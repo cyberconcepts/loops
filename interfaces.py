@@ -25,7 +25,7 @@ $Id$
 from zope.interface import Interface
 from zope.app.container.interfaces import IOrderedContainer
 
-from zope.schema import TextLine
+from zope.schema import TextLine, List, Object
 
 
 class ITask(IOrderedContainer):
@@ -55,9 +55,11 @@ class ITask(IOrderedContainer):
         """
 
     def createSubtask(taskType=None, container=None, name=None):
-        """ Create a new task with id in container and assign it to self as a subtask.
-            container defaults to parent of self.
-            name will be generated if not given.
+        """ Create a new task and assign it to self as a subtask.
+
+            taskType is a class that implements the ITask interface and defaults to Task.
+            The container in which the object will be created defaults to parent of self.
+            The name of the object to be created will be generated if not given.
             Return the new subtask.
         """
 
@@ -77,11 +79,18 @@ class ITask(IOrderedContainer):
 
     def createAndAllocateResource(resourceType=None, allocType='standard',
                                   container=None, name=None):
-        """ Allocate resource to self. A special allocation type may be given.
+        """ Create resource and allocate it to self.
+
+            resourceType is a class that implements the IResource interface
+            and defaults to Resource.
+            allocType defaults to 'standard'.
+            The container in which the object will be created defaults to parent of self.
+            The name of the object to be created will be generated if not given.
+            Return the new resource object.
         """
 
     def deallocateResource(resource, allocTypes=None):
-        """ Deallocate from self the resource given. If no allocTypes
+        """ Deallocate the resource given from self. If no allocTypes
             given all allocations to resource will be removed.
         """
 
@@ -117,4 +126,44 @@ class IResourceConstraint(Interface):
     """ A ResourceConstraint governs which Resource objects may be
         allocated to a Task object.
     """
+
+    task = Object(ITask,
+        title=u'Task',
+        description=u'Task object this ResourceConstraint belongs to',
+        required=True)
+
+    constraintType = TextLine(
+        title=u'Constraint Type',
+        description=u'Type of the constraint: select, require, or disallow',
+        default=u'select',
+        required=True)
+
+    referenceType = TextLine(
+        title=u'Reference Type',
+        description=u'Type of reference to the resource attribute to check: '
+                     'explicit, type, container, attribute, property, or parent',
+        default=u'explicit',
+        required=True)
+
+    referenceKey = TextLine(
+        title=u'Reference Key',
+        description=u'Key for referencing the resource attribute')
+
+    referenceValue = List(
+        title=u'Reference Values',
+        description=u'Attribute values to check for; may be any kind of object',
+        value_type=Object(Interface, title=u'Value'))
+
+    def isResourceAllowed(resource):
+        """ Return True if this ResourceConstraint allows the resource given.
+        """
+
+    def getAllowedResources(candidates=None):
+        """ Return a list of resource objects that are allowed by this
+            ResourceConstraint.
+
+            If given, use candidates as a list of possible resources
+            (candidates must implement the IResource interface).
+
+        """
 

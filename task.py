@@ -89,7 +89,8 @@ class Task(OrderedContainer):
     def createAndAllocateResource(self, resourceType=None, allocType='standard',
                                   container=None, name=None):
         container = container or zapi.getParent(self)
-        resource = Resource()
+        rClass = resourceType or Resource
+        resource = rClass()
         name = name or resource._createResourceName(container)
         container[name] = resource
         self.allocateResource(resource, allocType)
