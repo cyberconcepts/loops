@@ -25,7 +25,7 @@ $Id$
 from zope.interface import Interface
 from zope.app.container.interfaces import IOrderedContainer
 
-from zope.schema import Text, TextLine, List, Object
+from zope.schema import Text, TextLine, List, Object, Int
 
 
 class IResourceConstraint(Interface):
@@ -92,6 +92,20 @@ class ITask(IOrderedContainer):
         description=u'Name or short title of the task',
         default=u'',
         required=True)
+
+    qualifier = TextLine(
+        title=u'Qualifier',
+        description=u'Some string telling more specifically what this task is about',
+        default=u'',
+        required=False)
+    # to do: associate with a dynamically provided vocabulary
+
+    priority = Int(
+        title=u'Priority',
+        description=u'The priority is usually used for ordering the listing '
+                     'of tasks or subtasks; 0 means no priority, lower number = higher priority',
+        default=0,
+        required=False)
 
     resourceConstraints = List(
         title=u'Resource Constraints',
@@ -194,6 +208,12 @@ class ITask(IOrderedContainer):
             Returns None if no usable resource constraints are present.
             Falls back to getCandidateResources if candidates is None
             and usable resource constraints are present.
+        """
+
+    def isValid(checkSubtasks=True):
+        """ Check if currently assigned resources fulfill the resource constraints.
+
+            Default: Also check subtasks.
         """
 
     # Task object as prototype:

@@ -47,6 +47,12 @@ class TestTask(unittest.TestCase):
         t.title = u'First Task'
         self.assertEqual(u'First Task', t.title)
 
+    def testQualifier(self):
+        t = Task()
+        self.assertEqual(u'', t.qualifier)
+        t.qualifier = u'troubleticket'
+        self.assertEqual(u'troubleticket', t.qualifier)
+
     def testSubtasks(self):
         t1 = Task()
         self.assertEqual((), t1.getSubtasks())
@@ -71,6 +77,15 @@ class TestTask(unittest.TestCase):
         t1.deassignSubtask(t2)
         self.assertEqual((), t2.getParentTasks())
         self.assertEqual((), t1.getSubtasks())
+
+    def testSubtasksOrdering(self):
+        t1 = self.t1
+        st1 = t1.createSubtask()
+        st2 = t1.createSubtask()
+        st2.priority = 2
+        self.assertEqual((st1, st2), t1.getSubtasks())
+        st1.priority = 3
+        self.assertEqual((st2, st1), t1.getSubtasks())
 
 
 from loops.resource import Resource
@@ -153,6 +168,29 @@ class TestTaskResourceConstraints(unittest.TestCase):
         self.assertEqual(True, rc1.isResourceAllowed(r1))
         self.assertEqual((r1,), t1.getCandidateResources())
         self.assertEqual((r1,), rc1.getAllowedResources([r1]))
+
+    def testIsValid(self):
+        t1 = self.t1
+        r1 = self.r1
+        rc1 = self.rc1
+        t1.allocateResource(r1)
+        self.failUnless(t1.isValid())       # no constraint - everything valid
+        self.t1.resourceConstraints.append(self.rc1)        # empty constraint
+        self.failIf(t1.isValid())           # does not allow anything
+        rc1.referenceValues = ([r1])        # explicit allow
+        self.failUnless(t1.isValid())       #
+
+    def testIsValidParentTask(self):
+        t1 = self.t1
+        r1 = self.r1
+        rc1 = self.rc1
+        t1.allocateResource(r1)
+        pt = Task()
+        pt.assignSubtask(t1)
+        self.failUnless(pt.isValid())       # no constraint - everything valid
+        self.t1.resourceConstraints.append(self.rc1)        # empty constraint
+        self.failIf(pt.isValid())           # does not allow anything
+        self.failUnless(pt.isValid(False))  # don't check subtasks
 
 
 class TestTaskCopy(unittest.TestCase):

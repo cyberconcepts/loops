@@ -37,6 +37,8 @@ class Task(OrderedContainer):
     implements(ITask)
 
     title = u''
+    qualifier = u''
+    priority = 0
 
 
     def __init__(self):
@@ -49,7 +51,9 @@ class Task(OrderedContainer):
     # subtasks:
 
     def getSubtasks(self, taskTypes=None):
-        return tuple(self._subtasks)
+        st = self._subtasks
+        st.sort(lambda x,y: x.priority < y.priority and -1 or 1)
+        return tuple(st)
 
     def getParentTasks(self, taskTypes=None):
         return tuple(self._parentTasks)
@@ -146,6 +150,17 @@ class Task(OrderedContainer):
             # Empty result means: can't tell
             return result and result or None
         return tuple([ c for c in candidates if self.isResourceAllowed(c) ])
+
+    def isValid(self, checkSubtasks=True):
+        if self.resourceConstraints is not None:
+            for r in self.getAllocatedResources():
+                if not self.isResourceAllowed(r):
+                    return False
+        if checkSubtasks:
+            for t in self.getSubtasks():
+                if not t.isValid():
+                    return False
+        return True
 
     # Task object as prototype:
 
