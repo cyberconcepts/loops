@@ -19,7 +19,7 @@
 """
 Definition of the Task class.
 
-$Id: task.py $
+$Id$
 """
 
 from zope.interface import implements
@@ -37,4 +37,5 @@ class Task(Entity):
     implements(ITask)
 
     title = u''
+    #title = property(_getTitle, _setTitle)
 

@@ -1,10 +1,12 @@
+<!-- $Id$ -->
+
 <configure
    xmlns="http://namespaces.zope.org/zope"
    i18n_domain="zope"
    >
 
   <!-- Backward compatibility -->
-  <modulealias module="loops" alias="src.loops" />
+  <modulealias module="src.loops" alias="loops" />
 
   <!-- Security definitions -->
 
@@ -26,13 +28,17 @@
         id="loops.Task"
         description="Task object " />
 
-    <require
+    <!-- <require
         permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer"/>
+        interface="zope.app.container.interfaces.IReadContainer"/> -->
 
     <require
-        permission="zwiki.AddWikiPage"
-        interface="zope.app.container.interfaces.IWriteContainer"/>
+        permission="zope.View"
+        interface=".interfaces.ITask"/>
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.ITask"/>
 
   </content>
 

@@ -1,0 +1,45 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <!-- Backward compatibility -->
+  <zope:modulealias module="loops" alias="src.loops" />
+
+  <addform
+      label="Add Task"
+      name="AddTask.html"
+      schema="src.loops.interfaces.ITask"
+      content_factory="src.loops.task.Task"
+      fields="title"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="src.loops.task.Task"
+      title="Task"
+      description="A Task is a piece of work or something else a resource may be allocated to"
+      permission="zope.ManageContent"
+      view="AddTask.html"
+      />
+
+  <editform
+      label="Edit Task"
+      name="edit.html"
+      schema="src.loops.interfaces.ITask"
+      for="src.loops.interfaces.ITask"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <containerViews
+      for="src.loops.interfaces.ITask"
+      index="zope.View"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+</configure>
