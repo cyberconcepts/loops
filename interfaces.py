@@ -27,47 +27,9 @@ from zope.app.container.interfaces import IOrderedContainer
 from zope.schema import TextLine
 
 
-class IEntity(IOrderedContainer):
-    """ Common base class of the Task and Resource classes.
-        (Not sure if we really need it...)
-    """
-
-    def getRelations(relationships=None):
-        """ Return a list of target objects from relations assiociated
-            with this Entity, possibly restricted to the relationships given.
-        """
-
-    def getReverseRelations(relationships=None):
-        """ Return a list of source objects from relations directed at
-            this Entity as the target, possibly restricted to the relationships
-            given.
-        """
-
-class DummyIEntity:
-    def getRelation(target, relationship=None):
-        """ Return the relation object specified by target and relationship.
-        """
-
-    def addRelation(target, relationship, **props):
-        """ Create a new relation object with relationship to target
-            and assign it to self.
-            If supported by relationship additional properties may be
-            given as keyword parameters.
-            Return relation object.
-        """
-
-    def removeRelation(target, relationship):
-        """ Remove the relation to target with relationship from self.
-        """
-
-    def getController():
-        """ Return the LoopsController object of this Entity, typically
-            the parent LoopsManager object or the portal_loops Tool.
-        """
-
-
 class ITask(IOrderedContainer):
-    """ A Task is a scheduled piece of work.
+    """ A Task is a piece of work.
+
         Resources may be allocated to a Task.
         A Task may depend on subtasks.
     """
@@ -79,27 +41,23 @@ class ITask(IOrderedContainer):
         required=True)
 
     def getSubtasks(taskTypes=None):
-        """ Return a list of subtasks of self,
+        """ Return a tuple of subtasks of self,
             possibly restricted to the task types given.
         """
 
     def assignSubtask(task):
-        """ Assign an existing task to self as a subtask.
-            Return the relation object that leads to the subtask (Really?).
+        """ Assign an existing task to self as a subtask..
         """
 
     def getParentTasks():
-        """ Return a list of tasks to which self has a subtask relationship.
+        """ Return a tuple of tasks to which self has a subtask relationship.
         """
 
-class DummyITask:
-
-    def createSubtask(taskType=None, container=None, id=None, **props):
+    def createSubtask(taskType=None, container=None, name=None):
         """ Create a new task with id in container and assign it to self as a subtask.
             container defaults to parent of self.
-            id will be generated if not given.
-            Return the relation object that leads to the subtask
-            (fetch the subtask via relation.getTarget()).
+            name will be generated if not given.
+            Return the new subtask.
         """
 
     def deassignSubtask(task):
@@ -107,15 +65,19 @@ class DummyITask:
         """
 
     def getAllocatedResources(allocTypes=None, resTypes=None):
-        """ Return a list of resources allocated to self,
+        """ Return a tuple of resources allocated to self,
             possibly restricted to the allocation types and
             target resource types given.
         """
 
-    def allocateResource(resource, allocType=None, **props):
+    def allocateResource(resource, allocType=None):
+        """ Allocate resource to self. A special allocation type may be given.
+        """
+
+    def createAndAllocateResource(resourceType='Resource', allocType='standard',
+                                  container=None, name=None):
         """ Allocate resource to self. A special allocation type may be given.
             Additional properties may be given as keyword parameters.
-            Return relation object that implements the allocation reference.
         """
 
     def deallocateResource(resource):
@@ -123,7 +85,7 @@ class DummyITask:
         """
 
     def allocatedUserIds():
-        """ Returns list of user IDs of allocated Person objects that are portal members.
+        """ Returns tuple of user IDs of allocated Person objects that are portal members.
             Used by catalog index 'allocUserIds'.
         """
 
@@ -134,5 +96,18 @@ class DummyITask:
 
     def getAllAllocTypes():
         """ Return a tuple with all available allocation types defined
-            in the LoopsController object that is responsible for self.
+            in the controller object that is responsible for self.
         """
+
+
+class IResource(IOrderedContainer):
+    """ A Resource is an object - a thing or a person - that may be
+        allocated to one or more Task objects.
+    """
+
+    def getTasksAllocatedTo(allocTypes=None, taskTypes=None):
+        """ Return a list of task to which self is allocated to,
+            possibly restricted to the allocation types and
+            source task types given.
+        """
+
