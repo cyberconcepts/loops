@@ -25,7 +25,7 @@ $Id$
 from zope.interface import Interface
 from zope.app.container.interfaces import IOrderedContainer
 
-from zope.schema import TextLine, List, Object
+from zope.schema import Text, TextLine, List, Object
 
 
 class ITask(IOrderedContainer):
@@ -127,21 +127,22 @@ class IResourceConstraint(Interface):
         allocated to a Task object.
     """
 
-    task = Object(ITask,
-        title=u'Task',
-        description=u'Task object this ResourceConstraint belongs to',
+    explanation = Text(
+        title=u'Explanation',
+        description=u'Explanation of this constraint - '
+                     'why or why not certain resources may be allowed',
         required=True)
 
     constraintType = TextLine(
         title=u'Constraint Type',
-        description=u'Type of the constraint: select, require, or disallow',
+        description=u'Type of the constraint: select, require, disallow',
         default=u'select',
         required=True)
 
     referenceType = TextLine(
         title=u'Reference Type',
         description=u'Type of reference to the resource attribute to check: '
-                     'explicit, type, container, attribute, property, or parent',
+                     'explicit, parent, type, attribute, property, method'
         default=u'explicit',
         required=True)
 
@@ -149,7 +150,7 @@ class IResourceConstraint(Interface):
         title=u'Reference Key',
         description=u'Key for referencing the resource attribute')
 
-    referenceValue = List(
+    referenceValues = List(
         title=u'Reference Values',
         description=u'Attribute values to check for; may be any kind of object',
         value_type=Object(Interface, title=u'Value'))
@@ -164,6 +165,5 @@ class IResourceConstraint(Interface):
 
             If given, use candidates as a list of possible resources
             (candidates must implement the IResource interface).
-
         """
 
