@@ -175,7 +175,7 @@ class TestTaskResourceConstraints(unittest.TestCase):
         r2 = Resource()
         self.f1['rsc2'] = r2
         rc1 = self.rc1
-        rc1.referenceValues = ([r1, r2])  # allow/select both resources
+        rc1.referenceValues = [r1, r2]  # allow/select both resources
         rc2 = ResourceConstraint()
         rc2.referenceType = 'checkmethod'
         rc2.referenceKey = 'isAllowedForTesting'
@@ -189,9 +189,9 @@ class TestTaskResourceConstraints(unittest.TestCase):
         rc1 = self.rc1
         t1.allocateResource(r1)
         self.failUnless(t1.isValid())       # no constraint - everything valid
-        self.t1.resourceConstraints.append(self.rc1)        # empty constraint
+        self.t1.resourceConstraints.append(rc1)        # empty constraint
         self.failIf(t1.isValid())           # does not allow anything
-        rc1.referenceValues = ([r1])        # explicit allow
+        rc1.referenceValues = [r1]          # explicit allow
         self.failUnless(t1.isValid())       #
 
     def testIsValidParentTask(self):
@@ -202,7 +202,7 @@ class TestTaskResourceConstraints(unittest.TestCase):
         pt = Task()
         pt.assignSubtask(t1)
         self.failUnless(pt.isValid())       # no constraint - everything valid
-        self.t1.resourceConstraints.append(self.rc1)        # empty constraint
+        self.t1.resourceConstraints.append(rc1)        # empty constraint
         self.failIf(pt.isValid())           # does not allow anything
         self.failUnless(pt.isValid(False))  # don't check subtasks
 

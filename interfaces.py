@@ -193,8 +193,11 @@ class ITask(IOrderedContainer):
 
     # resource constraint stuff:
 
-    def isResourceAllowed(resource):
+    def isResourceAllowed(resource, rcDontCheck=None):
         """ Return True if the resource given is allowed for this task.
+
+            If rcDontChedk is given this resource constraint will be skipped
+            during checking.
         """
 
     def getCandidateResources():
