@@ -150,7 +150,7 @@ class TestTaskResourceConstraints(unittest.TestCase):
 
     # the tests...
 
-    def testSelectExplicit(self):
+    def testRequireExplicit(self):
         t1 = self.t1
         r1 = self.r1
         rc1 = self.rc1
@@ -165,9 +165,23 @@ class TestTaskResourceConstraints(unittest.TestCase):
         self.assertEqual((), t1.getAllowedResources([r1]))
 
         rc1.referenceValues = ([r1])
-        self.assertEqual(True, rc1.isResourceAllowed(r1))
+        self.assertEqual(True, t1.isResourceAllowed(r1))
         self.assertEqual((r1,), t1.getCandidateResources())
-        self.assertEqual((r1,), rc1.getAllowedResources([r1]))
+        self.assertEqual((r1,), t1.getAllowedResources([r1]))
+
+    def testRCCombination(self):
+        t1 = self.t1
+        r1 = self.r1
+        r2 = Resource()
+        self.f1['rsc2'] = r2
+        rc1 = self.rc1
+        rc1.referenceValues = ([r1, r2])  # allow/select both resources
+        rc2 = ResourceConstraint()
+        rc2.referenceType = 'checkmethod'
+        rc2.referenceKey = 'isAllowedForTesting'
+        Resource.isAllowedForTesting = lambda self: zapi.name(self) == 'rsc1'
+        t1.resourceConstraints = [rc1, rc2]
+        self.assertEqual((r1,), t1.getAllowedResources())
 
     def testIsValid(self):
         t1 = self.t1

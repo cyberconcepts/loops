@@ -122,24 +122,27 @@ class Task(OrderedContainer):
 
     # resource constraint stuff:
 
-    def isResourceAllowed(self, resource):
+    def isResourceAllowed(self, resource, rcDontCheck=None):
         rc = self.resourceConstraints
         if not rc:
             return True
         for c in rc:
+            if rcDontCheck and c == rcDontCheck:  # don't check constraint already checked
+                continue
             # that's too simple, we must check all constraints for constraintType:
-            if c.isResourceAllowed(resource):
-                return True
-        return False
+            if not c.isResourceAllowed(resource):
+                return False
+        return True
 
     def getCandidateResources(self):
         rc = self.resourceConstraints
         if not rc:
             return ()
-        result = []
         for c in rc:
-            result.extend(c.getAllowedResources())
-        return tuple(result)
+            candidates = c.getAllowedResources()
+            if candidates is not None:
+                return tuple([ r for r in candidates if self.isResourceAllowed(r, c) ])
+        return ()
 
     def getAllowedResources(self, candidates=None):
         rc = self.resourceConstraints
@@ -149,7 +152,7 @@ class Task(OrderedContainer):
             result = self.getCandidateResources()
             # Empty result means: can't tell
             return result and result or None
-        return tuple([ c for c in candidates if self.isResourceAllowed(c) ])
+        return tuple([ r for r in candidates if self.isResourceAllowed(r) ])
 
     def isValid(self, checkSubtasks=True):
         if self.resourceConstraints is not None:
