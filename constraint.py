@@ -43,13 +43,22 @@ class ResourceConstraint(object):
 
     def isResourceAllowed(self, resource, task=None):
         if self.referenceType == 'parent':
-            for r in self.referenceValues:
-                m = getattr(r, self.referenceKey)
+            for ref in self.referenceValues:
+                m = getattr(ref, self.referenceKey)
                 if resource in m():
                     return True
             return False
         elif self.referenceType == 'explicit':
             return resource in self.referenceValues
+        elif self.referenceType == 'method':
+            m = getattr(resource, self.referenceKey, None)
+            if m:
+                result = m()
+                if result is None: # method needs additional task parameter
+                    result = m(task=task)
+                return result
+            else:
+                return False
         else:
             return False
 
@@ -57,12 +66,15 @@ class ResourceConstraint(object):
     def getAllowedResources(self, candidates=None, task=None):
         if self.referenceType == 'parent':
             result = []
-            for r in self.referenceValues:
-                m = getattr(r, self.referenceKey)
+            for ref in self.referenceValues:
+                m = getattr(ref, self.referenceKey)
                 result.extend(m())
             return tuple(result)
         elif self.referenceType == 'explicit':
             return tuple(self.referenceValues)
         else:
-            return ()
+            if candidates is None:
+                return None
+            else:
+                return tuple([ r for r in candidates if self.isResourceAllowed(r, task) ])
 

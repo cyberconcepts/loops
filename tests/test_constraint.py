@@ -53,6 +53,28 @@ class Test(unittest.TestCase):
         rc1.referenceValues = ([t2])
         self.assertEqual(True, rc1.isResourceAllowed(r1))
         self.assertEqual((r1,), rc1.getAllowedResources())
+        rc1.referenceType = 'parent'
+        rc1.referenceKey = 'getAllocatedResources'
+
+    def testRequireMethod(self):
+        rc1 = self.rc1
+        rc1.constraintType = 'require'
+        rc1.referenceType = 'method'
+        rc1.referenceKey = 'isAllowedForTesting'
+        r1 = self.r1
+        t1 = self.t1
+        self.failIf(rc1.isResourceAllowed(r1))
+        Resource.isAllowedForTesting = lambda self: True
+        self.failUnless(rc1.isResourceAllowed(r1))
+        Resource.isAllowedForTesting = lambda self: False
+        self.failIf(rc1.isResourceAllowed(r1))
+        def method(self, task='dummy'):
+            if task == 'dummy': return None # need task keyword parameter
+            return task == t1
+        Resource.isAllowedForTesting = method
+        self.failUnless(rc1.isResourceAllowed(r1, t1))
+        self.failIf(rc1.isResourceAllowed(r1, Task()))
+
 
 
 def test_suite():
