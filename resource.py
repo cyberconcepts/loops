@@ -69,7 +69,7 @@ class Resource(OrderedContainer):
     def _createResourceName(self, container=None):
         prefix = 'rsc'
         container = container or zapi.getParent(self)
-        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [1])
+        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [0])
         return prefix + str(last+1)
 
         

@@ -24,10 +24,13 @@ $Id$
 
 from zope.interface import implements
 from zope.app.container.ordered import OrderedContainer
+from zope.app.copypastemove import ObjectCopier
 from zope.app import zapi
 
 from resource import Resource
 from interfaces import ITask
+
+from copy import copy
 
 class Task(OrderedContainer):
 
@@ -41,6 +44,7 @@ class Task(OrderedContainer):
         self._subtasks = []
         self._parentTasks = []
         self._resourceAllocs = {}
+        self.resourceConstraints = []
 
     # subtasks:
 
@@ -112,11 +116,55 @@ class Task(OrderedContainer):
     def getAllAllocTypes(self):
         return ('standard',)
 
+    # resource constraint stuff:
+
+    def isResourceAllowed(self, resource):
+        rc = self.resourceConstraints
+        if not rc:
+            return True
+        for c in rc:
+            # that's too simple, we must check all constraints for constraintType:
+            if c.isResourceAllowed(resource):
+                return True
+        return False
+
+    def getCandidateResources(self):
+        rc = self.resourceConstraints
+        if not rc:
+            return ()
+        result = []
+        for c in rc:
+            result.extend(c.getAllowedResources())
+        return tuple(result)
+
+    def getAllowedResources(self, candidates=None):
+        rc = self.resourceConstraints
+        if not rc:
+            return None
+        if candidates is None:
+            result = self.getCandidateResources()
+            # Empty result means: can't tell
+            return result and result or None
+        return tuple([ c for c in candidates if self.isResourceAllowed(c) ])
+
+    # Task object as prototype:
+
+    def copyTask(self, targetContainer=None):
+        targetContainer = targetContainer or zapi.getParent(self)
+        newName = self._createTaskName(targetContainer)
+        newTask = copy(self)
+        targetContainer[newName] = newTask
+        newTask._subtasks = []
+        for st in self.getSubtasks():
+            newSt = st.copyTask(targetContainer)
+            newSt._parentTasks.remove(self)
+            newTask.assignSubtask(newSt)
+        return newTask
 
     # Helper methods:
 
     def _createTaskName(self, container=None):
         prefix = 'tsk'
         container = container or zapi.getParent(self)
-        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [1])
+        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [0])
         return prefix + str(last+1)

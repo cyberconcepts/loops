@@ -86,7 +86,7 @@ class TestTaskResource(unittest.TestCase):
         self.t1 = Task()
         self.r1 = Resource()
         self.f1['tsk1'] = self.t1
-        self.r1['rsc1'] = self.r1
+        self.f1['rsc1'] = self.r1
 
     def tearDown(self):
         pass
@@ -115,11 +115,88 @@ class TestTaskResource(unittest.TestCase):
         self.assertEqual((r1,), t1.getAllocatedResources())
 
 
+from loops.constraint import ResourceConstraint
+
+class TestTaskResourceConstraints(unittest.TestCase):
+    "Test methods of the Task class related to checking for allowed resources."
+
+    def setUp(self):
+        self.f1 = Folder()
+        self.f1.__name__ = u'f1'
+        self.t1 = Task()
+        self.r1 = Resource()
+        self.f1['tsk1'] = self.t1
+        self.r1['rsc1'] = self.r1
+        self.rc1 = ResourceConstraint()
+
+    def tearDown(self):
+        pass
+
+
+    # the tests...
+
+    def testSelectExplicit(self):
+        t1 = self.t1
+        r1 = self.r1
+        rc1 = self.rc1
+
+        self.assertEqual(True, t1.isResourceAllowed(r1))    # no check
+        self.assertEqual((), t1.getCandidateResources())    # no candidates
+        self.assertEqual(None, t1.getAllowedResources([r1]))# can't say without constraint
+
+        self.t1.resourceConstraints.append(self.rc1)        # empty constraint
+        self.assertEqual(False, t1.isResourceAllowed(r1))   # does not allow
+        self.assertEqual((), t1.getCandidateResources())    # anything
+        self.assertEqual((), t1.getAllowedResources([r1]))
+
+        rc1.referenceValues = ([r1])
+        self.assertEqual(True, rc1.isResourceAllowed(r1))
+        self.assertEqual((r1,), t1.getCandidateResources())
+        self.assertEqual((r1,), rc1.getAllowedResources([r1]))
+
+
+class TestTaskCopy(unittest.TestCase):
+    "Tests related to copying tasks e.g. when using task prototypes."
+
+    def setUp(self):
+        self.f1 = Folder()
+        self.f1.__name__ = u'f1'
+        self.t1 = Task()
+        self.r1 = Resource()
+        self.f1['tsk1'] = self.t1
+        self.f1['rsc1'] = self.r1
+        self.rc1 = ResourceConstraint()
+
+    def tearDown(self):
+        pass
+
+
+    # the tests...
+
+    def testCopyTask(self):
+        t1 = self.t1
+        r1 = self.r1
+        rc1 = self.rc1
+        ts1 = t1.createSubtask()
+        ts1.resourceConstraints.append(rc1)
+        ts1.allocateResource(r1)
+        t2 = t1.copyTask()
+        self.failIf(t1 is t2, 't1 and t2 are still the same')
+        st2 = t2.getSubtasks()
+        self.assertEquals(1, len(st2))
+        ts2 = st2[0]
+        self.failIf(ts1 is ts2, 'ts1 and ts2 are still the same')
+        self.assertEquals((r1,), ts2.getAllocatedResources())
+        self.assertEquals([rc1,], ts2.resourceConstraints)
+
+
 def test_suite():
     return unittest.TestSuite((
 #            DocTestSuite('loops.tests.doctests'),
             unittest.makeSuite(TestTask),
             unittest.makeSuite(TestTaskResource),
+            unittest.makeSuite(TestTaskResourceConstraints),
+            unittest.makeSuite(TestTaskCopy),
             ))
 
 if __name__ == '__main__':

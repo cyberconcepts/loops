@@ -37,12 +37,11 @@ class ResourceConstraint(object):
     referenceKey = None
 
 
-    def __init__(self, task):
+    def __init__(self):
         self.referenceValues = []
-        self._task = task
 
 
-    def isResourceAllowed(self, resource):
+    def isResourceAllowed(self, resource, task=None):
         if self.referenceType == 'parent':
             for r in self.referenceValues:
                 m = getattr(r, self.referenceKey)
@@ -55,7 +54,7 @@ class ResourceConstraint(object):
             return False
 
 
-    def getAllowedResources(self, candidates=None):
+    def getAllowedResources(self, candidates=None, task=None):
         if self.referenceType == 'parent':
             result = []
             for r in self.referenceValues:

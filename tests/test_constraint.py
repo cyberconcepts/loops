@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         self.f1['rsc1'] = self.r1
         self.t1 = Task()
         self.f1['tsk1'] = self.t1
-        self.rc1 = ResourceConstraint(self.t1)
+        self.rc1 = ResourceConstraint()
 
     def tearDown(self):
         pass

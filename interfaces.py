@@ -28,6 +28,58 @@ from zope.app.container.interfaces import IOrderedContainer
 from zope.schema import Text, TextLine, List, Object
 
 
+class IResourceConstraint(Interface):
+    """ A ResourceConstraint governs which Resource objects may be
+        allocated to a Task object.
+    """
+
+    explanation = Text(
+        title=u'Explanation',
+        description=u'Explanation of this constraint - '
+                     'why or why not certain resources may be allowed',
+        required=True)
+
+    constraintType = TextLine(
+        title=u'Constraint Type',
+        description=u'Type of the constraint: select, require, disallow',
+        default=u'select',
+        required=True)
+
+    referenceType = TextLine(
+        title=u'Reference Type',
+        description=u'Type of reference to the resource attribute to check: '
+                     'explicit, parent, type, attribute, property, method',
+        default=u'explicit',
+        required=True)
+
+    referenceKey = TextLine(
+        title=u'Reference Key',
+        description=u'Key for referencing the resource attribute')
+
+    referenceValues = List(
+        title=u'Reference Values',
+        description=u'Attribute values to check for; may be any kind of object',
+        value_type=Object(Interface, title=u'Value'),
+        unique=True)
+
+    def isResourceAllowed(resource, task=None):
+        """ Return True if this ResourceConstraint allows the resource given.
+
+            If a task parameter is given there may be special checks on it, e.g.
+            on concerning subtasks of the task's parent task (sibling constraints).
+        """
+
+    def getAllowedResources(candidates=None, task=None):
+        """ Return a list of resource objects that are allowed by this
+            ResourceConstraint.
+
+            If given, use candidates as a list of possible resources
+            (candidates must implement the IResource interface).
+            If a task parameter is given there may be special checks on it, e.g.
+            on concerning subtasks of the task's parent task (sibling constraints).
+        """
+
+
 class ITask(IOrderedContainer):
     """ A Task is a piece of work.
 
@@ -40,6 +92,17 @@ class ITask(IOrderedContainer):
         description=u'Name or short title of the task',
         default=u'',
         required=True)
+
+    resourceConstraints = List(
+        title=u'Resource Constraints',
+        description=u'Collection of Constraints controlling the resources '
+                     'that may be allocated to a task',
+        default=[],
+        required=False,
+        value_type=Object(schema=IResourceConstraint, title=u'Resource Constraint'),
+        unique=True)
+
+    # subtask stuff:
 
     def getSubtasks(taskTypes=None):
         """ Return a tuple of subtasks of self,
@@ -66,6 +129,8 @@ class ITask(IOrderedContainer):
     def deassignSubtask(task):
         """ Remove the subtask relation to task from self.
         """
+
+    # resource allocations:
 
     def getAllocatedResources(allocTypes=None, resTypes=None):
         """ Return a tuple of resources allocated to self,
@@ -109,6 +174,38 @@ class ITask(IOrderedContainer):
             in the controller object that is responsible for self.
         """
 
+    # resource constraint stuff:
+
+    def isResourceAllowed(resource):
+        """ Return True if the resource given is allowed for this task.
+        """
+
+    def getCandidateResources():
+        """ Return a tuple of resource objects that are allowed for this task.
+
+            Returns empty tuple if no usable resource constraints present.
+        """
+
+    def getAllowedResources(candidates=None):
+        """ Return a list of resource objects that are allowed for this task.
+
+            If given, use candidates as a list of possible resources
+            (candidates must implement the IResource interface).
+            Returns None if no usable resource constraints are present.
+            Falls back to getCandidateResources if candidates is None
+            and usable resource constraints are present.
+        """
+
+    # Task object as prototype:
+
+    def copyTask(targetContainer=None):
+        """ Copy self to the target container given and return the new task.
+
+            Also copy all subtasks. Keep the references to resources and
+            resource constraints without copying them.
+            targetContainer defaults to self.getParent().
+        """
+
 
 class IResource(IOrderedContainer):
     """ A Resource is an object - a thing or a person - that may be
@@ -121,49 +218,4 @@ class IResource(IOrderedContainer):
             source task types given.
         """
 
-
-class IResourceConstraint(Interface):
-    """ A ResourceConstraint governs which Resource objects may be
-        allocated to a Task object.
-    """
-
-    explanation = Text(
-        title=u'Explanation',
-        description=u'Explanation of this constraint - '
-                     'why or why not certain resources may be allowed',
-        required=True)
-
-    constraintType = TextLine(
-        title=u'Constraint Type',
-        description=u'Type of the constraint: select, require, disallow',
-        default=u'select',
-        required=True)
-
-    referenceType = TextLine(
-        title=u'Reference Type',
-        description=u'Type of reference to the resource attribute to check: '
-                     'explicit, parent, type, attribute, property, method'
-        default=u'explicit',
-        required=True)
-
-    referenceKey = TextLine(
-        title=u'Reference Key',
-        description=u'Key for referencing the resource attribute')
-
-    referenceValues = List(
-        title=u'Reference Values',
-        description=u'Attribute values to check for; may be any kind of object',
-        value_type=Object(Interface, title=u'Value'))
-
-    def isResourceAllowed(resource):
-        """ Return True if this ResourceConstraint allows the resource given.
-        """
-
-    def getAllowedResources(candidates=None):
-        """ Return a list of resource objects that are allowed by this
-            ResourceConstraint.
-
-            If given, use candidates as a list of possible resources
-            (candidates must implement the IResource interface).
-        """
 
