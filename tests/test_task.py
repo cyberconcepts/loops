@@ -5,8 +5,8 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.app.container.tests.test_icontainer import TestSampleContainer
 from zope.interface.verify import verifyClass
 
-from src.loops.task import Task
-from src.loops.interfaces import ITask
+from loops.task import Task
+from loops.interfaces import ITask
 
 #class Test(TestSampleContainer):
 class Test(unittest.TestCase):
@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-            #DocTestSuite('src.loops.task'),
+            DocTestSuite('loops.tests.doctests'),
             unittest.makeSuite(Test),
             ))
 

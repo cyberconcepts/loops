@@ -25,7 +25,7 @@ $Id$
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 
-from src.loops.interfaces import ITask
+from loops.interfaces import ITask
 
 class TaskDetails:
 
