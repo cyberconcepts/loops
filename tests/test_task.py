@@ -4,9 +4,11 @@ import unittest
 #from zope.testing.doctestunit import DocTestSuite
 from zope.interface.verify import verifyClass
 #from zope.app.tests.setup import placelessSetUp
+from zope.app.tests.setup import placefulSetUp
 #from zope.app.container.tests.test_icontainer import TestSampleContainer
 from zope.app.container.interfaces import IContained
 from zope.app.folder import Folder
+from zope.app import zapi
 
 from loops.task import Task
 from loops.interfaces import ITask
@@ -16,7 +18,8 @@ class TestTask(unittest.TestCase):
     "Test methods of the Task class."
 
     def setUp(self):
-        #placelessSetUp()
+#        placelessSetUp()
+        placefulSetUp()
         self.f1 = Folder()
         self.f1.__name__ = u'f1'
         self.t1 = Task()
@@ -35,8 +38,8 @@ class TestTask(unittest.TestCase):
         verifyClass(ITask, Task)
 
     def testContained(self):
-        self.assertEqual(u'tsk1', self.t1.__name__)
-        self.assertEqual(u'f1', self.t1.__parent__.__name__)
+        self.assertEqual(u'tsk1', zapi.name(self.t1))
+        self.assertEqual(u'f1', zapi.name(zapi.getParent(self.t1)))
 
     def testTitle(self):
         t = Task()
@@ -75,9 +78,9 @@ from loops.resource import Resource
 class TestTaskResource(unittest.TestCase):
     "Test methods of the Task class related to Resource allocations."
 
-
     def setUp(self):
         #placelessSetUp()
+        #placefulSetUp()
         self.f1 = Folder()
         self.f1.__name__ = u'f1'
         self.t1 = Task()
@@ -95,6 +98,20 @@ class TestTaskResource(unittest.TestCase):
         r1 = self.r1
         self.assertEqual((), t1.getAllocatedResources())
         t1.allocateResource(r1)
+        self.assertEqual((r1,), t1.getAllocatedResources())
+
+    def testDeallocateResource(self):
+        t1 = self.t1
+        r1 = self.r1
+        t1.allocateResource(r1)
+        self.assertEqual((r1,), t1.getAllocatedResources())
+        t1.deallocateResource(r1)
+        self.assertEqual((), t1.getAllocatedResources())
+
+    def testCreateAndAllocateResource(self):
+        t1 = self.t1
+        self.assertEqual((), t1.getAllocatedResources())
+        r1 = t1.createAndAllocateResource()
         self.assertEqual((r1,), t1.getAllocatedResources())
 
 

@@ -54,6 +54,14 @@ class Test(unittest.TestCase):
         t1.allocateResource(r1)
         self.assertEqual((t1,), r1.getTasksAllocatedTo())
 
+    def testDeallocateFromTask(self):
+        t1 = self.t1
+        r1 = self.r1
+        t1.allocateResource(r1)
+        self.assertEqual((t1,), r1.getTasksAllocatedTo())
+        t1.deallocateResource(r1)
+        self.assertEqual((), r1.getTasksAllocatedTo())
+
 
 def test_suite():
     return unittest.TestSuite((

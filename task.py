@@ -24,9 +24,10 @@ $Id$
 
 from zope.interface import implements
 from zope.app.container.ordered import OrderedContainer
+from zope.app import zapi
 
+from resource import Resource
 from interfaces import ITask
-
 
 class Task(OrderedContainer):
 
@@ -54,9 +55,9 @@ class Task(OrderedContainer):
         task._parentTasks.append(self)
 
     def createSubtask(self, taskType=None, container=None, name=None):
-        container = container or self.__parent__
+        container = container or zapi.getParent(self)
         task = Task()
-        name = name or self._createTaskName()
+        name = name or task._createTaskName(container)
         container[name] = task
         self.assignSubtask(task)
         return task
@@ -65,37 +66,47 @@ class Task(OrderedContainer):
         self._subtasks.remove(task)
         task._parentTasks.remove(self)
 
-    # resources:
+    # resource allocations:
 
     def getAllocatedResources(self, allocTypes=None, resTypes=None):
         from sets import Set
         allocs = self._resourceAllocs
         res = Set()
-        for at in allocs.keys():
-            if allocTypes is None or at in allocTypes:
-                res.union_update(allocs[at])
+        for at in allocTypes or allocs.keys():
+            res.union_update(allocs[at])
+        if resTypes:
+            res = [ r for r in res if r in resTypes ]
         return tuple(res)
 
-    def allocateResource(self, resource, allocType=None):
-        allocType = allocType or 'standard'
+    def allocateResource(self, resource, allocType='standard'):
         allocs = self._resourceAllocs
         rList = allocs.get(allocType, [])
-        rList.append(resource)
+        if resource not in rList:
+            rList.append(resource)
         allocs[allocType] = rList
-        resource._updateAllocations(self, allocType)
+        resource._addAllocation(self, allocType)
 
-    def createAndAllocateResource(self, resourceType='Resource', allocType='standard',
-                                  container=None, id=None):
-        return None
+    def createAndAllocateResource(self, resourceType=None, allocType='standard',
+                                  container=None, name=None):
+        container = container or zapi.getParent(self)
+        resource = Resource()
+        name = name or resource._createResourceName(container)
+        container[name] = resource
+        self.allocateResource(resource, allocType)
+        return resource
 
-    def deallocateResource(self, resource):
-        pass
+    def deallocateResource(self, resource, allocTypes=None):
+        allocs = self._resourceAllocs
+        for at in allocTypes or allocs.keys():
+            if resource in allocs[at]:
+                allocs[at].remove(resource)
+        resource._removeAllocations(self, allocTypes)
 
     def allocatedUserIds(self):
         return ()
 
-    def getAllocType(self, resource):
-        return 'standard'
+    def getAllocTypes(self, resource):
+        return ('standard',)
 
     def getAllAllocTypes(self):
         return ('standard',)
@@ -103,7 +114,8 @@ class Task(OrderedContainer):
 
     # Helper methods:
 
-    def _createTaskName(self):
+    def _createTaskName(self, container=None):
         prefix = 'tsk'
-        last = max([ int(n[len(prefix):]) for n in self.__parent__.keys() ] or [1])
+        container = container or zapi.getParent(self)
+        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [1])
         return prefix + str(last+1)

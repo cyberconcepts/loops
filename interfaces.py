@@ -22,6 +22,7 @@ loops interface definitions.
 $Id$
 """
 
+from zope.interface import Interface
 from zope.app.container.interfaces import IOrderedContainer
 
 from zope.schema import TextLine
@@ -70,18 +71,18 @@ class ITask(IOrderedContainer):
             target resource types given.
         """
 
-    def allocateResource(resource, allocType=None):
+    def allocateResource(resource, allocType='standard'):
         """ Allocate resource to self. A special allocation type may be given.
         """
 
-    def createAndAllocateResource(resourceType='Resource', allocType='standard',
+    def createAndAllocateResource(resourceType=None, allocType='standard',
                                   container=None, name=None):
         """ Allocate resource to self. A special allocation type may be given.
-            Additional properties may be given as keyword parameters.
         """
 
-    def deallocateResource(resource):
-        """ Deallocate from self the resource allocated.
+    def deallocateResource(resource, allocTypes=None):
+        """ Deallocate from self the resource given. If no allocTypes
+            given all allocations to resource will be removed.
         """
 
     def allocatedUserIds():
@@ -89,9 +90,9 @@ class ITask(IOrderedContainer):
             Used by catalog index 'allocUserIds'.
         """
 
-    def getAllocType(resource):
-        """ Return the allocation type for the resource given. Raise a
-            ValueException if resource is not allocated to self.
+    def getAllocTypes(resource):
+        """ Return the allocation types with which the resource given
+            is allocated to self.
         """
 
     def getAllAllocTypes():
@@ -110,4 +111,10 @@ class IResource(IOrderedContainer):
             possibly restricted to the allocation types and
             source task types given.
         """
+
+
+class IResourceConstraint(Interface):
+    """ A ResourceConstraint governs which Resource objects may be
+        allocated to a Task object.
+    """
 

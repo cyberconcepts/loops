@@ -24,6 +24,7 @@ $Id$
 
 from zope.interface import implements
 from zope.app.container.ordered import OrderedContainer
+from zope.app import zapi
 
 from interfaces import IResource
 
@@ -52,13 +53,23 @@ class Resource(OrderedContainer):
 
     # Helper methods:
 
-    def _updateAllocations(self, task, allocType):
+    def _addAllocation(self, task, allocType):
         #called by Task.allocateResource
         tList = self._allocations.get(allocType, [])
         tList.append(task)
         self._allocations[allocType] = tList
 
-    def _createResourceName(self):
+    def _removeAllocations(self, task, allocTypes):
+        #called by Task.deallocateResource
+        allocs = self._allocations
+        for at in allocTypes or allocs.keys():
+            if task in allocs[at]:
+                allocs[at].remove(task)
+
+    def _createResourceName(self, container=None):
         prefix = 'rsc'
-        last = max([ int(n[len(prefix):]) for n in self.__parent__.keys() ] or [1])
+        container = container or zapi.getParent(self)
+        last = max([ int(n[len(prefix):]) for n in container.keys() ] or [1])
         return prefix + str(last+1)
+
+        
