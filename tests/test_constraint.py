@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
             'Interface IResourceConstraint is not implemented by class ResourceConstraint.')
         verifyClass(IResourceConstraint, ResourceConstraint)
 
-    def testSelectExplicit(self):
+    def testRequireExplicit(self):
         rc1 = self.rc1
         r1 = self.r1
         self.assertEqual(False, rc1.isResourceAllowed(r1))
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         self.assertEqual(True, rc1.isResourceAllowed(r1))
         self.assertEqual((r1,), rc1.getAllowedResources())
 
-    def testSelectParent(self):
+    def testRequireParent(self):
         rc1 = self.rc1
         r1 = self.r1
         t2 = Task()
@@ -56,10 +56,9 @@ class Test(unittest.TestCase):
         rc1.referenceType = 'parent'
         rc1.referenceKey = 'getAllocatedResources'
 
-    def testRequireMethod(self):
+    def testRequireCheckmethod(self):
         rc1 = self.rc1
-        rc1.constraintType = 'require'
-        rc1.referenceType = 'method'
+        rc1.referenceType = 'checkmethod'
         rc1.referenceKey = 'isAllowedForTesting'
         r1 = self.r1
         t1 = self.t1
@@ -67,13 +66,20 @@ class Test(unittest.TestCase):
         Resource.isAllowedForTesting = lambda self: True
         self.failUnless(rc1.isResourceAllowed(r1))
         Resource.isAllowedForTesting = lambda self: False
-        self.failIf(rc1.isResourceAllowed(r1))
-        def method(self, task='dummy'):
-            if task == 'dummy': return None # need task keyword parameter
-            return task == t1
-        Resource.isAllowedForTesting = method
-        self.failUnless(rc1.isResourceAllowed(r1, t1))
-        self.failIf(rc1.isResourceAllowed(r1, Task()))
+        self.failIf(rc1.isResourceAllowed(r1, t1))
+
+    def testRequireSelectMethod(self):
+        rc1 = self.rc1
+        rc1.referenceType = 'selectmethod'
+        rc1.referenceKey = 'selectResources'
+        r1 = self.r1
+        t1 = self.t1
+        def method(self, candidates, task):
+            if task is None: return None
+            return (r1,)
+        ResourceConstraint.selectResources = method
+        self.assertEqual((r1,), rc1.getAllowedResources(task=t1))
+        self.failUnless(rc1.isResourceAllowed(r1, task=t1))
 
 
 

@@ -41,14 +41,14 @@ class IResourceConstraint(Interface):
 
     constraintType = TextLine(
         title=u'Constraint Type',
-        description=u'Type of the constraint: select, require, allow, disallow',
-        default=u'select',
+        description=u'Type of the constraint: require, allow, disallow',
+        default=u'require',
         required=True)
 
     referenceType = TextLine(
         title=u'Reference Type',
         description=u'Type of reference to the resource attribute to check: '
-                     'explicit, parent, type, method.',
+                     'explicit, parent, type, selectmethod, checkmethod.',
         default=u'explicit',
         required=True)
 

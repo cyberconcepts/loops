@@ -32,7 +32,7 @@ class ResourceConstraint(object):
     implements(IResourceConstraint)
 
     explanation = u''
-    constraintType = 'select'
+    constraintType = 'require'
     referenceType = 'explicit'
     referenceKey = None
 
@@ -47,20 +47,16 @@ class ResourceConstraint(object):
                 m = getattr(ref, self.referenceKey)
                 if resource in m():
                     return True
-            return False
         elif self.referenceType == 'explicit':
             return resource in self.referenceValues
-        elif self.referenceType == 'method':
+        elif self.referenceType == 'checkmethod':
             m = getattr(resource, self.referenceKey, None)
             if m:
-                result = m()
-                if result is None: # method needs additional task parameter
-                    result = m(task=task)
-                return result
-            else:
-                return False
-        else:
-            return False
+                return m()
+        elif self.referenceType == 'selectmethod':
+            allowed = self.getAllowedResources(task=task)
+            return allowed and resource in allowed or False
+        return False
 
 
     def getAllowedResources(self, candidates=None, task=None):
@@ -72,6 +68,9 @@ class ResourceConstraint(object):
             return tuple(result)
         elif self.referenceType == 'explicit':
             return tuple(self.referenceValues)
+        elif self.referenceType == 'selectmethod':
+            m = getattr(self, self.referenceKey)
+            return m(candidates, task)
         else:
             if candidates is None:
                 return None
