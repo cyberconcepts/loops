@@ -39,3 +39,16 @@ class Task(Entity):
     title = u''
     #title = property(_getTitle, _setTitle)
 
+    _subtasks = []
+    _parentTasks = []
+
+    def getSubtasks(self, taskTypes=None):
+        return tuple(self._subtasks)
+
+    def getParentTasks(self, taskTypes=None):
+        return tuple(self._parentTasks)
+
+    def assignSubtask(self, task):
+        self._subtasks.append(task)
+        task._parentTasks.append(self)
+        return task

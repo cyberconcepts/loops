@@ -1,4 +1,4 @@
-# $Id: test_task.py $
+# $Id$
 
 import unittest
 from zope.testing.doctestunit import DocTestSuite
@@ -12,9 +12,6 @@ from src.loops.interfaces import ITask
 class Test(unittest.TestCase):
     "Test methods of the Task class."
 
-    def makeTestObject(self):
-        return Task()
-
     def testInterface(self):
         self.assert_(ITask.providedBy(Task()), 'Interface ITask is not implemented by class Task.')
         verifyClass(ITask, Task)
@@ -24,6 +21,16 @@ class Test(unittest.TestCase):
         self.assertEqual(u'', t.title)
         t.title = u'First Task'
         self.assertEqual(u'First Task', t.title)
+
+    def testSubtasks(self):
+        t1 = Task()
+        self.assertEquals((), t1.getSubtasks())
+        t2 = Task()
+        self.assertEquals((), t2.getSubtasks())
+        self.assertEquals((), t2.getParentTasks())
+        t1.assignSubtask(t2)
+        self.assertEquals((t2,), t1.getSubtasks())
+        self.assertEquals((t1,), t2.getParentTasks())
 
 def test_suite():
     return unittest.TestSuite((

@@ -19,7 +19,7 @@
 """
 loops interface definitions.
 
-$Id: interfaces.py $
+$Id$
 """
 
 from zope.app.container.interfaces import IOrderedContainer
@@ -29,6 +29,7 @@ from zope.schema import TextLine
 
 class IEntity(IOrderedContainer):
     """ Common base class of the Task and Resource classes.
+        (Not sure if we really need it...)
     """
 
     def getRelations(relationships=None):
@@ -65,7 +66,7 @@ class DummyIEntity:
         """
 
 
-class ITask(IEntity):
+class ITask(IOrderedContainer):
     """ A Task is a scheduled piece of work.
         Resources may be allocated to a Task.
         A Task may depend on subtasks.
@@ -77,11 +78,21 @@ class ITask(IEntity):
         default=u'',
         required=True)
 
-class DummyITask:
     def getSubtasks(taskTypes=None):
         """ Return a list of subtasks of self,
             possibly restricted to the task types given.
         """
+
+    def assignSubtask(task):
+        """ Assign an existing task to self as a subtask.
+            Return the relation object that leads to the subtask (Really?).
+        """
+
+    def getParentTasks():
+        """ Return a list of tasks to which self has a subtask relationship.
+        """
+
+class DummyITask:
 
     def createSubtask(taskType=None, container=None, id=None, **props):
         """ Create a new task with id in container and assign it to self as a subtask.
@@ -91,17 +102,8 @@ class DummyITask:
             (fetch the subtask via relation.getTarget()).
         """
 
-    def assignSubtask(task):
-        """ Assign an existing task to self as a subtask.
-            Return the relation object that leads to the subtask.
-        """
-
     def deassignSubtask(task):
         """ Remove the subtask relation to task from self.
-        """
-
-    def getParentTasks():
-        """ Return a list of tasks to which self has a subtask relationship.
         """
 
     def getAllocatedResources(allocTypes=None, resTypes=None):

@@ -42,4 +42,13 @@
       add="zope.ManageContent"
       />
 
+  <page
+      name="details.html"
+      for="src.loops.interfaces.ITask"
+      class=".task.TaskDetails"
+      template="task_details.pt"
+      permission="zope.View"
+      menu="zmi_views" title="Details"
+      />
+
 </configure>
