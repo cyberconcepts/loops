@@ -1,0 +1,42 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope"
+   >
+
+  <!-- Backward compatibility -->
+  <modulealias module="loops" alias="src.loops" />
+
+  <!-- Security definitions -->
+
+  <!-- Content declarations -->
+
+  <interface
+      interface=".interfaces.ITask"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
+ <content class=".task.Task">
+
+    <implements interface="zope.app.container.interfaces.IContentContainer" />
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="loops.Task"
+        description="Task object " />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"/>
+
+    <require
+        permission="zwiki.AddWikiPage"
+        interface="zope.app.container.interfaces.IWriteContainer"/>
+
+  </content>
+
+  <!-- Register various browser related components, including all views -->
+  <include package=".browser" />
+
+</configure>
