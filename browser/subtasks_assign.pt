@@ -1,0 +1,47 @@
+<html metal:use-macro="views/standard_macros/view">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <h1 tal:content="context/title">Task Title</h1>
+
+      <div class="row">
+        <span class="label">Subtasks</span>:
+        <span class="field"
+            tal:repeat="task context/getSubtasks">
+          <span tal:content="task/title">subtask</span>
+          <span class="field" tal:condition="not:repeat/task/end"> - </span>
+        </span>
+      </div>
+      <div class="row">
+        <span class="label">Parent Tasks</span>:
+        <span class="field"
+            tal:repeat="task context/getParentTasks">
+          <span tal:content="task/title">parent task</span>
+          <span class="field" tal:condition="not:repeat/task/end"> - </span>
+        </span>
+      </div>
+      <div class="row">
+        <span class="label">Last Modified</span>:
+        <span class="field" tal:content="view/modified">2004-08-28</span>
+      </div>
+      
+      <form action="." method="post"
+            tal:attributes="action context/@@absolute_url">
+        <div class="row">
+            <span class="label">Subtasks</span>:
+            <span class="field">
+            <input type="test" name="subtaskPath" />
+            </span>
+        </div>
+        <div class="row">
+            <input type="submit" name="subtask_assign:method" value="Assign Subtask" />
+        </div>
+      </form>
+
+    </div>
+  </body>
+</html>

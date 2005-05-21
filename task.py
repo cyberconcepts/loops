@@ -59,8 +59,8 @@ class Task(OrderedContainer):
         return tuple(self._parentTasks)
 
     def assignSubtask(self, task):
-        self._subtasks.append(task)
-        task._parentTasks.append(self)
+        self._subtasks = self._subtasks + [task]
+        task._parentTasks = task._parentTasks + [self]
 
     def createSubtask(self, taskType=None, container=None, name=None):
         container = container or zapi.getParent(self)

@@ -1,10 +1,10 @@
 # $Id$
 
 import unittest
-#from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface.verify import verifyClass
 #from zope.app.tests.setup import placelessSetUp
-from zope.app.tests.setup import placefulSetUp
+from zope.app.testing.setup import placefulSetUp
 #from zope.app.container.tests.test_icontainer import TestSampleContainer
 from zope.app.container.interfaces import IContained
 from zope.app.folder import Folder
@@ -244,7 +244,7 @@ class TestTaskCopy(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-#            DocTestSuite('loops.tests.doctests'),
+            DocTestSuite('loops.tests.doctests'),
             unittest.makeSuite(TestTask),
             unittest.makeSuite(TestTaskResource),
             unittest.makeSuite(TestTaskResourceConstraints),

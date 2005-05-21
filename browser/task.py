@@ -24,10 +24,11 @@ $Id$
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import ITask
 
-class TaskDetails:
+class Details:
 
     def modified(self):
         """ get date/time of last modification
@@ -36,3 +37,16 @@ class TaskDetails:
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
+
+class SubtaskAssignments(Details):
+
+    def assignSubtask(self):
+        """ Add a subtask denoted by the path given in the
+            request variable subtaskPath.
+        """
+        subtaskPath = self.request.get('subtaskPath')
+        #if subtaskPath:
+        subtask = zapi.traverse(zapi.getRoot(self.context), subtaskPath, None, self.request)
+        #if subtask:
+        self.context.assignSubtask(removeSecurityProxy(subtask))
+        self.request.response.redirect('.')
