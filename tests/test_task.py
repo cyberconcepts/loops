@@ -234,6 +234,7 @@ class TestTaskCopy(unittest.TestCase):
         ts1.allocateResource(r1)
         t2 = t1.copyTask()
         self.failIf(t1 is t2, 't1 and t2 are still the same')
+        self.assertEquals(1, len(t1.getSubtasks()))
         st2 = t2.getSubtasks()
         self.assertEquals(1, len(st2))
         ts2 = st2[0]

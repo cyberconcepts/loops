@@ -27,10 +27,23 @@ from zope.app.container.ordered import OrderedContainer
 from zope.app.copypastemove import ObjectCopier
 from zope.app import zapi
 
+from relation import Relation, Relations
 from resource import Resource
 from interfaces import ITask
 
 from copy import copy
+
+
+class ResourceAllocation(Relation):
+    """ A relation that represents an allocation of a resource
+        to a task.
+    """
+
+    
+class ResourceAllocations(Relations):
+    """ A set of resource allocations.
+    """
+
 
 class Task(OrderedContainer):
 
@@ -43,24 +56,27 @@ class Task(OrderedContainer):
 
     def __init__(self):
         OrderedContainer.__init__(self)
-        self._subtasks = []
-        self._parentTasks = []
+        self._subtasks = Relations()
+        self._parentTasks = Relations()
         self._resourceAllocs = {}
         self.resourceConstraints = []
 
     # subtasks:
 
     def getSubtasks(self, taskTypes=None):
-        st = self._subtasks
+        st = [ r._target for r in self._subtasks ]
         st.sort(lambda x,y: x.priority < y.priority and -1 or 1)
         return tuple(st)
 
     def getParentTasks(self, taskTypes=None):
-        return tuple(self._parentTasks)
+        pt = [ r._source for r in self._parentTasks ]
+        return tuple(pt)
 
     def assignSubtask(self, task):
-        self._subtasks = self._subtasks + [task]
-        task._parentTasks = task._parentTasks + [self]
+        if task not in self.getSubtasks():
+            rel = Relation(self, task)
+            self._subtasks.add(rel)
+            task._parentTasks.add(rel)
 
     def createSubtask(self, taskType=None, container=None, name=None):
         container = container or zapi.getParent(self)
@@ -71,8 +87,10 @@ class Task(OrderedContainer):
         return task
 
     def deassignSubtask(self, task):
-        self._subtasks.remove(task)
-        task._parentTasks.remove(self)
+        hits = [ r for r in self._subtasks if r._target == task ]
+        if hits:
+            self._subtasks.remove(hits[0])
+            task._parentTasks.remove(hits[0])
 
     # resource allocations:
 
@@ -172,10 +190,11 @@ class Task(OrderedContainer):
         newName = self._createTaskName(targetContainer)
         newTask = copy(self)
         targetContainer[newName] = newTask
-        newTask._subtasks = []
-        for st in self.getSubtasks():
+        subtasks = self.getSubtasks() 
+        newTask._subtasks.clear()
+        for st in subtasks:
             newSt = st.copyTask(targetContainer)
-            newSt._parentTasks.remove(self)
+            newSt._parentTasks.clear()
             newTask.assignSubtask(newSt)
         return newTask
 

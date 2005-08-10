@@ -28,6 +28,33 @@ from zope.app.container.interfaces import IOrderedContainer
 from zope.schema import Text, TextLine, List, Object, Int
 
 
+class IRelations(Interface):
+    """ Holds a set of relations (more precisely: ends of relations).
+        A simple implementation is to just use an IOSet.
+    """
+
+    def add(relation):
+        """ Add a relation.
+            relationClass is the class that should be used for the relation
+            object; it should have a default setting, e.g. Relation.
+        """
+
+    def remove(relation):
+        """
+        """
+
+
+class IRelation(Interface):
+    """ Represents a relation from one object to another.
+    """
+    source = Object(Interface,
+                    title=u'Source Object',
+                    description=u"Object that is the source of the relation")
+    target = Object(Interface,
+                    title=u'Target Object',
+                    description=u"Object that is the target of the relation")
+
+
 class IResourceConstraint(Interface):
     """ A ResourceConstraint governs which Resource objects may be
         allocated to a Task object.
@@ -243,5 +270,4 @@ class IResource(IOrderedContainer):
             possibly restricted to the allocation types and
             source task types given.
         """
-
 
