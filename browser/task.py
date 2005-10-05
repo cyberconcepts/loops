@@ -28,7 +28,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import ITask
 
-class Details:
+class Details(object):
 
     def modified(self):
         """ get date/time of last modification

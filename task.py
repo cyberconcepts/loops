@@ -26,6 +26,7 @@ from zope.interface import implements
 from zope.app.container.ordered import OrderedContainer
 from zope.app.copypastemove import ObjectCopier
 from zope.app import zapi
+from zope.schema.fieldproperty import FieldProperty
 
 from relation import Relation, Relations
 from resource import Resource
@@ -51,8 +52,7 @@ class Task(OrderedContainer):
 
     title = u''
     qualifier = u''
-    priority = 0
-
+    priority = FieldProperty(ITask['priority'])
 
     def __init__(self):
         OrderedContainer.__init__(self)
