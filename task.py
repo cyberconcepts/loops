@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,17 +35,6 @@ from interfaces import ITask
 from copy import copy
 
 
-class ResourceAllocation(Relation):
-    """ A relation that represents an allocation of a resource
-        to a task.
-    """
-
-    
-class ResourceAllocations(Relations):
-    """ A set of resource allocations.
-    """
-
-
 class Task(OrderedContainer):
 
     implements(ITask)
@@ -54,12 +43,12 @@ class Task(OrderedContainer):
     qualifier = u''
     priority = FieldProperty(ITask['priority'])
 
-    def __init__(self):
+    def __init__(self, name=None, title=u''):
         OrderedContainer.__init__(self)
-        self._subtasks = Relations()
-        self._parentTasks = Relations()
-        self._resourceAllocs = {}
-        self.resourceConstraints = []
+        if name:
+            self.__name__ = name
+        if title:
+            self.title = title
 
     # subtasks:
 
