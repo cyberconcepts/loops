@@ -30,23 +30,6 @@ class TestTask(unittest.TestCase):
 
     # the tests...
 
-    def testInterface(self):
-        self.assert_(ITask.providedBy(Task()),
-            'Interface ITask is not implemented by class Task.')
-        self.assert_(IContained.providedBy(Task()),
-            'Interface IContained is not implemented by class Task.')
-        verifyClass(ITask, Task)
-
-    def testContained(self):
-        self.assertEqual(u'tsk1', zapi.name(self.t1))
-        self.assertEqual(u'f1', zapi.name(zapi.getParent(self.t1)))
-
-    def testTitle(self):
-        t = Task()
-        self.assertEqual(u'', t.title)
-        t.title = u'First Task'
-        self.assertEqual(u'First Task', t.title)
-
     def testQualifier(self):
         t = Task()
         self.assertEqual(u'', t.qualifier)

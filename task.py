@@ -27,12 +27,22 @@ from zope.app.container.ordered import OrderedContainer
 from zope.app.copypastemove import ObjectCopier
 from zope.app import zapi
 from zope.schema.fieldproperty import FieldProperty
+from zope.component.interfaces import IFactory
 
-from relation import Relation, Relations
+from cybertools.relation.interfaces import IRelationsRegistry
+from cybertools.relation import DyadicRelation
+
+#from relation import Relation, Relations
 from resource import Resource
 from interfaces import ITask
 
 from copy import copy
+
+
+class SubtaskRelation(DyadicRelation):
+    """ Relation of a first task (the parent task) to a second task
+        (the subtask).
+    """
 
 
 class Task(OrderedContainer):
@@ -53,19 +63,22 @@ class Task(OrderedContainer):
     # subtasks:
 
     def getSubtasks(self, taskTypes=None):
-        st = [ r._target for r in self._subtasks ]
-        st.sort(lambda x,y: x.priority < y.priority and -1 or 1)
-        return tuple(st)
+        registry = zapi.getUtility(IRelationsRegistry)
+        return [r.second
+                for r in registry.query(relationship=SubtaskRelation,
+                                        first=self)]
+        # TODO: sort according to priority
 
     def getParentTasks(self, taskTypes=None):
-        pt = [ r._source for r in self._parentTasks ]
-        return tuple(pt)
+        registry = zapi.getUtility(IRelationsRegistry)
+        return [r.first
+                for r in registry.query(relationship=SubtaskRelation,
+                                        second=self)]
 
     def assignSubtask(self, task):
-        if task not in self.getSubtasks():
-            rel = Relation(self, task)
-            self._subtasks.add(rel)
-            task._parentTasks.add(rel)
+        registry = zapi.getUtility(IRelationsRegistry)
+        registry.register(SubtaskRelation(self, task))
+        # TODO (?): avoid duplicates
 
     def createSubtask(self, taskType=None, container=None, name=None):
         container = container or zapi.getParent(self)
