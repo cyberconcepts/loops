@@ -6,6 +6,50 @@
    i18n_domain="zope"
    >
 
+  <!-- loops top-level container -->
+
+  <addform
+      label="Add loops Container"
+      name="AddLoopsContainer.html"
+      schema="loops.interfaces.ILoops"
+      content_factory="loops.Loops"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.Loops"
+      title="loops Container"
+      description="A top-level loops container"
+      permission="zope.ManageContent"
+      view="AddLoopsContainer.html"
+      />
+
+  <!-- concept manager -->
+
+  <addform
+      label="Add Concept Manager"
+      name="AddLoopsConceptManager.html"
+      schema="loops.interfaces.IConceptManager"
+      content_factory="loops.concept.ConceptManager"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.concept.ConceptManager"
+      title="Concept Manager"
+      description="A concept manager manages concepts"
+      permission="zope.ManageContent"
+      view="AddLoopsConceptManager.html"
+      />
+
+  <containerViews
+      for="loops.interfaces.IConceptManager"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <!-- concept -->
+
   <page
       name="details.html"
       for="loops.interfaces.IConcept"
@@ -65,4 +109,56 @@
 
   </pages>
     
+  <!-- resource manager -->
+
+  <addform
+      label="Add Resource Manager"
+      name="AddLoopsResourceManager.html"
+      schema="loops.interfaces.IResourceManager"
+      content_factory="loops.resource.ResourceManager"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.resource.ResourceManager"
+      title="Resource Manager"
+      description="A resource manager manages resources"
+      permission="zope.ManageContent"
+      view="AddLoopsResourceManager.html"
+      />
+
+  <containerViews
+      for="loops.interfaces.IResourceManager"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <!-- document -->
+
+  <addform
+      label="Add Document"
+      name="AddLoopsDocument.html"
+      schema="loops.interfaces.IDocument"
+      content_factory="loops.resource.Document"
+      fields="title body format"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.resource.Document"
+      title="Document"
+      description="A document is an editable information unit"
+      permission="zope.ManageContent"
+      view="AddLoopsDocument.html"
+      />
+
+  <editform
+      label="Edit Document"
+      name="edit.html"
+      schema="loops.interfaces.IDocument"
+      for="loops.interfaces.IDocument"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
 </configure>

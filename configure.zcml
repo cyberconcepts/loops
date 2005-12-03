@@ -7,15 +7,57 @@
 
   <!-- Security definitions -->
 
-  <!-- Content declarations -->
+  <!-- loops top-level container -->
+
+  <interface interface=".interfaces.ILoops"
+             type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".Loops">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory id="loops.Loops"
+             description="loops top-level container" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer" />
+
+  </content>
+
+  <!-- concept manager and concept -->
+
+  <interface interface=".interfaces.IConceptManager"
+             type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".concept.ConceptManager">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory id="loops.ConceptManager"
+             description="Concept manager" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer" />
+
+  </content>
 
   <interface
       interface=".interfaces.IConcept"
       type="zope.app.content.interfaces.IContentType" />
 
   <content class=".concept.Concept">
-
-    <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -24,10 +66,6 @@
         id="loops.Concept"
         description="Concept object" />
 
-    <!-- <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer"/> -->
-
     <require
         permission="zope.View"
         interface=".interfaces.IConcept" />
@@ -35,6 +73,52 @@
     <require
         permission="zope.ManageContent"
         set_schema=".interfaces.IConcept" />
+
+  </content>
+
+  <!-- resource manager and resource -->
+
+  <interface interface=".interfaces.IResourceManager"
+             type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".resource.ResourceManager">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory id="loops.ResourceManager"
+             description="Resource manager" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer" />
+
+  </content>
+
+  <interface
+      interface=".interfaces.IDocument"
+      type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".resource.Document">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="loops.Document"
+        description="Document" />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IDocument" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDocument" />
 
   </content>
 

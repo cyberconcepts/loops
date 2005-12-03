@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-# -*- Mode: Python; py-indent-offset: 4 -*-
 #
 #  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
 #
@@ -19,15 +17,28 @@
 #
 
 """
+Definition of relation classes.
 
 $Id$
 """
 
+from zope.app import zapi
 from zope.interface import implements
-from zope.app.folder.folder import Folder
-from interfaces import ILoops
 
-class Loops(Folder):
+from cybertools.relation import DyadicRelation
 
-    implements(ILoops)
+
+class ConceptRelation(DyadicRelation):
+    """ A relation between concept objects.
+    """
+
+
+class ResourceRelation(DyadicRelation):
+    """ A relation between concept and resource objects.
+    """
+
+
+class ViewRelation(DyadicRelation):
+    """ A relation between view and concept objects.
+    """
 

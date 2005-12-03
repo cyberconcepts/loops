@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope.app import zapi
+from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.interface import implements
 from persistent import Persistent
@@ -31,11 +32,14 @@ from cybertools.relation.interfaces import IRelationsRegistry
 from cybertools.relation import DyadicRelation
 
 from interfaces import IConcept
+from interfaces import IConceptManager, IConceptManagerContained
+from interfaces import ILoopsContained
+from relations import ConceptRelation
 
 
-class Concept(Persistent, Contained):
+class Concept(Contained, Persistent):
 
-    implements(IConcept)
+    implements(IConcept, IConceptManagerContained)
 
     _title = u''
     def getTitle(self): return self._title
@@ -56,7 +60,7 @@ class Concept(Persistent, Contained):
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
-    def assignConcept(self, concept, relationship):
+    def assignConcept(self, concept, relationship=ConceptRelation):
         registry = zapi.getUtility(IRelationsRegistry)
         registry.register(relationship(self, concept))
         # TODO (?): avoid duplicates
@@ -65,7 +69,12 @@ class Concept(Persistent, Contained):
         pass  # TODO
 
 
-# TODO: move this to the relation package
+class ConceptManager(BTreeContainer):
+
+    implements(IConceptManager, ILoopsContained)
+
+
+# TODO: move this to the cybertools.relation package
 
 def getRelations(first=None, second=None, third=None, relationships=None):
     registry = zapi.getUtility(IRelationsRegistry)

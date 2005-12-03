@@ -25,20 +25,28 @@ $Id$
 from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 from zope import schema
+from zope.app.container.constraints import contains, containers
+from zope.app.container.interfaces import IContainer
+from zope.app.file.interfaces import IFile as IBaseFile
+from zope.app.folder.interfaces import IFolder
 
 _ = MessageFactory('loops')
 
 
+# concept interfaces
+
 class IConcept(Interface):
-    """ The 'concept' is the central element of the loops framework.
-        A concept is related to other concepts.
+    """ The concept is the central element of the loops framework.
+    
+        A concept is related to other concepts, may have resources
+        associated with it and may be referenced by views.
     """
 
     title = schema.TextLine(
         title=_(u'Title'),
-        description=_(u'Name or short title of the concept'),
+        description=_(u'Title of the concept'),
         default=u'',
-        required=True)
+        required=False)
 
     def getSubConcepts(relationships=None):
         """ Return a tuple of concepts related to self as sub-concepts,
@@ -61,4 +69,116 @@ class IConcept(Interface):
         """ Remove the relations to the concept given from self, optionally
             restricting them to the relationships given.
         """
+
+class IConceptManager(IContainer):
+    """ A manager/container for concepts.
+    """
+    contains(IConcept)
+
+
+class IConceptManagerContained(Interface):
+    containers(IConceptManager)
+
+
+# resource interfaces
+
+class IResource(Interface):
+    """ A resource is an atomic information element that is usually
+        available via a concept.
+    """
+
+    title = schema.TextLine(
+                title=_(u'Title'),
+                description=_(u'Title of the document'),
+                required=False)
+
+
+class IDocument(IResource):
+    """ A resource containing an editable body.
+    """
+
+    body = schema.Text(
+                title=_(u'Body'),
+                description=_(u'Body of the document'),
+                required=False)
+
+    format = schema.TextLine(
+                title=_(u'Format'),
+                description=_(u'Format of the body field, default is "text/xml"'),
+                default=_(u'text/xml'),
+                required=False)
+
+
+class IFile(IResource, IBaseFile):
+    """ A resource containing a (typically binary) file-like content
+        or an image.
+    """
+
+
+class IResourceManager(IContainer):
+    """ A manager/container for resources.
+    """
+    contains(IResource)
+
+
+class IResourceManagerContained(Interface):
+    containers(IResourceManager)
+
+
+# view interfaces
+
+class IView(Interface):
+    """ A view is a user interface component that provides access to one
+        or more concepts.
+    """
+
+    title = schema.TextLine(
+        title=_(u'Title'),
+        description=_(u'Title of the view; this will appear e.g. in menus'),
+        default=u'',
+        required=True)
+
+    description = schema.Text(
+        title=_(u'Description'),
+        description=_(u'Detailed description, e.g. for tooltips or listings'),
+        default=u'',
+        required=False)
+
+    def getConcepts():
+        """ Return an ordered sequence of concepts referenced by this view.
+        """
+
+
+class INode(IContainer):
+    """ A node is a view that may contain other views, thus building a
+        menu or folder hierarchy.
+    """
+    contains(IView)
+
+
+class IViewManager(IContainer):
+    """ A manager/container for views.
+    """
+    contains(IView)
+
+
+class INodeContained(Interface):
+    containers(INode, IViewManager)
+
+
+class IViewManagerContained(Interface):
+    containers(IViewManager)
+
+
+# the loops top-level container
+
+class ILoops(IFolder):
+    """ The top-level object of a loops site.
+    """
+    contains(IConceptManager, IResourceManager, IViewManager)
+    
+
+class ILoopsContained(Interface):
+    containers(ILoops)
+
 
