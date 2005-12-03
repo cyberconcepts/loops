@@ -6,6 +6,20 @@
    i18n_domain="zope"
    >
 
+  <page
+      name="details.html"
+      for="loops.interfaces.IConcept"
+      class=".concept.Details"
+      template="concept_details.pt"
+      permission="zope.View"
+      menu="zmi_views" title="Details"
+      />
+
+  <defaultView
+      for="loops.interfaces.IConcept"
+      name="details.html"
+      />
+
   <addform
       label="Add Concept"
       name="AddLoopsConcept.html"
@@ -30,20 +44,6 @@
       for="loops.interfaces.IConcept"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
-      />
-
-  <defaultView
-      for="loops.interfaces.IConcept"
-      name="details.html"
-      />
-
-  <page
-      name="details.html"
-      for="loops.interfaces.IConcept"
-      class=".concept.Details"
-      template="concept_details.pt"
-      permission="zope.View"
-      menu="zmi_views" title="Details"
       />
 
   <pages

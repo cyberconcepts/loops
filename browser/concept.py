@@ -42,12 +42,9 @@ class Details(object):
 class ConceptRelations(Details):
 
     def assignConcept(self, concept_name):
-        """ Assign a concept denoted with the name.
+        """ Assign a concept denoted by the 'concept_name' request parameter.
         """
-        #conceptName = self.request.get('concept_name')
-        #if conceptName:
         concept = zapi.getParent(self.context)[concept_name]
-        #if concept:
         self.context.assignConcept(removeSecurityProxy(concept), DyadicRelation)
         self.request.response.redirect(zapi.absoluteURL(self.context, self.request))
 
