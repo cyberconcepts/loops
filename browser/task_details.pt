@@ -12,7 +12,9 @@
         <span class="label">Subtasks</span>:
         <span class="field"
             tal:repeat="task context/getSubtasks">
-          <span tal:content="task/title">subtask</span>
+          <span tal:condition="python: task is None">**deleted**</span>
+          <span tal:condition="python: task is not None"
+                tal:content="task/title">subtask</span>
           <span class="field" tal:condition="not:repeat/task/end"> - </span>
         </span>
       </div>
