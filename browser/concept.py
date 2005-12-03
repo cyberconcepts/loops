@@ -49,4 +49,5 @@ class ConceptRelations(Details):
         concept = zapi.getParent(self.context)[concept_name]
         #if concept:
         self.context.assignConcept(removeSecurityProxy(concept), DyadicRelation)
-        self.request.response.redirect('.')
+        self.request.response.redirect(zapi.absoluteURL(self.context, self.request))
+
