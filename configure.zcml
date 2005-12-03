@@ -122,6 +122,56 @@
 
   </content>
 
+  <!-- view manager and view -->
+
+  <interface interface=".interfaces.IViewManager"
+             type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".view.ViewManager">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory id="loops.ViewManager"
+             description="View manager" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer" />
+
+  </content>
+
+  <interface
+      interface=".interfaces.INode"
+      type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".view.Node">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="loops.Node"
+        description="Node" />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.INode" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INode" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+  </content>
+
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />
 

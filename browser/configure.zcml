@@ -139,8 +139,8 @@
       label="Add Document"
       name="AddLoopsDocument.html"
       schema="loops.interfaces.IDocument"
-      content_factory="loops.resource.Document"
       fields="title body format"
+      content_factory="loops.resource.Document"
       permission="zope.ManageContent"
       />
 
@@ -156,7 +156,67 @@
       label="Edit Document"
       name="edit.html"
       schema="loops.interfaces.IDocument"
+      fields="title body format"
       for="loops.interfaces.IDocument"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <!-- view manager -->
+
+  <addform
+      label="Add View Manager"
+      name="AddLoopsViewManager.html"
+      schema="loops.interfaces.IViewManager"
+      content_factory="loops.view.ViewManager"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.view.ViewManager"
+      title="View Manager"
+      description="A view manager manages views, like nodes, menu items, ..."
+      permission="zope.ManageContent"
+      view="AddLoopsViewManager.html"
+      />
+
+  <containerViews
+      for="loops.interfaces.IViewManager"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <!-- node -->
+
+  <containerViews
+      for="loops.interfaces.INode"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <addform
+      label="Add Node"
+      name="AddLoopsNode.html"
+      content_factory="loops.view.Node"
+      schema="loops.interfaces.INode"
+      fields="title description"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.view.Node"
+      title="Node"
+      description="A node provides access to concepts, possibly hierarchically organized"
+      permission="zope.ManageContent"
+      view="AddLoopsNode.html"
+      />
+
+  <editform
+      label="Edit Node"
+      name="edit.html"
+      schema="loops.interfaces.INode"
+      fields="title description"
+      for="loops.interfaces.INode"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />

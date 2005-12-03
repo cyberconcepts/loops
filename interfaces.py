@@ -149,7 +149,7 @@ class IView(Interface):
         """
 
 
-class INode(IContainer):
+class INode(IView):
     """ A node is a view that may contain other views, thus building a
         menu or folder hierarchy.
     """

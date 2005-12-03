@@ -10,8 +10,11 @@ from zope.app.intid.interfaces import IIntIds
 
 from interfaces import ILoops
 from loops import Loops
-from interfaces import IConcept, IConceptManager
+from interfaces import IConcept, IConceptManager, IDocument, IResourceManager
+from interfaces import INode, IViewManager
 from loops.concept import Concept, ConceptManager
+from loops.resource import Document, ResourceManager
+from loops.view import Node, ViewManager
 
 class Test(unittest.TestCase):
     "Basic tests for the loops package."
@@ -23,6 +26,14 @@ class Test(unittest.TestCase):
         self.assert_(IConcept.providedBy(Concept()))
         verifyClass(IConceptManager, ConceptManager)
         self.assert_(IConceptManager.providedBy(ConceptManager()))
+        verifyClass(IDocument, Document)
+        self.assert_(IDocument.providedBy(Document()))
+        verifyClass(IResourceManager, ResourceManager)
+        self.assert_(IResourceManager.providedBy(ResourceManager()))
+        verifyClass(INode, Node)
+        self.assert_(INode.providedBy(Node()))
+        verifyClass(IViewManager, ViewManager)
+        self.assert_(IViewManager.providedBy(ViewManager()))
 
 
 def test_suite():
