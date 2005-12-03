@@ -25,6 +25,7 @@ $Id$
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.security.proxy import removeSecurityProxy
+from cybertools.relation import DyadicRelation
 
 from loops.interfaces import IConcept
 
@@ -40,13 +41,12 @@ class Details(object):
 
 class ConceptRelations(Details):
 
-    def assignSubtask(self):
-        """ Add a subtask denoted by the path given in the
-            request variable subtaskPath.
+    def assignConcept(self, concept_name):
+        """ Assign a concept denoted with the name.
         """
-        conceptName = self.request.get('concept_name')
+        #conceptName = self.request.get('concept_name')
         #if conceptName:
-        concept = zapi.getParent(self.context)[conceptName]
+        concept = zapi.getParent(self.context)[concept_name]
         #if concept:
-        self.context.assignConcept(removeSecurityProxy(concept))
+        self.context.assignConcept(removeSecurityProxy(concept), DyadicRelation)
         self.request.response.redirect('.')

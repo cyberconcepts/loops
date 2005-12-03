@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope.app import zapi
+from zope.app.container.contained import Contained
 from zope.interface import implements
 from persistent import Persistent
 
@@ -32,7 +33,7 @@ from cybertools.relation import DyadicRelation
 from interfaces import IConcept
 
 
-class Concept(Persistent):
+class Concept(Persistent, Contained):
 
     implements(IConcept)
 
