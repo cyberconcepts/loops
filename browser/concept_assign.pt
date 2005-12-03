@@ -6,24 +6,24 @@
   <body>
     <div metal:fill-slot="body">
 
-      <h1 tal:content="context/title">Task Title</h1>
+      <h1 tal:content="context/title">Concept Title</h1>
 
       <div class="row">
-        <span class="label">Subtasks</span>:
+        <span class="label">Sub-Concepts</span>:
         <span class="field"
-            tal:repeat="task context/getSubtasks">
-          <span tal:condition="python: task is None">**deleted**</span>
-          <span tal:condition="python: task is not None"
-                tal:content="task/title">subtask</span>
-          <span class="field" tal:condition="not:repeat/task/end"> - </span>
+            tal:repeat="concept context/getSubConcepts">
+          <span tal:condition="python: concept is None">**deleted**</span>
+          <span tal:condition="python: concept is not None"
+                tal:content="concept/title">subconcept</span>
+          <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>
       <div class="row">
-        <span class="label">Parent Tasks</span>:
+        <span class="label">Parent Concepts</span>:
         <span class="field"
-            tal:repeat="task context/getParentTasks">
-          <span tal:content="task/title">parent task</span>
-          <span class="field" tal:condition="not:repeat/task/end"> - </span>
+            tal:repeat="concept context/getParentConcepts">
+          <span tal:content="concept/title">parent concept</span>
+          <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>
       <div class="row">
@@ -34,13 +34,13 @@
       <form action="." method="post"
             tal:attributes="action context/@@absolute_url">
         <div class="row">
-            <span class="label">Subtasks</span>:
+            <span class="label">Concept Name</span>:
             <span class="field">
-            <input type="test" name="subtaskPath" />
+            <input type="test" name="concept_name" />
             </span>
         </div>
         <div class="row">
-            <input type="submit" name="subtask_assign:method" value="Assign Subtask" />
+            <input type="submit" name="concept_assign:method" value="Assign Concept" />
         </div>
       </form>
 

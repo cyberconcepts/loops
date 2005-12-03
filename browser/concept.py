@@ -26,7 +26,7 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import ITask
+from loops.interfaces import IConcept
 
 class Details(object):
 
@@ -38,15 +38,15 @@ class Details(object):
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
 
-class SubtaskAssignments(Details):
+class ConceptRelations(Details):
 
     def assignSubtask(self):
         """ Add a subtask denoted by the path given in the
             request variable subtaskPath.
         """
-        subtaskPath = self.request.get('subtaskPath')
-        #if subtaskPath:
-        subtask = zapi.traverse(zapi.getRoot(self.context), subtaskPath, None, self.request)
-        #if subtask:
-        self.context.assignSubtask(removeSecurityProxy(subtask))
+        conceptName = self.request.get('concept_name')
+        #if conceptName:
+        concept = zapi.getParent(self.context)[conceptName]
+        #if concept:
+        self.context.assignConcept(removeSecurityProxy(concept))
         self.request.response.redirect('.')

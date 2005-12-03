@@ -8,16 +8,15 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.intid.interfaces import IIntIds
 
-from interfaces import ITask
-from task import Task
+from interfaces import IConcept
+from concept import Concept
 
 class Test(unittest.TestCase):
     "Basic tests for the loops package."
 
     def testInterfaces(self):
-        verifyClass(ITask, Task)
-        self.assert_(ITask.providedBy(Task()),
-            'Interface ITask is not implemented by class Task.')
+        verifyClass(IConcept, Concept)
+        self.assert_(IConcept.providedBy(Concept()))
 
 
 def test_suite():

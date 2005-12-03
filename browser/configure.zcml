@@ -7,67 +7,60 @@
    >
 
   <addform
-      label="Add Task"
-      name="AddTask.html"
-      schema="loops.interfaces.ITask"
-      content_factory="loops.task.Task"
+      label="Add Concept"
+      name="AddLoopsConcept.html"
+      schema="loops.interfaces.IConcept"
+      content_factory="loops.concept.Concept"
       fields="title"
       permission="zope.ManageContent"
       />
 
   <addMenuItem
-      class="loops.task.Task"
-      title="Task"
-      description="A Task is a piece of work or something else a resource may be allocated to"
+      class="loops.concept.Concept"
+      title="Concept"
+      description="A Concept is a Concept is a Concept..."
       permission="zope.ManageContent"
-      view="AddTask.html"
+      view="AddLoopsConcept.html"
       />
 
   <editform
-      label="Edit Task"
+      label="Edit Concept"
       name="edit.html"
-      schema="loops.interfaces.ITask"
-      for="loops.interfaces.ITask"
+      schema="loops.interfaces.IConcept"
+      for="loops.interfaces.IConcept"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />
 
-  <containerViews
-      for="loops.interfaces.ITask"
-      index="zope.View"
-      contents="zope.View"
-      add="zope.ManageContent"
-      />
-
   <defaultView
-      for="loops.interfaces.ITask"
+      for="loops.interfaces.IConcept"
       name="details.html"
       />
 
   <page
       name="details.html"
-      for="loops.interfaces.ITask"
-      class=".task.Details"
-      template="task_details.pt"
+      for="loops.interfaces.IConcept"
+      class=".concept.Details"
+      template="concept_details.pt"
       permission="zope.View"
       menu="zmi_views" title="Details"
       />
 
   <pages
-        for="loops.interfaces.ITask"
-        class=".task.SubtaskAssignments"
+        for="loops.interfaces.IConcept"
+        class=".concept.ConceptRelations"
         permission="zope.ManageContent"
         >
     
     <page
-        name="subtasks.html"
-        template="subtasks_assign.pt"
-        menu="zmi_views" title="Subtasks"
+        name="assign.html"
+        template="concept_assign.pt"
+        menu="zmi_views" title="Assign Concept"
         />
     
     <page
-        name="subtask_assign"
-        attribute="assignSubtask"
+        name="concept_assign"
+        attribute="assignConcept"
         />
 
   </pages>

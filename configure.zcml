@@ -10,22 +10,19 @@
   <!-- Content declarations -->
 
   <interface
-      interface=".interfaces.ITask"
+      interface=".interfaces.IConcept"
       type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".task.Task">
+  <content class=".concept.Concept">
 
     <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-    <implements
-        interface="zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable" />
-
     <factory
-        id="loops.Task"
-        description="Task object" />
+        id="loops.Concept"
+        description="Concept object" />
 
     <!-- <require
         permission="zope.View"
@@ -33,11 +30,11 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.ITask" />
+        interface=".interfaces.IConcept" />
 
     <require
         permission="zope.ManageContent"
-        set_schema=".interfaces.ITask" />
+        set_schema=".interfaces.IConcept" />
 
   </content>
 
