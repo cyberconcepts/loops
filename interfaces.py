@@ -49,7 +49,7 @@ class IConcept(Interface):
         required=False)
 
     def getSubConcepts(relationships=None):
-        """ Return a tuple of concepts related to self as sub-concepts,
+        """ Return a sequence of concepts related to self as sub-concepts,
             possibly restricted to the relationships (typically a list of
             relation classes) given.
         """
@@ -63,12 +63,31 @@ class IConcept(Interface):
     def assignConcept(concept, relationship):
         """ Assign an existing concept to self using the relationship given.
             The assigned concept will be a sub-concept of self.
+
+            The relationship defaults to ConceptRelation.
         """
 
     def deassignConcept(concept, relationships=None):
         """ Remove the relations to the concept given from self, optionally
             restricting them to the relationships given.
         """
+
+    def getResources(relationships=None):
+        """ Return a sequence of resources assigned to self,
+            possibly restricted to the relationships given.
+        """        
+
+    def assignResource(resource, relationship):
+        """ Assign an existing resource to self using the relationship given.
+
+            The relationship defaults to ConceptResourceRelation.
+        """
+        
+    def deassignResource(resource, relationships=None):
+        """ Remove the relations to the resource given from self, optionally
+            restricting them to the relationships given.
+        """
+        
 
 class IConceptManager(IContainer):
     """ A manager/container for concepts.
@@ -91,6 +110,11 @@ class IResource(Interface):
                 title=_(u'Title'),
                 description=_(u'Title of the document'),
                 required=False)
+
+    def getClients(relationships=None):
+        """ Return a sequence of objects that are clients of the resource,
+            i.e. that have some relation with it.
+        """
 
 
 class IDocument(IResource):
@@ -164,10 +188,6 @@ class IViewManager(IContainer):
 
 class INodeContained(Interface):
     containers(INode, IViewManager)
-
-
-class IViewManagerContained(Interface):
-    containers(IViewManager)
 
 
 # the loops top-level container

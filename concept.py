@@ -28,13 +28,13 @@ from zope.app.container.contained import Contained
 from zope.interface import implements
 from persistent import Persistent
 
-from cybertools.relation.interfaces import IRelationsRegistry
 from cybertools.relation import DyadicRelation
+from cybertools.relation.registry import IRelationsRegistry, getRelations
 
 from interfaces import IConcept
 from interfaces import IConceptManager, IConceptManagerContained
 from interfaces import ILoopsContained
-from relations import ConceptRelation
+from relations import ConceptRelation, ConceptResourceRelation
 
 
 class Concept(Contained, Persistent):
@@ -46,48 +46,60 @@ class Concept(Contained, Persistent):
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
 
-    def __init__(self, name=None, title=u''):
+    def __init__(self, title=u''):
         self.title = title
 
-    # concept relations:
+    # concept relations
 
     def getSubConcepts(self, relationships=None):
+        if relationships is None:
+            relationships = [ConceptRelation]
         rels = getRelations(first=self, relationships=relationships)
         return [r.second for r in rels]
         # TODO: sort...
 
     def getParentConcepts(self, relationships=None):
+        if relationships is None:
+            relationships = [ConceptRelation]
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
     def assignConcept(self, concept, relationship=ConceptRelation):
         registry = zapi.getUtility(IRelationsRegistry)
-        registry.register(relationship(self, concept))
+        rel = relationship(self, concept)
+        registry.register(rel)
         # TODO (?): avoid duplicates
 
     def deassignConcept(self, concept, relationships=None):
-        pass  # TODO
+        registry = zapi.getUtility(IRelationsRegistry)
+        relations = registry.query(first=self, second=concept,
+                                   relationships=relationships)
+        for rel in relations:
+            registry.unregister(relation)
+
+    # resource relations
+
+    def getResources(self, relationships=None):
+        if relationships is None:
+            relationships = [ConceptResourceRelation]
+        rels = getRelations(first=self, relationships=relationships)
+        return [r.second for r in rels]
+        # TODO: sort...
+
+    def assignResource(self, resource, relationship=ConceptResourceRelation):
+        registry = zapi.getUtility(IRelationsRegistry)
+        registry.register(relationship(self, resource))
+        # TODO (?): avoid duplicates
+
+    def deassignResource(self, resource, relationships=None):
+        registry = zapi.getUtility(IRelationsRegistry)
+        relations = registry.query(first=self, second=resource,
+                                   relationships=relationships)
+        for rel in relations:
+            registry.unregister(relation)
 
 
 class ConceptManager(BTreeContainer):
 
     implements(IConceptManager, ILoopsContained)
-
-
-# TODO: move this to the cybertools.relation package
-
-def getRelations(first=None, second=None, third=None, relationships=None):
-    registry = zapi.getUtility(IRelationsRegistry)
-    query = {}
-    if first: query['first'] = first
-    if second: query['second'] = second
-    if third: query['third'] = third
-    if not relationships:
-        return registry.query(**query)
-    else:
-        result = []
-        for r in relationships:
-            query['relationship'] = r
-            result.extend(registry.query(**query))
-        return result
 

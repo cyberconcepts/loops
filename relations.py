@@ -33,12 +33,17 @@ class ConceptRelation(DyadicRelation):
     """
 
 
-class ResourceRelation(DyadicRelation):
-    """ A relation between concept and resource objects.
+class ConceptResourceRelation(DyadicRelation):
+    """ A relation between a concept and a resource object.
     """
 
 
-class ViewRelation(DyadicRelation):
-    """ A relation between view and concept objects.
+class ViewConceptRelation(DyadicRelation):
+    """ A relation between a view and a concept object.
+    """
+
+
+class ViewResourceRelation(DyadicRelation):
+    """ A relation between a view and a resource object.
     """
 

@@ -30,13 +30,13 @@ from zope.interface import implements
 from persistent import Persistent
 
 from interfaces import IView, INode
-from interfaces import IViewManager, IViewManagerContained
+from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
 
 
 class View(object):
 
-    implements(IView, IViewManagerContained)
+    implements(IView, INodeContained)
 
     _title = u''
     def getTitle(self): return self._title
@@ -48,15 +48,16 @@ class View(object):
     def setDescription(self, description): self._description = description
     description = property(getDescription, setDescription)
 
-    def __init__(self, name=None, title=u''):
+    def __init__(self, title=u'', description=u''):
         self.title = title
         self.description = description
+        super(View, self).__init__()
 
     def getConcepts(self):
         return []
 
 
-class Node(OrderedContainer, View):
+class Node(View, OrderedContainer):
 
     implements(INode)
 

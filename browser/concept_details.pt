@@ -11,18 +11,20 @@
       <div class="row">
         <span class="label">Sub-Concepts</span>:
         <span class="field"
-            tal:repeat="concept context/getSubConcepts">
-          <span tal:condition="python: concept is None">**deleted**</span>
-          <span tal:condition="python: concept is not None"
-                tal:content="concept/title">subtask</span>
+            tal:repeat="concept view/subConcepts">
+          <a href="#"
+             tal:attributes="href concept/url"
+             tal:content="concept/title">subtask</a>
           <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>
       <div class="row">
         <span class="label">Parent Concepts</span>:
         <span class="field"
-            tal:repeat="concept context/getParentConcepts">
-          <span tal:content="concept/title">parent concept</span>
+            tal:repeat="concept view/parentConcepts">
+          <a href="#"
+             tal:attributes="href concept/url"
+             tal:content="concept/title">subtask</a>
           <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>

@@ -27,6 +27,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.interface import implements
 from persistent import Persistent
+from cybertools.relation.registry import getRelations
 
 from interfaces import IResource, IDocument
 from interfaces import IResourceManager, IResourceManagerContained
@@ -42,8 +43,12 @@ class Resource(Contained, Persistent):
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
 
-    def __init__(self, name=None, title=u''):
+    def __init__(self, title=u''):
         self.title = title
+
+    def getClients(self, relationships=None):
+        rels = getRelations(second=self, relationships=relationships)
+        return [r.first for r in rels]
 
 
 class Document(Resource):
