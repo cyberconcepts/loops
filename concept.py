@@ -17,7 +17,7 @@
 #
 
 """
-Definition of the Concept class.
+Definition of the Concept and related classes.
 
 $Id$
 """
@@ -34,9 +34,22 @@ from cybertools.relation.registry import IRelationsRegistry, getRelations
 from interfaces import IConcept
 from interfaces import IConceptManager, IConceptManagerContained
 from interfaces import ILoopsContained
-from relations import ConceptRelation, ConceptResourceRelation
 
 
+# relation classes
+
+class ConceptRelation(DyadicRelation):
+    """ A relation between concept objects.
+    """
+
+
+class ResourceRelation(DyadicRelation):
+    """ A relation between a concept and a resource object.
+    """
+
+
+# concept
+    
 class Concept(Contained, Persistent):
 
     implements(IConcept, IConceptManagerContained)
@@ -71,6 +84,8 @@ class Concept(Contained, Persistent):
         # TODO (?): avoid duplicates
 
     def deassignConcept(self, concept, relationships=None):
+        if relationships is None:
+            relationships = [ConceptRelation]
         registry = zapi.getUtility(IRelationsRegistry)
         relations = registry.query(first=self, second=concept,
                                    relationships=relationships)
@@ -81,17 +96,19 @@ class Concept(Contained, Persistent):
 
     def getResources(self, relationships=None):
         if relationships is None:
-            relationships = [ConceptResourceRelation]
+            relationships = [ResourceRelation]
         rels = getRelations(first=self, relationships=relationships)
         return [r.second for r in rels]
         # TODO: sort...
 
-    def assignResource(self, resource, relationship=ConceptResourceRelation):
+    def assignResource(self, resource, relationship=ResourceRelation):
         registry = zapi.getUtility(IRelationsRegistry)
         registry.register(relationship(self, resource))
         # TODO (?): avoid duplicates
 
     def deassignResource(self, resource, relationships=None):
+        if relationships is None:
+            relationships = [ResourceRelation]
         registry = zapi.getUtility(IRelationsRegistry)
         relations = registry.query(first=self, second=resource,
                                    relationships=relationships)
@@ -99,6 +116,8 @@ class Concept(Contained, Persistent):
             registry.unregister(relation)
 
 
+# concept manager
+            
 class ConceptManager(BTreeContainer):
 
     implements(IConceptManager, ILoopsContained)

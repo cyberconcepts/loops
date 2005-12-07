@@ -28,6 +28,8 @@ from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
 from zope.interface import implements
 from persistent import Persistent
+from cybertools.relation import DyadicRelation
+from cybertools.relation.registry import IRelationsRegistry, getRelations
 
 from interfaces import IView, INode
 from interfaces import IViewManager, INodeContained
@@ -48,13 +50,32 @@ class View(object):
     def setDescription(self, description): self._description = description
     description = property(getDescription, setDescription)
 
+    def getTarget(self):
+        rels = getRelations(first=self)
+        if len(rels) == 0:
+            return None
+        if len(rels) > 1:
+            raise ValueError, 'There may be only one target for a View object.'
+        return rels.next().second
+
+    def setTarget(self, target):
+        return
+        registry = zapi.getUtility(IRelationsRegistry)
+        rels = registry.query(first=self)
+        if len(rels) > 0:
+            if rels[0].second != target:
+                registry.unregister(target)
+        else:
+            rel = relationship(self, concept)
+            registry.register(rel)
+
+    target = property(getTarget, setTarget)
+
     def __init__(self, title=u'', description=u''):
         self.title = title
         self.description = description
         super(View, self).__init__()
 
-    def getConcepts(self):
-        return []
 
 
 class Node(View, OrderedContainer):
@@ -67,3 +88,8 @@ class ViewManager(BTreeContainer):
     implements(IViewManager, ILoopsContained)
 
 
+class TargetRelation(DyadicRelation):
+    """ A relation between a view and a concept or resource object.
+    """
+
+    

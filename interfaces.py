@@ -22,7 +22,7 @@ loops interface definitions.
 $Id$
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from zope.i18nmessageid import MessageFactory
 from zope import schema
 from zope.app.container.constraints import contains, containers
@@ -168,10 +168,8 @@ class IView(Interface):
         default=u'',
         required=False)
 
-    def getConcepts():
-        """ Return an ordered sequence of concepts referenced by this view.
-        """
-
+    target = Attribute('Target object that is referenced by this view')
+    
 
 class INode(IView):
     """ A node is a view that may contain other views, thus building a

@@ -89,7 +89,7 @@ We can associate a resource with a concept by assigning it to the concept:
   [<loops.resource.Document ...>]
 
 The resource also provides access to the associated concepts (or views, see
-below):
+below) via the getClients() method:
 
   >>> conc = zope_info.getClients()
   >>> len(conc)
@@ -122,5 +122,9 @@ menu that may contain other nodes as menu items:
   >>> m112.description
   u''
 
-We can associate a node with a concept or directly with a resource:
+We can associate a node with a concept or directly with a resource via the
+view class's target attribute:
+
+  >>> m111.target = zope_info
+  >>> m112.target = zope3
 
