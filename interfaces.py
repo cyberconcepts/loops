@@ -26,7 +26,7 @@ from zope.interface import Interface, Attribute
 from zope.i18nmessageid import MessageFactory
 from zope import schema
 from zope.app.container.constraints import contains, containers
-from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IFile as IBaseFile
 from zope.app.folder.interfaces import IFolder
 
@@ -153,7 +153,7 @@ class IResourceManagerContained(Interface):
 
 class IView(Interface):
     """ A view is a user interface component that provides access to one
-        or more concepts.
+        or more concepts, resources, or other views.
     """
 
     title = schema.TextLine(
@@ -171,7 +171,7 @@ class IView(Interface):
     target = Attribute('Target object that is referenced by this view')
     
 
-class INode(IView):
+class INode(IView, IOrderedContainer):
     """ A node is a view that may contain other views, thus building a
         menu or folder hierarchy.
     """

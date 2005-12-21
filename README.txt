@@ -107,7 +107,7 @@ We first need a view manager:
   >>> views = loops['views']
 
 The view space is typically built up with nodes; a node may be a top-level
-menu that may contain other nodes as menu items:
+menu that may contain other nodes as menu or content items:
       
   >>> m1 = Node(u'Menu')
   >>> views['m1'] = m1
@@ -126,5 +126,12 @@ We can associate a node with a concept or directly with a resource via the
 view class's target attribute:
 
   >>> m111.target = zope_info
-  >>> m112.target = zope3
+  >>> m111.target is zope_info
+  True
+  >>> m111.target = zope_info
+  >>> m111.target is zope_info
+  True
+  >>> m111.target = zope3
+  >>> m111.target is zope3
+  True
 

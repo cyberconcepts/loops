@@ -51,23 +51,24 @@ class View(object):
     description = property(getDescription, setDescription)
 
     def getTarget(self):
-        rels = getRelations(first=self)
+        rels = getRelations(first=self, relationships=[TargetRelation])
         if len(rels) == 0:
             return None
         if len(rels) > 1:
             raise ValueError, 'There may be only one target for a View object.'
-        return rels.next().second
+        return list(rels)[0].second
 
     def setTarget(self, target):
-        return
         registry = zapi.getUtility(IRelationsRegistry)
-        rels = registry.query(first=self)
+        rels = list(registry.query(first=self, relationship=TargetRelation))
         if len(rels) > 0:
-            if rels[0].second != target:
-                registry.unregister(target)
-        else:
-            rel = relationship(self, concept)
-            registry.register(rel)
+            oldRel = rels[0]
+            if oldRel.second is target:
+                return
+            else:
+                registry.unregister(oldRel)
+        rel = TargetRelation(self, target)
+        registry.register(rel)
 
     target = property(getTarget, setTarget)
 
