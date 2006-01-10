@@ -174,8 +174,25 @@ class IView(Interface):
 class INode(IView, IOrderedContainer):
     """ A node is a view that may contain other views, thus building a
         menu or folder hierarchy.
+
+        A node may be a content object on its own; for this reason it
+        has a body attribute that may be shown e.g. on web pages.
     """
     contains(IView)
+
+    type = schema.Choice(
+        title=_(u'Type'),
+        description=_(u'Type of the node'),
+        values=('page', 'text', 'menu', 'menuitem'),
+        default='page',
+        required=True)
+
+    body = schema.Text(
+        title=_(u'Body'),
+        description=_(u'Textual body that may be shown in addition to '
+                       'or instead of information coming from the target'),
+        default=u'',
+        required=False)
 
 
 class IViewManager(IContainer):

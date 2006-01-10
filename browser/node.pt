@@ -1,0 +1,24 @@
+<tal:show i18n:domain="loops">
+<html metal:use-macro="context/@@skin_macros/page">
+<head></head>
+<body>
+
+  <metal:body fill-slot="body">
+    <tal:content define="item context;
+                         level level|python: 1">
+
+      <metal:block define-macro="content">
+        <div tal:content="structure item/body">The body</div>        
+        <div tal:define="level python:level+1">
+          <tal:items repeat="item item/values">
+            <metal:portlet use-macro="views/node_macros/content" />
+          </tal:items>
+        </div>
+      </metal:block>
+      
+    </tal:content>
+  </metal:body>
+
+</body>
+</html>
+</tal:show>

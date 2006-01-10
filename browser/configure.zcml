@@ -3,8 +3,24 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="zope">
+
+  <!-- macros -->
+   
+  <page
+      for="*"
+      name="loops_macros"
+      permission="zope.View"
+      class=".macros.Macros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
+  <page
+      for="*"
+      name="node_macros"
+      template="node.pt"
+      permission="zope.View"
+      />
 
   <!-- loops top-level container -->
 
@@ -44,7 +60,7 @@
 
   <containerViews
       for="loops.interfaces.IConceptManager"
-      contents="zope.View"
+      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
@@ -91,10 +107,9 @@
       />
 
   <pages
-        for="loops.interfaces.IConcept"
-        class=".concept.ConceptRelations"
-        permission="zope.ManageContent"
-        >
+      for="loops.interfaces.IConcept"
+      class=".concept.ConceptRelations"
+      permission="zope.ManageContent">
     
     <page
         name="assign.html"
@@ -129,7 +144,7 @@
 
   <containerViews
       for="loops.interfaces.IResourceManager"
-      contents="zope.View"
+      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
@@ -182,26 +197,24 @@
 
   <containerViews
       for="loops.interfaces.IViewManager"
-      contents="zope.View"
+      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
   <!-- node -->
-
-  <containerViews
-      for="loops.interfaces.INode"
-      contents="zope.View"
-      add="zope.ManageContent"
-      />
 
   <addform
       label="Add Node"
       name="AddLoopsNode.html"
       content_factory="loops.view.Node"
       schema="loops.interfaces.INode"
-      fields="title description"
-      permission="zope.ManageContent"
-      />
+      fields="title description type body"
+      permission="zope.ManageContent">
+      
+    <widget field="description" height="2" />
+    <widget field="body" height="4" />
+
+  </addform>
 
   <addMenuItem
       class="loops.view.Node"
@@ -215,10 +228,32 @@
       label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
-      fields="title description"
+      fields="title description type body"
       for="loops.interfaces.INode"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
+      menu="zmi_views" title="Edit">
+
+    <widget field="description" height="2" />
+    <widget field="body" height="4" />
+
+  </editform>
+
+  <page
+      name="node.html"
+      for="loops.interfaces.INode"
+      template="node.pt"
+      permission="zope.View"
+      />
+    
+  <defaultView
+      for="loops.interfaces.INode"
+      name="node.html"
+      />
+
+  <containerViews
+      for="loops.interfaces.INode"
+      contents="zope.ManageContent"
+      add="zope.ManageContent"
       />
 
 </configure>

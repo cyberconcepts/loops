@@ -78,10 +78,19 @@ class View(object):
         super(View, self).__init__()
 
 
-
 class Node(View, OrderedContainer):
 
     implements(INode)
+
+    _type = 'page'
+    def getType(self): return self._type
+    def setType(self, type): self._type = type
+    type = property(getType, setType)
+
+    _body = u''
+    def getBody(self): return self._body
+    def setBody(self, body): self._body = body
+    body = property(getBody, setBody)
 
 
 class ViewManager(BTreeContainer):
@@ -90,7 +99,6 @@ class ViewManager(BTreeContainer):
 
 
 class TargetRelation(DyadicRelation):
-    """ A relation between a view and a concept or resource object.
+    """ A relation between a view and another object.
     """
 
-    
