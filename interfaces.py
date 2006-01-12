@@ -180,11 +180,11 @@ class INode(IView, IOrderedContainer):
     """
     contains(IView)
 
-    type = schema.Choice(
-        title=_(u'Type'),
+    nodeType = schema.Choice(
+        title=_(u'Node Type'),
         description=_(u'Type of the node'),
-        values=('page', 'text', 'menu', 'menuitem'),
-        default='page',
+        values=('text', 'page', 'menu', 'info'),
+        default='info',
         required=True)
 
     body = schema.Text(
@@ -193,6 +193,39 @@ class INode(IView, IOrderedContainer):
                        'or instead of information coming from the target'),
         default=u'',
         required=False)
+
+    contentType = Attribute(_(u'Content type (format) of the body'))
+
+    def getParentNode(nodeTypes=None):
+        """ Return the next node up the node hierarchy. If the nodeTypes
+            parameter is given, search for the next node that has one of
+            the types in the nodeTypes list.
+
+            Return None if no suitable node can be found.
+        """
+
+    def getChildNodes(nodeTypes=None):
+        """ Return a sequence of nodes contained in this node. If the
+            nodeTypes parameter is given return only nodes of these types.
+        """
+
+    def getMenu():
+        """ Return the menu node this node belongs to or None if not found.
+        """
+
+    def getPage():
+        """ Return a page node or None if not found.
+        """
+
+    def getMenuItems():
+        """ Return the menu items belonging to this object (that should be
+            a menu).
+        """
+
+    def getTextItems():
+        """ Return the menu items belonging to this object (that should be
+            a menu).
+        """
 
 
 class IViewManager(IContainer):

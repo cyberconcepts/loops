@@ -82,15 +82,45 @@ class Node(View, OrderedContainer):
 
     implements(INode)
 
-    _type = 'page'
-    def getType(self): return self._type
-    def setType(self, type): self._type = type
-    type = property(getType, setType)
+    _nodeType = 'info'
+    def getNodeType(self): return self._nodeType
+    def setNodeType(self, nodeType): self._nodeType = nodeType
+    nodeType = property(getNodeType, setNodeType)
 
     _body = u''
     def getBody(self): return self._body
     def setBody(self, body): self._body = body
     body = property(getBody, setBody)
+
+    contentType = u'zope.source.rest'
+
+    def getParentNode(self, nodeTypes=None):
+        parent = zapi.getParent(self)
+        while INode.providedBy(parent):
+            if not nodeTypes or parent.nodeType in nodeTypes:
+                return parent
+            parent = zapi.getParent(parent)
+        return None
+
+    def getChildNodes(self, nodeTypes=None):
+        return [item for item in self.values()
+                    if INode.providedBy(item)
+                        and (not nodeTypes or item.nodeType in nodeTypes)]
+
+    def getMenu(self):
+        return self.nodeType == 'menu' and self or self.getParentNode(['menu'])
+
+    def getPage(self):
+        pageTypes = ['page', 'menu', 'info']
+        if self.nodeType in pageTypes:
+            return self
+        return self.getParentNode(pageTypes)
+
+    def getMenuItems(self):
+        return self.getChildNodes(['page', 'menu'])
+
+    def getTextItems(self):
+        return self.getChildNodes(['text'])
 
 
 class ViewManager(BTreeContainer):

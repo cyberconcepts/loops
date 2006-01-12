@@ -3,21 +3,63 @@
 <head></head>
 <body>
 
+  
+  <metal:css fill-slot="style_slot">
+    <style type="text/css" media="all"
+           tal:content="string:@import url(${context/++resource++view.css});">
+      @import url(view.css);
+    </style>
+  </metal:css>
+  
+
   <metal:body fill-slot="body">
-    <tal:content define="item context;
+    <tal:content define="item view/getContent;
                          level level|python: 1">
 
       <metal:block define-macro="content">
-        <div tal:content="structure item/body">The body</div>        
-        <div tal:define="level python:level+1">
-          <tal:items repeat="item item/values">
+        <tal:body define="body item/body"
+                  condition="body">
+          <div class="content-1"
+               tal:content="structure body"
+               tal:attributes="class string:content-$level">The body</div>
+        </tal:body>
+        <tal:sub define="level python:level+1">
+          <tal:items repeat="item item/items">
             <metal:portlet use-macro="views/node_macros/content" />
           </tal:items>
-        </div>
+        </tal:sub>
       </metal:block>
       
     </tal:content>
   </metal:body>
+
+
+  <div class="box" metal:fill-slot="navigators">
+    <h4>Navigation</h4>
+    <tal:menu define="item view/getMenu;
+                      level level|python: 1"
+              condition="item">
+
+      <div class="body">
+        <metal:menu define-macro="menu">
+          <div class="menu-3"
+               tal:attributes="class python: 'content '
+                    + (item['selected'] and 'even' or 'odd')
+                    + ' menu-%i' % level">
+            <a href="#" class=""
+               tal:content="item/title"
+               tal:attributes="href item/url">Menu Text</a>
+          </div>
+          <tal:sub tal:define="level python:level+1">
+            <tal:items repeat="item item/items">
+              <metal:portlet use-macro="views/node_macros/menu" />
+            </tal:items>
+          </tal:sub>
+        </metal:menu>
+      </div>
+      
+    </tal:menu>
+  </div>
 
 </body>
 </html>

@@ -5,6 +5,10 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <!-- resources -->
+
+  <resource name="view.css" file="view.css" />
+
   <!-- macros -->
    
   <page
@@ -197,6 +201,7 @@
 
   <containerViews
       for="loops.interfaces.IViewManager"
+      index="zope.View"
       contents="zope.ManageContent"
       add="zope.ManageContent"
       />
@@ -208,11 +213,11 @@
       name="AddLoopsNode.html"
       content_factory="loops.view.Node"
       schema="loops.interfaces.INode"
-      fields="title description type body"
+      fields="title description nodeType body"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />
-    <widget field="body" height="4" />
+    <widget field="body" height="8" />
 
   </addform>
 
@@ -228,13 +233,13 @@
       label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
-      fields="title description type body"
+      fields="title description nodeType body"
       for="loops.interfaces.INode"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit">
 
     <widget field="description" height="2" />
-    <widget field="body" height="4" />
+    <widget field="body" height="15" />
 
   </editform>
 
@@ -242,6 +247,7 @@
       name="node.html"
       for="loops.interfaces.INode"
       template="node.pt"
+      class=".node.NodeView"
       permission="zope.View"
       />
     

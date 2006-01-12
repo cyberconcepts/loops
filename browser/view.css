@@ -1,0 +1,48 @@
+/*
+ $Id$
+
+ settings specific for view / node objects
+ 
+*/
+
+.box {
+    margin: 5px;
+}
+
+#body {
+    margin-left: 5px;
+}
+
+.content-1 h1 {
+    font-size: 160%;
+    font-weight: bold;
+}
+
+.content-2 h1, .content-1 h2, .content-1 h3 {
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.content-3 h1, .content-2 h2, .content-2 h3 {
+    font-size: 120%;
+}
+
+.content-4 h1, .content-3 h2, .content-3 h3   {
+    font-size: 110%;
+    border: none;
+}
+
+.content-5 h1, .content-4 h2, .content-4 h3 {
+    font-size: 100%;
+    border: none;
+}
+
+.box div.body div.menu-3 {
+    padding-left: 1.5em;
+}
+
+.box div.body div.menu-4 {
+    padding-left: 3em;
+    font-size: 90%
+}
+

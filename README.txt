@@ -4,6 +4,14 @@ loops - Linked Objects for Organization and Processing Services
 
   ($Id$)
 
+  >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
+  >>> site = placefulSetUp(True)
+  
+  >>> from zope.app import zapi
+  >>> from zope.app.tests import ztapi
+  >>> from zope.publisher.browser import TestRequest
+
+
 Concepts and Relations
 ======================
 
@@ -12,6 +20,8 @@ top-level loops container and a concept manager:
 
   >>> from loops import Loops
   >>> loops = Loops()
+  >>> site['loops'] = Loops()
+  >>> loops = site['loops']
 
   >>> from loops.concept import ConceptManager, Concept
   >>> loops['concepts'] = ConceptManager()
@@ -97,8 +107,8 @@ below) via the getClients() method:
   >>> conc[0] is zope
   True
 
-Views: Menus, Menu Items, Listings, etc
-=======================================
+Views: Menus, Menu Items, Listings, Simple Content, etc
+=======================================================
 
 We first need a view manager:
     
@@ -122,6 +132,57 @@ menu that may contain other nodes as menu or content items:
   >>> m112.description
   u''
 
+There are a few convienence methods for accessing parent and child nodes:
+
+  >>> m1.getParentNode() is None
+  True
+  >>> m11.getParentNode() is m1
+  True
+  >>> [zapi.getName(child) for child in m11.getChildNodes()]
+  [u'm111', u'm112']
+
+What is returned by these may be controlled by the nodeType attribute:
+
+  >>> m1.nodeType = 'menu'
+  >>> m11.nodeType = 'page'
+  >>> m11.getParentNode('menu') is m1
+  True
+  >>> m11.getParentNode('page') is None
+  True
+  >>> m111.nodeType = 'info'
+  >>> m112.nodeType = 'text'
+  >>> len(m11.getChildNodes('text'))
+  1
+
+There are also shortcut methods to retrieve certain types of nodes
+in a simple and logical way:
+
+  >>> m1.getMenu() is m1
+  True
+  >>> m111.getMenu() is m1
+  True
+  >>> m1.getPage() is m1
+  True
+  >>> m111.getPage() is m111
+  True
+  >>> m112.getPage() is m11
+  True
+  >>> len(m1.getMenuItems())
+  1
+  >>> len(m11.getMenuItems())
+  0
+  >>> len(m111.getMenuItems())
+  0
+  >>> len(m1.getTextItems())
+  0
+  >>> len(m11.getTextItems())
+  1
+  >>> len(m111.getTextItems())
+  0
+
+Targets
+-------
+
 We can associate a node with a concept or directly with a resource via the
 view class's target attribute:
 
@@ -134,4 +195,10 @@ view class's target attribute:
   >>> m111.target = zope3
   >>> m111.target is zope3
   True
+
+
+Fin de partie
+=============
+
+  >>> placefulTearDown()
 
