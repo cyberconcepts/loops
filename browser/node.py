@@ -27,6 +27,7 @@ from zope.app import zapi
 from zope.app.container.browser.contents import JustContents
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.proxy import removeAllProxies
+from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IConcept
@@ -62,6 +63,7 @@ class NodeView(object):
         result = {'title': item.title,
                   'url': zapi.absoluteURL(item, self.request),
                   'body': self.render(item.body),
+                  'editable': canWrite(item, 'body'),
                   'items': [self.content(child)
                                 for child in item.getTextItems()]}
         return result
@@ -107,19 +109,19 @@ class OrderedContainerView(JustContents):
                 return True
         return False
 
-    def moveDown(self, ids, delta=1):
+    def moveDown(self, ids=[], delta=1):
         self.context.moveSubNodesByDelta(ids, int(delta))
         self.request.response.redirect(self.url + '/contents.html')
 
-    def moveUp(self, ids, delta=1):
+    def moveUp(self, ids=[], delta=1):
         self.context.moveSubNodesByDelta(ids, -int(delta))
         self.request.response.redirect(self.url + '/contents.html')
 
-    def moveToBottom(self, ids):
+    def moveToBottom(self, ids=[]):
         self.context.moveSubNodesByDelta(ids, len(self.context))
         self.request.response.redirect(self.url + '/contents.html')
 
-    def moveToTop(self, ids):
+    def moveToTop(self, ids=[]):
         self.context.moveSubNodesByDelta(ids, -len(self.context))
         self.request.response.redirect(self.url + '/contents.html')
 

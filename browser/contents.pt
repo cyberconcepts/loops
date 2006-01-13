@@ -149,22 +149,6 @@
                i18n:domain="zope"
                />
 
-        <div tal:condition="view/orderable">
-          <input type="submit" name="move_top" value="Top"
-                 i18n:attributes="value container-movetop-button"
-                 i18n:domain="zope" />
-          <input type="submit" name="move_up" value="Up"
-                 i18n:attributes="value container-moveup-button"
-                 i18n:domain="zope" />
-          <input type="submit" name="move_down" value="Down"
-                 i18n:attributes="value container-moveup-button"
-                 i18n:domain="zope" />
-                 <input type="submit" name="move_bottom" value="Bottom"
-                 i18n:attributes="value container-movebottom-button"
-                 i18n:domain="zope" />
-          <input type="hidden" name="delta" value="1" />
-        </div>
-
         <div tal:condition="view/hasAdding" tal:omit-tag="">
         <div tal:omit-tag="" 
              tal:define="adding nocall:context/@@+;
@@ -185,6 +169,22 @@
                tal:attributes="value python:addingInfo[0]['action']" 
                />
         </div>
+        </div>
+
+        <div tal:condition="view/orderable">
+          <input type="submit" name="move_top" value="Top"
+                 i18n:attributes="value container-movetop-button"
+                 i18n:domain="zope" />
+          <input type="submit" name="move_up" value="Up"
+                 i18n:attributes="value container-moveup-button"
+                 i18n:domain="zope" />
+          <input type="text" size="2" name="delta" value="1" />
+          <input type="submit" name="move_down" value="Down"
+                 i18n:attributes="value container-moveup-button"
+                 i18n:domain="zope" />
+          <input type="submit" name="move_bottom" value="Bottom"
+                 i18n:attributes="value container-movebottom-button"
+                 i18n:domain="zope" />
         </div>
 
       </div>

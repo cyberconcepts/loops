@@ -8,6 +8,7 @@
   <!-- resources -->
 
   <resource name="node.css" file="node.css" />
+  <resource name="edit.gif" file="edit.gif" />
 
   <!-- macros -->
    
@@ -228,6 +229,7 @@
       schema="loops.interfaces.INode"
       fields="title description nodeType body"
       for="loops.interfaces.INode"
+      template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit">
 

@@ -10,7 +10,7 @@ loops - Linked Objects for Organization and Processing Services
   >>> from zope.app import zapi
   >>> from zope.app.tests import ztapi
   >>> from zope.publisher.browser import TestRequest
-
+  
 
 Concepts and Relations
 ======================
@@ -123,6 +123,10 @@ thus provide the presentation space to concepts and resources.
 We first need a view manager:
     
   >>> from loops.view import ViewManager, Node
+  >>> from zope.security.checker import NamesChecker, defineChecker
+  >>> nodeChecker = NamesChecker(('body',))
+  >>> defineChecker(Node, nodeChecker)
+
   >>> loops['views'] = ViewManager()
   >>> views = loops['views']
 
@@ -218,7 +222,7 @@ Node views
    'selected': True, 'title': u'Menu'}
   >>> view.content()
   {'url': 'http://127.0.0.1/loops/views/m1', 'body': u'', 'items': [],
-   'title': u'Menu'}
+   'editable': False, 'title': u'Menu'}
 
   >>> view = NodeView(m11, TestRequest())
   >>> view.menu()
@@ -229,8 +233,8 @@ Node views
   >>> view.content()
   {'url': 'http://127.0.0.1/loops/views/m1/m11', 'body': u'',
    'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11/m112',
-              'body': u'', 'items': [], 'title': u'Zope 3'}],
-   'title': u'Zope'}
+              'body': u'', 'items': [], 'editable': False, 'title': u'Zope 3'}],
+   'editable': False, 'title': u'Zope'}
     
 Ordering Nodes
 --------------

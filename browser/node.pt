@@ -10,7 +10,7 @@
       @import url(view.css);
     </style>
   </metal:css>
-  
+
 
   <metal:body fill-slot="body">
     <tal:content define="item view/content;
@@ -20,8 +20,14 @@
         <tal:body define="body item/body"
                   condition="body">
           <div class="content-1"
-               tal:content="structure body"
-               tal:attributes="class string:content-$level">The body</div>
+               tal:define="onclick string:
+                            zmi=window.open('${item/url}/@@edit.html', 'zmi');;
+                            zmi.focus();; return false;;"
+               tal:attributes="class string:content-$level;
+                               onclick python: item['editable'] and onclick or ''"
+               tal:content="structure body">
+            The body
+          </div>
         </tal:body>
         <tal:sub define="level python:level+1">
           <tal:items repeat="item item/items">
@@ -61,6 +67,22 @@
     </tal:menu>
   </div>
 
+
 </body>
 </html>
 </tal:show>
+
+<tal:hide condition="nothing">
+  <metal:editlink define-macro="editlink">
+    <a target="zmi"
+       tal:define="url string:${item/url}/@@edit.html'"
+       tal:attributes="href url;
+                       onclick string:
+                            zmi=window.open('$url', 'zmi');;
+                            zmi.focus();; return false;;">
+      <img src="edit.gif"
+           tal:attributes="src context/++resource++edit.gif" border="0" />
+    </a>
+  </metal:editlink>
+</tal:hide>
+
