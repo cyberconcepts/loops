@@ -7,7 +7,7 @@
 
   <!-- resources -->
 
-  <resource name="view.css" file="view.css" />
+  <resource name="node.css" file="node.css" />
 
   <!-- macros -->
    
@@ -199,13 +199,6 @@
       view="AddLoopsViewManager.html"
       />
 
-  <containerViews
-      for="loops.interfaces.IViewManager"
-      index="zope.View"
-      contents="zope.ManageContent"
-      add="zope.ManageContent"
-      />
-
   <!-- node -->
 
   <addform
@@ -256,10 +249,25 @@
       name="node.html"
       />
 
+  <!-- move nodes up and down -->
+
   <containerViews
-      for="loops.interfaces.INode"
-      contents="zope.ManageContent"
+      for="loops.interfaces.IBaseNode"
+      index="zope.ManageContent"
       add="zope.ManageContent"
       />
+
+  <pages
+      for="loops.interfaces.IBaseNode"
+      class=".node.OrderedContainerView"
+      permission="zope.ManageContent">
+    <page name="contents.html" template="contents.pt"
+          menu="zmi_views" title="Contents"
+          />
+    <page name="move_down" attribute="moveDown" />
+    <page name="move_up" attribute="moveUp" />
+    <page name="move_bottom" attribute="moveToBottom" />
+    <page name="move_top" attribute="moveToTop" />
+  </pages>
 
 </configure>

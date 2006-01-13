@@ -169,9 +169,13 @@ class IView(Interface):
         required=False)
 
     target = Attribute('Target object that is referenced by this view')
+
+class IBaseNode(IOrderedContainer):
+    """ Common abstract base class for different types of nodes
+    """
     
 
-class INode(IView, IOrderedContainer):
+class INode(IView, IBaseNode):
     """ A node is a view that may contain other views, thus building a
         menu or folder hierarchy.
 
@@ -227,8 +231,14 @@ class INode(IView, IOrderedContainer):
             a menu).
         """
 
+    def moveSubNodesByDelta(names, delta):
+        """ Move the sub-nodes specified by the list of names up
+            (negative delta) or down (positive delta) by the number of places
+            specified by delta.
+        """
 
-class IViewManager(IContainer):
+
+class IViewManager(IBaseNode):
     """ A manager/container for views.
     """
     contains(IView)

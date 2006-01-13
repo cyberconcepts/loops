@@ -71,6 +71,7 @@ We can now ask our concepts for their related concepts:
 
 TODO: Work with views...
         
+
 Resources and what they have to do with Concepts
 ================================================
 
@@ -107,8 +108,17 @@ below) via the getClients() method:
   >>> conc[0] is zope
   True
 
-Views: Menus, Menu Items, Listings, Simple Content, etc
-=======================================================
+
+Views/Nodes: Menus, Menu Items, Listings, Pages, etc
+====================================================
+
+Note: the term "view" here is not directly related to the special
+Zop 3 term "view" (a multiadapter for presentation purposes) but basically
+bears the common sense meaning: an object (that may be persistent or
+created on the fly) that provides a view to content of whatever kind.
+
+Views (or nodes - that's the only type of views existing at the moment)
+thus provide the presentation space to concepts and resources.
 
 We first need a view manager:
     
@@ -196,6 +206,59 @@ view class's target attribute:
   >>> m111.target is zope3
   True
 
+Node views
+----------
+
+  >>> from loops.browser.node import NodeView
+  >>> view = NodeView(m1, TestRequest())
+  >>> view.menu()
+  {'url': 'http://127.0.0.1/loops/views/m1',
+   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11', 'items': [],
+              'selected': False, 'title': u'Zope'}],
+   'selected': True, 'title': u'Menu'}
+  >>> view.content()
+  {'url': 'http://127.0.0.1/loops/views/m1', 'body': u'', 'items': [],
+   'title': u'Menu'}
+
+  >>> view = NodeView(m11, TestRequest())
+  >>> view.menu()
+  {'url': 'http://127.0.0.1/loops/views/m1',
+   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11', 'items': [],
+              'selected': True, 'title': u'Zope'}],
+   'selected': False, 'title': u'Menu'}
+  >>> view.content()
+  {'url': 'http://127.0.0.1/loops/views/m1/m11', 'body': u'',
+   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11/m112',
+              'body': u'', 'items': [], 'title': u'Zope 3'}],
+   'title': u'Zope'}
+    
+Ordering Nodes
+--------------
+
+Let's add some more nodes and reorder them:
+
+  >>> m113 = Node()
+  >>> m11['m113'] = m113
+  >>> m114 = Node()
+  >>> m11['m114'] = m114
+  >>> m11.keys()
+  ['m111', 'm112', 'm113', 'm114']
+      
+  >>> m11.moveSubNodesByDelta(['m113'], -1)
+  >>> m11.keys()
+  ['m111', 'm113', 'm112', 'm114']
+
+A special management view provides methods for moving objects down, up,
+to the bottom, and to the top
+      
+  >>> from loops.browser.node import OrderedContainerView
+  >>> view = OrderedContainerView(m11, TestRequest())
+  >>> view.moveToBottom(('m113',))
+  >>> m11.keys()
+  ['m111', 'm112', 'm114', 'm113']
+  >>> view.moveUp(('m114',), 1)
+  >>> m11.keys()
+  ['m111', 'm114', 'm112', 'm113']
 
 Fin de partie
 =============
