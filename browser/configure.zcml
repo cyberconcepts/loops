@@ -200,6 +200,28 @@
       view="AddLoopsViewManager.html"
       />
 
+  <containerViews
+      for="loops.interfaces.IViewManager"
+      index="zope.ManageContent"
+      contents="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
+  <!-- import/export -->
+
+  <pages for="loops.interfaces.IViewManager"
+         class=".external.NodesExportImport"
+         permission="zope.ManageContent">
+         
+    <page name="exportimport.html"
+          template="exportimport.pt"
+          menu="zmi_views" title="Export/Import"  />
+
+    <page name="export_nodes.html"
+          attribute="export" />
+
+  </pages>
+
   <!-- node -->
 
   <addform
