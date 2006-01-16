@@ -141,7 +141,8 @@
 
     <require
         permission="zope.ManageContent"
-        interface="zope.app.container.interfaces.IWriteContainer" />
+        interface="zope.app.container.interfaces.IWriteContainer"
+        attributes="updateOrder" />
 
   </content>
 

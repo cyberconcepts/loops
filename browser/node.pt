@@ -67,10 +67,10 @@
     </tal:menu>
   </div>
 
-
 </body>
 </html>
 </tal:show>
+
 
 <tal:hide condition="nothing">
   <metal:editlink define-macro="editlink">
