@@ -173,6 +173,14 @@
 
   </content>
 
+  <!-- adapters for export/import -->
+
+  <adapter factory="loops.external.NodesLoader" />
+
+  <adapter factory="loops.external.NodesExporter" />
+
+  <adapter factory="loops.external.NodesImporter" />
+
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />
 
