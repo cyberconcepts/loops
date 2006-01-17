@@ -38,7 +38,9 @@ class NodeView(object):
         self.context = context
         self.request = request
 
-    def render(self, text):
+    def render(self, text=None):
+        if text is None:
+            text = self.context.body
         if not text:
             return u''
         if text.startswith('<'):  # seems to be HTML
@@ -55,6 +57,7 @@ class NodeView(object):
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
+    @Lazy
     def page(self):
         page = self.context.getPage()
         return page is not None and NodeView(page, self.request) or None
@@ -63,17 +66,18 @@ class NodeView(object):
         for child in self.context.getTextItems():
             yield NodeView(child, self.request)
 
-    def menuItems(self):
-        for child in self.context.getMenuItems():
-            yield NodeView(child, self.request)
-
+    @Lazy
     def menu(self):
         menu = self.context.getMenu()
         return menu is not None and NodeView(menu, self.request) or None
 
+    def menuItems(self):
+        for child in self.context.getMenuItems():
+            yield NodeView(child, self.request)
+
     @Lazy
     def body(self):
-        return self.render(self.context.body)
+        return self.render()
 
     @Lazy
     def url(self):

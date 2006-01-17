@@ -24,7 +24,7 @@
                             zmi=window.open('${item/url}/@@edit.html', 'zmi');;
                             zmi.focus();; return false;;"
                tal:attributes="class string:content-$level;
-                               onclick python: item.editable and onclick or ''"
+                               ondblclick python: item.editable and onclick or ''"
                tal:content="structure body">
             The body
           </div>
@@ -67,6 +67,12 @@
     </tal:menu>
   </div>
 
+  
+  <div metal:fill-slot="footer">
+    <a href="#"
+       tal:attributes="href string:${view/menu/url}/impressum">Impressum</a>
+  </div>
+      
 </body>
 </html>
 </tal:show>

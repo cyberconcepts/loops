@@ -216,13 +216,13 @@ Node views
   >>> from loops.browser.node import NodeView
   >>> view = NodeView(m11, TestRequest())
 
-  >>> page = view.page()
+  >>> page = view.page
   >>> items = page.textItems()
   >>> for item in items:
   ...     print item.url, item.editable
   http://127.0.0.1/loops/views/m1/m11/m112 False
 
-  >>> menu = view.menu()
+  >>> menu = view.menu
   >>> items = menu.menuItems()
   >>> for item in items:
   ...     print item.url, view.selected(item)
