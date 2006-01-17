@@ -55,30 +55,36 @@ class NodeView(object):
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
-    def content(self, item=None):
-        if item is None:
-            item = self.context.getPage()
-        if item is None:
-            item = self.context
-        result = {'title': item.title,
-                  'url': zapi.absoluteURL(item, self.request),
-                  'body': self.render(item.body),
-                  'editable': canWrite(item, 'body'),
-                  'items': [self.content(child)
-                                for child in item.getTextItems()]}
-        return result
+    def page(self):
+        page = self.context.getPage()
+        return page is not None and NodeView(page, self.request) or None
 
-    def menu(self, item=None):
-        if item is None:
-            item = self.context.getMenu()
-        if item is None:
-            return None
-        result = {'title': item.title,
-                  'url': zapi.absoluteURL(item, self.request),
-                  'selected': item == self.context,
-                  'items': [self.menu(child)
-                                for child in item.getMenuItems()]}
-        return result
+    def textItems(self):
+        for child in self.context.getTextItems():
+            yield NodeView(child, self.request)
+
+    def menuItems(self):
+        for child in self.context.getMenuItems():
+            yield NodeView(child, self.request)
+
+    def menu(self):
+        menu = self.context.getMenu()
+        return menu is not None and NodeView(menu, self.request) or None
+
+    @Lazy
+    def body(self):
+        return self.render(self.context.body)
+
+    @Lazy
+    def url(self):
+        return zapi.absoluteURL(self.context, self.request)
+
+    @Lazy
+    def editable(self):
+        return canWrite(self.context, 'body')
+
+    def selected(self, item):
+        return item.context == self.context
 
 
 class OrderedContainerView(JustContents):

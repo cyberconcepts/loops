@@ -13,7 +13,7 @@
 
 
   <metal:body fill-slot="body">
-    <tal:content define="item view/content;
+    <tal:content define="item view/page;
                          level level|python: 1">
 
       <metal:block define-macro="content">
@@ -24,13 +24,14 @@
                             zmi=window.open('${item/url}/@@edit.html', 'zmi');;
                             zmi.focus();; return false;;"
                tal:attributes="class string:content-$level;
-                               onclick python: item['editable'] and onclick or ''"
+                               onclick python: item.editable and onclick or ''"
                tal:content="structure body">
             The body
           </div>
+          <div tal:content="item/context/title" />
         </tal:body>
         <tal:sub define="level python:level+1">
-          <tal:items repeat="item item/items">
+          <tal:items repeat="item item/textItems">
             <metal:portlet use-macro="views/node_macros/content" />
           </tal:items>
         </tal:sub>
@@ -50,14 +51,14 @@
         <metal:menu define-macro="menu">
           <div class="menu-3"
                tal:attributes="class python: 'content '
-                    + (item['selected'] and 'even' or 'odd')
+                    + (view.selected(item) and 'even' or 'odd')
                     + ' menu-%i' % level">
             <a href="#" class=""
-               tal:content="item/title"
+               tal:content="item/context/title"
                tal:attributes="href item/url">Menu Text</a>
           </div>
           <tal:sub tal:define="level python:level+1">
-            <tal:items repeat="item item/items">
+            <tal:items repeat="item item/menuItems">
               <metal:portlet use-macro="views/node_macros/menu" />
             </tal:items>
           </tal:sub>

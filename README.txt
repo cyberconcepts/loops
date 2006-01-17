@@ -214,27 +214,20 @@ Node views
 ----------
 
   >>> from loops.browser.node import NodeView
-  >>> view = NodeView(m1, TestRequest())
-  >>> view.menu()
-  {'url': 'http://127.0.0.1/loops/views/m1',
-   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11', 'items': [],
-              'selected': False, 'title': u'Zope'}],
-   'selected': True, 'title': u'Menu'}
-  >>> view.content()
-  {'url': 'http://127.0.0.1/loops/views/m1', 'body': u'', 'items': [],
-   'editable': False, 'title': u'Menu'}
-
   >>> view = NodeView(m11, TestRequest())
-  >>> view.menu()
-  {'url': 'http://127.0.0.1/loops/views/m1',
-   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11', 'items': [],
-              'selected': True, 'title': u'Zope'}],
-   'selected': False, 'title': u'Menu'}
-  >>> view.content()
-  {'url': 'http://127.0.0.1/loops/views/m1/m11', 'body': u'',
-   'items': [{'url': 'http://127.0.0.1/loops/views/m1/m11/m112',
-              'body': u'', 'items': [], 'editable': False, 'title': u'Zope 3'}],
-   'editable': False, 'title': u'Zope'}
+
+  >>> page = view.page()
+  >>> items = page.textItems()
+  >>> for item in items:
+  ...     print item.url, item.editable
+  http://127.0.0.1/loops/views/m1/m11/m112 False
+
+  >>> menu = view.menu()
+  >>> items = menu.menuItems()
+  >>> for item in items:
+  ...     print item.url, view.selected(item)
+  http://127.0.0.1/loops/views/m1/m11 True
+
     
 Ordering Nodes
 --------------
