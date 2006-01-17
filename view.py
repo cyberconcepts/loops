@@ -104,9 +104,12 @@ class Node(View, OrderedContainer):
         return None
 
     def getChildNodes(self, nodeTypes=None):
-        return [item for item in self.values()
-                    if INode.providedBy(item)
-                        and (not nodeTypes or item.nodeType in nodeTypes)]
+        for item in self.values():
+            if INode.providedBy(item) \
+                    and (not nodeTypes or item.nodeType in nodeTypes):
+                yield item
+            else:
+                continue
 
     def getMenu(self):
         return self.nodeType == 'menu' and self or self.getParentNode(['menu'])

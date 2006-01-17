@@ -165,7 +165,7 @@ What is returned by these may be controlled by the nodeType attribute:
   True
   >>> m111.nodeType = 'info'
   >>> m112.nodeType = 'text'
-  >>> len(m11.getChildNodes('text'))
+  >>> len(list(m11.getChildNodes('text')))
   1
 
 There are also shortcut methods to retrieve certain types of nodes
@@ -181,17 +181,17 @@ in a simple and logical way:
   True
   >>> m112.getPage() is m11
   True
-  >>> len(m1.getMenuItems())
+  >>> len(list(m1.getMenuItems()))
   1
-  >>> len(m11.getMenuItems())
+  >>> len(list(m11.getMenuItems()))
   0
-  >>> len(m111.getMenuItems())
+  >>> len(list(m111.getMenuItems()))
   0
-  >>> len(m1.getTextItems())
+  >>> len(list(m1.getTextItems()))
   0
-  >>> len(m11.getTextItems())
+  >>> len(list(m11.getTextItems()))
   1
-  >>> len(m111.getTextItems())
+  >>> len(list(m111.getTextItems()))
   0
 
 Targets
