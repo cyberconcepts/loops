@@ -20,6 +20,13 @@
     <factory id="loops.Loops"
              description="loops top-level container" />
 
+    <allow
+        attributes="getSiteManager" />
+    
+    <require
+        permission="zope.ManageServices"
+        attributes="setSiteManager" />
+        
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />

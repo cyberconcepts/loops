@@ -73,7 +73,7 @@ class NodesExportImport(object):
     def setDownloadHeader(self, request, text):
         response = request.response
         response.setHeader('Content-Disposition',
-                           'attachment; filename=yeepacontent.dmp')
+                           'attachment; filename=loopscontent.dmp')
         response.setHeader('Content-Type', 'text/plain')
         response.setHeader('Content-Length', len(text))
 
