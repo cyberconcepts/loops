@@ -129,6 +129,7 @@ class Node(View, OrderedContainer):
     def moveSubNodesByDelta(self, names, delta):
         self.updateOrder(moveByDelta(self.keys(), names, delta))
 
+
 class ViewManager(OrderedContainer):
 
     implements(IViewManager, ILoopsContained)

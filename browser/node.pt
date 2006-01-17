@@ -28,7 +28,6 @@
                tal:content="structure body">
             The body
           </div>
-          <div tal:content="item/context/title" />
         </tal:body>
         <tal:sub define="level python:level+1">
           <tal:items repeat="item item/textItems">
