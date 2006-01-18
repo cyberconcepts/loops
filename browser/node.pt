@@ -12,6 +12,9 @@
   </metal:css>
 
 
+  <metal:block fill-slot="actions" />
+
+
   <metal:body fill-slot="body">
     <tal:content define="item view/page;
                          level level|python: 1">

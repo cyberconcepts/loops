@@ -20,12 +20,12 @@
       </tal:control>
 
       <div metal:define-macro="formbody">
-
+          
         <h3 tal:condition="view/label"
-            tal:content="view/label"
-            metal:define-slot="heading"
-            i18n:translate=""
-            >Edit something</h3>
+            metal:define-slot="heading">
+          <span tal:content="view/label"
+                i18n:translate="">Edit something</span>
+        </h3>
 
         <p tal:define="status view/update"
            tal:condition="status"
