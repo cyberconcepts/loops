@@ -159,7 +159,7 @@
       label="Add Document"
       name="AddLoopsDocument.html"
       schema="loops.interfaces.IDocument"
-      fields="title body format"
+      fields="title data contentType"
       content_factory="loops.resource.Document"
       permission="zope.ManageContent"
       />
@@ -176,8 +176,37 @@
       label="Edit Document"
       name="edit.html"
       schema="loops.interfaces.IDocument"
-      fields="title body format"
+      fields="title data contentType"
       for="loops.interfaces.IDocument"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <!-- media asset -->
+
+  <addform
+      label="Add Media Asset"
+      name="AddLoopsMediaAsset.html"
+      schema="loops.interfaces.IMediaAsset"
+      fields="title data contentType"
+      content_factory="loops.resource.MediaAsset"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="loops.resource.MediaAsset"
+      title="Media Asset"
+      description="A media asset is a binary file, image, video or audio file"
+      permission="zope.ManageContent"
+      view="AddLoopsMediaAsset.html"
+      />
+
+  <editform
+      label="Edit Media Asset"
+      name="edit.html"
+      schema="loops.interfaces.IMediaAsset"
+      fields="title data contentType"
+      for="loops.interfaces.IMediaAsset"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />

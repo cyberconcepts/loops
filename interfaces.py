@@ -27,7 +27,7 @@ from zope.i18nmessageid import MessageFactory
 from zope import schema
 from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
-from zope.app.file.interfaces import IFile as IBaseFile
+from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
 
 _ = MessageFactory('loops')
@@ -102,13 +102,20 @@ class IConceptManagerContained(Interface):
 # resource interfaces
 
 class IResource(Interface):
-    """ A resource is an atomic information element that is usually
-        available via a concept.
+    """ A resource is an atomic information element that is made
+        available via a view or a concept.
     """
 
     title = schema.TextLine(
                 title=_(u'Title'),
                 description=_(u'Title of the document'),
+                required=False)
+
+    contentType = schema.TextLine(
+                title=_(u'Content Type'),
+                description=_(u'Content type (format) of the body field, '
+                               'default is "text/xml"'),
+                default=_(u'text/xml'),
                 required=False)
 
     def getClients(relationships=None):
@@ -121,22 +128,21 @@ class IDocument(IResource):
     """ A resource containing an editable body.
     """
 
-    body = schema.Text(
-                title=_(u'Body'),
-                description=_(u'Body of the document'),
-                required=False)
-
-    format = schema.TextLine(
-                title=_(u'Format'),
-                description=_(u'Format of the body field, default is "text/xml"'),
-                default=_(u'text/xml'),
+    data = schema.Text(
+                title=_(u'Data'),
+                description=_(u'Raw body data of the document'),
                 required=False)
 
 
-class IFile(IResource, IBaseFile):
+class IMediaAsset(IResource, IBaseAsset):
     """ A resource containing a (typically binary) file-like content
-        or an image.
+        or an image. 
     """
+
+    data = schema.Bytes(
+                title=_(u'Data'),
+                description=_(u'Media asset raw data'),
+                required=False)
 
 
 class IResourceManager(IContainer):
@@ -173,6 +179,10 @@ class IView(Interface):
 class IBaseNode(IOrderedContainer):
     """ Common abstract base class for different types of nodes
     """
+
+    def getLoopsRoot():
+        """ Return the loops root object.
+        """
     
 
 class INode(IView, IBaseNode):

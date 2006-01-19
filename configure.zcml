@@ -129,6 +129,29 @@
 
   </content>
 
+  <interface
+      interface=".interfaces.IMediaAsset"
+      type="zope.app.content.interfaces.IContentType" />
+
+  <content class=".resource.MediaAsset">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="loops.MediaAsset"
+        description="Media Asset" />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IMediaAsset" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IMediaAsset" />
+
+  </content>
+
   <!-- view manager and view -->
 
   <interface interface=".interfaces.IViewManager"
@@ -187,6 +210,17 @@
   <adapter factory="loops.external.NodesExporter" />
 
   <adapter factory="loops.external.NodesImporter" />
+
+  <!-- traversal adapter -->
+  
+  <view factory="loops.view.NodeTraverser"
+        for="loops.interfaces.INode"
+        type="zope.publisher.interfaces.http.IHTTPRequest"
+        provides="zope.publisher.interfaces.IPublishTraverse"
+        allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+        permission="zope.Public" />
+
+  <!--<adapter factory="loops.view.NodeTraversable" />-->
 
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />

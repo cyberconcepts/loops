@@ -26,14 +26,14 @@ top-level loops container and a concept manager:
   >>> from loops.concept import ConceptManager, Concept
   >>> loops['concepts'] = ConceptManager()
   >>> concepts = loops['concepts']
-  >>> zope = Concept()
-  >>> concepts['zope'] = zope
-  >>> zope.title
+  >>> cc1 = Concept()
+  >>> concepts['cc1'] = cc1
+  >>> cc1.title
   u''
 
-  >>> zope3 = Concept(u'Zope 3')
-  >>> concepts['zope3'] = zope3
-  >>> zope3.title
+  >>> cc2 = Concept(u'Zope 3')
+  >>> concepts['cc2'] = cc2
+  >>> cc2.title
   u'Zope 3'
 
 Now we want to relate the second concept to the first one.
@@ -48,25 +48,25 @@ testing we use a simple dummy implementation.
 
 Now we can assign the concept c2 to c1 (using the standard ConceptRelation):
         
-  >>> zope.assignConcept(zope3)
+  >>> cc1.assignConcept(cc2)
 
 We can now ask our concepts for their related concepts:
 
-  >>> sc1 = zope.getSubConcepts()
+  >>> sc1 = cc1.getSubConcepts()
   >>> len(sc1)
   1
-  >>> zope3 in sc1
+  >>> cc2 in sc1
   True
-  >>> len(zope.getParentConcepts())
+  >>> len(cc1.getParentConcepts())
   0
 
-  >>> pc2 = zope3.getParentConcepts()
+  >>> pc2 = cc2.getParentConcepts()
   >>> len(pc2)
   1
 
-  >>> zope in pc2
+  >>> cc1 in pc2
   True
-  >>> len(zope3.getSubConcepts())
+  >>> len(cc2.getSubConcepts())
   0
 
 TODO: Work with views...
@@ -81,31 +81,33 @@ We first need a resource manager:
   >>> loops['resources'] = ResourceManager()
   >>> resources = loops['resources']
 
-A common type of resource is a Document:
+A common type of resource is a document:
       
-  >>> zope_info = Document(u'Zope Info')
-  >>> resources['zope_info'] = zope_info
-  >>> zope_info.title
+  >>> doc1 = Document(u'Zope Info')
+  >>> resources['doc1'] = doc1
+  >>> doc1.title
   u'Zope Info'
-  >>> zope_info.body
+  >>> doc1.data
   u''
-  >>> zope_info.format
+  >>> doc1.contentType
   u'text/xml'
+
+Another one is a media asset:
 
 We can associate a resource with a concept by assigning it to the concept:
 
-  >>> zope.assignResource(zope_info)
-  >>> res = zope.getResources()
+  >>> cc1.assignResource(doc1)
+  >>> res = cc1.getResources()
   >>> list(res)
   [<loops.resource.Document ...>]
 
 The resource also provides access to the associated concepts (or views, see
 below) via the getClients() method:
 
-  >>> conc = zope_info.getClients()
+  >>> conc = doc1.getClients()
   >>> len(conc)
   1
-  >>> conc[0] is zope
+  >>> conc[0] is cc1
   True
 
 
@@ -200,14 +202,14 @@ Targets
 We can associate a node with a concept or directly with a resource via the
 view class's target attribute:
 
-  >>> m111.target = zope_info
-  >>> m111.target is zope_info
+  >>> m111.target = cc1
+  >>> m111.target is cc1
   True
-  >>> m111.target = zope_info
-  >>> m111.target is zope_info
+  >>> m111.target = cc1
+  >>> m111.target is cc1
   True
-  >>> m111.target = zope3
-  >>> m111.target is zope3
+  >>> m111.target = cc2
+  >>> m111.target is cc2
   True
 
 Node views

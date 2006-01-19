@@ -25,11 +25,12 @@ $Id$
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
+from zope.app.file.image import Image as BaseMediaAsset
 from zope.interface import implements
 from persistent import Persistent
 from cybertools.relation.registry import getRelations
 
-from interfaces import IResource, IDocument
+from interfaces import IResource, IDocument, IMediaAsset
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 
@@ -43,27 +44,36 @@ class Resource(Contained, Persistent):
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
 
-    def __init__(self, title=u''):
-        self.title = title
+    _contentType = u'text/xml'
+    def setContentType(self, contentType): self._contentType = contentType
+    def getContentType(self): return self._contentType
+    contentType = property(getContentType, setContentType)
+
+    _data = u''
+    def setData(self, data): self._data = data
+    def getData(self): return self._data
+    data = property(getData, setData)
 
     def getClients(self, relationships=None):
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
+    def __init__(self, title=u''):
+        self.title = title
+
 
 class Document(Resource):
 
     implements(IDocument)
-        
-    _body = u''
-    def setBody(self, body): self._body = body
-    def getBody(self): return self._body
-    body = property(getBody, setBody)
 
-    _format = u'text/xml'
-    def setFormat(self, format): self._format = format
-    def getFormat(self): return self._format
-    format = property(getFormat, setFormat)
+
+class MediaAsset(Resource, BaseMediaAsset):
+
+    implements(IMediaAsset)
+
+    def __init__(self, title=u''):
+        super(MediaAsset, self).__init__()
+        self.title = title
 
 
 class ResourceManager(BTreeContainer):

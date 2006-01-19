@@ -10,10 +10,11 @@ from zope.app.intid.interfaces import IIntIds
 
 from interfaces import ILoops
 from loops import Loops
-from interfaces import IConcept, IConceptManager, IDocument, IResourceManager
+from interfaces import IConcept, IConceptManager
+from interfaces import IDocument, IMediaAsset, IResourceManager
 from interfaces import INode, IViewManager
 from loops.concept import Concept, ConceptManager
-from loops.resource import Document, ResourceManager
+from loops.resource import Document, MediaAsset, ResourceManager
 from loops.view import Node, ViewManager
 
 class Test(unittest.TestCase):
@@ -28,6 +29,8 @@ class Test(unittest.TestCase):
         self.assert_(IConceptManager.providedBy(ConceptManager()))
         verifyClass(IDocument, Document)
         self.assert_(IDocument.providedBy(Document()))
+        verifyClass(IMediaAsset, MediaAsset)
+        self.assert_(IMediaAsset.providedBy(MediaAsset()))
         verifyClass(IResourceManager, ResourceManager)
         self.assert_(IResourceManager.providedBy(ResourceManager()))
         verifyClass(INode, Node)

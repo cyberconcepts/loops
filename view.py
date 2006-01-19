@@ -26,6 +26,9 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
+from zope.app.container.traversal import ContainerTraverser, ItemTraverser
+from zope.app.container.traversal import ContainerTraversable
+from zope.component import adapts
 from zope.interface import implements
 from persistent import Persistent
 from cybertools.relation import DyadicRelation
@@ -95,6 +98,9 @@ class Node(View, OrderedContainer):
 
     contentType = u'zope.source.rest'
 
+    def getLoopsRoot(self):
+        return zapi.getParent(self).getLoopsRoot()
+
     def getParentNode(self, nodeTypes=None):
         parent = zapi.getParent(self)
         while INode.providedBy(parent):
@@ -134,8 +140,34 @@ class ViewManager(OrderedContainer):
 
     implements(IViewManager, ILoopsContained)
 
+    def getLoopsRoot(self):
+        return zapi.getParent(self)
+
 
 class TargetRelation(DyadicRelation):
     """ A relation between a view and another object.
     """
+
+
+class NodeTraverser(ItemTraverser):
+
+    adapts(INode)
+
+    def publishTraverse(self, request, name):
+        print name
+        if name == '.loops':
+            return self.context.getLoopsRoot()
+        return super(NodeTraverser, self).publishTraverse(request, name)
+ 
+ 
+# class NodeTraversable(ContainerTraversable):
+# 
+#     adapts(INode)
+# 
+#     def traverse(self, name, furtherPath):
+#         print name
+#         if str(name) == '.loops':
+#             print self._container.getLoopsRoot()
+#             return self._container.getLoopsRoot()
+#         return super(NodeTraversable, self).traverse(name, furtherPath)
 
