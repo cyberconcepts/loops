@@ -155,14 +155,23 @@
 
   <!-- document -->
 
+  <!--<zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IBytes"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".resource.DataWidget"
+      permission="zope.Public"
+      name="loops.resource.DataWidget"
+      />-->
+
   <addform
       label="Add Document"
       name="AddLoopsDocument.html"
       schema="loops.interfaces.IDocument"
       fields="title data contentType"
       content_factory="loops.resource.Document"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
+  
 
   <addMenuItem
       class="loops.resource.Document"
@@ -179,8 +188,7 @@
       fields="title data contentType"
       for="loops.interfaces.IDocument"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />
+      menu="zmi_views" title="Edit" />      
 
   <!-- media asset -->
 
@@ -192,7 +200,7 @@
       content_factory="loops.resource.MediaAsset"
       permission="zope.ManageContent"
       />
-
+    
   <addMenuItem
       class="loops.resource.MediaAsset"
       title="Media Asset"
@@ -210,7 +218,7 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />
-
+    
   <!-- view manager -->
 
   <addform

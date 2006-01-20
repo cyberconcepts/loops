@@ -28,6 +28,7 @@ from zope.app.container.contained import Contained
 from zope.app.file.image import Image as BaseMediaAsset
 from zope.interface import implements
 from persistent import Persistent
+from cStringIO import StringIO
 from cybertools.relation.registry import getRelations
 
 from interfaces import IResource, IDocument, IMediaAsset
@@ -45,7 +46,9 @@ class Resource(Contained, Persistent):
     title = property(getTitle, setTitle)
 
     _contentType = ''
-    def setContentType(self, contentType): self._contentType = contentType
+    def setContentType(self, contentType):
+        if contentType:
+            self._contentType = contentType
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
 
@@ -56,7 +59,7 @@ class Resource(Contained, Persistent):
     def __init__(self, title=u''):
         self.title = title
 
-    _size = 0
+    _size = _width = _height = 0
 
 
 class Document(Resource):
@@ -78,13 +81,16 @@ class MediaAsset(Resource, BaseMediaAsset):
         self.title = title
 
     def _setData(self, data):
-        super(MediaAsset, self)._setData(data)
+        dataFile = StringIO(data)  # let File tear it into pieces
+        super(MediaAsset, self)._setData(dataFile)
         if not self.contentType:
             self.guessContentType(data)
 
     data = property(BaseMediaAsset._getData, _setData)
 
     def guessContentType(self, data):
+        if not isinstance(data, str): # seems to be a file object
+            data = data.read(20)
         if data.startswith('%PDF'):
             self.contentType = 'application/pdf'
 
