@@ -44,15 +44,10 @@ class Resource(Contained, Persistent):
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
 
-    _contentType = u'text/xml'
+    _contentType = ''
     def setContentType(self, contentType): self._contentType = contentType
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
-
-    _data = u''
-    def setData(self, data): self._data = data
-    def getData(self): return self._data
-    data = property(getData, setData)
 
     def getClients(self, relationships=None):
         rels = getRelations(second=self, relationships=relationships)
@@ -61,10 +56,17 @@ class Resource(Contained, Persistent):
     def __init__(self, title=u''):
         self.title = title
 
+    _size = 0
+
 
 class Document(Resource):
 
     implements(IDocument)
+
+    _data = u''
+    def setData(self, data): self._data = data
+    def getData(self): return self._data
+    data = property(getData, setData)
 
 
 class MediaAsset(Resource, BaseMediaAsset):
@@ -74,6 +76,17 @@ class MediaAsset(Resource, BaseMediaAsset):
     def __init__(self, title=u''):
         super(MediaAsset, self).__init__()
         self.title = title
+
+    def _setData(self, data):
+        super(MediaAsset, self)._setData(data)
+        if not self.contentType:
+            self.guessContentType(data)
+
+    data = property(BaseMediaAsset._getData, _setData)
+
+    def guessContentType(self, data):
+        if data.startswith('%PDF'):
+            self.contentType = 'application/pdf'
 
 
 class ResourceManager(BTreeContainer):

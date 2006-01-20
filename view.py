@@ -159,15 +159,3 @@ class NodeTraverser(ItemTraverser):
             return self.context.getLoopsRoot()
         return super(NodeTraverser, self).publishTraverse(request, name)
  
- 
-# class NodeTraversable(ContainerTraversable):
-# 
-#     adapts(INode)
-# 
-#     def traverse(self, name, furtherPath):
-#         print name
-#         if str(name) == '.loops':
-#             print self._container.getLoopsRoot()
-#             return self._container.getLoopsRoot()
-#         return super(NodeTraversable, self).traverse(name, furtherPath)
-

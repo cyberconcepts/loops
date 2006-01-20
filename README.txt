@@ -19,13 +19,12 @@ Let's start with creating a few example concepts, putting them in a
 top-level loops container and a concept manager:
 
   >>> from loops import Loops
-  >>> loops = Loops()
   >>> site['loops'] = Loops()
-  >>> loops = site['loops']
+  >>> loopsRoot = site['loops']
 
   >>> from loops.concept import ConceptManager, Concept
-  >>> loops['concepts'] = ConceptManager()
-  >>> concepts = loops['concepts']
+  >>> loopsRoot['concepts'] = ConceptManager()
+  >>> concepts = loopsRoot['concepts']
   >>> cc1 = Concept()
   >>> concepts['cc1'] = cc1
   >>> cc1.title
@@ -78,8 +77,8 @@ Resources and what they have to do with Concepts
 We first need a resource manager:
     
   >>> from loops.resource import ResourceManager, Document
-  >>> loops['resources'] = ResourceManager()
-  >>> resources = loops['resources']
+  >>> loopsRoot['resources'] = ResourceManager()
+  >>> resources = loopsRoot['resources']
 
 A common type of resource is a document:
       
@@ -90,9 +89,34 @@ A common type of resource is a document:
   >>> doc1.data
   u''
   >>> doc1.contentType
-  u'text/xml'
+  ''
 
 Another one is a media asset:
+
+  >>> from loops.resource import MediaAsset
+  >>> img = MediaAsset(u'A png Image')
+
+For testing we use some simple files from the tests directory:
+      
+  >>> from loops import tests
+  >>> import os
+  >>> path = os.path.join(*tests.__path__)
+  >>> img.data = open(os.path.join(path, 'test_icon.png')).read()
+  >>> img.getSize()
+  381
+  >>> img.getImageSize()
+  (16, 16)
+  >>> img.contentType
+  'image/png'
+
+  >>> pdf = MediaAsset(u'A pdf File')
+  >>> pdf.data = open(os.path.join(path, 'test.pdf')).read()
+  >>> pdf.getSize()
+  25862
+  >>> pdf.getImageSize()
+  (-1, -1)
+  >>> pdf.contentType
+  'application/pdf'
 
 We can associate a resource with a concept by assigning it to the concept:
 
@@ -129,8 +153,8 @@ We first need a view manager:
   >>> nodeChecker = NamesChecker(('body',))
   >>> defineChecker(Node, nodeChecker)
 
-  >>> loops['views'] = ViewManager()
-  >>> views = loops['views']
+  >>> loopsRoot['views'] = ViewManager()
+  >>> views = loopsRoot['views']
 
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:
@@ -290,7 +314,6 @@ instance to another.
   >>> data[3]['name']
   u'm112'
 
-  >>> import os
   >>> dumpname = os.path.dirname(__file__) + '/test.tmp'
   >>> exporter.filename = dumpname
   >>> exporter.dumpData()

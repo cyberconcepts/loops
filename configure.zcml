@@ -152,6 +152,12 @@
 
   </content>
 
+  <!--<adapter
+      factory="zope.app.file.image.ImageSized"
+      provides="zope.app.size.interfaces.ISized"
+      for=".interfaces.IMediaAsset"
+      />-->
+
   <!-- view manager and view -->
 
   <interface interface=".interfaces.IViewManager"
@@ -215,12 +221,10 @@
   
   <view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"
-        type="zope.publisher.interfaces.http.IHTTPRequest"
-        provides="zope.publisher.interfaces.IPublishTraverse"
-        allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+        type="zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+        allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
         permission="zope.Public" />
-
-  <!--<adapter factory="loops.view.NodeTraversable" />-->
 
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />

@@ -8,11 +8,11 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.intid.interfaces import IIntIds
 
-from interfaces import ILoops
+from loops.interfaces import ILoops
 from loops import Loops
-from interfaces import IConcept, IConceptManager
-from interfaces import IDocument, IMediaAsset, IResourceManager
-from interfaces import INode, IViewManager
+from loops.interfaces import IConcept, IConceptManager
+from loops.interfaces import IDocument, IMediaAsset, IResourceManager
+from loops.interfaces import INode, IViewManager
 from loops.concept import Concept, ConceptManager
 from loops.resource import Document, MediaAsset, ResourceManager
 from loops.view import Node, ViewManager
@@ -43,7 +43,7 @@ def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
-                DocFileSuite('README.txt', optionflags=flags),
+                DocFileSuite('../README.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

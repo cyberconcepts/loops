@@ -108,14 +108,23 @@ class IResource(Interface):
 
     title = schema.TextLine(
                 title=_(u'Title'),
-                description=_(u'Title of the document'),
+                description=_(u'Title of the resource'),
+                default=u'',
+                missing_value=u'',
                 required=False)
 
-    contentType = schema.TextLine(
+    contentType = schema.BytesLine(
                 title=_(u'Content Type'),
-                description=_(u'Content type (format) of the body field, '
-                               'default is "text/xml"'),
-                default=_(u'text/xml'),
+                description=_(u'Content type (format) of the data field'),
+                default='',
+                missing_value='',
+                required=False)
+
+    data = schema.Bytes(
+                title=_(u'Data'),
+                description=_(u'Resource raw data'),
+                default='',
+                missing_value='',
                 required=False)
 
     def getClients(relationships=None):
@@ -131,6 +140,8 @@ class IDocument(IResource):
     data = schema.Text(
                 title=_(u'Data'),
                 description=_(u'Raw body data of the document'),
+                default=u'',
+                missing_value=u'',
                 required=False)
 
 
@@ -141,7 +152,9 @@ class IMediaAsset(IResource, IBaseAsset):
 
     data = schema.Bytes(
                 title=_(u'Data'),
-                description=_(u'Media asset raw data'),
+                description=_(u'Media asset file'),
+                default='',
+                missing_value='',
                 required=False)
 
 
