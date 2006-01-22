@@ -74,14 +74,18 @@ TODO: Work with views...
 Resources and what they have to do with Concepts
 ================================================
 
+  >>> from loops.interfaces import IDocument, IMediaAsset
+
 We first need a resource manager:
     
-  >>> from loops.resource import ResourceManager, Document
+  >>> from loops.resource import ResourceManager
   >>> loopsRoot['resources'] = ResourceManager()
   >>> resources = loopsRoot['resources']
 
 A common type of resource is a document:
       
+  >>> from loops.interfaces import IDocument
+  >>> from loops.resource import Document
   >>> doc1 = Document(u'Zope Info')
   >>> resources['doc1'] = doc1
   >>> doc1.title
@@ -93,6 +97,7 @@ A common type of resource is a document:
 
 Another one is a media asset:
 
+  >>> from loops.interfaces import IMediaAsset
   >>> from loops.resource import MediaAsset
   >>> img = MediaAsset(u'A png Image')
 
@@ -274,6 +279,8 @@ It is also possible to edit a target's attributes directly in an
 edit form provided by the node:
 
   >>> from loops.target import DocumentProxy, MediaAssetProxy
+  >>> ztapi.provideAdapter(INode, IDocument, DocumentProxy)
+  >>> ztapi.provideAdapter(INode, IMediaAsset, MediaAssetProxy)
 
 Ordering Nodes
 --------------
