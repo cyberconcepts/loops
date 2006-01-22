@@ -30,7 +30,6 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import IConcept
 
 class NodeView(object):
 
@@ -56,6 +55,10 @@ class NodeView(object):
         dc = ICMFDublinCore(self.context)
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
+
+    @Lazy
+    def target(self):
+        return self.context.target
 
     @Lazy
     def page(self):

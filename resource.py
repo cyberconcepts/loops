@@ -52,6 +52,9 @@ class Resource(Contained, Persistent):
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
 
+    def getLoopsRoot(self):
+        return zapi.getParent(self).getLoopsRoot()
+
     def getClients(self, relationships=None):
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
@@ -98,5 +101,8 @@ class MediaAsset(Resource, BaseMediaAsset):
 class ResourceManager(BTreeContainer):
 
     implements(IResourceManager, ILoopsContained)
+
+    def getLoopsRoot(self):
+        return zapi.getParent(self)
 
 

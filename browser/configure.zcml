@@ -218,6 +218,13 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />
+
+  <!-- suppress the upload menu item: -->
+  <menuItem
+      for="loops.interfaces.IMediaAsset"
+      menu="zmi_views" action="upload.html" title="Upload"
+      filter="nothing"
+      />
     
   <!-- view manager -->
 

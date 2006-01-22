@@ -236,9 +236,10 @@ view class's target attribute:
   >>> m111.target is cc2
   True
 
-Node views
+Node Views
 ----------
 
+  >>> from loops.interfaces import INode
   >>> from loops.browser.node import NodeView
   >>> view = NodeView(m11, TestRequest())
 
@@ -254,7 +255,26 @@ Node views
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
 
-    
+Node Schema Adapters
+--------------------
+
+When creating or editing (more precisely: configuring) a node you may
+specify what you want to do with respect to the node's target: associate
+an existing one or create a new one (with specifying the target's type),
+and give an URI that will be used to identify the target. (Internally
+the reference to the target will be stored as a relation so that the
+target may be moved or renamed without any problems.)
+
+  >>> from loops.interfaces import INodeConfigSchema
+  >>> from loops.view import NodeConfigAdapter
+  >>> ztapi.provideAdapter(INode, INodeConfigSchema, NodeConfigAdapter)
+  >>> nodeConfig = INodeConfigSchema(m111)
+
+It is also possible to edit a target's attributes directly in an
+edit form provided by the node:
+
+  >>> from loops.target import DocumentProxy, MediaAssetProxy
+
 Ordering Nodes
 --------------
 

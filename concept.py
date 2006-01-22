@@ -62,6 +62,9 @@ class Concept(Contained, Persistent):
     def __init__(self, title=u''):
         self.title = title
 
+    def getLoopsRoot(self):
+        return zapi.getParent(self).getLoopsRoot()
+
     # concept relations
 
     def getSubConcepts(self, relationships=None):
@@ -121,4 +124,7 @@ class Concept(Contained, Persistent):
 class ConceptManager(BTreeContainer):
 
     implements(IConceptManager, ILoopsContained)
+
+    def getLoopsRoot(self):
+        return zapi.getParent(self)
 

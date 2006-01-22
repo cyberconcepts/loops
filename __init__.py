@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # -*- Mode: Python; py-indent-offset: 4 -*-
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,4 +30,7 @@ from interfaces import ILoops
 class Loops(Folder):
 
     implements(ILoops)
+
+    def getLoopsRoot(self):
+        return self
 

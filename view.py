@@ -34,7 +34,7 @@ from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import IRelationsRegistry, getRelations
 
-from interfaces import IView, INode
+from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
 from util import moveByDelta
@@ -81,6 +81,9 @@ class View(object):
         self.description = description
         super(View, self).__init__()
 
+    def getLoopsRoot(self):
+        return zapi.getParent(self).getLoopsRoot()
+
 
 class Node(View, OrderedContainer):
 
@@ -97,9 +100,6 @@ class Node(View, OrderedContainer):
     body = property(getBody, setBody)
 
     contentType = u'zope.source.rest'
-
-    def getLoopsRoot(self):
-        return zapi.getParent(self).getLoopsRoot()
 
     def getParentNode(self, nodeTypes=None):
         parent = zapi.getParent(self)
@@ -148,6 +148,7 @@ class TargetRelation(DyadicRelation):
     """ A relation between a view and another object.
     """
 
+# adapters
 
 class NodeTraverser(ItemTraverser):
 
@@ -159,3 +160,12 @@ class NodeTraverser(ItemTraverser):
             return self.context.getLoopsRoot()
         return super(NodeTraverser, self).publishTraverse(request, name)
  
+
+class NodeConfigAdapter(object):
+
+    def __init__(self, context):
+        self.context = context
+
+    implements(INodeConfigSchema)
+    adapts(INode)
+

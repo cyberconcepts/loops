@@ -209,16 +209,17 @@
 
   </content>
 
-  <!-- adapters for export/import -->
+  <!-- adapters -->
 
   <adapter factory="loops.external.NodesLoader" />
-
   <adapter factory="loops.external.NodesExporter" />
-
   <adapter factory="loops.external.NodesImporter" />
 
-  <!-- traversal adapter -->
-  
+  <adapter factory="loops.view.NodeConfigAdapter" />
+
+  <adapter factory="loops.target.DocumentProxy" />
+  <adapter factory="loops.target.MediaAssetProxy" />
+
   <view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"
         type="zope.publisher.interfaces.browser.IBrowserRequest"

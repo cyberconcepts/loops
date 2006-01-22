@@ -33,9 +33,19 @@ from zope.app.folder.interfaces import IFolder
 _ = MessageFactory('loops')
 
 
+# common top-level
+
+class ILoopsObject(Interface):
+    """ Common top-level interface.
+    """
+
+    def getLoopsRoot():
+        """ Return the loops root object.
+        """
+
 # concept interfaces
 
-class IConcept(Interface):
+class IConcept(ILoopsObject):
     """ The concept is the central element of the loops framework.
     
         A concept is related to other concepts, may have resources
@@ -89,7 +99,7 @@ class IConcept(Interface):
         """
         
 
-class IConceptManager(IContainer):
+class IConceptManager(ILoopsObject, IContainer):
     """ A manager/container for concepts.
     """
     contains(IConcept)
@@ -101,7 +111,7 @@ class IConceptManagerContained(Interface):
 
 # resource interfaces
 
-class IResource(Interface):
+class IResource(ILoopsObject):
     """ A resource is an atomic information element that is made
         available via a view or a concept.
     """
@@ -158,7 +168,7 @@ class IMediaAsset(IResource, IBaseAsset):
                 required=False)
 
 
-class IResourceManager(IContainer):
+class IResourceManager(ILoopsObject, IContainer):
     """ A manager/container for resources.
     """
     contains(IResource)
@@ -170,7 +180,7 @@ class IResourceManagerContained(Interface):
 
 # view interfaces
 
-class IView(Interface):
+class IView(ILoopsObject):
     """ A view is a user interface component that provides access to one
         or more concepts, resources, or other views.
     """
@@ -261,7 +271,7 @@ class INode(IView, IBaseNode):
         """
 
 
-class IViewManager(IBaseNode):
+class IViewManager(ILoopsObject, IBaseNode):
     """ A manager/container for views.
     """
     contains(IView)
@@ -271,9 +281,38 @@ class INodeContained(Interface):
     containers(INode, IViewManager)
 
 
+# schemas to be used by forms on view/node objects
+
+class ITargetProperties(Interface):
+    """ Fields used for specifying a view's or node's target.
+    """
+
+    targetType = schema.Choice(
+        title=_(u'Target Type'),
+        description=_(u'Type of the target'),
+        values=('', 'resource.Document', 'resource.MediaAsset'),
+        default='',
+        required=False)
+
+    targetUri = schema.TextLine(
+        title=_(u'Target URI'),
+        description=_(u'An URI being a unique reference to the target'),
+        required=False)
+
+
+class INodeConfigSchema(INode, ITargetProperties):
+    """ All fields that may be shown in the node add form.
+    """
+
+    createTarget = schema.Bool(
+        title=_(u'Create Target'),
+        description=_(u'Should a new target object be created?'),
+        required=False)
+
+
 # the loops top-level container
 
-class ILoops(IFolder):
+class ILoops(ILoopsObject, IFolder):
     """ The top-level object of a loops site.
     """
     contains(IConceptManager, IResourceManager, IViewManager)

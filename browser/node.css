@@ -46,3 +46,12 @@
     font-size: 90%
 }
 
+.flow-left {
+    float: left;
+}
+
+div.image {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
