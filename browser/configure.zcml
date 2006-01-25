@@ -308,9 +308,10 @@
       label="Configure Node"
       name="configure.html"
       schema="loops.interfaces.INodeConfigSchema"
-      fields="title description nodeType targetType targetUri createTarget"
+      fields="title description nodeType targetUri targetType createTarget"
       for="loops.interfaces.INode"
       template="edit.pt"
+      class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure">
 

@@ -94,6 +94,33 @@ class NodeView(object):
         return item.context == self.context
 
 
+class ConfigureBaseView(object):
+    """ Helper view object for editing/configuring a node, providing the
+        stuff needed for creating a target object.
+    """
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def checkCreateTarget(self):
+        pass
+
+
+class ConfigureView(object):
+    """ An editing view for configuring a node, optionally creating
+        a target object.
+    """
+
+    def __init__(self, context, request):
+        super(ConfigureView, self).__init__(context, request)
+        self.delegate = ConfigureBaseView(context, request)
+
+    def update(self):
+        self.delegate.checkCreateTarget()
+        return super(ConfigureView, self).update()
+
+
 class OrderedContainerView(JustContents):
     """ A view providing the necessary methods for moving sub-objects
         within an ordered container.

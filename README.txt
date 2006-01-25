@@ -9,6 +9,7 @@ loops - Linked Objects for Organization and Processing Services
   
   >>> from zope.app import zapi
   >>> from zope.app.tests import ztapi
+  >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
   
 
@@ -290,6 +291,15 @@ target may be moved or renamed without any problems.)
   'loops.resource.Document'
   >>> m111 in doc1.getClients()
   True
+
+There is a special edit view class that can be used to configure a node
+in a way, that allows the creation of a target object on the fly.
+(We here use the base class providing the method for this action; the real
+application uses a subclass that does all the other stuff for form handling.)
+
+  >>> from loops.browser.node import ConfigureBaseView
+  >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest())
+  >>> view.checkCreateTarget()
 
 It is also possible to edit a target's attributes directly in an
 edit form provided by the node:

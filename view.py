@@ -166,7 +166,7 @@ class NodeConfigAdapter(object):
 
     def __init__(self, context):
         self.context = removeSecurityProxy(context)
-        #self.context = context
+        self._targetType = None
 
     implements(INodeConfigSchema)
     adapts(INode)
@@ -208,9 +208,17 @@ class NodeConfigAdapter(object):
 
     def getTargetType(self):
         target = self.context.target
-        return '%s.%s' % (target.__module__, target.__class__.__name__)
+        if target:
+            return '%s.%s' % (target.__module__, target.__class__.__name__)
+        return None
     def setTargetType(self, tt):
-        pass
+        self._targetType = tt  # to be able to use it in setCreateTarget()
     targetType = property(getTargetType, setTargetType)
-    
+
+    def setCreateTarget(self, value):
+        if value:
+            print 'targetType:', self._targetType or self.targetType
+    def getCreateTarget(self): return False
+    createTarget = property(getCreateTarget, setCreateTarget)
+
 
