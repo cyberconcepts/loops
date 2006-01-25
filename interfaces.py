@@ -290,8 +290,8 @@ class ITargetProperties(Interface):
     targetType = schema.Choice(
         title=_(u'Target Type'),
         description=_(u'Type of the target'),
-        values=('', 'resource.Document', 'resource.MediaAsset'),
-        default='',
+        values=('loops.resource.Document', 'loops.resource.MediaAsset'),
+        default=None,
         required=False)
 
     targetUri = schema.TextLine(

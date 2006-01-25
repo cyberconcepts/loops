@@ -28,8 +28,10 @@ from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
 from zope.app.container.traversal import ContainerTraverser, ItemTraverser
 from zope.app.container.traversal import ContainerTraversable
+from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
+from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import IRelationsRegistry, getRelations
@@ -155,7 +157,6 @@ class NodeTraverser(ItemTraverser):
     adapts(INode)
 
     def publishTraverse(self, request, name):
-        print name
         if name == '.loops':
             return self.context.getLoopsRoot()
         return super(NodeTraverser, self).publishTraverse(request, name)
@@ -164,8 +165,52 @@ class NodeTraverser(ItemTraverser):
 class NodeConfigAdapter(object):
 
     def __init__(self, context):
-        self.context = context
+        self.context = removeSecurityProxy(context)
+        #self.context = context
 
     implements(INodeConfigSchema)
     adapts(INode)
+
+    # provide access to fields of the Node class:
+
+    def getTitle(self): return self.context.title
+    def setTitle(self, title): self.context.title = title
+    title = property(getTitle, setTitle)
+
+    def getDescription(self): return self.context.description
+    def setDescription(self, description): self.context.description = description
+    description = property(getDescription, setDescription)
+    
+    def getNodeType(self): return self.context.nodeType
+    def setNodeType(self, nodeType): self.context.nodeType = nodeType
+    nodeType = property(getNodeType, setNodeType)
+
+    # the real config stuff:
+    
+    @Lazy
+    def loopsRoot(self): return self.context.getLoopsRoot()
+
+    def getTargetUri(self):
+        rootPath = zapi.getPath(self.loopsRoot)
+        if self.context.target is not None:
+            path = zapi.getPath(self.context.target)[len(rootPath):]
+            return '.loops' + path
+        else:
+            return ''
+    
+    def setTargetUri(self, uri):
+        names = uri.split('/')
+        if names[0] == '.loops':
+            path = '/'.join(names[1:])
+            self.context.target = zapi.traverse(self.loopsRoot, path)
+            
+    targetUri = property(getTargetUri, setTargetUri)
+
+    def getTargetType(self):
+        target = self.context.target
+        return '%s.%s' % (target.__module__, target.__class__.__name__)
+    def setTargetType(self, tt):
+        pass
+    targetType = property(getTargetType, setTargetType)
+    
 

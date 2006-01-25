@@ -275,6 +275,22 @@ target may be moved or renamed without any problems.)
   >>> ztapi.provideAdapter(INode, INodeConfigSchema, NodeConfigAdapter)
   >>> nodeConfig = INodeConfigSchema(m111)
 
+  >>> nodeConfig.targetUri
+  u'.loops/concepts/cc2'
+  >>> nodeConfig.title = u'New title for m111'
+  >>> nodeConfig.title
+  u'New title for m111'
+  >>> m111.title
+  u'New title for m111'
+  >>> nodeConfig.targetUri = '.loops/resources/doc1'
+  >>> nodeConfig.title = 'New title for m111'
+  >>> m111.target is doc1
+  True
+  >>> nodeConfig.targetType
+  'loops.resource.Document'
+  >>> m111 in doc1.getClients()
+  True
+
 It is also possible to edit a target's attributes directly in an
 edit form provided by the node:
 

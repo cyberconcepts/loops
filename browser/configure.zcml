@@ -272,8 +272,8 @@
       label="Add Node"
       name="AddLoopsNode.html"
       content_factory="loops.view.Node"
-      schema="loops.interfaces.INode"
-      fields="title description nodeType body"
+      schema="loops.interfaces.INodeConfigSchema"
+      fields="title description nodeType targetType targetUri createTarget"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />
@@ -298,6 +298,21 @@
       template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit">
+
+    <widget field="description" height="2" />
+    <widget field="body" height="15" />
+
+  </editform>
+
+  <editform
+      label="Configure Node"
+      name="configure.html"
+      schema="loops.interfaces.INodeConfigSchema"
+      fields="title description nodeType targetType targetUri createTarget"
+      for="loops.interfaces.INode"
+      template="edit.pt"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Configure">
 
     <widget field="description" height="2" />
     <widget field="body" height="15" />

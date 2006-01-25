@@ -215,7 +215,8 @@
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />
 
-  <adapter factory="loops.view.NodeConfigAdapter" />
+  <adapter factory=".view.NodeConfigAdapter"
+           permission="zope.ManageContent" />
 
   <adapter factory="loops.target.DocumentProxy" />
   <adapter factory="loops.target.MediaAssetProxy" />
