@@ -212,13 +212,8 @@ class NodeConfigAdapter(object):
             return '%s.%s' % (target.__module__, target.__class__.__name__)
         return None
     def setTargetType(self, tt):
-        self._targetType = tt  # to be able to use it in setCreateTarget()
+        pass  # only used whe a new target object is created
     targetType = property(getTargetType, setTargetType)
 
-    def setCreateTarget(self, value):
-        if value:
-            print 'targetType:', self._targetType or self.targetType
-    def getCreateTarget(self): return False
-    createTarget = property(getCreateTarget, setCreateTarget)
-
+    createTarget = False  # not used
 

@@ -30,6 +30,7 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from loops.resource import MediaAsset
 
 class NodeView(object):
 
@@ -95,17 +96,26 @@ class NodeView(object):
 
 
 class ConfigureBaseView(object):
-    """ Helper view object for editing/configuring a node, providing the
+    """ Helper view class for editing/configuring a node, providing the
         stuff needed for creating a target object.
     """
 
     def __init__(self, context, request):
-        self.context = context
+        self.context = removeSecurityProxy(context)
         self.request = request
 
     def checkCreateTarget(self):
-        pass
-
+        form = self.request.form
+        if 'field.createTarget' in form:
+            type = self.request.form.get('field.targetType',
+                                         'loops.resource.MediaAsset')
+            # TODO: find class (better: factory) from type name
+            uri = self.request.form.get('field.targetUri', None)
+            # TODO: generate uri/__name__ if not given
+            if uri:
+                # TODO: find container
+                self.context.getLoopsRoot()['resources']['ma07'] = MediaAsset()
+                #self.context.loopsRoot['resources']['ma07'] = MediaAsset()
 
 class ConfigureView(object):
     """ An editing view for configuring a node, optionally creating
@@ -117,6 +127,8 @@ class ConfigureView(object):
         self.delegate = ConfigureBaseView(context, request)
 
     def update(self):
+        if self.update_status is not None:
+            return self.update_status
         self.delegate.checkCreateTarget()
         return super(ConfigureView, self).update()
 

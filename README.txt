@@ -300,6 +300,16 @@ application uses a subclass that does all the other stuff for form handling.)
   >>> from loops.browser.node import ConfigureBaseView
   >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest())
   >>> view.checkCreateTarget()
+  >>> sorted(resources.keys())
+  [u'doc1']
+  >>> form = {'field.createTarget': True,
+  ...         'field.targetUri': '.loops/resources/ma07',
+  ...         'field.targetType': 'loops.resource.MediaAsset'}
+  >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest(form=form))
+  >>> view = ConfigureBaseView(m111, TestRequest(form=form))
+  >>> view.checkCreateTarget()
+  >>> sorted(resources.keys())
+  [u'doc1', u'ma07']
 
 It is also possible to edit a target's attributes directly in an
 edit form provided by the node:
