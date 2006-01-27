@@ -22,22 +22,6 @@ Utility functions.
 $Id$
 """
 
-def moveByDelta(objs, toMove, delta):
-    """ Return the list given by objs resorted in a way that the elements
-        of toMove (which must be in the objs list) have been moved by delta.
-    """
-    result = [obj for obj in objs if obj not in toMove]
-    if delta < 0:
-        objs = list(reversed(objs))
-        result.reverse()
-    toMove = sorted(toMove, lambda x,y: cmp(objs.index(x), objs.index(y)))
-    for element in toMove:
-        newPos = min(len(result), objs.index(element) + abs(delta))
-        result.insert(newPos, element)
-    if delta < 0:
-        result.reverse()
-    return result
-
 def nl2br(text):
     if not text: return text
     if '\n' in text: # Unix or DOS line endings

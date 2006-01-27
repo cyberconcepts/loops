@@ -39,7 +39,6 @@ from cybertools.relation.registry import IRelationsRegistry, getRelations
 from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
-from util import moveByDelta
 
 
 class View(object):
@@ -133,9 +132,6 @@ class Node(View, OrderedContainer):
 
     def getTextItems(self):
         return self.getChildNodes(['text'])
-
-    def moveSubNodesByDelta(self, names, delta):
-        self.updateOrder(moveByDelta(self.keys(), names, delta))
 
 
 class ViewManager(OrderedContainer):

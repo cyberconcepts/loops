@@ -264,12 +264,6 @@ class INode(IView, IBaseNode):
             a menu).
         """
 
-    def moveSubNodesByDelta(names, delta):
-        """ Move the sub-nodes specified by the list of names up
-            (negative delta) or down (positive delta) by the number of places
-            specified by delta.
-        """
-
 
 class IViewManager(ILoopsObject, IBaseNode):
     """ A manager/container for views.

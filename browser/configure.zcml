@@ -333,25 +333,10 @@
       name="node.html"
       />
 
-  <!-- move nodes up and down -->
-
   <containerViews
       for="loops.interfaces.IBaseNode"
       index="zope.ManageContent"
       add="zope.ManageContent"
       />
-
-  <pages
-      for="loops.interfaces.IBaseNode"
-      class=".node.OrderedContainerView"
-      permission="zope.ManageContent">
-    <page name="contents.html" template="contents.pt"
-          menu="zmi_views" title="Contents"
-          />
-    <page name="move_down" attribute="moveDown" />
-    <page name="move_up" attribute="moveUp" />
-    <page name="move_bottom" attribute="moveToBottom" />
-    <page name="move_top" attribute="moveToTop" />
-  </pages>
 
 </configure>

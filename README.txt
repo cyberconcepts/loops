@@ -330,14 +330,10 @@ Let's add some more nodes and reorder them:
   >>> m11.keys()
   ['m111', 'm112', 'm113', 'm114']
       
-  >>> m11.moveSubNodesByDelta(['m113'], -1)
-  >>> m11.keys()
-  ['m111', 'm113', 'm112', 'm114']
-
 A special management view provides methods for moving objects down, up,
 to the bottom, and to the top
       
-  >>> from loops.browser.node import OrderedContainerView
+  >>> from cybertools.container.ordered import OrderedContainerView
   >>> view = OrderedContainerView(m11, TestRequest())
   >>> view.moveToBottom(('m113',))
   >>> m11.keys()
