@@ -27,6 +27,7 @@ from zope.app import zapi
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
+from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IResource, IDocument, IMediaAsset
 from loops.interfaces import IView
@@ -37,16 +38,17 @@ class ResourceProxy(object):
     adapts(IView)
 
     def getTitle(self): return self.target.title
-    def setTitle(self, title): self.title = title
+    def setTitle(self, title): self.target.title = title
     title = property(getTitle, setTitle)
 
     def setContentType(self, contentType):
-        self.target._contentType = contentType
+        self.target.contentType = contentType
     def getContentType(self): return self.target.contentType
     contentType = property(getContentType, setContentType)
 
     def __init__(self, context):
         self.context = context
+        #self.context = removeSecurityProxy(context)
 
     @Lazy
     def target(self):

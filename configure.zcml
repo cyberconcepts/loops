@@ -218,8 +218,10 @@
   <adapter factory=".view.NodeConfigAdapter"
            permission="zope.ManageContent" />
 
-  <adapter factory="loops.target.DocumentProxy" />
-  <adapter factory="loops.target.MediaAssetProxy" />
+  <adapter factory="loops.target.DocumentProxy"
+           permission="zope.ManageContent" />
+  <adapter factory="loops.target.MediaAssetProxy"
+           permission="zope.ManageContent" />
 
   <view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"

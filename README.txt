@@ -30,6 +30,8 @@ top-level loops container and a concept manager:
   >>> concepts['cc1'] = cc1
   >>> cc1.title
   u''
+  >>> loopsRoot.getLoopsUri(cc1)
+  '.loops/concepts/cc1'
 
   >>> cc2 = Concept(u'Zope 3')
   >>> concepts['cc2'] = cc2
@@ -277,13 +279,17 @@ target may be moved or renamed without any problems.)
   >>> nodeConfig = INodeConfigSchema(m111)
 
   >>> nodeConfig.targetUri
-  u'.loops/concepts/cc2'
+  '.loops/concepts/cc2'
   >>> nodeConfig.title = u'New title for m111'
   >>> nodeConfig.title
   u'New title for m111'
   >>> m111.title
   u'New title for m111'
   >>> nodeConfig.targetUri = '.loops/resources/doc1'
+
+We have to get a new adapter to avoid problems with lazy variables:
+
+  >>> nodeConfig = INodeConfigSchema(m111)
   >>> nodeConfig.title = 'New title for m111'
   >>> m111.target is doc1
   True
@@ -305,18 +311,33 @@ application uses a subclass that does all the other stuff for form handling.)
   >>> form = {'field.createTarget': True,
   ...         'field.targetUri': '.loops/resources/ma07',
   ...         'field.targetType': 'loops.resource.MediaAsset'}
-  >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest(form=form))
   >>> view = ConfigureBaseView(m111, TestRequest(form=form))
-  >>> view.checkCreateTarget()
+  >>> m111.target = view.checkCreateTarget()
   >>> sorted(resources.keys())
   [u'doc1', u'ma07']
-
+  >>> isinstance(resources['ma07'], MediaAsset)
+  True
+  
+  >>> form = {'field.createTarget': True,
+  ...         'field.targetType': 'loops.resource.Document'}
+  >>> view = ConfigureBaseView(m111, TestRequest(form=form))
+  >>> m111.target = view.checkCreateTarget()
+  >>> sorted(resources.keys())
+  [u'doc1', u'm1.m11.m111', u'ma07']
+  >>> isinstance(resources['m1.m11.m111'], Document)
+  True
+        
 It is also possible to edit a target's attributes directly in an
 edit form provided by the node:
 
   >>> from loops.target import DocumentProxy, MediaAssetProxy
   >>> ztapi.provideAdapter(INode, IDocument, DocumentProxy)
   >>> ztapi.provideAdapter(INode, IMediaAsset, MediaAssetProxy)
+
+  >>> proxy = zapi.getAdapter(m111, IDocument)
+  >>> proxy.title = u'Set via proxy'
+  >>> resources['m1.m11.m111'].title
+  u'Set via proxy'
 
 Ordering Nodes
 --------------
@@ -335,10 +356,10 @@ to the bottom, and to the top
       
   >>> from cybertools.container.ordered import OrderedContainerView
   >>> view = OrderedContainerView(m11, TestRequest())
-  >>> view.moveToBottom(('m113',))
+  >>> view.move_bottom(('m113',))
   >>> m11.keys()
   ['m111', 'm112', 'm114', 'm113']
-  >>> view.moveUp(('m114',), 1)
+  >>> view.move_up(('m114',), 1)
   >>> m11.keys()
   ['m111', 'm114', 'm112', 'm113']
 

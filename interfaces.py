@@ -43,6 +43,10 @@ class ILoopsObject(Interface):
         """ Return the loops root object.
         """
 
+    def getViewManager():
+        """ Return the (default) view manager.
+        """
+
 # concept interfaces
 
 class IConcept(ILoopsObject):
@@ -310,6 +314,10 @@ class ILoops(ILoopsObject, IFolder):
     """ The top-level object of a loops site.
     """
     contains(IConceptManager, IResourceManager, IViewManager)
+
+    def getLoopsUri(obj):
+        """ Return the relativ path to obj, starting with '.loops/...'.
+        """
     
 
 class ILoopsContained(Interface):

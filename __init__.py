@@ -23,8 +23,9 @@
 $Id$
 """
 
-from zope.interface import implements
+from zope.app import zapi
 from zope.app.folder.folder import Folder
+from zope.interface import implements
 from interfaces import ILoops
 
 class Loops(Folder):
@@ -33,4 +34,10 @@ class Loops(Folder):
 
     def getLoopsRoot(self):
         return self
+
+    def getViewManager(self):
+        return self['views']
+
+    def getLoopsUri(self, obj):
+        return str('.loops' + zapi.getPath(obj)[len(zapi.getPath(self)):])
 

@@ -247,7 +247,6 @@
   <containerViews
       for="loops.interfaces.IViewManager"
       index="zope.ManageContent"
-      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
@@ -274,6 +273,7 @@
       content_factory="loops.view.Node"
       schema="loops.interfaces.INodeConfigSchema"
       fields="title description nodeType targetType targetUri createTarget"
+      class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />
@@ -304,6 +304,12 @@
 
   </editform>
 
+  <containerViews
+      for="loops.interfaces.INode"
+      index="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
   <editform
       label="Configure Node"
       name="configure.html"
@@ -320,6 +326,21 @@
 
   </editform>
 
+  <editform
+      label="Edit Target"
+      name="edit_target.html"
+      schema="loops.interfaces.IMediaAsset"
+      fields="title data contentType"
+      for="loops.interfaces.INode"
+      permission="zope.ManageContent"
+      />
+
+  <menuItem
+      for="loops.interfaces.INode"
+      menu="zmi_views" action="edit_target.html" title="Edit Target"
+      filter="context/target"
+      />
+  
   <page
       name="node.html"
       for="loops.interfaces.INode"
@@ -331,12 +352,6 @@
   <defaultView
       for="loops.interfaces.INode"
       name="node.html"
-      />
-
-  <containerViews
-      for="loops.interfaces.IBaseNode"
-      index="zope.ManageContent"
-      add="zope.ManageContent"
       />
 
 </configure>

@@ -26,6 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.container.browser.contents import JustContents
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.configuration.config import ConfigurationContext
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -104,18 +105,41 @@ class ConfigureBaseView(object):
         self.context = removeSecurityProxy(context)
         self.request = request
 
+    @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
     def checkCreateTarget(self):
         form = self.request.form
-        if 'field.createTarget' in form:
+        if form.get('field.createTarget', False):
             type = self.request.form.get('field.targetType',
                                          'loops.resource.MediaAsset')
-            # TODO: find class (better: factory) from type name
+            factory = ConfigurationContext().resolve(type)
             uri = self.request.form.get('field.targetUri', None)
-            # TODO: generate uri/__name__ if not given
             if uri:
-                # TODO: find container
-                self.context.getLoopsRoot()['resources']['ma07'] = MediaAsset()
-                #self.context.loopsRoot['resources']['ma07'] = MediaAsset()
+                path = uri.split('/')
+                containerName = path[-2]
+                name = path[-1]
+            else:
+                containerName = 'resource' in type and 'resources' or 'concepts'
+                viewManagerPath = zapi.getPath(self.context.getViewManager())
+                name = zapi.getPath(self.context)[len(viewManagerPath)+1:]
+                name = name.replace('/', '.')
+            container = self.loopsRoot[containerName]
+            # check for duplicates:
+            num = 1
+            basename = name
+            while name in container:
+                name = '%s-%d' % (basename, num)
+                num += 1
+            # create target:
+            container[name] = factory()
+            target = container[name]
+            # set possibly new targetUri in request for further processing:
+            targetUri = self.loopsRoot.getLoopsUri(target)
+            form['field.targetUri'] = targetUri
+            return target
+
 
 class ConfigureView(object):
     """ An editing view for configuring a node, optionally creating

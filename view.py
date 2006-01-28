@@ -60,7 +60,8 @@ class View(object):
         if len(rels) == 0:
             return None
         if len(rels) > 1:
-            raise ValueError, 'There may be only one target for a View object.'
+            raise ValueError('There may be only one target for a View object: %s - %s'
+                % (zapi.getName(self), `[zapi.getName(r.second) for r in rels]`))
         return list(rels)[0].second
 
     def setTarget(self, target):
@@ -72,8 +73,9 @@ class View(object):
                 return
             else:
                 registry.unregister(oldRel)
-        rel = TargetRelation(self, target)
-        registry.register(rel)
+        if target:
+            rel = TargetRelation(self, target)
+            registry.register(rel)
 
     target = property(getTarget, setTarget)
 
@@ -84,6 +86,9 @@ class View(object):
 
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
+
+    def getViewManager(self):
+        return zapi.getParent(self).getViewManager()
 
 
 class Node(View, OrderedContainer):
@@ -141,6 +146,9 @@ class ViewManager(OrderedContainer):
     def getLoopsRoot(self):
         return zapi.getParent(self)
 
+    def getViewManager(self):
+        return self
+
 
 class TargetRelation(DyadicRelation):
     """ A relation between a view and another object.
@@ -186,24 +194,30 @@ class NodeConfigAdapter(object):
     @Lazy
     def loopsRoot(self): return self.context.getLoopsRoot()
 
+    @Lazy
+    def target(self):
+        return self.context.target
+
     def getTargetUri(self):
-        rootPath = zapi.getPath(self.loopsRoot)
-        if self.context.target is not None:
-            path = zapi.getPath(self.context.target)[len(rootPath):]
-            return '.loops' + path
+        target = self.target
+        if target is not None:
+            return self.loopsRoot.getLoopsUri(target)
         else:
             return ''
     
     def setTargetUri(self, uri):
-        names = uri.split('/')
-        if names[0] == '.loops':
-            path = '/'.join(names[1:])
-            self.context.target = zapi.traverse(self.loopsRoot, path)
+        if uri:
+            names = uri.split('/')
+            if names[0] == '.loops':
+                path = '/'.join(names[1:])
+                self.context.target = zapi.traverse(self.loopsRoot, path)
+        else:
+            self.context.target = None
             
     targetUri = property(getTargetUri, setTargetUri)
 
     def getTargetType(self):
-        target = self.context.target
+        target = self.target
         if target:
             return '%s.%s' % (target.__module__, target.__class__.__name__)
         return None
