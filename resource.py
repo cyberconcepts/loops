@@ -31,7 +31,9 @@ from persistent import Persistent
 from cStringIO import StringIO
 from cybertools.relation.registry import getRelations
 
-from interfaces import IResource, IDocument, IMediaAsset
+from interfaces import IResource
+from interfaces import IDocument, IDocumentSchema, IDocumentView
+from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 
@@ -72,6 +74,8 @@ class Document(Resource):
 
     implements(IDocument)
 
+    proxyInterface = IDocumentView
+
     _data = u''
     def setData(self, data): self._data = data
     def getData(self): return self._data
@@ -81,6 +85,8 @@ class Document(Resource):
 class MediaAsset(Resource, BaseMediaAsset):
 
     implements(IMediaAsset)
+
+    proxyInterface = IMediaAssetView
 
     def __init__(self, title=u''):
         super(MediaAsset, self).__init__()

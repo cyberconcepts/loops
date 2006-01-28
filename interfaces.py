@@ -47,9 +47,18 @@ class ILoopsObject(Interface):
         """ Return the (default) view manager.
         """
 
+
+class IPotentialTarget(Interface):
+    """ For objects that may be used as target objects for view objects.
+    """
+
+    proxyInterface = Attribute('An interface allowing an object to be '
+                               'used as a target for a view/node (and '
+                               'typically specifying the corresponding schema')
+
 # concept interfaces
 
-class IConcept(ILoopsObject):
+class IConcept(ILoopsObject, IPotentialTarget):
     """ The concept is the central element of the loops framework.
     
         A concept is related to other concepts, may have resources
@@ -115,23 +124,13 @@ class IConceptManagerContained(Interface):
 
 # resource interfaces
 
-class IResource(ILoopsObject):
-    """ A resource is an atomic information element that is made
-        available via a view or a concept.
-    """
+class IResourceSchema(Interface):
 
     title = schema.TextLine(
                 title=_(u'Title'),
                 description=_(u'Title of the resource'),
                 default=u'',
                 missing_value=u'',
-                required=False)
-
-    contentType = schema.BytesLine(
-                title=_(u'Content Type'),
-                description=_(u'Content type (format) of the data field'),
-                default='',
-                missing_value='',
                 required=False)
 
     data = schema.Bytes(
@@ -141,15 +140,26 @@ class IResource(ILoopsObject):
                 missing_value='',
                 required=False)
 
+    contentType = schema.BytesLine(
+                title=_(u'Content Type'),
+                description=_(u'Content type (format) of the data field'),
+                default='',
+                missing_value='',
+                required=False)
+
+
+class IResource(ILoopsObject, IPotentialTarget):
+    """ A resource is an atomic information element that is made
+        available via a view or a concept.
+    """
+
     def getClients(relationships=None):
         """ Return a sequence of objects that are clients of the resource,
             i.e. that have some relation with it.
         """
 
 
-class IDocument(IResource):
-    """ A resource containing an editable body.
-    """
+class IDocumentSchema(IResourceSchema):
 
     data = schema.Text(
                 title=_(u'Data'),
@@ -159,10 +169,16 @@ class IDocument(IResource):
                 required=False)
 
 
-class IMediaAsset(IResource, IBaseAsset):
-    """ A resource containing a (typically binary) file-like content
-        or an image. 
+class IDocumentView(IDocumentSchema):
+    """ Used for accessing a document via a node's target attribute"""
+
+
+class IDocument(IDocumentSchema, IResource):
+    """ A resource containing an editable body.
     """
+
+
+class IMediaAssetSchema(IResourceSchema):
 
     data = schema.Bytes(
                 title=_(u'Data'),
@@ -170,6 +186,16 @@ class IMediaAsset(IResource, IBaseAsset):
                 default='',
                 missing_value='',
                 required=False)
+
+
+class IMediaAssetView(IMediaAssetSchema):
+    """ Used for accessing a media asset via a node's target attribute"""
+
+
+class IMediaAsset(IMediaAssetSchema, IResource, IBaseAsset):
+    """ A resource containing a (typically binary) file-like content
+        or an image. 
+    """
 
 
 class IResourceManager(ILoopsObject, IContainer):
@@ -202,6 +228,7 @@ class IView(ILoopsObject):
         required=False)
 
     target = Attribute('Target object that is referenced by this view')
+
 
 class IBaseNode(IOrderedContainer):
     """ Common abstract base class for different types of nodes
@@ -323,4 +350,4 @@ class ILoops(ILoopsObject, IFolder):
 class ILoopsContained(Interface):
     containers(ILoops)
 
-
+    

@@ -28,9 +28,10 @@ from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
 from zope.app.container.traversal import ContainerTraverser, ItemTraverser
 from zope.app.container.traversal import ContainerTraversable
-from zope.cachedescriptors.property import Lazy
+from zope.cachedescriptors.property import Lazy, readproperty
 from zope.component import adapts
 from zope.interface import implements
+from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 from cybertools.relation import DyadicRelation
@@ -73,9 +74,14 @@ class View(object):
                 return
             else:
                 registry.unregister(oldRel)
+                oldTargetSchema = oldRel.second.proxyInterface
+                directlyProvides(self, directlyProvidedBy(self) - oldTargetSchema)
+                
         if target:
+            targetSchema = target.proxyInterface
             rel = TargetRelation(self, target)
             registry.register(rel)
+            alsoProvides(self, targetSchema)
 
     target = property(getTarget, setTarget)
 
@@ -194,7 +200,7 @@ class NodeConfigAdapter(object):
     @Lazy
     def loopsRoot(self): return self.context.getLoopsRoot()
 
-    @Lazy
+    @readproperty
     def target(self):
         return self.context.target
 
@@ -225,5 +231,7 @@ class NodeConfigAdapter(object):
         pass  # only used whe a new target object is created
     targetType = property(getTargetType, setTargetType)
 
-    createTarget = False  # not used
+    def getCreateTarget(self): return False
+    def setCreateTarget(self, value): pass
+    createTarget = property(getCreateTarget, setCreateTarget)
 

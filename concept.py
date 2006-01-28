@@ -54,6 +54,8 @@ class Concept(Contained, Persistent):
 
     implements(IConcept, IConceptManagerContained)
 
+    proxyInterface = IConcept
+    
     _title = u''
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title

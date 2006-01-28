@@ -167,7 +167,7 @@
   <addform
       label="Add Document"
       name="AddLoopsDocument.html"
-      schema="loops.interfaces.IDocument"
+      schema="loops.interfaces.IDocumentSchema"
       fields="title data contentType"
       content_factory="loops.resource.Document"
       permission="zope.ManageContent" />
@@ -184,7 +184,7 @@
   <editform
       label="Edit Document"
       name="edit.html"
-      schema="loops.interfaces.IDocument"
+      schema="loops.interfaces.IDocumentSchema"
       fields="title data contentType"
       for="loops.interfaces.IDocument"
       permission="zope.ManageContent"
@@ -195,7 +195,7 @@
   <addform
       label="Add Media Asset"
       name="AddLoopsMediaAsset.html"
-      schema="loops.interfaces.IMediaAsset"
+      schema="loops.interfaces.IMediaAssetSchema"
       fields="title data contentType"
       content_factory="loops.resource.MediaAsset"
       permission="zope.ManageContent"
@@ -212,11 +212,11 @@
   <editform
       label="Edit Media Asset"
       name="edit.html"
-      schema="loops.interfaces.IMediaAsset"
+      schema="loops.interfaces.IMediaAssetSchema"
       fields="title data contentType"
       for="loops.interfaces.IMediaAsset"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
+      menu="zmi_views" title="Edit Media Asset"
       />
 
   <!-- suppress the upload menu item: -->
@@ -271,8 +271,8 @@
       label="Add Node"
       name="AddLoopsNode.html"
       content_factory="loops.view.Node"
-      schema="loops.interfaces.INodeConfigSchema"
-      fields="title description nodeType targetType targetUri createTarget"
+      schema="loops.interfaces.INode"
+      fields="title description nodeType body"
       class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent">
       
@@ -327,20 +327,25 @@
   </editform>
 
   <editform
-      label="Edit Target"
+      label="Edit Media Asset"
       name="edit_target.html"
       schema="loops.interfaces.IMediaAsset"
       fields="title data contentType"
-      for="loops.interfaces.INode"
+      for="loops.interfaces.IMediaAssetView"
       permission="zope.ManageContent"
+      menu="zmi_views" title="Edit Media Asset"
       />
 
-  <menuItem
-      for="loops.interfaces.INode"
-      menu="zmi_views" action="edit_target.html" title="Edit Target"
-      filter="context/target"
+  <editform
+      label="Edit Document"
+      name="edit_target.html"
+      schema="loops.interfaces.IDocument"
+      fields="title data contentType"
+      for="loops.interfaces.IDocumentView"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit Document"
       />
-  
+
   <page
       name="node.html"
       for="loops.interfaces.INode"

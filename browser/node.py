@@ -26,7 +26,8 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.container.browser.contents import JustContents
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.configuration.config import ConfigurationContext
+#import zope.configuration.name
+from zope.dottedname.resolve import resolve
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -114,7 +115,7 @@ class ConfigureBaseView(object):
         if form.get('field.createTarget', False):
             type = self.request.form.get('field.targetType',
                                          'loops.resource.MediaAsset')
-            factory = ConfigurationContext().resolve(type)
+            factory = resolve(type)
             uri = self.request.form.get('field.targetUri', None)
             if uri:
                 path = uri.split('/')

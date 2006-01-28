@@ -29,7 +29,9 @@ from zope.component import adapts
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import IResource, IDocument, IMediaAsset
+from loops.interfaces import IResource
+from loops.interfaces import IDocument, IMediaAsset
+from loops.interfaces import IDocumentView, IMediaAssetView
 from loops.interfaces import IView
 
 
@@ -47,8 +49,8 @@ class ResourceProxy(object):
     contentType = property(getContentType, setContentType)
 
     def __init__(self, context):
-        self.context = context
-        #self.context = removeSecurityProxy(context)
+        #self.context = context
+        self.context = removeSecurityProxy(context)
 
     @Lazy
     def target(self):
@@ -58,6 +60,7 @@ class ResourceProxy(object):
 class DocumentProxy(ResourceProxy):
 
     implements(IDocument)
+    adapts(IDocumentView)
 
     def setData(self, data): self.target.data = data
     def getData(self): return self.target.data
@@ -67,6 +70,7 @@ class DocumentProxy(ResourceProxy):
 class MediaAssetProxy(ResourceProxy):
 
     implements(IMediaAsset)
+    adapts(IMediaAssetView)
 
     def setData(self, data): self.target.data = data
     def getData(self): return self.target.data

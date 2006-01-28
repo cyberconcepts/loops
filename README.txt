@@ -286,11 +286,6 @@ target may be moved or renamed without any problems.)
   >>> m111.title
   u'New title for m111'
   >>> nodeConfig.targetUri = '.loops/resources/doc1'
-
-We have to get a new adapter to avoid problems with lazy variables:
-
-  >>> nodeConfig = INodeConfigSchema(m111)
-  >>> nodeConfig.title = 'New title for m111'
   >>> m111.target is doc1
   True
   >>> nodeConfig.targetType
@@ -327,16 +322,33 @@ application uses a subclass that does all the other stuff for form handling.)
   >>> isinstance(resources['m1.m11.m111'], Document)
   True
         
-It is also possible to edit a target's attributes directly in an
+A node object provides the targetSchema of its target:
+
+  >>> from loops.interfaces import IDocumentView
+  >>> from loops.interfaces import IMediaAssetView
+  >>> IDocumentView.providedBy(m111)
+  True
+  >>> IMediaAssetView.providedBy(m111)
+  False
+  >>> m111.target = None
+  >>> IDocumentView.providedBy(m111)
+  False
+  >>> m111.target = resources['ma07']
+  >>> IDocumentView.providedBy(m111)
+  False
+  >>> IMediaAssetView.providedBy(m111)
+  True
+
+It is possible to edit a target's attributes directly in an
 edit form provided by the node:
 
   >>> from loops.target import DocumentProxy, MediaAssetProxy
-  >>> ztapi.provideAdapter(INode, IDocument, DocumentProxy)
-  >>> ztapi.provideAdapter(INode, IMediaAsset, MediaAssetProxy)
+  >>> ztapi.provideAdapter(INode, IDocumentView, DocumentProxy)
+  >>> ztapi.provideAdapter(INode, IMediaAssetView, MediaAssetProxy)
 
-  >>> proxy = zapi.getAdapter(m111, IDocument)
+  >>> proxy = zapi.getAdapter(m111, IDocumentView)
   >>> proxy.title = u'Set via proxy'
-  >>> resources['m1.m11.m111'].title
+  >>> resources['ma07'].title
   u'Set via proxy'
 
 Ordering Nodes
