@@ -1,0 +1,104 @@
+<!-- content macros -->
+
+<metal:block define-macro="content"
+             tal:define="bodyMacro view/bodyMacro">
+  <metal:body use-macro="views/node_macros/?bodyMacro" />
+  <tal:sub define="level python:level+1">
+    <tal:items repeat="item item/textItems">
+      <metal:content use-macro="views/node_macros/content" />
+    </tal:items>
+  </tal:sub>
+</metal:block>
+
+
+<metal:body define-macro="textbody">
+  <tal:body define="body item/body"
+            condition="body">
+          <div class="content-1"
+               tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
+               tal:attributes="class string:content-$level;
+                               ondblclick python: item.editable and onclick or ''"
+               tal:content="structure body">
+            The body
+          </div>
+          <div class="content-1"
+               tal:define="target view/target;
+                           onclick string:openEditWindow('${item/url}/@@edit_target.html')"
+               tal:condition="target"
+               tal:attributes="class string:content-$level;
+                               ondblclick python: item.editable and onclick or ''"
+               tal:content="structure target/data">
+            The body
+          </div>
+  </tal:body>
+</metal:body>
+
+
+<metal:body define-macro="filebody">
+  <tal:body define="body item/body">
+    <div class="content-1"
+         tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
+         tal:attributes="class string:content-$level;
+                         ondblclick python: item.editable and onclick or ''">
+      <a href="#"
+         tal:attributes="href string:${item/url}/target"
+         tal:content="structure body">The body</a>
+    </div>
+  </tal:body>
+</metal:body>
+
+
+<metal:body define-macro="imagebody">
+  <tal:body define="body item/body"
+            condition="body">
+    <div class="content-1"
+               tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
+               tal:attributes="class string:content-$level;
+                               ondblclick python: item.editable and onclick or ''"
+               tal:content="structure body">
+            The body
+    </div>
+    <div class="content-1"
+         tal:define="onclick string:openEditWindow('${item/url}/@@edit_target.html')"
+         tal:attributes="class string:content-$level;
+                         ondblclick python: item.editable and onclick or ''">
+      <img src="target"
+           tal:attributes="src string:${item/url}/target" />
+    </div>
+  </tal:body>
+</metal:body>
+
+
+<!-- menu -->
+
+<metal:menu define-macro="menu">
+          <div class="menu-3"
+               tal:attributes="class python: 'content '
+                    + (view.selected(item) and 'even' or 'odd')
+                    + ' menu-%i' % level">
+            <a href="#" class=""
+               tal:content="item/context/title"
+               tal:attributes="href item/url">Menu Text</a>
+          </div>
+          <tal:sub tal:define="level python:level+1">
+            <tal:items repeat="item item/menuItems">
+              <metal:portlet use-macro="views/node_macros/menu" />
+            </tal:items>
+          </tal:sub>
+</metal:menu>
+
+
+<!-- and other stuff -->
+
+<metal:editlink define-macro="editlink">
+    <a target="zmi"
+       tal:define="url string:${item/url}/@@edit.html'"
+       tal:attributes="href url;
+                       onclick string:
+                            zmi=window.open('$url', 'zmi');;
+                            zmi.focus();; return false;;">
+      <img src="edit.gif"
+           tal:attributes="src context/++resource++edit.gif" border="0" />
+    </a>
+</metal:editlink>
+

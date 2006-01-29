@@ -8,6 +8,7 @@
   <!-- resources -->
 
   <resource name="node.css" file="node.css" />
+  <resource name="node.js" file="node.js" />
   <resource name="edit.gif" file="edit.gif" />
 
   <!-- macros -->
@@ -23,7 +24,7 @@
   <page
       for="*"
       name="node_macros"
-      template="node.pt"
+      template="node_macros.pt"
       permission="zope.View"
       />
 
@@ -318,20 +319,34 @@
       for="loops.interfaces.INode"
       template="edit.pt"
       class="loops.browser.node.ConfigureView"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Configure">
+      permission="zope.ManageContent">
 
     <widget field="description" height="2" />
     <widget field="body" height="15" />
 
   </editform>
 
+  <menuItem
+      for="loops.interfaces.INode"
+      action="configure.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Configure"
+      />
+    
+  <menuItem
+      for="loops.interfaces.INode"
+      action="contents.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Contents"
+      />
+    
   <editform
       label="Edit Media Asset"
       name="edit_target.html"
       schema="loops.interfaces.IMediaAsset"
       fields="title data contentType"
       for="loops.interfaces.IMediaAssetView"
+      template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Media Asset"
       />
@@ -342,6 +357,7 @@
       schema="loops.interfaces.IDocument"
       fields="title data contentType"
       for="loops.interfaces.IDocumentView"
+      template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Document"
       />
@@ -351,6 +367,14 @@
       for="loops.interfaces.INode"
       template="node.pt"
       class=".node.NodeView"
+      permission="zope.View"
+      />
+    
+  <page
+      name="target"
+      for="loops.interfaces.INode"
+      class=".node.NodeView"
+      attribute="renderTarget"
       permission="zope.View"
       />
     

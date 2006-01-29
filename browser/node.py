@@ -32,6 +32,7 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from loops.interfaces import IDocument, IMediaAsset
 from loops.resource import MediaAsset
 
 class NodeView(object):
@@ -63,6 +64,14 @@ class NodeView(object):
     def target(self):
         return self.context.target
 
+    def renderTarget(self):
+        target = self.target
+        if target is not None:
+            targetView = zapi.getMultiAdapter((target, self.request),
+                    name=zapi.getDefaultViewName(target, self.request))
+            return targetView()
+        return u''
+
     @Lazy
     def page(self):
         page = self.context.getPage()
@@ -73,17 +82,17 @@ class NodeView(object):
             yield NodeView(child, self.request)
 
     @Lazy
-    def menu(self):
-        menu = self.context.getMenu()
-        return menu is not None and NodeView(menu, self.request) or None
-
-    def menuItems(self):
-        for child in self.context.getMenuItems():
-            yield NodeView(child, self.request)
-
-    @Lazy
     def body(self):
         return self.render()
+
+    @Lazy
+    def bodyMacro(self):
+        target = self.target
+        if target is None or IDocument.providedBy(target):
+            return 'textbody'
+        if target.contentType.startswith('image/'):
+            return 'imagebody'
+        return 'filebody'
 
     @Lazy
     def url(self):
@@ -92,6 +101,15 @@ class NodeView(object):
     @Lazy
     def editable(self):
         return canWrite(self.context, 'body')
+
+    @Lazy
+    def menu(self):
+        menu = self.context.getMenu()
+        return menu is not None and NodeView(menu, self.request) or None
+
+    def menuItems(self):
+        for child in self.context.getMenuItems():
+            yield NodeView(child, self.request)
 
     def selected(self, item):
         return item.context == self.context

@@ -2,6 +2,14 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zope">
   <body>
+
+  <metal:js fill-slot="ecmascript_slot">
+    <script type="text/javascript"
+            src="node.js"
+            tal:attributes="src string:${context/++resource++node.js}">
+    </script>
+  </metal:js>
+  
   <div metal:fill-slot="body">
 
   <div metal:define-macro="body">
@@ -12,10 +20,7 @@
       <input type="hidden" name="form_submitted" value="true" />
       <tal:control condition="request/form_submitted|nothing">
         <script language="JavaScript">
-          if (typeof(opener) != 'undefined' && opener != null) {
-            opener.location.reload();
-            opener.focus();
-          }
+            focusOpener();
         </script>
       </tal:control>
 

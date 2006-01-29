@@ -326,7 +326,7 @@ class ITargetProperties(Interface):
 
 
 class INodeConfigSchema(INode, ITargetProperties):
-    """ All fields that may be shown in the node add form.
+    """ All fields that may be shown in the node config form.
     """
 
     createTarget = schema.Bool(
