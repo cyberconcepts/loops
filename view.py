@@ -40,6 +40,7 @@ from cybertools.relation.registry import IRelationsRegistry, getRelations
 from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
+from interfaces import ITargetRelation
 
 
 class View(object):
@@ -74,8 +75,6 @@ class View(object):
                 return
             else:
                 registry.unregister(oldRel)
-                oldTargetSchema = oldRel.second.proxyInterface
-                directlyProvides(self, directlyProvidedBy(self) - oldTargetSchema)
                 
         if target:
             targetSchema = target.proxyInterface
@@ -157,8 +156,10 @@ class ViewManager(OrderedContainer):
 
 
 class TargetRelation(DyadicRelation):
-    """ A relation between a view and another object.
+    """ A relation between a view and its target.
     """
+    implements(ITargetRelation)
+
 
 # adapters
 

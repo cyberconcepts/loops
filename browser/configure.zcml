@@ -251,6 +251,13 @@
       add="zope.ManageContent"
       />
 
+  <menuItem
+      for="loops.interfaces.IViewManager"
+      action="contents.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Contents"
+      />
+    
   <!-- import/export -->
 
   <pages for="loops.interfaces.IViewManager"
@@ -298,7 +305,7 @@
       for="loops.interfaces.INode"
       template="edit.pt"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit">
+      menu="zmi_views" title="Edit Node">
 
     <widget field="description" height="2" />
     <widget field="body" height="15" />

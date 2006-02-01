@@ -5,7 +5,15 @@
    i18n_domain="zope"
    >
 
-  <!-- Security definitions -->
+  <!-- security definitions -->
+
+  <!-- event subscribers -->
+
+  <subscriber
+        for=".interfaces.ITargetRelation
+             cybertools.relation.interfaces.IRelationInvalidatedEvent"
+        handler=".util.removeTargetRelation"
+        />
 
   <!-- loops top-level container -->
 

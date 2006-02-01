@@ -22,9 +22,21 @@ Utility functions.
 $Id$
 """
 
+from zope.interface import directlyProvides, directlyProvidedBy
+from view import TargetRelation
+
+
+def removeTargetRelation(context, event):
+    """ Handles IRelationInvalidatedEvent by doing some cleanup work.
+    """
+    targetIfc = context.second.proxyInterface
+    if targetIfc:
+        directlyProvides(context.first, directlyProvidedBy(context) - targetIfc)
+
+
 def nl2br(text):
     if not text: return text
     if '\n' in text: # Unix or DOS line endings
         return '<br />\n'.join(x.replace('\r', '') for x in text.split('\n'))
-    else: # gracefully handle Mac line endigns
+    else: # gracefully handle Mac line endings
         return '<br />\n'.join(text.split('\r'))

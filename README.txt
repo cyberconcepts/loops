@@ -232,8 +232,16 @@ Targets
 -------
 
 We can associate a node with a concept or directly with a resource via the
-view class's target attribute:
+view class's target attribute. (We also have to supply a subscriber to
+IRelationInvalidatedEvent to make sure associated actions will be carried
+out - this is usually done through ZCML.)
 
+  >>> from loops.util import removeTargetRelation
+  >>> from loops.interfaces import ITargetRelation
+  >>> from cybertools.relation.interfaces import IRelationInvalidatedEvent
+  >>> ztapi.subscribe([ITargetRelation, IRelationInvalidatedEvent], None,
+  ...                 removeTargetRelation)
+  
   >>> m111.target = cc1
   >>> m111.target is cc1
   True
@@ -350,6 +358,22 @@ edit form provided by the node:
   >>> proxy.title = u'Set via proxy'
   >>> resources['ma07'].title
   u'Set via proxy'
+
+If the target object is removed from its container all references
+to it are removed as well. (To make this work we have to handle
+the IObjectRemovedEvent; this is usually done via ZCML in the
+cybertools.relation package.)
+
+  >>> from zope.app.container.interfaces import IObjectRemovedEvent
+  >>> from zope.interface import Interface
+  >>> from cybertools.relation.registry import invalidateRelations
+  >>> ztapi.subscribe([Interface, IObjectRemovedEvent], None,
+  ...                 invalidateRelations)
+
+  >>> del resources['ma07']
+  >>> m111.target
+  >>> IMediaAssetView.providedBy(m111)
+  False
 
 Ordering Nodes
 --------------

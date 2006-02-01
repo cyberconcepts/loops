@@ -29,11 +29,12 @@ from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
+from cybertools.relation.interfaces import IRelation
 
 _ = MessageFactory('loops')
 
 
-# common top-level
+# common interfaces
 
 class ILoopsObject(Interface):
     """ Common top-level interface.
@@ -55,6 +56,7 @@ class IPotentialTarget(Interface):
     proxyInterface = Attribute('An interface allowing an object to be '
                                'used as a target for a view/node (and '
                                'typically specifying the corresponding schema')
+
 
 # concept interfaces
 
@@ -335,6 +337,12 @@ class INodeConfigSchema(INode, ITargetProperties):
         required=False)
 
 
+class ITargetRelation(IRelation):
+    """ (Marker) interfaces for relations pointing to a target
+        of a view or node.
+    """
+
+
 # the loops top-level container
 
 class ILoops(ILoopsObject, IFolder):
@@ -350,4 +358,3 @@ class ILoops(ILoopsObject, IFolder):
 class ILoopsContained(Interface):
     containers(ILoops)
 
-    
