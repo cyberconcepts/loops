@@ -170,6 +170,14 @@ class IDocumentSchema(IResourceSchema):
                 missing_value=u'',
                 required=False)
 
+    contentType = schema.Choice(
+                title=_(u'Content Type'),
+                description=_(u'Content type (format) of the data field'),
+                values=('text/restructured', 'text/structured', 'text/html',
+                        'text/plain',),
+                default='text/restructured',
+                required=True)
+
 
 class IDocumentView(IDocumentSchema):
     """ Used for accessing a document via a node's target attribute"""

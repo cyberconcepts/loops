@@ -72,6 +72,13 @@ class NodeView(object):
             return targetView()
         return u''
 
+    def renderTargetBody(self):
+        target = self.target
+        if target is not None:
+            targetView = zapi.getMultiAdapter((target, self.request))
+            return targetView.render()
+        return u''
+
     @Lazy
     def page(self):
         page = self.context.getPage()

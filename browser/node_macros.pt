@@ -27,7 +27,7 @@
                tal:condition="target"
                tal:attributes="class string:content-$level;
                                ondblclick python: item.editable and onclick or ''"
-               tal:content="structure target/data">
+               tal:content="structure view/renderTargetBody">
             The body
           </div>
   </tal:body>

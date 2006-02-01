@@ -390,4 +390,12 @@
       name="node.html"
       />
 
+  <zope:adapter
+      for="loops.interfaces.IDocument
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.DocumentView"
+      permission="zope.View"
+      />
+
 </configure>

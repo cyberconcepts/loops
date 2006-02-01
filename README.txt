@@ -347,6 +347,41 @@ A node object provides the targetSchema of its target:
   >>> IMediaAssetView.providedBy(m111)
   True
 
+A node's target is rendered using the NodeView's renderTargetBody()
+method. This makes use of a browser view registered for the target interface,
+and of a lot of other stuff needed for the rendering machine.
+
+  >>> from zope.app.publisher.interfaces.browser import IBrowserView
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from loops.browser.resource import DocumentView
+  >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
+  ...                      with=(IBrowserRequest,))
+
+  >>> from zope.component.interfaces import IFactory
+  >>> from zope.app.renderer import plaintext
+  >>> ztapi.provideUtility(IFactory, plaintext.PlainTextSourceFactory,
+  ...                      'zope.source.plaintext')
+  >>> ztapi.provideAdapter(plaintext.IPlainTextSource, Interface,
+  ...                      plaintext.PlainTextToHTMLRenderer,
+  ...                      with=(IBrowserRequest,))
+  >>> from zope.app.renderer import rest
+  >>> ztapi.provideUtility(IFactory, rest.ReStructuredTextSourceFactory,
+  ...                      'zope.source.rest')
+  >>> ztapi.provideAdapter(rest.IReStructuredTextSource, Interface,
+  ...                      rest.ReStructuredTextToHTMLRenderer,
+  ...                      with=(IBrowserRequest,))
+
+  >>> m112.target = doc1
+  >>> view = NodeView(m112, TestRequest())
+  >>> view.renderTargetBody()
+  u''
+  >>> doc1.data = u'Test data\n\nAnother paragraph'
+  >>> view.renderTargetBody()
+  u'Test data<br />\n<br />\nAnother paragraph'
+  >>> doc1.contentType = 'text/restructured'
+  >>> view.renderTargetBody()
+  u'<p>Test data</p>\n<p>Another paragraph</p>\n'
+
 It is possible to edit a target's attributes directly in an
 edit form provided by the node:
 
@@ -388,7 +423,7 @@ Let's add some more nodes and reorder them:
   ['m111', 'm112', 'm113', 'm114']
       
 A special management view provides methods for moving objects down, up,
-to the bottom, and to the top
+to the bottom, and to the top.
       
   >>> from cybertools.container.ordered import OrderedContainerView
   >>> view = OrderedContainerView(m11, TestRequest())
