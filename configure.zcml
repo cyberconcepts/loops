@@ -230,6 +230,17 @@
            permission="zope.ManageContent" />
   <adapter factory="loops.target.MediaAssetProxy"
            permission="zope.ManageContent" />
+  <adapter factory="loops.target.ConceptProxy"
+           permission="zope.ManageContent" />
+
+  <adapter factory="loops.browser.target.TargetTerms"
+           for="loops.browser.target.TargetSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <vocabulary
+      factory="loops.browser.target.TargetSourceList"
+      name="loops.targetSource"
+      />
 
   <view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"

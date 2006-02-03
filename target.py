@@ -33,11 +33,36 @@ from loops.interfaces import IResource
 from loops.interfaces import IDocument, IMediaAsset
 from loops.interfaces import IDocumentView, IMediaAssetView
 from loops.interfaces import IView
+from loops.interfaces import IConcept, IConceptView
+
+
+class ConceptProxy(object):
+
+    implements(IConcept)
+    adapts(IConceptView)
+
+    def __init__(self, context):
+        #self.context = context
+        self.context = removeSecurityProxy(context)
+
+    def getTitle(self): return self.target.title
+    def setTitle(self, title): self.target.title = title
+    title = property(getTitle, setTitle)
+
+    def getSubConcepts(self, relationships=None):
+        return self.target.getSubConcepts(relationships)
+
+    def getParentConcepts(self, relationships=None):
+        return self.target.getParentConcepts(relationships)
 
 
 class ResourceProxy(object):
 
     adapts(IView)
+
+    def __init__(self, context):
+        #self.context = context
+        self.context = removeSecurityProxy(context)
 
     def getTitle(self): return self.target.title
     def setTitle(self, title): self.target.title = title
@@ -47,10 +72,6 @@ class ResourceProxy(object):
         self.target.contentType = contentType
     def getContentType(self): return self.target.contentType
     contentType = property(getContentType, setContentType)
-
-    def __init__(self, context):
-        #self.context = context
-        self.context = removeSecurityProxy(context)
 
     @Lazy
     def target(self):

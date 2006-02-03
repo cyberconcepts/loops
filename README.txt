@@ -358,12 +358,6 @@ and of a lot of other stuff needed for the rendering machine.
   ...                      with=(IBrowserRequest,))
 
   >>> from zope.component.interfaces import IFactory
-  >>> from zope.app.renderer import plaintext
-  >>> ztapi.provideUtility(IFactory, plaintext.PlainTextSourceFactory,
-  ...                      'zope.source.plaintext')
-  >>> ztapi.provideAdapter(plaintext.IPlainTextSource, Interface,
-  ...                      plaintext.PlainTextToHTMLRenderer,
-  ...                      with=(IBrowserRequest,))
   >>> from zope.app.renderer import rest
   >>> ztapi.provideUtility(IFactory, rest.ReStructuredTextSourceFactory,
   ...                      'zope.source.rest')
@@ -377,7 +371,7 @@ and of a lot of other stuff needed for the rendering machine.
   u''
   >>> doc1.data = u'Test data\n\nAnother paragraph'
   >>> view.renderTargetBody()
-  u'Test data<br />\n<br />\nAnother paragraph'
+  u'Test data\n\nAnother paragraph'
   >>> doc1.contentType = 'text/restructured'
   >>> view.renderTargetBody()
   u'<p>Test data</p>\n<p>Another paragraph</p>\n'

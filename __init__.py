@@ -28,6 +28,8 @@ from zope.app.folder.folder import Folder
 from zope.interface import implements
 from interfaces import ILoops
 
+loopsPrefix = '.loops'
+
 class Loops(Folder):
 
     implements(ILoops)
@@ -39,5 +41,9 @@ class Loops(Folder):
         return self['views']
 
     def getLoopsUri(self, obj):
-        return str('.loops' + zapi.getPath(obj)[len(zapi.getPath(self)):])
+        return str(loopsPrefix + zapi.getPath(obj)[len(zapi.getPath(self)):])
 
+    def loopsTraverse(self, uri):
+        prefix = loopsPrefix + '/'
+        if uri.startswith(prefix):
+            return zapi.traverse(self, uri[len(prefix):])

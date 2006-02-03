@@ -191,6 +191,14 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit" />      
 
+  <zope:adapter
+      for="loops.interfaces.IDocument
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.DocumentView"
+      permission="zope.View"
+      />
+
   <!-- media asset -->
 
   <addform
@@ -301,7 +309,7 @@
       label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
-      fields="title description nodeType body"
+      fields="title description nodeType body target"
       for="loops.interfaces.INode"
       template="edit.pt"
       permission="zope.ManageContent"
@@ -369,6 +377,17 @@
       menu="zmi_views" title="Edit Document"
       />
 
+  <editform
+      label="Edit Concept"
+      name="edit_target.html"
+      schema="loops.interfaces.IConcept"
+      fields="title"
+      for="loops.interfaces.IConceptView"
+      template="edit.pt"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit Concept"
+      />
+
   <page
       name="node.html"
       for="loops.interfaces.INode"
@@ -388,14 +407,6 @@
   <defaultView
       for="loops.interfaces.INode"
       name="node.html"
-      />
-
-  <zope:adapter
-      for="loops.interfaces.IDocument
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.browser.resource.DocumentView"
-      permission="zope.View"
       />
 
 </configure>

@@ -50,8 +50,9 @@ class DocumentView(object):
         """ Return the rendered content (data) of the context object.
         """
         text = self.context.data
-        typeKey = renderingFactories.get(self.context.contentType,
-                                renderingFactories['text/plain'])
+        typeKey = renderingFactories.get(self.context.contentType, None)
+        if typeKey is None:
+            return text
         source = zapi.createObject(typeKey, text)
         view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()

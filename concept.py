@@ -31,7 +31,7 @@ from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import IRelationsRegistry, getRelations
 
-from interfaces import IConcept
+from interfaces import IConcept, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
 from interfaces import ILoopsContained
 
@@ -54,7 +54,7 @@ class Concept(Contained, Persistent):
 
     implements(IConcept, IConceptManagerContained)
 
-    proxyInterface = IConcept
+    proxyInterface = IConceptView
     
     _title = u''
     def getTitle(self): return self._title

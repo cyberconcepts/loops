@@ -114,6 +114,10 @@ class IConcept(ILoopsObject, IPotentialTarget):
         """
         
 
+class IConceptView(Interface):
+    """ Used for accessing a concept via a node's target attribute"""
+
+
 class IConceptManager(ILoopsObject, IContainer):
     """ A manager/container for concepts.
     """
@@ -174,7 +178,7 @@ class IDocumentSchema(IResourceSchema):
                 title=_(u'Content Type'),
                 description=_(u'Content type (format) of the data field'),
                 values=('text/restructured', 'text/structured', 'text/html',
-                        'text/plain',),
+                        'text/plain', 'text/xml', 'text/css'),
                 default='text/restructured',
                 required=True)
 
@@ -237,7 +241,14 @@ class IView(ILoopsObject):
         default=u'',
         required=False)
 
-    target = Attribute('Target object that is referenced by this view')
+    #target = Attribute('Target object that is referenced by this view')
+
+    target = schema.Choice(
+        title=_(u'Target'),
+        description=_(u'The target object of this view or node'),
+        default=None,
+        source="loops.targetSource",
+        required=False)
 
 
 class IBaseNode(IOrderedContainer):
@@ -325,7 +336,8 @@ class ITargetProperties(Interface):
     targetType = schema.Choice(
         title=_(u'Target Type'),
         description=_(u'Type of the target'),
-        values=('loops.resource.Document', 'loops.resource.MediaAsset'),
+        values=('loops.resource.Document', 'loops.resource.MediaAsset',
+                'loops.concept.Concept'),
         default=None,
         required=False)
 
@@ -360,6 +372,10 @@ class ILoops(ILoopsObject, IFolder):
 
     def getLoopsUri(obj):
         """ Return the relativ path to obj, starting with '.loops/...'.
+        """
+
+    def loopsTraverse(uri):
+        """ Retrieve object specified by the loops uri given.
         """
     
 
