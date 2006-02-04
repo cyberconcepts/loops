@@ -25,16 +25,10 @@ $Id$
 
 from zope.app import zapi
 from zope.app.form.browser.interfaces import ITerms
-from zope.schema.interfaces import IIterableSource
+from zope.schema.vocabulary import SimpleTerm
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
-
-
-class Term(object):
-  
-    def __init__(self, **kw):
-        self.__dict__.update(kw)
 
 
 class TargetTerms(object):
@@ -42,7 +36,7 @@ class TargetTerms(object):
     implements(ITerms)
 
     def __init__(self, context, request):
-        self.context = context.context
+        self.context = context.context # the context parameter is the source object
         self.request = request
 
     @Lazy
@@ -51,26 +45,8 @@ class TargetTerms(object):
 
     def getTerm(self, value):
         token = self.loopsRoot.getLoopsUri(value)
-        #token = value.getLoopsRoot().getLoopsUri(value)
-        title = value.title
-        return Term(title=title, token=token)
+        return SimpleTerm(value, token, value.title)
 
     def getValue(self, token):
         return self.loopsRoot.loopsTraverse(token)
-
-
-class TargetSourceList(object):
-
-    implements(IIterableSource)
-
-    def __init__(self, context):
-        self.context = removeSecurityProxy(context)
-        self.resources = self.context.getLoopsRoot()['resources']
-
-    def __iter__(self):
-        return iter(self.resources.values())
-
-    def __len__():
-        return len(self.resources)
-
 

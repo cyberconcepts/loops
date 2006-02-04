@@ -27,6 +27,7 @@ from zope.app import zapi
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
+from zope import schema
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IResource
@@ -35,6 +36,8 @@ from loops.interfaces import IDocumentView, IMediaAssetView
 from loops.interfaces import IView
 from loops.interfaces import IConcept, IConceptView
 
+
+# proxies for accessing target objects from views/nodes
 
 class ConceptProxy(object):
 
@@ -96,5 +99,22 @@ class MediaAssetProxy(ResourceProxy):
     def setData(self, data): self.target.data = data
     def getData(self): return self.target.data
     data = property(getData, setData)
+
+
+# source classes for target vocabularies
+
+class TargetSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = removeSecurityProxy(context)
+        self.resources = self.context.getLoopsRoot()['resources']
+
+    def __iter__(self):
+        return iter(self.resources.values())
+
+    def __len__():
+        return len(self.resources)
 
 

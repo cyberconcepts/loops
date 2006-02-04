@@ -71,11 +71,10 @@ class View(object):
         rels = list(registry.query(first=self, relationship=TargetRelation))
         if len(rels) > 0:
             oldRel = rels[0]
-            if oldRel.second is target:
+            if oldRel.second == target:
                 return
             else:
                 registry.unregister(oldRel)
-                
         if target:
             targetSchema = target.proxyInterface
             rel = TargetRelation(self, target)
@@ -196,14 +195,14 @@ class NodeConfigAdapter(object):
     def setNodeType(self, nodeType): self.context.nodeType = nodeType
     nodeType = property(getNodeType, setNodeType)
 
+    def getTarget(self): return self.context.target
+    def setTarget(self, target): self.context.target = target
+    target = property(getTarget, setTarget)
+
     # the real config stuff:
     
     @Lazy
     def loopsRoot(self): return self.context.getLoopsRoot()
-
-    @readproperty
-    def target(self):
-        return self.context.target
 
     def getTargetUri(self):
         target = self.target
@@ -213,6 +212,7 @@ class NodeConfigAdapter(object):
             return ''
     
     def setTargetUri(self, uri):
+        return # ignore - only relevant for target creation
         if uri:
             names = uri.split('/')
             if names[0] == '.loops':

@@ -31,6 +31,8 @@ from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
 from cybertools.relation.interfaces import IRelation
 
+import util
+
 _ = MessageFactory('loops')
 
 
@@ -258,7 +260,7 @@ class IBaseNode(IOrderedContainer):
     def getLoopsRoot():
         """ Return the loops root object.
         """
-    
+
 
 class INode(IView, IBaseNode):
     """ A node is a view that may contain other views, thus building a
@@ -272,7 +274,12 @@ class INode(IView, IBaseNode):
     nodeType = schema.Choice(
         title=_(u'Node Type'),
         description=_(u'Type of the node'),
-        values=('text', 'page', 'menu', 'info'),
+        source=util.KeywordVocabulary((
+                ('text', _(u'Text')),
+                ('page', _(u'Page')),
+                ('menu', _(u'Menu')),
+                ('info', _(u'Info')),
+            )),
         default='info',
         required=True)
 
@@ -312,8 +319,7 @@ class INode(IView, IBaseNode):
         """
 
     def getTextItems():
-        """ Return the menu items belonging to this object (that should be
-            a menu).
+        """ Return the text items belonging to this object.
         """
 
 

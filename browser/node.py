@@ -163,7 +163,8 @@ class ConfigureBaseView(object):
             target = container[name]
             # set possibly new targetUri in request for further processing:
             targetUri = self.loopsRoot.getLoopsUri(target)
-            form['field.targetUri'] = targetUri
+            #form['field.targetUri'] = targetUri
+            form['field.target'] = targetUri
             return target
 
 

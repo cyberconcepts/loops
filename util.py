@@ -23,7 +23,16 @@ $Id$
 """
 
 from zope.interface import directlyProvides, directlyProvidedBy
-from view import TargetRelation
+from zope.schema import vocabulary
+#from view import TargetRelation
+
+
+class KeywordVocabulary(vocabulary.SimpleVocabulary):
+
+    def __init__(self, items, *interfaces):
+        terms = [vocabulary.SimpleTerm(token, token, title)
+                        for token, title in items]
+        super(KeywordVocabulary, self).__init__(terms, *interfaces)
 
 
 def removeTargetRelation(context, event):

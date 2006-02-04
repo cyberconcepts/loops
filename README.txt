@@ -274,12 +274,9 @@ Node Views
 Node Schema Adapters
 --------------------
 
-When creating or editing (more precisely: configuring) a node you may
+When configuring a node you may
 specify what you want to do with respect to the node's target: associate
-an existing one or create a new one (with specifying the target's type),
-and give an URI that will be used to identify the target. (Internally
-the reference to the target will be stored as a relation so that the
-target may be moved or renamed without any problems.)
+an existing one or create a new one.
 
   >>> from loops.interfaces import INodeConfigSchema
   >>> from loops.view import NodeConfigAdapter
@@ -293,7 +290,7 @@ target may be moved or renamed without any problems.)
   u'New title for m111'
   >>> m111.title
   u'New title for m111'
-  >>> nodeConfig.targetUri = '.loops/resources/doc1'
+  >>> nodeConfig.target = doc1
   >>> m111.target is doc1
   True
   >>> nodeConfig.targetType
@@ -305,6 +302,8 @@ There is a special edit view class that can be used to configure a node
 in a way, that allows the creation of a target object on the fly.
 (We here use the base class providing the method for this action; the real
 application uses a subclass that does all the other stuff for form handling.)
+When creating a new target object you may specify a uri that determines
+the location of the new target object and its name.
 
   >>> from loops.browser.node import ConfigureBaseView
   >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest())

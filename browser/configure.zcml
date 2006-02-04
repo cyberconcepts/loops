@@ -309,7 +309,7 @@
       label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
-      fields="title description nodeType body target"
+      fields="title description nodeType body"
       for="loops.interfaces.INode"
       template="edit.pt"
       permission="zope.ManageContent"
@@ -330,7 +330,7 @@
       label="Configure Node"
       name="configure.html"
       schema="loops.interfaces.INodeConfigSchema"
-      fields="title description nodeType targetUri targetType createTarget"
+      fields="title description nodeType target createTarget targetUri targetType"
       for="loops.interfaces.INode"
       template="edit.pt"
       class="loops.browser.node.ConfigureView"
@@ -408,5 +408,18 @@
       for="loops.interfaces.INode"
       name="node.html"
       />
+
+  <!-- vocabulary, traversing, and other stuff -->
+
+  <zope:adapter factory="loops.browser.target.TargetTerms"
+           for="loops.target.TargetSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <zope:view factory="loops.view.NodeTraverser"
+        for="loops.interfaces.INode"
+        type="zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+        allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+        permission="zope.Public" />
 
 </configure>

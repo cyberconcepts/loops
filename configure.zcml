@@ -233,21 +233,10 @@
   <adapter factory="loops.target.ConceptProxy"
            permission="zope.ManageContent" />
 
-  <adapter factory="loops.browser.target.TargetTerms"
-           for="loops.browser.target.TargetSourceList
-                zope.publisher.interfaces.browser.IBrowserRequest" />
-
   <vocabulary
-      factory="loops.browser.target.TargetSourceList"
+      factory="loops.target.TargetSourceList"
       name="loops.targetSource"
       />
-
-  <view factory="loops.view.NodeTraverser"
-        for="loops.interfaces.INode"
-        type="zope.publisher.interfaces.browser.IBrowserRequest"
-        provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-        allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-        permission="zope.Public" />
 
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />
