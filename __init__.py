@@ -37,6 +37,12 @@ class Loops(Folder):
     def getLoopsRoot(self):
         return self
 
+    def getConceptManager(self):
+        return self['concepts']
+
+    def getResourceManager(self):
+        return self['resources']
+
     def getViewManager(self):
         return self['views']
 

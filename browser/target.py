@@ -45,7 +45,8 @@ class TargetTerms(object):
 
     def getTerm(self, value):
         token = self.loopsRoot.getLoopsUri(value)
-        return SimpleTerm(value, token, value.title)
+        title = value.title or zapi.getName(value)
+        return SimpleTerm(value, token, title)
 
     def getValue(self, token):
         return self.loopsRoot.loopsTraverse(token)

@@ -91,9 +91,6 @@ class View(object):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
-    def getViewManager(self):
-        return zapi.getParent(self).getViewManager()
-
 
 class Node(View, OrderedContainer):
 
@@ -204,23 +201,8 @@ class NodeConfigAdapter(object):
     @Lazy
     def loopsRoot(self): return self.context.getLoopsRoot()
 
-    def getTargetUri(self):
-        target = self.target
-        if target is not None:
-            return self.loopsRoot.getLoopsUri(target)
-        else:
-            return ''
-    
-    def setTargetUri(self, uri):
-        return # ignore - only relevant for target creation
-        if uri:
-            names = uri.split('/')
-            if names[0] == '.loops':
-                path = '/'.join(names[1:])
-                self.context.target = zapi.traverse(self.loopsRoot, path)
-        else:
-            self.context.target = None
-            
+    def getTargetUri(self):return ''
+    def setTargetUri(self, uri): pass
     targetUri = property(getTargetUri, setTargetUri)
 
     def getTargetType(self):
@@ -228,8 +210,7 @@ class NodeConfigAdapter(object):
         if target:
             return '%s.%s' % (target.__module__, target.__class__.__name__)
         return None
-    def setTargetType(self, tt):
-        pass  # only used whe a new target object is created
+    def setTargetType(self, tt): pass
     targetType = property(getTargetType, setTargetType)
 
     def getCreateTarget(self): return False

@@ -57,9 +57,6 @@ class Resource(Contained, Persistent):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
-    def getViewManager(self):
-        return self.getLoopsRoot().getViewManager()
-
     def getClients(self, relationships=None):
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]

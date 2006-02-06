@@ -109,12 +109,15 @@ class TargetSourceList(object):
 
     def __init__(self, context):
         self.context = removeSecurityProxy(context)
-        self.resources = self.context.getLoopsRoot()['resources']
+        root = self.context.getLoopsRoot()
+        self.resources = root.getResourceManager()
+        self.concepts = root.getConceptManager()
 
     def __iter__(self):
-        return iter(self.resources.values())
+        return iter(list(self.resources.values()) + list(self.concepts.values()))
 
-    def __len__():
-        return len(self.resources)
+    def __len__(self):
+        return len(self.resources) + len(self.concepts)
 
 
+    

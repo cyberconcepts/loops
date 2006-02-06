@@ -271,20 +271,20 @@ Node Views
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
 
-Node Schema Adapters
---------------------
+Node Configuration
+------------------
 
-When configuring a node you may
-specify what you want to do with respect to the node's target: associate
-an existing one or create a new one.
-
+When configuring a node you may specify what you want to do with respect
+to the node's target: associate an existing one or create a new one.
+These options are provided via the INodeConfigSchema that is provided
+by a NodeConfigAdapter; in addition the attributes of the node (like the
+title) may be changed via the NodeConfigAdapter.
+  
   >>> from loops.interfaces import INodeConfigSchema
   >>> from loops.view import NodeConfigAdapter
   >>> ztapi.provideAdapter(INode, INodeConfigSchema, NodeConfigAdapter)
   >>> nodeConfig = INodeConfigSchema(m111)
 
-  >>> nodeConfig.targetUri
-  '.loops/concepts/cc2'
   >>> nodeConfig.title = u'New title for m111'
   >>> nodeConfig.title
   u'New title for m111'
@@ -293,9 +293,43 @@ an existing one or create a new one.
   >>> nodeConfig.target = doc1
   >>> m111.target is doc1
   True
+  >>> m111 in doc1.getClients()
+  True
+
+The targetUri and targetType fields are only relevant when creating
+a new target object:
+
+  >>> nodeConfig.targetUri
+  ''
   >>> nodeConfig.targetType
   'loops.resource.Document'
-  >>> m111 in doc1.getClients()
+
+The node configuration form provides a target assignment field using
+a vocabulary (source) for selecting the target. (In a future version this form
+will be extended by a widget that lets you search for potential target
+objects.) The source is basically a source list:
+
+  >>> from loops.target import TargetSourceList
+  >>> source = TargetSourceList(m111)
+  >>> len(source)
+  3
+  >>> sorted([zapi.getName(s) for s in source])
+  [u'cc1', u'cc2', u'doc1']
+
+The form then uses a sort of browser view providing the ITerms interface
+based on this source list:
+
+  >>> from loops.browser.target import TargetTerms
+  >>> terms = TargetTerms(source, TestRequest())
+  >>> term = terms.getTerm(doc1)
+  >>> term.token, term.title, term.value
+  ('.loops/resources/doc1', u'Zope Info', <loops.resource.Document...>)
+      
+  >>> term = terms.getTerm(cc1)
+  >>> term.token, term.title, term.value
+  ('.loops/concepts/cc1', u'cc1', <loops.concept.Concept...>)
+      
+  >>> terms.getValue('.loops/concepts/cc1') is cc1
   True
 
 There is a special edit view class that can be used to configure a node

@@ -67,9 +67,6 @@ class Concept(Contained, Persistent):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
-    def getViewManager(self):
-        return self.getLoopsRoot().getViewManager()
-
     # concept relations
 
     def getSubConcepts(self, relationships=None):

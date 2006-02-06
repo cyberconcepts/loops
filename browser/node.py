@@ -32,7 +32,7 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import IDocument, IMediaAsset
+from loops.interfaces import IConcept, IDocument, IMediaAsset
 from loops.resource import MediaAsset
 
 class NodeView(object):
@@ -97,7 +97,9 @@ class NodeView(object):
         target = self.target
         if target is None or IDocument.providedBy(target):
             return 'textbody'
-        if target.contentType.startswith('image/'):
+        if IConcept.providedBy(target): # TODO...
+            return 'filebody'
+        if IMediaAsset.providedBy(target) and target.contentType.startswith('image/'):
             return 'imagebody'
         return 'filebody'
 
@@ -138,20 +140,23 @@ class ConfigureBaseView(object):
     def checkCreateTarget(self):
         form = self.request.form
         if form.get('field.createTarget', False):
+            root = self.loopsRoot
             type = self.request.form.get('field.targetType',
                                          'loops.resource.MediaAsset')
             factory = resolve(type)
             uri = self.request.form.get('field.targetUri', None)
             if uri:
                 path = uri.split('/')
+                # TODO: check for .loops prefix
                 containerName = path[-2]
                 name = path[-1]
+                container = root[containerName]
             else:
-                containerName = 'resource' in type and 'resources' or 'concepts'
-                viewManagerPath = zapi.getPath(self.context.getViewManager())
+                container = ('.resource.' in type and root.getResourceManager()
+                          or root.getConceptManager())
+                viewManagerPath = zapi.getPath(root.getViewManager())
                 name = zapi.getPath(self.context)[len(viewManagerPath)+1:]
                 name = name.replace('/', '.')
-            container = self.loopsRoot[containerName]
             # check for duplicates:
             num = 1
             basename = name
@@ -161,9 +166,8 @@ class ConfigureBaseView(object):
             # create target:
             container[name] = factory()
             target = container[name]
-            # set possibly new targetUri in request for further processing:
+            # set possibly new target uri in request for further processing:
             targetUri = self.loopsRoot.getLoopsUri(target)
-            #form['field.targetUri'] = targetUri
             form['field.target'] = targetUri
             return target
 

@@ -46,13 +46,9 @@ class ILoopsObject(Interface):
         """ Return the loops root object.
         """
 
-    def getViewManager():
-        """ Return the (default) view manager.
-        """
-
 
 class IPotentialTarget(Interface):
-    """ For objects that may be used as target objects for view objects.
+    """ For objects that may be used as target objects for views/nodes.
     """
 
     proxyInterface = Attribute('An interface allowing an object to be '
@@ -381,9 +377,22 @@ class ILoops(ILoopsObject, IFolder):
         """
 
     def loopsTraverse(uri):
-        """ Retrieve object specified by the loops uri given.
+        """ Retrieve object specified by the loops uri (starting with
+        '.loops/') given.
         """
     
+    def getConceptManager():
+        """ Return the (default) concept manager.
+        """
+
+    def getResourceManager():
+        """ Return the (default) resource manager.
+        """
+
+    def getViewManager():
+        """ Return the (default) view manager.
+        """
+
 
 class ILoopsContained(Interface):
     containers(ILoops)

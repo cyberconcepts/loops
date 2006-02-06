@@ -22,12 +22,12 @@
             The body
           </div>
           <div class="content-1"
-               tal:define="target view/target;
+               tal:define="target item/target;
                            onclick string:openEditWindow('${item/url}/@@edit_target.html')"
                tal:condition="target"
                tal:attributes="class string:content-$level;
                                ondblclick python: item.editable and onclick or ''"
-               tal:content="structure view/renderTargetBody">
+               tal:content="structure item/renderTargetBody">
             The body
           </div>
   </tal:body>
