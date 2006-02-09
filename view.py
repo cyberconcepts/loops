@@ -35,7 +35,8 @@ from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 from cybertools.relation import DyadicRelation
-from cybertools.relation.registry import IRelationsRegistry, getRelations
+from cybertools.relation.registry import getRelations
+from cybertools.relation.interfaces import IRelationRegistry
 
 from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
@@ -67,7 +68,7 @@ class View(object):
         return list(rels)[0].second
 
     def setTarget(self, target):
-        registry = zapi.getUtility(IRelationsRegistry)
+        registry = zapi.getUtility(IRelationRegistry)
         rels = list(registry.query(first=self, relationship=TargetRelation))
         if len(rels) > 0:
             oldRel = rels[0]

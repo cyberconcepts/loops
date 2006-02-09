@@ -29,7 +29,8 @@ from zope.interface import implements
 from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
-from cybertools.relation.registry import IRelationsRegistry, getRelations
+from cybertools.relation.registry import getRelations
+from cybertools.relation.interfaces import IRelationRegistry
 
 from interfaces import IConcept, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
@@ -83,7 +84,7 @@ class Concept(Contained, Persistent):
         return [r.first for r in rels]
 
     def assignConcept(self, concept, relationship=ConceptRelation):
-        registry = zapi.getUtility(IRelationsRegistry)
+        registry = zapi.getUtility(IRelationRegistry)
         rel = relationship(self, concept)
         registry.register(rel)
         # TODO (?): avoid duplicates
@@ -91,7 +92,7 @@ class Concept(Contained, Persistent):
     def deassignConcept(self, concept, relationships=None):
         if relationships is None:
             relationships = [ConceptRelation]
-        registry = zapi.getUtility(IRelationsRegistry)
+        registry = zapi.getUtility(IRelationRegistry)
         relations = registry.query(first=self, second=concept,
                                    relationships=relationships)
         for rel in relations:
@@ -107,14 +108,14 @@ class Concept(Contained, Persistent):
         # TODO: sort...
 
     def assignResource(self, resource, relationship=ResourceRelation):
-        registry = zapi.getUtility(IRelationsRegistry)
+        registry = zapi.getUtility(IRelationRegistry)
         registry.register(relationship(self, resource))
         # TODO (?): avoid duplicates
 
     def deassignResource(self, resource, relationships=None):
         if relationships is None:
             relationships = [ResourceRelation]
-        registry = zapi.getUtility(IRelationsRegistry)
+        registry = zapi.getUtility(IRelationRegistry)
         relations = registry.query(first=self, second=resource,
                                    relationships=relationships)
         for rel in relations:

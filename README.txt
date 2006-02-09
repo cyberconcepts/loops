@@ -40,13 +40,13 @@ top-level loops container and a concept manager:
 
 Now we want to relate the second concept to the first one.
 
-In order to do this we first have to provide a relations registry. For
+In order to do this we first have to provide a relation registry. For
 testing we use a simple dummy implementation.
 
-  >>> from cybertools.relation.interfaces import IRelationsRegistry
-  >>> from cybertools.relation.registry import DummyRelationsRegistry
+  >>> from cybertools.relation.interfaces import IRelationRegistry
+  >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IRelationsRegistry, DummyRelationsRegistry())
+  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
 
 Now we can assign the concept c2 to c1 (using the standard ConceptRelation):
         
