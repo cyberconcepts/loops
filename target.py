@@ -108,16 +108,33 @@ class TargetSourceList(object):
     implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
+        #self.context = context
         self.context = removeSecurityProxy(context)
         root = self.context.getLoopsRoot()
         self.resources = root.getResourceManager()
         self.concepts = root.getConceptManager()
 
     def __iter__(self):
-        return iter(list(self.resources.values()) + list(self.concepts.values()))
+        for obj in self.resources.values():
+            yield obj
+        for obj in self.concepts.values():
+            yield obj
+        #return iter(list(self.resources.values()) + list(self.concepts.values()))
 
     def __len__(self):
         return len(self.resources) + len(self.concepts)
 
 
-    
+class QueryableTargetSource(object):
+
+    implements(schema.interfaces.ISource)
+
+    def __init__(self, context):
+        self.context = context
+        root = self.context.getLoopsRoot()
+        self.resources = root.getResourceManager()
+        self.concepts = root.getConceptManager()
+
+    def __contains__(self, value):
+        return value in self.resources.values() or value in self.concepts.values()
+

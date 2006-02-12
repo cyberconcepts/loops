@@ -71,28 +71,40 @@ class IConcept(ILoopsObject, IPotentialTarget):
         default=u'',
         required=False)
 
-    def getSubConcepts(relationships=None):
-        """ Return a sequence of concepts related to self as sub-concepts,
+    def getChildren(relationships=None):
+        """ Return a sequence of concepts related to self as child concepts,
             possibly restricted to the relationships (typically a list of
             relation classes) given.
         """
 
-    def getParentConcepts(relationships=None):
+    def getParents(relationships=None):
         """ Return a tuple of concepts related to self as parent concepts,
             possibly restricted to the relationships (typically a list of
             relation classes) given.
         """
 
-    def assignConcept(concept, relationship):
+    def assignChild(concept, relationship):
         """ Assign an existing concept to self using the relationship given.
-            The assigned concept will be a sub-concept of self.
+            The assigned concept will be a child concept of self.
 
             The relationship defaults to ConceptRelation.
         """
 
-    def deassignConcept(concept, relationships=None):
-        """ Remove the relations to the concept given from self, optionally
-            restricting them to the relationships given.
+    def assignParent(concept, relationship):
+        """ Assign an existing concept to self using the relationship given.
+            The assigned concept will be a parent concept of self.
+
+            The relationship defaults to ConceptRelation.
+        """
+
+    def deassignChildren(concept, relationships=None):
+        """ Remove the child concept relations to the concept given from self,
+            optionally restricting them to the relationships given.
+        """
+
+    def deassignParents(concept, relationships=None):
+        """ Remove the child concept relations to the concept given from self,
+            optionally restricting them to the relationships given.
         """
 
     def getResources(relationships=None):

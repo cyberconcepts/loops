@@ -72,20 +72,6 @@
 
   <!-- concept -->
 
-  <page
-      name="details.html"
-      for="loops.interfaces.IConcept"
-      class=".concept.Details"
-      template="concept_details.pt"
-      permission="zope.View"
-      menu="zmi_views" title="Details"
-      />
-
-  <defaultView
-      for="loops.interfaces.IConcept"
-      name="details.html"
-      />
-
   <addform
       label="Add Concept"
       name="AddLoopsConcept.html"
@@ -114,22 +100,31 @@
 
   <pages
       for="loops.interfaces.IConcept"
-      class=".concept.ConceptRelations"
+      class=".concept.ConceptView"
       permission="zope.ManageContent">
     
     <page
-        name="assign.html"
-        template="concept_assign.pt"
-        menu="zmi_views" title="Assign Concept"
+        name="children.html"
+        template="concept_children.pt"
+        menu="zmi_views" title="Children"
         />
     
-    <page
-        name="concept_assign"
-        attribute="assignConcept"
-        />
-
   </pages>
     
+  <page
+      name="concept.html"
+      for="loops.interfaces.IConcept"
+      class=".concept.ConceptView"
+      template="concept.pt"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+
+  <defaultView
+      for="loops.interfaces.IConcept"
+      name="concept.html"
+      />
+
   <!-- resource manager -->
 
   <addform
@@ -394,8 +389,14 @@
       template="node.pt"
       class=".node.NodeView"
       permission="zope.View"
+      menu="zmi_views" title="View"
       />
     
+  <defaultView
+      for="loops.interfaces.INode"
+      name="node.html"
+      />
+
   <page
       name="target"
       for="loops.interfaces.INode"
@@ -404,11 +405,6 @@
       permission="zope.View"
       />
     
-  <defaultView
-      for="loops.interfaces.INode"
-      name="node.html"
-      />
-
   <!-- vocabulary, traversing, and other stuff -->
 
   <zope:adapter factory="loops.browser.target.TargetTerms"

@@ -1,9 +1,8 @@
-<html metal:use-macro="views/standard_macros/view">
-  <head>
-    <style metal:fill-slot="style_slot">
-    </style>
-  </head>
+<tal:tag condition="view/update" />
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
   <body>
+    
     <div metal:fill-slot="body">
 
       <h1 tal:content="context/title">Concept Title</h1>
@@ -11,28 +10,30 @@
       <div class="row">
         <span class="label">Sub-Concepts</span>:
         <span class="field"
-            tal:repeat="concept context/getSubConcepts">
+            tal:repeat="concept view/children">
           <span tal:condition="python: concept is None">**deleted**</span>
-          <span tal:condition="python: concept is not None"
-                tal:content="concept/title">subconcept</span>
+          <a href="#"
+             tal:attributes="href string:${concept/url}/children.html">
+            <span tal:condition="python: concept is not None"
+                  tal:replace="concept/title">child</span>
+          </a>
           <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>
       <div class="row">
         <span class="label">Parent Concepts</span>:
         <span class="field"
-            tal:repeat="concept context/getParentConcepts">
-          <span tal:content="concept/title">parent concept</span>
+            tal:repeat="concept view/parents">
+          <a href="#"
+             tal:attributes="href string:${concept/url}/children.html">
+            <span tal:replace="concept/title">parent</span>
+          </a>
           <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
       </div>
-      <div class="row">
-        <span class="label">Last Modified</span>:
-        <span class="field" tal:content="view/modified">2004-08-28</span>
-      </div>
       
       <form action="." method="post"
-            tal:attributes="action context/@@absolute_url">
+            tal:attributes="action request/URL">
         <div class="row">
             <span class="label">Concept Name</span>:
             <span class="field">
@@ -40,7 +41,7 @@
             </span>
         </div>
         <div class="row">
-            <input type="submit" name="concept_assign:method" value="Assign Concept" />
+            <input type="submit" name="concept_assign" value="Assign Concept" />
         </div>
       </form>
 

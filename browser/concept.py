@@ -24,13 +24,16 @@ $Id$
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
-from cybertools.relation import DyadicRelation
 
-from loops.interfaces import IConcept
+class ConceptView(object):
 
-class Details(object):
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
+    @Lazy
     def modified(self):
         """ get date/time of last modification
         """
@@ -38,25 +41,28 @@ class Details(object):
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
-    def subConcepts(self):
-        return [{'object': c,
-                 'title': c.title,
-                 'url': zapi.absoluteURL(c, self.request)}
-            for c in self.context.getSubConcepts()]
+    @Lazy
+    def url(self):
+        return zapi.absoluteURL(self.context, self.request)
 
-    def parentConcepts(self):
-        return [{'object': c,
-                 'title': c.title,
-                 'url': zapi.absoluteURL(c, self.request)}
-            for c in self.context.getParentConcepts()]
+    @Lazy
+    def title(self):
+        return self.context.title
 
+    def children(self):
+        request = self.request
+        for c in self.context.getChildren():
+            yield ConceptView(c, request)
 
-class ConceptRelations(Details):
+    def parents(self):
+        request = self.request
+        for c in self.context.getParents():
+            yield ConceptView(c, request)
 
-    def assignConcept(self, concept_name):
-        """ Assign a concept denoted by the 'concept_name' request parameter.
-        """
-        concept = zapi.getParent(self.context)[concept_name]
-        self.context.assignConcept(removeSecurityProxy(concept))
-        self.request.response.redirect(zapi.absoluteURL(self.context, self.request))
+    def update(self):
+        concept_name = self.request.get('concept_name', None)
+        if concept_name:
+            concept = zapi.getParent(self.context)[concept_name]
+            self.context.assignChild(removeSecurityProxy(concept))
+        return True
 

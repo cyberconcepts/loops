@@ -70,26 +70,29 @@ class Concept(Contained, Persistent):
 
     # concept relations
 
-    def getSubConcepts(self, relationships=None):
+    def getChildren(self, relationships=None):
         if relationships is None:
             relationships = [ConceptRelation]
         rels = getRelations(first=self, relationships=relationships)
         return [r.second for r in rels]
         # TODO: sort...
 
-    def getParentConcepts(self, relationships=None):
+    def getParents(self, relationships=None):
         if relationships is None:
             relationships = [ConceptRelation]
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
-    def assignConcept(self, concept, relationship=ConceptRelation):
+    def assignChild(self, concept, relationship=ConceptRelation):
         registry = zapi.getUtility(IRelationRegistry)
         rel = relationship(self, concept)
         registry.register(rel)
         # TODO (?): avoid duplicates
 
-    def deassignConcept(self, concept, relationships=None):
+    def assignParent(self, concept, relationship=ConceptRelation):
+        concept.assignChild(self, relationship)
+
+    def deassignChildren(self, concept, relationships=None):
         if relationships is None:
             relationships = [ConceptRelation]
         registry = zapi.getUtility(IRelationRegistry)
@@ -98,6 +101,9 @@ class Concept(Contained, Persistent):
         for rel in relations:
             registry.unregister(relation)
 
+    def deassignParents(self, concept, relationships=None):
+        concept.deassignChildren(self, relationships)
+    
     # resource relations
 
     def getResources(self, relationships=None):
@@ -133,6 +139,4 @@ class ConceptManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
-
-
     

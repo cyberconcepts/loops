@@ -48,30 +48,35 @@ testing we use a simple dummy implementation.
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
 
-Now we can assign the concept c2 to c1 (using the standard ConceptRelation):
+Now we can assign the concept c2 as a child to c1 (using the standard
+ConceptRelation):
         
-  >>> cc1.assignConcept(cc2)
+  >>> cc1.assignChild(cc2)
 
-We can now ask our concepts for their related concepts:
+We can now ask our concepts for their related child and parent concepts:
 
-  >>> sc1 = cc1.getSubConcepts()
+  >>> sc1 = cc1.getChildren()
   >>> len(sc1)
   1
   >>> cc2 in sc1
   True
-  >>> len(cc1.getParentConcepts())
+  >>> len(cc1.getParents())
   0
 
-  >>> pc2 = cc2.getParentConcepts()
+  >>> pc2 = cc2.getParents()
   >>> len(pc2)
   1
 
   >>> cc1 in pc2
   True
-  >>> len(cc2.getSubConcepts())
+  >>> len(cc2.getChildren())
   0
 
-TODO: Work with views...
+Concept Views
+-------------
+
+  >>> from loops.browser.concept import ConceptView
+  >>> view = ConceptView(cc1, TestRequest())
         
 
 Resources and what they have to do with Concepts
@@ -147,12 +152,15 @@ Views/Nodes: Menus, Menu Items, Listings, Pages, etc
 ====================================================
 
 Note: the term "view" here is not directly related to the special
-Zop 3 term "view" (a multiadapter for presentation purposes) but basically
+Zope 3 term "view" (a multiadapter for presentation purposes) but basically
 bears the common sense meaning: an object (that may be persistent or
 created on the fly) that provides a view to content of whatever kind.
 
 Views (or nodes - that's the only type of views existing at the moment)
-thus provide the presentation space to concepts and resources.
+thus provide the presentation space for concepts and resources, i.e. visitors
+of a site only see views or nodes but never concepts or resources directly;
+the views or nodes, however, present informations coming from the concepts
+or resources they are related to.
 
 We first need a view manager:
     
@@ -333,7 +341,7 @@ based on this source list:
   True
 
 There is a special edit view class that can be used to configure a node
-in a way, that allows the creation of a target object on the fly.
+in a way that allows the creation of a target object on the fly.
 (We here use the base class providing the method for this action; the real
 application uses a subclass that does all the other stuff for form handling.)
 When creating a new target object you may specify a uri that determines
@@ -439,6 +447,10 @@ cybertools.relation package.)
 
 Ordering Nodes
 --------------
+
+Note: this functionality has been moved to cybertools.container; we
+include some testing here to make sure it still works and give a short
+demonstration.
 
 Let's add some more nodes and reorder them:
 

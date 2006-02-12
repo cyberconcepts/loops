@@ -1,17 +1,18 @@
-<tal:tag condition="view/update"/>
+<tal:tag condition="view/update" />
 <html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zope">
+      i18n:domain="zope">
+
+  <head>
+    <metal:js fill-slot="ecmascript_slot">
+      <script type="text/javascript"
+              src="node.js"
+              tal:attributes="src string:${context/++resource++node.js}">
+      </script>
+    </metal:js>
+  </head>
   <body>
-
-  <metal:js fill-slot="ecmascript_slot">
-    <script type="text/javascript"
-            src="node.js"
-            tal:attributes="src string:${context/++resource++node.js}">
-    </script>
-  </metal:js>
-  
+    
   <div metal:fill-slot="body">
-
   <div metal:define-macro="body">
 
     <form action="." tal:attributes="action request/URL" method="post"

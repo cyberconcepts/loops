@@ -11,7 +11,7 @@
       <div class="row">
         <span class="label">Sub-Concepts</span>:
         <span class="field"
-            tal:repeat="concept view/subConcepts">
+            tal:repeat="concept view/children">
           <a href="#"
              tal:attributes="href concept/url"
              tal:content="concept/title">subtask</a>
@@ -21,7 +21,7 @@
       <div class="row">
         <span class="label">Parent Concepts</span>:
         <span class="field"
-            tal:repeat="concept view/parentConcepts">
+            tal:repeat="concept view/parents">
           <a href="#"
              tal:attributes="href concept/url"
              tal:content="concept/title">subtask</a>
