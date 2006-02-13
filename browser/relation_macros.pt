@@ -1,0 +1,40 @@
+<html i18n:domain="loops">
+
+
+<metal:assignments define-macro="assignments">
+  <form method="post" name="remove" action="."
+        tal:attributes="action request/URL"
+        tal:condition="items">
+    <fieldset>
+      <table class="listing" summary="Currently assigned objects">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th i18n:translate="label_title">Title</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="item items">
+            <td class="field">
+              <input class="formSelection"
+                     type="checkbox" name="tokens:list" id="#" value=""
+                     tal:attributes="value item/token" />
+            </td>
+            <td>
+              <a tal:content="item/title" href="#"
+                 tal:attributes="href item/url">Title</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="formControls">
+        <input class="context" type="submit" name="form.button.Remove"
+               value="Remove Assignment(s)"
+               i18n:attributes="value" />
+      </div>
+    </fieldset>
+  </form>
+</metal:assignments>
+
+
+</html>
