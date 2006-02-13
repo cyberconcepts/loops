@@ -1,25 +1,12 @@
 <tal:tag condition="view/update" />
 <html metal:use-macro="context/@@standard_macros/view"
-      i18n:domain="zope">
+      i18n:domain="loops">
   <body>
     
     <div metal:fill-slot="body">
 
       <h1 tal:content="context/title">Concept Title</h1>
 
-      <div class="row">
-        <span class="label">Sub-Concepts</span>:
-        <span class="field"
-            tal:repeat="concept view/children">
-          <span tal:condition="python: concept is None">**deleted**</span>
-          <a href="#"
-             tal:attributes="href string:${concept/url}/children.html">
-            <span tal:condition="python: concept is not None"
-                  tal:replace="concept/title">child</span>
-          </a>
-          <span class="field" tal:condition="not:repeat/concept/end"> - </span>
-        </span>
-      </div>
       <div class="row">
         <span class="label">Parent Concepts</span>:
         <span class="field"
@@ -30,6 +17,11 @@
           </a>
           <span class="field" tal:condition="not:repeat/concept/end"> - </span>
         </span>
+      </div>
+      <div class="row"
+           tal:define="items view/children">
+        <span class="label">Sub-Concepts</span>:
+        <metal:children use-macro="views/relation_macros/assignments" />
       </div>
       
       <form action="." method="post"

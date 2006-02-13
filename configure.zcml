@@ -43,6 +43,14 @@
         permission="zope.ManageContent"
         interface="zope.app.container.interfaces.IWriteContainer" />
 
+    <!--<require
+        permission="zope.View"
+        interface="loops.interfaces.ILoops" />-->
+    
+    <require
+        permission="zope.View"
+        attributes="getLoopsUri" />
+
   </content>
 
   <!-- concept manager and concept -->

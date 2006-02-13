@@ -379,7 +379,8 @@ class ITargetRelation(IRelation):
 
 # the loops top-level container
 
-class ILoops(ILoopsObject, IFolder):
+#class ILoops(ILoopsObject, IFolder):
+class ILoops(ILoopsObject):
     """ The top-level object of a loops site.
     """
     contains(IConceptManager, IResourceManager, IViewManager)

@@ -26,28 +26,10 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
+from loops.browser.common import BaseView
 
-class ConceptView(object):
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    @Lazy
-    def modified(self):
-        """ get date/time of last modification
-        """
-        dc = ICMFDublinCore(self.context)
-        d = dc.modified or dc.created
-        return d and d.strftime('%Y-%m-%d %H:%M') or ''
-
-    @Lazy
-    def url(self):
-        return zapi.absoluteURL(self.context, self.request)
-
-    @Lazy
-    def title(self):
-        return self.context.title
+class ConceptView(BaseView):
 
     def children(self):
         request = self.request

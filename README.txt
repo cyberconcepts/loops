@@ -77,6 +77,9 @@ Concept Views
 
   >>> from loops.browser.concept import ConceptView
   >>> view = ConceptView(cc1, TestRequest())
+
+  >>> sorted([c.title for c in view.children()])
+  [u'Zope 3']
         
 
 Resources and what they have to do with Concepts

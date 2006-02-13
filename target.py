@@ -52,11 +52,11 @@ class ConceptProxy(object):
     def setTitle(self, title): self.target.title = title
     title = property(getTitle, setTitle)
 
-    def getSubConcepts(self, relationships=None):
-        return self.target.getSubConcepts(relationships)
+    def getChildren(self, relationships=None):
+        return self.target.getChildren(relationships)
 
-    def getParentConcepts(self, relationships=None):
-        return self.target.getParentConcepts(relationships)
+    def getParents(self, relationships=None):
+        return self.target.getParents(relationships)
 
 
 class ResourceProxy(object):

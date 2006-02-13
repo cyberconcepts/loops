@@ -1,7 +1,7 @@
 /* $Id$ */
 
 function openEditWindow(url) {
-    zmi=window.open(url, 'zmi');
+    zmi = window.open(url, 'zmi');
     zmi.focus();
     return false;
 }

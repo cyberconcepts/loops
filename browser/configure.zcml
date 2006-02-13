@@ -28,6 +28,13 @@
       permission="zope.View"
       />
 
+  <page
+      for="*"
+      name="relation_macros"
+      template="relation_macros.pt"
+      permission="zope.View"
+      />
+
   <!-- loops top-level container -->
 
   <addform
