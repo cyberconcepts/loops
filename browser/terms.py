@@ -17,7 +17,7 @@
 #
 
 """
-Class(es) for representing a target attribute, to be used e.g. for
+Class(es) for representing a related object , to be used e.g. for
 vocabularies and widgets.
 
 $Id$
@@ -29,9 +29,10 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
+from loops.browser.common import BaseView
 
 
-class TargetTerms(object):
+class LoopsTerms(BaseView):
 
     implements(ITerms)
 

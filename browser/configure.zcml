@@ -111,9 +111,9 @@
       permission="zope.ManageContent">
     
     <page
-        name="children.html"
-        template="concept_children.pt"
-        menu="zmi_views" title="Children"
+        name="related.html"
+        template="concept_related.pt"
+        menu="zmi_views" title="Related Concepts"
         />
     
   </pages>
@@ -414,8 +414,12 @@
     
   <!-- vocabulary, traversing, and other stuff -->
 
-  <zope:adapter factory="loops.browser.target.TargetTerms"
+  <zope:adapter factory="loops.browser.terms.LoopsTerms"
            for="loops.target.TargetSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <zope:adapter factory="loops.browser.terms.LoopsTerms"
+           for="loops.browser.concept.ConceptSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:view factory="loops.view.NodeTraverser"

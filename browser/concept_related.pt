@@ -1,0 +1,46 @@
+<tal:tag condition="view/update" />
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="loops">
+  <body>
+    
+    <div metal:fill-slot="body">
+
+      <h1 tal:content="context/title">Concept Title</h1><br />
+      
+      <tal:block define="items view/parents;
+                         qualifier string:parents;
+                         legend string:Parent Concepts">
+        <metal:parents use-macro="views/relation_macros/assignments" />
+      </tal:block>
+      <tal:block define="items view/children;
+                         qualifier string:children;
+                         legend string:Child Concepts">
+        <metal:children use-macro="views/relation_macros/assignments" />
+      </tal:block>
+      
+      <form action="." method="post"
+            tal:attributes="action request/URL">
+        <div class="row">
+          <span class="label">Concept Name</span>:
+          <span class="field">
+            <input type="test" name="concept_name" />
+          </span>
+        </div>
+        <div class="row">
+          <select name="concept">
+            <tal:option repeat="term view/getVocabularyForRelated">
+              <option tal:content="term/title"
+                      tal:attributes="value term/token">
+                Concept Abc
+              </option>
+            </tal:option>
+          </select>
+        </div>
+        <div class="row">
+          <input type="submit" name="concept_assign" value="Assign Concept" />
+        </div>
+      </form>
+
+    </div>
+  </body>
+</html>

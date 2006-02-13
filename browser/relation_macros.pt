@@ -5,7 +5,11 @@
   <form method="post" name="remove" action="."
         tal:attributes="action request/URL"
         tal:condition="items">
+    <input type="hidden" name="action" value="remove" />
+    <input type="hidden" name="qualifier" value="parents"
+           tal:attributes="value qualifier" />
     <fieldset>
+     <legend tal:content="legend">Parent Concepts</legend>
       <table class="listing" summary="Currently assigned objects">
         <thead>
           <tr>

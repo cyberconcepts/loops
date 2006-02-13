@@ -80,6 +80,12 @@ Concept Views
 
   >>> sorted([c.title for c in view.children()])
   [u'Zope 3']
+
+  >>> voc = view.getVocabularyForRelated()
+  >>> for term in voc:
+  ...     print term.token, term.title
+  .loops/concepts/cc1
+  .loops/concepts/cc2 Zope 3
         
 
 Resources and what they have to do with Concepts
@@ -330,8 +336,8 @@ objects.) The source is basically a source list:
 The form then uses a sort of browser view providing the ITerms interface
 based on this source list:
 
-  >>> from loops.browser.target import TargetTerms
-  >>> terms = TargetTerms(source, TestRequest())
+  >>> from loops.browser.terms import LoopsTerms
+  >>> terms = LoopsTerms(source, TestRequest())
   >>> term = terms.getTerm(doc1)
   >>> term.token, term.title, term.value
   ('.loops/resources/doc1', u'Zope Info', <loops.resource.Document...>)

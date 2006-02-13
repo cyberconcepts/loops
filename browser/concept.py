@@ -25,8 +25,11 @@ $Id$
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.cachedescriptors.property import Lazy
+from zope.interface import implements
+from zope import schema
 from zope.security.proxy import removeSecurityProxy
 from loops.browser.common import BaseView
+from loops.browser.terms import LoopsTerms
 
 
 class ConceptView(BaseView):
@@ -47,4 +50,27 @@ class ConceptView(BaseView):
             concept = zapi.getParent(self.context)[concept_name]
             self.context.assignChild(removeSecurityProxy(concept))
         return True
+
+    def getVocabularyForRelated(self):
+        source = ConceptSourceList(self.context)
+        for candidate in source:
+            yield LoopsTerms(ConceptView(candidate, self.request), self.request)
+
+
+class ConceptSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        #self.context = context
+        self.context = removeSecurityProxy(context)
+        root = self.context.getLoopsRoot()
+        self.concepts = root.getConceptManager()
+
+    def __iter__(self):
+        for obj in self.concepts.values():
+            yield obj
+
+    def __len__(self):
+        return len(self.concepts)
 
