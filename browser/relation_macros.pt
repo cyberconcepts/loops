@@ -1,16 +1,21 @@
 <html i18n:domain="loops">
 
 
-<metal:assignments define-macro="assignments">
-  <form method="post" name="remove" action="."
+<metal:assignments define-macro="listing">
+  <form method="post" name="listing" action="."
         tal:attributes="action request/URL"
         tal:condition="items">
-    <input type="hidden" name="action" value="remove" />
+    <input type="hidden" name="action" value="remove"
+           tal:attributes="value action" />
     <input type="hidden" name="qualifier" value="parents"
+           tal:condition="qualifier"
            tal:attributes="value qualifier" />
     <fieldset>
-     <legend tal:content="legend">Parent Concepts</legend>
-      <table class="listing" summary="Currently assigned objects">
+      <legend tal:content="legend"
+              i18n:translate="">Parent Concepts</legend>
+      <table class="listing" summary="Currently assigned objects"
+             i18n:attributes="summary"
+             tal:attributes="summary summary">
         <thead>
           <tr>
             <th>&nbsp;</th>
@@ -32,9 +37,10 @@
         </tbody>
       </table>
       <div class="formControls">
-        <input class="context" type="submit" name="form.button.Remove"
+        <input class="context" type="submit" name="form.button.submit"
                value="Remove Assignment(s)"
-               i18n:attributes="value" />
+               i18n:attributes="value"
+               tal:attributes="value buttonText" />
       </div>
     </fieldset>
   </form>

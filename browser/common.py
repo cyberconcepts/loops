@@ -24,7 +24,10 @@ $Id$
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
+from zope.interface import implements
+#from zope.schema.vocabulary import SimpleTerm
 from zope.security.proxy import removeSecurityProxy
 
 class BaseView(object):
@@ -56,5 +59,37 @@ class BaseView(object):
 
     @Lazy
     def title(self):
-        return self.context.title
+        return self.context.title or zapi.getName(self.context)
+
+    @Lazy
+    def value(self):
+        return self.context
+
+
+class LoopsTerms(object):
+    """ Provide the ITerms interface, e.g. for usage in selection
+        lists.
+    """
+
+    implements(ITerms)
+
+    def __init__(self, source, request):
+        # the source parameter is a view or adapter of a real context object:
+        self.source = source
+        self.context = source.context
+        self.request = request
+
+    @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+    
+    def getTerm(self, value):
+        return BaseView(value, self.request)
+        #token = self.loopsRoot.getLoopsUri(value)
+        #title = value.title or zapi.getName(value)
+        #return SimpleTerm(value, token, title)
+
+    def getValue(self, token):
+        return self.loopsRoot.loopsTraverse(token)
+
 

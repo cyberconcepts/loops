@@ -26,6 +26,8 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.interface import implements
+from zope import schema
+from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
@@ -96,10 +98,12 @@ class Concept(Contained, Persistent):
         if relationships is None:
             relationships = [ConceptRelation]
         registry = zapi.getUtility(IRelationRegistry)
-        relations = registry.query(first=self, second=concept,
-                                   relationships=relationships)
+        relations = []
+        for rs in relationships:
+            relations.extend(registry.query(first=self, second=concept,
+                                            relationship=rs))
         for rel in relations:
-            registry.unregister(relation)
+            registry.unregister(rel)
 
     def deassignParents(self, concept, relationships=None):
         concept.deassignChildren(self, relationships)
@@ -140,3 +144,24 @@ class ConceptManager(BTreeContainer):
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
     
+
+# adapters and similar components
+
+class ConceptSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        #self.context = context
+        self.context = removeSecurityProxy(context)
+        root = self.context.getLoopsRoot()
+        self.concepts = root.getConceptManager()
+
+    def __iter__(self):
+        for obj in self.concepts.values():
+            yield obj
+
+    def __len__(self):
+        return len(self.concepts)
+
+

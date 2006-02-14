@@ -81,12 +81,39 @@ Concept Views
   >>> sorted([c.title for c in view.children()])
   [u'Zope 3']
 
+The concept view allows to get a list of terms (sort of vocabulary) that
+can be used to show the objects in a listing:
+
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from zope.app.form.browser.interfaces import ITerms
+  >>> from loops.concept import ConceptSourceList
+  >>> from loops.browser.common import LoopsTerms
+  >>> ztapi.provideAdapter(ConceptSourceList, ITerms, LoopsTerms,
+  ...                      with=(IBrowserRequest,))
   >>> voc = view.getVocabularyForRelated()
   >>> for term in voc:
   ...     print term.token, term.title
-  .loops/concepts/cc1
+  .loops/concepts/cc1 cc1
   .loops/concepts/cc2 Zope 3
-        
+
+The concept view allows updating the underlying context object:
+
+  >>> cc3 = Concept(u'loops for Zope 3')
+  >>> concepts['cc3'] = cc3
+  >>> view = ConceptView(cc1,
+  ...           TestRequest(action='assign', tokens=['.loops/concepts/cc3']))
+  >>> view.update()
+  True
+  >>> sorted(c.title for c in cc1.getChildren())
+  [u'Zope 3', u'loops for Zope 3']
+
+  >>> view = ConceptView(cc1,
+  ...           TestRequest(action='remove', qualifier='children',
+  ...                       tokens=['.loops/concepts/cc2']))
+  >>> view.update()
+  True
+  >>> sorted(c.title for c in cc1.getChildren())
+  [u'loops for Zope 3']
 
 Resources and what they have to do with Concepts
 ================================================
@@ -329,14 +356,14 @@ objects.) The source is basically a source list:
   >>> from loops.target import TargetSourceList
   >>> source = TargetSourceList(m111)
   >>> len(source)
-  3
+  4
   >>> sorted([zapi.getName(s) for s in source])
-  [u'cc1', u'cc2', u'doc1']
+  [u'cc1', u'cc2', u'cc3', u'doc1']
 
 The form then uses a sort of browser view providing the ITerms interface
 based on this source list:
 
-  >>> from loops.browser.terms import LoopsTerms
+  >>> from loops.browser.common import LoopsTerms
   >>> terms = LoopsTerms(source, TestRequest())
   >>> term = terms.getTerm(doc1)
   >>> term.token, term.title, term.value
@@ -402,7 +429,6 @@ method. This makes use of a browser view registered for the target interface,
 and of a lot of other stuff needed for the rendering machine.
 
   >>> from zope.app.publisher.interfaces.browser import IBrowserView
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from loops.browser.resource import DocumentView
   >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
   ...                      with=(IBrowserRequest,))

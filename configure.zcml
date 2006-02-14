@@ -49,7 +49,7 @@
     
     <require
         permission="zope.View"
-        attributes="getLoopsUri" />
+        attributes="getLoopsUri loopsTraverse" />
 
   </content>
 

@@ -414,12 +414,12 @@
     
   <!-- vocabulary, traversing, and other stuff -->
 
-  <zope:adapter factory="loops.browser.terms.LoopsTerms"
+  <zope:adapter factory="loops.browser.common.LoopsTerms"
            for="loops.target.TargetSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
-  <zope:adapter factory="loops.browser.terms.LoopsTerms"
-           for="loops.browser.concept.ConceptSourceList
+  <zope:adapter factory="loops.browser.common.LoopsTerms"
+           for="loops.concept.ConceptSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:view factory="loops.view.NodeTraverser"

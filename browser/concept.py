@@ -24,12 +24,14 @@ $Id$
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
+from zope.publisher.interfaces import BadRequest
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
-from loops.browser.common import BaseView
-from loops.browser.terms import LoopsTerms
+from loops.concept import ConceptSourceList
+from loops.browser.common import BaseView, LoopsTerms
 
 
 class ConceptView(BaseView):
@@ -45,32 +47,29 @@ class ConceptView(BaseView):
             yield ConceptView(c, request)
 
     def update(self):
-        concept_name = self.request.get('concept_name', None)
-        if concept_name:
-            concept = zapi.getParent(self.context)[concept_name]
-            self.context.assignChild(removeSecurityProxy(concept))
+        action = self.request.get('action', None)
+        if action is None:
+            return True
+        tokens = self.request.get('tokens', [])
+        for token in tokens:
+            concept = self.loopsRoot.loopsTraverse(token)
+            if action == 'assign':
+                self.context.assignChild(removeSecurityProxy(concept))
+            elif action == 'remove':
+                qualifier = self.request.get('qualifier', None)
+                if qualifier == 'parents':
+                    self.context.deassignParents(concept)
+                elif qualifier == 'children':
+                    self.context.deassignChildren(concept)
+                else:
+                    raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
+            else:
+                    raise(BadRequest, 'Illegal action: %s.' % action)
         return True
 
     def getVocabularyForRelated(self):
         source = ConceptSourceList(self.context)
+        terms = zapi.getMultiAdapter((source, self.request), ITerms)
         for candidate in source:
-            yield LoopsTerms(ConceptView(candidate, self.request), self.request)
-
-
-class ConceptSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
-
-    def __init__(self, context):
-        #self.context = context
-        self.context = removeSecurityProxy(context)
-        root = self.context.getLoopsRoot()
-        self.concepts = root.getConceptManager()
-
-    def __iter__(self):
-        for obj in self.concepts.values():
-            yield obj
-
-    def __len__(self):
-        return len(self.concepts)
+            yield terms.getTerm(candidate)
 
