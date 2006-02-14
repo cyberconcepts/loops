@@ -54,7 +54,13 @@ class ConceptView(BaseView):
         for token in tokens:
             concept = self.loopsRoot.loopsTraverse(token)
             if action == 'assign':
-                self.context.assignChild(removeSecurityProxy(concept))
+                assignAs = self.request.get('assignAs', 'child')
+                if assignAs == 'child':
+                    self.context.assignChild(removeSecurityProxy(concept))
+                elif assignAs == 'parent':
+                    self.context.assignParent(removeSecurityProxy(concept))
+                else:
+                    raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
             elif action == 'remove':
                 qualifier = self.request.get('qualifier', None)
                 if qualifier == 'parents':

@@ -26,14 +26,30 @@
         <metal:children use-macro="views/relation_macros/listing" />
       </tal:block>
 
+      <tal:block>
+        <metal:create use-macro="views/relation_macros/create" />
+      </tal:block>
+      
       <tal:block define="items view/getVocabularyForRelated;
                          action string:assign;
                          qualifier nothing;
                          summary string:Assignment candidates;
-                         legend string:Assign as Children;
-                         buttonText string:Assign Object(s);
+                         legend string:Search Results;
+                         buttonText string:Assign;
                          ">
-        <metal:assign use-macro="views/relation_macros/listing" />
+        <metal:assign use-macro="views/relation_macros/listing">
+          <metal:search fill-slot="topActions">
+            <metal:block use-macro="views/relation_macros/search" />
+          </metal:search>
+          <metal:special fill-slot="specialButtons">
+            as
+            <select name="assignAs">
+              <option value="child" selected i18n:translate="">child</option>
+              <option value="parent" i18n:translate="">parent</option>
+            </select>
+            object(s)
+          </metal:special>
+        </metal:assign>
       </tal:block>
       
     </div>

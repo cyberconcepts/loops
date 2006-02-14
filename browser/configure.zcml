@@ -96,15 +96,6 @@
       view="AddLoopsConcept.html"
       />
 
-  <editform
-      label="Edit Concept"
-      name="edit.html"
-      schema="loops.interfaces.IConcept"
-      for="loops.interfaces.IConcept"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />
-
   <pages
       for="loops.interfaces.IConcept"
       class=".concept.ConceptView"
@@ -118,6 +109,15 @@
     
   </pages>
     
+  <editform
+      label="Edit Concept"
+      name="edit.html"
+      schema="loops.interfaces.IConcept"
+      for="loops.interfaces.IConcept"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
   <page
       name="concept.html"
       for="loops.interfaces.IConcept"
