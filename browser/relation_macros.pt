@@ -4,9 +4,10 @@
 <metal:assignments define-macro="listing">
   <fieldset>
     <legend tal:content="legend"
-              i18n:translate="">Parent Concepts</legend>
+            i18n:translate="">Listing</legend>
     <metal:top define-slot="topActions" />
-    <form method="post" name="listing" action="."
+    <form metal:define-macro="listing_form"
+          method="post" name="listing" action="."
           tal:attributes="action request/URL"
           tal:condition="items">
       <input type="hidden" name="action" value="remove"
@@ -46,34 +47,40 @@
                tal:attributes="value buttonText" />
         <metal:buttons define-slot="specialButtons" />
       </div>
-  </form>
-    </fieldset>
+    </form>
+  </fieldset>
 </metal:assignments>
 
 
 <metal:create define-macro="create">
   <fieldset>
-    <legend i18n:translate="">Create Object</legend>
+    <legend tal:content="legend"
+            i18n:translate="">Create Object</legend>
     <form method="post" name="listing" action="."
         tal:attributes="action request/URL">
+      <input type="hidden" name="action" value="create" />
       <div class="row">
         <span i18n:translate="">Name</span>
-        <input />
+        <input name="create.name" size="15"
+               tal:attributes="value nothing" />&nbsp;
         <span i18n:translate="">Title</span>
-        <input />
+        <input name="create.title" size="30"
+               tal:attributes="value nothing" />&nbsp;
         <span i18n:translate="">Type</span>
-        <select>
-          <option>Topic</option>
+        <select name="create.type">
+          <option value=".loops/concepts/topic"
+                  i18n:translate="">Topic</option>
         </select>
-      </div>
+      </div><br />
       <div class="formControls">
         <input class="context" type="submit" name="form.button.submit"
                value="Create Object"
-               i18n:attributes="value" />
+               i18n:attributes="value"
+               tal:attributes="value buttonText" />
             and assign as
             <select name="assignAs">
-              <option value="child" selected i18n:translate="">child</option>
-              <option value="parent" i18n:translate="">parent</option>
+              <option value="child" selected i18n:translate="">Child</option>
+              <option value="parent" i18n:translate="">Parent</option>
             </select>
       </div>
     </form>
@@ -84,9 +91,17 @@
 <metal:search define-macro="search">
   <form method="post" name="listing" action="."
         tal:attributes="action request/URL">
+      <input type="hidden" name="action" value="search" />
       <div class="row">
         <span i18n:translate="">Search Term</span>
-        <input />
+        <input name="searchTerm"
+               tal:attributes="value request/searchTerm | nothing" />
+        <span i18n:translate="">Type</span>
+        <select name="search.type">
+          <option value="*">Any</option>
+          <option value=".loops/concepts/topic"
+                  i18n:translate="">Topic</option>
+        </select>
       </div>
       <div class="formControls">
         <input class="context" type="submit" name="form.button.submit"

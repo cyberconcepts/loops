@@ -415,11 +415,11 @@
   <!-- vocabulary, traversing, and other stuff -->
 
   <zope:adapter factory="loops.browser.common.LoopsTerms"
-           for="loops.target.TargetSourceList
+           for="loops.concept.ConceptTypeSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:adapter factory="loops.browser.common.LoopsTerms"
-           for="loops.concept.ConceptSourceList
+           for="loops.target.TargetSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:view factory="loops.view.NodeTraverser"

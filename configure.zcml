@@ -49,7 +49,7 @@
     
     <require
         permission="zope.View"
-        attributes="getLoopsUri loopsTraverse" />
+        attributes="getLoopsUri loopsTraverse getConceptManager" />
 
   </content>
 
@@ -227,6 +227,8 @@
 
   <!-- adapters -->
 
+  <adapter factory="loops.concept.SearchableText" />
+  
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />
@@ -240,6 +242,11 @@
            permission="zope.ManageContent" />
   <adapter factory="loops.target.ConceptProxy"
            permission="zope.ManageContent" />
+
+  <vocabulary
+      factory="loops.concept.ConceptTypeSourceList"
+      name="loops.conceptTypeSource"
+      />
 
   <vocabulary
       factory="loops.target.TargetSourceList"

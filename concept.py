@@ -25,6 +25,8 @@ $Id$
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
+from zope.cachedescriptors.property import Lazy
+from zope.component import adapts
 from zope.interface import implements
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
@@ -32,11 +34,13 @@ from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
+from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry
 
-from interfaces import IConcept, IConceptView
+from interfaces import IConcept, IConceptRelation, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
 from interfaces import ILoopsContained
+from interfaces import ISearchableText
 
 
 # relation classes
@@ -44,11 +48,20 @@ from interfaces import ILoopsContained
 class ConceptRelation(DyadicRelation):
     """ A relation between concept objects.
     """
+    implements(IConceptRelation)
+
+
+class TypeRelation(DyadicRelation):
+    """ A special relation between two concepts, the parent specifying
+        the type of the child.
+    """
+    implements(IConceptRelation)
 
 
 class ResourceRelation(DyadicRelation):
     """ A relation between a concept and a resource object.
     """
+    implements(IConceptRelation)
 
 
 # concept
@@ -63,6 +76,14 @@ class Concept(Contained, Persistent):
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
+
+    def getConceptType(self):
+        rel = getRelationSingle(self, TypeRelation)
+        return rel and rel.second or None
+    def setConceptType(self, concept):
+        if self.getConceptType() != concept:
+            setRelationSingle(TypeRelation(self, removeSecurityProxy(concept)))
+    conceptType = property(getConceptType, setConceptType)
 
     def __init__(self, title=u''):
         self.title = title
@@ -164,4 +185,47 @@ class ConceptSourceList(object):
     def __len__(self):
         return len(self.concepts)
 
+
+class ConceptTypeSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+        #self.context = removeSecurityProxy(context)
+        root = self.context.getLoopsRoot()
+        self.concepts = root.getConceptManager()
+
+    def __iter__(self):
+        return iter(self.conceptTypes)
+
+    @Lazy
+    def conceptTypes(self):
+        result = []
+        typeObject = self.concepts.get('type')
+        unknownType = self.concepts.get('unknown')
+        if typeObject is not None:
+            types = typeObject.getParents((TypeRelation,))
+            if typeObject not in types:
+                result.append(typeObject)
+            if unknownType is not None and unknownType not in types:
+                result.append(unknownType)
+            result.extend(types)
+        return result
+
+    def __len__(self):
+        return len(self.conceptTypes)
+
+
+class SearchableText(object):
+
+    implements(ISearchableText)
+    adapts(IConcept)
+
+    def __init__(self, context):
+        self.context = context
+
+    def searchableText(self):
+        context = self.context
+        return ' '.join((zapi.getName(context), context.title,))
 

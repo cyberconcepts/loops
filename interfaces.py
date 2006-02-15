@@ -71,6 +71,14 @@ class IConcept(ILoopsObject, IPotentialTarget):
         default=u'',
         required=False)
 
+    conceptType = schema.Choice(
+        title=_(u'Concept Type'),
+        description=_(u"The type of the concept, specified by a relation to "
+                       "a concept of type 'type'."),
+        default=None,
+        source="loops.conceptTypeSource",
+        required=False)
+
     def getChildren(relationships=None):
         """ Return a sequence of concepts related to self as child concepts,
             possibly restricted to the relationships (typically a list of
@@ -371,12 +379,6 @@ class INodeConfigSchema(INode, ITargetProperties):
         required=False)
 
 
-class ITargetRelation(IRelation):
-    """ (Marker) interfaces for relations pointing to a target
-        of a view or node.
-    """
-
-
 # the loops top-level container
 
 #class ILoops(ILoopsObject, IFolder):
@@ -409,4 +411,29 @@ class ILoops(ILoopsObject):
 
 class ILoopsContained(Interface):
     containers(ILoops)
+
+
+# relation interfaces
+
+class ITargetRelation(IRelation):
+    """ (Marker) interfaces for relations pointing to a target
+        of a view or node.
+    """
+
+
+class IConceptRelation(IRelation):
+    """ (Marker) interfaces for relations originating from a concept.
+    """
+
+
+# interfaces for catalog indexes
+
+class ISearchableText(Interface):
+    """ Objects to be included in the general full-text index should provide
+        or be adaptable to this interface.
+    """
+
+    def searchableText():
+        """ Return a text with all parts to be indexed by a full-text index.
+        """
 

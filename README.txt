@@ -72,6 +72,33 @@ We can now ask our concepts for their related child and parent concepts:
   >>> len(cc2.getChildren())
   0
 
+Each concept should have a concept type; this is in fact provided by a
+relation to a special kind of concept object with the magic name 'type'.
+This type object is its own type:
+
+  >>> concepts['type'] = Concept(u'Type')
+  >>> typeObject = concepts['type']
+  >>> typeObject.setConceptType(typeObject)
+  >>> typeObject.getConceptType().title
+  u'Type'
+
+  >>> concepts['unknown'] = Concept(u'Unknown Type')
+  >>> unknown = concepts['unknown']
+  >>> unknown.setConceptType(typeObject)
+  >>> unknown.getConceptType().title
+  u'Type'
+
+  >>> cc1.setConceptType(unknown)
+  >>> cc1.getConceptType().title
+  u'Unknown Type'
+
+  >>> concepts['topic'] = Concept(u'Topic')
+  >>> topic = concepts['topic']
+  >>> topic.setConceptType(typeObject)
+  >>> cc1.setConceptType(topic)
+  >>> cc1.getConceptType().title
+  u'Topic'
+
 Concept Views
 -------------
 
@@ -83,18 +110,6 @@ Concept Views
 
 The concept view allows to get a list of terms (sort of vocabulary) that
 can be used to show the objects in a listing:
-
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
-  >>> from zope.app.form.browser.interfaces import ITerms
-  >>> from loops.concept import ConceptSourceList
-  >>> from loops.browser.common import LoopsTerms
-  >>> ztapi.provideAdapter(ConceptSourceList, ITerms, LoopsTerms,
-  ...                      with=(IBrowserRequest,))
-  >>> voc = view.getVocabularyForRelated()
-  >>> for term in voc:
-  ...     print term.token, term.title
-  .loops/concepts/cc1 cc1
-  .loops/concepts/cc2 Zope 3
 
 The concept view allows updating the underlying context object:
 
@@ -114,6 +129,23 @@ The concept view allows updating the underlying context object:
   True
   >>> sorted(c.title for c in cc1.getChildren())
   [u'loops for Zope 3']
+
+We can also create a new concept and assign it:
+
+  >>> params = {'action': 'create', 'create.name': 'cc4',
+  ...           'create.title': u'New concept'}
+  >>> view = ConceptView(cc1, TestRequest(**params))
+  >>> view.update()
+  True
+  >>> sorted(c.title for c in cc1.getChildren())
+  [u'New concept', u'loops for Zope 3']
+
+Searchable Text Adapter
+-----------------------
+
+  >>> from loops.concept import SearchableText
+  >>> SearchableText(cc2).searchableText()
+  u'cc2 Zope 3'
 
 Resources and what they have to do with Concepts
 ================================================
@@ -356,9 +388,9 @@ objects.) The source is basically a source list:
   >>> from loops.target import TargetSourceList
   >>> source = TargetSourceList(m111)
   >>> len(source)
-  4
+  8
   >>> sorted([zapi.getName(s) for s in source])
-  [u'cc1', u'cc2', u'cc3', u'doc1']
+  [u'cc1', u'cc2', u'cc3', u'cc4', u'doc1', u'topic', u'type', u'unknown']
 
 The form then uses a sort of browser view providing the ITerms interface
 based on this source list:
@@ -428,6 +460,7 @@ A node's target is rendered using the NodeView's renderTargetBody()
 method. This makes use of a browser view registered for the target interface,
 and of a lot of other stuff needed for the rendering machine.
 
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from zope.app.publisher.interfaces.browser import IBrowserView
   >>> from loops.browser.resource import DocumentView
   >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,

@@ -7,36 +7,38 @@
 
       <h1 tal:content="context/title">Concept Title</h1><br />
       
-      <tal:block define="items view/parents;
+      <div   tal:define="items view/parents;
                          action string:remove;
                          qualifier string:parents;
                          summary string:Currently assigned objects;
                          legend string:Parent Concepts;
-                         buttonText string:Remove Assignment(s);
-                         ">
-        <metal:parents use-macro="views/relation_macros/listing" />
-      </tal:block>
-      <tal:block define="items view/children;
+                         buttonText string:Remove Parents;"
+             style="float:left; padding-right:20px">
+          <metal:parents use-macro="views/relation_macros/listing" />
+      </div>
+      <div   tal:define="items view/children;
                          action string:remove;
                          qualifier string:children;
                          summary string:Currently assigned objects;
                          legend string:Child Concepts;
-                         buttonText string:Remove Assignment(s);
-                         ">
-        <metal:children use-macro="views/relation_macros/listing" />
-      </tal:block>
+                         buttonText string:Remove Children;"
+             style="padding-right:20px">
+          <metal:children use-macro="views/relation_macros/listing" />
+      </div>
 
-      <tal:block>
+      <div   tal:define="legend string:Create Concept;
+                         buttonText string:Create Concept"
+             style="padding-right:20px; clear:left">
         <metal:create use-macro="views/relation_macros/create" />
-      </tal:block>
+      </div>
       
-      <tal:block define="items view/getVocabularyForRelated;
+      <div   tal:define="items view/search;
                          action string:assign;
                          qualifier nothing;
                          summary string:Assignment candidates;
-                         legend string:Search Results;
-                         buttonText string:Assign;
-                         ">
+                         legend string:Search;
+                         buttonText string:Assign;"
+             style="padding-right:20px">
         <metal:assign use-macro="views/relation_macros/listing">
           <metal:search fill-slot="topActions">
             <metal:block use-macro="views/relation_macros/search" />
@@ -44,13 +46,13 @@
           <metal:special fill-slot="specialButtons">
             as
             <select name="assignAs">
-              <option value="child" selected i18n:translate="">child</option>
-              <option value="parent" i18n:translate="">parent</option>
+              <option value="child" selected i18n:translate="">Child</option>
+              <option value="parent" i18n:translate="">Parent</option>
             </select>
             object(s)
           </metal:special>
         </metal:assign>
-      </tal:block>
+      </div>
       
     </div>
   </body>
