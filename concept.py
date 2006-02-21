@@ -35,7 +35,7 @@ from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.registry import getRelationSingle, setRelationSingle
-from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 
 from interfaces import IConcept, IConceptRelation, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
@@ -50,12 +50,18 @@ class ConceptRelation(DyadicRelation):
     """
     implements(IConceptRelation)
 
+    def __init__(self, first, second, predicate=None):
+        super(ConceptRelation, self).__init__(first, second)
+        if predicate is None:
+            context = first is not None and first or second
+            cm = context.getLoopsRoot().getConceptManager()
+            predicate = cm.getDefaultPredicate()
+        self.predicate = predicate
 
-class TypeRelation(DyadicRelation):
-    """ A special relation between two concepts, the parent specifying
-        the type of the child.
-    """
-    implements(IConceptRelation)
+    def getPredicateName(self):
+        baseName = super(ConceptRelation, self).getPredicateName()
+        id = zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.predicate)
+        return '.'.join((baseName, str(id)))
 
 
 class ResourceRelation(DyadicRelation):
@@ -68,7 +74,7 @@ class ResourceRelation(DyadicRelation):
     
 class Concept(Contained, Persistent):
 
-    implements(IConcept, IConceptManagerContained)
+    implements(IConcept, IConceptManagerContained, IRelatable)
 
     proxyInterface = IConceptView
     
@@ -78,11 +84,16 @@ class Concept(Contained, Persistent):
     title = property(getTitle, setTitle)
 
     def getConceptType(self):
-        rel = getRelationSingle(self, TypeRelation)
-        return rel and rel.second or None
+        cm = self.getLoopsRoot().getConceptManager()
+        typeRelation = ConceptRelation(None, self, cm.getTypePredicate())
+        rel = getRelationSingle(self, typeRelation, forSecond=True)
+        return rel and rel.first or None
     def setConceptType(self, concept):
         if self.getConceptType() != concept:
-            setRelationSingle(TypeRelation(self, removeSecurityProxy(concept)))
+            cm = self.getLoopsRoot().getConceptManager()
+            typeRelation = ConceptRelation(removeSecurityProxy(concept), self,
+                                           cm.getTypePredicate())
+            setRelationSingle(typeRelation, forSecond=True)
     conceptType = property(getConceptType, setConceptType)
 
     def __init__(self, title=u''):
@@ -95,14 +106,14 @@ class Concept(Contained, Persistent):
 
     def getChildren(self, relationships=None):
         if relationships is None:
-            relationships = [ConceptRelation]
+            relationships = [ConceptRelation(self, None)]
         rels = getRelations(first=self, relationships=relationships)
         return [r.second for r in rels]
         # TODO: sort...
 
     def getParents(self, relationships=None):
         if relationships is None:
-            relationships = [ConceptRelation]
+            relationships = [ConceptRelation(None, self)]
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
@@ -117,7 +128,7 @@ class Concept(Contained, Persistent):
 
     def deassignChildren(self, concept, relationships=None):
         if relationships is None:
-            relationships = [ConceptRelation]
+            relationships = [ConceptRelation(self, None)]
         registry = zapi.getUtility(IRelationRegistry)
         relations = []
         for rs in relationships:
@@ -159,8 +170,27 @@ class ConceptManager(BTreeContainer):
 
     implements(IConceptManager, ILoopsContained)
 
+    typeConcept = None
+    typePredicate = None
+    defaultPredicate = None
+
     def getLoopsRoot(self):
         return zapi.getParent(self)
+
+    def getTypePredicate(self):
+        if self.typePredicate is None:
+            self.typePredicate = self['hasType']
+        return self.typePredicate
+
+    def getTypeConcept(self):
+        if self.typeConcept is None:
+            self.typeConcept = self['type']
+        return self.typeConcept
+
+    def getDefaultPredicate(self):
+        if self.defaultPredicate is None:
+            self.defaultPredicate = self['standard']
+        return self.defaultPredicate
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
@@ -202,10 +232,12 @@ class ConceptTypeSourceList(object):
     @Lazy
     def conceptTypes(self):
         result = []
-        typeObject = self.concepts.get('type')
+        cm = self.concepts
+        typeObject = cm.getTypeConcept()
         unknownType = self.concepts.get('unknown')
         if typeObject is not None:
-            types = typeObject.getParents((TypeRelation,))
+            typeRelation = ConceptRelation(None, typeObject, cm.getTypePredicate())
+            types = typeObject.getChildren((typeRelation,))
             if typeObject not in types:
                 result.append(typeObject)
             if unknownType is not None and unknownType not in types:

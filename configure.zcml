@@ -74,6 +74,10 @@
         permission="zope.ManageContent"
         interface="zope.app.container.interfaces.IWriteContainer" />
 
+    <require
+        permission="zope.View"
+        attributes="getTypePredicate getDefaultPredicate getTypeConcept" />
+  
   </content>
 
   <interface

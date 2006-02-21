@@ -25,8 +25,10 @@ $Id$
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
+from zope.event import notify
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope import schema
@@ -90,6 +92,8 @@ class ConceptView(BaseView):
         concept = Concept(title)
         container = self.loopsRoot.getConceptManager()
         container[name] = concept
+        # TODO: notify ObjectCreatedEvent() (?)
+        #notify(ObjectCreatedEvent(removeSecurityProxy(concept)))
         assignAs = self.request.get('assignAs', 'child')
         if assignAs == 'child':
             self.context.assignChild(removeSecurityProxy(concept))

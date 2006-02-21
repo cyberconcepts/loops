@@ -112,7 +112,10 @@ class TargetSourceList(object):
         self.context = removeSecurityProxy(context)
         root = self.context.getLoopsRoot()
         self.resources = root.getResourceManager()
-        self.concepts = root.getConceptManager()
+        # concepts will only be included when we have some really
+        # queryable source with a corresponding user interface:
+        #self.concepts = root.getConceptManager()
+        self.concepts = {}
 
     def __iter__(self):
         for obj in self.resources.values():

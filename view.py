@@ -36,7 +36,7 @@ from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
-from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 
 from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
@@ -46,7 +46,7 @@ from interfaces import ITargetRelation
 
 class View(object):
 
-    implements(IView, INodeContained)
+    implements(IView, INodeContained, IRelatable)
 
     _title = u''
     def getTitle(self): return self._title

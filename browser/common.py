@@ -27,7 +27,6 @@ from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
-#from zope.schema.vocabulary import SimpleTerm
 from zope.security.proxy import removeSecurityProxy
 
 class BaseView(object):
@@ -85,9 +84,6 @@ class LoopsTerms(object):
     
     def getTerm(self, value):
         return BaseView(value, self.request)
-        #token = self.loopsRoot.getLoopsUri(value)
-        #title = value.title or zapi.getName(value)
-        #return SimpleTerm(value, token, title)
 
     def getValue(self, token):
         return self.loopsRoot.loopsTraverse(token)

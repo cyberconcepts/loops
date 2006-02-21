@@ -30,6 +30,7 @@ from zope.interface import implements
 from persistent import Persistent
 from cStringIO import StringIO
 from cybertools.relation.registry import getRelations
+from cybertools.relation.interfaces import IRelatable
 
 from interfaces import IResource
 from interfaces import IDocument, IDocumentSchema, IDocumentView
@@ -40,7 +41,7 @@ from interfaces import ILoopsContained
 
 class Resource(Contained, Persistent):
 
-    implements(IResource, IResourceManagerContained)
+    implements(IResource, IResourceManagerContained, IRelatable)
 
     _title = u''
     def getTitle(self): return self._title

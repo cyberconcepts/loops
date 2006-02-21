@@ -41,12 +41,15 @@ top-level loops container and a concept manager:
 Now we want to relate the second concept to the first one.
 
 In order to do this we first have to provide a relation registry. For
-testing we use a simple dummy implementation.
+testing we use a simple dummy implementation. As relationships are
+based on predicates that are themselves concepts we also need a
+default predicate concept; the default name for this is 'standard'.
 
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+  >>> concepts['standard'] = Concept('Default Predicate')
 
 Now we can assign the concept c2 as a child to c1 (using the standard
 ConceptRelation):
@@ -74,8 +77,10 @@ We can now ask our concepts for their related child and parent concepts:
 
 Each concept should have a concept type; this is in fact provided by a
 relation to a special kind of concept object with the magic name 'type'.
-This type object is its own type:
+This type object is its own type. The type relations themselves are of
+a special predicate 'hasType'.
 
+  >>> concepts['hasType'] = Concept(u'Type Predicate')
   >>> concepts['type'] = Concept(u'Type')
   >>> typeObject = concepts['type']
   >>> typeObject.setConceptType(typeObject)
@@ -99,6 +104,13 @@ This type object is its own type:
   >>> cc1.getConceptType().title
   u'Topic'
 
+We get a list of types using the ConceptTypeSourceList:
+
+  >>> from loops.concept import ConceptTypeSourceList
+  >>> types = ConceptTypeSourceList(cc1)
+  >>> sorted(t.title for t in types)
+  [u'Topic', u'Type', u'Unknown Type']
+    
 Concept Views
 -------------
 
@@ -107,9 +119,6 @@ Concept Views
 
   >>> sorted([c.title for c in view.children()])
   [u'Zope 3']
-
-The concept view allows to get a list of terms (sort of vocabulary) that
-can be used to show the objects in a listing:
 
 The concept view allows updating the underlying context object:
 
@@ -388,9 +397,9 @@ objects.) The source is basically a source list:
   >>> from loops.target import TargetSourceList
   >>> source = TargetSourceList(m111)
   >>> len(source)
-  8
+  1
   >>> sorted([zapi.getName(s) for s in source])
-  [u'cc1', u'cc2', u'cc3', u'cc4', u'doc1', u'topic', u'type', u'unknown']
+  [u'doc1']
 
 The form then uses a sort of browser view providing the ITerms interface
 based on this source list:

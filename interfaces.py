@@ -141,6 +141,17 @@ class IConceptManager(ILoopsObject, IContainer):
     """
     contains(IConcept)
 
+    def getTypePredicate():
+        """ Return the concept that provides the type predicate.
+        """
+
+    def getTypeConcept():
+        """ Return the concept that provides the type object.
+        """
+
+    def getDefaultPredicate():
+        """ Return the concept that provides the default (standard) predicate.
+        """
 
 class IConceptManagerContained(Interface):
     containers(IConceptManager)
