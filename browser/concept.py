@@ -88,9 +88,9 @@ class ConceptView(BaseView):
                 predicate = self.loopsRoot.loopsTraverse(relToken)
                 qualifier = self.request.get('qualifier')
                 if qualifier == 'parents':
-                    self.context.deassignParents(concept, [predicate])
+                    self.context.deassignParent(concept, [predicate])
                 elif qualifier == 'children':
-                    self.context.deassignChildren(concept, [predicate])
+                    self.context.deassignChild(concept, [predicate])
                 else:
                     raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
             else:

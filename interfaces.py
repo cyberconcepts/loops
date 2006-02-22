@@ -84,9 +84,10 @@ class IConcept(ILoopsObject, IPotentialTarget):
             optionally restricted to the predicates given.
         """
 
-    def getChildRelations(predicates=None):
+    def getChildRelations(predicates=None, children=None):
         """ Return a sequence of relations to other concepts assigned to self
-            as child concepts, optionally restricted to the predicates given.
+            as child concepts, optionally restricted to the predicates given
+            or to a certain child concept.
         """
 
     def getParents(predicates=None):
@@ -94,9 +95,10 @@ class IConcept(ILoopsObject, IPotentialTarget):
             optionally restricted to the predicates given.
         """
 
-    def getParentRelations(predicates=None):
+    def getParentRelations(predicates=None, parents=None):
         """ Return a sequence of relations to other concepts assigned to self
-            as child concepts, optionally restricted to the predicates given.
+            as parent concepts, optionally restricted to the predicates given
+            or to a certain parent concept.
         """
 
     def assignChild(concept, predicate):
@@ -113,13 +115,13 @@ class IConcept(ILoopsObject, IPotentialTarget):
             The predicate defaults to the concept manager's default predicate.
         """
 
-    def deassignChildren(concept, predicates=None):
+    def deassignChild(child, predicates=None):
         """ Remove the child concept relations to the concept given from self,
             optionally restricting them to the predicates given.
         """
 
-    def deassignParents(concept, predicates=None):
-        """ Remove the child concept relations to the concept given from self,
+    def deassignParent(parent, predicates=None):
+        """ Remove the parent concept relations to the concept given from self,
             optionally restricting them to the predicates given.
         """
 
@@ -128,9 +130,10 @@ class IConcept(ILoopsObject, IPotentialTarget):
             optionally restricted to the predicates given.
         """        
 
-    def getResourceRelations(predicates=None):
+    def getResourceRelations(predicates=None, resource=None):
         """ Return a sequence of relations to resources assigned to self,
-            optionally restricted to the predicates given.
+            optionally restricted to the predicates given or to a certain
+            resource.
         """
 
     def assignResource(resource, predicate):
