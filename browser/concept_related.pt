@@ -12,6 +12,7 @@
                          qualifier string:parents;
                          summary string:Currently assigned objects;
                          legend string:Parent Concepts;
+                         showPredicate string:yes;
                          buttonText string:Remove Parents;"
              style="float:left; padding-right:20px">
           <metal:parents use-macro="views/relation_macros/listing" />
@@ -21,6 +22,7 @@
                          qualifier string:children;
                          summary string:Currently assigned objects;
                          legend string:Child Concepts;
+                         showPredicate string:yes;
                          buttonText string:Remove Children;"
              style="padding-right:20px">
           <metal:children use-macro="views/relation_macros/listing" />
@@ -37,6 +39,7 @@
                          qualifier nothing;
                          summary string:Assignment candidates;
                          legend string:Search;
+                         showPredicate nothing;
                          buttonText string:Assign;"
              style="padding-right:20px">
         <metal:assign use-macro="views/relation_macros/listing">
@@ -49,7 +52,15 @@
               <option value="child" selected i18n:translate="">Child</option>
               <option value="parent" i18n:translate="">Parent</option>
             </select>
-            object(s)
+            Object(s) using Predicate
+            <select name="predicate">
+              <tal:types repeat="pred view/predicates">
+                <option value=".loops/concepts/hasType"
+                    i18n:translate=""
+                    tal:attributes="value pred/token"
+                    tal:content="pred/title">Predicate</option>
+              </tal:types>
+            </select>
           </metal:special>
         </metal:assign>
       </div>

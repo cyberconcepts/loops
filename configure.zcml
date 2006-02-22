@@ -253,6 +253,11 @@
       />
 
   <vocabulary
+      factory="loops.concept.PredicateSourceList"
+      name="loops.PredicateSource"
+      />
+
+  <vocabulary
       factory="loops.target.TargetSourceList"
       name="loops.targetSource"
       />

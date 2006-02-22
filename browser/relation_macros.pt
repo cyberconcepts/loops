@@ -22,8 +22,9 @@
           <tr>
             <th>&nbsp;</th>
             <th i18n:translate="label_title">Title</th>
-            <th i18n:translate="label_predicate">Predicate</th>
             <th i18n:translate="label_type">Type</th>
+            <th i18n:translate="label_predicate"
+                tal:condition="showPredicate">Predicate</th>
           </tr>
         </thead>
         <tbody>
@@ -39,21 +40,19 @@
                 Title
               </a>
             </td>
-            <tal:relation condition="item/predicateTitle|nothing">
-            <td>
-              <a tal:content="item/predicateTitle" href="#"
-                 tal:attributes="href
-                    string:${item/predicateUrl}/@@SelectedManagementView.html">
-                Type
-              </a>
-            </td>
-            </tal:relation>
             <td>
               <a tal:condition="item/typeTitle | nothing"
                  tal:content="item/typeTitle" href="#"
                  tal:attributes="href
                     string:${item/typeUrl}/@@SelectedManagementView.html">
-                Title
+                Type
+              </a>
+            </td>
+            <td tal:condition="showPredicate">
+              <a tal:content="item/predicateTitle" href="#"
+                 tal:attributes="href
+                    string:${item/predicateUrl}/@@SelectedManagementView.html">
+                Predicate
               </a>
             </td>
           </tr>
@@ -87,8 +86,13 @@
                tal:attributes="value nothing" />&nbsp;
         <span i18n:translate="">Type</span>
         <select name="create.type">
-          <option value=".loops/concepts/topic"
-                  i18n:translate="">Topic</option>
+          <tal:types repeat="type view/conceptTypes">
+            <option value=".loops/concepts/topic"
+                    i18n:translate=""
+                    tal:attributes="value type/token"
+                    tal:content="type/title">Topic</option>
+          </tal:types>
+          <option>None</option>
         </select>
       </div><br />
       <div class="formControls">
@@ -96,11 +100,20 @@
                value="Create Object"
                i18n:attributes="value"
                tal:attributes="value buttonText" />
-            and assign as
-            <select name="assignAs">
-              <option value="child" selected i18n:translate="">Child</option>
-              <option value="parent" i18n:translate="">Parent</option>
-            </select>
+        and assign as
+        <select name="assignAs">
+          <option value="child" selected i18n:translate="">Child</option>
+          <option value="parent" i18n:translate="">Parent</option>
+        </select>
+        using Predicate
+        <select name="create.predicate">
+          <tal:types repeat="pred view/predicates">
+            <option value=".loops/concepts/hasType"
+                    i18n:translate=""
+                    tal:attributes="value pred/token"
+                    tal:content="pred/title">Predicate</option>
+          </tal:types>
+        </select>
       </div>
     </form>
   </fieldset>
@@ -111,15 +124,23 @@
   <form method="post" name="listing" action="."
         tal:attributes="action request/URL">
       <input type="hidden" name="action" value="search" />
-      <div class="row">
+      <div class="row"
+           tal:define="searchTerm request/searchTerm | nothing;
+                       searchType request/searchType | nothing;">
         <span i18n:translate="">Search Term</span>
         <input name="searchTerm"
-               tal:attributes="value request/searchTerm | nothing" />
+               tal:attributes="value searchTerm" />
         <span i18n:translate="">Type</span>
-        <select name="search.type">
+        <select name="searchType">
           <option value="*">Any</option>
-          <option value=".loops/concepts/topic"
-                  i18n:translate="">Topic</option>
+          <tal:types repeat="type view/conceptTypes">
+            <option value=".loops/concepts/topic"
+                    i18n:translate=""
+                    tal:attributes="value type/token;
+                                    selected python: type.token == searchType"
+                    tal:content="type/title">Topic</option>
+          </tal:types>
+          <option>None</option>
         </select>
       </div>
       <div class="formControls">

@@ -252,15 +252,44 @@ class ConceptTypeSourceList(object):
         result = []
         cm = self.concepts
         typeObject = cm.getTypeConcept()
-        unknownType = self.concepts.get('unknown')
+        unknownType = cm.get('unknown')  # does this make sense?
         if typeObject is not None:
-            typeRelation = ConceptRelation(None, typeObject, cm.getTypePredicate())
-            types = typeObject.getChildren((typeRelation,))
+            types = typeObject.getChildren([cm.getTypePredicate()])
             if typeObject not in types:
                 result.append(typeObject)
             if unknownType is not None and unknownType not in types:
                 result.append(unknownType)
             result.extend(types)
+        return result
+
+    def __len__(self):
+        return len(self.conceptTypes)
+
+
+class PredicateSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+        self.concepts = self.context.getLoopsRoot().getConceptManager()
+
+    def __iter__(self):
+        return iter(self.predicates)
+
+    @Lazy
+    def predicates(self):
+        result = []
+        cm = self.concepts
+        defPred = cm.getDefaultPredicate()
+        typePred = cm.getTypePredicate()
+        if defPred is not None and typePred is not None:
+            result.append(defPred)
+            result.append(typePred)
+            predType = defPred.conceptType
+            if predType is not None and predType != cm.getTypeConcept():
+                result.extend(p for p in predType.getChildren([typePred])
+                                    if p not in result)
         return result
 
     def __len__(self):

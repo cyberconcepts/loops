@@ -419,6 +419,10 @@
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:adapter factory="loops.browser.common.LoopsTerms"
+           for="loops.concept.PredicateSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <zope:adapter factory="loops.browser.common.LoopsTerms"
            for="loops.target.TargetSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 

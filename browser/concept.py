@@ -31,9 +31,11 @@ from zope.cachedescriptors.property import Lazy
 from zope.event import notify
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope import schema
+from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
-from loops.concept import Concept
+from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import BaseView, LoopsTerms
 
 
@@ -46,30 +48,16 @@ class ConceptView(BaseView):
     def parents(self):
         for r in self.context.getParentRelations():
             yield ConceptRelationView(r, self.request)
-        #rels = self.context.getParentRelations()
-        #result = []
-        #for r in rels:
-        #    p = r.first
-            #if p is None:  # this should not be necessary
-            #    print 'Warning: parents() got a None first on', \
-            #            zapi.getName(self.context), zapi.getName(r.predicate)
-            #    continue
-        #    p.predicate = r.predicate
-        #return result and self.viewIterator(result) or []
-
-    def viewIterator(self, objs):
-        request = self.request
-        for o in objs:
-            yield ConceptView(o, request)
 
     def update(self):
-        action = self.request.get('action')
+        request = self.request
+        action = request.get('action')
         if action is None:
             return True
         if action == 'create':
             self.createAndAssign()
             return True
-        tokens = self.request.get('tokens', [])
+        tokens = request.get('tokens', [])
         for token in tokens:
             parts = token.split(':')
             token = parts[0]
@@ -77,16 +65,20 @@ class ConceptView(BaseView):
                 relToken = parts[1]
             concept = self.loopsRoot.loopsTraverse(token)
             if action == 'assign':
-                assignAs = self.request.get('assignAs', 'child')
+                assignAs = request.get('assignAs', 'child')
+                predicate = request.get('predicate') or None
+                if predicate:
+                    predicate = removeSecurityProxy(
+                                    self.loopsRoot.loopsTraverse(predicate))
                 if assignAs == 'child':
-                    self.context.assignChild(removeSecurityProxy(concept))
+                    self.context.assignChild(removeSecurityProxy(concept), predicate)
                 elif assignAs == 'parent':
-                    self.context.assignParent(removeSecurityProxy(concept))
+                    self.context.assignParent(removeSecurityProxy(concept), predicate)
                 else:
                     raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
             elif action == 'remove':
                 predicate = self.loopsRoot.loopsTraverse(relToken)
-                qualifier = self.request.get('qualifier')
+                qualifier = request.get('qualifier')
                 if qualifier == 'parents':
                     self.context.deassignParent(concept, [predicate])
                 elif qualifier == 'children':
@@ -103,17 +95,23 @@ class ConceptView(BaseView):
         if not name:
             raise(BadRequest, 'Empty name.')
         title = request.get('create.title', u'')
-        type = request.get('create.type')
+        conceptType = request.get('create.type')
         concept = Concept(title)
         container = self.loopsRoot.getConceptManager()
         container[name] = concept
-        # TODO: notify ObjectCreatedEvent() (?)
-        #notify(ObjectCreatedEvent(removeSecurityProxy(concept)))
+        if conceptType:
+            ctype = self.loopsRoot.loopsTraverse(conceptType)
+            concept.conceptType = ctype
+        notify(ObjectCreatedEvent(removeSecurityProxy(concept)))
         assignAs = self.request.get('assignAs', 'child')
+        predicate = request.get('create.predicate') or None
+        if predicate:
+            predicate = removeSecurityProxy(
+                            self.loopsRoot.loopsTraverse(predicate))
         if assignAs == 'child':
-            self.context.assignChild(removeSecurityProxy(concept))
+            self.context.assignChild(removeSecurityProxy(concept), predicate)
         elif assignAs == 'parent':
-            self.context.assignParent(removeSecurityProxy(concept))
+            self.context.assignParent(removeSecurityProxy(concept), predicate)
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 
@@ -127,7 +125,31 @@ class ConceptView(BaseView):
             result = cat.searchResults(loops_searchableText=searchTerm)
         else:
             result = self.loopsRoot.getConceptManager().values()
+        searchType = request.get('searchType', '*')
+        # TODO: query catalog for type
+        if not searchType:
+            result = [r for r in result if r.conceptType is None]            
+        elif searchType != '*':
+            type = self.loopsRoot.loopsTraverse(searchType)
+            result = [r for r in result if r.conceptType == type]
         return self.viewIterator(result)
+
+    def viewIterator(self, objs):
+        request = self.request
+        for o in objs:
+            yield ConceptView(o, request)
+
+    def conceptTypes(self):
+        types = ConceptTypeSourceList(self.context)
+        terms = zapi.getMultiAdapter((types, self.request), ITerms)
+        for type in types:
+            yield terms.getTerm(type)
+
+    def predicates(self):
+        preds = PredicateSourceList(self.context)
+        terms = zapi.getMultiAdapter((preds, self.request), ITerms)
+        for pred in preds:
+            yield terms.getTerm(pred)
 
 
 class ConceptRelationView(object):

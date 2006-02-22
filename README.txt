@@ -49,7 +49,7 @@ default predicate concept; the default name for this is 'standard'.
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
-  >>> concepts['standard'] = Concept('parent')
+  >>> concepts['standard'] = Concept(u'subconcept')
 
 Now we can assign the concept c2 as a child to c1 (using the standard
 ConceptRelation):
@@ -103,7 +103,21 @@ We get a list of types using the ConceptTypeSourceList:
   >>> types = ConceptTypeSourceList(cc1)
   >>> sorted(t.title for t in types)
   [u'Topic', u'Type', u'Unknown Type']
-    
+
+Using a PredicateSourceList we can retrieve a list of the available
+predicates. In order for this to work we first have to assign our predicates
+a special concept type.
+
+  >>> concepts['predicate'] = Concept(u'Predicate')
+  >>> predicate = concepts['predicate']
+  >>> concepts['hasType'].conceptType = predicate
+  >>> concepts['standard'].conceptType = predicate
+
+  >>> from loops.concept import PredicateSourceList
+  >>> predicates = PredicateSourceList(cc1)
+  >>> sorted(t.title for t in predicates)
+  [u'has type', u'subconcept']
+
 Concept Views
 -------------
 
@@ -150,6 +164,24 @@ We can also create a new concept and assign it:
   True
   >>> sorted(c.title for c in cc1.getChildren())
   [u'New concept', u'loops for Zope 3']
+
+The concept view provides methods for displaying concept types and
+predicates:
+
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from loops.browser.common import LoopsTerms
+  >>> from zope.app.form.browser.interfaces import ITerms
+  >>> from zope.schema.interfaces import IIterableSource
+  >>> ztapi.provideAdapter(IIterableSource, ITerms, LoopsTerms,
+  ...                      with=(IBrowserRequest,))
+      
+  >>> sorted((t.title, t.token) for t in view.conceptTypes())
+  [(u'Topic', '.loops/concepts/topic'), (u'Type', '.loops/concepts/type'),
+      (u'Unknown Type', '.loops/concepts/unknown')]
+          
+  >>> sorted((t.title, t.token) for t in view.predicates())
+  [(u'has type', '.loops/concepts/hasType'),
+      (u'subconcept', '.loops/concepts/standard')]
 
 Searchable Text Adapter
 -----------------------
@@ -406,7 +438,6 @@ objects.) The source is basically a source list:
 The form then uses a sort of browser view providing the ITerms interface
 based on this source list:
 
-  >>> from loops.browser.common import LoopsTerms
   >>> terms = LoopsTerms(source, TestRequest())
   >>> term = terms.getTerm(doc1)
   >>> term.token, term.title, term.value
@@ -471,7 +502,6 @@ A node's target is rendered using the NodeView's renderTargetBody()
 method. This makes use of a browser view registered for the target interface,
 and of a lot of other stuff needed for the rendering machine.
 
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from zope.app.publisher.interfaces.browser import IBrowserView
   >>> from loops.browser.resource import DocumentView
   >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
