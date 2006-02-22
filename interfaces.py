@@ -79,56 +79,69 @@ class IConcept(ILoopsObject, IPotentialTarget):
         source="loops.conceptTypeSource",
         required=False)
 
-    def getChildren(relationships=None):
+    def getChildren(predicates=None):
         """ Return a sequence of concepts related to self as child concepts,
-            possibly restricted to the relationships (typically a list of
-            relation classes) given.
+            optionally restricted to the predicates given.
         """
 
-    def getParents(relationships=None):
+    def getChildRelations(predicates=None):
+        """ Return a sequence of relations to other concepts assigned to self
+            as child concepts, optionally restricted to the predicates given.
+        """
+
+    def getParents(predicates=None):
         """ Return a tuple of concepts related to self as parent concepts,
-            possibly restricted to the relationships (typically a list of
-            relation classes) given.
+            optionally restricted to the predicates given.
         """
 
-    def assignChild(concept, relationship):
-        """ Assign an existing concept to self using the relationship given.
+    def getParentRelations(predicates=None):
+        """ Return a sequence of relations to other concepts assigned to self
+            as child concepts, optionally restricted to the predicates given.
+        """
+
+    def assignChild(concept, predicate):
+        """ Assign an existing concept to self using the predicate given.
             The assigned concept will be a child concept of self.
 
-            The relationship defaults to ConceptRelation.
+            The predicate defaults to the concept manager's default predicate.
         """
 
-    def assignParent(concept, relationship):
-        """ Assign an existing concept to self using the relationship given.
+    def assignParent(concept, predicate):
+        """ Assign an existing concept to self using the predicate given.
             The assigned concept will be a parent concept of self.
 
-            The relationship defaults to ConceptRelation.
+            The predicate defaults to the concept manager's default predicate.
         """
 
-    def deassignChildren(concept, relationships=None):
+    def deassignChildren(concept, predicates=None):
         """ Remove the child concept relations to the concept given from self,
-            optionally restricting them to the relationships given.
+            optionally restricting them to the predicates given.
         """
 
-    def deassignParents(concept, relationships=None):
+    def deassignParents(concept, predicates=None):
         """ Remove the child concept relations to the concept given from self,
-            optionally restricting them to the relationships given.
+            optionally restricting them to the predicates given.
         """
 
-    def getResources(relationships=None):
+    def getResources(predicates=None):
         """ Return a sequence of resources assigned to self,
-            possibly restricted to the relationships given.
+            optionally restricted to the predicates given.
         """        
 
-    def assignResource(resource, relationship):
-        """ Assign an existing resource to self using the relationship given.
+    def getResourceRelations(predicates=None):
+        """ Return a sequence of relations to resources assigned to self,
+            optionally restricted to the predicates given.
+        """
+
+    def assignResource(resource, predicate):
+        """ Assign an existing resource to self using the predicate given.
 
             The relationship defaults to ConceptResourceRelation.
         """
         
-    def deassignResource(resource, relationships=None):
+    def deassignResource(resource, predicates=None):
         """ Remove the relations to the resource given from self, optionally
-            restricting them to the relationships given.
+            restricting them to the predicates given.
         """
         
 

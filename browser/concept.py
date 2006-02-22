@@ -40,12 +40,22 @@ from loops.browser.common import BaseView, LoopsTerms
 class ConceptView(BaseView):
 
     def children(self):
-        ch = self.context.getChildren()
-        return ch and self.viewIterator(ch) or []
+        for r in self.context.getChildRelations():
+            yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
     def parents(self):
-        p = self.context.getParents()
-        return p and self.viewIterator(p) or []
+        for r in self.context.getParentRelations():
+            yield ConceptRelationView(r, self.request)
+        #rels = self.context.getParentRelations()
+        #result = []
+        #for r in rels:
+        #    p = r.first
+            #if p is None:  # this should not be necessary
+            #    print 'Warning: parents() got a None first on', \
+            #            zapi.getName(self.context), zapi.getName(r.predicate)
+            #    continue
+        #    p.predicate = r.predicate
+        #return result and self.viewIterator(result) or []
 
     def viewIterator(self, objs):
         request = self.request
@@ -61,6 +71,10 @@ class ConceptView(BaseView):
             return True
         tokens = self.request.get('tokens', [])
         for token in tokens:
+            parts = token.split(':')
+            token = parts[0]
+            if len(parts) > 1:
+                relToken = parts[1]
             concept = self.loopsRoot.loopsTraverse(token)
             if action == 'assign':
                 assignAs = self.request.get('assignAs', 'child')
@@ -71,11 +85,12 @@ class ConceptView(BaseView):
                 else:
                     raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
             elif action == 'remove':
+                predicate = self.loopsRoot.loopsTraverse(relToken)
                 qualifier = self.request.get('qualifier')
                 if qualifier == 'parents':
-                    self.context.deassignParents(concept)
+                    self.context.deassignParents(concept, [predicate])
                 elif qualifier == 'children':
-                    self.context.deassignChildren(concept)
+                    self.context.deassignChildren(concept, [predicate])
                 else:
                     raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
             else:
@@ -102,12 +117,6 @@ class ConceptView(BaseView):
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 
-    #def getVocabularyForRelated(self):  # obsolete
-    #    source = ConceptSourceList(self.context)
-    #    terms = zapi.getMultiAdapter((source, self.request), ITerms)
-    #    for candidate in source:
-    #        yield terms.getTerm(candidate)
-
     def search(self):
         request = self.request
         if request.get('action') != 'search':
@@ -119,4 +128,51 @@ class ConceptView(BaseView):
         else:
             result = self.loopsRoot.getConceptManager().values()
         return self.viewIterator(result)
+
+
+class ConceptRelationView(object):
+
+    def __init__(self, relation, request, contextIsSecond=False):
+        if contextIsSecond:
+            self.context = relation.second
+            self.other = relation.first
+        else:
+            self.context = relation.first
+            self.other = relation.second
+        self.predicate = relation.predicate
+        self.conceptType = self.context.conceptType
+        self.request = request
+
+    @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
+    def url(self):
+        return zapi.absoluteURL(self.context, self.request)
+
+    @Lazy
+    def title(self):
+        return self.context.title
+    
+    @Lazy
+    def token(self):
+        return ':'.join((self.loopsRoot.getLoopsUri(self.context),
+                         self.loopsRoot.getLoopsUri(self.predicate)))
+
+    @Lazy
+    def typeTitle(self):
+        return self.conceptType.title
+
+    @Lazy
+    def typeUrl(self):
+        return zapi.absoluteURL(self.conceptType, self.request)
+
+    @Lazy
+    def predicateTitle(self):
+        return self.predicate.title
+
+    @Lazy
+    def predicateUrl(self):
+        return zapi.absoluteURL(self.predicate, self.request)
 

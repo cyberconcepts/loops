@@ -22,6 +22,8 @@
           <tr>
             <th>&nbsp;</th>
             <th i18n:translate="label_title">Title</th>
+            <th i18n:translate="label_predicate">Predicate</th>
+            <th i18n:translate="label_type">Type</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +36,23 @@
             <td>
               <a tal:content="item/title" href="#"
                  tal:attributes="href string:${item/url}/@@SelectedManagementView.html">
+                Title
+              </a>
+            </td>
+            <tal:relation condition="item/predicateTitle|nothing">
+            <td>
+              <a tal:content="item/predicateTitle" href="#"
+                 tal:attributes="href
+                    string:${item/predicateUrl}/@@SelectedManagementView.html">
+                Type
+              </a>
+            </td>
+            </tal:relation>
+            <td>
+              <a tal:condition="item/typeTitle | nothing"
+                 tal:content="item/typeTitle" href="#"
+                 tal:attributes="href
+                    string:${item/typeUrl}/@@SelectedManagementView.html">
                 Title
               </a>
             </td>

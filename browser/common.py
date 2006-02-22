@@ -32,8 +32,8 @@ from zope.security.proxy import removeSecurityProxy
 class BaseView(object):
 
     def __init__(self, context, request):
-        self.context = context
-        #self.context = removeSecurityProxy(context)
+        #self.context = context
+        self.context = removeSecurityProxy(context)
         self.request = request
 
     @Lazy
@@ -63,6 +63,15 @@ class BaseView(object):
     @Lazy
     def value(self):
         return self.context
+
+    @Lazy
+    def typeTitle(self):
+        return self.context.conceptType.title
+
+    @Lazy
+    def typeUrl(self):
+        return zapi.absoluteURL(self.context.conceptType, self.request)
+
 
 
 class LoopsTerms(object):

@@ -45,13 +45,10 @@ from interfaces import ISearchableText
 
 # relation classes
 
-class ConceptRelation(DyadicRelation):
-    """ A relation between concept objects.
-    """
-    implements(IConceptRelation)
+class BaseRelation(DyadicRelation):
 
     def __init__(self, first, second, predicate=None):
-        super(ConceptRelation, self).__init__(first, second)
+        super(BaseRelation, self).__init__(first, second)
         if predicate is None:
             context = first is not None and first or second
             cm = context.getLoopsRoot().getConceptManager()
@@ -59,12 +56,18 @@ class ConceptRelation(DyadicRelation):
         self.predicate = predicate
 
     def getPredicateName(self):
-        baseName = super(ConceptRelation, self).getPredicateName()
+        baseName = super(BaseRelation, self).getPredicateName()
         id = zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.predicate)
         return '.'.join((baseName, str(id)))
 
 
-class ResourceRelation(DyadicRelation):
+class ConceptRelation(BaseRelation):
+    """ A relation between concept objects.
+    """
+    implements(IConceptRelation)
+
+
+class ResourceRelation(BaseRelation):
     """ A relation between a concept and a resource object.
     """
     implements(IConceptRelation)
@@ -84,16 +87,23 @@ class Concept(Contained, Persistent):
     title = property(getTitle, setTitle)
 
     def getConceptType(self):
-        cm = self.getLoopsRoot().getConceptManager()
-        typeRelation = ConceptRelation(None, self, cm.getTypePredicate())
-        rel = getRelationSingle(self, typeRelation, forSecond=True)
-        return rel and rel.first or None
+        typePred = self.getConceptManager().getTypePredicate()
+        parents = self.getParents([typePred])
+        #typeRelation = ConceptRelation(None, self, cm.getTypePredicate())
+        #rels = getRelationSingle(self, typeRelation, forSecond=True)
+        # TODO (?): check for multiple types (->Error)
+        return parents and parents[0] or None
     def setConceptType(self, concept):
-        if self.getConceptType() != concept:
-            cm = self.getLoopsRoot().getConceptManager()
-            typeRelation = ConceptRelation(removeSecurityProxy(concept), self,
-                                           cm.getTypePredicate())
-            setRelationSingle(typeRelation, forSecond=True)
+        current = self.getConceptType()
+        if current != concept:
+            typePred = self.getConceptManager().getTypePredicate()
+            if current is not None:
+                self.deassignParents(current, [typePred])
+            self.assignParent(concept, typePred)
+            #cm = self.getLoopsRoot().getConceptManager()
+            #typeRelation = ConceptRelation(removeSecurityProxy(concept), self,
+            #                               cm.getTypePredicate())
+            #setRelationSingle(typeRelation, forSecond=True)
     conceptType = property(getConceptType, setConceptType)
 
     def __init__(self, title=u''):
@@ -102,66 +112,74 @@ class Concept(Contained, Persistent):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
+    def getConceptManager(self):
+        return self.getLoopsRoot().getConceptManager()
+
     # concept relations
 
-    def getChildren(self, relationships=None):
-        if relationships is None:
-            relationships = [ConceptRelation(self, None)]
-        rels = getRelations(first=self, relationships=relationships)
-        return [r.second for r in rels]
+    def getChildRelations(self, predicates=None, second=None):
+        predicates = predicates is None and ['*'] or predicates
+        relationships = [ConceptRelation(self, None, p) for p in predicates]
         # TODO: sort...
+        return getRelations(first=self, second=second, relationships=relationships)
 
-    def getParents(self, relationships=None):
-        if relationships is None:
-            relationships = [ConceptRelation(None, self)]
-        rels = getRelations(second=self, relationships=relationships)
-        return [r.first for r in rels]
+    def getChildren(self, predicates=None):
+        return [r.second for r in self.getChildRelations(predicates)]
 
-    def assignChild(self, concept, relationship=ConceptRelation):
+    def getParentRelations (self, predicates=None, first=None):
+        predicates = predicates is None and ['*'] or predicates
+        relationships = [ConceptRelation(None, self, p) for p in predicates]
+        # TODO: sort...
+        return getRelations(first=first, second=self, relationships=relationships)
+        
+    def getParents(self, predicates=None):
+        return [r.first for r in self.getParentRelations(predicates)]
+
+    def assignChild(self, concept, predicate=None):
+        if predicate is None:
+            predicate = self.getConceptManager().getDefaultPredicate()
         registry = zapi.getUtility(IRelationRegistry)
-        rel = relationship(self, concept)
+        rel = ConceptRelation(self, concept, predicate)
         registry.register(rel)
         # TODO (?): avoid duplicates
 
-    def assignParent(self, concept, relationship=ConceptRelation):
-        concept.assignChild(self, relationship)
+    def assignParent(self, concept, predicate=None):
+        concept.assignChild(self, predicate)
 
-    def deassignChildren(self, concept, relationships=None):
-        if relationships is None:
-            relationships = [ConceptRelation(self, None)]
+    def deassignChildren(self, concept, predicates=None):
         registry = zapi.getUtility(IRelationRegistry)
-        relations = []
-        for rs in relationships:
-            relations.extend(registry.query(first=self, second=concept,
-                                            relationship=rs))
-        for rel in relations:
+        #relations = []
+        #for rs in relationships:
+        #    relations.extend(registry.query(first=self, second=concept,
+        #                                    relationship=rs))
+        for rel in self.getChildRelations(predicates, concept):
             registry.unregister(rel)
 
-    def deassignParents(self, concept, relationships=None):
-        concept.deassignChildren(self, relationships)
+    def deassignParents(self, concept, predicates=None):
+        concept.deassignChildren(self, predicates)
     
     # resource relations
 
-    def getResources(self, relationships=None):
-        if relationships is None:
-            relationships = [ResourceRelation]
-        rels = getRelations(first=self, relationships=relationships)
-        return [r.second for r in rels]
+    def getResourceRelations(self, predicates=None):
+        predicates = predicates is None and ['*'] or predicates
+        relationships = [ResourceRelation(self, None, p) for p in predicates]
         # TODO: sort...
+        return getRelations(first=self, relationships=relationships)
 
-    def assignResource(self, resource, relationship=ResourceRelation):
+    def getResources(self, predicates=None):
+        return [r.second for r in self.getResourceRelations(predicates)]
+
+    def assignResource(self, resource, predicate=None):
+        if predicate is None:
+            predicate = self.getConceptManager().getDefaultPredicate()
         registry = zapi.getUtility(IRelationRegistry)
-        registry.register(relationship(self, resource))
+        registry.register(ResourceRelation(self, resource, predicate))
         # TODO (?): avoid duplicates
 
-    def deassignResource(self, resource, relationships=None):
-        if relationships is None:
-            relationships = [ResourceRelation]
+    def deassignResource(self, resource, predicates=None):
         registry = zapi.getUtility(IRelationRegistry)
-        relations = registry.query(first=self, second=resource,
-                                   relationships=relationships)
-        for rel in relations:
-            registry.unregister(relation)
+        for rel in self.getResourceRelations(predicates):
+            registry.unregister(rel)
 
 
 # concept manager

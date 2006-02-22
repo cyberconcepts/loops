@@ -49,7 +49,7 @@ default predicate concept; the default name for this is 'standard'.
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
-  >>> concepts['standard'] = Concept('Default Predicate')
+  >>> concepts['standard'] = Concept('parent')
 
 Now we can assign the concept c2 as a child to c1 (using the standard
 ConceptRelation):
@@ -58,20 +58,13 @@ ConceptRelation):
 
 We can now ask our concepts for their related child and parent concepts:
 
-  >>> sc1 = cc1.getChildren()
-  >>> len(sc1)
-  1
-  >>> cc2 in sc1
-  True
+  >>> [zapi.getName(c) for c in cc1.getChildren()]
+  [u'cc2']
   >>> len(cc1.getParents())
   0
+  >>> [zapi.getName(p) for p in cc2.getParents()]
+  [u'cc1']
 
-  >>> pc2 = cc2.getParents()
-  >>> len(pc2)
-  1
-
-  >>> cc1 in pc2
-  True
   >>> len(cc2.getChildren())
   0
 
@@ -80,7 +73,7 @@ relation to a special kind of concept object with the magic name 'type'.
 This type object is its own type. The type relations themselves are of
 a special predicate 'hasType'.
 
-  >>> concepts['hasType'] = Concept(u'Type Predicate')
+  >>> concepts['hasType'] = Concept(u'has type')
   >>> concepts['type'] = Concept(u'Type')
   >>> typeObject = concepts['type']
   >>> typeObject.setConceptType(typeObject)
@@ -117,8 +110,17 @@ Concept Views
   >>> from loops.browser.concept import ConceptView
   >>> view = ConceptView(cc1, TestRequest())
 
-  >>> sorted([c.title for c in view.children()])
+  >>> children = list(view.children())
+  >>> [c.title for c in children]
   [u'Zope 3']
+
+The token attribute provided with the items returned by the children() and
+parents() methods identifies identifies not only the item itself but
+also the relationship to the context object using a combination
+of URIs to item and the predicate of the relationship:
+  
+  >>> [c.token for c in children]
+  ['.loops/concepts/cc2:.loops/concepts/standard']
 
 The concept view allows updating the underlying context object:
 
@@ -133,7 +135,7 @@ The concept view allows updating the underlying context object:
 
   >>> view = ConceptView(cc1,
   ...           TestRequest(action='remove', qualifier='children',
-  ...                       tokens=['.loops/concepts/cc2']))
+  ...               tokens=['.loops/concepts/cc2:.loops/concepts/standard']))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
