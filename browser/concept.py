@@ -134,6 +134,14 @@ class ConceptView(BaseView):
             result = [r for r in result if r.conceptType == type]
         return self.viewIterator(result)
 
+    @Lazy
+    def typeTitle(self):
+        return self.context.conceptType.title
+
+    @Lazy
+    def typeUrl(self):
+        return zapi.absoluteURL(self.context.conceptType, self.request)
+
     def viewIterator(self, objs):
         request = self.request
         for o in objs:

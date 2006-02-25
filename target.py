@@ -26,6 +26,7 @@ $Id$
 from zope.app import zapi
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
@@ -35,6 +36,8 @@ from loops.interfaces import IDocument, IMediaAsset
 from loops.interfaces import IDocumentView, IMediaAssetView
 from loops.interfaces import IView
 from loops.interfaces import IConcept, IConceptView
+
+_ = MessageFactory('loops')
 
 
 # proxies for accessing target objects from views/nodes
@@ -141,3 +144,9 @@ class QueryableTargetSource(object):
     def __contains__(self, value):
         return value in self.resources.values() or value in self.concepts.values()
 
+
+def getTargetTypes():
+    return (('loops.concept.Concept', _(u'Concept')),
+            ('loops.resource.Document', _(u'Document')),
+            ('loops.resource.MediaAsset', _(u'Media Asset')),
+    )

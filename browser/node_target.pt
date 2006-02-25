@@ -1,0 +1,43 @@
+<tal:tag condition="view/update" />
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
+<head></head>
+<body>
+  <div metal:fill-slot="body"
+       tal:define="target view/target">
+
+      <h1 tal:content="context/title">Node Title</h1><br />
+
+      <div>
+        <span i18n:translate=""
+              tal:condition="not:target">No target assigned</span>
+        <tal:target condition="target">
+          <span i18n:translate="">Currently assigned target</span>:
+          <a href="#"
+             tal:attributes="href string:${target/url}/@@SelectedManagementView.html"
+             tal:content="target/title">Document xy</a>
+        </tal:target>
+      </div>
+      
+      <div style="padding-right:20px">
+        <metal:create use-macro="views/target_macros/create" />
+      </div>
+
+      <div   tal:define="items view/search;
+                         action string:assign;
+                         target nocall:context/target;
+                         summary string:Assignment candidates;
+                         legend string:Search;
+                         buttonText string:Assign Target;"
+             style="padding-right:20px">
+        <metal:assign use-macro="views/target_macros/listing">
+          <metal:search fill-slot="topActions">
+            <metal:block use-macro="views/target_macros/search" />
+          </metal:search>
+        </metal:assign>
+      </div>
+      
+  </div>
+</body>
+
+</html>

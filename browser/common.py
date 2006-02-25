@@ -29,6 +29,9 @@ from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
+from loops import util
+from loops.target import getTargetTypes
+
 class BaseView(object):
 
     def __init__(self, context, request):
@@ -66,12 +69,20 @@ class BaseView(object):
 
     @Lazy
     def typeTitle(self):
-        return self.context.conceptType.title
+        voc = util.KeywordVocabulary(getTargetTypes())
+        token = '.'.join((self.context.__module__,
+                         self.context.__class__.__name__))
+        term = voc.getTermByToken(token)
+        return term.title
 
     @Lazy
     def typeUrl(self):
-        return zapi.absoluteURL(self.context.conceptType, self.request)
+        return None
 
+    def viewIterator(self, objs):
+        request = self.request
+        for o in objs:
+            yield BaseView(o, request)
 
 
 class LoopsTerms(object):

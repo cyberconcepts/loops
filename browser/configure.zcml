@@ -35,6 +35,13 @@
       permission="zope.View"
       />
 
+  <page
+      for="*"
+      name="target_macros"
+      template="target_macros.pt"
+      permission="zope.View"
+      />
+
   <!-- loops top-level container -->
 
   <addform
@@ -331,10 +338,10 @@
   <editform
       label="Configure Node"
       name="configure.html"
-      schema="loops.interfaces.INodeConfigSchema"
-      fields="title description nodeType target createTarget targetUri targetType"
+      schema="loops.interfaces.INode"
+      fields="title description nodeType target"
       for="loops.interfaces.INode"
-      template="edit.pt"
+      template="node_target.pt"
       class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent">
 

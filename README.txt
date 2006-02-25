@@ -390,113 +390,44 @@ Node Views
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
 
-Node Configuration
-------------------
+A Node and its Target
+---------------------
 
 When configuring a node you may specify what you want to do with respect
 to the node's target: associate an existing one or create a new one.
-These options are provided via the INodeConfigSchema that is provided
-by a NodeConfigAdapter; in addition the attributes of the node (like the
-title) may be changed via the NodeConfigAdapter.
-  
-  >>> from loops.interfaces import INodeConfigSchema
-  >>> from loops.view import NodeConfigAdapter
-  >>> ztapi.provideAdapter(INode, INodeConfigSchema, NodeConfigAdapter)
-  >>> nodeConfig = INodeConfigSchema(m111)
 
-  >>> nodeConfig.title = u'New title for m111'
-  >>> nodeConfig.title
-  u'New title for m111'
-  >>> m111.title
-  u'New title for m111'
-  >>> nodeConfig.target = doc1
-  >>> m111.target is doc1
+  >>> from loops.browser.node import ConfigureView
+  >>> form = {'action': 'create', 'create.title': 'New Resource',
+  ...         'create.type': 'loops.resource.MediaAsset',}
+  >>> view = ConfigureView(m111, TestRequest(form = form))
+  >>> sorted((t.token, t.title) for t in view.targetTypes())
+  [('loops.concept.Concept', u'Concept'),
+      ('loops.resource.Document', u'Document'),
+      ('loops.resource.MediaAsset', u'Media Asset')]
+  >>> view.update()
   True
-  >>> m111 in doc1.getClients()
-  True
-
-The targetUri and targetType fields are only relevant when creating
-a new target object:
-
-  >>> nodeConfig.targetUri
-  ''
-  >>> nodeConfig.targetType
-  'loops.resource.Document'
-
-The node configuration form provides a target assignment field using
-a vocabulary (source) for selecting the target. (In a future version this form
-will be extended by a widget that lets you search for potential target
-objects.) The source is basically a source list:
-
-  >>> from loops.target import TargetSourceList
-  >>> source = TargetSourceList(m111)
-  >>> len(source)
-  1
-  >>> sorted([zapi.getName(s) for s in source])
-  [u'doc1']
-
-The form then uses a sort of browser view providing the ITerms interface
-based on this source list:
-
-  >>> terms = LoopsTerms(source, TestRequest())
-  >>> term = terms.getTerm(doc1)
-  >>> term.token, term.title, term.value
-  ('.loops/resources/doc1', u'Zope Info', <loops.resource.Document...>)
-      
-  >>> term = terms.getTerm(cc1)
-  >>> term.token, term.title, term.value
-  ('.loops/concepts/cc1', u'cc1', <loops.concept.Concept...>)
-      
-  >>> terms.getValue('.loops/concepts/cc1') is cc1
-  True
-
-There is a special edit view class that can be used to configure a node
-in a way that allows the creation of a target object on the fly.
-(We here use the base class providing the method for this action; the real
-application uses a subclass that does all the other stuff for form handling.)
-When creating a new target object you may specify a uri that determines
-the location of the new target object and its name.
-
-  >>> from loops.browser.node import ConfigureBaseView
-  >>> view = ConfigureBaseView(INodeConfigSchema(m111), TestRequest())
-  >>> view.checkCreateTarget()
   >>> sorted(resources.keys())
-  [u'doc1']
-  >>> form = {'field.createTarget': True,
-  ...         'field.targetUri': '.loops/resources/ma07',
-  ...         'field.targetType': 'loops.resource.MediaAsset'}
-  >>> view = ConfigureBaseView(m111, TestRequest(form=form))
-  >>> m111.target = view.checkCreateTarget()
-  >>> sorted(resources.keys())
-  [u'doc1', u'ma07']
-  >>> isinstance(resources['ma07'], MediaAsset)
-  True
-  
-  >>> form = {'field.createTarget': True,
-  ...         'field.targetType': 'loops.resource.Document'}
-  >>> view = ConfigureBaseView(m111, TestRequest(form=form))
-  >>> m111.target = view.checkCreateTarget()
-  >>> sorted(resources.keys())
-  [u'doc1', u'm1.m11.m111', u'ma07']
-  >>> isinstance(resources['m1.m11.m111'], Document)
-  True
-        
+  [u'doc1', u'm1.m11.m111']
+
+  >>> view.target.title, view.target.token
+  ('New Resource', '.loops/resources/m1.m11.m111')
+
 A node object provides the targetSchema of its target:
 
   >>> from loops.interfaces import IDocumentView
   >>> from loops.interfaces import IMediaAssetView
   >>> IDocumentView.providedBy(m111)
-  True
-  >>> IMediaAssetView.providedBy(m111)
   False
+  >>> IMediaAssetView.providedBy(m111)
+  True
   >>> m111.target = None
   >>> IDocumentView.providedBy(m111)
   False
-  >>> m111.target = resources['ma07']
+  >>> m111.target = resources['doc1']
   >>> IDocumentView.providedBy(m111)
-  False
-  >>> IMediaAssetView.providedBy(m111)
   True
+  >>> IMediaAssetView.providedBy(m111)
+  False
 
 A node's target is rendered using the NodeView's renderTargetBody()
 method. This makes use of a browser view registered for the target interface,
@@ -535,7 +466,7 @@ edit form provided by the node:
 
   >>> proxy = zapi.getAdapter(m111, IDocumentView)
   >>> proxy.title = u'Set via proxy'
-  >>> resources['ma07'].title
+  >>> resources['doc1'].title
   u'Set via proxy'
 
 If the target object is removed from its container all references
@@ -549,7 +480,7 @@ cybertools.relation package.)
   >>> ztapi.subscribe([Interface, IObjectRemovedEvent], None,
   ...                 invalidateRelations)
 
-  >>> del resources['ma07']
+  >>> del resources['doc1']
   >>> m111.target
   >>> IMediaAssetView.providedBy(m111)
   False

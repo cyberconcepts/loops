@@ -24,16 +24,24 @@ $Id$
 
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
+from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.event.objectevent import ObjectCreatedEvent
 #import zope.configuration.name
 from zope.dottedname.resolve import resolve
+from zope.event import notify
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IConcept, IDocument, IMediaAsset
 from loops.resource import MediaAsset
+from loops.target import getTargetTypes
+from loops import util
+from loops.browser.common import BaseView
+from loops.browser.concept import ConceptView
+
 
 class NodeView(object):
 
@@ -124,12 +132,13 @@ class NodeView(object):
         return item.context == self.context
 
 
-class ConfigureBaseView(object):
-    """ Helper view class for editing/configuring a node, providing the
-        stuff needed for creating a target object.
+class ConfigureView(BaseView):
+    """ An editing view for configuring a node, optionally creating
+        a target object.
     """
 
     def __init__(self, context, request):
+        #self.context = context
         self.context = removeSecurityProxy(context)
         self.request = request
 
@@ -137,53 +146,84 @@ class ConfigureBaseView(object):
     def loopsRoot(self):
         return self.context.getLoopsRoot()
 
-    def checkCreateTarget(self):
-        form = self.request.form
-        if form.get('field.createTarget', False):
-            root = self.loopsRoot
-            type = self.request.form.get('field.targetType',
-                                         'loops.resource.MediaAsset')
-            factory = resolve(type)
-            uri = self.request.form.get('field.targetUri', None)
-            if uri:
-                path = uri.split('/')
-                # TODO: check for .loops prefix
-                containerName = path[-2]
-                name = path[-1]
-                container = root[containerName]
-            else:
-                container = ('.resource.' in type and root.getResourceManager()
-                          or root.getConceptManager())
-                viewManagerPath = zapi.getPath(root.getViewManager())
-                name = zapi.getPath(self.context)[len(viewManagerPath)+1:]
-                name = name.replace('/', '.')
-            # check for duplicates:
-            num = 1
-            basename = name
-            while name in container:
-                name = '%s-%d' % (basename, num)
-                num += 1
-            # create target:
-            container[name] = factory()
-            target = container[name]
-            # set possibly new target uri in request for further processing:
-            targetUri = self.loopsRoot.getLoopsUri(target)
-            form['field.target'] = targetUri
-            return target
-
-
-class ConfigureView(object):
-    """ An editing view for configuring a node, optionally creating
-        a target object.
-    """
-
-    def __init__(self, context, request):
-        super(ConfigureView, self).__init__(context, request)
-        self.delegate = ConfigureBaseView(context, request)
+    @property
+    def target(self):
+        target = self.context.target
+        if target is not None:
+            if IConcept.providedBy(target):
+                return ConceptView(target, self.request)
+            return BaseView(target, self.request)
+        return None
 
     def update(self):
-        if self.update_status is not None:
-            return self.update_status
-        self.delegate.checkCreateTarget()
-        return super(ConfigureView, self).update()
+        request = self.request
+        action = request.get('action')
+        if action is None or action == 'search':
+            return True
+        if action == 'create':
+            return self.createAndAssign()
+        if action == 'assign':
+            token = request.get('token')
+            if token:
+                target = self.loopsRoot.loopsTraverse(token)
+            else:
+                target = None
+            self.context.target = target
+        # TODO: raise error
+        return True
+
+    def createAndAssign(self):
+        form = self.request.form
+        root = self.loopsRoot
+        type = self.request.form.get('create.type',
+                                     'loops.resource.MediaAsset')
+        factory = resolve(type)
+        if '.resource.' in type:
+            container = root.getResourceManager()
+        else:
+            container = root.getConceptManager()
+        name = form.get('create.name', '')
+        if not name:
+            viewManagerPath = zapi.getPath(root.getViewManager())
+            name = zapi.getPath(self.context)[len(viewManagerPath)+1:]
+            name = name.replace('/', '.')
+        # check for duplicates:
+        num = 1
+        basename = name
+        while name in container:
+            name = '%s-%d' % (basename, num)
+            num += 1
+        container[name] = removeSecurityProxy(factory())
+        target = container[name]
+        target.title = form.get('create.title', u'')
+        notify(ObjectCreatedEvent(target))
+        self.context.target = target
+        return True
+
+    def targetTypes(self):
+        return util.KeywordVocabulary(getTargetTypes())
+
+    @Lazy
+    def search(self):
+        request = self.request
+        if request.get('action') != 'search':
+            return []
+        searchTerm = request.get('searchTerm', None)
+        if searchTerm:
+            cat = zapi.getUtility(ICatalog)
+            result = cat.searchResults(loops_searchableText=searchTerm)
+        else:
+            result = (list(self.loopsRoot.getConceptManager().values())
+                    + list(self.loopsRoot.getResourceManager().values()))
+        return list(self.viewIterator(result))
+
+    def viewIterator(self, objs):
+        request = self.request
+        for o in objs:
+            if o == self.context.target:
+                continue
+            if IConcept.providedBy(o):
+                yield ConceptView(o, request)
+            else:
+                yield BaseView(o, request)
 

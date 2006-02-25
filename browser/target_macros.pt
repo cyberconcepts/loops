@@ -1,0 +1,146 @@
+<html i18n:domain="loops">
+
+
+<metal:assignments define-macro="listing">
+  <fieldset>
+    <legend tal:content="legend"
+            i18n:translate="">Listing</legend>
+    <metal:top define-slot="topActions" />
+    <form metal:define-macro="listing_form"
+          method="post" name="listing" action="."
+          tal:attributes="action request/URL"
+          tal:condition="items">
+      <input type="hidden" name="action" value="assign"
+             tal:attributes="value action" />
+      <table class="listing" summary="Currently assigned"
+             i18n:attributes="summary"
+             tal:attributes="summary summary">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th i18n:translate="label_title">Title</th>
+            <th i18n:translate="label_type">Type</th>
+          </tr>
+        </thead>
+        <tbody tal:define="target view/target;
+                           targetToken python: target and target.token or None">
+          <tal:none define="item nothing; title string:None; token nothing;
+                            type nothing">
+            <metal:none use-macro="views/target_macros/list_item_tr" />
+          </tal:none>
+          <tal:current define="item target"
+                       condition="item">
+            <metal:current use-macro="views/target_macros/list_item" />
+          </tal:current>
+          <tal:items repeat="item items">
+            <metal:item define-macro="list_item"
+                        tal:define="title item/title;
+                                    token item/token;
+                                    type item/typeTitle">
+              <tr metal:define-macro="list_item_tr">
+                <td class="field">
+                  <input class="formSelection"
+                         type="radio" name="token" id="#" value=""
+                         tal:attributes="value token;
+                                checked python: targetToken == token" />
+                </td>
+                <td>
+                  <a href="#"
+                     tal:omit-tag="not:item"
+                     tal:content="title"
+                     tal:attributes="href
+                        string:${item/url|nothing}/@@SelectedManagementView.html">
+                    Title
+                  </a>
+                </td>
+                <td>
+                  <a tal:condition="type"
+                     href="#"
+                     tal:attributes="href
+                        string:${item/typeUrl}/@@SelectedManagementView.html"
+                     tal:omit-tag="not:item/typeUrl">
+                    <span tal:replace="type">Type</span>
+                  </a>
+                </td>
+              </tr>
+            </metal:item>
+          </tal:items>
+        </tbody>
+      </table>
+      <div class="formControls">
+        <input class="context" type="submit" name="form.button.submit"
+               value="Change assignment"
+               i18n:attributes="value"
+               tal:attributes="value buttonText" />
+        <metal:buttons define-slot="specialButtons" />
+      </div>
+    </form>
+  </fieldset>
+</metal:assignments>
+
+
+<metal:create define-macro="create">
+  <fieldset>
+    <legend i18n:translate="">Create Target</legend>
+    <form method="post" name="listing" action="."
+        tal:attributes="action request/URL">
+      <input type="hidden" name="action" value="create" />
+      <div class="row">
+        <span i18n:translate="">Name</span>
+        <input name="create.name" size="15"
+               tal:attributes="value nothing" />&nbsp;
+        <span i18n:translate="">Title</span>
+        <input name="create.title" size="30"
+               tal:attributes="value nothing" />&nbsp;
+        <span i18n:translate="">Type</span>
+        <select name="create.type">
+          <tal:types repeat="type view/targetTypes">
+            <option value=".loops/concepts/topic"
+                    i18n:translate=""
+                    tal:attributes="value type/token"
+                    tal:content="type/title">Topic</option>
+          </tal:types>
+        </select>
+      </div><br />
+      <div class="formControls">
+        <input class="context" type="submit" name="form.button.submit"
+               value="Create Target"
+               i18n:attributes="value" />
+      </div>
+    </form>
+  </fieldset>
+</metal:create>
+
+
+<metal:search define-macro="search">
+  <form method="post" name="listing" action="."
+        tal:attributes="action request/URL">
+      <input type="hidden" name="action" value="search" />
+      <div class="row"
+           tal:define="searchTerm request/searchTerm | nothing;
+                       searchType request/searchType | nothing;">
+        <span i18n:translate="">Search Term</span>
+        <input name="searchTerm"
+               tal:attributes="value searchTerm" />
+        <span i18n:translate="">Type</span>
+        <select name="searchType">
+          <option value="*">Any</option>
+          <tal:types repeat="type view/targetTypes">
+            <option value=".loops/concepts/topic"
+                    i18n:translate=""
+                    tal:attributes="value type/token;
+                                    selected python: type.token == searchType"
+                    tal:content="type/title">Topic</option>
+          </tal:types>
+        </select>
+      </div>
+      <div class="formControls">
+        <input class="context" type="submit" name="form.button.submit"
+               value="Search"
+               i18n:attributes="value" />
+      </div>
+  </form>
+</metal:search>
+
+
+</html>
