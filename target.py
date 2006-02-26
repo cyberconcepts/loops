@@ -150,3 +150,11 @@ def getTargetTypes():
             ('loops.resource.Document', _(u'Document')),
             ('loops.resource.MediaAsset', _(u'Media Asset')),
     )
+
+def getTargetTypesForSearch():
+    # TODO: provide full list of concept types
+    return (('loops:concept:*', _(u'Any Concept')),
+            ('loops:resource:Document', _(u'Document')),
+            ('loops:resource:MediaAsset', _(u'Media Asset')),
+    )
+

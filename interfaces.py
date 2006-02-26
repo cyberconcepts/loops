@@ -460,7 +460,16 @@ class IIndexAttributes(Interface):
         by an adapter.
     """
 
+    def title():
+        """ Return a text containing title and similar attributes to be
+            indexed by a full-text index.
+        """
+
     def text():
         """ Return a text with all parts to be indexed by a full-text index.
+        """
+
+    def type():
+        """ Return a string that identifies the type of the object.
         """
 

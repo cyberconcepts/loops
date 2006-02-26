@@ -128,6 +128,13 @@ class IndexAttributes(object):
 
     def text(self):
         context = self.context
-        return ' '.join((zapi.getName(context), context.title,))
+        return ' '.join((zapi.getName(context), context.title, context.data)).strip()
 
+    def title(self):
+        context = self.context
+        return ' '.join((zapi.getName(context), context.title,)).strip()
+
+    def type(self):
+        context = self.context
+        return ':'.join(('loops:resource', context.__class__.__name__))
 

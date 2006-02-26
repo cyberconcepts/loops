@@ -183,13 +183,20 @@ predicates:
   [(u'has type', '.loops/concepts/hasType'),
       (u'subconcept', '.loops/concepts/standard')]
 
-Searchable Text Adapter
------------------------
+Index attributes adapter
+------------------------
 
   >>> from loops.concept import IndexAttributes
   >>> idx = IndexAttributes(cc2)
   >>> idx.text()
   u'cc2 Zope 3'
+  
+  >>> idx.title()
+  u'cc2 Zope 3'
+
+  >>> idx.type()
+  'loops:concept:unknown'
+
 
 Resources and what they have to do with Concepts
 ================================================
@@ -258,6 +265,20 @@ below) via the getClients() method:
   1
   >>> conc[0] is cc1
   True
+
+Index attributes adapter
+------------------------
+
+  >>> from loops.resource import IndexAttributes
+  >>> idx = IndexAttributes(doc1)
+  >>> idx.text()
+  u'doc1 Zope Info'
+  
+  >>> idx.title()
+  u'doc1 Zope Info'
+
+  >>> idx.type()
+  'loops:resource:Document'
 
 
 Views/Nodes: Menus, Menu Items, Listings, Pages, etc

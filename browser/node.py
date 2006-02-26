@@ -37,7 +37,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IConcept, IDocument, IMediaAsset
 from loops.resource import MediaAsset
-from loops.target import getTargetTypes
+from loops.target import getTargetTypes, getTargetTypesForSearch
 from loops import util
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
@@ -203,15 +203,29 @@ class ConfigureView(BaseView):
     def targetTypes(self):
         return util.KeywordVocabulary(getTargetTypes())
 
+    def targetTypesForSearch(self):
+        return util.KeywordVocabulary(getTargetTypesForSearch())
+
     @Lazy
     def search(self):
         request = self.request
         if request.get('action') != 'search':
             return []
         searchTerm = request.get('searchTerm', None)
-        if searchTerm:
+        searchType = request.get('searchType', None)
+        if searchTerm or searchType:
+            criteria = {}
+            if searchTerm:
+                criteria['loops_title'] = searchTerm
+            if searchType:
+                if searchType.endswith('*'):
+                    start = searchType[:-1]
+                    end = start + '\x7f'
+                else:
+                    start = end = searchType
+                criteria['loops_type'] = (start, end)
             cat = zapi.getUtility(ICatalog)
-            result = cat.searchResults(loops_text=searchTerm)
+            result = cat.searchResults(**criteria)
         else:
             result = (list(self.loopsRoot.getConceptManager().values())
                     + list(self.loopsRoot.getResourceManager().values()))

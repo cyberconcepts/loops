@@ -71,7 +71,7 @@ class BaseView(object):
     def typeTitle(self):
         voc = util.KeywordVocabulary(getTargetTypes())
         token = '.'.join((self.context.__module__,
-                         self.context.__class__.__name__))
+                          self.context.__class__.__name__))
         term = voc.getTermByToken(token)
         return term.title
 

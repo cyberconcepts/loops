@@ -120,18 +120,17 @@ class ConceptView(BaseView):
         if request.get('action') != 'search':
             return []
         searchTerm = request.get('searchTerm', None)
-        if searchTerm:
+        searchType = request.get('searchType', None)
+        if searchTerm or searchType:
+            criteria = {}
+            if searchTerm:
+                criteria['loops_title'] = searchTerm
+            if searchType:
+                criteria['loops_type'] = (searchType)
             cat = zapi.getUtility(ICatalog)
-            result = cat.searchResults(loops_text=searchTerm)
+            result = cat.searchResults(**criteria)
         else:
-            result = self.loopsRoot.getConceptManager().values()
-        searchType = request.get('searchType', '*')
-        # TODO: query catalog for type
-        if not searchType:
-            result = [r for r in result if r.conceptType is None]            
-        elif searchType != '*':
-            type = self.loopsRoot.loopsTraverse(searchType)
-            result = [r for r in result if r.conceptType == type]
+            result = [r for r in result if r.conceptType is None]
         return self.viewIterator(result)
 
     @Lazy

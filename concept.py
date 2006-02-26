@@ -308,3 +308,12 @@ class IndexAttributes(object):
         context = self.context
         return ' '.join((zapi.getName(context), context.title,))
 
+    def title(self):
+        return self.text()
+
+    def type(self):
+        context = self.context
+        conceptType = context.conceptType
+        typeName = conceptType is None and 'unknown' or zapi.getName(conceptType)
+        return ':'.join(('loops:concept', typeName,))
+
