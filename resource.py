@@ -26,6 +26,7 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image as BaseMediaAsset
+from zope.component import adapts
 from zope.interface import implements
 from persistent import Persistent
 from cStringIO import StringIO
@@ -37,6 +38,7 @@ from interfaces import IDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
+from interfaces import IIndexAttributes
 
 
 class Resource(Contained, Persistent):
@@ -115,5 +117,17 @@ class ResourceManager(BTreeContainer):
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
 
+
+class IndexAttributes(object):
+
+    implements(IIndexAttributes)
+    adapts(IResource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def text(self):
+        context = self.context
+        return ' '.join((zapi.getName(context), context.title,))
 
 

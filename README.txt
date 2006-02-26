@@ -186,8 +186,9 @@ predicates:
 Searchable Text Adapter
 -----------------------
 
-  >>> from loops.concept import SearchableText
-  >>> SearchableText(cc2).searchableText()
+  >>> from loops.concept import IndexAttributes
+  >>> idx = IndexAttributes(cc2)
+  >>> idx.text()
   u'cc2 Zope 3'
 
 Resources and what they have to do with Concepts

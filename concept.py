@@ -40,7 +40,7 @@ from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from interfaces import IConcept, IConceptRelation, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
 from interfaces import ILoopsContained
-from interfaces import ISearchableText
+from interfaces import IIndexAttributes
 
 
 # relation classes
@@ -296,15 +296,15 @@ class PredicateSourceList(object):
         return len(self.conceptTypes)
 
 
-class SearchableText(object):
+class IndexAttributes(object):
 
-    implements(ISearchableText)
+    implements(IIndexAttributes)
     adapts(IConcept)
 
     def __init__(self, context):
         self.context = context
 
-    def searchableText(self):
+    def text(self):
         context = self.context
         return ' '.join((zapi.getName(context), context.title,))
 

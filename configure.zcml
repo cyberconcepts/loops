@@ -232,7 +232,8 @@
 
   <!-- adapters -->
 
-  <adapter factory="loops.concept.SearchableText" />
+  <adapter factory="loops.concept.IndexAttributes" />
+  <adapter factory="loops.resource.IndexAttributes" />
   
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />

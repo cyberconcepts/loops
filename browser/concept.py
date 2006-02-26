@@ -122,7 +122,7 @@ class ConceptView(BaseView):
         searchTerm = request.get('searchTerm', None)
         if searchTerm:
             cat = zapi.getUtility(ICatalog)
-            result = cat.searchResults(loops_searchableText=searchTerm)
+            result = cat.searchResults(loops_text=searchTerm)
         else:
             result = self.loopsRoot.getConceptManager().values()
         searchType = request.get('searchType', '*')

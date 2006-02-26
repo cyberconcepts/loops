@@ -211,7 +211,7 @@ class ConfigureView(BaseView):
         searchTerm = request.get('searchTerm', None)
         if searchTerm:
             cat = zapi.getUtility(ICatalog)
-            result = cat.searchResults(loops_searchableText=searchTerm)
+            result = cat.searchResults(loops_text=searchTerm)
         else:
             result = (list(self.loopsRoot.getConceptManager().values())
                     + list(self.loopsRoot.getResourceManager().values()))

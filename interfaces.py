@@ -455,12 +455,12 @@ class IConceptRelation(IRelation):
 
 # interfaces for catalog indexes
 
-class ISearchableText(Interface):
-    """ Objects to be included in the general full-text index should provide
-        or be adaptable to this interface.
+class IIndexAttributes(Interface):
+    """ Attributes odr methods providing index values. Typically provided
+        by an adapter.
     """
 
-    def searchableText():
+    def text():
         """ Return a text with all parts to be indexed by a full-text index.
         """
 
