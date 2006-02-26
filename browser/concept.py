@@ -122,15 +122,23 @@ class ConceptView(BaseView):
             return []
         searchTerm = request.get('searchTerm', None)
         searchType = request.get('searchType', None)
-        if searchTerm or searchType:
+        result = []
+        if searchTerm or searchType != 'none':
             criteria = {}
             if searchTerm:
                 criteria['loops_title'] = searchTerm
             if searchType:
-                criteria['loops_type'] = (searchType, searchType)
+                if searchType.endswith('*'):
+                    start = searchType[:-1]
+                    end = start + '\x7f'
+                else:
+                    start = end = searchType
+                criteria['loops_type'] = (start, end)
             cat = zapi.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
         else:
+            result = self.loopsRoot.getConceptManager().values()
+        if searchType == 'none':
             result = [r for r in result if r.conceptType is None]
         return self.viewIterator(result)
 
@@ -159,9 +167,6 @@ class ConceptView(BaseView):
                                  self.getConceptTypeTokenForSearch(t))), t.title)
                        for t in types]
         return util.KeywordVocabulary(typesItems)
-        #terms = zapi.getMultiAdapter((types, self.request), ITerms)
-        #for type in types:
-        #    yield terms.getTerm(type)
 
     def getConceptTypeTokenForSearch(self, ct):
         return ct is None and 'unknown' or zapi.getName(ct)
