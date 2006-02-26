@@ -37,6 +37,7 @@ from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import BaseView, LoopsTerms
+from loops import util
 
 
 class ConceptView(BaseView):
@@ -126,7 +127,7 @@ class ConceptView(BaseView):
             if searchTerm:
                 criteria['loops_title'] = searchTerm
             if searchType:
-                criteria['loops_type'] = (searchType)
+                criteria['loops_type'] = (searchType, searchType)
             cat = zapi.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
         else:
@@ -151,6 +152,19 @@ class ConceptView(BaseView):
         terms = zapi.getMultiAdapter((types, self.request), ITerms)
         for type in types:
             yield terms.getTerm(type)
+
+    def conceptTypesForSearch(self):
+        types = ConceptTypeSourceList(self.context)
+        typesItems = [(':'.join(('loops:concept',
+                                 self.getConceptTypeTokenForSearch(t))), t.title)
+                       for t in types]
+        return util.KeywordVocabulary(typesItems)
+        #terms = zapi.getMultiAdapter((types, self.request), ITerms)
+        #for type in types:
+        #    yield terms.getTerm(type)
+
+    def getConceptTypeTokenForSearch(self, ct):
+        return ct is None and 'unknown' or zapi.getName(ct)
 
     def predicates(self):
         preds = PredicateSourceList(self.context)

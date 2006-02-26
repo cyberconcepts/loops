@@ -133,7 +133,7 @@
         <span i18n:translate="">Type</span>
         <select name="searchType">
           <option value="*">Any</option>
-          <tal:types repeat="type view/conceptTypes">
+          <tal:types repeat="type view/conceptTypesForSearch">
             <option value=".loops/concepts/topic"
                     i18n:translate=""
                     tal:attributes="value type/token;
