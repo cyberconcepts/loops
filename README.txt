@@ -121,7 +121,7 @@ a special concept type.
 Concept Views
 -------------
 
-  >>> from loops.browser.concept import ConceptView
+  >>> from loops.browser.concept import ConceptView, ConceptConfigureView
   >>> view = ConceptView(cc1, TestRequest())
 
   >>> children = list(view.children())
@@ -136,18 +136,19 @@ of URIs to item and the predicate of the relationship:
   >>> [c.token for c in children]
   ['.loops/concepts/cc2:.loops/concepts/standard']
 
-The concept view allows updating the underlying context object:
+There is also a concept configuration view that allows updating the
+underlying context object:
 
   >>> cc3 = Concept(u'loops for Zope 3')
   >>> concepts['cc3'] = cc3
-  >>> view = ConceptView(cc1,
+  >>> view = ConceptConfigureView(cc1,
   ...           TestRequest(action='assign', tokens=['.loops/concepts/cc3']))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
   [u'Zope 3', u'loops for Zope 3']
 
-  >>> view = ConceptView(cc1,
+  >>> view = ConceptConfigureView(cc1,
   ...           TestRequest(action='remove', qualifier='children',
   ...               tokens=['.loops/concepts/cc2:.loops/concepts/standard']))
   >>> view.update()
@@ -159,14 +160,14 @@ We can also create a new concept and assign it:
 
   >>> params = {'action': 'create', 'create.name': 'cc4',
   ...           'create.title': u'New concept'}
-  >>> view = ConceptView(cc1, TestRequest(**params))
+  >>> view = ConceptConfigureView(cc1, TestRequest(**params))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
   [u'New concept', u'loops for Zope 3']
 
-The concept view provides methods for displaying concept types and
-predicates:
+The concept configuration view provides methods for displaying concept
+types and predicates:
 
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from loops.browser.common import LoopsTerms
@@ -257,15 +258,33 @@ We can associate a resource with a concept by assigning it to the concept:
   >>> list(res)
   [<loops.resource.Document ...>]
 
-The resource also provides access to the associated concepts (or views, see
-below) via the getClients() method:
+The concept configuration view discussed above also manages the relations
+from concepts to resources:
 
-  >>> conc = doc1.getClients()
-  >>> len(conc)
+  >>> len(cc1.getResources())
   1
-  >>> conc[0] is cc1
+  >>> form = dict(action='remove', qualifier='resources',
+  ...               tokens=['.loops/resources/doc1:.loops/concepts/standard'])
+  >>> view = ConceptConfigureView(cc1, TestRequest(form=form))
+  >>> [zapi.getName(r.context) for r in view.resources()]
+  [u'doc1']
+  >>> view.update()
   True
+  >>> len(cc1.getResources())
+  0
+  >>> form = dict(action='assign', assignAs='resource',
+  ...               tokens=['.loops/resources/doc1'])
+  >>> view = ConceptConfigureView(cc1, TestRequest(form=form))
+  >>> view.update()
+  True
+  >>> len(cc1.getResources())
+  1
 
+These relations may also be managed starting from a resource using
+the resource configuration view:
+
+  >>> from loops.browser.resource import ResourceConfigureView
+    
 Index attributes adapter
 ------------------------
 
@@ -391,6 +410,16 @@ out - this is usually done through ZCML.)
   True
   >>> m111.target = cc2
   >>> m111.target is cc2
+  True
+
+A resource provides access to the associated views/nodes via the
+getClients() method:
+
+  >>> len(doc1.getClients())
+  0
+  >>> m112.target = doc1
+  >>> nodes = doc1.getClients()
+  >>> nodes[0] is m112
   True
 
 Node Views

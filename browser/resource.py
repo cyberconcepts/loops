@@ -24,12 +24,15 @@ $Id$
 
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
+from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IDocument, IMediaAsset
+from loops.browser.common import BaseView
+from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -40,11 +43,69 @@ renderingFactories = {
 }
 
 
-class DocumentView(object):
+class ResourceView(BaseView):
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
+    def concepts(self):
+        for r in self.context.getConceptRelations():
+            yield ConceptRelationView(r, self.request)
+
+
+class ResourceConfigureView(ResourceView, ConceptConfigureView):
+
+    def update(self):
+        request = self.request
+        action = request.get('action')
+        if action is None:
+            return True
+        if action == 'create':
+            self.createAndAssign()
+            return True
+        tokens = request.get('tokens', [])
+        for token in tokens:
+            parts = token.split(':')
+            token = parts[0]
+            if len(parts) > 1:
+                relToken = parts[1]
+            concept = self.loopsRoot.loopsTraverse(token)
+            if action == 'assign':
+                predicate = request.get('predicate') or None
+                if predicate:
+                    predicate = removeSecurityProxy(
+                                    self.loopsRoot.loopsTraverse(predicate))
+                self.context.assignConcept(removeSecurityProxy(concept), predicate)
+            elif action == 'remove':
+                predicate = self.loopsRoot.loopsTraverse(relToken)
+                self.context.deassignConcept(concept, [predicate])
+        return True
+
+    def search(self):
+        request = self.request
+        if request.get('action') != 'search':
+            return []
+        searchTerm = request.get('searchTerm', None)
+        searchType = request.get('searchType', None)
+        result = []
+        if searchTerm or searchType != 'none':
+            criteria = {}
+            if searchTerm:
+                criteria['loops_title'] = searchTerm
+            if searchType:
+                if searchType.endswith('*'):
+                    start = searchType[:-1]
+                    end = start + '\x7f'
+                else:
+                    start = end = searchType
+                criteria['loops_type'] = (start, end)
+            cat = zapi.getUtility(ICatalog)
+            result = cat.searchResults(**criteria)
+        else:
+            result = self.loopsRoot.getConceptManager().values()
+        if searchType == 'none':
+            result = [r for r in result if r.conceptType is None]
+        return self.viewIterator(result)
+
+
+class DocumentView(ResourceView):
 
     def render(self):
         """ Return the rendered content (data) of the context object.

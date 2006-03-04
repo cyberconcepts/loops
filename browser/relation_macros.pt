@@ -43,6 +43,7 @@
             <td>
               <a tal:condition="item/typeTitle | nothing"
                  tal:content="item/typeTitle" href="#"
+                 tal:omit-tag="not:item/typeUrl"
                  tal:attributes="href
                     string:${item/typeUrl}/@@SelectedManagementView.html">
                 Type
@@ -85,7 +86,7 @@
         <input name="create.title" size="30"
                tal:attributes="value nothing" />&nbsp;
         <span i18n:translate="">Type</span>
-        <select name="create.type">
+        <select name="create.type" metal:define-slot="types">
           <tal:types repeat="type view/conceptTypes">
             <option value=".loops/concepts/topic"
                     i18n:translate=""
@@ -96,24 +97,26 @@
         </select>
       </div><br />
       <div class="formControls">
-        <input class="context" type="submit" name="form.button.submit"
-               value="Create Object"
-               i18n:attributes="value"
-               tal:attributes="value buttonText" />
-        and assign as
-        <select name="assignAs">
-          <option value="child" selected i18n:translate="">Child</option>
-          <option value="parent" i18n:translate="">Parent</option>
-        </select>
-        using Predicate
-        <select name="create.predicate">
-          <tal:types repeat="pred view/predicates">
-            <option value=".loops/concepts/hasType"
-                    i18n:translate=""
-                    tal:attributes="value pred/token"
-                    tal:content="pred/title">Predicate</option>
-          </tal:types>
-        </select>
+        <metal:control define-slot="control">
+          <input class="context" type="submit" name="form.button.submit"
+                 value="Create Object"
+                 i18n:attributes="value"
+                 tal:attributes="value buttonText" />
+          and assign as
+          <select name="assignAs">
+            <option value="child" selected i18n:translate="">Child</option>
+            <option value="parent" i18n:translate="">Parent</option>
+          </select>
+          using Predicate
+          <select name="create.predicate" metal:define-macro="predicates">
+            <tal:types repeat="pred view/predicates">
+              <option value=".loops/concepts/hasType"
+                      i18n:translate=""
+                      tal:attributes="value pred/token"
+                      tal:content="pred/title">Predicate</option>
+            </tal:types>
+          </select>
+        </metal:control>
       </div>
     </form>
   </fieldset>
@@ -131,7 +134,7 @@
         <input name="searchTerm"
                tal:attributes="value searchTerm" />
         <span i18n:translate="">Type</span>
-        <select name="searchType">
+        <select name="searchType" metal:define-slot="types">
           <option value="loops:concept:*"
                   tal:attributes="selected python:
                       searchType == 'loops:concept:*'">Any</option>

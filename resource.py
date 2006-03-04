@@ -27,6 +27,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image as BaseMediaAsset
 from zope.component import adapts
+from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from persistent import Persistent
 from cStringIO import StringIO
@@ -39,11 +40,17 @@ from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 from interfaces import IIndexAttributes
+from concept import ResourceRelation
+from view import TargetRelation
+
+_ = MessageFactory('loops')
 
 
 class Resource(Contained, Persistent):
 
     implements(IResource, IResourceManagerContained, IRelatable)
+
+    _size = _width = _height = 0
 
     _title = u''
     def getTitle(self): return self._title
@@ -57,17 +64,34 @@ class Resource(Contained, Persistent):
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
 
+    def __init__(self, title=u''):
+        self.title = title
+
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
     def getClients(self, relationships=None):
+        if relationships is None:
+            relationships = [TargetRelation]
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
-    def __init__(self, title=u''):
-        self.title = title
+    # concept relations
 
-    _size = _width = _height = 0
+    def getConceptRelations (self, predicates=None, concept=None):
+        predicates = predicates is None and ['*'] or predicates
+        relationships = [ResourceRelation(None, self, p) for p in predicates]
+        # TODO: sort...
+        return getRelations(first=concept, second=self, relationships=relationships)
+        
+    def getConcepts(self, predicates=None):
+        return [r.first for r in self.getConceptRelations(predicates)]
+
+    def assignConcept(self, concept, predicate=None):
+        concept.assignResource(self, predicate)
+
+    def deassignConcept(self, concept, predicates=None):
+        concept.deassignResource(self, predicates)
 
 
 class Document(Resource):
@@ -137,4 +161,15 @@ class IndexAttributes(object):
     def type(self):
         context = self.context
         return ':'.join(('loops:resource', context.__class__.__name__))
+
+
+def getResourceTypes():
+    return (('loops.resource.Document', _(u'Document')),
+            ('loops.resource.MediaAsset', _(u'Media Asset')),
+    )
+
+def getResourceTypesForSearch():
+    return (('loops:resource:Document', _(u'Document')),
+            ('loops:resource:MediaAsset', _(u'Media Asset')),
+    )
 

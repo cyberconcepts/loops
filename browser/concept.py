@@ -28,6 +28,7 @@ from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
+from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
@@ -35,7 +36,10 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope import schema
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
+from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
+from loops.resource import getResourceTypes, getResourceTypesForSearch
+from loops.target import getTargetTypes
 from loops.browser.common import BaseView, LoopsTerms
 from loops import util
 
@@ -49,6 +53,13 @@ class ConceptView(BaseView):
     def parents(self):
         for r in self.context.getParentRelations():
             yield ConceptRelationView(r, self.request)
+
+    def resources(self):
+        for r in self.context.getResourceRelations():
+            yield ConceptResourceRelationView(r, self.request, contextIsSecond=True)
+
+
+class ConceptConfigureView(ConceptView):
 
     def update(self):
         request = self.request
@@ -75,6 +86,8 @@ class ConceptView(BaseView):
                     self.context.assignChild(removeSecurityProxy(concept), predicate)
                 elif assignAs == 'parent':
                     self.context.assignParent(removeSecurityProxy(concept), predicate)
+                elif assignAs == 'resource':
+                    self.context.assignResource(removeSecurityProxy(concept), predicate)
                 else:
                     raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
             elif action == 'remove':
@@ -84,6 +97,8 @@ class ConceptView(BaseView):
                     self.context.deassignParent(concept, [predicate])
                 elif qualifier == 'children':
                     self.context.deassignChild(concept, [predicate])
+                elif qualifier == 'resources':
+                    self.context.deassignResource(concept, [predicate])
                 else:
                     raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
             else:
@@ -97,8 +112,13 @@ class ConceptView(BaseView):
             raise(BadRequest, 'Empty name.')
         title = request.get('create.title', u'')
         conceptType = request.get('create.type')
-        concept = Concept(title)
-        container = self.loopsRoot.getConceptManager()
+        if conceptType and conceptType.startswith('loops.resource.'):
+            factory = resolve(conceptType)
+            concept = factory(title)
+            container = self.loopsRoot.getResourceManager()
+        else:
+            concept = Concept(title)
+            container = self.loopsRoot.getConceptManager()
         container[name] = concept
         if conceptType:
             ctype = self.loopsRoot.loopsTraverse(conceptType)
@@ -113,6 +133,8 @@ class ConceptView(BaseView):
             self.context.assignChild(removeSecurityProxy(concept), predicate)
         elif assignAs == 'parent':
             self.context.assignParent(removeSecurityProxy(concept), predicate)
+        elif assignAs == 'resource':
+            self.context.assignResource(removeSecurityProxy(concept), predicate)
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 
@@ -153,7 +175,10 @@ class ConceptView(BaseView):
     def viewIterator(self, objs):
         request = self.request
         for o in objs:
-            yield ConceptView(o, request)
+            if IConcept.providedBy(o):
+                yield ConceptConfigureView(o, request)
+            else:
+                yield BaseView(o, request)
 
     def conceptTypes(self):
         types = ConceptTypeSourceList(self.context)
@@ -170,6 +195,13 @@ class ConceptView(BaseView):
 
     def getConceptTypeTokenForSearch(self, ct):
         return ct is None and 'unknown' or zapi.getName(ct)
+
+    def resourceTypes(self):
+        return util.KeywordVocabulary(getResourceTypes())
+
+    def resourceTypesForSearch(self):
+        return util.KeywordVocabulary(getResourceTypesForSearch())
+
 
     def predicates(self):
         preds = PredicateSourceList(self.context)
@@ -188,7 +220,6 @@ class ConceptRelationView(object):
             self.context = relation.first
             self.other = relation.second
         self.predicate = relation.predicate
-        self.conceptType = self.context.conceptType
         self.request = request
 
     @Lazy
@@ -209,6 +240,10 @@ class ConceptRelationView(object):
                          self.loopsRoot.getLoopsUri(self.predicate)))
 
     @Lazy
+    def conceptType(self):
+        return self.context.conceptType
+
+    @Lazy
     def typeTitle(self):
         return self.conceptType.title
 
@@ -223,4 +258,24 @@ class ConceptRelationView(object):
     @Lazy
     def predicateUrl(self):
         return zapi.absoluteURL(self.predicate, self.request)
+
+
+class ConceptResourceRelationView(ConceptRelationView):
+    
+    @Lazy
+    def conceptType(self):
+        return None
+
+    @Lazy
+    def typeTitle(self):
+        voc = util.KeywordVocabulary(getTargetTypes())
+        token = '.'.join((self.context.__module__,
+                          self.context.__class__.__name__))
+        term = voc.getTermByToken(token)
+        return term.title
+
+
+    @Lazy
+    def typeUrl(self):
+        return ''
 

@@ -173,7 +173,7 @@ class Concept(Contained, Persistent):
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
         registry = zapi.getUtility(IRelationRegistry)
-        registry.register(ResourceRelation(self, resource, predicate))
+        registry.register(ResourceRelation(self, resource))
         # TODO (?): avoid duplicates
 
     def deassignResource(self, resource, predicates=None):

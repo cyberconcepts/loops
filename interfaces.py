@@ -205,9 +205,32 @@ class IResource(ILoopsObject, IPotentialTarget):
     """
 
     def getClients(relationships=None):
-        """ Return a sequence of objects that are clients of the resource,
-            i.e. that have some relation with it.
+        """ Return a sequence of objects that the resource is the target of.
         """
+
+    def getConcepts(predicates=None):
+        """ Return a tuple of concepts related to self as parent concepts,
+            optionally restricted to the predicates given.
+        """
+
+    def getConceptRelations(predicates=None, concepts=None):
+        """ Return a sequence of relations to concepts assigned to self
+            as parent concepts, optionally restricted to the predicates given
+            or to a certain concept.
+        """
+
+    def assignConcept(concept, predicate):
+        """ Assign an existing concept to self using the predicate given.
+            The assigned concept will be a parent concept of self.
+
+            The predicate defaults to the concept manager's default predicate.
+        """
+
+    def deassignConcept(concept, predicates=None):
+        """ Remove the concept relations to the concept given from self,
+            optionally restricting them to the predicates given.
+        """
+
 
 
 class IDocumentSchema(IResourceSchema):

@@ -105,13 +105,19 @@
 
   <pages
       for="loops.interfaces.IConcept"
-      class=".concept.ConceptView"
+      class=".concept.ConceptConfigureView"
       permission="zope.ManageContent">
     
     <page
         name="related.html"
         template="concept_related.pt"
         menu="zmi_views" title="Related Concepts"
+        />
+    
+    <page
+        name="resources.html"
+        template="concept_resources.pt"
+        menu="zmi_views" title="Resources"
         />
     
   </pages>
@@ -163,6 +169,21 @@
       add="zope.ManageContent"
       />
 
+  <!-- resource in general -->
+
+  <pages
+      for="loops.interfaces.IResource"
+      class=".resource.ResourceConfigureView"
+      permission="zope.ManageContent">
+    
+    <page
+        name="concepts.html"
+        template="resource_concepts.pt"
+        menu="zmi_views" title="Concepts"
+        />
+    
+  </pages>
+    
   <!-- document -->
 
   <!--<zope:view
