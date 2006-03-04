@@ -135,6 +135,8 @@ class ConceptConfigureView(ConceptView):
             self.context.assignParent(removeSecurityProxy(concept), predicate)
         elif assignAs == 'resource':
             self.context.assignResource(removeSecurityProxy(concept), predicate)
+        elif assignAs == 'concept':
+            self.context.assignConcept(removeSecurityProxy(concept), predicate)
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 

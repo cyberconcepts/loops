@@ -18,6 +18,22 @@
           <metal:parents use-macro="views/relation_macros/listing" />
       </div>
 
+      <div   tal:define="legend string:Create Concept;
+                         buttonText string:Create Concept"
+             style="padding-right:20px; clear:left">
+        <metal:create use-macro="views/relation_macros/create">
+          <metal:control fill-slot="control">
+            <input class="context" type="submit" name="form.button.submit"
+                   value="Create Object"
+                   i18n:attributes="value"
+                   tal:attributes="value buttonText" />
+            <input type="hidden" name="assignAs" value="concept" />
+            and assign using Predicate
+            <select metal:use-macro="views/relation_macros/predicates" />
+          </metal:control>
+        </metal:create>
+      </div>
+      
       <div   tal:define="items view/search;
                          action string:assign;
                          qualifier nothing;
