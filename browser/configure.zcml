@@ -177,8 +177,8 @@
       permission="zope.ManageContent">
     
     <page
-        name="concepts.html"
-        template="resource_concepts.pt"
+        name="configure.html"
+        template="resource_configure.pt"
         menu="zmi_views" title="Concepts"
         />
     
@@ -373,14 +373,14 @@
 
   <menuItem
       for="loops.interfaces.INode"
-      action="configure.html"
+      action="@@configure.html"
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure"
       />
     
   <menuItem
       for="loops.interfaces.INode"
-      action="contents.html"
+      action="@@contents.html"
       permission="zope.ManageContent"
       menu="zmi_views" title="Contents"
       />

@@ -14,7 +14,7 @@
         <tal:target condition="target">
           <span i18n:translate="">Currently assigned target</span>:
           <a href="#"
-             tal:attributes="href string:${target/url}/@@SelectedManagementView.html"
+             tal:attributes="href string:${target/url}/@@configure.html"
              tal:content="target/title">Document xy</a>
         </tal:target>
       </div>

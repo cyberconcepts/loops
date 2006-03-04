@@ -33,6 +33,7 @@ from zope.security.proxy import removeSecurityProxy
 from loops.interfaces import IDocument, IMediaAsset
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
+from loops.browser.node import NodeView
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -48,6 +49,10 @@ class ResourceView(BaseView):
     def concepts(self):
         for r in self.context.getConceptRelations():
             yield ConceptRelationView(r, self.request)
+
+    def clients(self):
+        for node in self.context.getClients():
+            yield NodeView(node, self.request)
 
 
 class ResourceConfigureView(ResourceView, ConceptConfigureView):

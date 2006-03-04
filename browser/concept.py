@@ -99,6 +99,8 @@ class ConceptConfigureView(ConceptView):
                     self.context.deassignChild(concept, [predicate])
                 elif qualifier == 'resources':
                     self.context.deassignResource(concept, [predicate])
+                elif qualifier == 'concepts':
+                    self.context.deassignConcept(concept, [predicate])
                 else:
                     raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
             else:

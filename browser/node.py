@@ -49,6 +49,18 @@ class NodeView(object):
         self.context = context
         self.request = request
 
+    @Lazy
+    def title(self):
+        return self.context.title
+
+    @Lazy
+    def nodeType(self):
+        return self.context.nodeType
+
+    @Lazy
+    def url(self):
+        return zapi.absoluteURL(self.context, self.request)
+
     def render(self, text=None):
         if text is None:
             text = self.context.body
@@ -110,10 +122,6 @@ class NodeView(object):
         if IMediaAsset.providedBy(target) and target.contentType.startswith('image/'):
             return 'imagebody'
         return 'filebody'
-
-    @Lazy
-    def url(self):
-        return zapi.absoluteURL(self.context, self.request)
 
     @Lazy
     def editable(self):
