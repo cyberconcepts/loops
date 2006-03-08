@@ -127,6 +127,24 @@ lazy properties, one should always get a new adapter:
   >>> cc1_type.typeProvider == topic
   True
 
+Now let's have a look at resources.
+
+  >>> from loops.interfaces import IResource
+  >>> from loops.type import ResourceType
+  >>> ztapi.provideAdapter(IResource, IType, ResourceType)
+
+  >>> doc1_type = IType(doc1)
+  >>> doc1_type.title
+  u'Document'
+  >>> doc1_type.token
+  '.loops/resources/document'
+  >>> doc1_type.tokenForSearch
+  'loops:resource:document'
+  
+  >>> img1_type = IType(img1)
+  >>> img1_type.title
+  u'Media Asset'
+
 Can we find out somehow which types are available? This is the time to look
 for a type manager. This could be a utility; but in the loops package it
 is again an adapter, now for the loops root object. Nevertheless one can
@@ -142,7 +160,8 @@ get a type manager from all loops objects, always with the same context:
 
   >>> types = typeManager.types
   >>> sorted(t.token for t in types)
-  ['.loops/concepts/topic', '.loops/concepts/type']
+  ['.loops/concepts/topic', '.loops/concepts/type',
+   '.loops/resources/document', '.loops/resources/mediaasset']
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True

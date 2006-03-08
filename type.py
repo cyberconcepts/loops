@@ -26,7 +26,8 @@ from zope.app import zapi
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from cybertools.typology.type import BaseType, TypeManager
-from loops.interfaces import ILoopsObject, IConcept
+from loops.interfaces import ILoopsObject, IConcept, IResource
+from loops.resource import Document, MediaAsset
 
 
 class LoopsType(BaseType):
@@ -71,6 +72,43 @@ class ConceptType(LoopsType):
         return self.context.conceptType
 
 
+class ResourceType(LoopsType):
+
+    adapts(IResource)
+
+    typeTitles = {'MediaAsset': u'Media Asset'}
+
+    @Lazy
+    def title(self):
+        cn = self.className
+        return self.typeTitles.get(cn, unicode(cn))
+
+    @Lazy
+    def token(self):
+        cn = self.className
+        return '/'.join(('.loops/resources', cn.lower(),))
+
+    @Lazy
+    def tokenForSearch(self):
+        cn = self.className
+        return ':'.join(('loops:resource', cn.lower(),))
+
+    @Lazy
+    def className(self):
+        return self.context.__class__.__name__
+
+
+
+class ResourceTypeInfo(ResourceType):
+
+    def __init__(self, cls):
+        self.cls = cls
+
+    @Lazy
+    def className(self):
+        return self.cls.__name__
+
+
 class LoopsTypeManager(TypeManager):
 
     adapts(ILoopsObject)
@@ -88,6 +126,8 @@ class LoopsTypeManager(TypeManager):
         result = to.getChildren([tp])
         if to not in result:
             result.append(to)
-        return tuple(LoopsTypeInfo(c) for c in result)
+        cTypes = [LoopsTypeInfo(c) for c in result]
+        rTypes = [ResourceTypeInfo(cls) for cls in (Document, MediaAsset)]
+        return tuple(cTypes + rTypes)
 
 
