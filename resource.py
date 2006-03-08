@@ -31,6 +31,9 @@ from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from persistent import Persistent
 from cStringIO import StringIO
+
+from textindexng.interfaces import IIndexableContent
+from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
 
@@ -161,6 +164,22 @@ class IndexAttributes(object):
     def type(self):
         context = self.context
         return ':'.join(('loops:resource', context.__class__.__name__))
+
+
+class IndexableResource(object):
+
+    implements(IIndexableContent)
+    adapts(IResource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def indexableContent(self, fields):
+        context = self.context
+        icc = IndexContentCollector()
+        icc.addBinary(fields[0], context.data, context.contentType, language='de')
+        return icc
+        
 
 
 def getResourceTypes():

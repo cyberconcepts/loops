@@ -4,6 +4,17 @@ loops - Linked Objects for Organization and Processing Services
 
   ($Id$)
 
+The loops platform is built up of three parts:
+
+(1) concepts: simple interconnected objects usually representing
+    meta-information
+(2) resources: (possibly large) atomic objects like documents and media assets
+(3) views: objects (usually hierarchically organized nodes) providing
+    access to and presenting concepts or resources
+
+Note that there is another doctest file called helpers.txt that deals
+with lower-level aspects like type or state management.
+
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
   

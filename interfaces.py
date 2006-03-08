@@ -476,6 +476,20 @@ class IConceptRelation(IRelation):
     """
 
 
+# type and type manager interfaces - probably obsolete
+
+# class ILoopsType(IType):
+#     """ Each loops object is of a certain type providing this interface.
+#         Usually implemented as an adapter.
+#     """
+
+
+# class ILoopsTypeManager(ITypeManager):
+#     """ The loops type manager, probably implemented by an adapter to
+#         the loops root object or the loops root object itself.
+#     """
+
+
 # interfaces for catalog indexes
 
 class IIndexAttributes(Interface):

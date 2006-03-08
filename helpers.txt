@@ -1,0 +1,162 @@
+===============================================================
+loops - Linked Objects for Organization and Processing Services
+===============================================================
+
+This file documents and tests a bunch of facilities that support the
+loops framework, mostly provided by sub-packages of the cybertools
+package.
+
+  ($Id$)
+
+Let's first do some basic imports
+
+  >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
+  >>> site = placefulSetUp(True)
+  
+  >>> from zope.app import zapi
+  >>> from zope.app.tests import ztapi
+  >>> from zope.interface import Interface
+  >>> from zope.publisher.browser import TestRequest
+
+and setup a simple loops site with its manager objects,
+  
+  >>> from loops import Loops
+  >>> site['loops'] = Loops()
+  >>> loopsRoot = site['loops']
+
+  >>> from loops.concept import ConceptManager, Concept
+  >>> loopsRoot['concepts'] = ConceptManager()
+  >>> concepts = loopsRoot['concepts']
+
+  >>> from loops.resource import ResourceManager, Document, MediaAsset
+  >>> loopsRoot['resources'] = ResourceManager()
+  >>> resources = loopsRoot['resources']
+
+some concepts,
+  
+  >>> cc1 = Concept(u'Zope')
+  >>> concepts['cc1'] = cc1
+  >>> cc1.title
+  u'Zope'
+
+  >>> cc2 = Concept(u'Zope 3')
+  >>> concepts['cc2'] = cc2
+  >>> cc2.title
+  u'Zope 3'
+
+and resources:
+
+  >>> doc1 = Document(u'Zope Info')
+  >>> resources['doc1'] = doc1
+  >>> doc1.title
+  u'Zope Info'
+
+  >>> img1 = MediaAsset(u'An Image')
+  >>> resources['img1'] = img1
+
+Finally, we also need a relation registry:
+
+  >>> from cybertools.relation.interfaces import IRelationRegistry
+  >>> from cybertools.relation.registry import DummyRelationRegistry
+  >>> from zope.app.testing import ztapi
+  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+
+Type management with typology
+=============================
+
+The type of an object may be determined by adapting it to the IType
+interface. The loops framework provides an adapter (LoopsType) for this
+purpose:
+
+  >>> from cybertools.typology.interfaces import IType
+  >>> from loops.interfaces import IConcept
+  >>> from loops.type import ConceptType
+  >>> ztapi.provideAdapter(IConcept, IType, ConceptType)
+  >>> cc1_type = IType(cc1)
+
+As we have not yet associated a type with one of our content objects we get
+
+  >>> cc1_type.typeProvider is None
+  True
+  >>> cc1_type.title
+  u'Unknown Type'
+  >>> cc1_type.token
+  '.unknown'
+
+So we create two special concepts: one ('hasType') as the predicate signifying
+a type relation, and the other ('type') as the one and only type concept:
+
+  >>> concepts['hasType'] = Concept(u'has type')
+  >>> concepts['type'] = Concept(u'Type')
+  >>> typeObject = concepts['type']
+
+Assigning a type to a concept is a core functionality of concepts as
+concept types are themselves concepts; and we assign the type object to
+itself (as it in fact is of type 'type'):
+
+  >>> typeObject.conceptType = typeObject
+
+So let's check the type of the type object:
+
+  >>> type_type = IType(typeObject)
+  >>> type_type.typeProvider is typeObject
+  True
+  >>> type_type.title
+  u'Type'
+  >>> type_type.token
+  '.loops/concepts/type'
+  >>> type_type.tokenForSearch
+  'loops:concept:type'
+
+Now we register another type ('topic') and assign it to cc1:
+
+  >>> concepts['topic'] = Concept(u'Topic')
+  >>> topic = concepts['topic']
+  >>> topic.conceptType = typeObject
+  >>> cc1.conceptType = topic
+
+Note: as these kind of usually short-living adapters makes heavy use of
+lazy properties, one should always get a new adapter:
+
+  >>> topic_type = IType(topic)
+  >>> cc1_type = IType(cc1)
+  >>> topic_type == type_type
+  True
+  >>> cc1_type == topic_type
+  False
+  >>> cc1_type.typeProvider == topic
+  True
+
+Can we find out somehow which types are available? This is the time to look
+for a type manager. This could be a utility; but in the loops package it
+is again an adapter, now for the loops root object. Nevertheless one can
+get a type manager from all loops objects, always with the same context:
+
+  >>> from cybertools.typology.interfaces import ITypeManager
+  >>> from loops.interfaces import ILoopsObject
+  >>> from loops.type import LoopsTypeManager
+  >>> ztapi.provideAdapter(ILoopsObject, ITypeManager, LoopsTypeManager)
+  >>> typeManager = ITypeManager(loopsRoot)
+  >>> typeManager.context == ITypeManager(cc1).context == loopsRoot
+  True
+
+  >>> types = typeManager.types
+  >>> sorted(t.token for t in types)
+  ['.loops/concepts/topic', '.loops/concepts/type']
+
+  >>> typeManager.getType('.loops/concepts/topic') == cc1_type
+  True
+
+Index attributes adapter
+------------------------
+
+  >>> from loops.concept import IndexAttributes
+  >>> idx = IndexAttributes(cc2)
+  >>> idx.type()
+  'loops:concept:unknown'
+  
+  >>> from loops.resource import IndexAttributes
+  >>> idx = IndexAttributes(doc1)
+  >>> idx.type()
+  'loops:resource:Document'
+

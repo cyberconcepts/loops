@@ -88,22 +88,21 @@ class Concept(Contained, Persistent):
 
     def getConceptType(self):
         typePred = self.getConceptManager().getTypePredicate()
+        if typePred is None:
+            return None
         parents = self.getParents([typePred])
-        #typeRelation = ConceptRelation(None, self, cm.getTypePredicate())
-        #rels = getRelationSingle(self, typeRelation, forSecond=True)
         # TODO (?): check for multiple types (->Error)
         return parents and parents[0] or None
     def setConceptType(self, concept):
         current = self.getConceptType()
         if current != concept:
             typePred = self.getConceptManager().getTypePredicate()
+            if typePred is None:
+                raise ValueError('No type predicate found for '
+                                + zapi.getName(self))
             if current is not None:
                 self.deassignParent(current, [typePred])
             self.assignParent(concept, typePred)
-            #cm = self.getLoopsRoot().getConceptManager()
-            #typeRelation = ConceptRelation(removeSecurityProxy(concept), self,
-            #                               cm.getTypePredicate())
-            #setRelationSingle(typeRelation, forSecond=True)
     conceptType = property(getConceptType, setConceptType)
 
     def __init__(self, title=u''):
@@ -196,9 +195,7 @@ class ConceptManager(BTreeContainer):
         return zapi.getParent(self)
 
     def getTypePredicate(self):
-        if self.typePredicate is None:
-            self.typePredicate = self['hasType']
-        return self.typePredicate
+        return self.get('hasType')
 
     def getTypeConcept(self):
         if self.typeConcept is None:
