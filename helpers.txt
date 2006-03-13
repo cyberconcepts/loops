@@ -108,7 +108,7 @@ So let's check the type of the type object:
   >>> type_type.tokenForSearch
   'loops:concept:type'
   >>> type_type.qualifiers
-  ('concept', 'system',)
+  ('concept',)
 
 Now we register another type ('topic') and assign it to cc1:
 
@@ -144,6 +144,8 @@ Now let's have a look at resources.
   '.loops/resources/document'
   >>> doc1_type.tokenForSearch
   'loops:resource:document'
+  >>> doc1_type.qualifiers
+  ('resource',)
   
   >>> img1_type = IType(img1)
   >>> img1_type.title
@@ -169,6 +171,16 @@ get a type manager from all loops objects, always with the same context:
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True
+
+The listTypes() method allows us to select types that fulfill a certain
+condition:
+
+  >>> types = typeManager.listTypes(include=('concept',))
+  >>> sorted(t.token for t in types)
+  ['.loops/concepts/topic', '.loops/concepts/type']
+  >>> types = typeManager.listTypes(exclude=('concept',))
+  >>> sorted(t.token for t in types)
+  ['.loops/resources/document', '.loops/resources/mediaasset']
 
 Index attributes adapter
 ------------------------

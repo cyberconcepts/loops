@@ -67,9 +67,17 @@ class ConceptType(LoopsType):
 
     adapts(IConcept)
 
+    qualifiers = ('concept',)
+
     @Lazy
     def typeProvider(self):
         return self.context.conceptType
+
+
+class ConceptTypeInfo(ConceptType):
+
+    def __init__(self, typeProvider):
+        self.typeProvider = self.context = typeProvider
 
 
 class ResourceType(LoopsType):
@@ -77,6 +85,8 @@ class ResourceType(LoopsType):
     adapts(IResource)
 
     typeTitles = {'MediaAsset': u'Media Asset'}
+
+    qualifiers = ('resource',)
 
     @Lazy
     def title(self):
@@ -118,6 +128,17 @@ class LoopsTypeManager(TypeManager):
 
     @property    
     def types(self):
+        return self.conceptTypes() + self.resourceTypes()
+
+    def listTypes(self, include=None, exclude=None):
+        for t in self.types:
+            if include and not [q for q in t.qualifiers if q in include]:
+                continue
+            if exclude and [q for q in t.qualifiers if q in exclude]:
+                continue
+            yield t
+
+    def conceptTypes(self):
         cm = self.context.getConceptManager()
         to = cm.getTypeConcept()
         tp = cm.getTypePredicate()
@@ -126,8 +147,7 @@ class LoopsTypeManager(TypeManager):
         result = to.getChildren([tp])
         if to not in result:
             result.append(to)
-        cTypes = [LoopsTypeInfo(c) for c in result]
-        rTypes = [ResourceTypeInfo(cls) for cls in (Document, MediaAsset)]
-        return tuple(cTypes + rTypes)
+        return tuple([ConceptTypeInfo(c) for c in result])
 
-
+    def resourceTypes(self):
+        return tuple([ResourceTypeInfo(cls) for cls in (Document, MediaAsset)])
