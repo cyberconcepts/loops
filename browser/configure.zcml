@@ -109,7 +109,7 @@
       permission="zope.ManageContent">
     
     <page
-        name="related.html"
+        name="configure.html"
         template="concept_related.pt"
         menu="zmi_views" title="Related Concepts"
         />
@@ -122,11 +122,24 @@
     
   </pages>
     
-  <editform
+  <!--<editform
       label="Edit Concept"
       name="edit.html"
       schema="loops.interfaces.IConcept"
       for="loops.interfaces.IConcept"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />-->
+
+  <zope:adapter
+      factory="loops.browser.util.pageform"
+      for="zope.interface.Interface"
+      name="pageform" />
+
+  <page
+      name="edit.html"
+      for="loops.interfaces.IConcept"
+      class="loops.browser.concept.ConceptEditForm"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />
@@ -179,7 +192,7 @@
     <page
         name="configure.html"
         template="resource_configure.pt"
-        menu="zmi_views" title="Concepts"
+        menu="zmi_views" title="Configure"
         />
     
   </pages>
@@ -319,7 +332,6 @@
       content_factory="loops.view.Node"
       schema="loops.interfaces.INode"
       fields="title description nodeType body"
-      class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />

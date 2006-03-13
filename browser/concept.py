@@ -30,6 +30,8 @@ from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
+from zope.formlib.form import EditForm, FormFields
+from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -42,6 +44,12 @@ from loops.resource import getResourceTypes, getResourceTypesForSearch
 from loops.target import getTargetTypes
 from loops.browser.common import BaseView, LoopsTerms
 from loops import util
+
+
+class ConceptEditForm(EditForm):
+
+    form_fields = FormFields(IConcept)
+    template = NamedTemplate('pageform')
 
 
 class ConceptView(BaseView):

@@ -118,7 +118,7 @@ class NodeView(object):
         if target is None or IDocument.providedBy(target):
             return 'textbody'
         if IConcept.providedBy(target): # TODO...
-            return 'filebody'
+            return 'conceptbody'
         if IMediaAsset.providedBy(target) and target.contentType.startswith('image/'):
             return 'imagebody'
         return 'filebody'

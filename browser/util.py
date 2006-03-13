@@ -23,8 +23,13 @@ $Id$
 """
 
 from zope.app import zapi
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
 from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
+from zope.formlib.namedtemplate import NamedTemplateImplementation
+
+
+pageform = NamedTemplateImplementation(ViewPageTemplateFile('pageform.pt'))
 
 
 class LoopsMenu(BrowserMenu):
