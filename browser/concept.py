@@ -38,9 +38,9 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope import schema
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
+from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
-from loops.resource import getResourceTypes, getResourceTypesForSearch
 from loops.target import getTargetTypes
 from loops.browser.common import BaseView, LoopsTerms
 from loops import util
@@ -64,7 +64,7 @@ class ConceptView(BaseView):
 
     def resources(self):
         for r in self.context.getResourceRelations():
-            yield ConceptResourceRelationView(r, self.request, contextIsSecond=True)
+            yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
 
 class ConceptConfigureView(ConceptView):
@@ -121,18 +121,14 @@ class ConceptConfigureView(ConceptView):
         if not name:
             raise(BadRequest, 'Empty name.')
         title = request.get('create.title', u'')
-        conceptType = request.get('create.type')
-        if conceptType and conceptType.startswith('loops.resource.'):
-            factory = resolve(conceptType)
-            concept = factory(title)
-            container = self.loopsRoot.getResourceManager()
-        else:
-            concept = Concept(title)
-            container = self.loopsRoot.getConceptManager()
+        token = self.request.get('create.type')
+        type = ITypeManager(self.context).getType(token)
+        factory = type.factory
+        container = type.defaultContainer
+        concept = factory(title)
         container[name] = concept
-        if conceptType:
-            ctype = self.loopsRoot.loopsTraverse(conceptType)
-            concept.conceptType = ctype
+        if IConcept.providedBy(concept):
+            concept.conceptType = type.typeProvider
         notify(ObjectCreatedEvent(removeSecurityProxy(concept)))
         assignAs = self.request.get('assignAs', 'child')
         predicate = request.get('create.predicate') or None
@@ -176,44 +172,28 @@ class ConceptConfigureView(ConceptView):
             result = [r for r in result if r.conceptType is None]
         return self.viewIterator(result)
 
-    @Lazy
-    def typeTitle(self):
-        return self.context.conceptType.title
-
-    @Lazy
-    def typeUrl(self):
-        return zapi.absoluteURL(self.context.conceptType, self.request)
-
     def viewIterator(self, objs):
         request = self.request
         for o in objs:
-            if IConcept.providedBy(o):
-                yield ConceptConfigureView(o, request)
-            else:
                 yield BaseView(o, request)
 
     def conceptTypes(self):
-        types = ConceptTypeSourceList(self.context)
-        terms = zapi.getMultiAdapter((types, self.request), ITerms)
-        for type in types:
-            yield terms.getTerm(type)
+        return util.KeywordVocabulary([(t.token, t.title)
+                    for t in ITypeManager(self.context).listTypes(('concept',))])
 
     def conceptTypesForSearch(self):
-        types = ConceptTypeSourceList(self.context)
-        typesItems = [(':'.join(('loops:concept',
-                                 self.getConceptTypeTokenForSearch(t))), t.title)
-                       for t in types]
-        return util.KeywordVocabulary(typesItems)
-
-    def getConceptTypeTokenForSearch(self, ct):
-        return ct is None and 'unknown' or zapi.getName(ct)
+        general = [('loops:concept:*', 'Any'),]
+        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
+                    for t in ITypeManager(self.context).listTypes(('concept',))])
 
     def resourceTypes(self):
-        return util.KeywordVocabulary(getResourceTypes())
+        return util.KeywordVocabulary([(t.token, t.title)
+                    for t in ITypeManager(self.context).listTypes(('resource',))])
 
     def resourceTypesForSearch(self):
-        return util.KeywordVocabulary(getResourceTypesForSearch())
-
+        general = [('loops:resource:*', 'Any'),]
+        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
+                    for t in ITypeManager(self.context).listTypes(('resource',))])
 
     def predicates(self):
         preds = PredicateSourceList(self.context)
@@ -222,7 +202,7 @@ class ConceptConfigureView(ConceptView):
             yield terms.getTerm(pred)
 
 
-class ConceptRelationView(object):
+class ConceptRelationView(BaseView):
 
     def __init__(self, relation, request, contextIsSecond=False):
         if contextIsSecond:
@@ -235,33 +215,9 @@ class ConceptRelationView(object):
         self.request = request
 
     @Lazy
-    def loopsRoot(self):
-        return self.context.getLoopsRoot()
-
-    @Lazy
-    def url(self):
-        return zapi.absoluteURL(self.context, self.request)
-
-    @Lazy
-    def title(self):
-        return self.context.title
-    
-    @Lazy
     def token(self):
         return ':'.join((self.loopsRoot.getLoopsUri(self.context),
                          self.loopsRoot.getLoopsUri(self.predicate)))
-
-    @Lazy
-    def conceptType(self):
-        return self.context.conceptType
-
-    @Lazy
-    def typeTitle(self):
-        return self.conceptType.title
-
-    @Lazy
-    def typeUrl(self):
-        return zapi.absoluteURL(self.conceptType, self.request)
 
     @Lazy
     def predicateTitle(self):
@@ -270,24 +226,4 @@ class ConceptRelationView(object):
     @Lazy
     def predicateUrl(self):
         return zapi.absoluteURL(self.predicate, self.request)
-
-
-class ConceptResourceRelationView(ConceptRelationView):
-    
-    @Lazy
-    def conceptType(self):
-        return None
-
-    @Lazy
-    def typeTitle(self):
-        voc = util.KeywordVocabulary(getTargetTypes())
-        token = '.'.join((self.context.__module__,
-                          self.context.__class__.__name__))
-        term = voc.getTermByToken(token)
-        return term.title
-
-
-    @Lazy
-    def typeUrl(self):
-        return ''
 

@@ -54,9 +54,6 @@
           <metal:search fill-slot="topActions">
             <metal:block use-macro="views/relation_macros/search">
               <select name="searchType" metal:fill-slot="types">
-                <option value="loops:resource:*"
-                        tal:attributes="selected python:
-                            searchType == 'loops:resource:*'">Any</option>
                 <tal:types repeat="type view/resourceTypesForSearch">
                   <option value="loops:resource:Document"
                           i18n:translate=""

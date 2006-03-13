@@ -35,6 +35,7 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept, IDocument, IMediaAsset
 from loops.resource import MediaAsset
 from loops.target import getTargetTypes, getTargetTypesForSearch
@@ -183,13 +184,10 @@ class ConfigureView(BaseView):
     def createAndAssign(self):
         form = self.request.form
         root = self.loopsRoot
-        type = self.request.form.get('create.type',
-                                     'loops.resource.MediaAsset')
-        factory = resolve(type)
-        if '.resource.' in type:
-            container = root.getResourceManager()
-        else:
-            container = root.getConceptManager()
+        token = form.get('create.type', 'loops.resource.MediaAsset')
+        type = ITypeManager(self.context).getType(token)
+        factory = type.factory
+        container = type.defaultContainer
         name = form.get('create.name', '')
         if not name:
             viewManagerPath = zapi.getPath(root.getViewManager())
@@ -204,15 +202,21 @@ class ConfigureView(BaseView):
         container[name] = removeSecurityProxy(factory())
         target = container[name]
         target.title = form.get('create.title', u'')
+        if IConcept.providedBy(target):
+            target.conceptType = type.typeProvider
         notify(ObjectCreatedEvent(target))
         self.context.target = target
         return True
 
     def targetTypes(self):
-        return util.KeywordVocabulary(getTargetTypes())
+        return util.KeywordVocabulary([(t.token, t.title)
+                        for t in ITypeManager(self.context).types])
 
     def targetTypesForSearch(self):
-        return util.KeywordVocabulary(getTargetTypesForSearch())
+        general = [('loops:*', 'Any'), ('loops:concept:*', 'Any Concept'),
+                   ('loops:resource:*', 'Any Resource'),]
+        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
+                        for t in ITypeManager(self.context).types])
 
     @Lazy
     def search(self):
@@ -244,8 +248,9 @@ class ConfigureView(BaseView):
         for o in objs:
             if o == self.context.target:
                 continue
-            if IConcept.providedBy(o):
-                yield ConceptView(o, request)
-            else:
-                yield BaseView(o, request)
+            yield BaseView(o, request)
+            #if IConcept.providedBy(o):
+            #    yield ConceptView(o, request)
+            #else:
+            #    yield BaseView(o, request)
 

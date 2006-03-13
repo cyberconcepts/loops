@@ -36,6 +36,7 @@ from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
+from cybertools.typology.interfaces import ITypeManager
 
 from interfaces import IConcept, IConceptRelation, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained
@@ -237,27 +238,14 @@ class ConceptTypeSourceList(object):
 
     def __init__(self, context):
         self.context = context
-        #self.context = removeSecurityProxy(context)
-        root = self.context.getLoopsRoot()
-        self.concepts = root.getConceptManager()
 
     def __iter__(self):
         return iter(self.conceptTypes)
 
     @Lazy
     def conceptTypes(self):
-        result = []
-        cm = self.concepts
-        typeObject = cm.getTypeConcept()
-        unknownType = cm.get('unknown')  # does this make sense?
-        if typeObject is not None:
-            types = typeObject.getChildren([cm.getTypePredicate()])
-            if typeObject not in types:
-                result.append(typeObject)
-            if unknownType is not None and unknownType not in types:
-                result.append(unknownType)
-            result.extend(types)
-        return result
+        types = ITypeManager(self.context).listTypes(include=('concept',))
+        return [t.typeProvider for t in types]
 
     def __len__(self):
         return len(self.conceptTypes)
@@ -307,10 +295,4 @@ class IndexAttributes(object):
 
     def title(self):
         return self.text()
-
-    def type(self):
-        context = self.context
-        conceptType = context.conceptType
-        typeName = conceptType is None and 'unknown' or zapi.getName(conceptType)
-        return ':'.join(('loops:concept', typeName,))
 

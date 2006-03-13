@@ -108,7 +108,14 @@ a special predicate 'hasType'.
   >>> cc1.getConceptType().title
   u'Topic'
 
-We get a list of types using the ConceptTypeSourceList:
+We get a list of types using the ConceptTypeSourceList.
+In order for the type machinery to work we first have to provide a
+type manager.
+
+  >>> from cybertools.typology.interfaces import ITypeManager
+  >>> from loops.interfaces import ILoopsObject
+  >>> from loops.type import LoopsTypeManager
+  >>> ztapi.provideAdapter(ILoopsObject, ITypeManager, LoopsTypeManager)
 
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
@@ -167,10 +174,11 @@ underlying context object:
   >>> sorted(c.title for c in cc1.getChildren())
   [u'loops for Zope 3']
 
-We can also create a new concept and assign it:
+We can also create a new concept and assign it.
 
   >>> params = {'action': 'create', 'create.name': 'cc4',
-  ...           'create.title': u'New concept'}
+  ...           'create.title': u'New concept',
+  ...           'create.type': '.loops/concepts/topic'}
   >>> view = ConceptConfigureView(cc1, TestRequest(**params))
   >>> view.update()
   True
@@ -178,7 +186,7 @@ We can also create a new concept and assign it:
   [u'New concept', u'loops for Zope 3']
 
 The concept configuration view provides methods for displaying concept
-types and predicates:
+types and predicates.
 
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from loops.browser.common import LoopsTerms
@@ -205,9 +213,6 @@ Index attributes adapter
   
   >>> idx.title()
   u'cc2 Zope 3'
-
-  >>> idx.type()
-  'loops:concept:unknown'
 
 
 Resources and what they have to do with Concepts
@@ -306,9 +311,6 @@ Index attributes adapter
   
   >>> idx.title()
   u'doc1 Zope Info'
-
-  >>> idx.type()
-  'loops:resource:Document'
 
 
 Views/Nodes: Menus, Menu Items, Listings, Pages, etc
@@ -463,7 +465,8 @@ to the node's target: associate an existing one or create a new one.
   ...         'create.type': 'loops.resource.MediaAsset',}
   >>> view = ConfigureView(m111, TestRequest(form = form))
   >>> sorted((t.token, t.title) for t in view.targetTypes())
-  [('loops.concept.Concept', u'Concept'),
+  [('.loops/concepts/topic', u'Topic'), ('.loops/concepts/type', u'Type'),
+      ('.loops/concepts/unknown', u'Unknown Type'),
       ('loops.resource.Document', u'Document'),
       ('loops.resource.MediaAsset', u'Media Asset')]
   >>> view.update()

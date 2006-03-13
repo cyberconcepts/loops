@@ -25,8 +25,10 @@ $Id$
 from zope.app import zapi
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
+from zope.dottedname.resolve import resolve
 from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
+from loops.concept import Concept
 from loops.resource import Document, MediaAsset
 
 
@@ -53,14 +55,6 @@ class LoopsType(BaseType):
         return self.context.getLoopsRoot()
 
 
-class LoopsTypeInfo(LoopsType):
-    """ A common class the instances of which are used as a generic type info.
-    """
-
-    def __init__(self, typeProvider):
-        self.typeProvider = self.context = typeProvider
-
-
 class ConceptType(LoopsType):
     """ The type adapter for concept objects.
     """
@@ -68,10 +62,15 @@ class ConceptType(LoopsType):
     adapts(IConcept)
 
     qualifiers = ('concept',)
+    factory = Concept
 
     @Lazy
     def typeProvider(self):
         return self.context.conceptType
+
+    @Lazy
+    def defaultContainer(self):
+        return self.root.getConceptManager()
 
 
 class ConceptTypeInfo(ConceptType):
@@ -95,8 +94,9 @@ class ResourceType(LoopsType):
 
     @Lazy
     def token(self):
-        cn = self.className
-        return '/'.join(('.loops/resources', cn.lower(),))
+        return '.'.join((self.factory.__module__, self.className))
+        #cn = self.className
+        #return '/'.join(('.loops/resources', cn.lower(),))
 
     @Lazy
     def tokenForSearch(self):
@@ -104,19 +104,23 @@ class ResourceType(LoopsType):
         return ':'.join(('loops:resource', cn.lower(),))
 
     @Lazy
-    def className(self):
-        return self.context.__class__.__name__
+    def defaultContainer(self):
+        return self.root.getResourceManager()
 
+    @Lazy
+    def factory(self):
+        return self.context.__class__
+
+    @Lazy
+    def className(self):
+        return self.factory.__name__
 
 
 class ResourceTypeInfo(ResourceType):
 
-    def __init__(self, cls):
-        self.cls = cls
-
-    @Lazy
-    def className(self):
-        return self.cls.__name__
+    def __init__(self, context, factory):
+        self.context = context
+        self.factory = factory
 
 
 class LoopsTypeManager(TypeManager):
@@ -125,6 +129,11 @@ class LoopsTypeManager(TypeManager):
 
     def __init__(self, context):
         self.context = context.getLoopsRoot()
+
+    def getType(self, token):
+        if token.startswith('.loops'):
+            return ConceptTypeInfo(self.context.loopsTraverse(token))
+        return ResourceTypeInfo(self.context, resolve(token))
 
     @property    
     def types(self):
@@ -150,4 +159,5 @@ class LoopsTypeManager(TypeManager):
         return tuple([ConceptTypeInfo(c) for c in result])
 
     def resourceTypes(self):
-        return tuple([ResourceTypeInfo(cls) for cls in (Document, MediaAsset)])
+        return tuple([ResourceTypeInfo(self.context, cls)
+                        for cls in (Document, MediaAsset)])

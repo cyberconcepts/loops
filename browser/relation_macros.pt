@@ -93,7 +93,6 @@
                     tal:attributes="value type/token"
                     tal:content="type/title">Topic</option>
           </tal:types>
-          <option>None</option>
         </select>
       </div><br />
       <div class="formControls">
@@ -135,9 +134,6 @@
                tal:attributes="value searchTerm" />
         <span i18n:translate="">Type</span>
         <select name="searchType" metal:define-slot="types">
-          <option value="loops:concept:*"
-                  tal:attributes="selected python:
-                      searchType == 'loops:concept:*'">Any</option>
           <tal:types repeat="type view/conceptTypesForSearch">
             <option value=".loops/concepts/topic"
                     i18n:translate=""

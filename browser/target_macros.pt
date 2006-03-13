@@ -124,7 +124,6 @@
                tal:attributes="value searchTerm" />
         <span i18n:translate="">Type</span>
         <select name="searchType">
-          <option>Any</option>
           <tal:types repeat="type view/targetTypesForSearch">
             <option value=".loops/concepts/topic"
                     i18n:translate=""

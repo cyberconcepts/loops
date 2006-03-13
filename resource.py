@@ -161,10 +161,6 @@ class IndexAttributes(object):
         context = self.context
         return ' '.join((zapi.getName(context), context.title,)).strip()
 
-    def type(self):
-        context = self.context
-        return ':'.join(('loops:resource', context.__class__.__name__))
-
 
 class IndexableResource(object):
 
@@ -179,16 +175,4 @@ class IndexableResource(object):
         icc = IndexContentCollector()
         icc.addBinary(fields[0], context.data, context.contentType, language='de')
         return icc
-        
-
-
-def getResourceTypes():
-    return (('loops.resource.Document', _(u'Document')),
-            ('loops.resource.MediaAsset', _(u'Media Asset')),
-    )
-
-def getResourceTypesForSearch():
-    return (('loops:resource:Document', _(u'Document')),
-            ('loops:resource:MediaAsset', _(u'Media Asset')),
-    )
 

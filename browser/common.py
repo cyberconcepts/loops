@@ -29,6 +29,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.typology.interfaces import IType
 from loops import util
 from loops.target import getTargetTypes
 
@@ -69,14 +70,16 @@ class BaseView(object):
 
     @Lazy
     def typeTitle(self):
-        voc = util.KeywordVocabulary(getTargetTypes())
-        token = '.'.join((self.context.__module__,
-                          self.context.__class__.__name__))
-        term = voc.getTermByToken(token)
-        return term.title
+        type = IType(self.context)
+        return type is not None and type.title or None
 
     @Lazy
     def typeUrl(self):
+        type = IType(self.context)
+        if type is not None:
+            provider = type.typeProvider
+            if provider is not None:
+                return zapi.absoluteURL(provider, self.request)
         return None
 
     def viewIterator(self, objs):
