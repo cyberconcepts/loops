@@ -35,15 +35,19 @@
 
 
 <metal:body define-macro="conceptbody">
-  <tal:body define="body item/body">
+  <tal:body define="body item/body;
+                    target item/target;">
     <div class="content-1"
          tal:define="onclick string:openEditWindow('${item/url}/@@configure.html')"
          tal:attributes="class string:content-$level;
                          ondblclick python: item.editable and onclick or ''">
+      <span tal:content="structure body">Node Body</span>
+    </div>
+    <div tal:repeat="resource target/resources">
       <a href="#"
-         tal:omit-tag=""
-         tal:attributes="href item/target/@@absolute_url"
-         tal:content="structure body">The body</a>
+         tal:attributes="href
+            string:${item/url}/.target${repeat/resource/number}/@@node.html"
+         tal:content="resource/title">Resource Title</a>
     </div>
   </tal:body>
 </metal:body>
@@ -56,7 +60,7 @@
          tal:attributes="class string:content-$level;
                          ondblclick python: item.editable and onclick or ''">
       <a href="#"
-         tal:attributes="href string:${item/url}/target"
+         tal:attributes="href string:${item/url}/@@target"
          tal:content="structure body">The body</a>
     </div>
   </tal:body>
@@ -70,7 +74,7 @@
          tal:attributes="class string:content-$level;
                          ondblclick python: item.editable and onclick or ''">
       <img src="target"
-           tal:attributes="src string:${item/url}/target" />
+           tal:attributes="src string:${item/url}/@@target" />
     </div>
     <div class="content-1"
          tal:condition="body"

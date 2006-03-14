@@ -41,7 +41,6 @@ from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
-from loops.target import getTargetTypes
 from loops.browser.common import BaseView, LoopsTerms
 from loops import util
 

@@ -42,6 +42,7 @@ from interfaces import IView, INode, INodeConfigSchema
 from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
 from interfaces import ITargetRelation
+from interfaces import IConcept
 
 
 class View(object):
@@ -167,54 +168,14 @@ class NodeTraverser(ItemTraverser):
     def publishTraverse(self, request, name):
         if name == '.loops':
             return self.context.getLoopsRoot()
+        if name.startswith('.target'):
+            target = self.context.target
+            if len(name) > len('.target') and IConcept.providedBy(target):
+                idx = int(name[len('.target'):]) - 1
+                target = target.getResources()[idx]
+            viewAnnotations = request.annotations.get('loops.view', {})
+            viewAnnotations['target'] = target
+            request.annotations['loops.view'] = viewAnnotations
+            return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
  
-
-class NodeConfigAdapter(object):
-
-    def __init__(self, context):
-        self.context = removeSecurityProxy(context)
-        self._targetType = None
-
-    implements(INodeConfigSchema)
-    adapts(INode)
-
-    # provide access to fields of the Node class:
-
-    def getTitle(self): return self.context.title
-    def setTitle(self, title): self.context.title = title
-    title = property(getTitle, setTitle)
-
-    def getDescription(self): return self.context.description
-    def setDescription(self, description): self.context.description = description
-    description = property(getDescription, setDescription)
-    
-    def getNodeType(self): return self.context.nodeType
-    def setNodeType(self, nodeType): self.context.nodeType = nodeType
-    nodeType = property(getNodeType, setNodeType)
-
-    def getTarget(self): return self.context.target
-    def setTarget(self, target): self.context.target = target
-    target = property(getTarget, setTarget)
-
-    # the real config stuff:
-    
-    @Lazy
-    def loopsRoot(self): return self.context.getLoopsRoot()
-
-    def getTargetUri(self):return ''
-    def setTargetUri(self, uri): pass
-    targetUri = property(getTargetUri, setTargetUri)
-
-    def getTargetType(self):
-        target = self.target
-        if target:
-            return '%s.%s' % (target.__module__, target.__class__.__name__)
-        return None
-    def setTargetType(self, tt): pass
-    targetType = property(getTargetType, setTargetType)
-
-    def getCreateTarget(self): return False
-    def setCreateTarget(self, value): pass
-    createTarget = property(getCreateTarget, setCreateTarget)
-

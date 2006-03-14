@@ -26,9 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
-from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.event.objectevent import ObjectCreatedEvent
-#import zope.configuration.name
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.proxy import removeAllProxies
@@ -36,31 +34,18 @@ from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import ITypeManager
-from loops.interfaces import IConcept, IDocument, IMediaAsset
+from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset
 from loops.resource import MediaAsset
-from loops.target import getTargetTypes, getTargetTypesForSearch
 from loops import util
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 
 
-class NodeView(object):
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    @Lazy
-    def title(self):
-        return self.context.title
+class NodeView(BaseView):
 
     @Lazy
     def nodeType(self):
         return self.context.nodeType
-
-    @Lazy
-    def url(self):
-        return zapi.absoluteURL(self.context, self.request)
 
     def render(self, text=None):
         if text is None:
@@ -74,19 +59,19 @@ class NodeView(object):
         return view.render()
 
     @Lazy
-    def modified(self):
-        """ get date/time of last modification
-        """
-        dc = ICMFDublinCore(self.context)
-        d = dc.modified or dc.created
-        return d and d.strftime('%Y-%m-%d %H:%M') or ''
+    def targetObject(self):
+        return self.context.target
 
     @Lazy
     def target(self):
-        return self.context.target
+        obj = self.targetObject
+        if obj is not None:
+            if IConcept.providedBy(obj):
+                return ConceptView(obj, self.request)
+            return BaseView(obj, self.request)
 
     def renderTarget(self):
-        target = self.target
+        target = self.targetObject
         if target is not None:
             targetView = zapi.getMultiAdapter((target, self.request),
                     name=zapi.getDefaultViewName(target, self.request))
@@ -94,7 +79,7 @@ class NodeView(object):
         return u''
 
     def renderTargetBody(self):
-        target = self.target
+        target = self.targetObject
         if target is not None:
             targetView = zapi.getMultiAdapter((target, self.request))
             return targetView.render()
@@ -115,7 +100,7 @@ class NodeView(object):
 
     @Lazy
     def bodyMacro(self):
-        target = self.target
+        target = self.targetObject
         if target is None or IDocument.providedBy(target):
             return 'textbody'
         if IConcept.providedBy(target): # TODO...
@@ -140,8 +125,17 @@ class NodeView(object):
     def selected(self, item):
         return item.context == self.context
 
+    # view @@target - probably obsolete, replace by view.NodeTraverser
+    def renderTarget(self):
+        target = self.target
+        if target is not None:
+            targetView = zapi.getMultiAdapter((target, self.request),
+                    name=zapi.getDefaultViewName(target, self.request))
+            return targetView()
+        return u''
 
-class ConfigureView(BaseView):
+
+class ConfigureView(NodeView):
     """ An editing view for configuring a node, optionally creating
         a target object.
     """
@@ -150,19 +144,6 @@ class ConfigureView(BaseView):
         #self.context = context
         self.context = removeSecurityProxy(context)
         self.request = request
-
-    @Lazy
-    def loopsRoot(self):
-        return self.context.getLoopsRoot()
-
-    @property
-    def target(self):
-        target = self.context.target
-        if target is not None:
-            if IConcept.providedBy(target):
-                return ConceptView(target, self.request)
-            return BaseView(target, self.request)
-        return None
 
     def update(self):
         request = self.request
@@ -249,8 +230,4 @@ class ConfigureView(BaseView):
             if o == self.context.target:
                 continue
             yield BaseView(o, request)
-            #if IConcept.providedBy(o):
-            #    yield ConceptView(o, request)
-            #else:
-            #    yield BaseView(o, request)
 

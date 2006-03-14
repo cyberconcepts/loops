@@ -31,7 +31,6 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
 from loops import util
-from loops.target import getTargetTypes
 
 class BaseView(object):
 

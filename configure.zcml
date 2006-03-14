@@ -244,9 +244,6 @@
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />
 
-  <adapter factory=".view.NodeConfigAdapter"
-           permission="zope.ManageContent" />
-
   <adapter factory="loops.target.DocumentProxy"
            permission="zope.ManageContent" />
   <adapter factory="loops.target.MediaAssetProxy"
@@ -263,11 +260,6 @@
       factory="loops.concept.PredicateSourceList"
       name="loops.PredicateSource"
       />
-
-  <!--<vocabulary
-      factory="loops.target.TargetSourceList"
-      name="loops.targetSource"
-      />-->
 
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />

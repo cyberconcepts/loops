@@ -55,11 +55,14 @@ class ConceptProxy(object):
     def setTitle(self, title): self.target.title = title
     title = property(getTitle, setTitle)
 
-    def getChildren(self, relationships=None):
-        return self.target.getChildren(relationships)
+    def getChildren(self, predicates=None):
+        return self.target.getChildren(predicates)
 
-    def getParents(self, relationships=None):
-        return self.target.getParents(relationships)
+    def getParents(self, predicates=None):
+        return self.target.getParents(predicates)
+
+    def getResources(self, predicates=None):
+        return self.target.getResources(predicates)
 
 
 class ResourceProxy(object):
@@ -102,59 +105,4 @@ class MediaAssetProxy(ResourceProxy):
     def setData(self, data): self.target.data = data
     def getData(self): return self.target.data
     data = property(getData, setData)
-
-
-# source classes for target vocabularies
-
-class TargetSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
-
-    def __init__(self, context):
-        #self.context = context
-        self.context = removeSecurityProxy(context)
-        root = self.context.getLoopsRoot()
-        self.resources = root.getResourceManager()
-        # concepts will only be included when we have some really
-        # queryable source with a corresponding user interface:
-        #self.concepts = root.getConceptManager()
-        self.concepts = {}
-
-    def __iter__(self):
-        for obj in self.resources.values():
-            yield obj
-        for obj in self.concepts.values():
-            yield obj
-        #return iter(list(self.resources.values()) + list(self.concepts.values()))
-
-    def __len__(self):
-        return len(self.resources) + len(self.concepts)
-
-
-class QueryableTargetSource(object):
-
-    implements(schema.interfaces.ISource)
-
-    def __init__(self, context):
-        self.context = context
-        root = self.context.getLoopsRoot()
-        self.resources = root.getResourceManager()
-        self.concepts = root.getConceptManager()
-
-    def __contains__(self, value):
-        return value in self.resources.values() or value in self.concepts.values()
-
-
-def getTargetTypes():
-    return (('loops.concept.Concept', _(u'Concept')),
-            ('loops.resource.Document', _(u'Document')),
-            ('loops.resource.MediaAsset', _(u'Media Asset')),
-    )
-
-def getTargetTypesForSearch():
-    # TODO: provide full list of concept types
-    return (('loops:concept:*', _(u'Any Concept')),
-            ('loops:resource:Document', _(u'Document')),
-            ('loops:resource:MediaAsset', _(u'Media Asset')),
-    )
 
