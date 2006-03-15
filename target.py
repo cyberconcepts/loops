@@ -42,18 +42,31 @@ _ = MessageFactory('loops')
 
 # proxies for accessing target objects from views/nodes
 
-class ConceptProxy(object):
 
-    implements(IConcept)
-    adapts(IConceptView)
+class TargetProxy(object):
 
     def __init__(self, context):
         #self.context = context
         self.context = removeSecurityProxy(context)
 
-    def getTitle(self): return self.target.title
+    @Lazy
+    def target(self):
+        return self.context.target
+        
+    def getTitle(self):
+        return self.target.title
     def setTitle(self, title): self.target.title = title
     title = property(getTitle, setTitle)
+
+
+class ConceptProxy(TargetProxy):
+
+    implements(IConcept)
+    adapts(IConceptView)
+
+    def getConceptType(self): return self.target.conceptType
+    def setConceptType(self, conceptType): self.target.conceptType = conceptType
+    conceptType = property(getConceptType, setConceptType)
 
     def getChildren(self, predicates=None):
         return self.target.getChildren(predicates)
@@ -65,27 +78,13 @@ class ConceptProxy(object):
         return self.target.getResources(predicates)
 
 
-class ResourceProxy(object):
-
-    adapts(IView)
-
-    def __init__(self, context):
-        #self.context = context
-        self.context = removeSecurityProxy(context)
-
-    def getTitle(self): return self.target.title
-    def setTitle(self, title): self.target.title = title
-    title = property(getTitle, setTitle)
+class ResourceProxy(TargetProxy):
 
     def setContentType(self, contentType):
         self.target.contentType = contentType
     def getContentType(self): return self.target.contentType
     contentType = property(getContentType, setContentType)
 
-    @Lazy
-    def target(self):
-        return self.context.target
-        
 
 class DocumentProxy(ResourceProxy):
 

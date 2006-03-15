@@ -25,6 +25,7 @@ $Id$
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.interfaces import ITerms
+from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
@@ -85,6 +86,10 @@ class BaseView(object):
         request = self.request
         for o in objs:
             yield BaseView(o, request)
+
+    @Lazy
+    def uniqueId(self):
+        return zapi.getUtility(IIntIds).getId(self.context)
 
 
 class LoopsTerms(object):

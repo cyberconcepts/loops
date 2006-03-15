@@ -53,7 +53,7 @@ class IPotentialTarget(Interface):
 
     proxyInterface = Attribute('An interface allowing an object to be '
                                'used as a target for a view/node (and '
-                               'typically specifying the corresponding schema')
+                               'typically specifying the corresponding schema)')
 
 
 # concept interfaces
@@ -399,39 +399,8 @@ class INodeContained(Interface):
     containers(INode, IViewManager)
 
 
-# schemas to be used by forms on view/node objects
-
-class ITargetProperties(Interface):
-    """ Fields used for specifying a view's or node's target.
-    """
-
-    targetType = schema.Choice(
-        title=_(u'Target Type'),
-        description=_(u'Type of the target'),
-        values=('loops.resource.Document', 'loops.resource.MediaAsset',
-                'loops.concept.Concept'),
-        default=None,
-        required=False)
-
-    targetUri = schema.TextLine(
-        title=_(u'Target URI'),
-        description=_(u'An URI being a unique reference to the target'),
-        required=False)
-
-
-class INodeConfigSchema(INode, ITargetProperties):
-    """ All fields that may be shown in the node config form.
-    """
-
-    createTarget = schema.Bool(
-        title=_(u'Create Target'),
-        description=_(u'Should a new target object be created?'),
-        required=False)
-
-
 # the loops top-level container
 
-#class ILoops(ILoopsObject, IFolder):
 class ILoops(ILoopsObject):
     """ The top-level object of a loops site.
     """
@@ -474,20 +443,6 @@ class ITargetRelation(IRelation):
 class IConceptRelation(IRelation):
     """ (Marker) interfaces for relations originating from a concept.
     """
-
-
-# type and type manager interfaces - probably obsolete
-
-# class ILoopsType(IType):
-#     """ Each loops object is of a certain type providing this interface.
-#         Usually implemented as an adapter.
-#     """
-
-
-# class ILoopsTypeManager(ITypeManager):
-#     """ The loops type manager, probably implemented by an adapter to
-#         the loops root object or the loops root object itself.
-#     """
 
 
 # interfaces for catalog indexes

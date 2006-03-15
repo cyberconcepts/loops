@@ -443,13 +443,13 @@ Node Views
   >>> view = NodeView(m11, TestRequest())
 
   >>> page = view.page
-  >>> items = page.textItems()
+  >>> items = page.textItems
   >>> for item in items:
   ...     print item.url, item.editable
   http://127.0.0.1/loops/views/m1/m11/m112 False
 
   >>> menu = view.menu
-  >>> items = menu.menuItems()
+  >>> items = menu.menuItems
   >>> for item in items:
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
@@ -458,9 +458,17 @@ A Node and its Target
 ---------------------
 
 When configuring a node you may specify what you want to do with respect
-to the node's target: associate an existing one or create a new one.
+to the node's target: associate an existing one or create a new one. When
+accessing a target via a node view it is usually wrapped in a corresponding
+view; these views we have to provide as multi-adapters:
 
   >>> from loops.browser.node import ConfigureView
+  >>> from loops.browser.resource import DocumentView, MediaAssetView
+  >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
+  ...                      with=(IBrowserRequest,))
+  >>> ztapi.provideAdapter(IMediaAsset, Interface, MediaAssetView,
+  ...                      with=(IBrowserRequest,))
+
   >>> form = {'action': 'create', 'create.title': 'New Resource',
   ...         'create.type': 'loops.resource.MediaAsset',}
   >>> view = ConfigureView(m111, TestRequest(form = form))
@@ -498,11 +506,6 @@ A node's target is rendered using the NodeView's renderTargetBody()
 method. This makes use of a browser view registered for the target interface,
 and of a lot of other stuff needed for the rendering machine.
 
-  >>> from zope.app.publisher.interfaces.browser import IBrowserView
-  >>> from loops.browser.resource import DocumentView
-  >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
-  ...                      with=(IBrowserRequest,))
-
   >>> from zope.component.interfaces import IFactory
   >>> from zope.app.renderer import rest
   >>> ztapi.provideUtility(IFactory, rest.ReStructuredTextSourceFactory,
@@ -513,13 +516,13 @@ and of a lot of other stuff needed for the rendering machine.
 
   >>> m112.target = doc1
   >>> view = NodeView(m112, TestRequest())
-  >>> view.renderTargetBody()
+  >>> view.renderTarget()
   u''
   >>> doc1.data = u'Test data\n\nAnother paragraph'
-  >>> view.renderTargetBody()
+  >>> view.renderTarget()
   u'Test data\n\nAnother paragraph'
   >>> doc1.contentType = 'text/restructured'
-  >>> view.renderTargetBody()
+  >>> view.renderTarget()
   u'<p>Test data</p>\n<p>Another paragraph</p>\n'
 
 It is possible to edit a target's attributes directly in an

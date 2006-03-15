@@ -28,6 +28,7 @@ from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
 from zope.app.container.traversal import ContainerTraverser, ItemTraverser
 from zope.app.container.traversal import ContainerTraversable
+from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy, readproperty
 from zope.component import adapts
 from zope.interface import implements
@@ -38,7 +39,7 @@ from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 
-from interfaces import IView, INode, INodeConfigSchema
+from interfaces import IView, INode
 from interfaces import IViewManager, INodeContained
 from interfaces import ILoopsContained
 from interfaces import ITargetRelation
@@ -171,8 +172,9 @@ class NodeTraverser(ItemTraverser):
         if name.startswith('.target'):
             target = self.context.target
             if len(name) > len('.target') and IConcept.providedBy(target):
-                idx = int(name[len('.target'):]) - 1
-                target = target.getResources()[idx]
+                idx = int(name[len('.target'):])
+                target = zapi.getUtility(IIntIds).getObject(idx)
+                #target = target.getResources()[idx]
             viewAnnotations = request.annotations.get('loops.view', {})
             viewAnnotations['target'] = target
             request.annotations['loops.view'] = viewAnnotations

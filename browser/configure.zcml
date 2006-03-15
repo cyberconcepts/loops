@@ -158,6 +158,14 @@
       name="concept.html"
       />
 
+  <zope:adapter
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.concept.ConceptView"
+      permission="zope.View"
+      />
+
   <!-- resource manager -->
 
   <addform
@@ -198,15 +206,6 @@
   </pages>
     
   <!-- document -->
-
-  <!--<zope:view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IBytes"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".resource.DataWidget"
-      permission="zope.Public"
-      name="loops.resource.DataWidget"
-      />-->
 
   <addform
       label="Add Document"
@@ -278,6 +277,14 @@
       filter="nothing"
       />
     
+  <zope:adapter
+      for="loops.interfaces.IMediaAsset
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.MediaAssetView"
+      permission="zope.View"
+      />
+
   <!-- view manager -->
 
   <addform
@@ -423,7 +430,7 @@
       label="Edit Concept"
       name="edit_target.html"
       schema="loops.interfaces.IConcept"
-      fields="title"
+      fields="title conceptType"
       for="loops.interfaces.IConceptView"
       template="edit.pt"
       permission="zope.ManageContent"
@@ -444,11 +451,13 @@
       name="node.html"
       />
 
+  <!-- render file or image assigned to a node as target -->
+
   <page
-      name="target"
+      name="view"
       for="loops.interfaces.INode"
       class=".node.NodeView"
-      attribute="renderTarget"
+      attribute="targetDefaultView"
       permission="zope.View"
       />
     

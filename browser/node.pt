@@ -23,17 +23,12 @@
 
 
   <metal:body fill-slot="body">
-    <tal:content define="item view/page;
+    <tal:content define="item view/item;
                          level level|python: 1;
-                         target request/annotations/loops.view/target | nothing">
-      <tal:content condition="not:target">
-        <metal:block use-macro="views/node_macros/content" />
+                         macro item/macro">
+      <tal:content>
+        <metal:block use-macro="macro" />
       </tal:content>
-      <tal:target condition="target">
-        <div>
-          Here comes the real target... <span tal:replace="target/title" />
-        </div>
-      </tal:target>
     </tal:content>
   </metal:body>
 

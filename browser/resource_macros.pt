@@ -1,0 +1,27 @@
+<metal:block define-macro="render">
+  <div>
+    Here comes a document...
+    <span tal:replace="structure item/render" />
+  </div>
+</metal:block>
+
+
+<metal:block define-macro="image">
+  <div>
+    Here comes an image...
+    <img src="#"
+         tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
+  </div>
+</metal:block>
+
+
+<metal:block define-macro="download">
+  <div>
+    Here comes a file...
+    <a href="#"
+       tal:attributes="href string:${view/url}/.target${view/targetId}/view">
+     Download '<span tal:replace="item/title" />'
+    </a>
+  </div>
+</metal:block>
+

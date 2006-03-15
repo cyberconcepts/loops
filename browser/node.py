@@ -27,6 +27,8 @@ from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
 from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.intid.interfaces import IIntIds
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.proxy import removeAllProxies
@@ -42,6 +44,28 @@ from loops.browser.concept import ConceptView
 
 
 class NodeView(BaseView):
+
+    template = ViewPageTemplateFile('node_macros.pt')
+    macro = template.macros['content']
+
+    @Lazy
+    def item(self):
+        target = self.request.annotations.get('loops.view', {}).get('target')
+        if target is not None:
+            # .target.... traversal magic
+            return zapi.getMultiAdapter((target, self.request))
+        return self.page
+
+    @Lazy
+    def page(self):
+        page = self.context.getPage()
+        return page is not None and NodeView(page, self.request) or None
+
+    @Lazy
+    def textItems(self):
+        return [NodeView(child, self.request)
+                    for child in self.context.getTextItems()]
+            
 
     @Lazy
     def nodeType(self):
@@ -66,33 +90,11 @@ class NodeView(BaseView):
     def target(self):
         obj = self.targetObject
         if obj is not None:
-            if IConcept.providedBy(obj):
-                return ConceptView(obj, self.request)
-            return BaseView(obj, self.request)
+            return zapi.getMultiAdapter((obj, self.request))
 
     def renderTarget(self):
-        target = self.targetObject
-        if target is not None:
-            targetView = zapi.getMultiAdapter((target, self.request),
-                    name=zapi.getDefaultViewName(target, self.request))
-            return targetView()
-        return u''
-
-    def renderTargetBody(self):
-        target = self.targetObject
-        if target is not None:
-            targetView = zapi.getMultiAdapter((target, self.request))
-            return targetView.render()
-        return u''
-
-    @Lazy
-    def page(self):
-        page = self.context.getPage()
-        return page is not None and NodeView(page, self.request) or None
-
-    def textItems(self):
-        for child in self.context.getTextItems():
-            yield NodeView(child, self.request)
+        target = self.target
+        return target is not None and target.render() or u''
 
     @Lazy
     def body(self):
@@ -103,7 +105,7 @@ class NodeView(BaseView):
         target = self.targetObject
         if target is None or IDocument.providedBy(target):
             return 'textbody'
-        if IConcept.providedBy(target): # TODO...
+        if IConcept.providedBy(target):
             return 'conceptbody'
         if IMediaAsset.providedBy(target) and target.contentType.startswith('image/'):
             return 'imagebody'
@@ -118,22 +120,34 @@ class NodeView(BaseView):
         menu = self.context.getMenu()
         return menu is not None and NodeView(menu, self.request) or None
 
+    @Lazy
     def menuItems(self):
-        for child in self.context.getMenuItems():
-            yield NodeView(child, self.request)
+        return [NodeView(child, self.request)
+                    for child in self.context.getMenuItems()]
 
     def selected(self, item):
-        return item.context == self.context
-
-    # view @@target - probably obsolete, replace by view.NodeTraverser
-    def renderTarget(self):
-        target = self.target
+        if item.context == self.context:
+            return True
+        if item.context in zapi.getParents(self.context) and not item.menuItems:
+            return True
+        return False
+            
+    def targetDefaultView(self):
+        target = self.request.annotations.get('loops.view', {}).get('target')
+        if target is None:
+            target = self.targetObject
         if target is not None:
             targetView = zapi.getMultiAdapter((target, self.request),
                     name=zapi.getDefaultViewName(target, self.request))
             return targetView()
         return u''
 
+    def targetId(self):
+        target = self.request.annotations.get('loops.view', {}).get('target')
+        if target is None:
+            target = self.targetObject
+        if target is not None:
+            return zapi.getUtility(IIntIds).getId(target)
 
 class ConfigureView(NodeView):
     """ An editing view for configuring a node, optionally creating

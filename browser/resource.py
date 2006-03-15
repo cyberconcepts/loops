@@ -26,6 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -45,6 +46,8 @@ renderingFactories = {
 
 
 class ResourceView(BaseView):
+
+    template = ViewPageTemplateFile('resource_macros.pt')
 
     def concepts(self):
         for r in self.context.getConceptRelations():
@@ -112,6 +115,8 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
 
 class DocumentView(ResourceView):
 
+    macro = ResourceView.template.macros['render']
+    
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
@@ -124,3 +129,11 @@ class DocumentView(ResourceView):
         return view.render()
 
     
+class MediaAssetView(ResourceView):
+
+    @property
+    def macro(self):
+        if 'image/' in self.context.contentType:
+            return self.template.macros['image']
+        else:
+            return self.template.macros['download']
