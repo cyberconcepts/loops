@@ -30,6 +30,13 @@
 
   <page
       for="*"
+      name="concept_macros"
+      template="concept_macros.pt"
+      permission="zope.View"
+      />
+
+  <page
+      for="*"
       name="relation_macros"
       template="relation_macros.pt"
       permission="zope.View"

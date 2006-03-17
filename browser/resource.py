@@ -106,6 +106,8 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
                 criteria['loops_type'] = (start, end)
             cat = zapi.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
+            # TODO: can this be done in a faster way?
+            result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
         else:
             result = self.loopsRoot.getConceptManager().values()
         if searchType == 'none':

@@ -52,14 +52,23 @@ top-level loops container and a concept manager:
 Now we want to relate the second concept to the first one.
 
 In order to do this we first have to provide a relation registry. For
-testing we use a simple dummy implementation. As relationships are
-based on predicates that are themselves concepts we also need a
-default predicate concept; the default name for this is 'standard'.
+testing we use a simple dummy implementation.
 
+  >>> from zope.app.intid.interfaces import IIntIds
+  >>> from cybertools.relation.tests import IntIdsStub
+  >>> from zope.app.testing import ztapi
+  >>> ztapi.provideUtility(IIntIds, IntIdsStub())
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+  >>> from cybertools.relation.registry import RelationRegistry
+  >>> #ztapi.provideUtility(IRelationRegistry, RelationRegistry())
+  >>> #zapi.getUtility(IRelationRegistry).setupIndexes()
+
+As relationships are based on predicates that are themselves concepts we
+also need a default predicate concept; the default name for this is
+'standard'.
+
   >>> concepts['standard'] = Concept(u'subconcept')
 
 Now we can assign the concept c2 as a child to c1 (using the standard

@@ -27,6 +27,7 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.browser.interfaces import ITerms
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
@@ -52,6 +53,9 @@ class ConceptEditForm(EditForm):
 
 
 class ConceptView(BaseView):
+
+    template = ViewPageTemplateFile('concept_macros.pt')
+    macro = template.macros['conceptlisting']
 
     def children(self):
         for r in self.context.getChildRelations():
@@ -165,6 +169,8 @@ class ConceptConfigureView(ConceptView):
                 criteria['loops_type'] = (start, end)
             cat = zapi.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
+            # TODO: can this be done in a faster way?
+            result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
         else:
             result = self.loopsRoot.getConceptManager().values()
         if searchType == 'none':

@@ -26,9 +26,7 @@
     <tal:content define="item view/item;
                          level level|python: 1;
                          macro item/macro">
-      <tal:content>
-        <metal:block use-macro="macro" />
-      </tal:content>
+      <metal:block use-macro="macro" />
     </tal:content>
   </metal:body>
 

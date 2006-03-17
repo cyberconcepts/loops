@@ -170,11 +170,11 @@ class NodeTraverser(ItemTraverser):
         if name == '.loops':
             return self.context.getLoopsRoot()
         if name.startswith('.target'):
-            target = self.context.target
-            if len(name) > len('.target') and IConcept.providedBy(target):
+            if len(name) > len('.target'):
                 idx = int(name[len('.target'):])
                 target = zapi.getUtility(IIntIds).getObject(idx)
-                #target = target.getResources()[idx]
+            else:
+                target = self.context.target
             viewAnnotations = request.annotations.get('loops.view', {})
             viewAnnotations['target'] = target
             request.annotations['loops.view'] = viewAnnotations

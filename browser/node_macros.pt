@@ -35,19 +35,16 @@
 
 
 <metal:body define-macro="conceptbody">
-  <tal:body define="body item/body;
-                    target item/target;">
+  <tal:body define="body item/body;">
     <div class="content-1"
          tal:define="onclick string:openEditWindow('${item/url}/@@configure.html')"
          tal:attributes="class string:content-$level;
                          ondblclick python: item.editable and onclick or ''">
       <span tal:content="structure body">Node Body</span>
     </div>
-    <div tal:repeat="resource target/resources">
-      <a href="#"
-         tal:attributes="href string:${item/url}/.target${resource/uniqueId}"
-         tal:content="resource/title">Resource Title</a>
-    </div>
+    <tal:concepts define="item item/target">
+      <div metal:use-macro="views/concept_macros/conceptlisting2" />
+    </tal:concepts>
   </tal:body>
 </metal:body>
 
