@@ -240,6 +240,8 @@
   <adapter factory="loops.type.ResourceType" />
   <adapter factory="loops.type.LoopsTypeManager" />
   
+  <adapter factory="loops.type.TypeConcept" />
+  
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />

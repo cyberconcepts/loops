@@ -125,12 +125,23 @@ class NodeView(BaseView):
         return [NodeView(child, self.request)
                     for child in self.context.getMenuItems()]
 
+    @Lazy
+    def parents(self):
+        return zapi.getParents(self.context)
+
+    @Lazy
+    def nearestMenuItem(self):
+        if self.context.isMenuItem():
+            return self.context
+        for p in self.parents:
+            if p.isMenuItem():
+                return p
+
     def selected(self, item):
-        if item.context == self.context:
-            return True
-        if item.context in zapi.getParents(self.context) and not item.menuItems:
-            return True
-        return False
+        return item.context == self.nearestMenuItem
+
+    def active(self, item):
+        return item.context == self.context or item.context in self.parents
             
     def targetDefaultView(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
@@ -148,6 +159,7 @@ class NodeView(BaseView):
             target = self.targetObject
         if target is not None:
             return zapi.getUtility(IIntIds).getId(target)
+
 
 class ConfigureView(NodeView):
     """ An editing view for configuring a node, optionally creating

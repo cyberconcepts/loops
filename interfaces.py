@@ -384,6 +384,10 @@ class INode(IView, IBaseNode):
             a menu).
         """
 
+    def isMenuItem():
+        """ Return True if this object is a menu item.
+        """
+
     def getTextItems():
         """ Return the text items belonging to this object.
         """
@@ -464,4 +468,14 @@ class IIndexAttributes(Interface):
     def type():
         """ Return a string that identifies the type of the object.
         """
+
+
+# types stuff
+
+class ITypeConcept(Interface):
+    """ This interface should be provided by concepts of type 'type'.
+    """
+
+    typeInterface = Attribute('The interface provided by objects of this type')
+
 

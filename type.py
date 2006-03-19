@@ -24,10 +24,12 @@ $Id$
 
 from zope.app import zapi
 from zope.component import adapts
+from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
+from loops.interfaces import ITypeConcept
 from loops.concept import Concept
 from loops.resource import Document, MediaAsset
 
@@ -71,6 +73,17 @@ class ConceptType(LoopsType):
     @Lazy
     def defaultContainer(self):
         return self.root.getConceptManager()
+
+    @Lazy
+    def typeInterface(self):
+        adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
+        if adapter is not None:
+            return adapter.typeInterface
+        else:
+            conceptType = self.context.conceptType
+            if conceptType is conceptType.getConceptManager().getTypeConcept():
+                return ITypeConcept
+        return None
 
 
 class ConceptTypeInfo(ConceptType):
@@ -161,3 +174,20 @@ class LoopsTypeManager(TypeManager):
     def resourceTypes(self):
         return tuple([ResourceTypeInfo(self.context, cls)
                         for cls in (Document, MediaAsset)])
+
+
+class TypeConcept(object):
+
+    implements(ITypeConcept)
+    adapts(IConcept)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getTypeInterface(self):
+        return getattr(self.context, '_typeInterface', None)
+    def setTypeInterface(self, ifc):
+        self.context._typeInterface = ifc
+    typeInterface = property(getTypeInterface, setTypeInterface)
+
+

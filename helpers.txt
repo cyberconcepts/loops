@@ -190,3 +190,40 @@ condition:
   >>> sorted(t.token for t in types)
   ['loops.resource.Document', 'loops.resource.MediaAsset']
 
+Type-based interfaces
+---------------------
+
+A type has an optional typeInterface attribute that objects of this type
+will be adaptable to. The default for this is None:
+
+  >>> cc1_type.typeInterface is None
+  True
+
+For concept objects that provide types (type providers) the value of
+the typeInterface attribute is the ITypeConcept interface:
+
+  >>> from loops.interfaces import ITypeConcept
+  >>> topic_type.typeInterface is ITypeConcept
+  True
+
+We now want to have a topic (i.e. a concept that has topic_type as its type)
+to provide the interface ITopic. This is done by assigning this interface
+to topic_type.typeProvider, i.e. the 'topic' concept, via an adapter:
+
+  >>> from loops.type import TypeConcept
+  >>> ztapi.provideAdapter(IConcept, ITypeConcept, TypeConcept)
+
+  >>> class ITopic(Interface): pass
+  >>> from zope.interface import implements
+  >>> class Topic(object):
+  ...     implements(ITopic)
+  ...     def __init__(self, context): pass
+  >>> ztapi.provideAdapter(IConcept, ITopic, Topic)
+  
+  >>> ITypeConcept(topic).typeInterface = ITopic
+  >>> cc1.conceptType = topic
+
+  >>> cc1_type = IType(cc1)
+  >>> cc1Adapter = cc1_type.typeInterface(cc1)
+  >>> ITopic.providedBy(cc1Adapter)
+  True

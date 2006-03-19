@@ -28,6 +28,7 @@ from zope.app.container.contained import Contained
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
+from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
@@ -36,7 +37,7 @@ from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
-from cybertools.typology.interfaces import ITypeManager
+from cybertools.typology.interfaces import IType, ITypeManager
 
 from interfaces import IConcept, IConceptRelation, IConceptView
 from interfaces import IConceptManager, IConceptManagerContained

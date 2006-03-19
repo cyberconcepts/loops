@@ -128,7 +128,9 @@ class Node(View, OrderedContainer):
                 continue
 
     def getMenu(self):
-        return self.nodeType == 'menu' and self or self.getParentNode(['menu'])
+        if self.nodeType == 'menu':
+            return self
+        return self.getParentNode(['menu'])
 
     def getPage(self):
         pageTypes = ['page', 'menu', 'info']
@@ -141,6 +143,9 @@ class Node(View, OrderedContainer):
 
     def getTextItems(self):
         return self.getChildNodes(['text'])
+
+    def isMenuItem(self):
+        return self.nodeType in ('page', 'menu')
 
 
 class ViewManager(OrderedContainer):
@@ -171,13 +176,14 @@ class NodeTraverser(ItemTraverser):
             return self.context.getLoopsRoot()
         if name.startswith('.target'):
             if len(name) > len('.target'):
-                idx = int(name[len('.target'):])
-                target = zapi.getUtility(IIntIds).getObject(idx)
+                uid = int(name[len('.target'):])
+                target = zapi.getUtility(IIntIds).getObject(uid)
             else:
                 target = self.context.target
-            viewAnnotations = request.annotations.get('loops.view', {})
-            viewAnnotations['target'] = target
-            request.annotations['loops.view'] = viewAnnotations
-            return self.context
+            if target is not None:
+                viewAnnotations = request.annotations.get('loops.view', {})
+                viewAnnotations['target'] = target
+                request.annotations['loops.view'] = viewAnnotations
+                return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
  
