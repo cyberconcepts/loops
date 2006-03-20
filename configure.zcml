@@ -259,6 +259,11 @@
       />
 
   <vocabulary
+      factory="loops.type.TypeInterfaceSourceList"
+      name="loops.TypeInterfaceSource"
+      />
+
+  <vocabulary
       factory="loops.concept.PredicateSourceList"
       name="loops.PredicateSource"
       />

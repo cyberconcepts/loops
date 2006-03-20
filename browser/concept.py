@@ -39,7 +39,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope import schema
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
-from cybertools.typology.interfaces import ITypeManager
+from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import BaseView, LoopsTerms
@@ -48,8 +48,24 @@ from loops import util
 
 class ConceptEditForm(EditForm):
 
-    form_fields = FormFields(IConcept)
     template = NamedTemplate('pageform')
+
+    @Lazy
+    def typeInterface(self):
+        print IType(self.context)
+        print IType(self.context).typeInterface
+        return IType(self.context).typeInterface
+
+    @property
+    def form_fields(self):
+        fields = FormFields(IConcept)
+        typeInterface = self.typeInterface
+        if typeInterface is not None:
+            fields = FormFields(fields, typeInterface)
+            #typeAdapter = zapi.queryAdapter(self.context, typeInterface)
+            #if typeAdapter is not None:
+            #...
+        return fields
 
 
 class ConceptView(BaseView):

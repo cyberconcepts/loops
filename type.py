@@ -27,6 +27,8 @@ from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
+from zope import schema
+from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import ITypeConcept
@@ -58,7 +60,7 @@ class LoopsType(BaseType):
 
 
 class ConceptType(LoopsType):
-    """ The type adapter for concept objects.
+    """ The IType adapter for concept objects.
     """
 
     adapts(IConcept)
@@ -77,11 +79,11 @@ class ConceptType(LoopsType):
     @Lazy
     def typeInterface(self):
         adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
-        if adapter is not None:
+        if adapter is not None:  # always gives TypeConcept
             return adapter.typeInterface
         else:
-            conceptType = self.context.conceptType
-            if conceptType is conceptType.getConceptManager().getTypeConcept():
+            conceptType = self.typeProvider
+            if conceptType is conceptType.getLoopsRoot().getConceptManager().getTypeConcept():
                 return ITypeConcept
         return None
 
@@ -177,17 +179,39 @@ class LoopsTypeManager(TypeManager):
 
 
 class TypeConcept(object):
+    """ typeInterface adapter for concepts of type 'type'.
+    """
 
     implements(ITypeConcept)
     adapts(IConcept)
 
     def __init__(self, context):
-        self.context = context
+        self.context = removeSecurityProxy(context)
 
     def getTypeInterface(self):
-        return getattr(self.context, '_typeInterface', None)
+        ti = getattr(self.context, '_typeInterface', None)
+        if ti is None:
+            conceptType = self.context
+            if conceptType == conceptType.getLoopsRoot().getConceptManager().getTypeConcept():
+                return ITypeConcept
+        return ti
     def setTypeInterface(self, ifc):
         self.context._typeInterface = ifc
     typeInterface = property(getTypeInterface, setTypeInterface)
 
+
+class TypeInterfaceSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    typeInterfaces = (ITypeConcept,)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __iter__(self):
+        return iter(self.typeInterfaces)
+
+    def __len__(self):
+        return len(self.typeInterfaces)
 

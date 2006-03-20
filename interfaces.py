@@ -473,9 +473,14 @@ class IIndexAttributes(Interface):
 # types stuff
 
 class ITypeConcept(Interface):
-    """ This interface should be provided by concepts of type 'type'.
+    """ Concepts of type 'type' should be adaptable to this interface.
     """
 
-    typeInterface = Attribute('The interface provided by objects of this type')
-
+    typeInterface = schema.Choice(
+        title=_(u'Type Interface'),
+        description=_(u'An interface that objects of this type can '
+                        'be adapted to'),
+        default=None,
+        source="loops.TypeInterfaceSource",
+        required=False)
 

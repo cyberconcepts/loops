@@ -27,7 +27,9 @@ from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
+from zope.dottedname.resolve import resolve
 from zope.interface import implements
+from zope.schema.vocabulary import SimpleTerm
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
@@ -114,5 +116,23 @@ class LoopsTerms(object):
 
     def getValue(self, token):
         return self.loopsRoot.loopsTraverse(token)
+
+
+class InterfaceTerms(object):
+    """ Provide the ITerms interface for source list of interfaces.
+    """
+
+    implements(ITerms)
+
+    def __init__(self, source, request):
+        self.source = source
+        self.request = request
+
+    def getTerm(self, value):
+        token = '.'.join((value.__module__, value.__name__))
+        return SimpleTerm(value, token, token)
+
+    def getValue(self, token):
+        return resolve(token)
 
 

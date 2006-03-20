@@ -478,6 +478,10 @@
            for="loops.concept.PredicateSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
+  <zope:adapter factory="loops.browser.common.InterfaceTerms"
+           for="loops.type.TypeInterfaceSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
   <zope:view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"
         type="zope.publisher.interfaces.browser.IBrowserRequest"
