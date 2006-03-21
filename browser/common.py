@@ -29,6 +29,8 @@ from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.interface import implements
+from zope.app.publisher.browser import applySkin
+from zope.publisher.interfaces.browser import ISkin
 from zope.schema.vocabulary import SimpleTerm
 from zope.security.proxy import removeSecurityProxy
 
@@ -39,8 +41,23 @@ class BaseView(object):
 
     def __init__(self, context, request):
         #self.context = context
+        # TODO: get rid of removeSecurityProxy() call
         self.context = removeSecurityProxy(context)
         self.request = request
+        skin = None
+        # TODO: get ISkinController adapter instead
+        skinName = self.loopsRoot.skinName
+        if skinName:
+            skin = zapi.queryUtility(ISkin, skinName)
+            if skin is not None:
+                applySkin(self.request, skin)
+        self.skin = skin
+
+    @Lazy
+    def resourceBase(self):
+        skinSetter = self.skin and ('/++skin++' + self.skin.__name__) or ''
+        # TODO: put '/@@' etc after path to site instead of directly after URL0
+        return self.request.URL[0] + skinSetter + '/@@'
 
     @Lazy
     def modified(self):

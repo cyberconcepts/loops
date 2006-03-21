@@ -43,12 +43,6 @@
   </div>
 
   
-  <div metal:fill-slot="footer">
-    <a href="#"
-       tal:attributes="href string:${view/menu/url}/impressum">Impressum</a>
-  </div>
-
-
 </body>
 </html>
 </tal:show>

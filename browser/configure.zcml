@@ -67,6 +67,21 @@
       view="AddLoopsContainer.html"
       />
 
+  <containerViews
+      for="loops.interfaces.ILoops"
+      contents="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
+  <editform
+      label="Edit Loops Container"
+      name="edit.html"
+      schema="loops.interfaces.ILoops"
+      fields="skinName"
+      for="loops.interfaces.ILoops"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit" />      
+
   <!-- concept manager -->
 
   <addform

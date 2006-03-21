@@ -50,7 +50,11 @@
     <require
         permission="zope.View"
         attributes="getLoopsUri loopsTraverse getConceptManager
-                    getResourceManager getViewManager" />
+                    getResourceManager getViewManager skinName" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.ILoops" />
 
   </content>
 

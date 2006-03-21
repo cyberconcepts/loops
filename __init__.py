@@ -34,6 +34,11 @@ class Loops(Folder):
 
     implements(ILoops)
 
+    _skinName = ''
+    def getSkinName(self): return self._skinName
+    def setSkinName(self, skinName): self._skinName = skinName
+    skinName = property(getSkinName, setSkinName)
+
     def getLoopsRoot(self):
         return self
 

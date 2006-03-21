@@ -410,6 +410,12 @@ class ILoops(ILoopsObject):
     """
     contains(IConceptManager, IResourceManager, IViewManager)
 
+    skinName = schema.ASCIILine(
+        title=_(u'Skin Name'),
+        description=_(u'Name of the skin to use'),
+        default='',
+        required=False)
+
     def getLoopsUri(obj):
         """ Return the relativ path to obj, starting with '.loops/...'.
         """
