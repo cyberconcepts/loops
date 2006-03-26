@@ -35,6 +35,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
+from loops.interfaces import IView
 from loops import util
 
 class BaseView(object):
@@ -47,17 +48,25 @@ class BaseView(object):
         skin = None
         # TODO: get ISkinController adapter instead
         skinName = self.loopsRoot.skinName
-        if skinName:
+        if skinName and IView.providedBy(self.context):
             skin = zapi.queryUtility(ISkin, skinName)
             if skin is not None:
                 applySkin(self.request, skin)
         self.skin = skin
 
-    @Lazy
-    def resourceBase(self):
-        skinSetter = self.skin and ('/++skin++' + self.skin.__name__) or ''
-        # TODO: put '/@@' etc after path to site instead of directly after URL0
-        return self.request.URL[0] + skinSetter + '/@@'
+    _controller = None
+    def setController(self, controller):
+        self._controller = controller
+        # this is also the place to register special macros with the controller
+        controller.skin = self.skin
+    def getController(self): return self._controller
+    controller = property(getController, setController)
+
+    #@Lazy
+    #def resourceBase(self):
+    #    skinSetter = self.skin and ('/++skin++' + self.skin.__name__) or ''
+    #    # TODO: put '/@@' etc after path to site instead of directly after URL0
+    #    return self.request.URL[0] + skinSetter + '/@@/'
 
     @Lazy
     def modified(self):

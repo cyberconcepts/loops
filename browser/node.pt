@@ -3,22 +3,14 @@
 <head></head>
 <body>
 
+
+  <metal:settings fill-slot="settings"
+    tal:define="dummy python:
+        controller.macros.register('css', resourceName='node.css', media='all');
+                dummy python:
+        controller.macros.register('js', resourceName='node.js');" />
+
   
-  <metal:js fill-slot="ecmascript_slot">
-    <script type="text/javascript" src="node.js"
-            tal:attributes="src string:${context/++resource++node.js}">
-    </script>
-  </metal:js>
-
-
-  <metal:css fill-slot="style_slot">
-    <style type="text/css" media="all"
-           tal:content="string:@import url(${context/++resource++node.css});">
-      @import url(view.css);
-    </style>
-  </metal:css>
-
-
   <metal:block fill-slot="actions" />
 
 
