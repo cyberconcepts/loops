@@ -26,6 +26,7 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image as BaseMediaAsset
+from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
@@ -143,6 +144,18 @@ class ResourceManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
+
+
+class DocumentWriteFileAdapter(object):
+
+    implements(IWriteFile)
+    adapts(IDocument)
+
+    def __init__(self, context):
+        self.context = context
+
+    def write(self, data):
+        self.context.data = data.replace('\r', '')
 
 
 class IndexAttributes(object):

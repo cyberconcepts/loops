@@ -240,6 +240,8 @@
   <adapter factory="loops.resource.IndexAttributes" />
   <adapter factory="loops.resource.IndexableResource" />
   
+  <adapter factory="loops.resource.DocumentWriteFileAdapter" />
+  
   <adapter factory="loops.type.ConceptType" />
   <adapter factory="loops.type.ResourceType" />
   <adapter factory="loops.type.LoopsTypeManager" />

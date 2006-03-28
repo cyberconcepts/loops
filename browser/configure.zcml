@@ -252,6 +252,7 @@
       schema="loops.interfaces.IDocumentSchema"
       fields="title data contentType"
       for="loops.interfaces.IDocument"
+      template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit" />      
 
@@ -288,6 +289,7 @@
       schema="loops.interfaces.IMediaAssetSchema"
       fields="title data contentType"
       for="loops.interfaces.IMediaAsset"
+      template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Media Asset"
       />
