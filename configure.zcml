@@ -149,6 +149,10 @@
         interface=".interfaces.IDocument" />
 
     <require
+        permission="zope.View"
+        interface="zope.app.size.interfaces.ISized" />
+
+    <require
         permission="zope.ManageContent"
         set_schema=".interfaces.IDocument" />
 
@@ -240,6 +244,7 @@
   <adapter factory="loops.resource.IndexAttributes" />
   <adapter factory="loops.resource.IndexableResource" />
   
+  <adapter factory="loops.resource.DocumentReadFileAdapter" />
   <adapter factory="loops.resource.DocumentWriteFileAdapter" />
   
   <adapter factory="loops.type.ConceptType" />

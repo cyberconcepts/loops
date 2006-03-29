@@ -26,7 +26,9 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image as BaseMediaAsset
-from zope.app.filerepresentation.interfaces import IWriteFile
+from zope.app.file.interfaces import IFile
+from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.app.size.interfaces import ISized
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
@@ -100,7 +102,7 @@ class Resource(Contained, Persistent):
 
 class Document(Resource):
 
-    implements(IDocument)
+    implements(IDocument, ISized)
 
     proxyInterface = IDocumentView
 
@@ -108,6 +110,15 @@ class Document(Resource):
     def setData(self, data): self._data = data
     def getData(self): return self._data
     data = property(getData, setData)
+
+    def getSize(self):
+        return len(self.data)
+
+    def sizeForSorting(self):
+        return 'byte', self.getSize()
+
+    def sizeForDisplay(self):
+        return '%i Bytes' % self.getSize()
 
 
 class MediaAsset(Resource, BaseMediaAsset):
@@ -155,7 +166,22 @@ class DocumentWriteFileAdapter(object):
         self.context = context
 
     def write(self, data):
-        self.context.data = data.replace('\r', '')
+        self.context.data = unicode(data.replace('\r', ''), 'UTF-8')
+
+
+class DocumentReadFileAdapter(object):
+
+    implements(IReadFile)
+    adapts(IDocument)
+
+    def __init__(self, context):
+        self.context = context
+
+    def read(self):
+        return self.context.data.encode('UTF-8')
+
+    def size(self):
+        return len(self.context.data)
 
 
 class IndexAttributes(object):

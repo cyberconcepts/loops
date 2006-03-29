@@ -5,7 +5,12 @@
     
     <div metal:fill-slot="body">
 
-      <h1 tal:content="context/title">Concept Title</h1><br />
+      <h1>
+        <span tal:content="context/title">Concept Title</span>
+        <a href="#"
+           tal:condition="python: context.contentType.startswith('text')"
+           tal:attributes="href string:${context/@@absolute_url}/external_edit">X</a>
+      </h1><br />
       
       <div   tal:define="items view/concepts;
                          action string:remove;

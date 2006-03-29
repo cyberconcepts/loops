@@ -31,10 +31,6 @@
             metal:define-slot="heading">
           <span tal:content="view/label"
                 i18n:translate="">Edit something</span>
-          <a href="#"
-             tal:condition="python: hasattr(context, 'data')
-                                and getattr(context, 'contentType', '').startswith('text')"
-             tal:attributes="href string:${context/@@absolute_url}/external_edit">X</a>
         </h3>
 
         <p tal:define="status view/update"

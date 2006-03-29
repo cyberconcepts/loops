@@ -130,6 +130,13 @@ class DocumentView(ResourceView):
         view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
+    def show(self):
+        data = self.context.data
+        response = self.request.response
+        response.setHeader('Content-Type', self.context.contentType)
+        response.setHeader('Content-Length', len(data))
+        return data
+
     
 class MediaAssetView(ResourceView):
 
