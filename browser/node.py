@@ -26,7 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.intid.interfaces import IIntIds
 from zope.dottedname.resolve import resolve
@@ -46,7 +46,13 @@ from loops.browser.concept import ConceptView
 class NodeView(BaseView):
 
     template = ViewPageTemplateFile('node_macros.pt')
-    macro = template.macros['content']
+
+    @Lazy
+    def macro(self):
+        macroName = self.request.get('viewer')
+        if not macroName:
+            macroName = self.context.viewer or 'content'
+        return self.template.macros[macroName]
 
     @Lazy
     def item(self):
@@ -65,7 +71,11 @@ class NodeView(BaseView):
     def textItems(self):
         return [NodeView(child, self.request)
                     for child in self.context.getTextItems()]
-            
+
+    @Lazy
+    def pageItems(self):
+        return [NodeView(child, self.request)
+                    for child in self.context.getPageItems()]
 
     @Lazy
     def nodeType(self):
@@ -148,8 +158,9 @@ class NodeView(BaseView):
         if target is None:
             target = self.targetObject
         if target is not None:
+            name = zapi.getDefaultViewName(target, self.request)
             targetView = zapi.getMultiAdapter((target, self.request),
-                    name=zapi.getDefaultViewName(target, self.request))
+                    name=name)
             return targetView()
         return u''
 
@@ -212,6 +223,7 @@ class ConfigureView(NodeView):
         if IConcept.providedBy(target):
             target.conceptType = type.typeProvider
         notify(ObjectCreatedEvent(target))
+        notify(ObjectModifiedEvent(target))
         self.context.target = target
         return True
 

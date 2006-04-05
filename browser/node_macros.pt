@@ -84,6 +84,21 @@
 </metal:body>
 
 
+<metal:body define-macro="listpages">
+  <div class="content-1"
+       tal:define="onclick string:openEditWindow('${view/url}/@@edit.html')"
+       tal:content="structure view/body"
+       tal:attributes="ondblclick python: view.editable and onclick or ''">
+    Listing
+  </div><br />
+  <div tal:repeat="item view/pageItems">
+    <a href="#"
+       tal:attributes="href item/url"
+       tal:content="item/title">Item</a>
+  </div>
+</metal:body>
+
+
 <!-- menu -->
 
 <metal:menu define-macro="menu">

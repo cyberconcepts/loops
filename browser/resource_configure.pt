@@ -9,7 +9,9 @@
         <span tal:content="context/title">Concept Title</span>
         <a href="#"
            tal:condition="python: context.contentType.startswith('text')"
-           tal:attributes="href string:${context/@@absolute_url}/external_edit">X</a>
+           tal:attributes="href string:${context/@@absolute_url}/external_edit"
+           ><img src="edit.gif"
+           tal:attributes="src context/++resource++edit.gif" border="0" /></a>
       </h1><br />
       
       <div   tal:define="items view/concepts;

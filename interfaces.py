@@ -309,13 +309,13 @@ class IView(ILoopsObject):
         default=u'',
         required=False)
 
-    #target = Attribute('Target object that is referenced by this view')
+    target = Attribute('Target object that is referenced by this view')
 
-    target = schema.Choice(
-        title=_(u'Target'),
-        description=_(u'The target object of this view or node'),
-        default=None,
-        source="loops.targetSource",
+    viewer = schema.TextLine(
+        title=_(u'Viewer Method Specification'),
+        description=_(u'Name, path or relative URI specifying a viewer '
+                       '(template, macro, ...) for this object'),
+        default=u'',
         required=False)
 
 
@@ -386,6 +386,10 @@ class INode(IView, IBaseNode):
 
     def isMenuItem():
         """ Return True if this object is a menu item.
+        """
+
+    def getPageItems():
+        """ Return the page items belonging to this object.
         """
 
     def getTextItems():

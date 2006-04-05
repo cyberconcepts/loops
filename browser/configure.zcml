@@ -388,7 +388,7 @@
       label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
-      fields="title description nodeType body"
+      fields="title description nodeType viewer body"
       for="loops.interfaces.INode"
       template="edit.pt"
       permission="zope.ManageContent"
@@ -405,20 +405,13 @@
       add="zope.ManageContent"
       />
 
-  <editform
-      label="Configure Node"
+  <page
       name="configure.html"
-      schema="loops.interfaces.INode"
-      fields="title description nodeType target"
       for="loops.interfaces.INode"
       template="node_target.pt"
       class="loops.browser.node.ConfigureView"
       permission="zope.ManageContent">
-
-    <widget field="description" height="2" />
-    <widget field="body" height="15" />
-
-  </editform>
+  </page>
 
   <menuItem
       for="loops.interfaces.INode"

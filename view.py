@@ -60,6 +60,11 @@ class View(object):
     def setDescription(self, description): self._description = description
     description = property(getDescription, setDescription)
 
+    _viewer = u''
+    def getViewer(self): return self._viewer
+    def setViewer(self, viewer): self._viewer = viewer
+    viewer = property(getViewer, setViewer)
+
     def getTarget(self):
         rels = getRelations(first=self, relationships=[TargetRelation])
         if len(rels) == 0:
@@ -140,6 +145,9 @@ class Node(View, OrderedContainer):
 
     def getMenuItems(self):
         return self.getChildNodes(['page', 'menu'])
+
+    def getPageItems(self):
+        return self.getChildNodes(['page', 'menu', 'info'])
 
     def getTextItems(self):
         return self.getChildNodes(['text'])

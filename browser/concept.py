@@ -25,7 +25,7 @@ $Id$
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -144,24 +144,25 @@ class ConceptConfigureView(ConceptView):
         type = ITypeManager(self.context).getType(token)
         factory = type.factory
         container = type.defaultContainer
-        concept = factory(title)
+        concept = removeSecurityProxy(factory(title))
         container[name] = concept
         if IConcept.providedBy(concept):
             concept.conceptType = type.typeProvider
-        notify(ObjectCreatedEvent(removeSecurityProxy(concept)))
+        notify(ObjectCreatedEvent(concept))
+        notify(ObjectModifiedEvent(concept))
         assignAs = self.request.get('assignAs', 'child')
         predicate = request.get('create.predicate') or None
         if predicate:
             predicate = removeSecurityProxy(
                             self.loopsRoot.loopsTraverse(predicate))
         if assignAs == 'child':
-            self.context.assignChild(removeSecurityProxy(concept), predicate)
+            self.context.assignChild(concept, predicate)
         elif assignAs == 'parent':
-            self.context.assignParent(removeSecurityProxy(concept), predicate)
+            self.context.assignParent(concept, predicate)
         elif assignAs == 'resource':
-            self.context.assignResource(removeSecurityProxy(concept), predicate)
+            self.context.assignResource(concept, predicate)
         elif assignAs == 'concept':
-            self.context.assignConcept(removeSecurityProxy(concept), predicate)
+            self.context.assignConcept(concept, predicate)
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 
