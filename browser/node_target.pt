@@ -16,12 +16,10 @@
           <a href="#"
              tal:attributes="href string:${target/url}/@@configure.html"
              tal:content="target/title">Document xy</a>
-          <a href="#" title="External Editor"
-             tal:condition="python:
-                 getattr(target.context, 'contentType','').startswith('text')"
-             tal:attributes="href string:${target/context/@@absolute_url}/external_edit"
-             ><img src="edit.gif" alt="External Editor"
-                   tal:attributes="src context/++resource++edit.gif" /></a>
+          <tal:xedit define="xeditObjectUrl target/url"
+                     condition="target/xeditable">
+            <metal:xedit use-macro="views/xedit_macros/editLink" />
+          </tal:xedit>
         </tal:target>
       </div>
       

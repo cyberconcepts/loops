@@ -26,6 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
+from zope.app.container.browser.adding import ContentAdding
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.intid.interfaces import IIntIds
@@ -271,3 +272,14 @@ class ConfigureView(NodeView):
                 continue
             yield BaseView(o, request)
 
+
+class NodeAdding(ContentAdding):
+
+    def addingInfo(self):
+        info = super(NodeAdding, self).addingInfo()
+        info.append({'title': 'Document',
+                     'action': 'AddLoopsNodeDocument.html',
+                     'selected': '',
+                     'has_custom_add_view': True,
+                     'description': 'This creates a node with an associated document'})
+        return info

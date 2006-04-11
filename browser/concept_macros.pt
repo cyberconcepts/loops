@@ -1,9 +1,13 @@
 <metal:body define-macro="conceptlisting">
   <div>
-    <h3><span i18n:translate="">Concept</span>:
-        <span tal:content="item/title">Title</span></h3>
+    <h3 tal:attributes="class string:content-$level;
+                        ondblclick item/openEditWindow">
+      <span i18n:translate="">Concept</span>:
+      <span tal:content="item/title">Title</span>
+    </h3>
     <metal:listing define-macro="conceptlisting2">
-      <div>
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('configure.html')">
         <h4>Parents</h4>
         <div tal:repeat="related item/parents">
           <a href="#"
@@ -11,7 +15,8 @@
              tal:content="related/title">Resource Title</a>
         </div>
       </div>
-      <div>
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('configure.html')">
         <h4>Children</h4>
         <div tal:repeat="related item/children">
           <a href="#"
@@ -19,7 +24,8 @@
              tal:content="related/title">Resource Title</a>
         </div>
       </div>
-      <div>
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('resources.html')">
         <h4>Resources</h4>
         <div tal:repeat="related item/resources">
           <a href="#"

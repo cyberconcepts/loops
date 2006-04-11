@@ -14,19 +14,17 @@
 <metal:body define-macro="textbody">
   <tal:body define="body item/body">
           <div class="content-1"
-               tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
                tal:condition="body"
                tal:attributes="class string:content-$level;
-                               ondblclick python: item.editable and onclick or ''"
+                               ondblclick item/openEditWindow"
                tal:content="structure body">
             The body
           </div>
           <div class="content-1"
-               tal:define="target item/target;
-                           onclick string:openEditWindow('${item/url}/@@configure.html')"
+               tal:define="target item/target"
                tal:condition="target"
                tal:attributes="class string:content-$level;
-                               ondblclick python: item.editable and onclick or ''"
+                               ondblclick python: item.openEditWindow('configure.html')"
                tal:content="structure item/renderTarget">
             The body
           </div>
@@ -37,9 +35,8 @@
 <metal:body define-macro="conceptbody">
   <tal:body define="body item/body;">
     <div class="content-1"
-         tal:define="onclick string:openEditWindow('${item/url}/@@configure.html')"
          tal:attributes="class string:content-$level;
-                         ondblclick python: item.editable and onclick or ''">
+                         ondblclick python: item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
     <tal:concepts define="item item/target">
@@ -52,9 +49,8 @@
 <metal:body define-macro="filebody">
   <tal:body define="body item/body">
     <div class="content-1"
-         tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
          tal:attributes="class string:content-$level;
-                         ondblclick python: item.editable and onclick or ''">
+                         ondblclick python: item.openEditWindow('edit_target.html')">
       <a href="#"
          tal:attributes="href string:${item/url}/.target/view"
          tal:content="structure body">The body</a>
@@ -66,17 +62,15 @@
 <metal:body define-macro="imagebody">
   <tal:body define="body item/body">
     <div class="content-1" style="margin-top: 12px"
-         tal:define="onclick string:openEditWindow('${item/url}/@@edit_target.html')"
          tal:attributes="class string:content-$level;
-                         ondblclick python: item.editable and onclick or ''">
+                         ondblclick python: item.openEditWindow('edit_target.html')">
       <img src="target"
            tal:attributes="src string:${item/url}/.target/view" />
     </div>
     <div class="content-1"
          tal:condition="body"
-         tal:define="onclick string:openEditWindow('${item/url}/@@edit.html')"
          tal:attributes="class string:content-$level;
-                         ondblclick python: item.editable and onclick or ''"
+                         ondblclick item/openEditWindow"
          tal:content="structure body">
       The body
     </div>
@@ -86,9 +80,8 @@
 
 <metal:body define-macro="listpages">
   <div class="content-1"
-       tal:define="onclick string:openEditWindow('${view/url}/@@edit.html')"
        tal:content="structure view/body"
-       tal:attributes="ondblclick python: view.editable and onclick or ''">
+       tal:attributes="ondblclick view/openEditWindow">
     Listing
   </div><br />
   <div tal:repeat="item view/pageItems">
@@ -124,9 +117,7 @@
     <a target="zmi"
        tal:define="url string:${item/url}/@@edit.html'"
        tal:attributes="href url;
-                       onclick string:
-                            zmi=window.open('$url', 'zmi');;
-                            zmi.focus();; return false;;">
+                       onclick item/openEditWindow;">
       <img src="edit.gif"
            tal:attributes="src context/++resource++edit.gif" border="0" />
     </a>

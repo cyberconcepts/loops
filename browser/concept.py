@@ -52,8 +52,6 @@ class ConceptEditForm(EditForm):
 
     @Lazy
     def typeInterface(self):
-        print IType(self.context)
-        print IType(self.context).typeInterface
         return IType(self.context).typeInterface
 
     @property

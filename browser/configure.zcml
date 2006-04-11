@@ -9,7 +9,6 @@
 
   <resource name="node.css" file="node.css" />
   <resource name="node.js" file="node.js" />
-  <resource name="edit.gif" file="edit.gif" />
 
   <!-- macros -->
    
@@ -368,7 +367,7 @@
       name="AddLoopsNode.html"
       content_factory="loops.view.Node"
       schema="loops.interfaces.INode"
-      fields="title description nodeType body"
+      fields="title description nodeType viewer body"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />
@@ -399,10 +398,30 @@
 
   </editform>
 
+  <addform
+      label="Add Node with Document"
+      name="AddLoopsNodeDocument.html"
+      content_factory="loops.view.Node"
+      schema="loops.interfaces.IDocument"
+      fields="title contentType data"
+      template="add.pt"
+      permission="zope.ManageContent">
+  </addform>
+
+  <view
+      for="loops.interfaces.INode"
+      name="+"
+      menu="zmi_actions" title="Add"
+      class="loops.browser.node.NodeAdding"
+      permission="zope.ManageContent"
+      allowed_attributes="addingInfo isSingleMenuItem hasCustomAddView">
+    <page name="index.html" template="selectAdd.pt" />
+    <page name="action.html" attribute="action" />
+  </view>
+  
   <containerViews
       for="loops.interfaces.INode"
       index="zope.ManageContent"
-      add="zope.ManageContent"
       />
 
   <page
@@ -410,8 +429,8 @@
       for="loops.interfaces.INode"
       template="node_target.pt"
       class="loops.browser.node.ConfigureView"
-      permission="zope.ManageContent">
-  </page>
+      permission="zope.ManageContent"
+      />
 
   <menuItem
       for="loops.interfaces.INode"

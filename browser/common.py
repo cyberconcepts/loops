@@ -32,6 +32,7 @@ from zope.interface import implements
 from zope.app.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import ISkin
 from zope.schema.vocabulary import SimpleTerm
+from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
@@ -61,12 +62,6 @@ class BaseView(object):
         controller.skin = self.skin
     def getController(self): return self._controller
     controller = property(getController, setController)
-
-    #@Lazy
-    #def resourceBase(self):
-    #    skinSetter = self.skin and ('/++skin++' + self.skin.__name__) or ''
-    #    # TODO: put '/@@' etc after path to site instead of directly after URL0
-    #    return self.request.URL[0] + skinSetter + '/@@/'
 
     @Lazy
     def modified(self):
@@ -119,6 +114,19 @@ class BaseView(object):
     def uniqueId(self):
         return zapi.getUtility(IIntIds).getId(self.context)
 
+    @Lazy
+    def editable(self):
+        return canWrite(self.context, 'title')
+
+    def openEditWindow(self, viewName='edit.html'):
+        if self.editable:
+            return "openEditWindow('%s/@@%s')" % (self.url, viewName)
+        return ''
+
+    @Lazy
+    def xeditable(self):
+        return getattr(self.context, 'contentType', '').startswith('text/')
+
 
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection
@@ -138,7 +146,10 @@ class LoopsTerms(object):
         return self.context.getLoopsRoot()
     
     def getTerm(self, value):
-        return BaseView(value, self.request)
+        #return BaseView(value, self.request)
+        title = value.title or zapi.getName(value)
+        token = self.loopsRoot.getLoopsUri(value)
+        return SimpleTerm(value, token, title)
 
     def getValue(self, token):
         return self.loopsRoot.loopsTraverse(token)

@@ -463,6 +463,18 @@ Node Views
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
 
+There is an openEditWindow() method that returns a JavaScript call for
+opening a new browser window for editing; but only if the view is
+editable:
+
+  >>> page.openEditWindow()
+  ''
+  >>> page.editable = True
+  >>> page.openEditWindow()
+  "openEditWindow('http://127.0.0.1/loops/views/m1/m11/@@edit.html')"
+  >>> page.openEditWindow('configure.html')
+  "openEditWindow('http://127.0.0.1/loops/views/m1/m11/@@configure.html')"
+
 A Node and its Target
 ---------------------
 
