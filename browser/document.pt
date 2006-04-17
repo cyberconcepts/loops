@@ -1,0 +1,17 @@
+<tal:show i18n:domain="loops">
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
+<head></head>
+<body>
+
+  
+  <metal:body fill-slot="body"
+        tal:define="item nocall:view">
+    <metal:block use-macro="views/resource_macros/render" />
+  </metal:body>
+
+
+</body>
+</html>
+</tal:show>
+
