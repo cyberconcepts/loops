@@ -24,7 +24,6 @@ $Id$
 
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.pagetemplate import ViewPageTemplateFile

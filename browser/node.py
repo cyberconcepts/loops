@@ -127,9 +127,22 @@ class NodeView(BaseView):
         return canWrite(self.context, 'body')
 
     @Lazy
+    def menuObject(self):
+        return self.context.getMenu()
+
+    @Lazy
     def menu(self):
-        menu = self.context.getMenu()
+        menu = self.menuObject
         return menu is not None and NodeView(menu, self.request) or None
+
+    @Lazy
+    def headTitle(self):
+        menuObject = self.menuObject
+        if menuObject is not None and menuObject != self.context:
+            prefix = super(NodeView, self.menu).headTitle + ' - '
+        else:
+            prefix = ''
+        return prefix + super(NodeView, self).headTitle
 
     @Lazy
     def menuItems(self):

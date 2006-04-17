@@ -46,6 +46,9 @@ class ILoopsObject(Interface):
         """ Return the loops root object.
         """
 
+    title = Attribute(u'A short line of information about an object to be '
+                       'used e.g. for menu items or listing entries.')
+
 
 class IPotentialTarget(Interface):
     """ For objects that may be used as target objects for views/nodes.

@@ -217,6 +217,9 @@
 
   <content class=".view.Node">
 
+    <!--<implements
+       interface="loops.interfaces.ILoopsObject" />-->
+
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
@@ -239,6 +242,30 @@
   </content>
 
   <!-- adapters -->
+
+  <adapter factory="loops.common.LoopsDCAdapter"
+           for="loops.interfaces.INode"
+           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           trusted="True" />
+  
+  <adapter factory="loops.common.LoopsDCAdapter"
+           for="loops.interfaces.IConcept"
+           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           trusted="True" />
+  
+  <adapter factory="loops.common.LoopsDCAdapter"
+           for="loops.interfaces.IDocument"
+           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           trusted="True" />
+  
+  <adapter factory="loops.common.LoopsDCAdapter"
+           for="loops.interfaces.IMediaAsset"
+           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           trusted="True" />
+  
+  <class class="loops.common.LoopsDCAdapter">
+    <require like_class="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter" />
+  </class>
 
   <adapter factory="loops.concept.IndexAttributes" />
   <adapter factory="loops.resource.IndexAttributes" />

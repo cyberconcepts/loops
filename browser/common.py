@@ -23,7 +23,7 @@ $Id$
 """
 
 from zope.app import zapi
-from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
@@ -67,7 +67,7 @@ class BaseView(object):
     def modified(self):
         """ get date/time of last modification
         """
-        dc = ICMFDublinCore(self.context)
+        dc = IZopeDublinCore(self.context)
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
@@ -86,6 +86,14 @@ class BaseView(object):
     @Lazy
     def title(self):
         return self.context.title or zapi.getName(self.context)
+
+    @Lazy
+    def dcTitle(self):
+        return IZopeDublinCore(self.context).title or self.title
+
+    @Lazy
+    def headTitle(self):
+        return self.dcTitle
 
     @Lazy
     def value(self):

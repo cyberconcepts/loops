@@ -48,6 +48,13 @@
       permission="zope.View"
       />
 
+  <page
+      for="*"
+      name="resource_macros"
+      template="resource_macros.pt"
+      permission="zope.View"
+      />
+
   <!-- loops top-level container -->
 
   <addform
@@ -261,6 +268,20 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit" />      
 
+  <page
+      for="loops.interfaces.IDocument"
+      name="document.html"
+      permission="zope.View"
+      template="document.pt"
+      class=".resource.DocumentView" />
+      
+  <menuItem
+      for="loops.interfaces.IDocument"
+      action="document.html"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+    
   <zope:adapter
       for="loops.interfaces.IDocument
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -362,6 +383,18 @@
 
   <!-- node -->
 
+  <menuItem
+      for="loops.interfaces.INode"
+      action="@@contents.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Contents"
+      />
+    
+  <containerViews
+      for="loops.interfaces.INode"
+      index="zope.ManageContent"
+      />
+
   <addform
       label="Add Node"
       name="AddLoopsNode.html"
@@ -419,11 +452,6 @@
     <page name="action.html" attribute="action" />
   </view>
   
-  <containerViews
-      for="loops.interfaces.INode"
-      index="zope.ManageContent"
-      />
-
   <page
       name="configure.html"
       for="loops.interfaces.INode"
@@ -437,13 +465,6 @@
       action="@@configure.html"
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure"
-      />
-    
-  <menuItem
-      for="loops.interfaces.INode"
-      action="@@contents.html"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Contents"
       />
     
   <editform
@@ -468,7 +489,7 @@
       menu="zmi_views" title="Edit Document"
       />
 
-  <editform
+  <!--<editform
       label="Edit Concept"
       name="edit_target.html"
       schema="loops.interfaces.IConcept"
@@ -477,7 +498,7 @@
       template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Concept"
-      />
+      />-->
 
   <page
       name="node.html"
