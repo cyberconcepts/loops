@@ -8,8 +8,9 @@
     <metal:top define-slot="topActions" />
     <form metal:define-macro="listing_form"
           method="post" name="listing" action="."
-          tal:attributes="action request/URL"
-          tal:condition="items">
+          tal:define="target view/target"
+          tal:condition="python: target or items"
+          tal:attributes="action request/URL">
       <input type="hidden" name="action" value="assign"
              tal:attributes="value action" />
       <table class="listing" summary="Currently assigned"
@@ -22,8 +23,7 @@
             <th i18n:translate="label_type">Type</th>
           </tr>
         </thead>
-        <tbody tal:define="target view/target;
-                           targetToken python: target and target.token or None">
+        <tbody tal:define="targetToken python: target and target.token or None">
           <tal:none define="item nothing; title string:None; token nothing;
                             type nothing">
             <metal:none use-macro="views/target_macros/list_item_tr" />

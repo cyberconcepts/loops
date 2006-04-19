@@ -103,7 +103,8 @@
                tal:content="item/context/title"
                tal:attributes="href item/url">Menu Text</a>
           </div>
-          <tal:sub tal:define="level python:level+1">
+          <tal:sub define="level python:level+1"
+                   condition="python: level &lt; 4 or view.active(item)">
             <tal:items repeat="item item/menuItems">
               <metal:portlet use-macro="views/node_macros/menu" />
             </tal:items>
