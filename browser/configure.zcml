@@ -5,6 +5,12 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <icon
+      name="zmi_icon"
+      for="loops.interfaces.ILoopsObject"
+      file="loops_icon.gif"
+      />
+
   <!-- resources -->
 
   <resource name="node.css" file="node.css" />
@@ -62,6 +68,7 @@
       name="AddLoopsContainer.html"
       schema="loops.interfaces.ILoops"
       content_factory="loops.Loops"
+      template="add.pt"
       permission="zope.ManageContent"
       />
 
@@ -95,6 +102,7 @@
       name="AddLoopsConceptManager.html"
       schema="loops.interfaces.IConceptManager"
       content_factory="loops.concept.ConceptManager"
+      template="add.pt"
       permission="zope.ManageContent"
       />
 
@@ -120,6 +128,7 @@
       schema="loops.interfaces.IConcept"
       content_factory="loops.concept.Concept"
       fields="title"
+      template="add.pt"
       permission="zope.ManageContent"
       />
 
@@ -201,6 +210,7 @@
       name="AddLoopsResourceManager.html"
       schema="loops.interfaces.IResourceManager"
       content_factory="loops.resource.ResourceManager"
+      template="add.pt"
       permission="zope.ManageContent"
       />
 
@@ -248,6 +258,7 @@
       schema="loops.interfaces.IDocumentSchema"
       fields="title data contentType"
       content_factory="loops.resource.Document"
+      template="add.pt"
       permission="zope.ManageContent" />
 
   <addMenuItem
@@ -298,6 +309,7 @@
       schema="loops.interfaces.IMediaAssetSchema"
       fields="title data contentType"
       content_factory="loops.resource.MediaAsset"
+      template="add.pt"
       permission="zope.ManageContent"
       />
     
@@ -342,6 +354,7 @@
       name="AddLoopsViewManager.html"
       schema="loops.interfaces.IViewManager"
       content_factory="loops.view.ViewManager"
+      template="add.pt"
       permission="zope.ManageContent"
       />
 
@@ -383,6 +396,12 @@
 
   <!-- node -->
 
+  <icon
+      name="zmi_icon"
+      for="loops.interfaces.INode"
+      file="node_icon.gif"
+      />
+
   <menuItem
       for="loops.interfaces.INode"
       action="@@contents.html"
@@ -401,6 +420,7 @@
       content_factory="loops.view.Node"
       schema="loops.interfaces.INode"
       fields="title description nodeType viewer body"
+      template="add.pt"
       permission="zope.ManageContent">
       
     <widget field="description" height="2" />

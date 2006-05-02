@@ -37,7 +37,7 @@ from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import ITypeManager
-from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset
+from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.resource import MediaAsset
 from loops import util
 from loops.browser.common import BaseView
@@ -133,6 +133,19 @@ class NodeView(BaseView):
     @Lazy
     def menu(self):
         menu = self.menuObject
+        return menu is not None and NodeView(menu, self.request) or None
+
+    @Lazy
+    def topMenu(self):
+        menu = self.menuObject
+        parentMenu = None
+        while menu is not None:
+            parent = zapi.getParent(menu)
+            if INode.providedBy(parent):
+                parentMenu = parent.getMenu()
+            if parentMenu is None or parentMenu is menu:
+                return NodeView(menu, self.request)
+            menu = parentMenu
         return menu is not None and NodeView(menu, self.request) or None
 
     @Lazy
@@ -290,9 +303,9 @@ class NodeAdding(ContentAdding):
 
     def addingInfo(self):
         info = super(NodeAdding, self).addingInfo()
-        info.append({'title': 'Document',
-                     'action': 'AddLoopsNodeDocument.html',
-                     'selected': '',
-                     'has_custom_add_view': True,
-                     'description': 'This creates a node with an associated document'})
+        #info.append({'title': 'Document',
+        #             'action': 'AddLoopsNodeDocument.html',
+        #             'selected': '',
+        #             'has_custom_add_view': True,
+        #             'description': 'This creates a node with an associated document'})
         return info

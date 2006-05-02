@@ -21,7 +21,7 @@
       <input type="hidden" name="form_submitted" value="true" />
       <tal:control condition="request/form_submitted|nothing">
         <script language="JavaScript">
-            //focusOpener();
+            focusOpener();
         </script>
       </tal:control>
 
