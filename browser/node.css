@@ -50,6 +50,10 @@
     float: left;
 }
 
+.flow-right {
+    float: right;
+}
+
 div.image {
     margin-top: 10px;
     margin-right: 5px;

@@ -46,9 +46,10 @@ class BaseView(object):
         # TODO: get rid of removeSecurityProxy() call
         self.context = removeSecurityProxy(context)
         self.request = request
+        self.setSkin(self.loopsRoot.skinName)
+
+    def setSkin(self, skinName):
         skin = None
-        # TODO: get ISkinController adapter instead
-        skinName = self.loopsRoot.skinName
         if skinName and IView.providedBy(self.context):
             skin = zapi.queryUtility(ISkin, skinName)
             if skin is not None:
@@ -59,6 +60,8 @@ class BaseView(object):
     def setController(self, controller):
         self._controller = controller
         # this is also the place to register special macros with the controller
+        if getattr(controller, 'skinName', None):
+            self.setSkin(controller.skinName.value)
         controller.skin = self.skin
     def getController(self): return self._controller
     controller = property(getController, setController)

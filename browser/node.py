@@ -168,11 +168,16 @@ class NodeView(BaseView):
 
     @Lazy
     def nearestMenuItem(self):
-        if self.context.isMenuItem():
-            return self.context
-        for p in self.parents:
-            if p.isMenuItem():
-                return p
+        menu = self.menuObject
+        menuItem = None
+        for p in [self.context] + self.parents:
+            if not p.isMenuItem():
+                menuItem = None
+            elif menuItem is None:
+                menuItem = p
+            if p == menu:
+                return menuItem
+        return None
 
     def selected(self, item):
         return item.context == self.nearestMenuItem
