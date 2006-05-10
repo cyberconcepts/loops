@@ -22,8 +22,10 @@ View class for Node objects.
 $Id$
 """
 
+from zope import component, interface
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
 from zope.app.container.browser.adding import ContentAdding
@@ -36,8 +38,10 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.browser import configurator
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
+from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
 from loops import util
 from loops.browser.common import BaseView
@@ -314,3 +318,43 @@ class NodeAdding(ContentAdding):
         #             'has_custom_add_view': True,
         #             'description': 'This creates a node with an associated document'})
         return info
+
+
+class ViewPropertiesConfigurator(object):
+
+    interface.implements(IViewConfiguratorSchema)
+    component.adapts(INode)
+
+    def __init__(self, context):
+        self.context = removeSecurityProxy(context)
+
+    def setSkinName(self, skinName):
+        ann = IAnnotations(self.context)
+        setting = ann.get(configurator.ANNOTATION_KEY, {})
+        setting['skinName'] = {'value': skinName}
+        ann[configurator.ANNOTATION_KEY] = setting
+    def getSkinName(self):
+        ann = IAnnotations(self.context)
+        setting = ann.get(configurator.ANNOTATION_KEY, {})
+        return setting.get('skinName', {}).get('value', '')
+    skinName = property(getSkinName, setSkinName)
+
+
+class NodeViewConfigurator(configurator.ViewConfigurator):
+    """ Take properties from next menu item...
+    """
+
+    @property
+    def viewProperties(self):
+        result = []
+        for p in list(reversed(zapi.getParents(self.context))) + [self.context]:
+            if not INode.providedBy(p) or p.nodeType != 'menu':
+                continue
+            ann = IAnnotations(p)
+            propDefs = ann.get(configurator.ANNOTATION_KEY, {})
+            if propDefs:
+                result.extend([self.setupViewProperty(prop, propDef)
+                                for prop, propDef in propDefs.items() if propDef])
+        return result
+
+

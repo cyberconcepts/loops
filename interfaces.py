@@ -497,3 +497,14 @@ class ITypeConcept(Interface):
         source="loops.TypeInterfaceSource",
         required=False)
 
+
+# view configurator stuff
+
+class IViewConfiguratorSchema(Interface):
+
+    skinName = schema.TextLine(
+        title=_(u'Skin Name'),
+        description=_(u'Name of the skin to use for this part of the site'),
+        default=u'',
+        required=False)
+

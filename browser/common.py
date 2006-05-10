@@ -52,7 +52,7 @@ class BaseView(object):
         skin = None
         if skinName and IView.providedBy(self.context):
             skin = zapi.queryUtility(ISkin, skinName)
-            if skin is not None:
+            if skin:
                 applySkin(self.request, skin)
         self.skin = skin
 

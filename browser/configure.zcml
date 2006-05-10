@@ -565,4 +565,32 @@
         allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
         permission="zope.Public" />
 
+  <!-- view configurator stuff -->
+
+  <zope:adapter factory="loops.browser.node.ViewPropertiesConfigurator" />
+
+  <editform
+      label="Configure View Properties"
+      name="viewconfigure.html"
+      schema="loops.interfaces.IViewConfiguratorSchema"
+      for="loops.interfaces.INode"
+      template="edit.pt"
+      permission="zope.ManageContent"
+      />
+
+  <menuItem
+      for="loops.interfaces.INode"
+      action="viewconfigure.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="View Properties"
+      filter="python: context.nodeType == 'menu'"
+      />
+
+  <zope:adapter
+      factory="loops.browser.node.NodeViewConfigurator"
+      for="loops.interfaces.INode
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="cybertools.browser.configurator.IViewConfigurator"
+      />
+      
 </configure>

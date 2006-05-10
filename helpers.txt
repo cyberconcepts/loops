@@ -13,6 +13,7 @@ Let's first do some basic imports
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
   
+  >>> from zope import interface, component
   >>> from zope.app import zapi
   >>> from zope.app.tests import ztapi
   >>> from zope.interface import Interface
@@ -32,6 +33,10 @@ and setup a simple loops site with its manager objects,
   >>> loopsRoot['resources'] = ResourceManager()
   >>> resources = loopsRoot['resources']
 
+  >>> from loops.view import ViewManager, Node
+  >>> loopsRoot['views'] = ViewManager()
+  >>> views = loopsRoot['views']
+
 some concepts,
   
   >>> cc1 = Concept(u'Zope')
@@ -44,7 +49,7 @@ some concepts,
   >>> cc2.title
   u'Zope 3'
 
-and resources:
+resources,
 
   >>> doc1 = Document(u'Zope Info')
   >>> resources['doc1'] = doc1
@@ -53,6 +58,16 @@ and resources:
 
   >>> img1 = MediaAsset(u'An Image')
   >>> resources['img1'] = img1
+
+and nodes (in view space):
+
+  >>> m1 = Node(u'Home')
+  >>> views['m1'] = m1
+  >>> m1.nodeType = 'menu'
+  
+  >>> m1p1 = Node(u'Page')
+  >>> m1['p1'] = m1p1
+  >>> m1p1.nodeType = 'page'
 
 Finally, we also need a relation registry:
 
@@ -229,3 +244,55 @@ i.e. the 'topic' concept, via an adapter:
   >>> cc1Adapter = cc1_type.typeInterface(cc1)
   >>> ITopic.providedBy(cc1Adapter)
   True
+
+
+Controlling presentation using view properties
+----------------------------------------------
+
+  >>> from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
+  >>> from zope.app.annotation.attribute import AttributeAnnotations
+  >>> from loops.interfaces import INode
+
+First we have to make sure we can use attribute annotations with our nodes,
+and we also have to register an IViewConfigurator adapter for them:
+
+  >>> component.provideAdapter(AttributeAnnotations, (INode,), IAnnotations)
+
+  >>> from cybertools.browser.configurator import IViewConfigurator
+  >>> from loops.browser.node import NodeViewConfigurator
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> component.provideAdapter(NodeViewConfigurator, (INode, IBrowserRequest),
+  ...                          IViewConfigurator)
+
+Now we are ready to set up a view on our page node:
+
+  >>> from loops.browser.node import NodeView
+  >>> request = TestRequest()
+  >>> view = NodeView(m1p1, request)
+
+The elements responsible for presentation are controlled by a controller
+object:
+
+  >>> from cybertools.browser.controller import Controller
+  >>> controller = Controller(view, request)
+  >>> getattr(controller, 'skinName', None) is None
+  True
+
+There is no `skinName` setting in the controller as we did not set any.
+The configurator (IViewConfigurator adapter, see above) takes the
+view properties from the attribute annotations. We set these properties
+using an adapter to the config schema; the configurator will only use
+settings on menu nodes (possibly above the node to be viewed in the
+browser).
+
+  >>> from loops.interfaces import IViewConfiguratorSchema
+  >>> from loops.browser.node import ViewPropertiesConfigurator
+  >>> component.provideAdapter(ViewPropertiesConfigurator, (INode,),
+  ...                          IViewConfiguratorSchema)
+  
+  >>> pageConfigurator = IViewConfiguratorSchema(m1)
+  >>> pageConfigurator.skinName = 'SuperSkin'
+
+  >>> controller = Controller(view, request)
+  >>> controller.skinName.value
+  'SuperSkin'
