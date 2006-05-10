@@ -127,7 +127,7 @@
       name="AddLoopsConcept.html"
       schema="loops.interfaces.IConcept"
       content_factory="loops.concept.Concept"
-      fields="title"
+      fields="title conceptType"
       template="add.pt"
       permission="zope.ManageContent"
       />

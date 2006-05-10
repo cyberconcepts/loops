@@ -9,13 +9,13 @@
       
       <div   tal:define="items view/resources;
                          action string:remove;
-                         qualifier string:parents;
+                         qualifier string:resources;
                          summary string:Currently assigned resources;
                          legend string:Resources;
                          showPredicate string:yes;
                          buttonText string:Remove Resources;"
              style="float:left; padding-right:20px">
-          <metal:parents use-macro="views/relation_macros/listing" />
+          <metal:resources use-macro="views/relation_macros/listing" />
       </div>
 
       <div   tal:define="legend string:Create Resource;

@@ -1,0 +1,21 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <!-- adapters -->
+
+  <zope:adapter factory="loops.organize.party.Person"
+                trusted="True" />
+
+  <zope:class class="loops.organize.party.Person">
+    <require permission="zope.View"
+             interface="cybertools.organize.interfaces.IPerson" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.organize.interfaces.IPerson" />
+  </zope:class>
+
+</configure>

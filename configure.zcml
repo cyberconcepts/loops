@@ -306,7 +306,7 @@
       name="loops.PredicateSource"
       />
 
-  <!-- Register various browser related components, including all views -->
+  <include package=".organize" />
   <include package=".browser" />
 
 </configure>
