@@ -22,48 +22,91 @@ Adapters for IConcept providing interfaces from the cybertools.organize package.
 $Id$
 """
 
+from zope import interface, component
 from zope.app import zapi
+from zope.app.principalannotation import annotations
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
 
-from cybertools.organize.interfaces import IPerson
+#from cybertools.organize.interfaces import IPerson
+from cybertools.organize.party import Person as BasePerson
+from cybertools.relation.interfaces import IRelationRegistry
 from loops.interfaces import IConcept
 from loops.type import TypeInterfaceSourceList
+from loops.organize.interfaces import IPerson
 
+
+# register IPerson as a type interface - (TODO: use a function for this)
 
 TypeInterfaceSourceList.typeInterfaces += (IPerson,)
 
 
-class Person(object):
+class Person(BasePerson):
     """ typeInterface adapter for concepts of type 'person'.
     """
 
     implements(IPerson)
     adapts(IConcept)
 
+    __attributes = ('context', '__parent__', 'userId',)
+
     def __init__(self, context):
-        self.context = context
-        self.__parent__ = context  # to get the permission stuff right
+        self.context = context # to get the permission stuff right
+        self.__parent__ = context
 
-    def getFirstName(self):
-        return getattr(self.context, '_firstName', u'')
-    def setFirstName(self, firstName):
-        self.context._firstName = firstName
-    firstName = property(getFirstName, setFirstName)
+    def __getattr__(self, attr):
+        self.checkAttr(attr)
+        return getattr(self.context, '_' + attr, None)
 
-    def getLastName(self):
-        return getattr(self.context, '_lastName', u'')
-    def setLastName(self, lastName):
-        self.context._lastName = lastName
-    lastName = property(getLastName, setLastName)
+    def __setattr__(self, attr, value):
+        if attr in self.__attributes:
+            object.__setattr__(self, attr, value)
+        else:
+            self.checkAttr(attr)
+            setattr(self.context, '_' + attr, value)
 
-    def getBirthDate(self):
-        return getattr(self.context, '_birthDate', u'')
-    def setBirthDate(self, birthDate):
-        self.context._birthDate = birthDate
-    birthDate = property(getBirthDate, setBirthDate)
+    def checkAttr(self, attr):
+        if attr not in list(IPerson) + list(IConcept):
+            raise AttributeError(attr)
 
+    def getUserId(self):
+        return getattr(self.context, '_userId', None)
+    def setUserId(self, userId):
+        auth = self.authentication
+        oldUserId = self.userId
+        if oldUserId and oldUserId != userId:
+            principal = self.getPrincipalForUserId(oldUserId)
+            if principal is not None:
+                pa = annotations(principal)
+                pa['loops.organize.person'] = None
+        if userId:
+            principal = auth.getPrincipal(userId)
+            pa = annotations(principal)
+            relations = component.getUtility(IRelationRegistry)
+            uid = relations.getUniqueIdForObject(self.context)
+            pa['loops.organize.person'] = uid
+        self.context._userId = userId
+    userId = property(getUserId, setUserId)
+
+    @Lazy
+    def authentication(self):
+        return component.getUtility(IAuthentication, context=self.context)
+
+    @Lazy
+    def principal(self):
+        return self.getPrincipalForUserId()
+
+    def getPrincipalForUserId(self, userId=None):
+        userId = userId or self.userId
+        if not userId:
+            return None
+        auth = self.authentication
+        try:
+            return auth.getPrincipal(userId)
+        except PrincipalLookupError:
+            return None
 
 

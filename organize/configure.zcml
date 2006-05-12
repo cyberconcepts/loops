@@ -9,13 +9,14 @@
   <!-- adapters -->
 
   <zope:adapter factory="loops.organize.party.Person"
+                provides="loops.organize.interfaces.IPerson"
                 trusted="True" />
 
   <zope:class class="loops.organize.party.Person">
     <require permission="zope.View"
-             interface="cybertools.organize.interfaces.IPerson" />
+             interface="loops.organize.interfaces.IPerson" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.organize.interfaces.IPerson" />
+             set_schema="loops.organize.interfaces.IPerson" />
   </zope:class>
 
 </configure>
