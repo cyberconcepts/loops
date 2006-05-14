@@ -14,9 +14,14 @@ Letz's do some basic set up
   >>> from zope import component, interface
   >>> from zope.app import zapi
 
-and setup a simple loops site with a concept manager and some concepts:
+and setup a simple loops site with a concept manager and some concepts
+(with all the type machinery, what in real life is done via standard
+ZCML setup):
   
   >>> from loops import Loops
+  >>> from loops.concept import ConceptManager, Concept
+  >>> from loops.interfaces import IConcept, ITypeConcept
+
   >>> site['loops'] = Loops()
   >>> loopsRoot = site['loops']
 
@@ -25,7 +30,11 @@ and setup a simple loops site with a concept manager and some concepts:
   >>> relations = DummyRelationRegistry()
   >>> component.provideUtility(relations, IRelationRegistry)
 
-  >>> from loops.concept import ConceptManager, Concept
+  >>> from cybertools.typology.interfaces import IType
+  >>> from loops.type import ConceptType, TypeConcept
+  >>> component.provideAdapter(ConceptType, (IConcept,), IType)
+  >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
+
   >>> loopsRoot['concepts'] = ConceptManager()
   >>> concepts = loopsRoot['concepts']
 
@@ -34,9 +43,11 @@ and setup a simple loops site with a concept manager and some concepts:
   >>> type = concepts['type']
   >>> type.conceptType = type
 
+  >>> from loops.organize.interfaces import IPerson
   >>> concepts['person'] = Concept(u'Person')
   >>> person = concepts['person']
   >>> person.conceptType = type
+  >>> ITypeConcept(person).typeInterface = IPerson
   
   >>> johnC = Concept(u'John')
   >>> concepts['john'] = johnC
@@ -48,8 +59,6 @@ Organizations: Persons (and Users), Institutions, Addresses...
 
 The classes used in this package are just adapters to IConcept.
 
-  >>> from loops.interfaces import IConcept
-  >>> from loops.organize.interfaces import IPerson
   >>> from loops.organize.party import Person
   >>> component.provideAdapter(Person, (IConcept,), IPerson)
 
@@ -98,7 +107,8 @@ For testing, we first have to provide the needed utilities and settings
   >>> john.userId = 'users.john'
 
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
-  >>> annotations.get('loops.organize.person') == relations.getUniqueIdForObject(johnC)
+  >>> from loops.organize.party import ANNOTATION_KEY
+  >>> annotations.get(ANNOTATION_KEY) == johnC
   True
 
 Change a userId assignment:
@@ -107,20 +117,54 @@ Change a userId assignment:
   >>> john.userId = 'users.johnny'
       
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
-  >>> annotations.get('loops.organize.person') == relations.getUniqueIdForObject(johnC)
+  >>> annotations.get(ANNOTATION_KEY) == johnC
   True
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
-  >>> annotations.get('loops.organize.person') is None
+  >>> annotations.get(ANNOTATION_KEY) is None
   True
 
   >>> john.userId = None
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
-  >>> annotations.get('loops.organize.person') is None
+  >>> annotations.get(ANNOTATION_KEY) is None
   True
 
 Deleting a person with a userId assigned removes the corresponding
 principal annotation:
 
+  >>> from zope.app.container.interfaces import IObjectRemovedEvent
+  >>> from zope.app.container.contained import ObjectRemovedEvent
+  >>> from zope.event import notify
+  >>> from zope.interface import Interface
+  >>> from loops.organize.party import removePersonReferenceFromPrincipal
+  >>> from zope.app.testing import ztapi
+  >>> ztapi.subscribe([IConcept, IObjectRemovedEvent], None,
+  ...                 removePersonReferenceFromPrincipal)
+
+  >>> john.userId = 'users.john'
+  >>> annotations = principalAnnotations.getAnnotationsById('users.john')
+  >>> annotations.get(ANNOTATION_KEY) == johnC
+  True
+
+  >>> del concepts['john']
+  >>> annotations = principalAnnotations.getAnnotationsById('users.john')
+  >>> annotations.get(ANNOTATION_KEY) is None
+  True
+
+If we try to assign a userId of a principal that already has a person
+concept assigned we should get an error:
+
+  >>> john.userId = 'users.john'
+
+  >>> marthaC = Concept(u'Martha')
+  >>> concepts['martha'] = marthaC
+  >>> marthaC.conceptType = person
+  >>> martha = IPerson(marthaC)
+
+  >>> martha.userId = 'users.john'
+  Traceback (most recent call last):
+      ...
+  ValueError: ...
+  
 
 Fin de partie
 =============

@@ -19,4 +19,10 @@
              set_schema="loops.organize.interfaces.IPerson" />
   </zope:class>
 
+  <zope:subscriber
+        for="loops.interfaces.IConcept
+             zope.app.container.interfaces.IObjectRemovedEvent"
+        handler="loops.organize.party.removePersonReferenceFromPrincipal"
+        />
+
 </configure>

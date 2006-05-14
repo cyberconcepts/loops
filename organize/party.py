@@ -31,12 +31,14 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
 
-#from cybertools.organize.interfaces import IPerson
 from cybertools.organize.party import Person as BasePerson
-from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
-from loops.type import TypeInterfaceSourceList
 from loops.organize.interfaces import IPerson
+from loops.type import TypeInterfaceSourceList
+
+
+ANNOTATION_KEY = 'loops.organize.person'
 
 
 # register IPerson as a type interface - (TODO: use a function for this)
@@ -52,6 +54,7 @@ class Person(BasePerson):
     adapts(IConcept)
 
     __attributes = ('context', '__parent__', 'userId',)
+    __schemas = list(IPerson) + list(IConcept)
 
     def __init__(self, context):
         self.context = context # to get the permission stuff right
@@ -69,31 +72,37 @@ class Person(BasePerson):
             setattr(self.context, '_' + attr, value)
 
     def checkAttr(self, attr):
-        if attr not in list(IPerson) + list(IConcept):
+        if attr not in self.__schemas:
             raise AttributeError(attr)
 
     def getUserId(self):
         return getattr(self.context, '_userId', None)
     def setUserId(self, userId):
         auth = self.authentication
-        oldUserId = self.userId
-        if oldUserId and oldUserId != userId:
-            principal = self.getPrincipalForUserId(oldUserId)
-            if principal is not None:
-                pa = annotations(principal)
-                pa['loops.organize.person'] = None
         if userId:
             principal = auth.getPrincipal(userId)
             pa = annotations(principal)
-            relations = component.getUtility(IRelationRegistry)
-            uid = relations.getUniqueIdForObject(self.context)
-            pa['loops.organize.person'] = uid
+            person = pa.get(ANNOTATION_KEY, None)
+            if person is not None and person != self.context:
+                raise ValueError(
+                    'There is alread a person (%s) assigned to user %s.'
+                    % (zapi.getName(person), userId))
+            pa[ANNOTATION_KEY] = self.context
+        oldUserId = self.userId
+        if oldUserId and oldUserId != userId:
+            self.removeReferenceFromPrincipal(oldUserId)
         self.context._userId = userId
     userId = property(getUserId, setUserId)
 
+    def removeReferenceFromPrincipal(self, userId):
+        principal = self.getPrincipalForUserId(userId)
+        if principal is not None:
+            pa = annotations(principal)
+            pa[ANNOTATION_KEY] = None
+
     @Lazy
     def authentication(self):
-        return component.getUtility(IAuthentication, context=self.context)
+        return getAuthenticationUtility(self.context)
 
     @Lazy
     def principal(self):
@@ -109,4 +118,21 @@ class Person(BasePerson):
         except PrincipalLookupError:
             return None
 
+
+def getAuthenticationUtility(context):
+    return component.getUtility(IAuthentication, context=context)
+
+
+def removePersonReferenceFromPrincipal(context, event):
+    """ Handles IObjectRemoved event for concepts used as persons.
+    """
+    if IConcept.providedBy(context):
+        # this does not work as the context is already removed from the
+        # relation registry:
+        #if IType(context).typeInterface == IPerson:
+        #    person = IPerson(context)
+        #    if person.userId:
+        if getattr(context, '_userId', None):
+            person = IPerson(context)
+            person.removeReferenceFromPrincipal(person.userId)
 
