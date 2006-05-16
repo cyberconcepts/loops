@@ -25,3 +25,21 @@
   </div>
 </metal:block>
 
+
+<form action="." method="post"
+      metal:define-macro="delete_object"
+      tal:define="action view/deleteObjectAction|nothing"
+      tal:condition="action"
+      tal:attributes="action action"
+      id="form.object.delete">
+  <span class="actionButtons"><br />
+    <input type="hidden" name="ids:list" value="obj"
+           tal:attributes="value context/zope:name" />
+    <input type="submit" id="object.delete"
+           name="container_delete_button"
+           value="Delete object" class="button"
+           onclick="return confirm('Do you really want to delete this object?')" />
+  </span>
+</form>
+
+

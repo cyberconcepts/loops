@@ -29,16 +29,15 @@ from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
+from zope.schema.interfaces import ValidationError
+from zope.app.form.interfaces import WidgetInputError
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.party import Person as BasePerson
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
-from loops.organize.interfaces import IPerson
+from loops.organize.interfaces import IPerson, ANNOTATION_KEY
 from loops.type import TypeInterfaceSourceList
-
-
-ANNOTATION_KEY = 'loops.organize.person'
 
 
 # register IPerson as a type interface - (TODO: use a function for this)
@@ -107,6 +106,16 @@ class Person(BasePerson):
     @Lazy
     def principal(self):
         return self.getPrincipalForUserId()
+
+    def getPrincipalForUserId(self, userId=None):
+        userId = userId or self.userId
+        if not userId:
+            return None
+        auth = self.authentication
+        try:
+            return auth.getPrincipal(userId)
+        except PrincipalLookupError:
+            return None
 
     def getPrincipalForUserId(self, userId=None):
         userId = userId or self.userId

@@ -23,11 +23,44 @@ $Id$
 """
 
 from zope.interface import Interface, Attribute
-from zope import schema
+from zope import component, schema
+from zope.app import zapi
+from zope.app.principalannotation import annotations
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.i18nmessageid import MessageFactory
 from cybertools.organize.interfaces import IPerson as IBasePerson
 
 _ = MessageFactory('zope')
+
+ANNOTATION_KEY = 'loops.organize.person'
+
+
+class ValidationError(schema.interfaces.ValidationError):
+    def doc(self):
+        return self.info
+
+def raiseValidationError(info):
+    error = ValidationError()
+    error.info = info
+    raise error
+
+
+class UserId(schema.TextLine):
+    
+    def _validate(self, userId):
+        if not userId:
+            return
+        auth = component.getUtility(IAuthentication, context=self.context)
+        try:
+            principal = auth.getPrincipal(userId)
+        except PrincipalLookupError:
+            raiseValidationError(u'User %s does not exist' % userId)
+        pa = annotations(principal)
+        person = pa.get(ANNOTATION_KEY, None)
+        if person is not None and person != self.context:
+            raiseValidationError(
+                u'There is alread a person (%s) assigned to user %s.'
+                % (zapi.getName(person), userId))
 
 
 class IPerson(IBasePerson):
@@ -37,7 +70,7 @@ class IPerson(IBasePerson):
         basic cybertools.organize package.
     """
 
-    userId = schema.TextLine(
+    userId = UserId(
                     title=_(u'User ID'),
                     description=_(u'The principal id of a user that should '
                                    'be associated with this person.'),

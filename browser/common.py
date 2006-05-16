@@ -28,6 +28,8 @@ from zope.app.form.browser.interfaces import ITerms
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
+from zope.formlib.form import EditForm as BaseEditForm
+from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import implements
 from zope.app.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import ISkin
@@ -38,6 +40,18 @@ from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IView
 from loops import util
+
+
+class EditForm(BaseEditForm):
+
+    template = NamedTemplate('pageform')
+
+    def deleteObjectAction(self):
+        return None  # better not to show the edit button at the moment
+        parent = zapi.getParent(self.context)
+        parentUrl = zapi.absoluteURL(parent, self.request)
+        return parentUrl + '/contents.html'
+
 
 class BaseView(object):
 

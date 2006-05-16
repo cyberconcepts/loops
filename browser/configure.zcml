@@ -61,6 +61,13 @@
       permission="zope.View"
       />
 
+  <!-- named template(s) -->
+
+  <zope:adapter
+      factory="loops.browser.util.pageform"
+      for="zope.interface.Interface"
+      name="pageform" />
+
   <!-- loops top-level container -->
 
   <addform
@@ -159,20 +166,6 @@
     
   </pages>
     
-  <!--<editform
-      label="Edit Concept"
-      name="edit.html"
-      schema="loops.interfaces.IConcept"
-      for="loops.interfaces.IConcept"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />-->
-
-  <zope:adapter
-      factory="loops.browser.util.pageform"
-      for="zope.interface.Interface"
-      name="pageform" />
-
   <page
       name="edit.html"
       for="loops.interfaces.IConcept"
@@ -277,7 +270,15 @@
       for="loops.interfaces.IDocument"
       template="edit.pt"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit" />      
+      menu="zmi_views" title="Edit" />
+
+  <!--<page
+      name="edit.html"
+      for="loops.interfaces.IDocument"
+      class="loops.browser.resource.DocumentEditForm"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />-->
 
   <page
       for="loops.interfaces.IDocument"
@@ -331,6 +332,14 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Media Asset"
       />
+
+  <!--<page
+      name="edit.html"
+      for="loops.interfaces.IMediaAsset"
+      class="loops.browser.resource.MediaAssetEditForm"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />-->
 
   <!-- suppress the upload menu item: -->
   <menuItem
@@ -447,7 +456,7 @@
       menu="zmi_views" title="Edit Node">
 
     <widget field="description" height="2" />
-    <widget field="body" height="15" />
+    <widget field="body" height="8" />
 
   </editform>
 
@@ -508,17 +517,6 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Document"
       />
-
-  <!--<editform
-      label="Edit Concept"
-      name="edit_target.html"
-      schema="loops.interfaces.IConcept"
-      fields="title conceptType"
-      for="loops.interfaces.IConceptView"
-      template="edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Concept"
-      />-->
 
   <page
       name="node.html"

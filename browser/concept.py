@@ -25,29 +25,28 @@ $Id$
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.formlib.form import EditForm, FormFields
-from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope import schema
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
+
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
-from loops.browser.common import BaseView, LoopsTerms
+from loops.browser.common import EditForm, BaseView, LoopsTerms
 from loops import util
 
 
 class ConceptEditForm(EditForm):
-
-    template = NamedTemplate('pageform')
 
     @Lazy
     def typeInterface(self):
@@ -59,9 +58,6 @@ class ConceptEditForm(EditForm):
         typeInterface = self.typeInterface
         if typeInterface is not None:
             fields = FormFields(fields, typeInterface)
-            #typeAdapter = zapi.queryAdapter(self.context, typeInterface)
-            #if typeAdapter is not None:
-            #...
         return fields
 
 

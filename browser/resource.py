@@ -27,12 +27,13 @@ from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.formlib.form import FormFields
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IDocument, IMediaAsset
-from loops.browser.common import BaseView
+from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView
 
@@ -43,6 +44,13 @@ renderingFactories = {
     'text/rest': 'zope.source.rest',
     'text/restructured': 'zope.source.rest',
 }
+
+
+class DocumentEditForm(EditForm):
+    form_fields = FormFields(IDocument)
+
+class MediaAssetEditForm(EditForm):
+    form_fields = FormFields(IMediaAsset)
 
 
 class ResourceView(BaseView):

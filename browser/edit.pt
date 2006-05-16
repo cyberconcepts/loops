@@ -78,6 +78,8 @@
 
     </form>
 
+    <form metal:use-macro="views/resource_macros/delete_object" />
+
   </div>
 
   </div>
