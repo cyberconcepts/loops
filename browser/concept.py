@@ -17,7 +17,7 @@
 #
 
 """
-Definition of the Task view class.
+Definition of the concept view classes.
 
 $Id$
 """

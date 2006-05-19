@@ -19,6 +19,15 @@
              set_schema="loops.organize.interfaces.IPerson" />
   </zope:class>
 
+  <zope:adapter
+      name="myconcepts"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.browser.MyConcepts"
+      permission="zope.View"
+      />
+  
   <zope:subscriber
         for="loops.interfaces.IConcept
              zope.app.container.interfaces.IObjectRemovedEvent"

@@ -279,7 +279,15 @@
   <adapter factory="loops.type.LoopsTypeManager" />
   
   <adapter factory="loops.type.TypeConcept" />
-  <adapter factory="loops.query.QueryConcept" />
+  
+  <adapter factory="loops.query.QueryConcept" trusted="True" />
+  <class class="loops.query.QueryConcept">
+    <require permission="zope.View"
+             interface="loops.query.IQueryConcept" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.query.IQueryConcept" />
+  </class>
+
   
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
