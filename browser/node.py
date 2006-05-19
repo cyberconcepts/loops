@@ -221,6 +221,12 @@ class ConfigureView(NodeView):
         self.context = removeSecurityProxy(context)
         self.request = request
 
+    @Lazy
+    def target(self):
+        obj = self.targetObject
+        if obj is not None:
+            return zapi.getMultiAdapter((obj, self.request))
+    
     def update(self):
         request = self.request
         action = request.get('action')
