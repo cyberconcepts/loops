@@ -54,13 +54,14 @@ class UserId(schema.TextLine):
         try:
             principal = auth.getPrincipal(userId)
         except PrincipalLookupError:
-            raiseValidationError(u'User %s does not exist' % userId)
+            raiseValidationError(_(u'User $userId does not exist',
+                                   mapping={'userId': userId}))
         pa = annotations(principal)
         person = pa.get(ANNOTATION_KEY, None)
         if person is not None and person != self.context:
             raiseValidationError(
-                u'There is alread a person (%s) assigned to user %s.'
-                % (zapi.getName(person), userId))
+                _(u'There is alread a person ($person) assigned to user $userId.',
+                 mapping={'person': zapi.getName(person), 'userId': userId}))
 
 
 class IPerson(IBasePerson):

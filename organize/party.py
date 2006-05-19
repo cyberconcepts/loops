@@ -37,7 +37,7 @@ from cybertools.organize.party import Person as BasePerson
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
-from loops.type import TypeInterfaceSourceList
+from loops.type import TypeInterfaceSourceList, AdapterBase
 
 
 # register IPerson as a type interface - (TODO: use a function for this)
@@ -45,34 +45,14 @@ from loops.type import TypeInterfaceSourceList
 TypeInterfaceSourceList.typeInterfaces += (IPerson,)
 
 
-class Person(BasePerson):
+class Person(AdapterBase, BasePerson):
     """ typeInterface adapter for concepts of type 'person'.
     """
 
     implements(IPerson)
-    adapts(IConcept)
 
-    __attributes = ('context', '__parent__', 'userId',)
-    __schemas = list(IPerson) + list(IConcept)
-
-    def __init__(self, context):
-        self.context = context # to get the permission stuff right
-        self.__parent__ = context
-
-    def __getattr__(self, attr):
-        self.checkAttr(attr)
-        return getattr(self.context, '_' + attr, None)
-
-    def __setattr__(self, attr, value):
-        if attr in self.__attributes:
-            object.__setattr__(self, attr, value)
-        else:
-            self.checkAttr(attr)
-            setattr(self.context, '_' + attr, value)
-
-    def checkAttr(self, attr):
-        if attr not in self.__schemas:
-            raise AttributeError(attr)
+    _attributes = ('context', '__parent__', 'userId',)
+    _schemas = list(IPerson) + list(IConcept)
 
     def getUserId(self):
         return getattr(self.context, '_userId', None)

@@ -22,8 +22,7 @@ ZCML setup):
   >>> from loops.concept import ConceptManager, Concept
   >>> from loops.interfaces import IConcept, ITypeConcept
 
-  >>> site['loops'] = Loops()
-  >>> loopsRoot = site['loops']
+  >>> loopsRoot = site['loops'] = Loops()
 
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry

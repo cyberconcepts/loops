@@ -105,7 +105,9 @@ class NodeView(BaseView):
     def target(self):
         obj = self.targetObject
         if obj is not None:
-            return zapi.getMultiAdapter((obj, self.request))
+            basicView = zapi.getMultiAdapter((obj, self.request))
+            return basicView.view
+            #return zapi.getMultiAdapter((obj, self.request))
 
     def renderTarget(self):
         target = self.target
@@ -117,6 +119,7 @@ class NodeView(BaseView):
 
     @Lazy
     def bodyMacro(self):
+        # ?TODO: replace by: return self.target.macroName
         target = self.targetObject
         if target is None or IDocument.providedBy(target):
             return 'textbody'

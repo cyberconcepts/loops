@@ -39,8 +39,10 @@
                          ondblclick python: item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
-    <tal:concepts define="item item/target">
-      <div metal:use-macro="views/concept_macros/conceptlisting2" />
+    <tal:concepts define="item item/target;
+                          macro item/macro">
+      <div metal:use-macro="macro" />
+      <!--<div metal:use-macro="views/concept_macros/conceptlisting2" />-->
     </tal:concepts>
   </tal:body>
 </metal:body>

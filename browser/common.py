@@ -97,6 +97,10 @@ class BaseView(object):
         return zapi.absoluteURL(self.context, self.request)
 
     @Lazy
+    def view(self):
+        return self
+
+    @Lazy
     def token(self):
         return self.loopsRoot.getLoopsUri(self.context)
 

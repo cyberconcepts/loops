@@ -22,6 +22,7 @@ Definition of the Task view class.
 $Id$
 """
 
+from zope import interface, component, schema
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
@@ -35,7 +36,6 @@ from zope.formlib.form import EditForm, FormFields
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope import schema
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
 
@@ -77,6 +77,25 @@ class ConceptView(BaseView):
     def resources(self):
         for r in self.context.getResourceRelations():
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
+
+    @Lazy
+    def view(self):
+        ti = IType(self.context).typeInterface
+        # TODO: check the interface (maybe for a base interface IViewProvider)
+        #       instead of the viewName attribute:
+        if ti and 'viewName' in ti:
+            typeAdapter = ti(self.context)
+            viewName = typeAdapter.viewName
+            # ??? Would it make sense to use a somehow restricted interface
+            #     that should be provided by the view like IQuery?
+            #viewInterface = getattr(typeAdapter, 'viewInterface', None) or IQuery
+            if viewName:
+                adapter = component.queryMultiAdapter((self.context, self.request),
+                                         interface.Interface, name=viewName)
+                if adapter is not None:
+                    return adapter
+        #elif type provides view: use this
+        return self
 
 
 class ConceptConfigureView(ConceptView):

@@ -215,7 +215,6 @@ Type-based interfaces and adapters
 A type has an optional typeInterface attribute that objects of this type
 will be adaptable to. The default for this is None:
 
-  >>> cc1_type.typeInterface
   >>> cc1_type.typeInterface is None
   True
 
@@ -235,7 +234,7 @@ i.e. the 'topic' concept, via an adapter:
   >>> class Topic(object):
   ...     implements(ITopic)
   ...     def __init__(self, context): pass
-  >>> ztapi.provideAdapter(IConcept, ITopic, Topic)
+  >>> component.provideAdapter(Topic, (IConcept,), ITopic)
   
   >>> ITypeConcept(topic).typeInterface = ITopic
   >>> cc1.conceptType = topic
@@ -244,6 +243,57 @@ i.e. the 'topic' concept, via an adapter:
   >>> cc1Adapter = cc1_type.typeInterface(cc1)
   >>> ITopic.providedBy(cc1Adapter)
   True
+
+
+Concepts as queries
+-------------------
+
+We first have to set up the query type, i.e. a type concept associated
+with the IQueryConcept interface:
+
+  >>> from loops.query import IQueryConcept, QueryConcept
+  >>> component.provideAdapter(QueryConcept, (IConcept,), IQueryConcept)
+
+  >>> query = concepts['query'] = Concept(u'Query')
+  >>> query.conceptType = typeObject
+  >>> ITypeConcept(query).typeInterface = IQueryConcept
+
+Next we need a concept of this type:
+
+  >>> simpleQuery = concepts['simpleQuery'] = Concept(u'Simple query')
+  >>> simpleQuery.conceptType = query
+  >>> sq_type = IType(simpleQuery)
+  >>> sq_adapter = sq_type.typeInterface(simpleQuery)
+  >>> sq_adapter.viewName = 'simpleview.html'
+  >>> simpleQuery._viewName
+  'simpleview.html'
+
+This viewName attribute of the query will be automatically used by
+a concept view when asked for the view that should be used for rendering
+the concept...
+
+  >>> from loops.browser.concept import ConceptView
+  >>> from zope.publisher.browser import TestRequest
+  >>> sq_baseView = ConceptView(simpleQuery, TestRequest())
+  >>> sq_view = sq_baseView.view
+
+...but only when the view exists, i.e. there is a class registered as a
+view/multi-adapter with this name:
+  
+  >>> sq_view is sq_baseView
+  True
+
+  >>> class SimpleView(object):
+  ...     def __init__(self, context, request): pass
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> component.provideAdapter(SimpleView, (IConcept, IBrowserRequest), Interface,
+  ...                          name='simpleview.html')
+  >>> sq_baseView = ConceptView(simpleQuery, TestRequest())
+  >>> sq_view = sq_baseView.view
+  >>> sq_view is sq_baseView
+  False
+  >>> sq_view.__class__
+  <class 'SimpleView'>
 
 
 Controlling presentation using view properties

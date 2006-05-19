@@ -215,3 +215,33 @@ class TypeInterfaceSourceList(object):
     def __len__(self):
         return len(self.typeInterfaces)
 
+
+class AdapterBase(object):
+    """ (Mix-in) Class for concept adapters that provide editing of fields
+        defined by the type interface.
+    """
+
+    adapts(IConcept)
+    
+    _attributes = ('context', '__parent__', )
+    _schemas = (IConcept,)
+    
+    def __init__(self, context):
+        self.context = context # to get the permission stuff right
+        self.__parent__ = context
+
+    def __getattr__(self, attr):
+        self.checkAttr(attr)
+        return getattr(self.context, '_' + attr, None)
+
+    def __setattr__(self, attr, value):
+        if attr in self._attributes:
+            object.__setattr__(self, attr, value)
+        else:
+            self.checkAttr(attr)
+            setattr(self.context, '_' + attr, value)
+
+    def checkAttr(self, attr):
+        if attr not in self._schemas:
+            raise AttributeError(attr)
+
