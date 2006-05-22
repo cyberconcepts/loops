@@ -28,10 +28,14 @@ from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
 from zope.cachedescriptors.property import Lazy
+from zope.i18nmessageid import MessageFactory
 
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptRelationView
-from loops.organize.interfaces import ANNOTATION_KEY
+from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
+from loops.organize.interfaces import raiseValidationError
+
+_ = MessageFactory('zope')
 
 
 class MyConcepts(BaseView):
@@ -65,6 +69,22 @@ class MyConcepts(BaseView):
         for r in self.person.getResourceRelations():
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
-    @Lazy
-    def view(self):
-        return self
+
+class MemberRegistration(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def register(self):
+        form = self.request.form
+        pw = form.get('field.passwd')
+        if form.get('field.passwdConfirm') != pw:
+            raiseValidationError(_(u'Password and password confirmation '
+                                    'do not match.'))
+        regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
+        person = regMan.register(form.get('field.userId'), pw,
+                                 form.get('field.lastName'),
+                                 form.get('field.firstName'))
+        return person
+

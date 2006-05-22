@@ -1,5 +1,5 @@
 <metal:block define-macro="render">
-  <div>
+  <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
     <h3 tal:content="item/title">Title</h3>
     <span tal:replace="structure item/render" />
   </div>
@@ -7,7 +7,7 @@
 
 
 <metal:block define-macro="image">
-  <div>
+  <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
     <img src="#"
          tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
@@ -16,7 +16,7 @@
 
 
 <metal:block define-macro="download">
-  <div>
+  <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
     <a href="#"
        tal:attributes="href string:${view/url}/.target${view/targetId}/view">

@@ -61,7 +61,8 @@ class UserId(schema.TextLine):
         if person is not None and person != self.context:
             raiseValidationError(
                 _(u'There is alread a person ($person) assigned to user $userId.',
-                 mapping={'person': zapi.getName(person), 'userId': userId}))
+                  mapping=dict(person=zapi.getName(person),
+                               userId=userId)))
 
 
 class IPerson(IBasePerson):
@@ -76,3 +77,23 @@ class IPerson(IBasePerson):
                     description=_(u'The principal id of a user that should '
                                    'be associated with this person.'),
                     required=False,)
+
+
+class IMemberRegistrationManager(Interface):
+    """ Knows what to do for registrating a new member (portal user).
+    """
+
+    authPluginId = Attribute(u'The id of an authentication plugin to be '
+                              'used for managing members of this loops site')
+
+    def register(userId, password, lastName, firstName=u'', **kw):
+        """ Register a new member for this loops site.
+            Return the person adapter for the concept created.
+            Raise ValidationError if the user could not be created.
+        """
+
+    def changePassword(oldPw, newPw):
+        """ Change the password of the user currently logged-in.
+            Raise a ValidationError if the oldPw does not match the
+            current password.
+        """

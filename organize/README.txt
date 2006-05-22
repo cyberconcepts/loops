@@ -6,7 +6,7 @@ loops - Linked Objects for Organization and Processing Services
 
 Note: This packages depends on cybertools.organize.
 
-Letz's do some basic set up
+Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
@@ -161,9 +161,75 @@ concept assigned we should get an error:
 
   >>> martha.userId = 'users.john'
   Traceback (most recent call last):
-      ...
+  ...
   ValueError: ...
+
+
+Member Registrations
+====================
+
+The member registration needs the whole pluggable authentication stuff
+with a principal folder:
+
+  >>> from zope.app.appsetup.bootstrap import ensureUtility
+  >>> from zope.app.authentication.authentication import PluggableAuthentication
+  >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
+  ...               copy_to_zlog=False)
+  ''
+  >>> pau = component.getUtility(IAuthentication, context=site)
+
+  >>> from zope.app.component.site import UtilityRegistration
+  >>> from zope.app.authentication.principalfolder import PrincipalFolder
+  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+  >>> pFolder = PrincipalFolder('loops.')
+  >>> pau['loops'] = pFolder
+  >>> reg = UtilityRegistration('loops', IAuthenticatorPlugin, pFolder)
+  >>> pau.registrationManager.addRegistration(reg)
+  'UtilityRegistration'  
+  >>> reg.status = u'Active'
+  >>> pau.authenticatorPlugins = ('loops',)
+
+In addition, we have to create at least one node in the view space
+and register an IMemberRegistrationManager adapter for the loops root object:
+
+  >>> from loops.view import ViewManager, Node
+  >>> views = loopsRoot['views'] = ViewManager()
+  >>> menu = views['menu'] = Node('Home')
+  >>> menu.nodeType = 'menu'
+
+  >>> from loops.organize.member import MemberRegistrationManager
+  >>> from loops.organize.interfaces import IMemberRegistrationManager
+  >>> from loops.interfaces import ILoops
+  >>> component.provideAdapter(MemberRegistrationManager)
+
+Now we can enter the registration info for a new member (after having made
+sure that a principal object can be served by a corresponding factory):
+
+  >>> from zope.app.authentication.principalfolder import FoundPrincipalFactory
+  >>> component.provideAdapter(FoundPrincipalFactory)
   
+  >>> form = {'field.userId': u'newuser',
+  ...         'field.passwd': u'quack',
+  ...         'field.passwdConfirm': u'quack',
+  ...         'field.lastName': u'Sawyer',
+  ...         'field.firstName': u'Tom'}
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest(form=form)
+
+and register it
+
+  >>> from loops.organize.browser import MemberRegistration
+  >>> regView = MemberRegistration(menu, request)
+  >>> personAdapter = regView.register()
+
+  >>> personAdapter.context.__name__, personAdapter.lastName, personAdapter.userId
+  (u'newuser', u'Sawyer', u'loops.newuser')
+
+Now we can also retrieve it from the authentication utility:
+
+  >>> pau.getPrincipal('loops.newuser').title
+  u'Tom Sawyer'
+
 
 Fin de partie
 =============
