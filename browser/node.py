@@ -34,6 +34,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.intid.interfaces import IIntIds
 from zope.dottedname.resolve import resolve
 from zope.event import notify
+from zope.formlib.namedtemplate import NamedTemplate
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -50,7 +51,7 @@ from loops.browser.concept import ConceptView
 
 class NodeView(BaseView):
 
-    template = ViewPageTemplateFile('node_macros.pt')
+    template = NamedTemplate('loops.node_macros')
 
     @Lazy
     def macro(self):

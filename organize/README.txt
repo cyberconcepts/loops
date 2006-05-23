@@ -208,19 +208,19 @@ sure that a principal object can be served by a corresponding factory):
   >>> from zope.app.authentication.principalfolder import FoundPrincipalFactory
   >>> component.provideAdapter(FoundPrincipalFactory)
   
-  >>> form = {'field.userId': u'newuser',
-  ...         'field.passwd': u'quack',
-  ...         'field.passwdConfirm': u'quack',
-  ...         'field.lastName': u'Sawyer',
-  ...         'field.firstName': u'Tom'}
-  >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest(form=form)
+  >>> data = {'loginName': u'newuser',
+  ...         'password': u'quack',
+  ...         'passwordConfirm': u'quack',
+  ...         'lastName': u'Sawyer',
+  ...         'firstName': u'Tom'}
 
 and register it
 
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
   >>> from loops.organize.browser import MemberRegistration
   >>> regView = MemberRegistration(menu, request)
-  >>> personAdapter = regView.register()
+  >>> personAdapter = regView.register(data)
 
   >>> personAdapter.context.__name__, personAdapter.lastName, personAdapter.userId
   (u'newuser', u'Sawyer', u'loops.newuser')

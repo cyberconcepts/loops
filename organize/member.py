@@ -23,13 +23,15 @@ $Id$
 """
 
 from zope.app import zapi
-from zope import interface, component
+from zope import interface, component, schema
 from zope.component import adapts
 from zope.interface import implements
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import InternalPrincipal
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.security.interfaces import IAuthentication
+from zope.event import notify
 from zope.i18nmessageid import MessageFactory
 from zope.cachedescriptors.property import Lazy
 
@@ -37,7 +39,6 @@ from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops
 from loops.concept import Concept
 from loops.organize.interfaces import IMemberRegistrationManager
-from loops.organize.interfaces import raiseValidationError
 
 _ = MessageFactory('zope')
 
@@ -56,24 +57,24 @@ class MemberRegistrationManager(object):
         # step 1: create an internal principal in the loops principal folder:
         pau = zapi.getUtility(IAuthentication, context=self.context)
         if not IPluggableAuthentication.providedBy(pau):
-            raiseValidationError(_(u'There is no pluggable authentication '
-                                    'utility available.'))
+            raise ValueError(u'There is no pluggable authentication '
+                                    'utility available.')
         if not self.authPluginId in pau.authenticatorPlugins:
-            raiseValidationError(_(u'There is no loops authenticator '
-                                    'plugin available.'))
+            raise ValueError(u'There is no loops authenticator '
+                                    'plugin available.')
         pFolder = component.queryUtility(IAuthenticatorPlugin, self.authPluginId,
                                          context=pau)
         title = firstName and ' '.join((firstName, lastName)) or lastName
-        # TODO: encrypt password:
+        # TODO: care for password encryption:
         principal = InternalPrincipal(userId, password, title)
         pFolder[userId] = principal
-        # step 1: create a corresponding person concept:
+        # step 2: create a corresponding person concept:
         cm = self.context.getConceptManager()
         id = userId
         num = 0
         while id in cm:
             num +=1
-            id = userid + str(num)
+            id = userId + str(num)
         person = cm[id] = Concept(title)
         # TODO: the name of the person type object must be kept flexible!
         person.conceptType = cm['person']
@@ -81,6 +82,8 @@ class MemberRegistrationManager(object):
         personAdapter.firstName = firstName
         personAdapter.lastName = lastName
         personAdapter.userId = '.'.join((self.authPluginId, userId))
+        notify(ObjectCreatedEvent(person))
+        notify(ObjectModifiedEvent(person))
         return personAdapter
 
     def changePassword(self, oldPw, newPw):

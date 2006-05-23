@@ -23,7 +23,7 @@ $Id$
 """
 
 from zope.interface import Interface, Attribute
-from zope import component, schema
+from zope import interface, component, schema
 from zope.app import zapi
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
@@ -65,22 +65,68 @@ class UserId(schema.TextLine):
                                userId=userId)))
 
 
+class LoginName(schema.TextLine):
+
+    def _validate(self, userId):
+        super(LoginName, self)._validate(userId)
+
+
+class Password(schema.Password):
+
+    def _validate(self, pw):
+        super(Password, self)._validate(pw)
+
+
 class IPerson(IBasePerson):
     """ Resembles a human being with a name (first and last name),
         a birth date, and a set of addresses. This interface only
-        lists fields used in addidtion to those provided by the
+        lists fields used in addition to those provided by the
         basic cybertools.organize package.
     """
 
-    userId = UserId(
-                    title=_(u'User ID'),
-                    description=_(u'The principal id of a user that should '
+    userId = UserId(title=_(u'User ID'),
+                    description=_(u'The principal id (including prinicipal '
+                                   'folder prefix) of a user that should '
                                    'be associated with this person.'),
                     required=False,)
 
 
+class IPasswordEntry(Interface):
+
+    password = Password(title=_(u'Password'),
+                    description=_(u'Enter password.'),
+                    required=True,)
+    passwordConfirm = schema.Password(title=_(u'Confirm password'),
+                    description=_(u'Please repeat the password.'),
+                    required=True,)
+
+    #@interface.invariant
+    #def passwordMatchConfirm(data):
+    #    if data.password != data.passwordConfirm:
+    #        raise interface.Invalid(_(u'Password and password confirmation '
+    #                                   'do not match.'))
+
+
+class IPasswordChange(IPasswordEntry):
+
+    oldPassword = schema.Password(title=_(u'Old password'),
+                    description=_(u'Enter old password.'),
+                    required=True,)
+
+
+class IMemberRegistration(IBasePerson, IPasswordEntry):
+    """ Schema for registering a new member (user + person).
+    """
+
+    loginName = LoginName(
+                    title=_(u'User ID'),
+                    description=_(u'Enter a user id.'),
+                    required=True,)
+
+
 class IMemberRegistrationManager(Interface):
-    """ Knows what to do for registrating a new member (portal user).
+    """ Knows what to do for registrating a new member (portal user),
+        change password, etc.
     """
 
     authPluginId = Attribute(u'The id of an authentication plugin to be '
@@ -89,11 +135,11 @@ class IMemberRegistrationManager(Interface):
     def register(userId, password, lastName, firstName=u'', **kw):
         """ Register a new member for this loops site.
             Return the person adapter for the concept created.
-            Raise ValidationError if the user could not be created.
+            Raise Validation Error (?) if the user could not be created.
         """
 
-    def changePassword(oldPw, newPw):
+    def changePassword(newPw):
         """ Change the password of the user currently logged-in.
-            Raise a ValidationError if the oldPw does not match the
+            Raise a Validation Error (?) if the oldPw does not match the
             current password.
         """

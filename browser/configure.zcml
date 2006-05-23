@@ -61,12 +61,27 @@
       permission="zope.View"
       />
 
-  <!-- named template(s) -->
+  <!-- named templates - forms and macro templates -->
 
   <zope:adapter
       factory="loops.browser.util.pageform"
       for="zope.interface.Interface"
-      name="pageform" />
+      name="loops.pageform" />
+
+  <zope:adapter
+      factory="loops.browser.util.dataform"
+      for="zope.interface.Interface"
+      name="loops.dataform" />
+
+  <zope:adapter
+      factory="loops.browser.util.concept_macros"
+      for="loops.browser.common.BaseView"
+      name="loops.concept_macros" />
+
+  <zope:adapter
+      factory="loops.browser.util.node_macros"
+      for="loops.browser.common.BaseView"
+      name="loops.node_macros" />
 
   <!-- loops top-level container -->
 

@@ -30,6 +30,10 @@ from zope.formlib.namedtemplate import NamedTemplateImplementation
 
 
 pageform = NamedTemplateImplementation(ViewPageTemplateFile('pageform.pt'))
+dataform = NamedTemplateImplementation(ViewPageTemplateFile('dataform.pt'))
+
+concept_macros = NamedTemplateImplementation(ViewPageTemplateFile('concept_macros.pt'))
+node_macros = NamedTemplateImplementation(ViewPageTemplateFile('node_macros.pt'))
 
 
 class LoopsMenu(BrowserMenu):

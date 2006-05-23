@@ -25,23 +25,31 @@ $Id$
 
 from zope import interface, component
 from zope.app import zapi
+from zope.app.form.browser.textwidgets import PasswordWidget as BasePasswordWidget
+from zope.app.form.interfaces import WidgetInputError
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
 from zope.cachedescriptors.property import Lazy
+from zope.formlib.form import Form, FormFields, action
+from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
 from loops.browser.common import BaseView
+from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
-from loops.organize.interfaces import raiseValidationError
+from loops.organize.interfaces import IMemberRegistration, raiseValidationError
 
 _ = MessageFactory('zope')
 
 
 class MyConcepts(BaseView):
 
-    template = ViewPageTemplateFile('../browser/concept_macros.pt')
-    macro = template.macros['conceptlisting']
+    template = NamedTemplate('loops.concept_macros')
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['conceptlisting']
 
     def __init__(self, context, request):
         self.context = context
@@ -70,21 +78,42 @@ class MyConcepts(BaseView):
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
 
-class MemberRegistration(object):
+class PasswordWidget(BasePasswordWidget):
+
+    def getInputValue(self):
+        value = super(PasswordWidget, self).getInputValue()
+        confirm = self.request.get('form.passwordConfirm')
+        if confirm != value:
+            v = _(u'Password and password confirmation do not match.')
+            self._error = WidgetInputError(
+                self.context.__name__, self.label, v)
+            raise self._error
+        return value
+
+
+class MemberRegistration(Form, NodeView):
+
+    form_fields = FormFields(IMemberRegistration)
+    template = NamedTemplate('loops.dataform')
+    label = _(u'Member Registration')
 
     def __init__(self, context, request):
-        self.context = context
-        self.request = request
+        NodeView.__init__(self, context, request)
 
-    def register(self):
-        form = self.request.form
-        pw = form.get('field.passwd')
-        if form.get('field.passwdConfirm') != pw:
-            raiseValidationError(_(u'Password and password confirmation '
-                                    'do not match.'))
+    @action(_(u'Register'))
+    def handle_register_action(self, action, data):
+        self.register(data)
+
+    def register(self, data=None):
+        form = data or self.request.form
+        pw = form.get('password')
+        if form.get('passwordConfirm') != pw:
+            raise ValueError(u'Password and password confirmation do not match.')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
-        person = regMan.register(form.get('field.userId'), pw,
-                                 form.get('field.lastName'),
-                                 form.get('field.firstName'))
+        person = regMan.register(form.get('loginName'), pw,
+                                 form.get('lastName'),
+                                 form.get('firstName'))
+        message = _(u'You have been registered and can now login.')
+        self.request.response.redirect('%s?message=%s' % (self.url, message))
         return person
 

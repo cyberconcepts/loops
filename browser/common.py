@@ -44,7 +44,7 @@ from loops import util
 
 class EditForm(BaseEditForm):
 
-    template = NamedTemplate('pageform')
+    template = NamedTemplate('loops.pageform')
 
     def deleteObjectAction(self):
         return None  # better not to show the edit button at the moment

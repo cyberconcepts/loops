@@ -6,7 +6,7 @@
    i18n_domain="zope"
    >
 
-  <!-- adapters -->
+  <!-- party: person, ... -->
 
   <zope:adapter factory="loops.organize.party.Person"
                 provides="loops.organize.interfaces.IPerson"
@@ -19,19 +19,44 @@
              set_schema="loops.organize.interfaces.IPerson" />
   </zope:class>
 
-  <zope:adapter
-      name="myconcepts"
-      for="loops.interfaces.IConcept
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.organize.browser.MyConcepts"
-      permission="zope.View"
-      />
-  
   <zope:subscriber
         for="loops.interfaces.IConcept
              zope.app.container.interfaces.IObjectRemovedEvent"
         handler="loops.organize.party.removePersonReferenceFromPrincipal"
         />
+
+  <!-- my stuff and other views -->
+
+  <zope:adapter
+        name="myconcepts"
+        for="loops.interfaces.IConcept
+            zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.organize.browser.MyConcepts"
+        permission="zope.View"
+        />
+  
+  <!-- member registration -->
+
+  <zope:adapter factory="loops.organize.member.MemberRegistrationManager"
+                trusted="True" />
+
+  <zope:class class="loops.organize.member.MemberRegistrationManager">
+    <require permission ="zope.Public"
+             interface="loops.organize.interfaces.IMemberRegistrationManager" />
+  </zope:class>
+
+  <browser:page name="registration.html"
+        for="loops.interfaces.IView"
+        class="loops.organize.browser.MemberRegistration"
+        permission="zope.Public" />
+
+  <zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="loops.organize.interfaces.Password"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory="loops.organize.browser.PasswordWidget"
+      permission="zope.Public"
+      />
 
 </configure>

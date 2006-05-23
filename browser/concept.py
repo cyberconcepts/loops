@@ -33,6 +33,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.formlib.form import EditForm, FormFields
+from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -63,8 +64,11 @@ class ConceptEditForm(EditForm):
 
 class ConceptView(BaseView):
 
-    template = ViewPageTemplateFile('concept_macros.pt')
-    macro = template.macros['conceptlisting']
+    template = NamedTemplate('loops.concept_macros')
+    
+    @Lazy
+    def macro(self):
+        return self.template.macros['conceptlisting']
 
     def children(self):
         for r in self.context.getChildRelations():
