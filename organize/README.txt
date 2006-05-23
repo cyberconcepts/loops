@@ -223,7 +223,7 @@ and register it
   >>> personAdapter = regView.register(data)
 
   >>> personAdapter.context.__name__, personAdapter.lastName, personAdapter.userId
-  (u'newuser', u'Sawyer', u'loops.newuser')
+  (u'person.newuser', u'Sawyer', u'loops.newuser')
 
 Now we can also retrieve it from the authentication utility:
 

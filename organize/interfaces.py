@@ -28,7 +28,10 @@ from zope.app import zapi
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.i18nmessageid import MessageFactory
+from zope.security.proxy import removeSecurityProxy
+
 from cybertools.organize.interfaces import IPerson as IBasePerson
+from loops.organize.util import getPrincipalFolder, authPluginId
 
 _ = MessageFactory('zope')
 
@@ -50,7 +53,8 @@ class UserId(schema.TextLine):
     def _validate(self, userId):
         if not userId:
             return
-        auth = component.getUtility(IAuthentication, context=self.context)
+        context = removeSecurityProxy(self.context).context
+        auth = component.getUtility(IAuthentication, context=context)
         try:
             principal = auth.getPrincipal(userId)
         except PrincipalLookupError:
@@ -58,7 +62,7 @@ class UserId(schema.TextLine):
                                    mapping={'userId': userId}))
         pa = annotations(principal)
         person = pa.get(ANNOTATION_KEY, None)
-        if person is not None and person != self.context:
+        if person is not None and person != context:
             raiseValidationError(
                 _(u'There is alread a person ($person) assigned to user $userId.',
                   mapping=dict(person=zapi.getName(person),
@@ -69,6 +73,10 @@ class LoginName(schema.TextLine):
 
     def _validate(self, userId):
         super(LoginName, self)._validate(userId)
+        if userId in getPrincipalFolder(self.context):
+            raiseValidationError(
+                _(u'There is alread a user with ID $userId.',
+                  mapping=dict(userId=userId)))
 
 
 class Password(schema.Password):

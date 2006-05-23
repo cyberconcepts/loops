@@ -34,22 +34,17 @@ from zope.formlib.form import Form, FormFields, action
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
-from loops.browser.common import BaseView
+from cybertools.typology.interfaces import IType
+from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
-from loops.organize.interfaces import IMemberRegistration, raiseValidationError
+from loops.organize.interfaces import IMemberRegistration
 
 _ = MessageFactory('zope')
 
 
-class MyConcepts(BaseView):
-
-    template = NamedTemplate('loops.concept_macros')
-
-    @Lazy
-    def macro(self):
-        return self.template.macros['conceptlisting']
+class MyStuff(ConceptView):
 
     def __init__(self, context, request):
         self.context = context
@@ -59,23 +54,9 @@ class MyConcepts(BaseView):
         if self.person is not None:
             self.context = self.person
 
-    def children(self):
-        if self.person is None:
-            return
-        for r in self.person.getChildRelations():
-            yield ConceptRelationView(r, self.request, contextIsSecond=True)
-
-    def parents(self):
-        if self.person is None:
-            return
-        for r in self.person.getParentRelations():
-            yield ConceptRelationView(r, self.request)
-
-    def resources(self):
-        if self.person is None:
-            return
-        for r in self.person.getResourceRelations():
-            yield ConceptRelationView(r, self.request, contextIsSecond=True)
+    @Lazy
+    def view(self):
+        return self
 
 
 class PasswordWidget(BasePasswordWidget):
@@ -109,11 +90,13 @@ class MemberRegistration(Form, NodeView):
         pw = form.get('password')
         if form.get('passwordConfirm') != pw:
             raise ValueError(u'Password and password confirmation do not match.')
+        login = form.get('loginName')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
-        person = regMan.register(form.get('loginName'), pw,
+        person = regMan.register(login, pw,
                                  form.get('lastName'),
                                  form.get('firstName'))
         message = _(u'You have been registered and can now login.')
-        self.request.response.redirect('%s?message=%s' % (self.url, message))
+        self.request.response.redirect('%s/login.html?login=%s&message=%s'
+                            % (self.url, login, message))
         return person
 

@@ -68,7 +68,18 @@ class ConceptView(BaseView):
     
     @Lazy
     def macro(self):
-        return self.template.macros['conceptlisting']
+        return self.template.macros['conceptdata']
+
+    def fieldData(self):
+        ti = IType(self.context).typeInterface
+        if not ti: return 
+        adapter = ti(self.context)
+        for f in ti:
+            title = getattr(ti[f], 'title', '')
+            value = getattr(adapter, f, '')
+            if not (value and title):
+                continue
+            yield {'title': title, 'value': value, 'id': f}
 
     def children(self):
         for r in self.context.getChildRelations():

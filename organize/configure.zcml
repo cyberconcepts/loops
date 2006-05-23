@@ -28,11 +28,11 @@
   <!-- my stuff and other views -->
 
   <zope:adapter
-        name="myconcepts"
+        name="mystuff"
         for="loops.interfaces.IConcept
             zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
-        factory="loops.organize.browser.MyConcepts"
+        factory="loops.organize.browser.MyStuff"
         permission="zope.View"
         />
   

@@ -39,6 +39,7 @@ from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops
 from loops.concept import Concept
 from loops.organize.interfaces import IMemberRegistrationManager
+from loops.organize.util import getPrincipalFolder, authPluginId
 
 _ = MessageFactory('zope')
 
@@ -48,40 +49,32 @@ class MemberRegistrationManager(object):
     implements(IMemberRegistrationManager)
     adapts(ILoops)
 
-    authPluginId = 'loops'
-
     def __init__(self, context):
         self.context = context
 
     def register(self, userId, password, lastName, firstName=u'', **kw):
         # step 1: create an internal principal in the loops principal folder:
-        pau = zapi.getUtility(IAuthentication, context=self.context)
-        if not IPluggableAuthentication.providedBy(pau):
-            raise ValueError(u'There is no pluggable authentication '
-                                    'utility available.')
-        if not self.authPluginId in pau.authenticatorPlugins:
-            raise ValueError(u'There is no loops authenticator '
-                                    'plugin available.')
-        pFolder = component.queryUtility(IAuthenticatorPlugin, self.authPluginId,
-                                         context=pau)
+        pFolder = getPrincipalFolder(self.context)
         title = firstName and ' '.join((firstName, lastName)) or lastName
         # TODO: care for password encryption:
         principal = InternalPrincipal(userId, password, title)
         pFolder[userId] = principal
         # step 2: create a corresponding person concept:
         cm = self.context.getConceptManager()
-        id = userId
+        id = baseId = 'person.' + userId
         num = 0
         while id in cm:
             num +=1
-            id = userId + str(num)
+            id = baseId + str(num)
         person = cm[id] = Concept(title)
         # TODO: the name of the person type object must be kept flexible!
+        # So we have to search for a type concept that has IPerson as
+        # its typeInterface...
         person.conceptType = cm['person']
         personAdapter = IType(person).typeInterface(person)
         personAdapter.firstName = firstName
         personAdapter.lastName = lastName
-        personAdapter.userId = '.'.join((self.authPluginId, userId))
+        personAdapter.userId = '.'.join((authPluginId, userId))
         notify(ObjectCreatedEvent(person))
         notify(ObjectModifiedEvent(person))
         return personAdapter
