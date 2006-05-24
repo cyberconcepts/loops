@@ -33,6 +33,7 @@ from zope.schema.interfaces import ValidationError
 from zope.app.form.interfaces import WidgetInputError
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.organize.interfaces import IAddress
 from cybertools.organize.party import Person as BasePerson
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
@@ -42,7 +43,7 @@ from loops.type import TypeInterfaceSourceList, AdapterBase
 
 # register IPerson as a type interface - (TODO: use a function for this)
 
-TypeInterfaceSourceList.typeInterfaces += (IPerson,)
+TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
 
 
 class Person(AdapterBase, BasePerson):
@@ -51,7 +52,7 @@ class Person(AdapterBase, BasePerson):
 
     implements(IPerson)
 
-    _attributes = ('context', '__parent__', 'userId',)
+    _attributes = ('context', '__parent__', 'userId', 'phoneNumbers')
     _schemas = list(IPerson) + list(IConcept)
 
     def getUserId(self):
@@ -78,6 +79,12 @@ class Person(AdapterBase, BasePerson):
         if principal is not None:
             pa = annotations(principal)
             pa[ANNOTATION_KEY] = None
+
+    def getPhoneNumbers(self):
+        return getattr(self.context, '_phoneNumbers', [])
+    def setPhoneNumbers(self, value):
+        self.context._phoneNumbers = value
+    phoneNumbers = property(getPhoneNumbers, setPhoneNumbers)
 
     @Lazy
     def authentication(self):
@@ -124,4 +131,20 @@ def removePersonReferenceFromPrincipal(context, event):
         if getattr(context, '_userId', None):
             person = IPerson(context)
             person.removeReferenceFromPrincipal(person.userId)
+
+
+class Address(AdapterBase):
+    """ typeInterface adapter for concepts of type 'address'.
+    """
+
+    implements(IAddress)
+
+    _attributes = ('context', '__parent__', 'lines')
+    _schemas = list(IAddress) + list(IConcept)
+
+    def getLines(self):
+        return getattr(self.context, '_lines', [])
+    def setLines(self, value):
+        self.context._lines = value
+    lines = property(getLines, setLines)
 

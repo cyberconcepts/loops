@@ -9,7 +9,7 @@
       <tr tal:repeat="field item/fieldData">
         <td><span tal:content="field/title"
                   i18n:translate="" />:</td>
-        <td tal:content="nocall:field/value"></td>
+        <td tal:content="structure field/widget"></td>
       </tr>
     </table>
     <metal:listing use-macro="item/template/macros/conceptlisting2" />

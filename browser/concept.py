@@ -28,6 +28,7 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.form.browser.interfaces import ITerms
+from zope.app.form.interfaces import IDisplayWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
@@ -74,12 +75,15 @@ class ConceptView(BaseView):
         ti = IType(self.context).typeInterface
         if not ti: return 
         adapter = ti(self.context)
-        for f in ti:
-            title = getattr(ti[f], 'title', '')
-            value = getattr(adapter, f, '')
-            if not (value and title):
+        for n, f in schema.getFieldsInOrder(ti):
+            value = getattr(adapter, n, '')
+            if not value:
                 continue
-            yield {'title': title, 'value': value, 'id': f}
+            bound = f.bind(adapter)
+            widget = component.getMultiAdapter(
+                                (bound, self.request), IDisplayWidget)
+            widget.setRenderedValue(value)
+            yield dict(title=f.title, value=value, id=n, widget=widget)
 
     def children(self):
         for r in self.context.getChildRelations():
