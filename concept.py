@@ -271,11 +271,12 @@ class PredicateSourceList(object):
         typePred = cm.getTypePredicate()
         if defPred is not None and typePred is not None:
             result.append(defPred)
-            result.append(typePred)
+            #result.append(typePred)
             predType = defPred.conceptType
             if predType is not None and predType != cm.getTypeConcept():
                 result.extend(p for p in predType.getChildren([typePred])
-                                    if p not in result)
+                                    if p not in result
+                                       and p != typePred)
         return result
 
     def __len__(self):

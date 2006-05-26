@@ -41,7 +41,7 @@ from loops.organize.interfaces import IPerson, ANNOTATION_KEY
 from loops.type import TypeInterfaceSourceList, AdapterBase
 
 
-# register IPerson as a type interface - (TODO: use a function for this)
+# register type interfaces - (TODO: use a function for this)
 
 TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
 

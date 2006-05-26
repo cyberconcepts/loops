@@ -273,6 +273,10 @@ class ConceptRelationView(BaseView):
                          self.loopsRoot.getLoopsUri(self.predicate)))
 
     @Lazy
+    def isProtected(self):
+        return zapi.getName(self.predicate) == 'hasType'
+
+    @Lazy
     def predicateTitle(self):
         return self.predicate.title
 

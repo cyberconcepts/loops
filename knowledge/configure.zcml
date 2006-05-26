@@ -1,0 +1,20 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <!-- knowledge/learning management stuff -->
+
+  <zope:adapter factory="loops.knowledge.knowledge.Person"
+                provides="loops.knowledge.interfaces.IPerson"
+                trusted="True" />
+
+  <zope:class class="loops.knowledge.knowledge.Person">
+    <require permission="zope.View"
+             interface="loops.knowledge.interfaces.IPerson" />
+  </zope:class>
+
+</configure>

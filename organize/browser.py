@@ -44,13 +44,17 @@ from loops.organize.interfaces import IMemberRegistration
 _ = MessageFactory('zope')
 
 
+def getPersonForLoggedInUser(request):
+        pa = annotations(request.principal)
+        return  pa.get(ANNOTATION_KEY, None)
+
+
 class MyStuff(ConceptView):
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        pa = annotations(request.principal)
-        self.person = pa.get(ANNOTATION_KEY, None)
+        self.person = getPersonForLoggedInUser(request)
         if self.person is not None:
             self.context = self.person
 

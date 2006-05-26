@@ -142,8 +142,12 @@ a special concept type.
 
   >>> from loops.concept import PredicateSourceList
   >>> predicates = PredicateSourceList(cc1)
+
+Note that the 'hasType' predicate is suppressed from this list as the
+corresponding relation is only assigned via the conceptType attribute:
+
   >>> sorted(t.title for t in predicates)
-  [u'has type', u'subconcept']
+  [u'subconcept']
 
 Concept Views
 -------------
@@ -209,8 +213,7 @@ types and predicates.
       (u'Unknown Type', '.loops/concepts/unknown')]
           
   >>> sorted((t.title, t.token) for t in view.predicates())
-  [(u'has type', '.loops/concepts/hasType'),
-      (u'subconcept', '.loops/concepts/standard')]
+  [(u'subconcept', '.loops/concepts/standard')]
 
 Index attributes adapter
 ------------------------

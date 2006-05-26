@@ -224,7 +224,7 @@ class AdapterBase(object):
     adapts(IConcept)
     
     _attributes = ('context', '__parent__', )
-    _schemas = (IConcept,)
+    _schemas = list(IConcept)
     
     def __init__(self, context):
         self.context = context # to get the permission stuff right
