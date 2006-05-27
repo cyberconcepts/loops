@@ -99,20 +99,22 @@ class ConceptView(BaseView):
 
     @Lazy
     def view(self):
-        ti = IType(self.context).typeInterface
-        # TODO: check the interface (maybe for a base interface IViewProvider)
-        #       instead of the viewName attribute:
-        if ti and 'viewName' in ti:
-            typeAdapter = ti(self.context)
-            viewName = typeAdapter.viewName
+        viewName = self.request.get('loops.viewName') or getattr(self, '_viewName', None)
+        if not viewName:
+            ti = IType(self.context).typeInterface
+            # TODO: check the interface (maybe for a base interface IViewProvider)
+            #       instead of the viewName attribute:
+            if ti and 'viewName' in ti:
+                typeAdapter = ti(self.context)
+                viewName = typeAdapter.viewName
+        if viewName:
             # ??? Would it make sense to use a somehow restricted interface
             #     that should be provided by the view like IQuery?
             #viewInterface = getattr(typeAdapter, 'viewInterface', None) or IQuery
-            if viewName:
-                adapter = component.queryMultiAdapter((self.context, self.request),
-                                         interface.Interface, name=viewName)
-                if adapter is not None:
-                    return adapter
+            adapter = component.queryMultiAdapter((self.context, self.request),
+                                        interface.Interface, name=viewName)
+            if adapter is not None:
+                return adapter
         #elif type provides view: use this
         return self
 

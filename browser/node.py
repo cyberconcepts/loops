@@ -55,23 +55,35 @@ class NodeView(BaseView):
 
     @Lazy
     def macro(self):
-        macroName = self.request.get('viewer')
-        if not macroName:
-            macroName = self.context.viewer or 'content'
-        return self.template.macros[macroName]
+        return self.template.macros['content']
+        #macroName = self.request.get('loops.viewName')
+        #if not macroName:
+        #    macroName = self.context.viewName or 'content'
+        #return self.template.macros[macroName]
+
+    @Lazy
+    def view(self):
+        viewName = self.request.get('loops.viewName') or self.context.viewName
+        if viewName:
+            adapter = component.queryMultiAdapter((self.context, self.request),
+                                        interface.Interface, name=viewName)
+            if adapter is not None:
+                return adapter
+        return self
 
     @Lazy
     def item(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
+        # was there a .target... element in the URL?
         if target is not None:
-            # .target.... traversal magic
-            return zapi.getMultiAdapter((target, self.request))
+            basicView = zapi.getMultiAdapter((target, self.request))
+            return basicView.view
         return self.page
 
     @Lazy
     def page(self):
         page = self.context.getPage()
-        return page is not None and NodeView(page, self.request) or None
+        return page is not None and NodeView(page, self.request).view or None
 
     @Lazy
     def textItems(self):
@@ -107,8 +119,8 @@ class NodeView(BaseView):
         obj = self.targetObject
         if obj is not None:
             basicView = zapi.getMultiAdapter((obj, self.request))
+            basicView._viewName = self.context.viewName
             return basicView.view
-            #return zapi.getMultiAdapter((obj, self.request))
 
     def renderTarget(self):
         target = self.target
@@ -210,6 +222,17 @@ class NodeView(BaseView):
             target = self.targetObject
         if target is not None:
             return zapi.getUtility(IIntIds).getId(target)
+
+
+class ListPages(NodeView):
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['listpages']
+
+    @Lazy
+    def view(self):
+        return self
 
 
 class ConfigureView(NodeView):

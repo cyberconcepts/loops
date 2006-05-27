@@ -314,10 +314,10 @@ class IView(ILoopsObject):
 
     target = Attribute('Target object that is referenced by this view')
 
-    viewer = schema.TextLine(
-        title=_(u'Viewer Method Specification'),
-        description=_(u'Name, path or relative URI specifying a viewer '
-                       '(template, macro, ...) for this object'),
+    viewName = schema.TextLine(
+        title=_(u'View name'),
+        description=_(u'Name of a special view be used for presenting '
+                       'this object.'),
         default=u'',
         required=False)
 

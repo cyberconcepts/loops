@@ -1,0 +1,35 @@
+<metal:listing define-macro="requirements">
+  <div>
+    <h3 tal:attributes="class string:content-$level;
+                        ondblclick item/openEditWindow">
+      <span i18n:translate="">Concept</span>:
+      <span tal:content="item/title">Title</span>
+    </h3>
+    <metal:listing define-macro="requirementslisting2">
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('configure.html')">
+        <h4>Requirements</h4>
+        <table class="listing">
+          <tr>
+           <th i18n:translate="">Requirement</th>
+           <th i18n:translate="">Providers</th>
+          </tr>
+          <tr tal:repeat="related item/myKnowledgeProvidersForTask">
+            <td>
+              <a href="#"
+                  tal:attributes="href string:${view/url}/.target${related/required/uniqueId}"
+                  tal:content="related/required/title">Concept Title</a>
+            </td>
+            <td>
+              <tal:provider repeat="prov related/providers">
+                <a href="#"
+                   tal:attributes="href string:${view/url}/.target${prov/uniqueId}"
+                    tal:content="prov/title">Provider Title</a>
+              </tal:provider>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </metal:listing>
+  </div>
+</metal:listing>

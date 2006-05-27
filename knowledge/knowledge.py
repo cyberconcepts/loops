@@ -32,7 +32,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.typology.interfaces import IType
 from cybertools.knowledge.interfaces import IKnowledgeElement, IKnowledgeProvider
 from cybertools.knowledge.knowing import Knowing
-from loops.interfaces import IConcept
+from loops.interfaces import IConcept, IResource
 from loops.knowledge.interfaces import IPerson, ITask
 from loops.organize.party import Person as BasePerson
 from loops.organize.task import Task as BaseTask
@@ -41,7 +41,8 @@ from loops.type import TypeInterfaceSourceList, AdapterBase
 
 # register type interfaces - (TODO: use a function for this)
 
-TypeInterfaceSourceList.typeInterfaces += (IPerson, IKnowledgeElement, ITask)
+TypeInterfaceSourceList.typeInterfaces += (IPerson, IKnowledgeElement,
+                                           ITask, IKnowledgeProvider)
 
 
 class KnowledgeAdapterMixin(object):
@@ -170,6 +171,7 @@ class ConceptKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):
 class ResourceKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):
 
     implements(IKnowledgeProvider)
+    adapts(IResource)
 
     def getProvidedKnowledge(self):
         return (IKnowledgeElement(c)

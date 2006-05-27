@@ -6,6 +6,13 @@
    i18n_domain="zope"
    >
 
+  <!-- named templates -->
+
+  <zope:adapter
+      factory="loops.knowledge.util.knowledge_macros"
+      for="loops.browser.common.BaseView"
+      name="loops.knowledge_macros" />
+
   <!-- knowledge/learning management stuff -->
 
   <zope:adapter factory="loops.knowledge.knowledge.Person"
@@ -15,6 +22,58 @@
   <zope:class class="loops.knowledge.knowledge.Person">
     <require permission="zope.View"
              interface="loops.knowledge.interfaces.IPerson" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.interfaces.IPerson" />
   </zope:class>
+
+  <zope:adapter factory="loops.knowledge.knowledge.Topic"
+                provides="cybertools.knowledge.interfaces.IKnowledgeElement"
+                trusted="True" />
+
+  <zope:class class="loops.knowledge.knowledge.Topic">
+    <require permission="zope.View"
+             interface="cybertools.knowledge.interfaces.IKnowledgeElement" />
+  </zope:class>
+
+  <zope:adapter factory="loops.knowledge.knowledge.Task"
+                provides="loops.knowledge.interfaces.ITask"
+                trusted="True" />
+
+  <zope:class class="loops.knowledge.knowledge.Task">
+    <require permission="zope.View"
+             interface="loops.knowledge.interfaces.ITask" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.interfaces.ITask" />
+  </zope:class>
+
+  <zope:adapter factory="loops.knowledge.knowledge.ConceptKnowledgeProvider"
+                provides="cybertools.knowledge.interfaces.IKnowledgeProvider"
+                trusted="True" />
+
+  <zope:class class="loops.knowledge.knowledge.ConceptKnowledgeProvider">
+    <require permission="zope.View"
+             interface="cybertools.knowledge.interfaces.IKnowledgeProvider" />
+  </zope:class>
+
+  <zope:adapter factory="loops.knowledge.knowledge.ResourceKnowledgeProvider"
+                provides="cybertools.knowledge.interfaces.IKnowledgeProvider"
+                trusted="True" />
+
+  <zope:class class="loops.knowledge.knowledge.ResourceKnowledgeProvider">
+    <require permission="zope.View"
+             interface="cybertools.knowledge.interfaces.IKnowledgeProvider" />
+  </zope:class>
+
+  <!-- views -->
+
+  <zope:adapter
+        name="requirements"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.knowledge.browser.MyKnowledge"
+        permission="zope.View"
+        />
+
 
 </configure>

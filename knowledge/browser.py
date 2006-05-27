@@ -40,13 +40,18 @@ _ = MessageFactory('zope')
 
 class MyKnowledge(BaseView):
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-        person = getPersonForLoggedInUser(request)
+    template = NamedTemplate('loops.knowledge_macros')
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['requirements']
+
+    @Lazy
+    def person(self):
+        person = getPersonForLoggedInUser(self.request)
         if person is not None:
             person = IPerson(person)
-        self.person = person
+        return person
 
     def myKnowledge(self):
         if self.person is None:
@@ -57,8 +62,11 @@ class MyKnowledge(BaseView):
     def myKnowledgeProvidersForTask(self):
         if self.person is None:
             return ()
+        request = self.request
         task = ITask(self.context)
         # TODO: check correct conceptType for context!
         providers = self.person.getProvidersNeeded(task)
-        return providers
+        return ({'required': BaseView(req.context, request),
+                 'providers': (BaseView(p.context, request) for p in prov)}
+                    for req, prov in providers)
 

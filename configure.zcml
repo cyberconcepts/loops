@@ -315,6 +315,7 @@
       name="loops.PredicateSource"
       />
 
+  <include package=".knowledge" />
   <include package=".organize" />
   <include package=".browser" />
 

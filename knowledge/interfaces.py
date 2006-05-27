@@ -34,6 +34,8 @@ from cybertools.organize.interfaces import ITask as IBaseTask
 
 _ = MessageFactory('zope')
 
+# TODO: separate interfaces for viewing and changing methods!
+
 
 class IPerson(IBasePerson, IKnowing):
     """ A person, including knowledge/learning management features.

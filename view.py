@@ -60,10 +60,12 @@ class View(object):
     def setDescription(self, description): self._description = description
     description = property(getDescription, setDescription)
 
-    _viewer = u''
-    def getViewer(self): return self._viewer
-    def setViewer(self, viewer): self._viewer = viewer
-    viewer = property(getViewer, setViewer)
+    _viewName = u''
+    def getViewName(self): return self._viewName or getattr(self, '_viewer', u'')
+    def setViewName(self, viewName): self._viewName = viewName
+    viewName = property(getViewName, setViewName)
+
+    viewer = property(getViewName, setViewName) # BBB
 
     def getTarget(self):
         rels = getRelations(first=self, relationships=[TargetRelation])
