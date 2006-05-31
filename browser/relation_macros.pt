@@ -4,7 +4,8 @@
 <metal:assignments define-macro="listing">
   <fieldset>
     <legend tal:content="legend"
-            i18n:translate="">Listing</legend>
+            i18n:translate=""
+            style="padding: 0 4px 0 4px">Listing</legend>
     <metal:top define-slot="topActions" />
     <form metal:define-macro="listing_form"
           method="post" name="listing" action="."
@@ -75,7 +76,8 @@
 <metal:create define-macro="create">
   <fieldset>
     <legend tal:content="legend"
-            i18n:translate="">Create Object</legend>
+            i18n:translate=""
+            style="padding: 0 4px 0 4px">Create Object</legend>
     <form method="post" name="listing" action="."
         tal:attributes="action request/URL">
       <input type="hidden" name="action" value="create" />

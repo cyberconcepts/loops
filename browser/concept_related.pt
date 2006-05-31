@@ -13,8 +13,7 @@
                          summary string:Currently assigned objects;
                          legend string:Parent Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Parents;"
-             style="float:left; padding-right:20px">
+                         buttonText string:Remove Parents;">
           <metal:parents use-macro="views/relation_macros/listing" />
       </div>
       <div   tal:define="items view/children;
@@ -23,14 +22,12 @@
                          summary string:Currently assigned objects;
                          legend string:Child Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Children;"
-             style="padding-right:20px">
+                         buttonText string:Remove Children;">
           <metal:children use-macro="views/relation_macros/listing" />
       </div>
 
       <div   tal:define="legend string:Create Concept;
-                         buttonText string:Create Concept"
-             style="padding-right:20px; clear:left">
+                         buttonText string:Create Concept">
         <metal:create use-macro="views/relation_macros/create" />
       </div>
       
@@ -40,8 +37,7 @@
                          summary string:Assignment candidates;
                          legend string:Search;
                          showPredicate nothing;
-                         buttonText string:Assign;"
-             style="padding-right:20px">
+                         buttonText string:Assign;">
         <metal:assign use-macro="views/relation_macros/listing">
           <metal:search fill-slot="topActions">
             <metal:block use-macro="views/relation_macros/search" />
