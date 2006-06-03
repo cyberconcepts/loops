@@ -1,11 +1,10 @@
 <metal:data define-macro="conceptdata">
-  <div tal:attributes="class string:content-$level;
-                       ondblclick item/openEditWindow">
-    <h3>
+  <div tal:attributes="class string:content-$level;">
+    <h3 tal:attributes="ondblclick item/openEditWindow">
       <span i18n:translate="">Concept</span>:
       <span tal:content="item/title">Title</span>
     </h3>
-    <table>
+    <table tal:attributes="ondblclick item/openEditWindow">
       <tr tal:repeat="field item/fieldData">
         <td><span tal:content="field/title"
                   i18n:translate="" />:</td>

@@ -29,7 +29,7 @@ from zope.i18nmessageid import MessageFactory
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.knowledge.interfaces import IKnowing, IRequirementProfile
-from cybertools.organize.interfaces import IPerson as IBasePerson
+from loops.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask as IBaseTask
 
 _ = MessageFactory('zope')
