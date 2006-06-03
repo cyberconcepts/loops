@@ -65,9 +65,6 @@
 
   <content class=".concept.ConceptManager">
 
-    <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
     <factory id="loops.ConceptManager"
              description="Concept manager" />
 
@@ -114,9 +111,6 @@
              type="zope.app.content.interfaces.IContentType" />
 
   <content class=".resource.ResourceManager">
-
-    <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory id="loops.ResourceManager"
              description="Resource manager" />
@@ -193,9 +187,6 @@
              type="zope.app.content.interfaces.IContentType" />
 
   <content class=".view.ViewManager">
-
-    <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory id="loops.ViewManager"
              description="View manager" />

@@ -86,7 +86,18 @@ class ConceptView(BaseView):
             yield dict(title=f.title, value=value, id=n, widget=widget)
 
     def children(self):
+        cm = self.loopsRoot.getConceptManager()
+        hasType = cm.getTypePredicate()
+        standard = cm.getDefaultPredicate()
         for r in self.context.getChildRelations():
+            if r.predicate == hasType:
+                # only show top-level entries for type instances:
+                skip = False
+                for parent in r.second.getParents((standard,)):
+                    if parent.conceptType == self.context:
+                        skip = True
+                        break
+                if skip: continue
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
     def parents(self):

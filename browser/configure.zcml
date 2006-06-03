@@ -138,7 +138,6 @@
 
   <containerViews
       for="loops.interfaces.IConceptManager"
-      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
@@ -232,7 +231,6 @@
 
   <containerViews
       for="loops.interfaces.IResourceManager"
-      contents="zope.ManageContent"
       add="zope.ManageContent"
       />
 
