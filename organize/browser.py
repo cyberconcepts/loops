@@ -78,7 +78,7 @@ class PasswordWidget(BasePasswordWidget):
 
 class MemberRegistration(Form, NodeView):
 
-    form_fields = FormFields(IMemberRegistration)
+    form_fields = FormFields(IMemberRegistration).omit('age')
     template = NamedTemplate('loops.dataform')
     label = _(u'Member Registration')
 

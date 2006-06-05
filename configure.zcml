@@ -140,15 +140,19 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IDocument" />
-
-    <require
-        permission="zope.View"
-        interface="zope.app.size.interfaces.ISized" />
+        interface=".interfaces.IDocument
+                   .interfaces.IFileSystemResource
+                   .interfaces.IControlledResource
+                   zope.app.size.interfaces.ISized" />
 
     <require
         permission="zope.ManageContent"
         set_schema=".interfaces.IDocument" />
+
+    <require
+        permission="zope.ManageApplication"
+        set_schema=".interfaces.IFileSystemResource
+                    .interfaces.IControlledResource" />
 
   </content>
 

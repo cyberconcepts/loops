@@ -275,7 +275,7 @@
       view="AddLoopsDocument.html"
       />
 
-  <editform
+<!--  <editform
       label="Edit Document"
       name="edit.html"
       schema="loops.interfaces.IDocumentSchema"
@@ -283,15 +283,15 @@
       for="loops.interfaces.IDocument"
       template="edit.pt"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit" />
+      menu="zmi_views" title="Edit" />-->
 
-  <!--<page
+  <page
       name="edit.html"
       for="loops.interfaces.IDocument"
       class="loops.browser.resource.DocumentEditForm"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
-      />-->
+      />
 
   <page
       for="loops.interfaces.IDocument"

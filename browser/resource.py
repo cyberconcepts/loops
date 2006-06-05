@@ -28,11 +28,13 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.formlib.form import FormFields
+from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from loops.interfaces import IDocument, IMediaAsset
+from loops.interfaces import IFileSystemResource, IControlledResource
 from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView
@@ -47,7 +49,10 @@ renderingFactories = {
 
 
 class DocumentEditForm(EditForm):
-    form_fields = FormFields(IDocument)
+    form_fields = FormFields(IDocument, IFileSystemResource, IControlledResource
+    )
+    for f in form_fields:
+        f.render_context |= DISPLAY_UNWRITEABLE
 
 class MediaAssetEditForm(EditForm):
     form_fields = FormFields(IMediaAsset)

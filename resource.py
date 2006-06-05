@@ -43,6 +43,7 @@ from cybertools.relation.interfaces import IRelatable
 from interfaces import IResource
 from interfaces import IDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
+from interfaces import IFileSystemResource, IControlledResource
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 from interfaces import IIndexAttributes
@@ -54,7 +55,8 @@ _ = MessageFactory('loops')
 
 class Resource(Contained, Persistent):
 
-    implements(IResource, IResourceManagerContained, IRelatable)
+    implements(IResource, IFileSystemResource, IControlledResource,
+               IResourceManagerContained, IRelatable)
 
     _size = _width = _height = 0
 
@@ -69,6 +71,16 @@ class Resource(Contained, Persistent):
             self._contentType = contentType
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
+
+    _fsPath = ''
+    def setFsPath(self, fsPath): self._fsPath = fsPath
+    def getFsPath(self): return self._fsPath
+    fsPath = property(getFsPath, setFsPath)
+
+    _readOnly = ''
+    def setReadOnly(self, readOnly): self._readOnly = readOnly
+    def getReadOnly(self): return self._readOnly
+    readOnly = property(getReadOnly, setReadOnly)
 
     def __init__(self, title=u''):
         self.title = title

@@ -202,6 +202,27 @@ class IResourceSchema(Interface):
                 required=False)
 
 
+class IFileSystemResource(Interface):
+
+    fsPath = schema.BytesLine(
+                title=_(u'Filesystem Path'),
+                description=_(u'Optional path to a file in the filesystem '
+                               'to be used for storing the resource'),
+                default='',
+                missing_value='',
+                required=False)
+
+
+class IControlledResource(Interface):
+
+    readOnly = schema.Bool(
+                title=_(u'Read only'),
+                description=_(u'Check this if resource may not be modified '
+                               'after being first filled with non-empty content'),
+                default=False,
+                required=False)
+
+
 class IResource(ILoopsObject, IPotentialTarget):
     """ A resource is an atomic information element that is made
         available via a view or a concept.
@@ -233,7 +254,6 @@ class IResource(ILoopsObject, IPotentialTarget):
         """ Remove the concept relations to the concept given from self,
             optionally restricting them to the predicates given.
         """
-
 
 
 class IDocumentSchema(IResourceSchema):
