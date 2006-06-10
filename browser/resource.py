@@ -49,8 +49,8 @@ renderingFactories = {
 
 
 class DocumentEditForm(EditForm):
-    form_fields = FormFields(IDocument, IFileSystemResource, IControlledResource
-    )
+    #form_fields = FormFields(IDocument, IFileSystemResource, IControlledResource)
+    form_fields = FormFields(IDocument)
     for f in form_fields:
         f.render_context |= DISPLAY_UNWRITEABLE
 
