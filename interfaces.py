@@ -32,8 +32,7 @@ from zope.app.folder.interfaces import IFolder
 from cybertools.relation.interfaces import IRelation
 
 import util
-
-_ = MessageFactory('loops')
+from util import _
 
 
 # common interfaces

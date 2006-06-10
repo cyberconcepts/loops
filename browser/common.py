@@ -28,11 +28,14 @@ from zope.app.form.browser.interfaces import ITerms
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
+from zope.formlib.form import FormFields
 from zope.formlib.form import EditForm as BaseEditForm
+from zope.formlib.form import AddForm as BaseAddForm
 from zope.formlib.namedtemplate import NamedTemplate
-from zope.interface import implements
+from zope.interface import Interface, implements
 from zope.app.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import ISkin
+from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -40,6 +43,29 @@ from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IView
 from loops import util
+from loops.util import _
+
+
+class NameField(schema.ASCIILine):
+
+    def _validate(self, value):
+        super(NameField, self)._validate(value)
+
+
+class IAddForm(Interface):
+
+    name = NameField(
+            title=_(u'Object name'),
+            description=_(u'Name of the object - will be used for addressing the '
+                        'object via a URL; should therefore be unique within '
+                        'the container and not contain special characters')
+        )
+
+
+class AddForm(BaseAddForm):
+
+    form_fields = FormFields(IAddForm)
+    template = NamedTemplate('loops.pageform')
 
 
 class EditForm(BaseEditForm):

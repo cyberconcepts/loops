@@ -17,6 +17,12 @@ from loops.concept import Concept, ConceptManager
 from loops.resource import Document, MediaAsset, ResourceManager
 from loops.view import Node, ViewManager
 
+# just for making sure there aren't any syntax and other errors during
+# Zope startup:
+
+from loops.browser.manager import LoopsAddForm, LoopsEditForm
+
+
 class Test(unittest.TestCase):
     "Basic tests for the loops package."
 

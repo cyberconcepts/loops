@@ -41,11 +41,15 @@ function toggleFormFieldHelp(ob,state) {
 
 <div id="viewspace" metal:define-slot="viewspace">
 
-  <h1  i18n:translate="heading_editform"
-       metal:define-slot="heading">Edit
+  <h1 tal:condition="not:view/label"
+      i18n:translate="heading_editform"
+      metal:define-slot="heading">Edit
     <span i18n:name="title"
-          tal:content="context/title">Concept</span>
+          tal:content="context/title|context/zope:name">Concept</span>
   </h1>
+
+  <h1 tal:condition="view/label"
+      tal:content="view/label">Headline</h1>
 
   <metal:block define-macro="header">
 

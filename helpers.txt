@@ -19,26 +19,30 @@ Let's first do some basic imports
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
 
-and setup a simple loops site with its manager objects,
+and provide a relation registry:
+
+  >>> from cybertools.relation.interfaces import IRelationRegistry
+  >>> from cybertools.relation.registry import DummyRelationRegistry
+  >>> from zope.app.testing import ztapi
+  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+
+Now we can setup a simple loops site with its manager objects, using a
+loops setup manager:
   
   >>> from loops import Loops
   >>> site['loops'] = Loops()
   >>> loopsRoot = site['loops']
 
-  >>> from loops.concept import ConceptManager, Concept
-  >>> loopsRoot['concepts'] = ConceptManager()
+  >>> from loops.setup import SetupManager
+  >>> setup = SetupManager(loopsRoot)
+  >>> setup.setup()
   >>> concepts = loopsRoot['concepts']
-
-  >>> from loops.resource import ResourceManager, Document, MediaAsset
-  >>> loopsRoot['resources'] = ResourceManager()
   >>> resources = loopsRoot['resources']
-
-  >>> from loops.view import ViewManager, Node
-  >>> loopsRoot['views'] = ViewManager()
   >>> views = loopsRoot['views']
 
-some concepts,
+We also add some example concepts,
   
+  >>> from loops.concept import Concept
   >>> cc1 = Concept(u'Zope')
   >>> concepts['cc1'] = cc1
   >>> cc1.title
@@ -51,6 +55,7 @@ some concepts,
 
 resources,
 
+  >>> from loops.resource import Document, MediaAsset
   >>> doc1 = Document(u'Zope Info')
   >>> resources['doc1'] = doc1
   >>> doc1.title
@@ -61,6 +66,7 @@ resources,
 
 and nodes (in view space):
 
+  >>> from loops.view import Node
   >>> m1 = Node(u'Home')
   >>> views['m1'] = m1
   >>> m1.nodeType = 'menu'
@@ -69,12 +75,6 @@ and nodes (in view space):
   >>> m1['p1'] = m1p1
   >>> m1p1.nodeType = 'page'
 
-Finally, we also need a relation registry:
-
-  >>> from cybertools.relation.interfaces import IRelationRegistry
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
 
 Type management with typology
 =============================
@@ -98,11 +98,10 @@ As we have not yet associated a type with one of our content objects we get
   >>> cc1_type.token
   '.unknown'
 
-So we create two special concepts: one ('hasType') as the predicate signifying
-a type relation, and the other ('type') as the one and only type concept:
+During setup we created two special concepts: one ('hasType') as the predicate
+signifying a type relation, and the other ('type') as the one and only type
+concept:
 
-  >>> concepts['hasType'] = Concept(u'has type')
-  >>> concepts['type'] = Concept(u'Type')
   >>> typeObject = concepts['type']
 
 Assigning a type to a concept is a core functionality of concepts as
@@ -189,8 +188,9 @@ get a type manager from all loops objects, always with the same context:
 
   >>> types = typeManager.types
   >>> sorted(t.token for t in types)
-  ['.loops/concepts/topic', '.loops/concepts/type',
-   'loops.resource.Document', 'loops.resource.MediaAsset']
+    ['.loops/concepts/predicate', '.loops/concepts/topic',
+     '.loops/concepts/type', 'loops.resource.Document',
+     'loops.resource.MediaAsset']
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True
@@ -200,7 +200,7 @@ condition:
 
   >>> types = typeManager.listTypes(include=('concept',))
   >>> sorted(t.token for t in types)
-  ['.loops/concepts/topic', '.loops/concepts/type']
+  ['.loops/concepts/predicate', '.loops/concepts/topic', '.loops/concepts/type']
   >>> types = typeManager.listTypes(exclude=('concept',))
   >>> sorted(t.token for t in types)
   ['loops.resource.Document', 'loops.resource.MediaAsset']

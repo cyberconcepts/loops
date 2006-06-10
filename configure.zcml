@@ -284,6 +284,7 @@
   </class>
 
   
+  <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />

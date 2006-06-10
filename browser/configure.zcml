@@ -85,13 +85,11 @@
 
   <!-- loops top-level container -->
 
-  <addform
-      label="Add loops Container"
+  <page
       name="AddLoopsContainer.html"
-      schema="loops.interfaces.ILoops"
-      content_factory="loops.Loops"
-      template="add.pt"
-      permission="zope.ManageContent"
+      for="zope.app.container.interfaces.IAdding"
+      class="loops.browser.manager.LoopsAddForm"
+      permission="zope.ManageApplication"
       />
 
   <addMenuItem
@@ -108,14 +106,13 @@
       add="zope.ManageContent"
       />
 
-  <editform
-      label="Edit Loops Container"
+  <page
       name="edit.html"
-      schema="loops.interfaces.ILoops"
-      fields="skinName"
       for="loops.interfaces.ILoops"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit" />      
+      class="loops.browser.manager.LoopsEditForm"
+      permission="zope.ManageApplication"
+      menu="zmi_views" title="Edit"
+      />
 
   <!-- concept manager -->
 

@@ -23,8 +23,11 @@ $Id$
 """
 
 from zope.interface import directlyProvides, directlyProvidedBy
+from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
 #from view import TargetRelation
+
+_ = MessageFactory('loops')
 
 
 class KeywordVocabulary(vocabulary.SimpleVocabulary):
