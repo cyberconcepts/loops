@@ -18,62 +18,36 @@ and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
   
-  >>> from loops import Loops
-  >>> from loops.concept import ConceptManager, Concept
-  >>> from loops.resource import ResourceManager
-  >>> from loops.interfaces import IResource, IConcept, ITypeConcept
-
-  >>> loopsRoot = site['loops'] = Loops()
-
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> relations = DummyRelationRegistry()
   >>> component.provideUtility(relations, IRelationRegistry)
 
   >>> from cybertools.typology.interfaces import IType
+  >>> from loops.interfaces import IConcept, ITypeConcept
   >>> from loops.type import ConceptType, TypeConcept
   >>> component.provideAdapter(ConceptType, (IConcept,), IType)
   >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
 
-  >>> concepts = loopsRoot['concepts'] = ConceptManager()
-  >>> resources = loopsRoot['resources'] = ResourceManager()
-
-  >>> hasType = concepts['hasType'] = Concept(u'has type')
-  >>> type = concepts['type'] = Concept(u'Type')
-  >>> type.conceptType = type
-
-  >>> predicate = concepts['predicate'] = Concept(u'Predicate')
-  >>> predicate.conceptType = type
-  >>> hasType.conceptType = predicate
-
-We need some predicates to set up the relationships between our concepts:
-
-  >>> standard = concepts['standard'] = Concept(u'subobject')
-  >>> depends = concepts['depends'] = Concept(u'depends')
-  >>> knows = concepts['knows'] = Concept(u'knows')
-  >>> requires = concepts['requires'] = Concept(u'requires')
-  >>> provides = concepts['provides'] = Concept(u'provides')
+  >>> from loops.interfaces import ILoops
+  >>> from loops.setup import ISetupManager
+  >>> from loops.knowledge.setup import SetupManager
+  >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
+  ...                           name='knowledge')
   
-  >>> for p in (standard, depends, knows, requires, provides):
-  ...     p.conceptType = predicate
+  >>> from loops import Loops
+  >>> loopsRoot = site['loops'] = Loops()
 
-And last not least we need some type concepts for controlling the
-meaning of the concepts objects:
-
-  >>> from cybertools.knowledge.interfaces import IKnowledgeElement
-  >>> topic = concepts['topic'] = Concept(u'Topic')
-  >>> topic.conceptType = type
-  >>> ITypeConcept(topic).typeInterface = IKnowledgeElement
-
-  >>> from loops.knowledge.interfaces import IPerson
-  >>> person = concepts['person'] = Concept(u'Person')
-  >>> person.conceptType = type
-  >>> ITypeConcept(person).typeInterface = IPerson
+  >>> from loops.setup import SetupManager
+  >>> setup = SetupManager(loopsRoot)
+  >>> concepts, resources, views = setup.setup()
   
-  >>> from loops.knowledge.interfaces import ITask
-  >>> task = concepts['task'] = Concept(u'Task')
-  >>> task.conceptType = type
-  >>> ITypeConcept(task).typeInterface = ITask
+We need some type concepts for controlling the meaning of the concepts objects,
+these have already been created during setup:
+
+  >>> topic = concepts['topic']
+  >>> person = concepts['person']
+  >>> task = concepts['task']
 
 
 Manage knowledge and knowledge requirements
@@ -82,6 +56,9 @@ Manage knowledge and knowledge requirements
 The classes used in this package are just adapters to IConcept.
 
   >>> from loops.knowledge.knowledge import Person, Topic, Task
+  >>> from loops.knowledge.interfaces import IPerson
+  >>> from cybertools.knowledge.interfaces import IKnowledgeElement
+  >>> from loops.knowledge.interfaces import ITask
   >>> component.provideAdapter(Person, (IConcept,), IPerson)
   >>> component.provideAdapter(Topic, (IConcept,), IKnowledgeElement)
   >>> component.provideAdapter(Task, (IConcept,), ITask)
@@ -91,6 +68,7 @@ interdependencies. Note that in order to discern the concepts created
 from their typeInterface adapters we here append a 'C' to the name of
 the variables:
 
+  >>> from loops.concept import Concept
   >>> progLangC = concepts['progLang'] = Concept(u'Programming Language')
   >>> ooProgC = concepts['ooProg'] = Concept(u'Object-oriented Programming')
   >>> pythonC = concepts['python'] = Concept(u'Python')
@@ -142,6 +120,7 @@ a position with the requirement profile:
 Luckily there are a few elearning content objects out there that
 provide some of the knowledge needed:
 
+  >>> from loops.interfaces import IResource
   >>> from cybertools.knowledge.interfaces import IKnowledgeProvider
   >>> from loops.knowledge.knowledge import ConceptKnowledgeProvider
   >>> component.provideAdapter(ConceptKnowledgeProvider, (IConcept,))

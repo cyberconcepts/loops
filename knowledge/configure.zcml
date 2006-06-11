@@ -75,5 +75,9 @@
         permission="zope.View"
         />
 
+  <!-- other adapters -->
+
+  <zope:adapter factory="loops.knowledge.setup.SetupManager"
+                name="knowledge" />
 
 </configure>

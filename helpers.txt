@@ -30,15 +30,13 @@ Now we can setup a simple loops site with its manager objects, using a
 loops setup manager:
   
   >>> from loops import Loops
-  >>> site['loops'] = Loops()
-  >>> loopsRoot = site['loops']
+  >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.setup import SetupManager
   >>> setup = SetupManager(loopsRoot)
-  >>> setup.setup()
-  >>> concepts = loopsRoot['concepts']
-  >>> resources = loopsRoot['resources']
-  >>> views = loopsRoot['views']
+  >>> concepts, resources, views = setup.setup()
+  >>> concepts['hasType'].title
+  u'has Type'
 
 We also add some example concepts,
   

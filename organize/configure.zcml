@@ -90,4 +90,9 @@
       permission="zope.Public"
       />
 
+  <!-- other adapters -->
+
+  <zope:adapter factory="loops.organize.setup.SetupManager"
+                name="organize" />
+
 </configure>

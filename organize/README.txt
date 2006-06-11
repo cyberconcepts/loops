@@ -18,38 +18,35 @@ and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
   
-  >>> from loops import Loops
-  >>> from loops.concept import ConceptManager, Concept
-  >>> from loops.interfaces import IConcept, ITypeConcept
-
-  >>> loopsRoot = site['loops'] = Loops()
-
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> relations = DummyRelationRegistry()
   >>> component.provideUtility(relations, IRelationRegistry)
 
   >>> from cybertools.typology.interfaces import IType
+  >>> from loops.interfaces import IConcept, ITypeConcept
   >>> from loops.type import ConceptType, TypeConcept
   >>> component.provideAdapter(ConceptType, (IConcept,), IType)
   >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
 
-  >>> loopsRoot['concepts'] = ConceptManager()
-  >>> concepts = loopsRoot['concepts']
-
-  >>> concepts['hasType'] = Concept(u'has type')
-  >>> concepts['type'] = Concept(u'Type')
-  >>> type = concepts['type']
-  >>> type.conceptType = type
-
-  >>> from loops.organize.interfaces import IPerson
-  >>> concepts['person'] = Concept(u'Person')
-  >>> person = concepts['person']
-  >>> person.conceptType = type
-  >>> ITypeConcept(person).typeInterface = IPerson
+  >>> from loops.interfaces import ILoops
+  >>> from loops.setup import ISetupManager
+  >>> from loops.organize.setup import SetupManager
+  >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
+  ...                           name='organize')
   
-  >>> johnC = Concept(u'John')
-  >>> concepts['john'] = johnC
+  >>> from loops import Loops
+  >>> loopsRoot = site['loops'] = Loops()
+
+  >>> from loops.setup import SetupManager
+  >>> setup = SetupManager(loopsRoot)
+  >>> concepts, resources, views = setup.setup()
+  
+  >>> type = concepts['type']
+  >>> person = concepts['person']
+  
+  >>> from loops.concept import Concept
+  >>> johnC = concepts['john'] = Concept(u'John')
   >>> johnC.conceptType = person
 
 
@@ -58,6 +55,7 @@ Organizations: Persons (and Users), Institutions, Addresses...
 
 The classes used in this package are just adapters to IConcept.
 
+  >>> from loops.organize.interfaces import IPerson
   >>> from loops.organize.party import Person
   >>> component.provideAdapter(Person, (IConcept,), IPerson)
 
@@ -71,7 +69,7 @@ The classes used in this package are just adapters to IConcept.
   True
   >>> john.someOtherAttribute
   Traceback (most recent call last):
-      ...
+  ...
   AttributeError: someOtherAttribute
 
 We can use the age calculations from the base Person class:
@@ -102,7 +100,6 @@ For testing, we first have to provide the needed utilities and settings
   >>> component.provideUtility(principalAnnotations, IPrincipalAnnotationUtility)
 
   >>> principal = auth.definePrincipal('users.john', u'John', login='john')
-
   >>> john.userId = 'users.john'
 
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
@@ -154,8 +151,7 @@ concept assigned we should get an error:
 
   >>> john.userId = 'users.john'
 
-  >>> marthaC = Concept(u'Martha')
-  >>> concepts['martha'] = marthaC
+  >>> marthaC = concepts['martha'] = Concept(u'Martha')
   >>> marthaC.conceptType = person
   >>> martha = IPerson(marthaC)
 
@@ -192,14 +188,12 @@ with a principal folder:
 In addition, we have to create at least one node in the view space
 and register an IMemberRegistrationManager adapter for the loops root object:
 
-  >>> from loops.view import ViewManager, Node
-  >>> views = loopsRoot['views'] = ViewManager()
+  >>> from loops.view import Node
   >>> menu = views['menu'] = Node('Home')
   >>> menu.nodeType = 'menu'
 
   >>> from loops.organize.member import MemberRegistrationManager
   >>> from loops.organize.interfaces import IMemberRegistrationManager
-  >>> from loops.interfaces import ILoops
   >>> component.provideAdapter(MemberRegistrationManager)
 
 Now we can enter the registration info for a new member (after having made

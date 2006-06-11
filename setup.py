@@ -22,12 +22,11 @@ Automatic setup of a loops site.
 $Id$
 """
 
-import transaction
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
+from zope import component
 from zope.component import adapts
 from zope.interface import implements, Interface
-from zope.cachedescriptors.property import Lazy
 
 from loops.interfaces import ILoops
 from loops.concept import ConceptManager, Concept
@@ -56,6 +55,11 @@ class SetupManager(object):
     def setup(self):
         concepts, resources, views = self.setupManagers()
         self.setupCoreConcepts(concepts)
+        appSetups = dict(component.getAdapters((self.context,), ISetupManager))
+        for smName in appSetups:
+            if smName: # skip core (unnamed), i.e. this, adapter
+                appSetups[smName].setup()
+        return concepts, resources, views # just for convenience when testing
 
     def setupManagers(self):
         loopsRoot = self.context
@@ -65,22 +69,21 @@ class SetupManager(object):
         return concepts, resources, views
         
     def setupCoreConcepts(self, conceptManager):
-        typeConcept = self.addObject(conceptManager, Concept, 'type', u'Type')
-        hasType = self.addObject(conceptManager, Concept, 'hasType', u'has type')
-        predicate = self.addObject(conceptManager, Concept, 'predicate', u'Predicate')
-        standard = self.addObject(conceptManager, Concept, 'standard', u'subobject')
+        typeConcept = self.addObject(conceptManager, Concept, 'type', title=u'Type')
+        hasType = self.addObject(conceptManager, Concept, 'hasType', title=u'has Type')
+        predicate = self.addObject(conceptManager, Concept, 'predicate', title=u'Predicate')
+        standard = self.addObject(conceptManager, Concept, 'standard', title=u'subobject')
         typeConcept.conceptType = typeConcept
         predicate.conceptType = typeConcept
         hasType.conceptType = predicate
         standard.conceptType = predicate
 
-    def addObject(self, container, class_, name, title=None):
+    def addObject(self, container, class_, name, **kw):
         if name in container:
             return container[name]
-        if title:
-            obj = container[name] = class_(title)
-        else:
-            obj = container[name] = class_()
+        obj = container[name] = class_()
+        for attr in kw:
+            setattr(obj, attr, kw[attr])
         notify(ObjectCreatedEvent(obj))
         notify(ObjectModifiedEvent(obj))
         return obj
