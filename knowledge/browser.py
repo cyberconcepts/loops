@@ -33,7 +33,7 @@ from zope.i18nmessageid import MessageFactory
 from cybertools.typology.interfaces import IType
 from loops.browser.common import BaseView
 from loops.knowledge.interfaces import IPerson, ITask
-from loops.organize.browser import getPersonForLoggedInUser
+from loops.organize.browser import getPersonForUser
 
 _ = MessageFactory('zope')
 
@@ -48,7 +48,7 @@ class MyKnowledge(BaseView):
 
     @Lazy
     def person(self):
-        person = getPersonForLoggedInUser(self.request)
+        person = getPersonForUser(self.context, self.request)
         if person is not None:
             person = IPerson(person)
         return person

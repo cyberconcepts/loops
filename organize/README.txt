@@ -37,6 +37,7 @@ ZCML setup):
   
   >>> from loops import Loops
   >>> loopsRoot = site['loops'] = Loops()
+  >>> loopsId = relations.getUniqueIdForObject(loopsRoot)
 
   >>> from loops.setup import SetupManager
   >>> setup = SetupManager(loopsRoot)
@@ -104,7 +105,7 @@ For testing, we first have to provide the needed utilities and settings
 
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
   >>> from loops.organize.party import ANNOTATION_KEY
-  >>> annotations.get(ANNOTATION_KEY) == johnC
+  >>> annotations[ANNOTATION_KEY][loopsId] == johnC
   True
 
 Change a userId assignment:
@@ -113,15 +114,15 @@ Change a userId assignment:
   >>> john.userId = 'users.johnny'
       
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
-  >>> annotations.get(ANNOTATION_KEY) == johnC
+  >>> annotations[ANNOTATION_KEY][loopsId] == johnC
   True
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
-  >>> annotations.get(ANNOTATION_KEY) is None
+  >>> annotations[ANNOTATION_KEY][loopsId] is None
   True
 
   >>> john.userId = None
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
-  >>> annotations.get(ANNOTATION_KEY) is None
+  >>> annotations[ANNOTATION_KEY][loopsId] is None
   True
 
 Deleting a person with a userId assigned removes the corresponding
@@ -138,17 +139,20 @@ principal annotation:
 
   >>> john.userId = 'users.john'
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
-  >>> annotations.get(ANNOTATION_KEY) == johnC
+  >>> annotations[ANNOTATION_KEY][loopsId] == johnC
   True
 
   >>> del concepts['john']
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
-  >>> annotations.get(ANNOTATION_KEY) is None
+  >>> annotations[ANNOTATION_KEY][loopsId] is None
   True
 
 If we try to assign a userId of a principal that already has a person
 concept assigned we should get an error:
 
+  >>> johnC = concepts['john'] = Concept(u'John')
+  >>> johnC.conceptType = person
+  >>> john = IPerson(johnC)
   >>> john.userId = 'users.john'
 
   >>> marthaC = concepts['martha'] = Concept(u'Martha')

@@ -40,13 +40,9 @@ from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
 from loops.organize.interfaces import IMemberRegistration
+from loops.organize.party import getPersonForUser
 
 _ = MessageFactory('zope')
-
-
-def getPersonForLoggedInUser(request):
-        pa = annotations(request.principal)
-        return  pa.get(ANNOTATION_KEY, None)
 
 
 class MyStuff(ConceptView):
@@ -54,7 +50,7 @@ class MyStuff(ConceptView):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.person = getPersonForLoggedInUser(request)
+        self.person = getPersonForUser(context, request)
         if self.person is not None:
             self.context = self.person
 

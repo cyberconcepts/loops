@@ -51,6 +51,7 @@ def raiseValidationError(info):
 class UserId(schema.TextLine):
     
     def _validate(self, userId):
+        from loops.organize.party import getPersonForUser
         if not userId:
             return
         context = removeSecurityProxy(self.context).context
@@ -60,8 +61,7 @@ class UserId(schema.TextLine):
         except PrincipalLookupError:
             raiseValidationError(_(u'User $userId does not exist',
                                    mapping={'userId': userId}))
-        pa = annotations(principal)
-        person = pa.get(ANNOTATION_KEY, None)
+        person = getPersonForUser(context, principal=principal)
         if person is not None and person != context:
             raiseValidationError(
                 _(u'There is alread a person ($person) assigned to user $userId.',

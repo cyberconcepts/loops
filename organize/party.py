@@ -22,6 +22,7 @@ Adapters for IConcept providing interfaces from the cybertools.organize package.
 $Id$
 """
 
+from persistent.mapping import PersistentMapping
 from zope import interface, component
 from zope.app import zapi
 from zope.app.principalannotation import annotations
@@ -35,7 +36,9 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.interfaces import IAddress
 from cybertools.organize.party import Person as BasePerson
+from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
+from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
 from loops.type import TypeInterfaceSourceList, AdapterBase
@@ -44,6 +47,22 @@ from loops.type import TypeInterfaceSourceList, AdapterBase
 # register type interfaces - (TODO: use a function for this)
 
 TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
+
+
+def getPersonForUser(context, request=None, principal=None):
+    if principal is None:
+        principal = request.principal
+    loops = context.getLoopsRoot()
+    pa = annotations(principal).get(ANNOTATION_KEY, None)
+    if pa is None:
+        return None
+    if type(pa) == Concept: # backward compatibility
+        if pa.getLoopsRoot() == loops:
+            return  pa
+        else:
+            return None
+    return pa.get(component.getUtility(
+                    IRelationRegistry, context=context).getUniqueIdForObject(loops))
 
 
 class Person(AdapterBase, BasePerson):
@@ -58,16 +77,22 @@ class Person(AdapterBase, BasePerson):
     def getUserId(self):
         return getattr(self.context, '_userId', None)
     def setUserId(self, userId):
-        auth = self.authentication
+        #auth = self.authentication
         if userId:
-            principal = auth.getPrincipal(userId)
-            pa = annotations(principal)
-            person = pa.get(ANNOTATION_KEY, None)
+            principal = self.getPrincipalForUserId(userId)
+            person = getPersonForUser(self.context, principal=principal)
             if person is not None and person != self.context:
                 raise ValueError(
                     'There is alread a person (%s) assigned to user %s.'
                     % (zapi.getName(person), userId))
-            pa[ANNOTATION_KEY] = self.context
+            pa = annotations(principal)
+            #pa[ANNOTATION_KEY] = self.context
+            intIds = component.getUtility(IRelationRegistry, context=self.context)
+            loopsId = intIds.getUniqueIdForObject(self.context.getLoopsRoot())
+            ann = pa.get(ANNOTATION_KEY)
+            if ann is None:
+                ann = pa[ANNOTATION_KEY] = PersistentMapping()
+            ann[loopsId] = self.context
         oldUserId = self.userId
         if oldUserId and oldUserId != userId:
             self.removeReferenceFromPrincipal(oldUserId)
@@ -78,7 +103,14 @@ class Person(AdapterBase, BasePerson):
         principal = self.getPrincipalForUserId(userId)
         if principal is not None:
             pa = annotations(principal)
-            pa[ANNOTATION_KEY] = None
+            ann = pa.get(ANNOTATION_KEY)
+            if type(ann) == Concept: # backward compatibility
+                pa[ANNOTATION_KEY] = None
+            else:
+                if ann is not None:
+                    intIds = component.getUtility(IRelationRegistry, context=self.context)
+                    loopsId = intIds.getUniqueIdForObject(self.context.getLoopsRoot())
+                    ann[loopsId] = None
 
     def getPhoneNumbers(self):
         return getattr(self.context, '_phoneNumbers', [])
@@ -93,16 +125,6 @@ class Person(AdapterBase, BasePerson):
     @Lazy
     def principal(self):
         return self.getPrincipalForUserId()
-
-    def getPrincipalForUserId(self, userId=None):
-        userId = userId or self.userId
-        if not userId:
-            return None
-        auth = self.authentication
-        try:
-            return auth.getPrincipal(userId)
-        except PrincipalLookupError:
-            return None
 
     def getPrincipalForUserId(self, userId=None):
         userId = userId or self.userId
