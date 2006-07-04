@@ -31,12 +31,17 @@ from zope import schema
 from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
-from loops.interfaces import ITypeConcept
+from loops.interfaces import ITypeConcept, IResourceAdapter, IFile, IImage
 from loops.concept import Concept
-from loops.resource import Document, MediaAsset
+from loops.resource import Resource, Document, MediaAsset
 
 
 class LoopsType(BaseType):
+    
+    adapts(ILoopsObject)
+    
+    factoryMapping = dict(concept=Concept, resource=Resource)
+    containerMapping = dict(concept='concepts', resource='resources')
 
     @Lazy
     def title(self):
@@ -52,55 +57,79 @@ class LoopsType(BaseType):
     def tokenForSearch(self):
         tp = self.typeProvider
         typeName = tp is None and 'unknown' or str(zapi.getName(tp))
-        return ':'.join(('loops:concept', typeName,))
+        return ':'.join(('loops', self.qualifiers[0], typeName,))
+    
+    @Lazy
+    def typeInterface(self):
+        adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
+        if adapter is not None:
+            return adapter.typeInterface
+        else:
+            conceptType = self.typeProvider
+            typeConcept = self.root.getConceptManager().getTypeConcept()
+            if conceptType is typeConcept:
+                return ITypeConcept
+        return None
+
+    @Lazy
+    def qualifiers(self):
+        ti = self.typeInterface
+        if ti is None or not issubclass(ti, IResourceAdapter):
+            return ('concept',)
+        return ('resource',)
+    
+    @Lazy
+    def factory(self):
+        return self.factoryMapping.get(self.qualifiers[0], Concept)
+    
+    @Lazy
+    def defaultContainer(self):
+        return self.root[self.containerMapping.get(self.qualifiers[0], 'concept')]
 
     @Lazy
     def root(self):
         return self.context.getLoopsRoot()
 
-
-class ConceptType(LoopsType):
-    """ The IType adapter for concept objects.
-    """
-
-    adapts(IConcept)
-
-    qualifiers = ('concept',)
-    factory = Concept
-
     @Lazy
     def typeProvider(self):
         return self.context.conceptType
 
-    @Lazy
-    def defaultContainer(self):
-        return self.root.getConceptManager()
 
-    @Lazy
-    def typeInterface(self):
-        adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
-        if adapter is not None:  # always gives TypeConcept
-            return adapter.typeInterface
-        else:
-            conceptType = self.typeProvider
-            if conceptType is conceptType.getLoopsRoot().getConceptManager().getTypeConcept():
-                return ITypeConcept
-        return None
-
-
-class ConceptTypeInfo(ConceptType):
+class LoopsTypeInfo(LoopsType):
+    """ The type info class used by the type manager for listing types.
+    """
 
     def __init__(self, typeProvider):
         self.typeProvider = self.context = typeProvider
 
 
+class ConceptType(LoopsType):
+    """ The IType adapter for concept objects. 
+        Probably obsolete because all real stuff has gone to LoopsType.
+    """
+
+    adapts(IConcept)
+
+
+class ConceptTypeInfo(LoopsTypeInfo):
+    """ The type info class used by the type manager for listing types.
+        Probably obsolete because all real stuff has gone to LoopsTypeInfo.
+    """
+
+
 class ResourceType(LoopsType):
+    """ The 'old-style' resource type - different classes (Document, MediaAsset)
+        per type. Will be replaced by new style types that are governed by
+        type concepts as is already the case for concepts.
+    """
 
     adapts(IResource)
 
     typeTitles = {'MediaAsset': u'Media Asset'}
 
+    typeInterface = None
     qualifiers = ('resource',)
+    typeProvider = None
 
     @Lazy
     def title(self):
@@ -204,6 +233,7 @@ class TypeInterfaceSourceList(object):
 
     implements(schema.interfaces.IIterableSource)
 
+    #typeInterfaces = (ITypeConcept, IFile, IImage,)
     typeInterfaces = (ITypeConcept,)
 
     def __init__(self, context):

@@ -125,13 +125,13 @@
       permission="zope.ManageContent"
       />
 
-  <addMenuItem
+  <!--<addMenuItem
       class="loops.concept.ConceptManager"
       title="Concept Manager"
       description="A concept manager manages concepts"
       permission="zope.ManageContent"
       view="AddLoopsConceptManager.html"
-      />
+      />-->
 
   <containerViews
       for="loops.interfaces.IConceptManager"
@@ -218,13 +218,13 @@
       permission="zope.ManageContent"
       />
 
-  <addMenuItem
+  <!--<addMenuItem
       class="loops.resource.ResourceManager"
       title="Resource Manager"
       description="A resource manager manages resources"
       permission="zope.ManageContent"
       view="AddLoopsResourceManager.html"
-      />
+      />-->
 
   <containerViews
       for="loops.interfaces.IResourceManager"
@@ -377,13 +377,13 @@
       permission="zope.ManageContent"
       />
 
-  <addMenuItem
+  <!--<addMenuItem
       class="loops.view.ViewManager"
       title="View Manager"
       description="A view manager manages views, like nodes, menu items, ..."
       permission="zope.ManageContent"
       view="AddLoopsViewManager.html"
-      />
+      />-->
 
   <containerViews
       for="loops.interfaces.IViewManager"

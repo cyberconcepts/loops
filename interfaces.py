@@ -300,8 +300,8 @@ class IMediaAsset(IMediaAssetSchema, IResource, IBaseAsset):
     """ A resource containing a (typically binary) file-like content
         or an image. 
     """
-
-
+    
+    
 class IResourceManager(ILoopsObject, IContainer):
     """ A manager/container for resources.
     """
@@ -515,6 +515,34 @@ class ITypeConcept(Interface):
         default=None,
         source="loops.TypeInterfaceSource",
         required=False)
+
+    # viewName = schema.TextLine()
+
+
+class IResourceAdapter(Interface):
+    """ Base interface for adapters for resources. This is the base interface
+        of the interfaces to be used as typeInterface attribute on type concepts
+        specifying resource types.
+    """
+
+
+class IFile(IResourceAdapter):
+    """ A media asset that is not shown on a (web) page like an image but
+        may be downloaded instead.
+    """
+    
+    
+class IImage(IResourceAdapter):
+    """ A media asset that may be embedded in a (web) page as an image.
+    """
+    
+    
+class ITextDocument(IResourceAdapter):
+    """ A resource containing some sort of plain text that may be rendered and 
+        edited without necessarily involving a special external application
+        (like e.g. OpenOffice); typical content types are text/html, text/xml,
+        text/restructured, etc.
+    """
 
 
 # view configurator stuff
