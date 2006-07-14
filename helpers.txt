@@ -25,6 +25,13 @@ and provide a relation registry:
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+      
+and care for some type adapter machinery:
+
+  >>> from loops.interfaces import IConcept
+  >>> from loops.interfaces import ITypeConcept
+  >>> from loops.type import TypeConcept
+  >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
 
 Now we can setup a simple loops site with its manager objects, using a
 loops setup manager:
@@ -52,6 +59,12 @@ We also add some example concepts,
   u'Zope 3'
 
 resources,
+    
+  >>> from loops.resource import Resource
+  >>> file1 = resources['file1'] = Resource(u'A file')
+  >>> file1.resourceType = concepts['file']
+
+(the use of Document and MediaAsset may get deprecated soon:)
 
   >>> from loops.resource import Document, MediaAsset
   >>> doc1 = Document(u'Zope Info')
@@ -82,7 +95,6 @@ interface. The loops framework provides an adapter (LoopsType) for this
 purpose:
 
   >>> from cybertools.typology.interfaces import IType
-  >>> from loops.interfaces import IConcept
   >>> from loops.type import ConceptType
   >>> ztapi.provideAdapter(IConcept, IType, ConceptType)
   >>> cc1_type = IType(cc1)
@@ -148,6 +160,25 @@ lazy properties, one should always get a new adapter:
   <class 'loops.concept.Concept'>
 
 Now let's have a look at resources.
+    
+  >>> from loops.interfaces import IResource
+  >>> from loops.type import LoopsType
+  >>> component.provideAdapter(LoopsType, (IResource,), IType)
+  >>> file1_type = IType(file1)
+  >>> file1_type.title
+  u'File'
+  >>> file1_type.token
+  '.loops/concepts/file'
+  >>> file1_type.tokenForSearch
+  'loops:resource:file'
+  >>> file1_type.qualifiers
+  ('resource',)
+  >>> file1_type.defaultContainer
+  <loops.resource.ResourceManager object ...>
+  >>> file1_type.factory
+  <class 'loops.resource.Resource'>
+    
+(The use of Document and MediaAsset will be deprecated soon...)
 
   >>> from loops.interfaces import IResource
   >>> from loops.type import ResourceType
@@ -185,10 +216,11 @@ get a type manager from all loops objects, always with the same context:
   True
 
   >>> types = typeManager.types
-  >>> sorted((t.token) for t in types)
-    ['.loops/concepts/predicate', '.loops/concepts/topic',
-     '.loops/concepts/type', 'loops.resource.Document',
-     'loops.resource.MediaAsset']
+  >>> sorted(t.token for t in types)
+    ['.loops/concepts/file', '.loops/concepts/image', '.loops/concepts/predicate', 
+     '.loops/concepts/textdocument', '.loops/concepts/topic', 
+     '.loops/concepts/type', 
+     'loops.resource.Document', 'loops.resource.MediaAsset']
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True
@@ -201,14 +233,13 @@ condition:
   ['.loops/concepts/predicate', '.loops/concepts/topic', '.loops/concepts/type']
   >>> types = typeManager.listTypes(exclude=('concept',))
   >>> sorted(t.token for t in types)
-  ['loops.resource.Document', 'loops.resource.MediaAsset']
+  ['.loops/concepts/file', '.loops/concepts/image', 
+   '.loops/concepts/textdocument', 'loops.resource.Document', 
+   'loops.resource.MediaAsset']
+
 
 Type-based interfaces and adapters
 ----------------------------------
-
-  >>> from loops.interfaces import ITypeConcept
-  >>> from loops.type import TypeConcept
-  >>> ztapi.provideAdapter(IConcept, ITypeConcept, TypeConcept)
 
 A type has an optional typeInterface attribute that objects of this type
 will be adaptable to. The default for this is None:

@@ -237,7 +237,7 @@
       for="loops.interfaces.IResource"
       class=".resource.ResourceConfigureView"
       permission="zope.ManageContent">
-    
+
     <page
         name="configure.html"
         template="resource_configure.pt"
@@ -246,6 +246,14 @@
     
   </pages>
     
+  <zope:adapter
+      for="loops.interfaces.IResource
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.ResourceView"
+      permission="zope.View"
+      />
+
   <!-- document -->
 
   <page

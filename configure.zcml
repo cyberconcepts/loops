@@ -302,6 +302,11 @@
       />
 
   <vocabulary
+      factory="loops.type.ResourceTypeSourceList"
+      name="loops.resourceTypeSource"
+      />
+
+  <vocabulary
       factory="loops.type.TypeInterfaceSourceList"
       name="loops.TypeInterfaceSource"
       />

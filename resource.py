@@ -40,7 +40,7 @@ from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
 
-from interfaces import IResource
+from interfaces import IBaseResource, IResource
 from interfaces import IDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
 from interfaces import IFileSystemResource, IControlledResource
@@ -55,11 +55,32 @@ _ = MessageFactory('loops')
 
 class Resource(Contained, Persistent):
 
-    implements(IResource, IFileSystemResource, IControlledResource,
+    implements(IBaseResource, IResource, IFileSystemResource, IControlledResource,
                IResourceManagerContained, IRelatable)
+               
+    proxyInterface = IMediaAssetView
 
     _size = _width = _height = 0
 
+    def getResourceType(self):
+        typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()
+        if typePred is None:
+            return None
+        concepts = self.getConcepts([typePred])
+        # TODO (?): check for multiple types (->Error)
+        return concepts and concepts[0] or None
+    def setResourceType(self, concept):
+        current = self.getResourceType()
+        if current != concept:
+            typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()
+            if typePred is None:
+                raise ValueError('No type predicate found for '
+                                + zapi.getName(self))
+            if current is not None:
+                self.deassignConcept(current, [typePred])
+            self.assignConcept(concept, typePred)
+    resourceType = property(getResourceType, setResourceType)
+    
     _title = u''
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title
@@ -167,6 +188,17 @@ class ResourceManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
+    
+    
+# adapters and similar stuff
+
+
+class FileAdapter(object):
+    """ A type adapter for providing file functionality for resources.
+    """
+    
+    def __init__(self, context):
+        self.context = context
 
 
 class DocumentWriteFileAdapter(object):

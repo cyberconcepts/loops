@@ -30,8 +30,10 @@ from zope.dottedname.resolve import resolve
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
 from cybertools.typology.type import BaseType, TypeManager
+from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
-from loops.interfaces import ITypeConcept, IResourceAdapter, IFile, IImage
+from loops.interfaces import ITypeConcept
+from loops.interfaces import IResourceAdapter, IFile, IImage, ITextDocument
 from loops.concept import Concept
 from loops.resource import Resource, Document, MediaAsset
 
@@ -92,7 +94,8 @@ class LoopsType(BaseType):
 
     @Lazy
     def typeProvider(self):
-        return self.context.conceptType
+        # TODO: unify this type attribute naming...
+        return self.context.resourceType
 
 
 class LoopsTypeInfo(LoopsType):
@@ -109,6 +112,10 @@ class ConceptType(LoopsType):
     """
 
     adapts(IConcept)
+
+    @Lazy
+    def typeProvider(self):
+        return self.context.conceptType
 
 
 class ConceptTypeInfo(LoopsTypeInfo):
@@ -233,8 +240,7 @@ class TypeInterfaceSourceList(object):
 
     implements(schema.interfaces.IIterableSource)
 
-    #typeInterfaces = (ITypeConcept, IFile, IImage,)
-    typeInterfaces = (ITypeConcept,)
+    typeInterfaces = (ITypeConcept, IFile, ITextDocument)
 
     def __init__(self, context):
         self.context = context
@@ -244,6 +250,25 @@ class TypeInterfaceSourceList(object):
 
     def __len__(self):
         return len(self.typeInterfaces)
+
+
+class ResourceTypeSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __iter__(self):
+        return iter(self.resourceTypes)
+
+    @Lazy
+    def resourceTypes(self):
+        types = ITypeManager(self.context).listTypes(include=('resource',))
+        return [t.typeProvider for t in types]
+
+    def __len__(self):
+        return len(self.resourceTypes)
 
 
 class AdapterBase(object):

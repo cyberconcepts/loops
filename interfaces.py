@@ -177,6 +177,29 @@ class IConceptManagerContained(Interface):
 
 # resource interfaces
 
+
+class IBaseResource(Interface):
+    """ New base interface for resources. Functionality beyond this simple
+        interface is provided by adapters that are chosen via the
+        resource type's typeInterface.
+    """
+    
+    title = schema.TextLine(
+                title=_(u'Title'),
+                description=_(u'Title of the resource'),
+                default=u'',
+                missing_value=u'',
+                required=False)
+
+    resourceType = schema.Choice(
+        title=_(u'Resource Type'),
+        description=_(u"The type of the resource, specified by a relation to "
+                       "a concept of type 'type'."),
+        default=None,
+        source="loops.resourceTypeSource",
+        required=False)
+
+
 class IResourceSchema(Interface):
 
     title = schema.TextLine(
@@ -200,6 +223,8 @@ class IResourceSchema(Interface):
                 missing_value='',
                 required=False)
 
+
+# the next two interfaces are probably obsolete:
 
 class IFileSystemResource(Interface):
 
@@ -517,6 +542,7 @@ class ITypeConcept(Interface):
         required=False)
 
     # viewName = schema.TextLine()
+    # storage = schema.Choice()
 
 
 class IResourceAdapter(Interface):
