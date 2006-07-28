@@ -30,11 +30,11 @@
 
     <allow
         attributes="getSiteManager" />
-    
+
     <require
         permission="zope.ManageServices"
         attributes="setSiteManager" />
-        
+
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />
@@ -46,7 +46,7 @@
     <!--<require
         permission="zope.View"
         interface="loops.interfaces.ILoops" />-->
-    
+
     <require
         permission="zope.View"
         attributes="getLoopsUri loopsTraverse getConceptManager
@@ -79,7 +79,7 @@
     <require
         permission="zope.View"
         attributes="getTypePredicate getDefaultPredicate getTypeConcept" />
-  
+
   </content>
 
   <interface
@@ -242,22 +242,22 @@
            for="loops.interfaces.INode"
            provides="zope.app.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
-  
+
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.IConcept"
            provides="zope.app.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
-  
+
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.IDocument"
            provides="zope.app.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
-  
+
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.IMediaAsset"
            provides="zope.app.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
-  
+
   <class class="loops.common.LoopsDCAdapter">
     <require like_class="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter" />
   </class>
@@ -265,16 +265,16 @@
   <adapter factory="loops.concept.IndexAttributes" />
   <adapter factory="loops.resource.IndexAttributes" />
   <adapter factory="loops.resource.IndexableResource" />
-  
+
   <adapter factory="loops.resource.DocumentReadFileAdapter" />
   <adapter factory="loops.resource.DocumentWriteFileAdapter" />
-  
+
   <adapter factory="loops.type.ConceptType" />
   <adapter factory="loops.type.ResourceType" />
   <adapter factory="loops.type.LoopsTypeManager" />
-  
+
   <adapter factory="loops.type.TypeConcept" />
-  
+
   <adapter factory="loops.query.QueryConcept" trusted="True" />
   <class class="loops.query.QueryConcept">
     <require permission="zope.View"
@@ -283,7 +283,7 @@
              set_schema="loops.query.IQueryConcept" />
   </class>
 
-  
+
   <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
@@ -318,6 +318,7 @@
 
   <include package=".knowledge" />
   <include package=".organize" />
+  <include package=".process" />
   <include package=".browser" />
 
 </configure>

@@ -39,9 +39,9 @@ from loops.resource import Resource, Document, MediaAsset
 
 
 class LoopsType(BaseType):
-    
+
     adapts(ILoopsObject)
-    
+
     factoryMapping = dict(concept=Concept, resource=Resource)
     containerMapping = dict(concept='concepts', resource='resources')
 
@@ -60,7 +60,7 @@ class LoopsType(BaseType):
         tp = self.typeProvider
         typeName = tp is None and 'unknown' or str(zapi.getName(tp))
         return ':'.join(('loops', self.qualifiers[0], typeName,))
-    
+
     @Lazy
     def typeInterface(self):
         adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
@@ -79,11 +79,11 @@ class LoopsType(BaseType):
         if ti is None or not issubclass(ti, IResourceAdapter):
             return ('concept',)
         return ('resource',)
-    
+
     @Lazy
     def factory(self):
         return self.factoryMapping.get(self.qualifiers[0], Concept)
-    
+
     @Lazy
     def defaultContainer(self):
         return self.root[self.containerMapping.get(self.qualifiers[0], 'concept')]
@@ -107,7 +107,7 @@ class LoopsTypeInfo(LoopsType):
 
 
 class ConceptType(LoopsType):
-    """ The IType adapter for concept objects. 
+    """ The IType adapter for concept objects.
         Probably obsolete because all real stuff has gone to LoopsType.
     """
 
@@ -186,7 +186,7 @@ class LoopsTypeManager(TypeManager):
             return ConceptTypeInfo(self.context.loopsTraverse(token))
         return ResourceTypeInfo(self.context, resolve(token))
 
-    @property    
+    @property
     def types(self):
         return self.conceptTypes() + self.resourceTypes()
 
@@ -277,10 +277,10 @@ class AdapterBase(object):
     """
 
     adapts(IConcept)
-    
+
     _attributes = ('context', '__parent__', )
     _schemas = list(IConcept)
-    
+
     def __init__(self, context):
         self.context = context # to get the permission stuff right
         self.__parent__ = context
@@ -299,4 +299,8 @@ class AdapterBase(object):
     def checkAttr(self, attr):
         if attr not in self._schemas:
             raise AttributeError(attr)
+
+    def __eq__(self, other):
+        return self.context == other.context
+
 
