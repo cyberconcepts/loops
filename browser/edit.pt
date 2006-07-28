@@ -8,10 +8,12 @@
               src="node.js"
               tal:attributes="src string:${context/++resource++node.js}">
       </script>
+      <metal:use use-macro="views/ajax.dojo/main"
+                 tal:condition="nothing" />
     </metal:js>
   </head>
   <body>
-    
+
   <div metal:fill-slot="body">
   <div metal:define-macro="body">
 
@@ -26,7 +28,7 @@
       </tal:control>
 
       <div metal:define-macro="formbody">
-          
+
         <h3 tal:condition="view/label"
             metal:define-slot="heading">
           <span tal:content="view/label"
@@ -35,7 +37,7 @@
 
         <p tal:define="status view/update"
            tal:condition="status"
-           tal:content="status" 
+           tal:content="status"
            i18n:translate=""/>
 
         <p tal:condition="view/errors" i18n:translate="">

@@ -3,6 +3,8 @@
       i18n:domain="zope">
 <head></head>
 <body>
+
+
   <div metal:fill-slot="body"
        tal:define="target view/target">
 
@@ -22,7 +24,7 @@
           </tal:xedit>
         </tal:target>
       </div>
-      
+
       <div style="padding-right:20px">
         <metal:create use-macro="views/target_macros/create" />
       </div>
@@ -40,8 +42,10 @@
           </metal:search>
         </metal:assign>
       </div>
-      
+
   </div>
+
+
 </body>
 
 </html>

@@ -92,7 +92,7 @@
         <span i18n:translate="">Title</span>
         <input name="create.title" size="30"
                tal:attributes="value nothing" />&nbsp;
-        <span i18n:translate="">Type</span>
+        <span>Type</span>
         <select name="create.type">
           <tal:types repeat="type view/targetTypes">
             <option value=".loops/concepts/topic"
