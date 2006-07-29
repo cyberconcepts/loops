@@ -2,7 +2,7 @@
  $Id$
 
  settings specific for view / node objects
- 
+
 */
 
 .box {
@@ -35,6 +35,20 @@
 .content-5 h1, .content-4 h2, .content-4 h3 {
     font-size: 100%;
     border: none;
+}
+
+.subcolumn {
+    display: inline-block;
+    float: left;
+}
+
+.box {
+    margin: 5px;
+    padding: 5px;
+}
+
+.box h1, .box h2, .box h3 {
+    border-bottom: None;
 }
 
 .box div.body div.menu-3 {

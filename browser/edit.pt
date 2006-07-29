@@ -5,8 +5,8 @@
   <head>
     <metal:js fill-slot="ecmascript_slot">
       <script type="text/javascript"
-              src="node.js"
-              tal:attributes="src string:${context/++resource++node.js}">
+              src="loops.js"
+              tal:attributes="src string:${context/++resource++loops.js}">
       </script>
       <metal:use use-macro="views/ajax.dojo/main"
                  tal:condition="nothing" />

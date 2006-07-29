@@ -6,11 +6,11 @@
 
   <metal:settings fill-slot="settings"
     tal:define="dummy python:
-        controller.macros.register('css', resourceName='node.css', media='all');
+        controller.macros.register('css', resourceName='loops.css', media='all');
                 dummy python:
-        controller.macros.register('js', resourceName='node.js');" />
+        controller.macros.register('js', resourceName='loops.js');" />
 
-  
+
   <metal:block fill-slot="actions" />
 
 
@@ -30,11 +30,11 @@
               condition="item">
       <div class="body">
         <metal:menu use-macro="views/node_macros/menu" />
-      </div>      
+      </div>
     </tal:menu>
   </div>
 
-  
+
 </body>
 </html>
 </tal:show>

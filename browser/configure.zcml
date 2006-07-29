@@ -13,11 +13,11 @@
 
   <!-- resources -->
 
-  <resource name="node.css" file="node.css" />
-  <resource name="node.js" file="node.js" />
+  <resource name="loops.css" file="loops.css" />
+  <resource name="loops.js" file="loops.js" />
 
   <!-- macros -->
-   
+
   <page
       for="*"
       name="loops_macros"
@@ -162,21 +162,21 @@
       for="loops.interfaces.IConcept"
       class=".concept.ConceptConfigureView"
       permission="zope.ManageContent">
-    
+
     <page
         name="configure.html"
         template="concept_related.pt"
         menu="zmi_views" title="Related Concepts"
         />
-    
+
     <page
         name="resources.html"
         template="concept_resources.pt"
         menu="zmi_views" title="Resources"
         />
-    
+
   </pages>
-    
+
   <page
       name="edit.html"
       for="loops.interfaces.IConcept"
@@ -243,9 +243,9 @@
         template="resource_configure.pt"
         menu="zmi_views" title="Configure"
         />
-    
+
   </pages>
-    
+
   <zope:adapter
       for="loops.interfaces.IResource
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -262,7 +262,7 @@
       permission="zope.View"
       class=".resource.DocumentView"
       attribute="show" />
-      
+
   <addform
       label="Add Document"
       name="AddLoopsDocument.html"
@@ -304,14 +304,14 @@
       permission="zope.View"
       template="document.pt"
       class=".resource.DocumentView" />
-      
+
   <menuItem
       for="loops.interfaces.IDocument"
       action="document.html"
       permission="zope.View"
       menu="zmi_views" title="View"
       />
-    
+
   <zope:adapter
       for="loops.interfaces.IDocument
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -331,7 +331,7 @@
       template="add.pt"
       permission="zope.ManageContent"
       />
-    
+
   <addMenuItem
       class="loops.resource.MediaAsset"
       title="Media Asset"
@@ -365,7 +365,7 @@
       menu="zmi_views" action="upload.html" title="Upload"
       filter="nothing"
       />
-    
+
   <zope:adapter
       for="loops.interfaces.IMediaAsset
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -405,13 +405,13 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Contents"
       />
-    
+
   <!-- import/export -->
 
   <pages for="loops.interfaces.IViewManager"
          class=".external.NodesExportImport"
          permission="zope.ManageContent">
-         
+
     <page name="exportimport.html"
           template="exportimport.pt"
           menu="zmi_views" title="Export/Import"  />
@@ -435,7 +435,7 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Contents"
       />
-    
+
   <containerViews
       for="loops.interfaces.INode"
       index="zope.ManageContent"
@@ -449,7 +449,7 @@
       fields="title description nodeType viewName body"
       template="add.pt"
       permission="zope.ManageContent">
-      
+
     <widget field="description" height="2" />
     <widget field="body" height="8" />
 
@@ -498,7 +498,7 @@
     <page name="index.html" template="selectAdd.pt" />
     <page name="action.html" attribute="action" />
   </view>
-  
+
   <page
       name="configure.html"
       for="loops.interfaces.INode"
@@ -513,7 +513,7 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure"
       />
-    
+
   <editform
       label="Edit Media Asset"
       name="edit_target.html"
@@ -544,7 +544,7 @@
       permission="zope.View"
       menu="zmi_views" title="View"
       />
-    
+
   <defaultView
       for="loops.interfaces.INode"
       name="node.html"
@@ -569,7 +569,7 @@
       attribute="targetDefaultView"
       permission="zope.View"
       />
-    
+
   <!-- vocabulary, traversing, and other stuff -->
 
   <zope:adapter factory="loops.browser.common.LoopsTerms"
@@ -618,5 +618,5 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="cybertools.browser.configurator.IViewConfigurator"
       />
-      
+
 </configure>

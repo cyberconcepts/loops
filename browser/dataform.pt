@@ -6,9 +6,9 @@
 
 <metal:settings fill-slot="settings"
     tal:define="dummy python:
-        controller.macros.register('css', resourceName='node.css', media='all');" />
+        controller.macros.register('css', resourceName='loops.css', media='all');" />
 
-  
+
 <div class="box" metal:fill-slot="navigators">
     <h4>Navigation</h4>
     <tal:menu define="item view/menu;
@@ -16,7 +16,7 @@
               condition="item">
       <div class="body">
         <metal:menu use-macro="views/node_macros/menu" />
-      </div>      
+      </div>
     </tal:menu>
 </div>
 

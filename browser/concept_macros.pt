@@ -1,9 +1,34 @@
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-    <h3 tal:attributes="ondblclick item/openEditWindow">
-      <span i18n:translate="">Concept</span>:
+        <div class="subcolumn">
+          <div style="margin-right: 50px">
+            <metal:fields use-macro="item/template/macros/conceptparents" />
+          </div>
+          <fieldset class="box"
+                    style="margin: 30px 20px 15px 30px">
+            <metal:fields use-macro="item/template/macros/concepttitle" />
+            <metal:fields use-macro="item/template/macros/conceptfields" />
+          </fieldset>
+          <div style="margin-right: 50px">
+            <metal:fields use-macro="item/template/macros/conceptchildren" />
+          </div>
+        </div>
+        <div class="subcolumn"
+             style="position: relative; top: 60px">
+          <metal:fields use-macro="item/template/macros/conceptresources" />
+        </div>
+  </div>
+</metal:data>
+
+
+<metal:title define-macro="concepttitle">
+    <h1 tal:attributes="ondblclick item/openEditWindow">
       <span tal:content="item/title">Title</span>
-    </h3>
+    </h1>
+</metal:title>
+
+
+<metal:fields define-macro="conceptfields">
     <table tal:attributes="ondblclick item/openEditWindow">
       <tr tal:repeat="field item/fieldData">
         <td><span tal:content="field/title"
@@ -11,46 +36,55 @@
         <td tal:content="structure field/widget"></td>
       </tr>
     </table>
-    <metal:listing use-macro="item/template/macros/conceptlisting2" />
-  </div>
-</metal:data>
+</metal:fields>
 
 
-<metal:listing define-macro="conceptlisting">
-  <div>
-    <h3 tal:attributes="class string:content-$level;
-                        ondblclick item/openEditWindow">
-      <span i18n:translate="">Concept</span>:
-      <span tal:content="item/title">Title</span>
-    </h3>
-    <metal:listing define-macro="conceptlisting2">
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('configure.html')">
-        <h4>Parents</h4>
+<metal:parents define-macro="conceptparents">
+      <fieldset tal:attributes="class string:content-$level box;
+                                ondblclick python: item.openEditWindow('configure.html')">
+        <legend>Parents</legend>
         <div tal:repeat="related item/parents">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Concept Title</a>
         </div>
-      </div>
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('configure.html')">
-        <h4>Children</h4>
+      </fieldset>
+</metal:parents>
+
+
+<metal:children define-macro="conceptchildren">
+      <fieldset tal:attributes="class string:content-$level box;
+                                ondblclick python: item.openEditWindow('configure.html')">
+        <legend>Children</legend>
         <div tal:repeat="related item/children">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Concept Title</a>
         </div>
-      </div>
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('resources.html')">
-        <h4>Resources</h4>
+      </fieldset>
+</metal:children>
+
+
+<metal:resources define-macro="conceptresources">
+      <fieldset tal:attributes="class string:content-$level box;
+                                ondblclick python: item.openEditWindow('resources.html')">
+        <legend>Resources</legend>
         <div tal:repeat="related item/resources">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Resource Title</a>
         </div>
-      </div>
+      </fieldset>
+</metal:resources>
+
+
+<metal:listing define-macro="conceptlisting">
+  <div>
+    <metal:fields use-macro="item/template/macros/concepttitle" />
+    <metal:listing define-macro="conceptlisting2">
+      <metal:fields use-macro="item/template/macros/conceptparents" />
+      <metal:fields use-macro="item/template/macros/conceptchildren" />
+      <metal:fields use-macro="item/template/macros/conceptresources" />
     </metal:listing>
   </div>
 </metal:listing>
