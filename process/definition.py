@@ -30,15 +30,15 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from cybertools.process.interfaces import IProcessDefinition
-from cybertools.process.definition import ProcessDefinition as BaseProcessDefinition
+from cybertools.process.interfaces import IProcess
+from cybertools.process.definition import Process as BaseProcess
 from loops.interfaces import IConcept
 from loops.type import TypeInterfaceSourceList, AdapterBase
 
 
 # register type interfaces - (TODO: use a function for this)
 
-TypeInterfaceSourceList.typeInterfaces += (IProcessDefinition,)
+TypeInterfaceSourceList.typeInterfaces += (IProcess,)
 
 
 class ProcessAdapterMixin(object):
@@ -49,12 +49,12 @@ class ProcessAdapterMixin(object):
 
     @Lazy
     def successorPred(self):
-        return self.conceptManager['successor']
+        return self.conceptManager['follows']
 
 
-class ProcessDefinition(AdapterBase, BaseProcessDefinition, ProcessAdapterMixin):
+class Process(AdapterBase, BaseProcess, ProcessAdapterMixin):
     """ A typeInterface adapter for concepts of type 'process'.
     """
 
-    implements(IProcessDefinition)
+    implements(IProcess)
 

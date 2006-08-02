@@ -8,15 +8,15 @@
 
   <!-- process/workflow management stuff -->
 
-  <zope:adapter factory="loops.process.definition.ProcessDefinition"
-                provides="cybertools.process.interfaces.IProcessDefinition"
+  <zope:adapter factory="loops.process.definition.Process"
+                provides="cybertools.process.interfaces.IProcess"
                 trusted="True" />
 
-  <zope:class class="loops.process.definition.ProcessDefinition">
+  <zope:class class="loops.process.definition.Process">
     <require permission="zope.View"
-             interface="cybertools.process.interfaces.IProcessDefinition" />
+             interface="cybertools.process.interfaces.IProcess" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.process.interfaces.IProcessDefinition" />
+             set_schema="cybertools.process.interfaces.IProcess" />
   </zope:class>
 
   <!-- setup -->

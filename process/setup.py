@@ -25,7 +25,7 @@ $Id$
 from zope.component import adapts
 from zope.interface import implements, Interface
 
-from cybertools.process.interfaces import IProcessDefinition
+from cybertools.process.interfaces import IProcess
 from loops.concept import Concept
 from loops.interfaces import ITypeConcept
 from loops.setup import SetupManager as BaseSetupManager
@@ -42,9 +42,9 @@ class SetupManager(BaseSetupManager):
                                  conceptType=type)
         processTypeAdapter = ITypeConcept(process)
         if not processTypeAdapter.typeInterface:
-            processTypeAdapter.typeInterface = IProcessDefinition
+            processTypeAdapter.typeInterface = IProcess
         # predicates:
-        successor = self.addObject(concepts, Concept, 'successor', title=u'successor',
+        follows = self.addObject(concepts, Concept, 'follows', title=u'follows',
                         conceptType=predicate)
 
 

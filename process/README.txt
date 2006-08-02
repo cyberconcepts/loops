@@ -53,9 +53,9 @@ Manage processes
 
 The classes used in this package are just adapters to IConcept.
 
-  >>> from loops.process.definition import ProcessDefinition
-  >>> from cybertools.process.interfaces import IProcessDefinition
-  >>> component.provideAdapter(ProcessDefinition, (IConcept,), IProcessDefinition)
+  >>> from loops.process.definition import Process
+  >>> from cybertools.process.interfaces import IProcess
+  >>> component.provideAdapter(Process, (IConcept,), IProcess)
 
 We start with creating a process definition.
 Note that in order to discern the concepts created
@@ -65,7 +65,7 @@ the variables:
   >>> from loops.concept import Concept
   >>> myProcessC = concepts['myProcess'] = Concept(u'A Simple Process')
   >>> myProcessC.conceptType = process
-  >>> myProcess = IProcessDefinition(myProcessC)
+  >>> myProcess = IProcess(myProcessC)
 
 
 Fin de partie
