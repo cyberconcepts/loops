@@ -44,7 +44,8 @@
 
 .box {
     margin: 5px;
-    padding: 5px;
+    padding: 6px;
+    padding-top: 0;
 }
 
 .box h1, .box h2, .box h3 {
