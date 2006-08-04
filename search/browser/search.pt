@@ -1,0 +1,22 @@
+<metal:search define-macro="search">
+  <div>
+    <h3 tal:attributes="class string:content-$level;
+                        ondblclick item/openEditWindow">
+      Search
+    </h3>
+
+    <div metal:define-macro="search_form">
+      <fieldset class="box">
+        <form action=".">
+          <input name="search" />
+        </form>
+      </fieldset>
+    </div>
+
+    <div metal:define-macro="search_results">
+      <fieldset class="box">
+      </fieldset>
+    </div>
+
+  </div>
+</metal:search>

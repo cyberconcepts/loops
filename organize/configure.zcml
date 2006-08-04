@@ -50,7 +50,7 @@
   <zope:adapter
         name="mystuff"
         for="loops.interfaces.IConcept
-            zope.publisher.interfaces.browser.IBrowserRequest"
+             zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.organize.browser.MyStuff"
         permission="zope.View"
@@ -66,7 +66,7 @@
       factory="cybertools.browser.widget.SimpleListDisplayWidget"
       permission="zope.Public"
       />
-  
+
   <!-- member registration -->
 
   <zope:adapter factory="loops.organize.member.MemberRegistrationManager"

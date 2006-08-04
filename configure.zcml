@@ -319,6 +319,7 @@
   <include package=".knowledge" />
   <include package=".organize" />
   <include package=".process" />
+  <include package=".search" />
   <include package=".browser" />
 
 </configure>
