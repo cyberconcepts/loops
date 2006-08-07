@@ -1,10 +1,28 @@
 <!-- $Id$ -->
 
 <configure
-    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope"
     >
 
-  <include package=".browser" />
+  <!-- named templates -->
+
+  <zope:adapter
+      factory="loops.search.browser.search_macros"
+      for="loops.browser.common.BaseView"
+      name="loops.search_macros" />
+
+  <!-- the real view -->
+
+  <zope:adapter
+      name="search"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.search.browser.Search"
+      permission="zope.View"
+      />
+
 
 </configure>
