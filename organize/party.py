@@ -41,7 +41,8 @@ from cybertools.typology.interfaces import IType
 from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
-from loops.type import TypeInterfaceSourceList, AdapterBase
+from loops.common import AdapterBase
+from loops.type import TypeInterfaceSourceList
 
 
 # register type interfaces - (TODO: use a function for this)

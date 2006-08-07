@@ -33,8 +33,8 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import IDocument, IMediaAsset
-from loops.interfaces import IFileSystemResource, IControlledResource
+from cybertools.typology.interfaces import IType
+from loops.interfaces import IBaseResource, IDocument, IMediaAsset
 from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView
@@ -48,11 +48,26 @@ renderingFactories = {
 }
 
 
+class ResourceEditForm(EditForm):
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.context).typeInterface
+
+    @property
+    def form_fields(self):
+        fields = FormFields(IBaseResource)
+        typeInterface = self.typeInterface
+        if typeInterface is not None:
+            fields = FormFields(fields, typeInterface)
+        return fields
+
+
 class DocumentEditForm(EditForm):
-    #form_fields = FormFields(IDocument, IFileSystemResource, IControlledResource)
     form_fields = FormFields(IDocument)
     for f in form_fields:
         f.render_context |= DISPLAY_UNWRITEABLE
+
 
 class MediaAssetEditForm(EditForm):
     form_fields = FormFields(IMediaAsset)
@@ -61,6 +76,20 @@ class MediaAssetEditForm(EditForm):
 class ResourceView(BaseView):
 
     template = ViewPageTemplateFile('resource_macros.pt')
+
+    @property
+    def macro(self):
+        if 'image/' in self.context.contentType:
+            return self.template.macros['image']
+        else:
+            return self.template.macros['download']
+
+    def show(self):
+        data = self.context.data
+        response = self.request.response
+        response.setHeader('Content-Type', self.context.contentType)
+        response.setHeader('Content-Length', len(data))
+        return data
 
     def concepts(self):
         for r in self.context.getConceptRelations():
@@ -130,8 +159,10 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
 
 class DocumentView(ResourceView):
 
-    macro = ResourceView.template.macros['render']
-    
+    @property
+    def macro(self):
+        return ResourceView.template.macros['render']
+
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
@@ -143,19 +174,3 @@ class DocumentView(ResourceView):
         view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
-    def show(self):
-        data = self.context.data
-        response = self.request.response
-        response.setHeader('Content-Type', self.context.contentType)
-        response.setHeader('Content-Length', len(data))
-        return data
-
-    
-class MediaAssetView(ResourceView):
-
-    @property
-    def macro(self):
-        if 'image/' in self.context.contentType:
-            return self.template.macros['image']
-        else:
-            return self.template.macros['download']

@@ -204,7 +204,7 @@ class NodeView(BaseView):
 
     def active(self, item):
         return item.context == self.context or item.context in self.parents
-            
+
     def targetDefaultView(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
         if target is None:
@@ -250,7 +250,7 @@ class ConfigureView(NodeView):
         obj = self.targetObject
         if obj is not None:
             return zapi.getMultiAdapter((obj, self.request))
-    
+
     def update(self):
         request = self.request
         action = request.get('action')
@@ -291,6 +291,8 @@ class ConfigureView(NodeView):
         target.title = form.get('create.title', u'')
         if IConcept.providedBy(target):
             target.conceptType = type.typeProvider
+        elif IResource.providedBy(target):
+            target.resourceType = type.typeProvider
         notify(ObjectCreatedEvent(target))
         notify(ObjectModifiedEvent(target))
         self.context.target = target

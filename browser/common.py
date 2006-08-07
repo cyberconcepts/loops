@@ -117,7 +117,7 @@ class BaseView(object):
     @Lazy
     def loopsRoot(self):
         return self.context.getLoopsRoot()
-    
+
     @Lazy
     def url(self):
         return zapi.absoluteURL(self.context, self.request)
@@ -199,9 +199,10 @@ class LoopsTerms(object):
     @Lazy
     def loopsRoot(self):
         return self.context.getLoopsRoot()
-    
+
     def getTerm(self, value):
-        #return BaseView(value, self.request)
+        #if value is None:
+        #    return SimpleTerm(None, '', u'not assigned')
         title = value.title or zapi.getName(value)
         token = self.loopsRoot.getLoopsUri(value)
         return SimpleTerm(value, token, title)

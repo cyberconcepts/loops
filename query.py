@@ -32,7 +32,8 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import IConcept
-from loops.type import AdapterBase, TypeInterfaceSourceList
+from loops.common import AdapterBase
+from loops.type import TypeInterfaceSourceList
 
 _ = MessageFactory('loops')
 

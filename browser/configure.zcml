@@ -233,6 +233,21 @@
 
   <!-- resource in general -->
 
+  <page
+      for="loops.interfaces.IResource"
+      name="index.html"
+      permission="zope.View"
+      class=".resource.ResourceView"
+      attribute="show" />
+
+  <zope:adapter
+      for="loops.interfaces.IResource
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.ResourceView"
+      permission="zope.View"
+      />
+
   <pages
       for="loops.interfaces.IResource"
       class=".resource.ResourceConfigureView"
@@ -246,12 +261,19 @@
 
   </pages>
 
-  <zope:adapter
-      for="loops.interfaces.IResource
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.browser.resource.ResourceView"
-      permission="zope.View"
+  <page
+      name="edit.html"
+      for="loops.interfaces.IResource"
+      class="loops.browser.resource.ResourceEditForm"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <!-- suppress the upload menu item: -->
+  <menuItem
+      for="loops.interfaces.IResource"
+      menu="zmi_views" action="upload.html" title="Upload"
+      filter="nothing"
       />
 
   <!-- document -->
@@ -262,33 +284,6 @@
       permission="zope.View"
       class=".resource.DocumentView"
       attribute="show" />
-
-  <addform
-      label="Add Document"
-      name="AddLoopsDocument.html"
-      schema="loops.interfaces.IDocumentSchema"
-      fields="title data contentType"
-      content_factory="loops.resource.Document"
-      template="add.pt"
-      permission="zope.ManageContent" />
-
-  <addMenuItem
-      class="loops.resource.Document"
-      title="Document"
-      description="A document is an editable information unit"
-      permission="zope.ManageContent"
-      view="AddLoopsDocument.html"
-      />
-
-<!--  <editform
-      label="Edit Document"
-      name="edit.html"
-      schema="loops.interfaces.IDocumentSchema"
-      fields="title data contentType"
-      for="loops.interfaces.IDocument"
-      template="edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit" />-->
 
   <page
       name="edit.html"
@@ -322,25 +317,7 @@
 
   <!-- media asset -->
 
-  <addform
-      label="Add Media Asset"
-      name="AddLoopsMediaAsset.html"
-      schema="loops.interfaces.IMediaAssetSchema"
-      fields="title data contentType"
-      content_factory="loops.resource.MediaAsset"
-      template="add.pt"
-      permission="zope.ManageContent"
-      />
-
-  <addMenuItem
-      class="loops.resource.MediaAsset"
-      title="Media Asset"
-      description="A media asset is a binary file, image, video or audio file"
-      permission="zope.ManageContent"
-      view="AddLoopsMediaAsset.html"
-      />
-
-  <editform
+  <!--<editform
       label="Edit Media Asset"
       name="edit.html"
       schema="loops.interfaces.IMediaAssetSchema"
@@ -349,7 +326,7 @@
       template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Media Asset"
-      />
+      />-->
 
   <!--<page
       name="edit.html"
@@ -358,21 +335,6 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"
       />-->
-
-  <!-- suppress the upload menu item: -->
-  <menuItem
-      for="loops.interfaces.IMediaAsset"
-      menu="zmi_views" action="upload.html" title="Upload"
-      filter="nothing"
-      />
-
-  <zope:adapter
-      for="loops.interfaces.IMediaAsset
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.browser.resource.MediaAssetView"
-      permission="zope.View"
-      />
 
   <!-- view manager -->
 
@@ -582,6 +544,10 @@
 
   <zope:adapter factory="loops.browser.common.InterfaceTerms"
            for="loops.type.TypeInterfaceSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <zope:adapter factory="loops.browser.common.LoopsTerms"
+           for="loops.resource.ResourceTypeSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
   <zope:view factory="loops.view.NodeTraverser"

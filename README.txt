@@ -17,12 +17,12 @@ with lower-level aspects like type or state management.
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-  
+
   >>> from zope.app import zapi
   >>> from zope.app.tests import ztapi
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
-  
+
 
 Concepts and Relations
 ======================
@@ -73,7 +73,7 @@ also need a default predicate concept; the default name for this is
 
 Now we can assign the concept c2 as a child to c1 (using the standard
 ConceptRelation):
-        
+
   >>> cc1.assignChild(cc2)
 
 We can now ask our concepts for their related child and parent concepts:
@@ -163,7 +163,7 @@ The token attribute provided with the items returned by the children() and
 parents() methods identifies identifies not only the item itself but
 also the relationship to the context object using a combination
 of URIs to item and the predicate of the relationship:
-  
+
   >>> [c.token for c in children]
   ['.loops/concepts/cc2:.loops/concepts/standard']
 
@@ -207,11 +207,11 @@ types and predicates.
   >>> from zope.schema.interfaces import IIterableSource
   >>> ztapi.provideAdapter(IIterableSource, ITerms, LoopsTerms,
   ...                      with=(IBrowserRequest,))
-      
+
   >>> sorted((t.title, t.token) for t in view.conceptTypes())
   [(u'Topic', '.loops/concepts/topic'), (u'Type', '.loops/concepts/type'),
       (u'Unknown Type', '.loops/concepts/unknown')]
-          
+
   >>> sorted((t.title, t.token) for t in view.predicates())
   [(u'subconcept', '.loops/concepts/standard')]
 
@@ -222,7 +222,7 @@ Index attributes adapter
   >>> idx = IndexAttributes(cc2)
   >>> idx.text()
   u'cc2 Zope 3'
-  
+
   >>> idx.title()
   u'cc2 Zope 3'
 
@@ -230,16 +230,16 @@ Index attributes adapter
 Resources and what they have to do with Concepts
 ================================================
 
-  >>> from loops.interfaces import IDocument, IMediaAsset
+  >>> from loops.interfaces import IResource, IDocument, IMediaAsset
 
 We first need a resource manager:
-    
+
   >>> from loops.resource import ResourceManager
   >>> loopsRoot['resources'] = ResourceManager()
   >>> resources = loopsRoot['resources']
 
 A common type of resource is a document:
-      
+
   >>> from loops.interfaces import IDocument
   >>> from loops.resource import Document
   >>> doc1 = Document(u'Zope Info')
@@ -247,9 +247,9 @@ A common type of resource is a document:
   >>> doc1.title
   u'Zope Info'
   >>> doc1.data
-  u''
-  >>> doc1.contentType
   ''
+  >>> doc1.contentType
+  u''
 
 Another one is a media asset:
 
@@ -258,7 +258,7 @@ Another one is a media asset:
   >>> img = MediaAsset(u'A png Image')
 
 For testing we use some simple files from the tests directory:
-      
+
   >>> from loops import tests
   >>> import os
   >>> path = os.path.join(*tests.__path__)
@@ -312,7 +312,7 @@ These relations may also be managed starting from a resource using
 the resource configuration view:
 
   >>> from loops.browser.resource import ResourceConfigureView
-    
+
 Index attributes adapter
 ------------------------
 
@@ -320,7 +320,7 @@ Index attributes adapter
   >>> idx = IndexAttributes(doc1)
   >>> idx.text()
   u'doc1 Zope Info'
-  
+
   >>> idx.title()
   u'doc1 Zope Info'
 
@@ -340,7 +340,7 @@ the views or nodes, however, present informations coming from the concepts
 or resources they are related to.
 
 We first need a view manager:
-    
+
   >>> from loops.view import ViewManager, Node
   >>> from zope.security.checker import NamesChecker, defineChecker
   >>> nodeChecker = NamesChecker(('body',))
@@ -351,7 +351,7 @@ We first need a view manager:
 
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:
-      
+
   >>> m1 = Node(u'Menu')
   >>> views['m1'] = m1
   >>> m11 = Node(u'Zope')
@@ -426,7 +426,7 @@ out - this is usually done through ZCML.)
   >>> from cybertools.relation.interfaces import IRelationInvalidatedEvent
   >>> ztapi.subscribe([ITargetRelation, IRelationInvalidatedEvent], None,
   ...                 removeTargetRelation)
-  
+
   >>> m111.target = cc1
   >>> m111.target is cc1
   True
@@ -487,10 +487,10 @@ accessing a target via a node view it is usually wrapped in a corresponding
 view; these views we have to provide as multi-adapters:
 
   >>> from loops.browser.node import ConfigureView
-  >>> from loops.browser.resource import DocumentView, MediaAssetView
+  >>> from loops.browser.resource import DocumentView, ResourceView
   >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
   ...                      with=(IBrowserRequest,))
-  >>> ztapi.provideAdapter(IMediaAsset, Interface, MediaAssetView,
+  >>> ztapi.provideAdapter(IResource, Interface, ResourceView,
   ...                      with=(IBrowserRequest,))
 
   >>> form = {'action': 'create', 'create.title': 'New Resource',
@@ -592,10 +592,10 @@ Let's add some more nodes and reorder them:
   >>> m11['m114'] = m114
   >>> m11.keys()
   ['m111', 'm112', 'm113', 'm114']
-      
+
 A special management view provides methods for moving objects down, up,
 to the bottom, and to the top.
-      
+
   >>> from cybertools.container.ordered import OrderedContainerView
   >>> view = OrderedContainerView(m11, TestRequest())
   >>> view.move_bottom(('m113',))
@@ -641,7 +641,7 @@ instance to another.
   >>> exporter.dumpData()
 
 Load them again from the exported file:
-  
+
   >>> importer = NodesImporter(views)
   >>> importer.filename = dumpname
   >>> imported = importer.getData()

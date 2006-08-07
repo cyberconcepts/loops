@@ -126,6 +126,30 @@
   </content>
 
   <interface
+      interface=".interfaces.IResource"
+      type="zope.app.content.interfaces.IContentType" />
+
+  <class class=".resource.Resource">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="loops.Resource"
+        description="Document" />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IBaseResource
+                   zope.app.size.interfaces.ISized" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IBaseResource" />
+
+  </class>
+
+  <interface
       interface=".interfaces.IDocument"
       type="zope.app.content.interfaces.IContentType" />
 
@@ -141,18 +165,11 @@
     <require
         permission="zope.View"
         interface=".interfaces.IDocument
-                   .interfaces.IFileSystemResource
-                   .interfaces.IControlledResource
                    zope.app.size.interfaces.ISized" />
 
     <require
         permission="zope.ManageContent"
         set_schema=".interfaces.IDocument" />
-
-    <require
-        permission="zope.ManageApplication"
-        set_schema=".interfaces.IFileSystemResource
-                    .interfaces.IControlledResource" />
 
   </content>
 
@@ -171,11 +188,11 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IMediaAsset" />
+        interface=".interfaces.IBaseResource" />
 
     <require
         permission="zope.ManageContent"
-        set_schema=".interfaces.IMediaAsset" />
+        set_schema=".interfaces.IBaseResource" />
 
   </content>
 
@@ -249,12 +266,7 @@
            trusted="True" />
 
   <adapter factory="loops.common.LoopsDCAdapter"
-           for="loops.interfaces.IDocument"
-           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
-           trusted="True" />
-
-  <adapter factory="loops.common.LoopsDCAdapter"
-           for="loops.interfaces.IMediaAsset"
+           for="loops.interfaces.IResource"
            provides="zope.app.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
 
@@ -264,16 +276,30 @@
 
   <adapter factory="loops.concept.IndexAttributes" />
   <adapter factory="loops.resource.IndexAttributes" />
-  <adapter factory="loops.resource.IndexableResource" />
+  <adapter factory="loops.resource.IndexableResource" trusted="True" />
+  <class class="loops.resource.IndexableResource">
+    <require permission="zope.View"
+             interface="loops.interfaces.IBaseResourceSchema" />
+  </class>
 
   <adapter factory="loops.resource.DocumentReadFileAdapter" />
   <adapter factory="loops.resource.DocumentWriteFileAdapter" />
 
+  <adapter factory="loops.type.LoopsType" />
   <adapter factory="loops.type.ConceptType" />
-  <adapter factory="loops.type.ResourceType" />
+  <adapter factory="loops.type.ResourceType"
+           for="loops.interfaces.IDocument" />
+  <adapter factory="loops.type.ResourceType"
+           for="loops.interfaces.IMediaAsset" />
   <adapter factory="loops.type.LoopsTypeManager" />
 
-  <adapter factory="loops.type.TypeConcept" />
+  <adapter factory="loops.type.TypeConcept" trusted="True" />
+  <class class="loops.type.TypeConcept">
+    <require permission="zope.View"
+             interface="loops.interfaces.ITypeConcept" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.ITypeConcept" />
+  </class>
 
   <adapter factory="loops.query.QueryConcept" trusted="True" />
   <class class="loops.query.QueryConcept">
@@ -281,6 +307,14 @@
              interface="loops.query.IQueryConcept" />
     <require permission="zope.ManageContent"
              set_schema="loops.query.IQueryConcept" />
+  </class>
+
+  <adapter factory="loops.resource.FileAdapter" trusted="True" />
+  <class class="loops.resource.FileAdapter">
+    <require permission="zope.View"
+             interface="loops.interfaces.IFile" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IFile" />
   </class>
 
 
@@ -302,7 +336,7 @@
       />
 
   <vocabulary
-      factory="loops.type.ResourceTypeSourceList"
+      factory="loops.resource.ResourceTypeSourceList"
       name="loops.resourceTypeSource"
       />
 

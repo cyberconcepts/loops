@@ -33,7 +33,8 @@ from cybertools.typology.interfaces import IType
 from cybertools.process.interfaces import IProcess
 from cybertools.process.definition import Process as BaseProcess
 from loops.interfaces import IConcept
-from loops.type import TypeInterfaceSourceList, AdapterBase
+from loops.common import AdapterBase
+from loops.type import TypeInterfaceSourceList
 
 
 # register type interfaces - (TODO: use a function for this)

@@ -25,13 +25,15 @@ $Id$
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
-from zope.app.file.image import Image as BaseMediaAsset
+from zope.app.file.image import Image
 from zope.app.file.interfaces import IFile
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.size.interfaces import ISized
+from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
+from zope import schema
 from persistent import Persistent
 from cStringIO import StringIO
 
@@ -39,36 +41,42 @@ from textindexng.interfaces import IIndexableContent
 from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
+from cybertools.typology.interfaces import ITypeManager
 
 from interfaces import IBaseResource, IResource
+from interfaces import IFile
 from interfaces import IDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
-from interfaces import IFileSystemResource, IControlledResource
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 from interfaces import IIndexAttributes
 from concept import ResourceRelation
+from common import ResourceAdapterBase
 from view import TargetRelation
 
 _ = MessageFactory('loops')
 
 
-class Resource(Contained, Persistent):
+class Resource(Image, Contained):
 
-    implements(IBaseResource, IResource, IFileSystemResource, IControlledResource,
-               IResourceManagerContained, IRelatable)
-               
+    implements(IBaseResource, IResource, IResourceManagerContained, IRelatable, ISized)
+
     proxyInterface = IMediaAssetView
 
     _size = _width = _height = 0
 
+    def __init__(self, title=u''):
+        super(Resource, self).__init__()
+        self.title = title
+
     def getResourceType(self):
-        typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()
+        cm = self.getLoopsRoot().getConceptManager()
+        typePred = cm.getTypePredicate()
         if typePred is None:
             return None
         concepts = self.getConcepts([typePred])
         # TODO (?): check for multiple types (->Error)
-        return concepts and concepts[0] or None
+        return concepts and concepts[0] or cm.get('file', None)
     def setResourceType(self, concept):
         current = self.getResourceType()
         if current != concept:
@@ -80,31 +88,31 @@ class Resource(Contained, Persistent):
                 self.deassignConcept(current, [typePred])
             self.assignConcept(concept, typePred)
     resourceType = property(getResourceType, setResourceType)
-    
+
     _title = u''
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
 
-    _contentType = ''
+    def _setData(self, data):
+        dataFile = StringIO(data)  # let File tear it into pieces
+        super(Resource, self)._setData(dataFile)
+        if not self.contentType:
+            self.guessContentType(data)
+    data = property(Image._getData, _setData)
+
+    def guessContentType(self, data):
+        if not isinstance(data, str): # seems to be a file object
+            data = data.read(20)
+        if data.startswith('%PDF'):
+            self.contentType = 'application/pdf'
+
+    _contentType = u''
     def setContentType(self, contentType):
         if contentType:
             self._contentType = contentType
     def getContentType(self): return self._contentType
     contentType = property(getContentType, setContentType)
-
-    _fsPath = ''
-    def setFsPath(self, fsPath): self._fsPath = fsPath
-    def getFsPath(self): return self._fsPath
-    fsPath = property(getFsPath, setFsPath)
-
-    _readOnly = ''
-    def setReadOnly(self, readOnly): self._readOnly = readOnly
-    def getReadOnly(self): return self._readOnly
-    readOnly = property(getReadOnly, setReadOnly)
-
-    def __init__(self, title=u''):
-        self.title = title
 
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
@@ -122,7 +130,7 @@ class Resource(Contained, Persistent):
         relationships = [ResourceRelation(None, self, p) for p in predicates]
         # TODO: sort...
         return getRelations(first=concept, second=self, relationships=relationships)
-        
+
     def getConcepts(self, predicates=None):
         return [r.first for r in self.getConceptRelations(predicates)]
 
@@ -132,17 +140,7 @@ class Resource(Contained, Persistent):
     def deassignConcept(self, concept, predicates=None):
         concept.deassignResource(self, predicates)
 
-
-class Document(Resource):
-
-    implements(IDocument, ISized)
-
-    proxyInterface = IDocumentView
-
-    _data = u''
-    def setData(self, data): self._data = data
-    def getData(self): return self._data
-    data = property(getData, setData)
+    # ISized interface
 
     def getSize(self):
         return len(self.data)
@@ -154,29 +152,24 @@ class Document(Resource):
         return '%i Bytes' % self.getSize()
 
 
-class MediaAsset(Resource, BaseMediaAsset):
+class Document(Resource):
 
-    implements(IMediaAsset)
+    implements(IDocument)
 
-    proxyInterface = IMediaAssetView
+    proxyInterface = IDocumentView
 
     def __init__(self, title=u''):
-        super(MediaAsset, self).__init__()
         self.title = title
 
-    def _setData(self, data):
-        dataFile = StringIO(data)  # let File tear it into pieces
-        super(MediaAsset, self)._setData(dataFile)
-        if not self.contentType:
-            self.guessContentType(data)
+    _data = ''
+    def setData(self, data): self._data = data
+    def getData(self): return self._data
+    data = property(getData, setData)
 
-    data = property(BaseMediaAsset._getData, _setData)
 
-    def guessContentType(self, data):
-        if not isinstance(data, str): # seems to be a file object
-            data = data.read(20)
-        if data.startswith('%PDF'):
-            self.contentType = 'application/pdf'
+class MediaAsset(Resource):
+
+    implements(IMediaAsset)
 
 
 class ResourceManager(BTreeContainer):
@@ -188,17 +181,19 @@ class ResourceManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
-    
-    
+
+
 # adapters and similar stuff
 
 
-class FileAdapter(object):
+class FileAdapter(ResourceAdapterBase):
     """ A type adapter for providing file functionality for resources.
     """
-    
-    def __init__(self, context):
-        self.context = context
+
+    implements(IFile)
+
+    # TODO: provide specialized access to data attribute analog to zope.app.file;
+    #       automatically set contentType...
 
 
 class DocumentWriteFileAdapter(object):
@@ -258,4 +253,24 @@ class IndexableResource(object):
         icc = IndexContentCollector()
         icc.addBinary(fields[0], context.data, context.contentType, language='de')
         return icc
+
+
+class ResourceTypeSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __iter__(self):
+        return iter(self.resourceTypes)
+
+    @Lazy
+    def resourceTypes(self):
+        types = ITypeManager(self.context).listTypes(include=('resource',))
+        return [t.typeProvider for t in types if t.typeProvider is not None]
+
+    def __len__(self):
+        return len(self.resourceTypes)
+
 

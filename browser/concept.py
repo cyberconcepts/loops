@@ -66,14 +66,14 @@ class ConceptEditForm(EditForm):
 class ConceptView(BaseView):
 
     template = NamedTemplate('loops.concept_macros')
-    
+
     @Lazy
     def macro(self):
         return self.template.macros['conceptdata']
 
     def fieldData(self):
         ti = IType(self.context).typeInterface
-        if not ti: return 
+        if not ti: return
         adapter = ti(self.context)
         for n, f in schema.getFieldsInOrder(ti):
             value = getattr(adapter, n, '')

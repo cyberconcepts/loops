@@ -36,7 +36,8 @@ from loops.interfaces import IConcept, IResource
 from loops.knowledge.interfaces import IPerson, ITask
 from loops.organize.party import Person as BasePerson
 from loops.organize.task import Task as BaseTask
-from loops.type import TypeInterfaceSourceList, AdapterBase
+from loops.common import AdapterBase
+from loops.type import TypeInterfaceSourceList
 
 
 # register type interfaces - (TODO: use a function for this)

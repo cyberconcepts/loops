@@ -29,6 +29,7 @@ from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
+from zope.app.size.interfaces import ISized
 from cybertools.relation.interfaces import IRelation
 
 import util
@@ -62,7 +63,7 @@ class IPotentialTarget(Interface):
 
 class IConcept(ILoopsObject, IPotentialTarget):
     """ The concept is the central element of the loops framework.
-    
+
         A concept is related to other concepts, may have resources
         associated with it and may be referenced by views.
     """
@@ -130,7 +131,7 @@ class IConcept(ILoopsObject, IPotentialTarget):
     def getResources(predicates=None):
         """ Return a sequence of resources assigned to self,
             optionally restricted to the predicates given.
-        """        
+        """
 
     def getResourceRelations(predicates=None, resource=None):
         """ Return a sequence of relations to resources assigned to self,
@@ -143,12 +144,12 @@ class IConcept(ILoopsObject, IPotentialTarget):
 
             The relationship defaults to ConceptResourceRelation.
         """
-        
+
     def deassignResource(resource, predicates=None):
         """ Remove the relations to the resource given from self, optionally
             restricting them to the predicates given.
         """
-        
+
 
 class IConceptView(Interface):
     """ Used for accessing a concept via a node's target attribute"""
@@ -178,12 +179,12 @@ class IConceptManagerContained(Interface):
 # resource interfaces
 
 
-class IBaseResource(Interface):
+class IBaseResource(ILoopsObject):
     """ New base interface for resources. Functionality beyond this simple
         interface is provided by adapters that are chosen via the
         resource type's typeInterface.
     """
-    
+
     title = schema.TextLine(
                 title=_(u'Title'),
                 description=_(u'Title of the resource'),
@@ -198,6 +199,26 @@ class IBaseResource(Interface):
         default=None,
         source="loops.resourceTypeSource",
         required=False)
+
+    data = schema.Bytes(
+                title=_(u'Data'),
+                description=_(u'Resource raw data'),
+                default='',
+                missing_value='',
+                required=False)
+
+    contentType = schema.BytesLine(
+                title=_(u'Content Type'),
+                description=_(u'Content type (format) of the data field'),
+                default='',
+                missing_value='',
+                required=False)
+
+
+class IBaseResourceSchema(Interface):
+    """ New schema for resources; to be used by sub-interfaces that will
+        be implemented by type adapters.
+    """
 
 
 class IResourceSchema(Interface):
@@ -221,29 +242,6 @@ class IResourceSchema(Interface):
                 description=_(u'Content type (format) of the data field'),
                 default='',
                 missing_value='',
-                required=False)
-
-
-# the next two interfaces are probably obsolete:
-
-class IFileSystemResource(Interface):
-
-    fsPath = schema.BytesLine(
-                title=_(u'Filesystem Path'),
-                description=_(u'Optional path to a file in the filesystem '
-                               'to be used for storing the resource'),
-                default='',
-                missing_value='',
-                required=False)
-
-
-class IControlledResource(Interface):
-
-    readOnly = schema.Bool(
-                title=_(u'Read only'),
-                description=_(u'Check this if resource may not be modified '
-                               'after being first filled with non-empty content'),
-                default=False,
                 required=False)
 
 
@@ -323,10 +321,10 @@ class IMediaAssetView(IMediaAssetSchema):
 
 class IMediaAsset(IMediaAssetSchema, IResource, IBaseAsset):
     """ A resource containing a (typically binary) file-like content
-        or an image. 
+        or an image.
     """
-    
-    
+
+
 class IResourceManager(ILoopsObject, IContainer):
     """ A manager/container for resources.
     """
@@ -475,7 +473,7 @@ class ILoops(ILoopsObject):
         """ Retrieve object specified by the loops uri (starting with
         '.loops/') given.
         """
-    
+
     def getConceptManager():
         """ Return the (default) concept manager.
         """
@@ -545,7 +543,7 @@ class ITypeConcept(Interface):
     # storage = schema.Choice()
 
 
-class IResourceAdapter(Interface):
+class IResourceAdapter(IBaseResourceSchema):
     """ Base interface for adapters for resources. This is the base interface
         of the interfaces to be used as typeInterface attribute on type concepts
         specifying resource types.
@@ -556,15 +554,15 @@ class IFile(IResourceAdapter):
     """ A media asset that is not shown on a (web) page like an image but
         may be downloaded instead.
     """
-    
-    
+
+
 class IImage(IResourceAdapter):
     """ A media asset that may be embedded in a (web) page as an image.
     """
-    
-    
+
+
 class ITextDocument(IResourceAdapter):
-    """ A resource containing some sort of plain text that may be rendered and 
+    """ A resource containing some sort of plain text that may be rendered and
         edited without necessarily involving a special external application
         (like e.g. OpenOffice); typical content types are text/html, text/xml,
         text/restructured, etc.
@@ -580,4 +578,28 @@ class IViewConfiguratorSchema(Interface):
         description=_(u'Name of the skin to use for this part of the site'),
         default=u'',
         required=False)
+
+
+# the next two interfaces are obsolete, they will be replaced by IResourceStorage:
+
+class IFileSystemResource(Interface):
+
+    fsPath = schema.BytesLine(
+                title=_(u'Filesystem Path'),
+                description=_(u'Optional path to a file in the filesystem '
+                               'to be used for storing the resource'),
+                default='',
+                missing_value='',
+                required=False)
+
+
+class IControlledResource(Interface):
+
+    readOnly = schema.Bool(
+                title=_(u'Read only'),
+                description=_(u'Check this if resource may not be modified '
+                               'after being first filled with non-empty content'),
+                default=False,
+                required=False)
+
 

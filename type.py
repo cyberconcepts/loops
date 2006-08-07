@@ -36,6 +36,7 @@ from loops.interfaces import ITypeConcept
 from loops.interfaces import IResourceAdapter, IFile, IImage, ITextDocument
 from loops.concept import Concept
 from loops.resource import Resource, Document, MediaAsset
+from loops.common import AdapterBase
 
 
 class LoopsType(BaseType):
@@ -65,7 +66,7 @@ class LoopsType(BaseType):
     def typeInterface(self):
         adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
         if adapter is not None:
-            return adapter.typeInterface
+            return removeSecurityProxy(adapter.typeInterface)
         else:
             conceptType = self.typeProvider
             typeConcept = self.root.getConceptManager().getTypeConcept()
@@ -130,7 +131,7 @@ class ResourceType(LoopsType):
         type concepts as is already the case for concepts.
     """
 
-    adapts(IResource)
+    #adapts(IResource)
 
     typeTitles = {'MediaAsset': u'Media Asset'}
 
@@ -214,15 +215,13 @@ class LoopsTypeManager(TypeManager):
                         for cls in (Document, MediaAsset)])
 
 
-class TypeConcept(object):
+class TypeConcept(AdapterBase):
     """ typeInterface adapter for concepts of type 'type'.
     """
 
     implements(ITypeConcept)
-    adapts(IConcept)
 
-    def __init__(self, context):
-        self.context = removeSecurityProxy(context)
+    _schemas = list(ITypeConcept) + list(IConcept)
 
     def getTypeInterface(self):
         ti = getattr(self.context, '_typeInterface', None)
@@ -250,57 +249,4 @@ class TypeInterfaceSourceList(object):
 
     def __len__(self):
         return len(self.typeInterfaces)
-
-
-class ResourceTypeSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
-
-    def __init__(self, context):
-        self.context = context
-
-    def __iter__(self):
-        return iter(self.resourceTypes)
-
-    @Lazy
-    def resourceTypes(self):
-        types = ITypeManager(self.context).listTypes(include=('resource',))
-        return [t.typeProvider for t in types]
-
-    def __len__(self):
-        return len(self.resourceTypes)
-
-
-class AdapterBase(object):
-    """ (Mix-in) Class for concept adapters that provide editing of fields
-        defined by the type interface.
-    """
-
-    adapts(IConcept)
-
-    _attributes = ('context', '__parent__', )
-    _schemas = list(IConcept)
-
-    def __init__(self, context):
-        self.context = context # to get the permission stuff right
-        self.__parent__ = context
-
-    def __getattr__(self, attr):
-        self.checkAttr(attr)
-        return getattr(self.context, '_' + attr, None)
-
-    def __setattr__(self, attr, value):
-        if attr in self._attributes:
-            object.__setattr__(self, attr, value)
-        else:
-            self.checkAttr(attr)
-            setattr(self.context, '_' + attr, value)
-
-    def checkAttr(self, attr):
-        if attr not in self._schemas:
-            raise AttributeError(attr)
-
-    def __eq__(self, other):
-        return self.context == other.context
-
 
