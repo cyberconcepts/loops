@@ -8,7 +8,7 @@ The loops platform is built up of three parts:
 
 (1) concepts: simple interconnected objects usually representing
     meta-information
-(2) resources: (possibly large) atomic objects like documents and media assets
+(2) resources: (possibly large) atomic objects like documents and files
 (3) views: objects (usually hierarchically organized nodes) providing
     access to and presenting concepts or resources
 
@@ -31,8 +31,7 @@ Let's start with creating a few example concepts, putting them in a
 top-level loops container and a concept manager:
 
   >>> from loops import Loops
-  >>> site['loops'] = Loops()
-  >>> loopsRoot = site['loops']
+  >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.concept import ConceptManager, Concept
   >>> loopsRoot['concepts'] = ConceptManager()
@@ -230,11 +229,11 @@ Index attributes adapter
 Resources and what they have to do with Concepts
 ================================================
 
-  >>> from loops.interfaces import IResource, IDocument, IMediaAsset
+  >>> from loops.interfaces import IResource, IDocument
 
 We first need a resource manager:
 
-  >>> from loops.resource import ResourceManager
+  >>> from loops.resource import ResourceManager, Resource
   >>> loopsRoot['resources'] = ResourceManager()
   >>> resources = loopsRoot['resources']
 
@@ -251,11 +250,11 @@ A common type of resource is a document:
   >>> doc1.contentType
   u''
 
-Another one is a media asset:
+We can also directly use Resource objects; these behave like files.
+In fact, by using resource types we can explicitly assign a resource
+the 'file' type, but we will use this feature later:
 
-  >>> from loops.interfaces import IMediaAsset
-  >>> from loops.resource import MediaAsset
-  >>> img = MediaAsset(u'A png Image')
+  >>> img = Resource(u'A png Image')
 
 For testing we use some simple files from the tests directory:
 
@@ -270,7 +269,7 @@ For testing we use some simple files from the tests directory:
   >>> img.contentType
   'image/png'
 
-  >>> pdf = MediaAsset(u'A pdf File')
+  >>> pdf = Resource(u'A pdf File')
   >>> pdf.data = open(os.path.join(path, 'test.pdf')).read()
   >>> pdf.getSize()
   25862
@@ -499,8 +498,7 @@ view; these views we have to provide as multi-adapters:
   >>> sorted((t.token, t.title) for t in view.targetTypes())
   [('.loops/concepts/topic', u'Topic'), ('.loops/concepts/type', u'Type'),
       ('.loops/concepts/unknown', u'Unknown Type'),
-      ('loops.resource.Document', u'Document'),
-      ('loops.resource.MediaAsset', u'Media Asset')]
+      ('loops.resource.Document', u'Document')]
   >>> view.update()
   True
   >>> sorted(resources.keys())

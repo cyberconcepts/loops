@@ -46,7 +46,7 @@ from cybertools.typology.interfaces import ITypeManager
 from interfaces import IBaseResource, IResource
 from interfaces import IFile
 from interfaces import IDocument, IDocumentSchema, IDocumentView
-from interfaces import IMediaAsset, IMediaAssetSchema, IMediaAssetView
+from interfaces import IMediaAsset, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
 from interfaces import IIndexAttributes
@@ -191,9 +191,6 @@ class FileAdapter(ResourceAdapterBase):
     """
 
     implements(IFile)
-
-    # TODO: provide specialized access to data attribute analog to zope.app.file;
-    #       automatically set contentType...
 
 
 class DocumentWriteFileAdapter(object):

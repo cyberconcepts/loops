@@ -133,7 +133,8 @@ class ResourceType(LoopsType):
 
     #adapts(IResource)
 
-    typeTitles = {'MediaAsset': u'Media Asset'}
+    #typeTitles = {'MediaAsset': u'Media Asset'}
+    typeTitles = {}
 
     typeInterface = None
     qualifiers = ('resource',)
@@ -212,7 +213,8 @@ class LoopsTypeManager(TypeManager):
 
     def resourceTypes(self):
         return tuple([ResourceTypeInfo(self.context, cls)
-                        for cls in (Document, MediaAsset)])
+                        for cls in (Document,)])
+                        #for cls in (Document, MediaAsset)])
 
 
 class TypeConcept(AdapterBase):

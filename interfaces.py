@@ -305,21 +305,14 @@ class IDocument(IDocumentSchema, IResource):
     """
 
 
-class IMediaAssetSchema(IResourceSchema):
+# media asset is probably obsolete - replaced by plain Resource with
+# resourceType = file.
 
-    data = schema.Bytes(
-                title=_(u'Data'),
-                description=_(u'Media asset file'),
-                default='',
-                missing_value='',
-                required=False)
-
-
-class IMediaAssetView(IMediaAssetSchema):
+class IMediaAssetView(IResourceSchema):
     """ Used for accessing a media asset via a node's target attribute"""
 
 
-class IMediaAsset(IMediaAssetSchema, IResource, IBaseAsset):
+class IMediaAsset(IResourceSchema, IResource, IBaseAsset):
     """ A resource containing a (typically binary) file-like content
         or an image.
     """

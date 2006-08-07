@@ -188,7 +188,9 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IBaseResource" />
+        interface=".interfaces.IBaseResource
+                   zope.app.size.interfaces.ISized" />
+
 
     <require
         permission="zope.ManageContent"
@@ -289,8 +291,8 @@
   <adapter factory="loops.type.ConceptType" />
   <adapter factory="loops.type.ResourceType"
            for="loops.interfaces.IDocument" />
-  <adapter factory="loops.type.ResourceType"
-           for="loops.interfaces.IMediaAsset" />
+  <!--<adapter factory="loops.type.ResourceType"
+           for="loops.interfaces.IMediaAsset" />-->
   <adapter factory="loops.type.LoopsTypeManager" />
 
   <adapter factory="loops.type.TypeConcept" trusted="True" />
