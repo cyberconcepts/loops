@@ -122,6 +122,13 @@ class NodeView(BaseView):
             basicView._viewName = self.context.viewName
             return basicView.view
 
+    @Lazy
+    def targetUrl(self):
+        t = self.target
+        if t is not None:
+            return '%s/.target%s' % (self.url, t.uniqueId)
+        return ''
+
     def renderTarget(self):
         target = self.target
         return target is not None and target.render() or u''

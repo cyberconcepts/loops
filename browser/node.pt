@@ -8,7 +8,9 @@
     tal:define="dummy python:
         controller.macros.register('css', resourceName='loops.css', media='all');
                 dummy python:
-        controller.macros.register('js', resourceName='loops.js');" />
+        controller.macros.register('js', resourceName='loops.js');
+                dummy python:
+        controller.macros.register('js', resourceName='ajax.dojo/dojo.js');" />
 
 
   <metal:block fill-slot="actions" />

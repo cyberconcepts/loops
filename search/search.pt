@@ -1,24 +1,33 @@
 <metal:search define-macro="search">
   <div id="search"
-       tal:define="template nocall:item/template">
+       tal:define="macros item/template/macros">
     <h3 tal:attributes="class string:content-$level;
                         ondblclick item/openEditWindow">
       Search
     </h3>
 
-    <div metal:define-macro="search_form">
+    <div metal:define-macro="search_form" class="searchForm"
+         tal:define="idPrefix string:${item/itemNum}.search;
+                     formId string:$idPrefix.form">
       <fieldset class="box">
-        <form action=".">
+        <form action="." method="post" id="1.search.form"
+              tal:attributes="id formId">
           <table cellpadding="3">
-            <tal:block define="search_selection string:type">
-              <metal:row use-macro="template/macros/search_row" />
-            </tal:block>
-            <tal:block define="search_selection string:text">
-              <metal:row use-macro="template/macros/search_row" />
+            <tal:block repeat="search_selection python: ['type', 'text']">
+              <metal:row use-macro="macros/search_row" />
             </tal:block>
             <tr>
               <td colspan="2">
-                <input type="button" name="search.add.1" value=" Add filter " />
+                <input type="button" value="Add concept filter" class="button" />
+                <input type="button" value="Add attribute filter" class="button" />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <input type="submit" name="1.search" value="Search" class="submit"
+                       tal:attributes="name string:$idPrefix.submit;
+                                       onclick python:
+                                item.submitReplacing('1.results', formId, view)" />
               </td>
             </tr>
           </table>
@@ -26,9 +35,11 @@
       </fieldset>
     </div>
 
-    <div metal:define-macro="search_results">
+    <div metal:define-macro="search_results"
+         id="1.results">
       <fieldset class="box">
         Search results
+        <p tal:content="python:request.get('1.search.1.text', 'nothing')" />
       </fieldset>
     </div>
 
@@ -36,9 +47,70 @@
 </metal:search>
 
 
-<tr metal:define-macro="search_row" id="search.row.1.1">
+<tr metal:define-macro="search_row" id="search.row.1.1"
+    tal:define="rowNum item/rowNum;
+                idPrefix string:$idPrefix.$rowNum;
+                selection search_selection | item/searchSelection"
+    tal:attributes="id string:$idPrefix.row">
+  <td style="width: 30px">
+    <input type="button" value="&minus;"
+           title="Remove search parameter"
+           tal:condition="python: selection not in ['type', 'text']" />&nbsp;
+  </td>
   <td>
-    <input type="button" value="&minus;" />&nbsp;
+    <div metal:use-macro="macros/?selection" />
+  </td>
+</tr>
+
+
+<metal:text define-macro="type">
+  <div>
+    <h3>Type(s) to search for</h3>
+    <label for="text"
+           tal:attributes="for string:$idPrefix.text">Type:</label>
+    <select name="text"
+            tal:attributes="name string:$idPrefix.text;
+                            id string:$idPrefix.text;">
+      <option value=".loops/concepts/topic">Topic</option>
+      <option value="loops.resource.Document">Document</option>
+    </select>
+    <input type="button" value="+"
+           title="Add type" />&nbsp;
+  </div>
+</metal:text>
+
+
+<metal:text define-macro="text">
+  <div>
+    <h3>Search text</h3>
+    <input type="checkbox" checked
+           name="title" id="title"
+           tal:attributes="name string:$idPrefix.title;
+                           id string:$idPrefix.title;" />
+    <label for="title"
+           tal:attributes="for string:$idPrefix.title">Title</label>
+    <input type="checkbox"
+           name="full" id="full"
+           tal:attributes="name string:$idPrefix.full;
+                           id string:$idPrefix.full;" />
+    <label for="full"
+           tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
+    <label for="text"
+           tal:attributes="for string:$idPrefix.text">Search words:</label>
+    <input type="text" name="text"
+           tal:attributes="name string:$idPrefix.text;
+                           id string:$idPrefix.text;" />
+    <input type="button" value="+"
+           title="Add search word" />&nbsp;
+  </div>
+</metal:text>
+
+
+<!-- obsolete -->
+<tr metal:define-macro="search_row_selectable" id="search.row.1.1">
+  <td>
+    <input type="button" value="&minus;"
+           title="Remove search parameter" />&nbsp;
   </td>
   <td tal:define="selection search_selection | string:type">
     <select>
@@ -52,33 +124,5 @@
     <input metal:use-macro="template/macros/?selection" />
   </td>
 </tr>
-
-
-<metal:text define-macro="text">
-  <div id="search.text.1.1">
-    <input type="checkbox"
-           name="search.text.title.1.1" id="search.text.title.1.1" />
-    <label for="search.text.title.1.1">Title</label>
-    <input type="checkbox"
-           name="search.text.full.1.1" id="search.text.full.1.1" />
-    <label for="search.text.full.1.1">Full text</label>&nbsp;&nbsp;
-    <label for="search.text.text.1.1">Search words:</label>
-    <input type="text" name="search.text.text.1.1" />
-    <input type="text" name="search.text.text.1.1" />
-    <input type="button" name="search.text.add.1.1" value="+" />&nbsp;
-  </div>
-</metal:text>
-
-
-<metal:text define-macro="type">
-  <div id="search.type.1.2">
-    <label for="search.text.1.1">Type:</label>
-    <select type="text" name="search.type.text.1.2">
-      <option value=".loops/concepts/topic">Topic</option>
-      <option value="loops.resource.Document">Document</option>
-    </select>
-    <input type="button" name="search.type.add.1.2" value="+" />&nbsp;
-  </div>
-</metal:text>
 
 

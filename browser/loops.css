@@ -74,3 +74,13 @@ div.image {
     margin-right: 5px;
 }
 
+/* search stuff */
+
+.searchForm input.button, input.submit {
+    padding: 2px;
+}
+
+.searchForm input.submit {
+    font-weight: bold;
+}
+

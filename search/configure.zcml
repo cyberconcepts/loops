@@ -24,5 +24,11 @@
       permission="zope.View"
       />
 
+  <browser:page
+      name="searchresults.html"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.search.browser.SearchResults"
+      permission="zope.View"
+      />
 
 </configure>

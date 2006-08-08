@@ -42,7 +42,42 @@ class Search(BaseView):
 
     template = NamedTemplate('loops.search_macros')
 
+    maxRowNum = 0
+
     @Lazy
     def macro(self):
         return self.template.macros['search']
+
+    @Lazy
+    def itemNum(self):
+        """ Return a number identifying the item (the current search form)
+            on the page.
+        """
+        return self.request.get('loops.itemNum', 1)
+
+    @property
+    def rowNum(self):
+        """ Return the rowNum to be used for identifying the current row.
+        """
+        n = self.request.get('loops.rowNum', 0)
+        if n: # if given directly we don't use the calculation
+            return n
+        n = (self.maxRowNum or self.request.get('loops.maxRowNum', 0)) + 1
+        self.maxRowNum = n
+        return n
+
+    def submitReplacing(self, targetId, formId, view):
+        return 'return submitReplacing("%s", "%s", "%s")' % (
+                    targetId, formId,
+                    '%s/.target%s/@@searchresults.html' % (view.url, self.uniqueId))
+
+
+class SearchResults(BaseView):
+
+    innerHtml_template = NamedTemplate('loops.search_macros')
+    innerHtml_macro = 'search_results'
+    template = NamedTemplate('ajax.inner.html')
+
+    def __call__(self):
+        return self.template(self)
 

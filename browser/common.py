@@ -40,6 +40,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IView
 from loops import util
@@ -167,7 +168,8 @@ class BaseView(object):
 
     @Lazy
     def uniqueId(self):
-        return zapi.getUtility(IIntIds).getId(self.context)
+        return zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.context)
+        #return zapi.getUtility(IIntIds).getId(self.context)
 
     @Lazy
     def editable(self):
