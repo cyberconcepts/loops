@@ -465,6 +465,14 @@ Node Views
   ...     print item.url, view.selected(item)
   http://127.0.0.1/loops/views/m1/m11 True
 
+A NodeView provides an itemNum attribute that may be used to count elements
+appearing on a page. Thus a template may construct unique ids for elements.
+
+  >>> view.itemNum
+  1
+  >>> view.itemNum
+  2
+
 There is an openEditWindow() method that returns a JavaScript call for
 opening a new browser window for editing; but only if the view is
 editable:

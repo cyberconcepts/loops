@@ -7,7 +7,7 @@
     </h3>
 
     <div metal:define-macro="search_form" class="searchForm"
-         tal:define="idPrefix string:${item/itemNum}.search;
+         tal:define="idPrefix string:${view/itemNum}.search;
                      formId string:$idPrefix.form">
       <fieldset class="box">
         <form action="." method="post" id="1.search.form"

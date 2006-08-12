@@ -1,4 +1,4 @@
-<tal:show i18n:domain="loops">
+<tal:show i18n:domain="zope">
 <html metal:use-macro="context/@@skin_macros/page">
 <head></head>
 <body>
@@ -11,6 +11,14 @@
         controller.macros.register('js', resourceName='loops.js');
                 dummy python:
         controller.macros.register('js', resourceName='ajax.dojo/dojo.js');" />
+
+
+  <metal:block fill-slot="ecmascript_slot"
+               tal:condition="nothing">
+    <script>
+        dojo.require("dojo.widget.Editor");
+    </script>
+  </metal:block>
 
 
   <metal:block fill-slot="actions" />

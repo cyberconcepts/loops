@@ -5,28 +5,45 @@
   <metal:body use-macro="views/node_macros/?bodyMacro" />
   <tal:sub define="level python:level+1">
     <tal:items repeat="item item/textItems">
-      <metal:content use-macro="views/node_macros/content" />
+        <metal:content use-macro="views/node_macros/content" />
     </tal:items>
   </tal:sub>
 </metal:block>
 
 
+<!-- dojoType="Editor"
+     items="formatblock;|;insertunorderedlist;insertorderedlist;|;bold;italic;|;createLink;"
+-->
+
 <metal:body define-macro="textbody">
-  <tal:body define="body item/body">
-          <div class="content-1"
+  <tal:body define="body item/body;
+                    id string:${view/itemNum}.body">
+          <div class="content-1" id="1.body"
                tal:condition="body"
                tal:attributes="class string:content-$level;
+                               id string:${view/itemNum}.body;
                                ondblclick item/openEditWindow"
                tal:content="structure body">
             The body
           </div>
-          <div class="content-1"
-               tal:define="target item/target"
-               tal:condition="target"
-               tal:attributes="class string:content-$level;
-                               ondblclick python: item.openEditWindow('configure.html')"
-               tal:content="structure item/renderTarget">
-            The body
+          <div>
+            <div class="subcolumn"
+                 tal:condition="item/xeditable | nothing">
+              <a href="#" title="Edit" style="padding: 5px"
+                 tal:attributes="href string:${item/realTargetUrl}/external_edit;
+                                 title string:Edit ${item/title}"><img
+                            src="edit.gif" alt="Edit"
+                            tal:attributes="src context/++resource++edit.gif" /></a>
+            </div>
+            <div class="content-1 subcolumn" id="1.body"
+                 tal:define="target item/target"
+                 tal:condition="target"
+                 tal:attributes="class string:content-$level;
+                                 id id;
+                                 ondblclick python: item.openEditWindow('configure.html')"
+                 tal:content="structure item/renderTarget">
+              The body
+            </div>
           </div>
   </tal:body>
 </metal:body>
@@ -34,8 +51,9 @@
 
 <metal:body define-macro="conceptbody">
   <tal:body define="body item/body;">
-    <div class="content-1"
+    <div class="content-1" id="1"
          tal:attributes="class string:content-$level;
+                         id string:${view/itemNum}.body;
                          ondblclick python: item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
@@ -50,8 +68,9 @@
 
 <metal:body define-macro="filebody">
   <tal:body define="body item/body">
-    <div class="content-1"
+    <div class="content-1" id="1"
          tal:attributes="class string:content-$level;
+                         id string:${view/itemNum}.body;
                          ondblclick python: item.openEditWindow('edit_target.html')">
       <a href="#"
          tal:attributes="href string:${item/url}/.target/view"
@@ -65,6 +84,7 @@
   <tal:body define="body item/body">
     <div class="content-1" style="margin-top: 12px"
          tal:attributes="class string:content-$level;
+                         id string:${view/itemNum}.body;
                          ondblclick python: item.openEditWindow('edit_target.html')">
       <img src="target"
            tal:attributes="src string:${item/url}/.target/view" />
@@ -84,11 +104,12 @@
 
 <metal:body define-macro="listpages">
   <div class="content-1"
-       tal:content="structure view/body"
-       tal:attributes="ondblclick view/openEditWindow">
+       tal:content="structure item/body"
+       tal:attributes="ondblclick view/openEditWindow;
+                       id string:${view/itemNum}.body;">
     Listing
   </div><br />
-  <div tal:repeat="item view/pageItems">
+  <div tal:repeat="item item/pageItems">
     <a href="#"
        tal:attributes="href item/url"
        tal:content="item/title">Item</a>
@@ -97,13 +118,18 @@
 
 
 <metal:resources define-macro="listresources"
-                 tal:define="item view/target">
+                 tal:define="target item/target">
   <div class="content-1"
-       tal:content="structure view/body"
-       tal:attributes="ondblclick python: item.openEditWindow('resources.html')">
+       tal:content="structure item/body"
+       tal:attributes="ondblclick python:
+                target and target.openEditWindow('resources.html')
+                        or item.openEditWindow();
+                       id string:${view/itemNum}.body;">
     Listing
   </div><br />
-  <div tal:attributes="ondblclick python: item.openEditWindow('resources.html')">
+  <div tal:attributes="ondblclick python: target.openEditWindow('resources.html')"
+       tal:define="item item/target"
+       tal:condition="nocall:target">
     <div tal:repeat="related item/resources">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"

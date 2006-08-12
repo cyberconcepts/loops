@@ -59,8 +59,6 @@ The search view provides values for identifying the search form itself
 and the parameter rows; the rowNum is auto-incremented, so it should be
 accessed exactly once per row:
 
-  >>> searchView.itemNum
-  1
   >>> searchView.rowNum
   1
   >>> searchView.rowNum

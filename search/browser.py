@@ -48,16 +48,10 @@ class Search(BaseView):
     def macro(self):
         return self.template.macros['search']
 
-    @Lazy
-    def itemNum(self):
-        """ Return a number identifying the item (the current search form)
-            on the page.
-        """
-        return self.request.get('loops.itemNum', 1)
-
     @property
     def rowNum(self):
-        """ Return the rowNum to be used for identifying the current row.
+        """ Return the rowNum to be used for identifying the current search
+            parameter row.
         """
         n = self.request.get('loops.rowNum', 0)
         if n: # if given directly we don't use the calculation

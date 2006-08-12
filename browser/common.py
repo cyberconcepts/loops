@@ -169,7 +169,6 @@ class BaseView(object):
     @Lazy
     def uniqueId(self):
         return zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.context)
-        #return zapi.getUtility(IIntIds).getId(self.context)
 
     @Lazy
     def editable(self):
@@ -182,7 +181,8 @@ class BaseView(object):
 
     @Lazy
     def xeditable(self):
-        return getattr(self.context, 'contentType', '').startswith('text/')
+        return self.request.principal.id == 'rootadmin'
+        #return getattr(self.context, 'contentType', '').startswith('text/')
 
 
 class LoopsTerms(object):

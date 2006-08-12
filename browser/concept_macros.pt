@@ -13,8 +13,7 @@
             <metal:fields use-macro="item/template/macros/conceptchildren" />
           </div>
         </div>
-        <div class="subcolumn"
-             style="position: relative; top: 60px">
+        <div class="subcolumn" style="margin-top: 60px">
           <metal:fields use-macro="item/template/macros/conceptresources" />
         </div>
   </div>

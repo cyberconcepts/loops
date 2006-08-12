@@ -78,6 +78,8 @@ class Resource(Image, Contained):
         # TODO (?): check for multiple types (->Error)
         return concepts and concepts[0] or cm.get('file', None)
     def setResourceType(self, concept):
+        if concept is None:
+            return
         current = self.getResourceType()
         if current != concept:
             typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()

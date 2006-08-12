@@ -31,7 +31,7 @@ from zope.app.container.browser.contents import JustContents
 from zope.app.container.browser.adding import ContentAdding
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.intid.interfaces import IIntIds
+#from zope.app.intid.interfaces import IIntIds
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.formlib.namedtemplate import NamedTemplate
@@ -51,15 +51,13 @@ from loops.browser.concept import ConceptView
 
 class NodeView(BaseView):
 
+    _itemNum = 0
+
     template = NamedTemplate('loops.node_macros')
 
     @Lazy
     def macro(self):
         return self.template.macros['content']
-        #macroName = self.request.get('loops.viewName')
-        #if not macroName:
-        #    macroName = self.context.viewName or 'content'
-        #return self.template.macros[macroName]
 
     @Lazy
     def view(self):
@@ -94,6 +92,11 @@ class NodeView(BaseView):
     def pageItems(self):
         return [NodeView(child, self.request)
                     for child in self.context.getPageItems()]
+
+    @property
+    def itemNum(self):
+        self._itemNum += 1
+        return self._itemNum
 
     @Lazy
     def nodeType(self):
@@ -139,13 +142,13 @@ class NodeView(BaseView):
 
     @Lazy
     def bodyMacro(self):
-        # ?TODO: replace by: return self.target.macroName
+        # TODO: replace by: return self.target.macroName
         target = self.targetObject
         if target is None or IDocument.providedBy(target):
             return 'textbody'
         if IConcept.providedBy(target):
             return 'conceptbody'
-        if IMediaAsset.providedBy(target) and target.contentType.startswith('image/'):
+        if IResource.providedBy(target) and target.contentType.startswith('image/'):
             return 'imagebody'
         return 'filebody'
 
@@ -223,12 +226,39 @@ class NodeView(BaseView):
             return targetView()
         return u''
 
-    def targetId(self):
+    @Lazy
+    def virtualTarget(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
         if target is None:
             target = self.targetObject
+        return target
+
+    @Lazy
+    def targetId(self):
+        target = self.virtualTarget
         if target is not None:
-            return zapi.getUtility(IIntIds).getId(target)
+            return BaseView(target, self.request).uniqueId
+            #return target.uniqueId
+            #return zapi.getUtility(IIntIds).getId(target)
+
+    @Lazy
+    def virtualTargetUrl(self):
+        targetId = self.targetId
+        if targetId is not None:
+            return '%s/.target%s' % (self.url, targetId)
+
+    @Lazy
+    def realTargetUrl(self):
+        target = self.virtualTarget
+        if target is not None:
+            return BaseView(target, self.request).url
+
+    @Lazy
+    def richEditable(self):
+        target = self.virtualTarget
+        if target is None:
+            return False
+        return canWrite(target, 'title')
 
 
 class ListPages(NodeView):
