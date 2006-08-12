@@ -242,6 +242,17 @@ class ListPages(NodeView):
         return self
 
 
+class ListResources(NodeView):
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['listresources']
+
+    @Lazy
+    def view(self):
+        return self
+
+
 class ConfigureView(NodeView):
     """ An editing view for configuring a node, optionally creating
         a target object.

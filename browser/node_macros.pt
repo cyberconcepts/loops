@@ -80,6 +80,8 @@
 </metal:body>
 
 
+<!-- named views -->
+
 <metal:body define-macro="listpages">
   <div class="content-1"
        tal:content="structure view/body"
@@ -92,6 +94,23 @@
        tal:content="item/title">Item</a>
   </div>
 </metal:body>
+
+
+<metal:resources define-macro="listresources"
+                 tal:define="item view/target">
+  <div class="content-1"
+       tal:content="structure view/body"
+       tal:attributes="ondblclick python: item.openEditWindow('resources.html')">
+    Listing
+  </div><br />
+  <div tal:attributes="ondblclick python: item.openEditWindow('resources.html')">
+    <div tal:repeat="related item/resources">
+          <a href="#"
+             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
+             tal:content="related/title">Resource Title</a>
+    </div>
+  </div>
+</metal:resources>
 
 
 <!-- menu -->

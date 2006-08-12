@@ -521,6 +521,14 @@
       permission="zope.View"
       />
 
+  <zope:adapter
+      name="listresources"
+      for="loops.interfaces.INode
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.node.ListResources"
+      permission="zope.View"
+      />
 
   <!-- render file or image assigned to a node as target -->
 

@@ -89,7 +89,9 @@ class ConceptView(BaseView):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
-        for r in self.context.getChildRelations():
+        rels = sorted(self.context.getChildRelations(),
+                      key=(lambda x: x.second.title))
+        for r in rels:
             if r.predicate == hasType:
                 # only show top-level entries for type instances:
                 skip = False
@@ -101,11 +103,15 @@ class ConceptView(BaseView):
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
     def parents(self):
-        for r in self.context.getParentRelations():
+        rels = sorted(self.context.getParentRelations(),
+                      key=(lambda x: x.first.title))
+        for r in rels:
             yield ConceptRelationView(r, self.request)
 
     def resources(self):
-        for r in self.context.getResourceRelations():
+        rels = sorted(self.context.getResourceRelations(),
+                      key=(lambda x: x.second.title))
+        for r in rels:
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
     @Lazy
@@ -237,11 +243,6 @@ class ConceptConfigureView(ConceptView):
         if searchType == 'none':
             result = [r for r in result if r.conceptType is None]
         return self.viewIterator(result)
-
-    def viewIterator(self, objs):
-        request = self.request
-        for o in objs:
-                yield BaseView(o, request)
 
     def conceptTypes(self):
         return util.KeywordVocabulary([(t.token, t.title)
