@@ -184,6 +184,21 @@ class BaseView(object):
         return self.request.principal.id == 'rootadmin'
         #return getattr(self.context, 'contentType', '').startswith('text/')
 
+    @Lazy
+    def inlineEditingActive(self):
+        return self.request.principal.id == 'rootadmin'
+        # this may depend on system and user settings...
+        return True
+
+    @Lazy
+    def inlineEditable(self):
+        if not self.inlineEditingActive:
+            return False
+        return canWrite(self.context, 'title')
+
+    def inlineEdit(self, id):
+        return 'return inlineEdit("%s")' %id
+
 
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection

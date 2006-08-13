@@ -530,6 +530,15 @@
       permission="zope.View"
       />
 
+  <!-- inner HTML views -->
+
+  <page
+      name="inline_edit.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.InlineEdit"
+      permission="zope.View"
+      />
+
   <!-- render file or image assigned to a node as target -->
 
   <page

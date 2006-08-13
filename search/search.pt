@@ -39,7 +39,7 @@
          id="1.results">
       <fieldset class="box">
         Search results
-        <p tal:content="python:request.get('1.search.1.text', 'nothing')" />
+        <p tal:content="python:request.get('2.search.1.text', 'nothing')" />
       </fieldset>
     </div>
 

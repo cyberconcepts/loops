@@ -21,3 +21,11 @@ function submitReplacing(targetId, formId, actionUrl) {
         });
     return false;
 }
+
+function inlineEdit(id) {
+    var editor = dojo.widget.fromScript("Editor",
+        {items: ["save", "|", "formatblock", "|",
+                 "insertunorderedlist", "insertorderedlist", "|",
+                 "bold", "italic", "|", "createLink"]}, dojo.byId(id));
+    return false;
+}

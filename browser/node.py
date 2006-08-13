@@ -39,6 +39,7 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
@@ -227,19 +228,25 @@ class NodeView(BaseView):
         return u''
 
     @Lazy
-    def virtualTarget(self):
+    def virtualTargetObject(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
         if target is None:
             target = self.targetObject
         return target
 
     @Lazy
+    def virtualTarget(self):
+        obj = self.virtualTargetObject
+        if obj is not None:
+            basicView = zapi.getMultiAdapter((obj, self.request))
+            basicView._viewName = self.context.viewName
+            return basicView.view
+
+    @Lazy
     def targetId(self):
-        target = self.virtualTarget
+        target = self.virtualTargetObject
         if target is not None:
             return BaseView(target, self.request).uniqueId
-            #return target.uniqueId
-            #return zapi.getUtility(IIntIds).getId(target)
 
     @Lazy
     def virtualTargetUrl(self):
@@ -249,17 +256,34 @@ class NodeView(BaseView):
 
     @Lazy
     def realTargetUrl(self):
-        target = self.virtualTarget
+        target = self.virtualTargetObject
         if target is not None:
             return BaseView(target, self.request).url
 
     @Lazy
-    def richEditable(self):
+    def inlineEditable(self):
         target = self.virtualTarget
-        if target is None:
-            return False
-        return canWrite(target, 'title')
+        return target and target.inlineEditable or False
 
+
+# inner HTML views
+
+class InlineEdit(NodeView):
+    """ Provides inline editor as inner HTML - OBSOLETE, use as an example only!"""
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['inline_edit']
+
+    def __call__(self):
+        return innerHtml(self)
+
+    @property
+    def body(self):
+        return self.virtualTargetObject.data
+
+
+# special (named) views for nodes
 
 class ListPages(NodeView):
 

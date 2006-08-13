@@ -29,24 +29,22 @@ from zope.cachedescriptors.property import Lazy
 from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementation
 from zope.i18nmessageid import MessageFactory
 
+from cybertools.ajax import innerHtml
 from loops.browser.common import BaseView
 
 _ = MessageFactory('zope')
 
-
-search_macros = NamedTemplateImplementation(
-                    ViewPageTemplateFile('search.pt'))
-
+template = ViewPageTemplateFile('search.pt')
 
 class Search(BaseView):
 
-    template = NamedTemplate('loops.search_macros')
-
     maxRowNum = 0
+
+    template = template
 
     @Lazy
     def macro(self):
-        return self.template.macros['search']
+        return template.macros['search']
 
     @property
     def rowNum(self):
@@ -67,11 +65,12 @@ class Search(BaseView):
 
 
 class SearchResults(BaseView):
+    """ Provides results as inner HTML """
 
-    innerHtml_template = NamedTemplate('loops.search_macros')
-    innerHtml_macro = 'search_results'
-    template = NamedTemplate('ajax.inner.html')
+    @Lazy
+    def macro(self):
+        return template.macros['search_results']
 
     def __call__(self):
-        return self.template(self)
+        return innerHtml(self)
 

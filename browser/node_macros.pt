@@ -11,13 +11,10 @@
 </metal:block>
 
 
-<!-- dojoType="Editor"
-     items="formatblock;|;insertunorderedlist;insertorderedlist;|;bold;italic;|;createLink;"
--->
-
 <metal:body define-macro="textbody">
   <tal:body define="body item/body;
-                    id string:${view/itemNum}.body">
+                    itemNum view/itemNum;
+                    id string:$itemNum.body;">
           <div class="content-1" id="1.body"
                tal:condition="body"
                tal:attributes="class string:content-$level;
@@ -26,7 +23,8 @@
                tal:content="structure body">
             The body
           </div>
-          <div>
+          <div tal:define="target item/target"
+               tal:condition="target">
             <div class="subcolumn"
                  tal:condition="item/xeditable | nothing">
               <a href="#" title="Edit" style="padding: 5px"
@@ -35,9 +33,15 @@
                             src="edit.gif" alt="Edit"
                             tal:attributes="src context/++resource++edit.gif" /></a>
             </div>
+            <div class="subcolumn"
+                 tal:condition="item/inlineEditable">
+              <a href="#" title="Edit" style="padding: 5px"
+                 tal:attributes="title string:Edit ${item/title};
+                                 onclick python: item.inlineEdit(id)"><img
+                            src="edit.gif" alt="Edit"
+                            tal:attributes="src context/++resource++edit.gif" /></a>
+            </div>
             <div class="content-1 subcolumn" id="1.body"
-                 tal:define="target item/target"
-                 tal:condition="target"
                  tal:attributes="class string:content-$level;
                                  id id;
                                  ondblclick python: item.openEditWindow('configure.html')"
@@ -60,7 +64,6 @@
     <tal:concepts define="item item/target;
                           macro item/macro">
       <div metal:use-macro="macro" />
-      <!--<div metal:use-macro="views/concept_macros/conceptlisting2" />-->
     </tal:concepts>
   </tal:body>
 </metal:body>
@@ -159,7 +162,24 @@
 </metal:menu>
 
 
-<!-- and other stuff -->
+<!-- inner HTML macros -->
+
+<div metal:define-macro="inline_edit"
+     class="content-1" id="1.body">
+  <form action="." method="post" id="1.form">
+    <div dojoType="Editor"
+         tal:content="structure view/body">
+      The body
+    </div>
+  </form>
+</div>
+
+<!-- dojoType="Editor"
+     items="formatblock;|;insertunorderedlist;insertorderedlist;|;bold;italic;|;createLink;"
+-->
+
+
+<!-- edit and other links -->
 
 <metal:editlink define-macro="editlink">
     <a target="zmi"

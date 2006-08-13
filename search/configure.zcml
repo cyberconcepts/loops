@@ -6,15 +6,6 @@
     i18n_domain="zope"
     >
 
-  <!-- named templates -->
-
-  <zope:adapter
-      factory="loops.search.browser.search_macros"
-      for="loops.browser.common.BaseView"
-      name="loops.search_macros" />
-
-  <!-- the real view -->
-
   <zope:adapter
       name="search"
       for="loops.interfaces.IConcept
