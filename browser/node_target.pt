@@ -6,14 +6,14 @@
 
 
   <div metal:fill-slot="body"
-       tal:define="target view/target">
+       tal:define="target nocall:view/target">
 
       <h1 tal:content="context/title">Node Title</h1><br />
 
       <div>
         <span i18n:translate=""
-              tal:condition="not:target">No target assigned</span>
-        <tal:target condition="target">
+              tal:condition="not:nocall:target">No target assigned</span>
+        <tal:target condition="nocall:target">
           <span i18n:translate="">Currently assigned target</span>:
           <a href="#"
              tal:attributes="href string:${target/url}/@@configure.html"

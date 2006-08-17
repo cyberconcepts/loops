@@ -5,12 +5,12 @@
 
 
   <metal:settings fill-slot="settings"
-    tal:define="dummy python:
-        controller.macros.register('css', resourceName='loops.css', media='all');
-                dummy python:
-        controller.macros.register('js', resourceName='loops.js');
-                dummy python:
-        controller.macros.register('js', resourceName='ajax.dojo/dojo.js');" />
+    tal:define="dummy python: controller.macros.register('css',
+                    identifier='loops.css', resourceName='loops.css', media='all');
+                dummy python: controller.macros.register('js',
+                    identifier='loops.js', resourceName='loops.js');
+                dummy python: controller.macros.register('js',
+                    identifier='dojo.js', resourceName='ajax.dojo/dojo.js');" />
 
 
   <metal:block fill-slot="ecmascript_slot"
@@ -25,7 +25,7 @@
 
 
   <metal:body fill-slot="body">
-    <tal:content define="item view/item;
+    <tal:content define="item nocall:view/item;
                          level level|python: 1;
                          macro item/macro;">
       <metal:block use-macro="macro" />
@@ -35,9 +35,9 @@
 
   <div class="box" metal:fill-slot="navigators">
     <h4>Navigation</h4>
-    <tal:menu define="item view/menu;
+    <tal:menu define="item nocall:view/menu;
                       level level|python: 1"
-              condition="item">
+              condition="nocall:item">
       <div class="body">
         <metal:menu use-macro="views/node_macros/menu" />
       </div>

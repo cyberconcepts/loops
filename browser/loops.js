@@ -22,10 +22,14 @@ function submitReplacing(targetId, formId, actionUrl) {
     return false;
 }
 
-function inlineEdit(id) {
+function inlineEdit(id, saveUrl) {
     var editor = dojo.widget.fromScript("Editor",
         {items: ["save", "|", "formatblock", "|",
                  "insertunorderedlist", "insertorderedlist", "|",
-                 "bold", "italic", "|", "createLink"]}, dojo.byId(id));
+                 "bold", "italic", "|", "createLink", "insertimage"],
+         saveUrl: saveUrl,
+         closeOnSave: true,
+         onSave: function(){this.disableToolbar(true);},
+        }, dojo.byId(id));
     return false;
 }

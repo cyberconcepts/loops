@@ -8,7 +8,7 @@
     <metal:top define-slot="topActions" />
     <form metal:define-macro="listing_form"
           method="post" name="listing" action="."
-          tal:define="target view/target"
+          tal:define="target nocall:view/target"
           tal:condition="python: target or items"
           tal:attributes="action request/URL">
       <input type="hidden" name="action" value="assign"
@@ -28,8 +28,8 @@
                             type nothing">
             <metal:none use-macro="views/target_macros/list_item_tr" />
           </tal:none>
-          <tal:current define="item target"
-                       condition="item">
+          <tal:current define="item nocall:target"
+                       condition="nocall:item">
             <metal:current use-macro="views/target_macros/list_item" />
           </tal:current>
           <tal:items repeat="item items">
@@ -46,7 +46,7 @@
                 </td>
                 <td>
                   <a href="#"
-                     tal:omit-tag="not:item"
+                     tal:omit-tag="not:nocall:item"
                      tal:content="title"
                      tal:attributes="href
                         string:${item/url|nothing}/@@SelectedManagementView.html">

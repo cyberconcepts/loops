@@ -41,6 +41,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
+from cybertools.browser.view import GenericView
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
@@ -60,12 +61,19 @@ class NodeView(BaseView):
     def macro(self):
         return self.template.macros['content']
 
+    def setupController(self):
+        cm = self.controller.macros
+        cm.register('css', identifier='loops.css',
+                    resourceName='loops.css', media='all')
+        cm.register('js', identifier='loops.js', resourceName='loops.js')
+        cm.register('js', identifier='dojo.js', resourceName='ajax.dojo/dojo.js')
+
     @Lazy
     def view(self):
         viewName = self.request.get('loops.viewName') or self.context.viewName
         if viewName:
-            adapter = component.queryMultiAdapter((self.context, self.request),
-                                        interface.Interface, name=viewName)
+            adapter = component.queryMultiAdapter(
+                            (self.context, self.request), name=viewName)
             if adapter is not None:
                 return adapter
         return self
@@ -265,11 +273,13 @@ class NodeView(BaseView):
         target = self.virtualTarget
         return target and target.inlineEditable or False
 
+    def inlineEdit(self, id):
+        return 'return inlineEdit("%s", "%s/inline_save")' % (id, self.virtualTargetUrl)
 
 # inner HTML views
 
 class InlineEdit(NodeView):
-    """ Provides inline editor as inner HTML - OBSOLETE, use as an example only!"""
+    """ Provides inline editor as inner HTML"""
 
     @Lazy
     def macro(self):
@@ -281,6 +291,10 @@ class InlineEdit(NodeView):
     @property
     def body(self):
         return self.virtualTargetObject.data
+
+    def save(self):
+        target = self.virtualTargetObject
+        target.data = self.request.form['editorContent']
 
 
 # special (named) views for nodes

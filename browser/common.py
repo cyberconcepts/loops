@@ -40,6 +40,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IView
@@ -80,13 +81,12 @@ class EditForm(BaseEditForm):
         return parentUrl + '/contents.html'
 
 
-class BaseView(object):
+class BaseView(GenericView):
 
     def __init__(self, context, request):
-        #self.context = context
         # TODO: get rid of removeSecurityProxy() call
+        super(BaseView, self).__init__(context, request)
         self.context = removeSecurityProxy(context)
-        self.request = request
         self.setSkin(self.loopsRoot.skinName)
 
     def setSkin(self, skinName):
@@ -96,16 +96,6 @@ class BaseView(object):
             if skin:
                 applySkin(self.request, skin)
         self.skin = skin
-
-    _controller = None
-    def setController(self, controller):
-        self._controller = controller
-        # this is also the place to register special macros with the controller
-        if getattr(controller, 'skinName', None):
-            self.setSkin(controller.skinName.value)
-        controller.skin = self.skin
-    def getController(self): return self._controller
-    controller = property(getController, setController)
 
     @Lazy
     def modified(self):
@@ -186,18 +176,17 @@ class BaseView(object):
 
     @Lazy
     def inlineEditingActive(self):
+        return False
         return self.request.principal.id == 'rootadmin'
         # this may depend on system and user settings...
         return True
 
     @Lazy
     def inlineEditable(self):
-        if not self.inlineEditingActive:
-            return False
-        return canWrite(self.context, 'title')
+        return self.inlineEditingActive and canWrite(self.context, 'title')
 
     def inlineEdit(self, id):
-        return 'return inlineEdit("%s")' %id
+        return 'return inlineEdit("%s", "")' % id
 
 
 class LoopsTerms(object):

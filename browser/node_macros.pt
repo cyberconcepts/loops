@@ -23,8 +23,8 @@
                tal:content="structure body">
             The body
           </div>
-          <div tal:define="target item/target"
-               tal:condition="target">
+          <div tal:define="target nocall:item/target"
+               tal:condition="nocall:target">
             <div class="subcolumn"
                  tal:condition="item/xeditable | nothing">
               <a href="#" title="Edit" style="padding: 5px"
@@ -61,7 +61,7 @@
                          ondblclick python: item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
-    <tal:concepts define="item item/target;
+    <tal:concepts define="item nocall:item/target;
                           macro item/macro">
       <div metal:use-macro="macro" />
     </tal:concepts>
@@ -131,7 +131,7 @@
     Listing
   </div><br />
   <div tal:attributes="ondblclick python: target.openEditWindow('resources.html')"
-       tal:define="item item/target"
+       tal:define="item nocall:item/target"
        tal:condition="nocall:target">
     <div tal:repeat="related item/resources">
           <a href="#"

@@ -16,6 +16,15 @@
   <resource name="loops.css" file="loops.css" />
   <resource name="loops.js" file="loops.js" />
 
+
+  <!-- new style pages -->
+
+  <page for="loops.interfaces.INode"
+        name="main.html"
+        class="loops.browser.node.NodeView"
+        permission="zope.Public"
+        />
+
   <!-- macros -->
 
   <page
@@ -536,6 +545,14 @@
       name="inline_edit.html"
       for="loops.interfaces.INode"
       class="loops.browser.node.InlineEdit"
+      permission="zope.View"
+      />
+
+  <page
+      name="inline_save"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.InlineEdit"
+      attribute="save"
       permission="zope.View"
       />
 
