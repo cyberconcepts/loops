@@ -65,8 +65,7 @@ class NodeView(BaseView):
         cm = self.controller.macros
         cm.register('css', identifier='loops.css',
                     resourceName='loops.css', media='all')
-        cm.register('js', identifier='loops.js', resourceName='loops.js')
-        cm.register('js', identifier='dojo.js', resourceName='ajax.dojo/dojo.js')
+        cm.register('js', 'loops.js', resourceName='loops.js')
 
     @Lazy
     def view(self):
@@ -274,7 +273,12 @@ class NodeView(BaseView):
         return target and target.inlineEditable or False
 
     def inlineEdit(self, id):
+        self.registerDojo()
+        cm = self.controller.macros
+        jsCall = 'dojo.require("dojo.widget.Editor")'
+        cm.register('js-execute', jsCall, jsCall=jsCall)
         return 'return inlineEdit("%s", "%s/inline_save")' % (id, self.virtualTargetUrl)
+
 
 # inner HTML views
 

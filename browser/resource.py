@@ -174,3 +174,8 @@ class DocumentView(ResourceView):
         view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
+    @Lazy
+    def inlineEditable(self):
+        return (self.inlineEditingActive
+                and self.context.contentType == 'text/html'
+                and canWrite(self.context, 'data'))

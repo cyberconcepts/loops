@@ -59,6 +59,7 @@ class Search(BaseView):
         return n
 
     def submitReplacing(self, targetId, formId, view):
+        self.registerDojo()
         return 'return submitReplacing("%s", "%s", "%s")' % (
                     targetId, formId,
                     '%s/.target%s/@@searchresults.html' % (view.url, self.uniqueId))

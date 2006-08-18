@@ -518,7 +518,7 @@
 
   <defaultView
       for="loops.interfaces.INode"
-      name="node.html"
+      name="main.html"
       />
 
   <zope:adapter

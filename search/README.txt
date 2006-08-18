@@ -65,11 +65,17 @@ accessed exactly once per row:
   2
 
 To execute the search in the context of a node we have to set up a node
-view on our page. The submitReplacing method returns a JavaScript call
-that will replace the results part on the search page:
+view for our page. The submitReplacing method returns a JavaScript call
+that will replace the results part on the search page; as this registers
+the dojo library with the view's controller we also have to supply
+a controller attribute for the search view.
 
   >>> from loops.browser.node import NodeView
-  >>> pageView = NodeView(page, TestRequest())
+  >>> request = TestRequest()
+  >>> pageView = NodeView(page, request)
+
+  >>> from cybertools.browser.liquid.controller import Controller
+  >>> searchView.controller = Controller(searchView, request)
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'return submitReplacing("1.results", "1.search.form",

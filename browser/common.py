@@ -176,17 +176,24 @@ class BaseView(GenericView):
 
     @Lazy
     def inlineEditingActive(self):
-        return False
+        #return False
         return self.request.principal.id == 'rootadmin'
         # this may depend on system and user settings...
         return True
 
-    @Lazy
-    def inlineEditable(self):
-        return self.inlineEditingActive and canWrite(self.context, 'title')
+    #@Lazy
+    #def inlineEditable(self):
+    #    return self.inlineEditingActive and canWrite(self.context, 'title')
+
+    inlineEditable = False
 
     def inlineEdit(self, id):
+        self.registerDojo()
         return 'return inlineEdit("%s", "")' % id
+
+    def registerDojo(self):
+        cm = self.controller.macros
+        cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
 
 
 class LoopsTerms(object):
