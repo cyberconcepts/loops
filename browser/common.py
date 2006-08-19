@@ -40,9 +40,9 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
-from cybertools.typology.interfaces import IType
+from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IView
-#from loops import util
+from loops import util
 from loops.util import _
 
 
@@ -153,6 +153,13 @@ class BaseView(GenericView):
         request = self.request
         for o in objs:
             yield BaseView(o, request)
+
+    def typesForSearch(self):
+        general = [('loops:resource:*', 'Any Resource'),
+                   ('loops:concept:*', 'Any Concept'),]
+        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
+                        for t in ITypeManager(self.context).types])
+                        + [('loops:*', 'Any')])
 
     @Lazy
     def uniqueId(self):

@@ -79,19 +79,25 @@ class SearchResults(BaseView):
     @Lazy
     def results(self):
         request = self.request
+        type = request.get('search.1.text', 'loops:resource:*')
         text = request.get('search.2.text')
-        if not text:
+        if not text and '*' in type: # there should be some sort of selection...
             return set()
         useTitle = request.get('search.2.title')
         useFull = request.get('search.2.full')
-        r1 = r2 = set()
+        r1 = set()
         cat = component.getUtility(ICatalog)
-        if useFull:
+        if useFull and text and not type.startswith('loops:concept:'):
             criteria = {'loops_resource_textng': {'query': text},}
             r1 = set(cat.searchResults(**criteria))
-        if useTitle:
-            criteria = {'loops_title': text,}
-            r2 = set(cat.searchResults(**criteria))
-        result = [BaseView(r, request) for r in r1.union(r2)]
-        return result
+        if type.endswith('*'):
+            start = type[:-1]
+            end = start + '\x7f'
+        else:
+            start = end = type
+        criteria = {'loops_type': (start, end),}
+        if useTitle and text:
+            criteria['loops_title'] = text
+        r2 = set(cat.searchResults(**criteria))
+        return self.viewIterator(r1.union(r2))
 

@@ -234,6 +234,8 @@ class NodeView(BaseView):
             name = zapi.getDefaultViewName(target, self.request)
             targetView = zapi.getMultiAdapter((target, self.request),
                     name=name)
+            if name == 'index.html' and hasattr(targetView, 'show'):
+                return targetView.show()
             return targetView()
         return u''
 

@@ -1,7 +1,17 @@
 <metal:block define-macro="render">
   <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
     <h3 tal:content="item/title">Title</h3>
-    <span tal:replace="structure item/render" />
+    <tal:body define="itemNum view/itemNum;
+                      id string:$itemNum.body;">
+      <tal:edit define="item nocall:view">
+        <div metal:use-macro="views/node_macros/editicons" />
+      </tal:edit>
+      <div class="content-1" id="1.body"
+           tal:attributes="id id;"
+           tal:content="structure item/render">
+        The body
+      </div>
+    </tal:body>
   </div>
 </metal:block>
 

@@ -23,13 +23,17 @@ function submitReplacing(targetId, formId, actionUrl) {
 }
 
 function inlineEdit(id, saveUrl) {
+    var iconNode = dojo.byId("inlineedit_icon");
+    iconNode.style.visibility = "hidden";
     var editor = dojo.widget.fromScript("Editor",
         {items: ["save", "|", "formatblock", "|",
                  "insertunorderedlist", "insertorderedlist", "|",
                  "bold", "italic", "|", "createLink", "insertimage"],
          saveUrl: saveUrl,
          closeOnSave: true,
-         onSave: function(){this.disableToolbar(true);},
+         onSave: function(){
+            this.disableToolbar(true);
+            iconNode.style.visibility = "visible";}
         }, dojo.byId(id));
     return false;
 }

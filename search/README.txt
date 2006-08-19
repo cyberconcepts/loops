@@ -99,5 +99,5 @@ Before accessing the `results` property we have to prepare a catalog.
   ...         return []
   >>> component.provideUtility(DummyCat())
 
-  >>> resultsView.results
+  >>> list(resultsView.results)
   []

@@ -25,22 +25,24 @@
           </div>
           <div tal:define="target nocall:item/target"
                tal:condition="nocall:target">
-            <div class="subcolumn"
-                 tal:condition="item/xeditable | nothing">
-              <a href="#" title="Edit" style="padding: 5px"
-                 tal:attributes="href string:${item/realTargetUrl}/external_edit;
-                                 title string:Edit ${item/title}"><img
-                            src="edit.gif" alt="Edit"
-                            tal:attributes="src context/++resource++edit.gif" /></a>
-            </div>
-            <div class="subcolumn"
-                 tal:condition="item/inlineEditable">
-              <a href="#" title="Edit" style="padding: 5px"
-                 tal:attributes="title string:Edit ${item/title};
-                                 onclick python: item.inlineEdit(id)"><img
-                            src="edit.gif" alt="Edit"
-                            tal:attributes="src context/++resource++edit.gif" /></a>
-            </div>
+            <metal:editicons define-macro="editicons">
+              <div class="subcolumn" id="xedit_icon"
+                   tal:condition="item/xeditable | nothing">
+                <a href="#" title="Edit" style="padding: 5px"
+                   tal:attributes="href string:${item/realTargetUrl}/external_edit;
+                                   title string:Edit ${item/title}"><img
+                              src="edit.gif" alt="Edit"
+                              tal:attributes="src context/++resource++edit.gif" /></a>
+              </div>
+              <div class="subcolumn" id="inlineedit_icon"
+                   tal:condition="item/inlineEditable">
+                <a href="#" title="Edit" style="padding: 5px"
+                   tal:attributes="title string:Edit ${item/title};
+                                   onclick python: item.inlineEdit(id)"><img
+                              src="edit.gif" alt="Edit"
+                              tal:attributes="src context/++resource++edit.gif" /></a>
+              </div>
+            </metal:editicons>
             <div class="content-1 subcolumn" id="1.body"
                  tal:attributes="class string:content-$level;
                                  id id;
@@ -121,7 +123,7 @@
 
 
 <metal:resources define-macro="listresources"
-                 tal:define="target item/target">
+                 tal:define="target nocall:item/target">
   <div class="content-1"
        tal:content="structure item/body"
        tal:attributes="ondblclick python:

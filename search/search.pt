@@ -84,8 +84,12 @@
     <select name="text"
             tal:attributes="name string:$namePrefix.text;
                             id string:$idPrefix.text;">
-      <option value=".loops/concepts/topic">Topic</option>
-      <option value="loops.resource.Document">Document</option>
+      <tal:types repeat="type view/typesForSearch">
+        <option value="loops:*"
+                i18n:translate=""
+                tal:attributes="value type/token"
+                tal:content="type/title">Topic</option>
+      </tal:types>
     </select>
     <input type="button" value="+"
            title="Add type" />&nbsp;
