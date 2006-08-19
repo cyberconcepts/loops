@@ -37,6 +37,9 @@ from zope import schema
 from persistent import Persistent
 from cStringIO import StringIO
 
+from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
+from zope.event import notify
+
 from textindexng.interfaces import IIndexableContent
 from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
@@ -205,6 +208,7 @@ class DocumentWriteFileAdapter(object):
 
     def write(self, data):
         self.context.data = unicode(data.replace('\r', ''), 'UTF-8')
+        notify(ObjectModifiedEvent(self.context, Attributes(IDocument, 'data')))
 
 
 class DocumentReadFileAdapter(object):
@@ -230,6 +234,7 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
+    # obsolete, use TextIndexNG (with indexableContent() method) instead
     def text(self):
         context = self.context
         return ' '.join((zapi.getName(context), context.title, context.data)).strip()

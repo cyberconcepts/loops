@@ -11,6 +11,7 @@ Let's do some basic set up
   >>> site = placefulSetUp(True)
 
   >>> from zope import component, interface
+  >>> from zope.interface import implements
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
@@ -81,3 +82,22 @@ a controller attribute for the search view.
   'return submitReplacing("1.results", "1.search.form",
        "http://127.0.0.1/loops/views/page/.target19/@@searchresults.html")'
 
+The searchresults.html view, i.e. the SearchResults view class provides the
+result set of the search via its `results` property.
+
+  >>> from loops.search.browser import SearchResults
+  >>> form = {'search.2.title': 'yes', 'search.2.text': u'foo' }
+  >>> request = TestRequest(form=form)
+  >>> resultsView = SearchResults(page, request)
+
+Before accessing the `results` property we have to prepare a catalog.
+
+  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> class DummyCat(object):
+  ...     implements(ICatalog)
+  ...     def searchResults(self, **criteria):
+  ...         return []
+  >>> component.provideUtility(DummyCat())
+
+  >>> resultsView.results
+  []

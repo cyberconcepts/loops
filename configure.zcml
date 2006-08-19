@@ -276,12 +276,22 @@
     <require like_class="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter" />
   </class>
 
-  <adapter factory="loops.concept.IndexAttributes" />
-  <adapter factory="loops.resource.IndexAttributes" />
+  <adapter factory="loops.concept.IndexAttributes" trusted="True" />
+  <class class="loops.concept.IndexAttributes">
+    <allow interface="loops.interfaces.IIndexAttributes" />
+  </class>
+
+  <adapter factory="loops.resource.IndexAttributes" trusted="True" />
+  <class class="loops.resource.IndexAttributes">
+    <allow interface="loops.interfaces.IIndexAttributes" />
+  </class>
+
   <adapter factory="loops.resource.IndexableResource" trusted="True" />
   <class class="loops.resource.IndexableResource">
-    <require permission="zope.View"
-             interface="loops.interfaces.IBaseResourceSchema" />
+    <allow interface="textindexng.interfaces.IIndexableContent" />
+  </class>
+  <class class="textindexng.content.IndexContentCollector">
+    <allow interface="textindexng.interfaces.IIndexContentCollector" />
   </class>
 
   <adapter factory="loops.resource.DocumentReadFileAdapter" />
@@ -349,6 +359,21 @@
       factory="loops.concept.PredicateSourceList"
       name="loops.PredicateSource"
       />
+
+<!-- textindexng converters -->
+
+  <utility
+      provides="textindexng.interfaces.IConverter"
+      component="textindexng.converters.null.NullConverter"
+      name="text/structured"
+      />
+
+  <utility
+      provides="textindexng.interfaces.IConverter"
+      component="textindexng.converters.null.NullConverter"
+      name="text/restructured"
+      />
+
 
   <include package=".knowledge" />
   <include package=".organize" />

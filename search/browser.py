@@ -24,6 +24,7 @@ $Id$
 """
 
 from zope import interface, component
+from zope.app.catalog.interfaces import ICatalog
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementation
@@ -74,4 +75,23 @@ class SearchResults(BaseView):
 
     def __call__(self):
         return innerHtml(self)
+
+    @Lazy
+    def results(self):
+        request = self.request
+        text = request.get('search.2.text')
+        if not text:
+            return set()
+        useTitle = request.get('search.2.title')
+        useFull = request.get('search.2.full')
+        r1 = r2 = set()
+        cat = component.getUtility(ICatalog)
+        if useFull:
+            criteria = {'loops_resource_textng': {'query': text},}
+            r1 = set(cat.searchResults(**criteria))
+        if useTitle:
+            criteria = {'loops_title': text,}
+            r2 = set(cat.searchResults(**criteria))
+        result = [BaseView(r, request) for r in r1.union(r2)]
+        return result
 

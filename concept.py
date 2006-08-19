@@ -76,13 +76,13 @@ class ResourceRelation(BaseRelation):
 
 
 # concept
-    
+
 class Concept(Contained, Persistent):
 
     implements(IConcept, IConceptManagerContained, IRelatable)
 
     proxyInterface = IConceptView
-    
+
     _title = u''
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title
@@ -132,7 +132,7 @@ class Concept(Contained, Persistent):
         relationships = [ConceptRelation(None, self, p) for p in predicates]
         # TODO: sort...
         return getRelations(first=parent, second=self, relationships=relationships)
-        
+
     def getParents(self, predicates=None):
         return [r.first for r in self.getParentRelations(predicates)]
 
@@ -158,7 +158,7 @@ class Concept(Contained, Persistent):
 
     def deassignParent(self, parent, predicates=None):
         parent.deassignChild(self, predicates)
-    
+
     # resource relations
 
     def getResourceRelations(self, predicates=None, resource=None):
@@ -184,7 +184,7 @@ class Concept(Contained, Persistent):
 
 
 # concept manager
-            
+
 class ConceptManager(BTreeContainer):
 
     implements(IConceptManager, ILoopsContained)
@@ -211,7 +211,7 @@ class ConceptManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
-    
+
 
 # adapters and similar components
 
@@ -291,10 +291,12 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
+    # obsolete, use TextIndexNG (with indexableContent() method) instead
     def text(self):
         context = self.context
         return ' '.join((zapi.getName(context), context.title,))
 
     def title(self):
-        return self.text()
+        context = self.context
+        return ' '.join((zapi.getName(context), context.title,))
 

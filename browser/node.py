@@ -39,6 +39,9 @@ from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
+from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
+from zope.event import notify
+
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
 from cybertools.browser.view import GenericView
@@ -299,6 +302,7 @@ class InlineEdit(NodeView):
     def save(self):
         target = self.virtualTargetObject
         target.data = self.request.form['editorContent']
+        notify(ObjectModifiedEvent(target, Attributes(IResource, 'data')))
 
 
 # special (named) views for nodes

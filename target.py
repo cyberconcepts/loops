@@ -31,8 +31,10 @@ from zope.interface import implements
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
 
-from loops.interfaces import IResource
-from loops.interfaces import IDocument, IMediaAsset
+from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
+from zope.event import notify
+
+from loops.interfaces import ILoopsObject, IResource, IDocument, IMediaAsset
 from loops.interfaces import IDocumentView, IMediaAssetView
 from loops.interfaces import IView
 from loops.interfaces import IConcept, IConceptView
@@ -52,10 +54,13 @@ class TargetProxy(object):
     @Lazy
     def target(self):
         return self.context.target
-        
+
     def getTitle(self):
         return self.target.title
-    def setTitle(self, title): self.target.title = title
+    def setTitle(self, title):
+        self.target.title = title
+        notify(ObjectModifiedEvent(self.target,
+                                   Attributes(ILoopsObject, 'title')))
     title = property(getTitle, setTitle)
 
 
@@ -65,7 +70,9 @@ class ConceptProxy(TargetProxy):
     adapts(IConceptView)
 
     def getConceptType(self): return self.target.conceptType
-    def setConceptType(self, conceptType): self.target.conceptType = conceptType
+    def setConceptType(self, conceptType):
+        self.target.conceptType = conceptType
+        notify(ObjectModifiedEvent(self.target, Attributes(IConcept, 'conceptType')))
     conceptType = property(getConceptType, setConceptType)
 
     def getChildren(self, predicates=None):
@@ -81,6 +88,7 @@ class ConceptProxy(TargetProxy):
 class ResourceProxy(TargetProxy):
 
     def setContentType(self, contentType):
+        notify(ObjectModifiedEvent(self.target, Attributes(IResource, 'contentType')))
         self.target.contentType = contentType
     def getContentType(self): return self.target.contentType
     contentType = property(getContentType, setContentType)
@@ -91,7 +99,9 @@ class DocumentProxy(ResourceProxy):
     implements(IDocument)
     adapts(IDocumentView)
 
-    def setData(self, data): self.target.data = data
+    def setData(self, data):
+        self.target.data = data
+        notify(ObjectModifiedEvent(self.target, Attributes(IDocument, 'data')))
     def getData(self): return self.target.data
     data = property(getData, setData)
 

@@ -25,12 +25,10 @@ $Id$
 from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.form.browser.interfaces import ITerms
-from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
+from zope.formlib import form
 from zope.formlib.form import FormFields
-from zope.formlib.form import EditForm as BaseEditForm
-from zope.formlib.form import AddForm as BaseAddForm
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
 from zope.app.publisher.browser import applySkin
@@ -44,7 +42,7 @@ from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IView
-from loops import util
+#from loops import util
 from loops.util import _
 
 
@@ -64,13 +62,13 @@ class IAddForm(Interface):
         )
 
 
-class AddForm(BaseAddForm):
+class AddForm(form.AddForm):
 
     form_fields = FormFields(IAddForm)
     template = NamedTemplate('loops.pageform')
 
 
-class EditForm(BaseEditForm):
+class EditForm(form.EditForm):
 
     template = NamedTemplate('loops.pageform')
 
@@ -180,10 +178,6 @@ class BaseView(GenericView):
         return self.request.principal.id == 'rootadmin'
         # this may depend on system and user settings...
         return True
-
-    #@Lazy
-    #def inlineEditable(self):
-    #    return self.inlineEditingActive and canWrite(self.context, 'title')
 
     inlineEditable = False
 

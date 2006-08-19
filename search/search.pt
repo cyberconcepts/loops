@@ -1,19 +1,23 @@
 <metal:search define-macro="search">
   <div id="search"
-       tal:define="macros item/template/macros">
+       tal:define="macros item/template/macros;
+                   idPrefix string:${view/itemNum}.search;
+                   formId string:$idPrefix.form;
+                   resultsId string:$idPrefix.results">
     <h3 tal:attributes="class string:content-$level;
                         ondblclick item/openEditWindow">
       Search
     </h3>
 
-    <div metal:define-macro="search_form" class="searchForm"
-         tal:define="idPrefix string:${view/itemNum}.search;
-                     formId string:$idPrefix.form">
+    <div metal:define-macro="search_form" class="searchForm">
       <fieldset class="box">
         <form action="." method="post" id="1.search.form"
               tal:attributes="id formId">
+          <input type="hidden" name="search.submitted" value="yes" />
+          <input type="hidden" name="search.resultsId" value="1.results"
+                 tal:attributes="value resultsId" />
           <table cellpadding="3">
-            <tal:block repeat="search_selection python: ['type', 'text']">
+            <tal:block repeat="search_param python: ['type', 'text']">
               <metal:row use-macro="macros/search_row" />
             </tal:block>
             <tr>
@@ -24,10 +28,9 @@
             </tr>
             <tr>
               <td colspan="2">
-                <input type="submit" name="1.search" value="Search" class="submit"
-                       tal:attributes="name string:$idPrefix.submit;
-                                       onclick python:
-                                item.submitReplacing('1.results', formId, view)" />
+                <input type="submit" name="button.search" value="Search" class="submit"
+                       tal:attributes="onclick python:
+                                item.submitReplacing(resultsId, formId, view)" />
               </td>
             </tr>
           </table>
@@ -35,11 +38,17 @@
       </fieldset>
     </div>
 
-    <div metal:define-macro="search_results"
-         id="1.results">
-      <fieldset class="box">
-        Search results
-        <p tal:content="python:request.get('2.search.1.text', 'nothing')" />
+    <div metal:define-macro="search_results" id="1.search.results"
+         tal:attributes="id resultsId | request/search.resultsId">
+      <fieldset class="box"
+                tal:condition="request/search.submitted | nothing">
+        <legend>Search results</legend>
+        <div tal:repeat="row view/results">
+          <div>
+            <a tal:attributes="href string:${view/url}/.target${row/uniqueId}"
+               tal:content="row/title" />
+          </div>
+        </div>
       </fieldset>
     </div>
 
@@ -47,18 +56,22 @@
 </metal:search>
 
 
-<tr metal:define-macro="search_row" id="search.row.1.1"
+<tr metal:define-macro="search_row" id="1.1.row"
     tal:define="rowNum item/rowNum;
                 idPrefix string:$idPrefix.$rowNum;
-                selection search_selection | item/searchSelection"
+                namePrefix string:search.$rowNum;
+                param search_param | item/searchParam"
     tal:attributes="id string:$idPrefix.row">
   <td style="width: 30px">
+    <input type="hidden" name="paramtype" value="type"
+           tal:attributes="name string:$namePrefix.paramtype;
+                           value param" />
     <input type="button" value="&minus;"
            title="Remove search parameter"
-           tal:condition="python: selection not in ['type', 'text']" />&nbsp;
+           tal:condition="python: param not in ['type', 'text']" />&nbsp;
   </td>
   <td>
-    <div metal:use-macro="macros/?selection" />
+    <div metal:use-macro="macros/?param" />
   </td>
 </tr>
 
@@ -69,7 +82,7 @@
     <label for="text"
            tal:attributes="for string:$idPrefix.text">Type:</label>
     <select name="text"
-            tal:attributes="name string:$idPrefix.text;
+            tal:attributes="name string:$namePrefix.text;
                             id string:$idPrefix.text;">
       <option value=".loops/concepts/topic">Topic</option>
       <option value="loops.resource.Document">Document</option>
@@ -84,21 +97,21 @@
   <div>
     <h3>Search text</h3>
     <input type="checkbox" checked
-           name="title" id="title"
-           tal:attributes="name string:$idPrefix.title;
+           name="title" id="title" value="yes"
+           tal:attributes="name string:$namePrefix.title;
                            id string:$idPrefix.title;" />
     <label for="title"
            tal:attributes="for string:$idPrefix.title">Title</label>
     <input type="checkbox"
-           name="full" id="full"
-           tal:attributes="name string:$idPrefix.full;
+           name="full" id="full" value="yes"
+           tal:attributes="name string:$namePrefix.full;
                            id string:$idPrefix.full;" />
     <label for="full"
            tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
     <label for="text"
            tal:attributes="for string:$idPrefix.text">Search words:</label>
     <input type="text" name="text"
-           tal:attributes="name string:$idPrefix.text;
+           tal:attributes="name string:$namePrefix.text;
                            id string:$idPrefix.text;" />
     <input type="button" value="+"
            title="Add search word" />&nbsp;
