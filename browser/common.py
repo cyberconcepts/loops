@@ -182,7 +182,7 @@ class BaseView(GenericView):
     @Lazy
     def inlineEditingActive(self):
         #return False
-        return self.request.principal.id == 'rootadmin'
+        #return self.request.principal.id == 'rootadmin'
         # this may depend on system and user settings...
         return True
 

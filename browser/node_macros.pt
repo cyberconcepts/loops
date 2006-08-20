@@ -30,14 +30,14 @@
                    tal:condition="item/xeditable | nothing">
                 <a href="#" title="Edit" style="padding: 5px"
                    tal:attributes="href string:${item/realTargetUrl}/external_edit;
-                                   title string:Edit ${item/title}"><img
+                                   title string:Edit '${target/title}' with External Editor"><img
                               src="edit.gif" alt="Edit"
                               tal:attributes="src context/++resource++edit.gif" /></a>
               </div>
               <div class="subcolumn" id="inlineedit_icon"
                    tal:condition="item/inlineEditable">
                 <a href="#" title="Edit" style="padding: 5px"
-                   tal:attributes="title string:Edit ${item/title};
+                   tal:attributes="title string:Edit '${target/title}' with Inline Editor;
                                    onclick python: item.inlineEdit(id)"><img
                               src="edit.gif" alt="Edit"
                               tal:attributes="src context/++resource++edit.gif" /></a>

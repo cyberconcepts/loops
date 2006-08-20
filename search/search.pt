@@ -20,7 +20,7 @@
             <tal:block repeat="search_param python: ['type', 'text']">
               <metal:row use-macro="macros/search_row" />
             </tal:block>
-            <tr>
+            <tr tal:condition="nothing">
               <td colspan="2">
                 <input type="button" value="Add concept filter" class="button" />
                 <input type="button" value="Add attribute filter" class="button" />
@@ -62,7 +62,7 @@
                 namePrefix string:search.$rowNum;
                 param search_param | item/searchParam"
     tal:attributes="id string:$idPrefix.row">
-  <td style="width: 30px">
+  <td>
     <input type="hidden" name="paramtype" value="type"
            tal:attributes="name string:$namePrefix.paramtype;
                            value param" />
@@ -92,7 +92,8 @@
       </tal:types>
     </select>
     <input type="button" value="+"
-           title="Add type" />&nbsp;
+           title="Add type"
+           tal:condition="nothing" />&nbsp;
   </div>
 </metal:text>
 
@@ -118,7 +119,8 @@
            tal:attributes="name string:$namePrefix.text;
                            id string:$idPrefix.text;" />
     <input type="button" value="+"
-           title="Add search word" />&nbsp;
+           title="Add search word"
+           tal:condition="nothing" />&nbsp;
   </div>
 </metal:text>
 
