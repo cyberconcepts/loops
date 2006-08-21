@@ -99,5 +99,8 @@ class SearchResults(BaseView):
         if useTitle and text:
             criteria['loops_title'] = text
         r2 = set(cat.searchResults(**criteria))
-        return self.viewIterator(r1.union(r2))
+        result = r1.union(r2)
+        result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
+        result.sort(key=lambda x: x.title.lower())
+        return self.viewIterator(result)
 
