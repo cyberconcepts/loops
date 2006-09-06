@@ -31,7 +31,9 @@ from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementatio
 from zope.i18nmessageid import MessageFactory
 
 from cybertools.ajax import innerHtml
+from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
+from loops import util
 
 _ = MessageFactory('zope')
 
@@ -59,6 +61,12 @@ class Search(BaseView):
         self.maxRowNum = n
         return n
 
+    def conceptTypesForSearch(self):
+        general = [('loops:concept:*', 'Any Concept'),]
+        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
+                        for t in ITypeManager(self.context).types
+                            if 'concept' in t.qualifiers]))
+
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
         return 'return submitReplacing("%s", "%s", "%s")' % (
@@ -77,30 +85,72 @@ class SearchResults(BaseView):
         return innerHtml(self)
 
     @Lazy
+    def catalog(self):
+        return component.getUtility(ICatalog)
+
+    @Lazy
     def results(self):
+        result = set()
         request = self.request
+        r3 = self.queryConcepts()
         type = request.get('search.1.text', 'loops:resource:*')
         text = request.get('search.2.text')
-        if not text and '*' in type: # there should be some sort of selection...
-            return set()
-        useTitle = request.get('search.2.title')
-        useFull = request.get('search.2.full')
-        r1 = set()
-        cat = component.getUtility(ICatalog)
-        if useFull and text and not type.startswith('loops:concept:'):
-            criteria = {'loops_resource_textng': {'query': text},}
-            r1 = set(cat.searchResults(**criteria))
+        if not r3 and not text and '*' in type: # there should be some sort of selection...
+            return result
+        if text or not '*' in type:
+            useTitle = request.get('search.2.title')
+            useFull = request.get('search.2.full')
+            r1 = set()
+            cat = self.catalog
+            if useFull and text and not type.startswith('loops:concept:'):
+                criteria = {'loops_resource_textng': {'query': text},}
+                r1 = set(cat.searchResults(**criteria))
+            if type.endswith('*'):
+                start = type[:-1]
+                end = start + '\x7f'
+            else:
+                start = end = type
+            criteria = {'loops_type': (start, end),}
+            if useTitle and text:
+                criteria['loops_title'] = text
+            r2 = set(cat.searchResults(**criteria))
+            result = r1.union(r2)
+            result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        if r3 is not None:
+            if result:
+                result = result.intersection(r3)
+            else:
+                result = r3
+        result = sorted(result, key=lambda x: x.title.lower())
+        return self.viewIterator(result)
+
+    def queryConcepts(self):
+        result = set()
+        cat = self.catalog
+        request = self.request
+        type = request.get('search.3.type', 'loops:concept:*')
+        text = request.get('search.3.text')
+        if not text and '*' in type:
+            return None
         if type.endswith('*'):
             start = type[:-1]
             end = start + '\x7f'
         else:
             start = end = type
         criteria = {'loops_type': (start, end),}
-        if useTitle and text:
+        if text:
             criteria['loops_title'] = text
-        r2 = set(cat.searchResults(**criteria))
-        result = r1.union(r2)
-        result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
-        result.sort(key=lambda x: x.title.lower())
-        return self.viewIterator(result)
+        queue = list(cat.searchResults(**criteria))
+        concepts = []
+        while queue:
+            c = queue.pop(0)
+            concepts.append(c)
+            for child in c.getChildren():
+                # TODO: check for tree level, use relevance factors, ...
+                if child not in queue and child not in concepts:
+                    queue.append(child)
+        for c in concepts:
+            result.add(c)
+            result.update(c.getResources())
+        return result
 

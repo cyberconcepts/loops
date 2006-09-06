@@ -17,7 +17,7 @@
           <input type="hidden" name="search.resultsId" value="1.results"
                  tal:attributes="value resultsId" />
           <table cellpadding="3">
-            <tal:block repeat="search_param python: ['type', 'text']">
+            <tal:block repeat="search_param python: ['type', 'text', 'concept']">
               <metal:row use-macro="macros/search_row" />
             </tal:block>
             <tr tal:condition="nothing">
@@ -68,7 +68,7 @@
                            value param" />
     <input type="button" value="&minus;"
            title="Remove search parameter"
-           tal:condition="python: param not in ['type', 'text']" />&nbsp;
+           tal:condition="python: param not in ['type', 'text', 'concept']" />&nbsp;
   </td>
   <td>
     <div metal:use-macro="macros/?param" />
@@ -84,7 +84,7 @@
     <select name="text"
             tal:attributes="name string:$namePrefix.text;
                             id string:$idPrefix.text;">
-      <tal:types repeat="type view/typesForSearch">
+      <tal:types repeat="type item/typesForSearch">
         <option value="loops:*"
                 i18n:translate=""
                 tal:attributes="value type/token"
@@ -114,7 +114,7 @@
     <label for="full"
            tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
     <label for="text"
-           tal:attributes="for string:$idPrefix.text">Search words:</label>
+           tal:attributes="for string:$idPrefix.text">Search text:</label>
     <input type="text" name="text"
            tal:attributes="name string:$namePrefix.text;
                            id string:$idPrefix.text;" />
@@ -125,23 +125,29 @@
 </metal:text>
 
 
-<!-- obsolete -->
-<tr metal:define-macro="search_row_selectable" id="search.row.1.1">
-  <td>
-    <input type="button" value="&minus;"
-           title="Remove search parameter" />&nbsp;
-  </td>
-  <td tal:define="selection search_selection | string:type">
-    <select>
-      <option value="type"
-              tal:attributes="selected python: selection=='type'">Type</option>
-      <option value="text"
-              tal:attributes="selected python: selection=='text'">Text</option>
-      <option value="attribute">Attribute value</option>
-      <option value="concept">Concept</option>
-    </select>
-    <input metal:use-macro="template/macros/?selection" />
-  </td>
-</tr>
-
+<metal:text define-macro="concept">
+  <div>
+    <h3>Search via related conceps</h3>
+    <label for="type"
+           tal:attributes="for string:$idPrefix.type">Type:</label>
+    <select name="type"
+            tal:attributes="name string:$namePrefix.type;
+                            id string:$idPrefix.type;">
+      <tal:types repeat="type item/conceptTypesForSearch">
+        <option value="loops:*"
+                i18n:translate=""
+                tal:attributes="value type/token"
+                tal:content="type/title">Topic</option>
+      </tal:types>
+    </select>&nbsp;&nbsp;
+    <label for="text"
+           tal:attributes="for string:$idPrefix.text">Search text:</label>
+    <input type="text" name="text"
+           tal:attributes="name string:$namePrefix.text;
+                           id string:$idPrefix.text;" />
+    <input type="button" value="+"
+           title="Add type"
+           tal:condition="nothing" />&nbsp;
+  </div>
+</metal:text>
 

@@ -553,7 +553,7 @@
       for="loops.interfaces.INode"
       class="loops.browser.node.InlineEdit"
       attribute="save"
-      permission="zope.View"
+      permission="zope.ManageContent"
       />
 
   <!-- render file or image assigned to a node as target -->

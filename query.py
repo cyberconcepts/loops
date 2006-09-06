@@ -53,7 +53,7 @@ class IQueryConcept(Interface):
 
     viewName = schema.TextLine(
         title=_(u'Adapter/View name'),
-        description=_(u'The name of the (mulit-) adapter (typically a view) '
+        description=_(u'The name of the (multi-) adapter (typically a view) '
                        'to be used for the query and for presenting '
                        'the results'),
         default=u'',

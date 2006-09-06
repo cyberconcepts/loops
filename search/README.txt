@@ -50,6 +50,9 @@ In addition we create a concept that holds the search page and a node
   >>> page = views['page'] = Node('Search Page')
   >>> page.target = search
 
+Search views
+------------
+
 Now we are ready to create a search view object:
 
   >>> from zope.publisher.browser import TestRequest
@@ -64,6 +67,25 @@ accessed exactly once per row:
   1
   >>> searchView.rowNum
   2
+
+The search view provides vocabularies for types that allow the selection
+of types to search for; this needs an ITypeManager adapter registered via
+zcml in real life:
+
+  >>> from loops.type import LoopsTypeManager
+  >>> component.provideAdapter(LoopsTypeManager)
+
+  >>> t = searchView.typesForSearch()
+  >>> len(t)
+  11
+  >>> t.getTermByToken('loops:resource:*').title
+  'Any Resource'
+
+  >>> t = searchView.conceptTypesForSearch()
+  >>> len(t)
+  5
+  >>> t.getTermByToken('loops:concept:*').title
+  'Any Concept'
 
 To execute the search in the context of a node we have to set up a node
 view for our page. The submitReplacing method returns a JavaScript call
@@ -82,22 +104,86 @@ a controller attribute for the search view.
   'return submitReplacing("1.results", "1.search.form",
        "http://127.0.0.1/loops/views/page/.target19/@@searchresults.html")'
 
+Basic (text/title) search
+-------------------------
+
 The searchresults.html view, i.e. the SearchResults view class provides the
 result set of the search via its `results` property.
 
-  >>> from loops.search.browser import SearchResults
-  >>> form = {'search.2.title': 'yes', 'search.2.text': u'foo' }
-  >>> request = TestRequest(form=form)
-  >>> resultsView = SearchResults(page, request)
-
-Before accessing the `results` property we have to prepare a catalog.
+Before accessing the `results` property we have to prepare a (for testing
+purposes fairly primitive) catalog and a resource we can search for:
 
   >>> from zope.app.catalog.interfaces import ICatalog
   >>> class DummyCat(object):
   ...     implements(ICatalog)
   ...     def searchResults(self, **criteria):
+  ...         name = criteria.get('loops_title')
+  ...         type = criteria.get('loops_type', ('resource',))
+  ...         if name:
+  ...              if 'concept' in type[0]:
+  ...                  result = concepts.get(name)
+  ...              else:
+  ...                  result = resources.get(name)
+  ...              if result:
+  ...                  return [result]
   ...         return []
   >>> component.provideUtility(DummyCat())
 
-  >>> list(resultsView.results)
-  []
+  >>> from loops.resource import Resource
+  >>> rplone = resources['plone'] = Resource()
+
+  >>> from loops.search.browser import SearchResults
+  >>> form = {'search.2.title': True, 'search.2.text': u'plone'}
+  >>> request = TestRequest(form=form)
+  >>> resultsView = SearchResults(page, request)
+
+  >>> results = list(resultsView.results)
+  >>> len(results)
+  1
+  >>> results[0].context == rplone
+  True
+
+  >>> form = {'search.2.title': True, 'search.2.text': u'foo'}
+  >>> request = TestRequest(form=form)
+  >>> resultsView = SearchResults(page, request)
+  >>> len(list(resultsView.results))
+  0
+
+Search via related concepts
+---------------------------
+
+  We first have to prepare some test concepts (topics); we also assign our test
+  resource (rplone) from above to one of the topics:
+
+  >>> czope = concepts['zope'] = Concept('Zope')
+  >>> czope2 = concepts['zope2'] = Concept('Zope 2')
+  >>> czope3 = concepts['zope3'] = Concept('Zope 3')
+  >>> cplone = concepts['plone'] = Concept('Plone')
+  >>> for c in (czope, czope2, czope3, cplone):
+  ...     c.conceptType = topic
+  >>> czope.assignChild(czope2)
+  >>> czope.assignChild(czope3)
+  >>> czope2.assignChild(cplone)
+  >>> rplone.assignConcept(cplone)
+
+  Now we can fill our search form and execute the query; note that all concepts
+  found are listed, plus all their children and all resources associated
+  with them:
+
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope'}
+  >>> request = TestRequest(form=form)
+  >>> resultsView = SearchResults(page, request)
+  >>> results = list(resultsView.results)
+  >>> len(results)
+  5
+  >>> results[0].context.__name__
+  u'plone'
+
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope3'}
+  >>> request = TestRequest(form=form)
+  >>> resultsView = SearchResults(page, request)
+  >>> results = list(resultsView.results)
+  >>> len(results)
+  1
+  >>> results[0].context.__name__
+  u'zope3'
