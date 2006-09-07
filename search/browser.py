@@ -23,6 +23,7 @@ loops.search package.
 $Id$
 """
 
+from zope.app import zapi
 from zope import interface, component
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -49,6 +50,16 @@ class Search(BaseView):
     def macro(self):
         return template.macros['search']
 
+    def initDojo(self):
+        self.registerDojo()
+        cm = self.controller.macros
+        jsCall = 'dojo.require("dojo.widget.ComboBox")'
+        cm.register('js-execute', jsCall, jsCall=jsCall)
+
+    @Lazy
+    def catalog(self):
+        return component.getUtility(ICatalog)
+
     @property
     def rowNum(self):
         """ Return the rowNum to be used for identifying the current search
@@ -66,6 +77,27 @@ class Search(BaseView):
         return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
                         for t in ITypeManager(self.context).types
                             if 'concept' in t.qualifiers]))
+
+    def listConcepts(self):
+        request = self.request
+        request.response.setHeader('Content-Type', 'text/json; charset=UTF-8')
+        text = request.get('searchString', '')
+        print 'text:', text
+        #if not text:
+        #    return ''
+        type = request.get('search.3.type', 'loops:concept:*')
+        if type.endswith('*'):
+            start = type[:-1]
+            end = start + '\x7f'
+        else:
+            start = end = type
+        cat = self.catalog
+        if text:
+            result = cat.searchResults(loops_type=(start, end), loops_text=text+'*')
+        else:
+            result = cat.searchResults(loops_type=(start, end))
+        return str([[o.title.encode('UTF-8'), zapi.getName(o).encode('UTF-8')]
+                    for o in result])
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
@@ -93,11 +125,15 @@ class SearchResults(BaseView):
         result = set()
         request = self.request
         r3 = self.queryConcepts()
-        type = request.get('search.1.text', 'loops:resource:*')
+        type = request.get('search.1.text', 'loops:*')
         text = request.get('search.2.text')
         if not r3 and not text and '*' in type: # there should be some sort of selection...
             return result
-        if text or not '*' in type:
+        #if r3 and type != 'loops:*':
+        #    typeName = type.split(':')[-1]
+        #    r3 = set(o for o in r3 if self.isType(o, typeName))
+        #if text or not '*' in loops:
+        if text or type != 'loops:*':  # TODO: this may be highly inefficient! see above
             useTitle = request.get('search.2.title')
             useFull = request.get('search.2.full')
             r1 = set()

@@ -127,7 +127,7 @@
 
 <metal:text define-macro="concept">
   <div>
-    <h3>Search via related conceps</h3>
+    <h3>Search via related concepts</h3>
     <label for="type"
            tal:attributes="for string:$idPrefix.type">Type:</label>
     <select name="type"
@@ -148,6 +148,15 @@
     <input type="button" value="+"
            title="Add type"
            tal:condition="nothing" />&nbsp;
+    <div tal:define="dummy item/initDojo">
+      <select dojoType="comboBox"
+              dataUrl="listConceptsForComboBox.js"
+              dataProviderClass="dojo.widget.incrementalComboBoxDataProvider"
+              tal:attributes="name string:$namePrefix.text1;
+                              dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}">
+        <option value="zope">Zope</option>
+      </select>
+    </div>
   </div>
 </metal:text>
 

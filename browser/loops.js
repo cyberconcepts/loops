@@ -13,6 +13,10 @@ function focusOpener() {
     }
 }
 
+function listConceptsForComboBox() {
+    return [['Zope', 'zope'], ]
+}
+
 function submitReplacing(targetId, formId, actionUrl) {
     dojo.io.updateNode(targetId, {
             url: actionUrl,

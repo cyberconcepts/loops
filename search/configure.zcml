@@ -16,6 +16,14 @@
       />
 
   <browser:page
+      name="listConceptsForComboBox.js"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.search.browser.Search"
+      attribute="listConcepts"
+      permission="zope.View"
+      />
+
+  <browser:page
       name="searchresults.html"
       for="loops.interfaces.ILoopsObject"
       class="loops.search.browser.SearchResults"
