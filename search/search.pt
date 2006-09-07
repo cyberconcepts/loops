@@ -27,6 +27,7 @@
               </td>
             </tr>
             <tr>
+              <td></td>
               <td colspan="2">
                 <input type="submit" name="button.search" value="Search" class="submit"
                        tal:attributes="onclick python:
@@ -56,107 +57,137 @@
 </metal:search>
 
 
-<tr metal:define-macro="search_row" id="1.1.row"
-    tal:define="rowNum item/rowNum;
-                idPrefix string:$idPrefix.$rowNum;
-                namePrefix string:search.$rowNum;
-                param search_param | item/searchParam"
-    tal:attributes="id string:$idPrefix.row">
-  <td>
-    <input type="hidden" name="paramtype" value="type"
-           tal:attributes="name string:$namePrefix.paramtype;
-                           value param" />
-    <input type="button" value="&minus;"
-           title="Remove search parameter"
-           tal:condition="python: param not in ['type', 'text', 'concept']" />&nbsp;
-  </td>
-  <td>
-    <div metal:use-macro="macros/?param" />
-  </td>
-</tr>
+<div metal:define-macro="search_row" id="1.1.row"
+           tal:define="rowNum item/rowNum;
+                       idPrefix string:$idPrefix.$rowNum;
+                       namePrefix string:search.$rowNum;
+                       param search_param | item/searchParam"
+           tal:attributes="id string:$idPrefix.row">
+      <div metal:use-macro="macros/?param" />
+</div>
 
 
 <metal:text define-macro="type">
-  <div>
-    <h3>Type(s) to search for</h3>
-    <label for="text"
-           tal:attributes="for string:$idPrefix.text">Type:</label>
-    <select name="text"
-            tal:attributes="name string:$namePrefix.text;
+  <tr>
+    <td metal:use-macro="macros/minus"/>
+    <td colspan="2">
+      <h3>Type(s) to search for</h3>
+    </td>
+  <tr>
+    <td></td>
+    <td>
+      <label for="text"
+             tal:attributes="for string:$idPrefix.text">Type:</label>
+      <select name="text"
+              tal:attributes="name string:$namePrefix.text;
                             id string:$idPrefix.text;">
-      <tal:types repeat="type item/typesForSearch">
-        <option value="loops:*"
-                i18n:translate=""
-                tal:attributes="value type/token"
-                tal:content="type/title">Topic</option>
-      </tal:types>
-    </select>
-    <input type="button" value="+"
-           title="Add type"
-           tal:condition="nothing" />&nbsp;
-  </div>
+        <tal:types repeat="type item/typesForSearch">
+          <option value="loops:*"
+                  i18n:translate=""
+                  tal:attributes="value type/token"
+                  tal:content="type/title">Topic</option>
+        </tal:types>
+      </select>
+      <input type="button" value="+"
+             title="Add type"
+             tal:condition="nothing" />&nbsp;
+    </td>
+    <td></td>
+  </tr>
 </metal:text>
 
 
 <metal:text define-macro="text">
-  <div>
-    <h3>Search text</h3>
-    <input type="checkbox" checked
-           name="title" id="title" value="yes"
-           tal:attributes="name string:$namePrefix.title;
-                           id string:$idPrefix.title;" />
-    <label for="title"
-           tal:attributes="for string:$idPrefix.title">Title</label>
-    <input type="checkbox"
-           name="full" id="full" value="yes"
-           tal:attributes="name string:$namePrefix.full;
-                           id string:$idPrefix.full;" />
-    <label for="full"
-           tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
-    <label for="text"
-           tal:attributes="for string:$idPrefix.text">Search text:</label>
-    <input type="text" name="text"
-           tal:attributes="name string:$namePrefix.text;
-                           id string:$idPrefix.text;" />
-    <input type="button" value="+"
-           title="Add search word"
-           tal:condition="nothing" />&nbsp;
-  </div>
+  <tr>
+    <td metal:use-macro="macros/minus"/>
+    <td colspan="2">
+      <h3>Search text</h3>
+    </td>
+  <tr>
+    <td></td>
+    <td>
+      <input type="checkbox" checked
+             name="title" id="title" value="yes"
+             tal:attributes="name string:$namePrefix.title;
+                             id string:$idPrefix.title;" />
+      <label for="title"
+             tal:attributes="for string:$idPrefix.title">Title</label>
+      <input type="checkbox"
+             name="full" id="full" value="yes"
+             tal:attributes="name string:$namePrefix.full;
+                             id string:$idPrefix.full;" />
+      <label for="full"
+             tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
+    </td>
+    <td>
+      <label for="text"
+             tal:attributes="for string:$idPrefix.text">Search text:</label>
+    </td>
+    <td>
+      <input type="text" name="text"
+             tal:attributes="name string:$namePrefix.text;
+                             id string:$idPrefix.text;" />
+      <input type="button" value="+"
+             title="Add search word"
+             tal:condition="nothing" />&nbsp;
+    </td>
+  </tr>
 </metal:text>
 
 
 <metal:text define-macro="concept">
-  <div>
-    <h3>Search via related concepts</h3>
-    <label for="type"
-           tal:attributes="for string:$idPrefix.type">Type:</label>
-    <select name="type"
-            tal:attributes="name string:$namePrefix.type;
-                            id string:$idPrefix.type;">
-      <tal:types repeat="type item/conceptTypesForSearch">
-        <option value="loops:*"
-                i18n:translate=""
-                tal:attributes="value type/token"
-                tal:content="type/title">Topic</option>
-      </tal:types>
-    </select>&nbsp;&nbsp;
-    <label for="text"
-           tal:attributes="for string:$idPrefix.text">Search text:</label>
-    <input type="text" name="text"
-           tal:attributes="name string:$namePrefix.text;
-                           id string:$idPrefix.text;" />
-    <input type="button" value="+"
-           title="Add type"
-           tal:condition="nothing" />&nbsp;
-    <div tal:define="dummy item/initDojo">
-      <select dojoType="comboBox"
-              dataUrl="listConceptsForComboBox.js"
-              dataProviderClass="dojo.widget.incrementalComboBoxDataProvider"
-              tal:attributes="name string:$namePrefix.text1;
-                              dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}">
-        <option value="zope">Zope</option>
-      </select>
-    </div>
-  </div>
+  <tr>
+    <td metal:use-macro="macros/minus"/>
+    <td colspan="2">
+      <h3>Search via related concepts</h3>
+    </td>
+  <tr>
+    <td></td>
+    <td>
+      <label for="type"
+             tal:attributes="for string:$idPrefix.type">Type:</label>
+      <select name="type"
+              tal:attributes="name string:$namePrefix.type;
+                              id string:$idPrefix.type;
+                              onChange string:setConceptTypeForComboBox('$idPrefix.type', '$idPrefix.text')">
+        <tal:types repeat="type item/conceptTypesForSearch">
+          <option value="loops:*"
+                  i18n:translate=""
+                  tal:attributes="value type/token"
+                  tal:content="type/title">Topic</option>
+        </tal:types>
+      </select>&nbsp;&nbsp;
+    </td>
+    <td>
+      <label for="text"
+             tal:attributes="for string:$idPrefix.text">Search text:</label>
+      <input type="text" name="text"
+             tal:condition="nothing"
+             tal:attributes="name string:$namePrefix.text;
+                             id string:$idPrefix.text;" />
+      <input type="button" value="+"
+             title="Add type"
+             tal:condition="nothing" />&nbsp;
+    </td>
+    <td>
+      <tal:combo tal:define="dummy item/initDojo">
+        <select dojoType="comboBox"
+                dataUrl="listConceptsForComboBox.js"
+                dataProviderClass="dojo.widget.incrementalComboBoxDataProvider"
+                autoComplete="False"
+                tal:attributes="name string:$namePrefix.text;
+                                id string:$idPrefix.text;
+                                dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=">
+          <option value="zope">Zope</option>
+        </select>
+      </tal:combo>
+    </td>
+  </tr>
 </metal:text>
 
+
+<td metal:define-macro="minus">
+      <input type="button" value="&minus;"
+             title="Remove search parameter"
+             tal:condition="python: param not in ['type', 'text', 'concept']" />&nbsp;
+</td>

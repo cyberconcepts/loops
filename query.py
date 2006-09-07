@@ -22,20 +22,14 @@ Query management stuff.
 $Id$
 """
 
-from zope.app import zapi
-from zope.component import adapts
 from zope.interface import Interface, Attribute, implements
-from zope.i18nmessageid import MessageFactory
 from zope.cachedescriptors.property import Lazy
 from zope import schema
-from zope.security.proxy import removeSecurityProxy
 
-from cybertools.typology.type import BaseType, TypeManager
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
-
-_ = MessageFactory('loops')
+from loops.util import _
 
 
 class IQuery(Interface):

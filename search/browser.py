@@ -35,10 +35,11 @@ from cybertools.ajax import innerHtml
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops import util
+from loops.util import _
 
-_ = MessageFactory('zope')
 
 template = ViewPageTemplateFile('search.pt')
+
 
 class Search(BaseView):
 
@@ -49,12 +50,6 @@ class Search(BaseView):
     @Lazy
     def macro(self):
         return template.macros['search']
-
-    def initDojo(self):
-        self.registerDojo()
-        cm = self.controller.macros
-        jsCall = 'dojo.require("dojo.widget.ComboBox")'
-        cm.register('js-execute', jsCall, jsCall=jsCall)
 
     @Lazy
     def catalog(self):
@@ -78,14 +73,19 @@ class Search(BaseView):
                         for t in ITypeManager(self.context).types
                             if 'concept' in t.qualifiers]))
 
+    def initDojo(self):
+        self.registerDojo()
+        cm = self.controller.macros
+        jsCall = 'dojo.require("dojo.widget.ComboBox")'
+        cm.register('js-execute', jsCall, jsCall=jsCall)
+
     def listConcepts(self):
+        """ Used for dojo.widget.ComboBox.
+        """
         request = self.request
-        request.response.setHeader('Content-Type', 'text/json; charset=UTF-8')
+        request.response.setHeader('Content-Type', 'text/plain; charset=UTF-8')
         text = request.get('searchString', '')
-        print 'text:', text
-        #if not text:
-        #    return ''
-        type = request.get('search.3.type', 'loops:concept:*')
+        type = request.get('searchType') or 'loops:concept:*'
         if type.endswith('*'):
             start = type[:-1]
             end = start + '\x7f'
@@ -96,8 +96,8 @@ class Search(BaseView):
             result = cat.searchResults(loops_type=(start, end), loops_text=text+'*')
         else:
             result = cat.searchResults(loops_type=(start, end))
-        return str([[o.title.encode('UTF-8'), zapi.getName(o).encode('UTF-8')]
-                    for o in result])
+        return str(sorted([[`o.title`[2:-1], `zapi.getName(o)`[2:-1]]
+                        for o in result])).replace('\\\\x', '\\x')
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
