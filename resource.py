@@ -166,7 +166,7 @@ class Document(Resource):
     def __init__(self, title=u''):
         self.title = title
 
-    _data = ''
+    _data = u''
     def setData(self, data): self._data = data
     def getData(self): return self._data
     data = property(getData, setData)

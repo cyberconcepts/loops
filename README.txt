@@ -246,7 +246,7 @@ A common type of resource is a document:
   >>> doc1.title
   u'Zope Info'
   >>> doc1.data
-  ''
+  u''
   >>> doc1.contentType
   u''
 

@@ -171,15 +171,10 @@
     </td>
     <td>
       <tal:combo tal:define="dummy item/initDojo">
-        <select dojoType="comboBox"
-                dataUrl="listConceptsForComboBox.js"
-                dataProviderClass="dojo.widget.incrementalComboBoxDataProvider"
-                autoComplete="False"
-                tal:attributes="name string:$namePrefix.text;
-                                id string:$idPrefix.text;
-                                dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=">
-          <option value="zope">Zope</option>
-        </select>
+        <input dojoType="comboBox" mode="remote" autoComplete="False"
+               tal:attributes="name string:$namePrefix.text;
+                               id string:$idPrefix.text;
+                               dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
       </tal:combo>
     </td>
   </tr>
