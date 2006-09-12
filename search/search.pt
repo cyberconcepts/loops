@@ -44,12 +44,25 @@
       <fieldset class="box"
                 tal:condition="request/search.submitted | nothing">
         <legend>Search results</legend>
-        <div tal:repeat="row view/results">
-          <div>
-            <a tal:attributes="href string:${view/url}/.target${row/uniqueId}"
-               tal:content="row/title" />
-          </div>
-        </div>
+        <table class="listing" summary="Search results"
+               i18n:attributes="summary">
+          <thead>
+            <tr>
+              <th i18n:translate="label_title">Title</th>
+              <th i18n:translate="label_type">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr tal:repeat="row view/results">
+              <td>
+                <a tal:attributes="href string:${view/url}/.target${row/uniqueId}"
+                   tal:content="row/title" />
+              </td>
+              <td tal:content="row/typeTitle">
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </fieldset>
     </div>
 

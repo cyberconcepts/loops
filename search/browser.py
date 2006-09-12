@@ -84,7 +84,7 @@ class Search(BaseView):
         """
         request = self.request
         request.response.setHeader('Content-Type', 'text/plain; charset=UTF-8')
-        text = request.get('searchString', '')
+        text = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
         type = request.get('searchType') or 'loops:concept:*'
         if type.endswith('*'):
             start = type[:-1]
@@ -165,7 +165,7 @@ class SearchResults(BaseView):
         cat = self.catalog
         request = self.request
         type = request.get('search.3.type', 'loops:concept:*')
-        text = request.get('search.3.text')
+        text = request.get('search.3.text').replace('(', ' ').replace(')', ' ')
         if not text and '*' in type:
             return None
         if type.endswith('*'):

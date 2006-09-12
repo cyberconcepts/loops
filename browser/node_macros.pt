@@ -146,7 +146,11 @@
 
 <!-- menu -->
 
-<metal:menu define-macro="menu">
+<metal:menu define-macro="menu"
+            tal:define="item nocall:view/menu | nothing;
+                        level level|python: 1"
+            tal:condition="nocall:item">
+    <metal:sub define-macro="submenu">
           <div class="menu-3"
                tal:attributes="class python: 'content '
                     + (view.selected(item) and 'even' or 'odd')
@@ -158,10 +162,23 @@
           <tal:sub define="level python:level+1"
                    condition="python: level &lt; 4 or view.active(item)">
             <tal:items repeat="item item/menuItems">
-              <metal:portlet use-macro="views/node_macros/menu" />
+              <metal:portlet use-macro="views/node_macros/submenu" />
             </tal:items>
           </tal:sub>
+    </metal:sub>
 </metal:menu>
+
+
+<!-- portlets -->
+
+<metal:actions define-macro="actions">
+          <div class="menu-2">Add Resource</div>
+</metal:actions>
+
+
+<metal:actions define-macro="personal">
+          <div class="menu-2">Clipboard</div>
+</metal:actions>
 
 
 <!-- inner HTML macros -->

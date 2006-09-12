@@ -27,6 +27,7 @@ from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.formlib.form import FormFields
 from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
 from zope.proxy import removeAllProxies
@@ -83,6 +84,14 @@ class ResourceView(BaseView):
             return self.template.macros['image']
         else:
             return self.template.macros['download']
+
+    def __init__(self, context, request):
+        super(ResourceView, self).__init__(context, request)
+        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            cm = self.controller.macros
+            cm.register('portlet_right', 'related', title='Related Items',
+                         subMacro=self.template.macros['related'],
+                         position=0, info=self)
 
     def show(self):
         data = self.context.data

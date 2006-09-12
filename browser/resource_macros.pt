@@ -54,3 +54,15 @@
 </form>
 
 
+<metal:actions define-macro="related">
+          <div class="menu-2"
+               tal:repeat="concept macro/info/concepts">
+            <a href="#"
+               tal:content="concept/title"
+               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
+              Concept
+            </a>
+          </div>
+</metal:actions>
+
+

@@ -31,7 +31,7 @@ from zope.app.container.browser.contents import JustContents
 from zope.app.container.browser.adding import ContentAdding
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
-#from zope.app.intid.interfaces import IIntIds
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.formlib.namedtemplate import NamedTemplate
@@ -69,6 +69,13 @@ class NodeView(BaseView):
         cm.register('css', identifier='loops.css',
                     resourceName='loops.css', media='all')
         cm.register('js', 'loops.js', resourceName='loops.js')
+        cm.register('portlet_left', 'navigation', title='Navigation',
+                     subMacro=self.template.macros['menu'])
+        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            cm.register('portlet_right', 'actions', title='Actions',
+                         subMacro=self.template.macros['actions'])
+            cm.register('portlet_right', 'personal', title='Personal Items',
+                         subMacro=self.template.macros['personal'])
 
     @Lazy
     def view(self):
