@@ -165,7 +165,9 @@ class SearchResults(BaseView):
         cat = self.catalog
         request = self.request
         type = request.get('search.3.type', 'loops:concept:*')
-        text = request.get('search.3.text').replace('(', ' ').replace(')', ' ')
+        text = request.get('search.3.text')
+        if text:  # there are a few characters that the index doesn't like
+            text = text.replace('(', ' ').replace(')', ' ')
         if not text and '*' in type:
             return None
         if type.endswith('*'):

@@ -353,9 +353,13 @@ Now we are ready to set up a view on our page node:
   >>> view = NodeView(m1p1, request)
 
 The elements responsible for presentation are controlled by a controller
-object:
+object; note that we have to provide a named template 'loops.node_macros' that
+is used to retrieve a macro used by NodeView:
 
   >>> from cybertools.browser.controller import Controller
+  >>> from loops.browser.util import node_macros
+  >>> from loops.browser.common import BaseView
+  >>> component.provideAdapter(node_macros, (BaseView,), name='loops.node_macros')
   >>> controller = Controller(view, request)
   >>> getattr(controller, 'skinName', None) is None
   True

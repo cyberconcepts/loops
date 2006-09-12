@@ -88,10 +88,11 @@ class ResourceView(BaseView):
     def __init__(self, context, request):
         super(ResourceView, self).__init__(context, request)
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            cm = self.controller.macros
-            cm.register('portlet_right', 'related', title='Related Items',
-                         subMacro=self.template.macros['related'],
-                         position=0, info=self)
+            cont = self.controller
+            if cont is not None:
+                cont.macros.register('portlet_right', 'related', title='Related Items',
+                             subMacro=self.template.macros['related'],
+                             position=0, info=self)
 
     def show(self):
         data = self.context.data
