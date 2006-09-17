@@ -286,14 +286,6 @@
     <allow interface="loops.interfaces.IIndexAttributes" />
   </class>
 
-  <adapter factory="loops.resource.IndexableResource" trusted="True" />
-  <class class="loops.resource.IndexableResource">
-    <allow interface="textindexng.interfaces.IIndexableContent" />
-  </class>
-  <class class="textindexng.content.IndexContentCollector">
-    <allow interface="textindexng.interfaces.IIndexContentCollector" />
-  </class>
-
   <adapter factory="loops.resource.DocumentReadFileAdapter" />
   <adapter factory="loops.resource.DocumentWriteFileAdapter" />
 

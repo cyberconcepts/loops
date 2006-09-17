@@ -40,7 +40,6 @@ from cStringIO import StringIO
 from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
 from zope.event import notify
 
-from textindexng.interfaces import IIndexableContent
 from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
@@ -248,23 +247,6 @@ class IndexAttributes(object):
     def title(self):
         context = self.context
         return ' '.join((zapi.getName(context), context.title,)).strip()
-
-
-class IndexableResource(object):
-    """ Used for TextIndexNG - obsolete.
-    """
-
-    implements(IIndexableContent)
-    adapts(IResource)
-
-    def __init__(self, context):
-        self.context = context
-
-    def indexableContent(self, fields):
-        context = self.context
-        icc = IndexContentCollector()
-        icc.addBinary(fields[0], context.data, context.contentType, language='de')
-        return icc
 
 
 class ResourceTypeSourceList(object):
