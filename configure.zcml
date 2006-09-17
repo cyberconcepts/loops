@@ -352,20 +352,6 @@
       name="loops.PredicateSource"
       />
 
-<!-- textindexng converters -->
-
-  <utility
-      provides="textindexng.interfaces.IConverter"
-      component="textindexng.converters.null.NullConverter"
-      name="text/structured"
-      />
-
-  <utility
-      provides="textindexng.interfaces.IConverter"
-      component="textindexng.converters.null.NullConverter"
-      name="text/restructured"
-      />
-
 
   <include package=".knowledge" />
   <include package=".organize" />
