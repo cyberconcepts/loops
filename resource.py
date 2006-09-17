@@ -237,7 +237,7 @@ class IndexAttributes(object):
     def text(self):
         context = self.context
         if not context.contentType.startswith('text'):
-            return None
+            return ''
         data = context.data
         # TODO: transform to plain text
         #return ' '.join((zapi.getName(context), context.title, data)).strip()
@@ -249,7 +249,7 @@ class IndexAttributes(object):
 
 
 class IndexableResource(object):
-    """ Used for TextIndexNG.
+    """ Used for TextIndexNG - obsolete.
     """
 
     implements(IIndexableContent)
