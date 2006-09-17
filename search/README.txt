@@ -152,8 +152,8 @@ purposes fairly primitive) catalog and a resource we can search for:
 Search via related concepts
 ---------------------------
 
-  We first have to prepare some test concepts (topics); we also assign our test
-  resource (rplone) from above to one of the topics:
+We first have to prepare some test concepts (topics); we also assign our test
+resource (rplone) from above to one of the topics:
 
   >>> czope = concepts['zope'] = Concept('Zope')
   >>> czope2 = concepts['zope2'] = Concept('Zope 2')
@@ -166,11 +166,11 @@ Search via related concepts
   >>> czope2.assignChild(cplone)
   >>> rplone.assignConcept(cplone)
 
-  Now we can fill our search form and execute the query; note that all concepts
-  found are listed, plus all their children and all resources associated
-  with them:
+Now we can fill our search form and execute the query; note that all concepts
+found are listed, plus all their children and all resources associated
+with them:
 
-  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope'}
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text_selected': u'zope'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
   >>> results = list(resultsView.results)
@@ -179,7 +179,7 @@ Search via related concepts
   >>> results[0].context.__name__
   u'plone'
 
-  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope3'}
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text_selected': u'zope3'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
   >>> results = list(resultsView.results)
@@ -187,3 +187,11 @@ Search via related concepts
   1
   >>> results[0].context.__name__
   u'zope3'
+
+To support easy entry of concepts to search for we can preselect the available
+concepts (optionally restricted to a certain type) by entering text parts
+of the concepts' titles:
+
+TODO...
+
+

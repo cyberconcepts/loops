@@ -291,9 +291,9 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
-    # obsolete, use TextIndexNG (with indexableContent() method) instead
     def text(self):
         context = self.context
+        # TODO: include attributes provided by concept type
         return ' '.join((zapi.getName(context), context.title,))
 
     def title(self):

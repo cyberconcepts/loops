@@ -539,6 +539,15 @@
       permission="zope.View"
       />
 
+  <zope:adapter
+      name="listchildren"
+      for="loops.interfaces.INode
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.node.ListChildren"
+      permission="zope.View"
+      />
+
   <!-- inner HTML views -->
 
   <page

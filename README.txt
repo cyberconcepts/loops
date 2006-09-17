@@ -317,8 +317,8 @@ Index attributes adapter
 
   >>> from loops.resource import IndexAttributes
   >>> idx = IndexAttributes(doc1)
-  >>> idx.text()
-  u'doc1 Zope Info'
+  >>> idx.text() is None
+  True
 
   >>> idx.title()
   u'doc1 Zope Info'

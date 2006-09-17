@@ -234,10 +234,14 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
-    # obsolete, use TextIndexNG (with indexableContent() method) instead
     def text(self):
         context = self.context
-        return ' '.join((zapi.getName(context), context.title, context.data)).strip()
+        if not context.contentType.startswith('text'):
+            return None
+        data = context.data
+        # TODO: transform to plain text
+        #return ' '.join((zapi.getName(context), context.title, data)).strip()
+        return data
 
     def title(self):
         context = self.context
@@ -245,6 +249,8 @@ class IndexAttributes(object):
 
 
 class IndexableResource(object):
+    """ Used for TextIndexNG.
+    """
 
     implements(IIndexableContent)
     adapts(IResource)

@@ -22,9 +22,11 @@ Query management stuff.
 $Id$
 """
 
+from zope import schema, component
 from zope.interface import Interface, Attribute, implements
+from zope.app import traversing
 from zope.cachedescriptors.property import Lazy
-from zope import schema
+from zope.app.catalog.interfaces import ICatalog
 
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
@@ -40,6 +42,102 @@ class IQuery(Interface):
         """ Execute the query and return a sequence of objects.
         """
 
+
+class BaseQuery(object):
+
+    implements(IQuery)
+
+    def __init__(self, context):
+        self.context = context
+
+    @Lazy
+    def catalog(self):
+        return component.getUtility(ICatalog)
+
+    @Lazy
+    def loopsRoot(self):
+        return self.context.context.getLoopsRoot()
+
+    def queryConcepts(self, title=None, type=None):
+        if type.endswith('*'):
+            start = type[:-1]
+            end = start + '\x7f'
+        else:
+            start = end = type
+        cat = self.catalog
+        if title:
+            result = cat.searchResults(loops_type=(start, end), loops_title=title)
+        else:
+            result = cat.searchResults(loops_type=(start, end))
+        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        return result
+
+    def queryConceptsWithChildren(self, title=None, type=None):
+        if title:  # there are a few characters that the index doesn't like
+            title = title.replace('(', ' ').replace(')', ' ')
+        if not title and (type is None or '*' in type):
+            return None
+        result = set()
+        queue = list(self.queryConcepts(title=title, type=type))
+        concepts = []
+        while queue:
+            c = queue.pop(0)
+            concepts.append(c)
+            for child in c.getChildren():
+                # TODO: check for tree level, use relevance factors, ...
+                if child not in queue and child not in concepts:
+                    queue.append(child)
+        for c in concepts:
+            result.add(c)
+            result.update(c.getResources())
+        return result
+
+
+class FullQuery(BaseQuery):
+
+    def query(self, text=None, type=None, useTitle=True, useFull=False,
+                    conceptTitle=None, conceptType=None):
+        result = set()
+        rc = self.queryConceptsWithChildren(title=conceptTitle, type=conceptType)
+        if not rc and not text and '*' in type: # there should be some sort of selection...
+            return result
+        if text or type != 'loops:*':  # TODO: this may be highly inefficient!
+            cat = self.catalog
+            if useFull and text:
+                criteria = {'loops_text': text}
+                r1 = set(cat.searchResults(**criteria))
+            else:
+                r1 = set()
+            if type.endswith('*'):
+                start = type[:-1]
+                end = start + '\x7f'
+            else:
+                start = end = type
+            criteria = {'loops_type': (start, end),}
+            if useTitle and text:
+                criteria['loops_title'] = text
+            r2 = set(cat.searchResults(**criteria))
+            result = r1.union(r2)
+        if rc is not None:
+            if result:
+                result = result.intersection(rc)
+            else:
+                result = rc
+        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        return result
+
+
+class ConceptQuery(BaseQuery):
+    """ Find concepts of type `type` whose title starts with `title`.
+    """
+
+    def query(self, title=None, type=None):
+        if title and not title.endswith('*'):
+            title += '*'
+        return self.queryConcepts(title=title, type=type)
+
+
+# QueryConcept: concept objects that allow querying the database.
 
 class IQueryConcept(Interface):
     """ The schema for the query type.

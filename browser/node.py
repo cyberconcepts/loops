@@ -72,10 +72,14 @@ class NodeView(BaseView):
         cm.register('portlet_left', 'navigation', title='Navigation',
                      subMacro=self.template.macros['menu'])
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            cm.register('portlet_right', 'actions', title='Actions',
-                         subMacro=self.template.macros['actions'])
-            cm.register('portlet_right', 'personal', title='Personal Items',
-                         subMacro=self.template.macros['personal'])
+            cm.register('portlet_right', 'clipboard', title='Clipboard',
+                         subMacro=self.template.macros['clipboard'])
+            # this belongs to loops.organize; how to register portlets
+            # from sub- (other) packages?
+            # see controller / configurator: use multiple configurators;
+            # register additional configurators (adapters) from within package.
+            cm.register('portlet_right', 'worklist', title='Worklist',
+                         subMacro=self.template.macros['worklist'])
 
     @Lazy
     def view(self):
@@ -316,26 +320,27 @@ class InlineEdit(NodeView):
 
 # special (named) views for nodes
 
-class ListPages(NodeView):
+class SpecialNodeView(NodeView):
+
+    macroName = None # to be provided by subclass
 
     @Lazy
     def macro(self):
-        return self.template.macros['listpages']
+        return self.template.macros[self.macroName]
 
     @Lazy
     def view(self):
         return self
 
 
-class ListResources(NodeView):
+class ListPages(SpecialNodeView):
+    macroName = 'listpages'
 
-    @Lazy
-    def macro(self):
-        return self.template.macros['listresources']
+class ListResources(SpecialNodeView):
+    macroName = 'listresources'
 
-    @Lazy
-    def view(self):
-        return self
+class ListChildren(SpecialNodeView):
+    macroName = 'listchildren'
 
 
 class ConfigureView(NodeView):

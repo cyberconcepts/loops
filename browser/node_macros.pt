@@ -144,6 +144,28 @@
 </metal:resources>
 
 
+<metal:children define-macro="listchildren"
+                 tal:define="target nocall:item/target">
+  <div class="content-1"
+       tal:content="structure item/body"
+       tal:attributes="ondblclick python:
+                target and target.openEditWindow('configure.html')
+                        or item.openEditWindow();
+                       id string:${view/itemNum}.body;">
+    Listing
+  </div><br />
+  <div tal:attributes="ondblclick python: target.openEditWindow('configure.html')"
+       tal:define="item nocall:item/target"
+       tal:condition="nocall:target">
+    <div tal:repeat="related item/children">
+          <a href="#"
+             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
+             tal:content="related/title">Resource Title</a>
+    </div>
+  </div>
+</metal:children>
+
+
 <!-- menu -->
 
 <metal:menu define-macro="menu"
@@ -171,13 +193,13 @@
 
 <!-- portlets -->
 
-<metal:actions define-macro="actions">
-          <div class="menu-2">Add Resource</div>
+<metal:actions define-macro="clipboard">
+          <div class="menu-2">loops Development</div>
 </metal:actions>
 
 
-<metal:actions define-macro="personal">
-          <div class="menu-2">Clipboard</div>
+<metal:actions define-macro="worklist">
+          <div class="menu-2">Create Resource...</div>
 </metal:actions>
 
 
@@ -192,10 +214,6 @@
     </div>
   </form>
 </div>
-
-<!-- dojoType="Editor"
-     items="formatblock;|;insertunorderedlist;insertorderedlist;|;bold;italic;|;createLink;"
--->
 
 
 <!-- edit and other links -->

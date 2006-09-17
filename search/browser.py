@@ -23,9 +23,8 @@ loops.search package.
 $Id$
 """
 
-from zope.app import zapi
 from zope import interface, component
-from zope.app.catalog.interfaces import ICatalog
+from zope.app import traversing
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementation
@@ -34,6 +33,7 @@ from zope.i18nmessageid import MessageFactory
 from cybertools.ajax import innerHtml
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
+from loops.query import ConceptQuery, FullQuery
 from loops import util
 from loops.util import _
 
@@ -50,10 +50,6 @@ class Search(BaseView):
     @Lazy
     def macro(self):
         return template.macros['search']
-
-    @Lazy
-    def catalog(self):
-        return component.getUtility(ICatalog)
 
     @property
     def rowNum(self):
@@ -84,19 +80,11 @@ class Search(BaseView):
         """
         request = self.request
         request.response.setHeader('Content-Type', 'text/plain; charset=UTF-8')
-        text = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
+        title = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
         type = request.get('searchType') or 'loops:concept:*'
-        if type.endswith('*'):
-            start = type[:-1]
-            end = start + '\x7f'
-        else:
-            start = end = type
-        cat = self.catalog
-        if text:
-            result = cat.searchResults(loops_type=(start, end), loops_text=text+'*')
-        else:
-            result = cat.searchResults(loops_type=(start, end))
-        return str(sorted([[`o.title`[2:-1], `zapi.getName(o)`[2:-1]]
+        result = ConceptQuery(self).query(title=title, type=type)
+        # simple way to provide JSON format:
+        return str(sorted([[`o.title`[2:-1], `traversing.api.getName(o)`[2:-1]]
                         for o in result])).replace('\\\\x', '\\x')
 
     def submitReplacing(self, targetId, formId, view):
@@ -117,78 +105,17 @@ class SearchResults(BaseView):
         return innerHtml(self)
 
     @Lazy
-    def catalog(self):
-        return component.getUtility(ICatalog)
-
-    @Lazy
     def results(self):
-        result = set()
         request = self.request
-        r3 = self.queryConcepts()
         type = request.get('search.1.text', 'loops:*')
         text = request.get('search.2.text')
-        if not r3 and not text and '*' in type: # there should be some sort of selection...
-            return result
-        #if r3 and type != 'loops:*':
-        #    typeName = type.split(':')[-1]
-        #    r3 = set(o for o in r3 if self.isType(o, typeName))
-        #if text or not '*' in loops:
-        if text or type != 'loops:*':  # TODO: this may be highly inefficient! see above
-            useTitle = request.get('search.2.title')
-            useFull = request.get('search.2.full')
-            r1 = set()
-            cat = self.catalog
-            if useFull and text and not type.startswith('loops:concept:'):
-                criteria = {'loops_resource_textng': {'query': text},}
-                r1 = set(cat.searchResults(**criteria))
-            if type.endswith('*'):
-                start = type[:-1]
-                end = start + '\x7f'
-            else:
-                start = end = type
-            criteria = {'loops_type': (start, end),}
-            if useTitle and text:
-                criteria['loops_title'] = text
-            r2 = set(cat.searchResults(**criteria))
-            result = r1.union(r2)
-            result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
-        if r3 is not None:
-            if result:
-                result = result.intersection(r3)
-            else:
-                result = r3
+        useTitle = request.get('search.2.title')
+        useFull = request.get('search.2.full')
+        conceptType = request.get('search.3.type', 'loops:concept:*')
+        conceptTitle = request.get('search.3.text_selected')
+        result = FullQuery(self).query(text=text, type=type,
+                           useTitle=useTitle, useFull=useFull,
+                           conceptTitle=conceptTitle, conceptType= conceptType)
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
-
-    def queryConcepts(self):
-        result = set()
-        cat = self.catalog
-        request = self.request
-        type = request.get('search.3.type', 'loops:concept:*')
-        text = request.get('search.3.text')
-        if text:  # there are a few characters that the index doesn't like
-            text = text.replace('(', ' ').replace(')', ' ')
-        if not text and '*' in type:
-            return None
-        if type.endswith('*'):
-            start = type[:-1]
-            end = start + '\x7f'
-        else:
-            start = end = type
-        criteria = {'loops_type': (start, end),}
-        if text:
-            criteria['loops_title'] = text
-        queue = list(cat.searchResults(**criteria))
-        concepts = []
-        while queue:
-            c = queue.pop(0)
-            concepts.append(c)
-            for child in c.getChildren():
-                # TODO: check for tree level, use relevance factors, ...
-                if child not in queue and child not in concepts:
-                    queue.append(child)
-        for c in concepts:
-            result.add(c)
-            result.update(c.getResources())
-        return result
 
