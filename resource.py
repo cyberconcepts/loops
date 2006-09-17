@@ -40,7 +40,6 @@ from cStringIO import StringIO
 from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
 from zope.event import notify
 
-from textindexng.content import IndexContentCollector
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
 from cybertools.typology.interfaces import ITypeManager
