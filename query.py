@@ -103,17 +103,17 @@ class FullQuery(BaseQuery):
             return result
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!
             cat = self.catalog
-            if useFull and text:
-                criteria = {'loops_text': text}
-                r1 = set(cat.searchResults(**criteria))
-            else:
-                r1 = set()
             if type.endswith('*'):
                 start = type[:-1]
                 end = start + '\x7f'
             else:
                 start = end = type
             criteria = {'loops_type': (start, end),}
+            if useFull and text:
+                criteria['loops_text'] = text
+                r1 = set(cat.searchResults(**criteria))
+            else:
+                r1 = set()
             if useTitle and text:
                 criteria['loops_title'] = text
             r2 = set(cat.searchResults(**criteria))
