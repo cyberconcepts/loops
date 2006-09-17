@@ -237,8 +237,10 @@ class IndexAttributes(object):
     def text(self):
         context = self.context
         if not context.contentType.startswith('text'):
-            return ''
+            return u''
         data = context.data
+        if type(data) != unicode:
+            data = data.decode('UTF-8')
         # TODO: transform to plain text
         #return ' '.join((zapi.getName(context), context.title, data)).strip()
         return data
