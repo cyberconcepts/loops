@@ -42,6 +42,7 @@ from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IView
+from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
 
@@ -136,17 +137,38 @@ class BaseView(GenericView):
         return self.context
 
     @Lazy
+    def type(self):
+        return IType(self.context)
+
+    @Lazy
+    def typeProvider(self):
+        type = self.type
+        if type is not None:
+            return type.typeProvider
+
+    @Lazy
+    def typeInterface(self):
+        provider = self.typeProvider
+        if provider is not None:
+            tc = ITypeConcept(provider)
+            return tc.typeInterface
+
+    @Lazy
+    def typeAdapter(self):
+        ifc = self.typeInterface
+        if ifc is not None:
+            return ifc(self.context)
+
+    @Lazy
     def typeTitle(self):
-        type = IType(self.context)
+        type = self.type
         return type is not None and type.title or None
 
     @Lazy
     def typeUrl(self):
-        type = IType(self.context)
-        if type is not None:
-            provider = type.typeProvider
-            if provider is not None:
-                return zapi.absoluteURL(provider, self.request)
+        provider = self.typeProvider
+        if provider is not None:
+            return zapi.absoluteURL(provider, self.request)
         return None
 
     def viewIterator(self, objs):
@@ -160,6 +182,12 @@ class BaseView(GenericView):
         return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
                         for t in ITypeManager(self.context).types])
                         + [('loops:*', 'Any')])
+
+    def conceptTypesForSearch(self):
+        general = [('loops:concept:*', 'Any Concept'),]
+        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
+                        for t in ITypeManager(self.context).types
+                            if 'concept' in t.qualifiers]))
 
     @Lazy
     def uniqueId(self):

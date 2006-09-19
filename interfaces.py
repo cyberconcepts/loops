@@ -532,7 +532,13 @@ class ITypeConcept(Interface):
         source="loops.TypeInterfaceSource",
         required=False)
 
-    # viewName = schema.TextLine()
+    viewName = schema.TextLine(
+        title=_(u'View name'),
+        description=_(u'Name of a special view be used for presenting '
+                       'objects of this type.'),
+        default=u'',
+        required=False)
+
     # storage = schema.Choice()
 
 
@@ -554,12 +560,23 @@ class IImage(IResourceAdapter):
     """
 
 
-class ITextDocument(IResourceAdapter):
+class ITextDocument(IResourceAdapter, IDocumentSchema):
     """ A resource containing some sort of plain text that may be rendered and
         edited without necessarily involving a special external application
         (like e.g. OpenOffice); typical content types are text/html, text/xml,
         text/restructured, etc.
     """
+
+class INote(ITextDocument):
+    """ Typically a short piece of text; in addition a note may contain
+        a URL linking it to more information.
+    """
+
+    linkUrl = schema.TextLine(
+        title=_(u'Link URL'),
+        description=_(u'An (optional) link associated with this note'),
+        default=u'',
+        required=False)
 
 
 # view configurator stuff

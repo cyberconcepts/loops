@@ -32,8 +32,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.interfaces import IPerson as IBasePerson
 from loops.organize.util import getPrincipalFolder, authPluginId
-
-_ = MessageFactory('zope')
+from loops.util import _
 
 ANNOTATION_KEY = 'loops.organize.person'
 
@@ -49,7 +48,7 @@ def raiseValidationError(info):
 
 
 class UserId(schema.TextLine):
-    
+
     def _validate(self, userId):
         from loops.organize.party import getPersonForUser
         if not userId:

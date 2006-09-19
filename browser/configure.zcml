@@ -324,6 +324,15 @@
       permission="zope.View"
       />
 
+  <zope:adapter
+      name="note.html"
+      for="loops.interfaces.IResource
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.resource.NoteView"
+      permission="zope.View"
+      />
+
   <!-- media asset -->
 
   <!--<editform
@@ -546,6 +555,15 @@
       provides="zope.interface.Interface"
       factory="loops.browser.node.ListChildren"
       permission="zope.View"
+      />
+
+  <!-- forms (end-user view) -->
+
+  <page
+      name="create_object.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.CreateObject"
+      permission="zope.ManageContent"
       />
 
   <!-- inner HTML views -->

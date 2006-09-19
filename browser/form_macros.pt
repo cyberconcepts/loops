@@ -1,0 +1,70 @@
+<metal:block define-macro="create">
+    <div>
+      <form method="get">
+        <input type="hidden" name="form.action" value="create"
+               tal:attributes="value view/form_action" />
+        <table cellpadding="3" class="form">
+          <tr>
+            <th colspan="4">
+              <span tal:replace="view/title"
+                    i18n:translate="">Create Information Object</span>
+            </th>
+          </tr>
+          <tr tal:repeat="widget view/widgets">
+            <td class="label"
+                tal:define="hint widget/hint">
+              <label tal:attributes="for widget/name">
+                <span class="required" tal:condition="widget/required"
+                >*</span><span i18n:translate=""
+                               tal:content="widget/label">label</span>
+              </label>
+            </td>
+            <td class="field" colspan="3"
+                tal:define="hint widget/hint">
+              <div class="widget" tal:content="structure widget">
+                <input type="text" />
+              </div>
+              <div class="error"
+                   tal:condition="widget/error">
+                <span tal:replace="structure widget/error">error</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" class="headline">Assign Concept(s)</td>
+          </tr>
+          <tr>
+            <td><label for="dlg.create.search.type">Type:</label></td>
+            <td>
+              <select name="dlg.create.search.type" id="dlg.create.search.type"
+                      tal:attributes="onChange
+                        string:setConceptTypeForComboBox(
+                            'dlg.create.search.type', 'dlg.create.search.text')">
+                <tal:types repeat="type view/conceptTypesForSearch">
+                  <option value="loops:*"
+                          i18n:translate=""
+                          tal:attributes="value type/token"
+                          tal:content="type/title">Topic</option>
+                </tal:types>
+              </select>&nbsp;&nbsp;
+            </td>
+            <td><label for="dlg.create.search.text">Search text:</label></td>
+            <td>
+              <input dojoType="comboBox" mode="remote" autoComplete="False"
+                     name="dlg.create.search.text" id="dlg.create.search.text"
+                     tal:attributes="dataUrl
+                        string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <input type="button" value="Cancel"
+                     onclick="createObjectDlg.hide()">
+              <input type="submit" value="Save"
+                     onclick="createObjectDlg.hide()">
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+</metal:block>

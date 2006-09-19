@@ -22,7 +22,7 @@ View class for Node objects.
 $Id$
 """
 
-from zope import component, interface
+from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
@@ -34,6 +34,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.dottedname.resolve import resolve
 from zope.event import notify
+from zope.formlib.form import Form, FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
@@ -50,6 +51,7 @@ from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
 from loops import util
+from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 
@@ -70,16 +72,16 @@ class NodeView(BaseView):
                     resourceName='loops.css', media='all')
         cm.register('js', 'loops.js', resourceName='loops.js')
         cm.register('portlet_left', 'navigation', title='Navigation',
-                     subMacro=self.template.macros['menu'])
+                    subMacro=self.template.macros['menu'])
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             cm.register('portlet_right', 'clipboard', title='Clipboard',
-                         subMacro=self.template.macros['clipboard'])
+                        subMacro=self.template.macros['clipboard'])
             # this belongs to loops.organize; how to register portlets
             # from sub- (other) packages?
             # see controller / configurator: use multiple configurators;
             # register additional configurators (adapters) from within package.
-            cm.register('portlet_right', 'worklist', title='Worklist',
-                         subMacro=self.template.macros['worklist'])
+            cm.register('portlet_right', 'actions', title='Actions',
+                        subMacro=self.template.macros['actions'])
 
     @Lazy
     def view(self):
@@ -156,6 +158,7 @@ class NodeView(BaseView):
 
     def renderTarget(self):
         target = self.target
+        #targetAdapter = target.typeAdapter
         return target is not None and target.render() or u''
 
     @Lazy
@@ -164,9 +167,10 @@ class NodeView(BaseView):
 
     @Lazy
     def bodyMacro(self):
-        # TODO: replace by: return self.target.macroName
+        # TODO: replace by something like: return self.target.macroName
         target = self.targetObject
-        if target is None or IDocument.providedBy(target):
+        if (target is None or IDocument.providedBy(target)
+                or (IResource.providedBy(target) and target.contentType.startswith('text/'))):
             return 'textbody'
         if IConcept.providedBy(target):
             return 'conceptbody'
@@ -295,6 +299,12 @@ class NodeView(BaseView):
         cm.register('js-execute', jsCall, jsCall=jsCall)
         return 'return inlineEdit("%s", "%s/inline_save")' % (id, self.virtualTargetUrl)
 
+    def registerDojoDialog(self):
+        self.registerDojo()
+        cm = self.controller.macros
+        jsCall = 'dojo.require("dojo.widget.Dialog")'
+        cm.register('js-execute', jsCall, jsCall=jsCall)
+
 
 # inner HTML views
 
@@ -314,8 +324,41 @@ class InlineEdit(NodeView):
 
     def save(self):
         target = self.virtualTargetObject
-        target.data = self.request.form['editorContent']
+        data = self.request.form['editorContent']
+        if type(data) != unicode:
+            try:
+                data = data.decode('ISO-8859-15')  # IE hack
+            except UnicodeDecodeError:
+                print 'loops.browser.node.InlineEdit.save():', data
+                return
+        #    data = data.decode('UTF-8')
+        target.data = data
         notify(ObjectModifiedEvent(target, Attributes(IResource, 'data')))
+
+
+class CreateObject(NodeView, Form):
+
+    template = ViewPageTemplateFile('form_macros.pt')
+
+    @property
+    def macro(self): return self.template.macros['create']
+
+    form_fields = FormFields(
+        schema.TextLine(__name__='title', title=_(u'Title')),
+        schema.Text(__name__='body', title=_(u'Body Text')),
+        schema.TextLine(__name__='linkUrl', title=_(u'Link'), required=False),
+    )
+
+    title = _(u'Enter Note')
+    form_action = 'create_note'
+
+    def __init__(self, context, request):
+        super(CreateObject, self).__init__(context, request)
+        self.setUpWidgets()
+        self.widgets['body'].height = 3
+
+    def __call__(self):
+        return innerHtml(self)
 
 
 # special (named) views for nodes

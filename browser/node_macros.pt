@@ -194,12 +194,20 @@
 <!-- portlets -->
 
 <metal:actions define-macro="clipboard">
-          <div class="menu-2">loops Development</div>
+      <div class="menu-2">loops Development</div>
 </metal:actions>
 
 
-<metal:actions define-macro="worklist">
-          <div class="menu-2">Create Resource...</div>
+<metal:actions define-macro="actions">
+    <div class="menu-2"
+         tal:define="dummy view/registerDojo">
+      <a href="#"
+         onclick="createObjectDialog(); return false;">
+        Create Resource...
+      </a>
+      <span id="createObject">
+      </span>
+    </div>
 </metal:actions>
 
 

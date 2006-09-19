@@ -319,6 +319,14 @@
              set_schema="loops.interfaces.IFile" />
   </class>
 
+  <adapter factory="loops.resource.NoteAdapter" trusted="True" />
+  <class class="loops.resource.NoteAdapter">
+    <require permission="zope.View"
+             interface="loops.interfaces.INote" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.INote" />
+  </class>
+
 
   <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />

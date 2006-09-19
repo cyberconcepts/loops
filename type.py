@@ -33,7 +33,7 @@ from cybertools.typology.type import BaseType, TypeManager
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import ITypeConcept
-from loops.interfaces import IResourceAdapter, IFile, IImage, ITextDocument
+from loops.interfaces import IResourceAdapter, IFile, IImage, ITextDocument, INote
 from loops.concept import Concept
 from loops.resource import Resource, Document, MediaAsset
 from loops.common import AdapterBase
@@ -43,7 +43,7 @@ class LoopsType(BaseType):
 
     adapts(ILoopsObject)
 
-    factoryMapping = dict(concept=Concept, resource=Resource)
+    factoryMapping = dict(concept=Concept, resource=Resource, document=Document)
     containerMapping = dict(concept='concepts', resource='resources')
 
     @Lazy
@@ -83,6 +83,11 @@ class LoopsType(BaseType):
 
     @Lazy
     def factory(self):
+        ti = self.typeInterface
+        #if ti is not None:
+        #    fn = getattr(ti, 'factoryName', None)
+        #    if fn:
+        #        return self.factoryMapping.get(fn, Concept)
         return self.factoryMapping.get(self.qualifiers[0], Concept)
 
     @Lazy
@@ -241,7 +246,7 @@ class TypeInterfaceSourceList(object):
 
     implements(schema.interfaces.IIterableSource)
 
-    typeInterfaces = (ITypeConcept, IFile, ITextDocument)
+    typeInterfaces = (ITypeConcept, IFile, ITextDocument, INote)
 
     def __init__(self, context):
         self.context = context

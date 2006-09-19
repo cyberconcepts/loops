@@ -45,7 +45,7 @@ from cybertools.relation.interfaces import IRelatable
 from cybertools.typology.interfaces import ITypeManager
 
 from interfaces import IBaseResource, IResource
-from interfaces import IFile
+from interfaces import IFile, INote
 from interfaces import IDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
@@ -194,6 +194,16 @@ class FileAdapter(ResourceAdapterBase):
     """
 
     implements(IFile)
+
+
+class NoteAdapter(ResourceAdapterBase):
+    """ A type adapter for providing note functionality for resources.
+    """
+
+    implements(INote)
+    _schemas = list(INote) + list(IBaseResource)
+
+    #contentType = u'text/restructured'
 
 
 class DocumentWriteFileAdapter(object):

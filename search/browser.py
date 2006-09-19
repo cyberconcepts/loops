@@ -63,12 +63,6 @@ class Search(BaseView):
         self.maxRowNum = n
         return n
 
-    def conceptTypesForSearch(self):
-        general = [('loops:concept:*', 'Any Concept'),]
-        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
-                        for t in ITypeManager(self.context).types
-                            if 'concept' in t.qualifiers]))
-
     def initDojo(self):
         self.registerDojo()
         cm = self.controller.macros

@@ -18,6 +18,7 @@ with lower-level aspects like type or state management.
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
 
+  >>> from zope import component
   >>> from zope.app import zapi
   >>> from zope.app.tests import ztapi
   >>> from zope.interface import Interface
@@ -122,7 +123,7 @@ type manager.
 
   >>> from cybertools.typology.interfaces import ITypeManager
   >>> from loops.interfaces import ILoopsObject
-  >>> from loops.type import LoopsTypeManager
+  >>> from loops.type import LoopsTypeManager, LoopsType
   >>> ztapi.provideAdapter(ILoopsObject, ITypeManager, LoopsTypeManager)
 
   >>> from loops.concept import ConceptTypeSourceList
@@ -545,6 +546,8 @@ and of a lot of other stuff needed for the rendering machine.
   ...                      with=(IBrowserRequest,))
 
   >>> m112.target = doc1
+
+  >>> component.provideAdapter(LoopsType)
   >>> view = NodeView(m112, TestRequest())
   >>> view.renderTarget()
   u''

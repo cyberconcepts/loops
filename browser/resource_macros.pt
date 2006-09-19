@@ -17,6 +17,16 @@
 </metal:block>
 
 
+<metal:block define-macro="render_note">
+  <metal:render use-macro="item/template/macros/render" />
+  <div class="content-1" id="1.link">
+    <a href="."
+       tal:attributes="href item/linkUrl"
+       tal:condition="item/linkUrl">more...</a>
+  </div>
+</metal:block>
+
+
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>

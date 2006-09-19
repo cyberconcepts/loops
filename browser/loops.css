@@ -84,3 +84,34 @@ div.image {
     font-weight: bold;
 }
 
+/* dojo stuff */
+
+.dojoComboBox {
+    width: 200px;
+}
+
+.dojoDialog {
+    background: #eee;
+    border: 1px solid #999;
+    -moz-border-radius: 5px;
+    padding: 4px;
+}
+
+.dojoDialog th {
+    font-size: 120%;
+    padding: 0 5px 8px 5px;
+}
+
+.dojoDialog .headline {
+    font-weight: bold;
+}
+
+.dojoDialog input.text {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.dojoDialog input.submit {
+    font-weight: bold;
+}
+

@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope.cachedescriptors.property import Lazy
+from zope import component
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.dublincore.interfaces import ICMFDublinCore
@@ -39,6 +40,7 @@ from loops.interfaces import IBaseResource, IDocument, IMediaAsset
 from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView
+from loops.interfaces import ITypeConcept
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -60,7 +62,8 @@ class ResourceEditForm(EditForm):
         fields = FormFields(IBaseResource)
         typeInterface = self.typeInterface
         if typeInterface is not None:
-            fields = FormFields(fields, typeInterface)
+            omit = [f for f in typeInterface if f in IBaseResource]
+            fields = FormFields(fields.omit(*omit), typeInterface)
         return fields
 
 
@@ -93,6 +96,20 @@ class ResourceView(BaseView):
                 cont.macros.register('portlet_right', 'related', title='Related Items',
                              subMacro=self.template.macros['related'],
                              position=0, info=self)
+
+    @Lazy
+    def view(self):
+        context = self.context
+        tp = IType(context).typeProvider
+        if tp:
+           viewName = ITypeConcept(tp).viewName
+           if viewName:
+               return component.queryMultiAdapter((context, self.request),
+                           name=viewName)
+        if context.contentType.startswith('text/'):
+            # TODO: This should be controlled by resourceType
+            return DocumentView(context, self.request)
+        return self
 
     def show(self):
         data = self.context.data
@@ -173,6 +190,9 @@ class DocumentView(ResourceView):
     def macro(self):
         return ResourceView.template.macros['render']
 
+    @Lazy
+    def view(self): return self
+
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
@@ -189,3 +209,16 @@ class DocumentView(ResourceView):
         return (self.inlineEditingActive
                 and self.context.contentType == 'text/html'
                 and canWrite(self.context, 'data'))
+
+
+class NoteView(DocumentView):
+
+    @property
+    def macro(self):
+        return ResourceView.template.macros['render_note']
+
+    @property
+    def linkUrl(self):
+        ad = self.typeAdapter
+        return ad and ad.linkUrl or ''
+
