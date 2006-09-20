@@ -1,6 +1,6 @@
 <metal:block define-macro="render">
   <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
-    <h3 tal:content="item/title">Title</h3>
+    <h1 tal:content="item/title">Title</h1>
     <tal:body define="itemNum view/itemNum;
                       id string:$itemNum.body;">
       <tal:edit define="target nocall:item;

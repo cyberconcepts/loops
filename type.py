@@ -84,10 +84,6 @@ class LoopsType(BaseType):
     @Lazy
     def factory(self):
         ti = self.typeInterface
-        #if ti is not None:
-        #    fn = getattr(ti, 'factoryName', None)
-        #    if fn:
-        #        return self.factoryMapping.get(fn, Concept)
         return self.factoryMapping.get(self.qualifiers[0], Concept)
 
     @Lazy

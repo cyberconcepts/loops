@@ -95,10 +95,12 @@ class NodeView(BaseView):
 
     @Lazy
     def item(self):
+        #target = self.virtualTargetObject  # ignores page even for direktly assignd target
         target = self.request.annotations.get('loops.view', {}).get('target')
         # was there a .target... element in the URL?
         if target is not None:
             basicView = zapi.getMultiAdapter((target, self.request))
+            # xxx: obsolete when self.targetObject is virtual target:
             return basicView.view
         return self.page
 
@@ -139,6 +141,8 @@ class NodeView(BaseView):
 
     @Lazy
     def targetObject(self):
+        # xxx: use virtualTargetObject
+        #return self.virtualTargetObject
         return self.context.target
 
     @Lazy
@@ -158,7 +162,6 @@ class NodeView(BaseView):
 
     def renderTarget(self):
         target = self.target
-        #targetAdapter = target.typeAdapter
         return target is not None and target.render() or u''
 
     @Lazy
@@ -242,9 +245,10 @@ class NodeView(BaseView):
         return item.context == self.context or item.context in self.parents
 
     def targetDefaultView(self):
-        target = self.request.annotations.get('loops.view', {}).get('target')
-        if target is None:
-            target = self.targetObject
+        target = self.virtualTargetObject
+        #target = self.request.annotations.get('loops.view', {}).get('target')
+        #if target is None:
+        #    target = self.targetObject
         if target is not None:
             name = zapi.getDefaultViewName(target, self.request)
             targetView = zapi.getMultiAdapter((target, self.request),
@@ -258,7 +262,7 @@ class NodeView(BaseView):
     def virtualTargetObject(self):
         target = self.request.annotations.get('loops.view', {}).get('target')
         if target is None:
-            target = self.targetObject
+            target = self.context.target
         return target
 
     @Lazy

@@ -34,12 +34,12 @@
             <td colspan="4" class="headline">Assign Concept(s)</td>
           </tr>
           <tr>
-            <td><label for="dlg.create.search.type">Type:</label></td>
+            <td><label for="form.concept.search.type">Type:</label></td>
             <td>
-              <select name="dlg.create.search.type" id="dlg.create.search.type"
+              <select name="form.concept.search.type" id="form.concept.search.type"
                       tal:attributes="onChange
                         string:setConceptTypeForComboBox(
-                            'dlg.create.search.type', 'dlg.create.search.text')">
+                            'form.concept.search.type', 'form.concept.search.text')">
                 <tal:types repeat="type view/conceptTypesForSearch">
                   <option value="loops:*"
                           i18n:translate=""
@@ -48,10 +48,10 @@
                 </tal:types>
               </select>&nbsp;&nbsp;
             </td>
-            <td><label for="dlg.create.search.text">Search text:</label></td>
+            <td><label for="form.concept.search.text">Search text:</label></td>
             <td>
               <input dojoType="comboBox" mode="remote" autoComplete="False"
-                     name="dlg.create.search.text" id="dlg.create.search.text"
+                     name="form.concept.search.text" id="form.concept.search.text"
                      tal:attributes="dataUrl
                         string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
             </td>

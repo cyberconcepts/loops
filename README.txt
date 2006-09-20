@@ -536,6 +536,8 @@ A node object provides the targetSchema of its target:
 A node's target is rendered using the NodeView's renderTargetBody()
 method. This makes use of a browser view registered for the target interface,
 and of a lot of other stuff needed for the rendering machine.
+(Note: renderTarget is obsolete - we now use a macro provided by the target's
+view for rendering.)
 
   >>> from zope.component.interfaces import IFactory
   >>> from zope.app.renderer import rest

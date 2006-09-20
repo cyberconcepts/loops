@@ -562,7 +562,15 @@
   <page
       name="create_object.html"
       for="loops.interfaces.INode"
-      class="loops.browser.node.CreateObject"
+      class="loops.browser.form.CreateObjectForm"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="create_resource"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.browser.form.CreateObject"
       permission="zope.ManageContent"
       />
 

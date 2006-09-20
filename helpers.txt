@@ -277,6 +277,24 @@ i.e. the 'topic' concept, via an adapter:
   True
 
 
+Simple access to type information with BaseView
+-----------------------------------------------
+
+loops browser views are typically based on a common parent class, BaseView.
+BaseView provides simple access to a lot of information often needed for
+browser views; among others also some important informations about the
+context object's type:
+
+  >>> from loops.browser.common import BaseView
+  >>> view = BaseView(cc1, TestRequest)
+  >>> view.typeTitle
+  u'Topic'
+  >>> view.typeInterface
+  <InterfaceClass ...ITopic>
+  >>> view.typeAdapter
+  <Topic object ...>
+
+
 Concepts as queries
 -------------------
 

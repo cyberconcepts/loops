@@ -142,16 +142,11 @@ class BaseView(GenericView):
 
     @Lazy
     def typeProvider(self):
-        type = self.type
-        if type is not None:
-            return type.typeProvider
+        return self.type.typeProvider
 
     @Lazy
     def typeInterface(self):
-        provider = self.typeProvider
-        if provider is not None:
-            tc = ITypeConcept(provider)
-            return tc.typeInterface
+        return self.type.typeInterface
 
     @Lazy
     def typeAdapter(self):
@@ -161,8 +156,7 @@ class BaseView(GenericView):
 
     @Lazy
     def typeTitle(self):
-        type = self.type
-        return type is not None and type.title or None
+        return self.type.title
 
     @Lazy
     def typeUrl(self):
