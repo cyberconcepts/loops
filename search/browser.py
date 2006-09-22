@@ -31,6 +31,7 @@ from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementatio
 from zope.i18nmessageid import MessageFactory
 
 from cybertools.ajax import innerHtml
+from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.query import ConceptQuery, FullQuery
@@ -77,9 +78,14 @@ class Search(BaseView):
         title = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
         type = request.get('searchType') or 'loops:concept:*'
         result = ConceptQuery(self).query(title=title, type=type)
+        registry = component.getUtility(IRelationRegistry)
         # simple way to provide JSON format:
-        return str(sorted([[`o.title`[2:-1], `traversing.api.getName(o)`[2:-1]]
-                        for o in result])).replace('\\\\x', '\\x')
+        return str(sorted([[`o.title`[2:-1],
+                            `registry.getUniqueIdForObject(o)`]
+                        for o in result
+                        if o.getLoopsRoot() == self.loopsRoot])).replace('\\\\x', '\\x')
+        #return str(sorted([[`o.title`[2:-1], `traversing.api.getName(o)`[2:-1]]
+        #                for o in result])).replace('\\\\x', '\\x')
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
@@ -106,10 +112,12 @@ class SearchResults(BaseView):
         useTitle = request.get('search.2.title')
         useFull = request.get('search.2.full')
         conceptType = request.get('search.3.type', 'loops:concept:*')
-        conceptTitle = request.get('search.3.text_selected')
+        conceptTitle = request.get('search.3.text')
+        conceptUid = request.get('search.3.text_selected')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=useTitle, useFull=useFull,
-                           conceptTitle=conceptTitle, conceptType= conceptType)
+                           conceptTitle=conceptTitle, conceptUid=conceptUid,
+                           conceptType= conceptType)
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
 

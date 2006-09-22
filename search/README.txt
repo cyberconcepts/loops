@@ -17,10 +17,11 @@ and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
+  >>> from cybertools.relation.tests import IntIdsStub
   >>> relations = DummyRelationRegistry()
-  >>> component.provideUtility(relations, IRelationRegistry)
+  >>> component.provideUtility(relations)
+  >>> component.provideUtility(IntIdsStub())
 
   >>> from loops.type import ConceptType, TypeConcept
   >>> from loops.interfaces import ITypeConcept
@@ -170,7 +171,7 @@ Now we can fill our search form and execute the query; note that all concepts
 found are listed, plus all their children and all resources associated
 with them:
 
-  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text_selected': u'zope'}
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
   >>> results = list(resultsView.results)
@@ -179,7 +180,7 @@ with them:
   >>> results[0].context.__name__
   u'plone'
 
-  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text_selected': u'zope3'}
+  >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': u'zope3'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
   >>> results = list(resultsView.results)
@@ -192,6 +193,12 @@ To support easy entry of concepts to search for we can preselect the available
 concepts (optionally restricted to a certain type) by entering text parts
 of the concepts' titles:
 
-TODO...
+  >>> form = {'searchType': 'loops:concept:topic', 'searchString': u'zo'}
+  >>> request = TestRequest(form=form)
+  >>> view = Search(page, request)
+  >>> view.listConcepts()
+  '[]'
+
+TODO - more to come...
 
 

@@ -25,8 +25,9 @@ $Id$
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
 from zope.app import traversing
-from zope.cachedescriptors.property import Lazy
 from zope.app.catalog.interfaces import ICatalog
+from zope.app.intid.interfaces import IIntIds
+from zope.cachedescriptors.property import Lazy
 
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
@@ -72,13 +73,17 @@ class BaseQuery(object):
         result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
         return result
 
-    def queryConceptsWithChildren(self, title=None, type=None):
+    def queryConceptsWithChildren(self, title=None, type=None, uid=None):
         if title:  # there are a few characters that the index doesn't like
             title = title.replace('(', ' ').replace(')', ' ')
-        if not title and (type is None or '*' in type):
+        if not title and not uid and (type is None or '*' in type):
             return None
         result = set()
-        queue = list(self.queryConcepts(title=title, type=type))
+        if not uid:
+            queue = list(self.queryConcepts(title=title, type=type))
+        else:
+            intIds = component.getUtility(IIntIds)
+            queue = [intIds.getObject(int(uid))]
         concepts = []
         while queue:
             c = queue.pop(0)
@@ -96,9 +101,10 @@ class BaseQuery(object):
 class FullQuery(BaseQuery):
 
     def query(self, text=None, type=None, useTitle=True, useFull=False,
-                    conceptTitle=None, conceptType=None):
+                    conceptTitle=None, conceptUid=None, conceptType=None):
         result = set()
-        rc = self.queryConceptsWithChildren(title=conceptTitle, type=conceptType)
+        rc = self.queryConceptsWithChildren(title=conceptTitle, uid=conceptUid,
+                                            type=conceptType)
         if not rc and not text and '*' in type: # there should be some sort of selection...
             return result
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!

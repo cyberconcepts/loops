@@ -4,7 +4,7 @@
     <tal:body define="itemNum view/itemNum;
                       id string:$itemNum.body;">
       <tal:edit define="target nocall:item;
-                        item nocall:view;">
+                        item nocall:node|nocall:view;">
         <div metal:use-macro="views/node_macros/editicons" />
       </tal:edit>
       <div class="content-1" id="1.body"

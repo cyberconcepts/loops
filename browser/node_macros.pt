@@ -46,7 +46,8 @@
                 </metal:editicons>
             </tal:ignore>
             <div class="content-1 subcolumn" id="1.body"
-                 tal:define="item nocall:target"
+                 tal:define="node nocall:item;
+                             item nocall:target"
                  tal:attributes="class string:content-$level;
                                  id id;
                                  ondblclick python: target.openEditWindow('configure.html')">
@@ -205,7 +206,7 @@
 <metal:actions define-macro="actions">
     <div class="menu-2"
          tal:define="dummy view/registerDojo">
-      <a href="#"
+      <a href="javascript:createObjectDialog()"
          onclick="createObjectDialog(); return false;">
         Create Resource...
       </a>

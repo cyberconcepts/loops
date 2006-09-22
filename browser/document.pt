@@ -4,10 +4,14 @@
 <head></head>
 <body>
 
-  
+
   <metal:body fill-slot="body"
         tal:define="item nocall:view">
-    <metal:block use-macro="views/resource_macros/render" />
+    <h1 tal:content="item/title">Title</h1>
+    <div class="content-1" id="1.body"
+         tal:content="structure item/render">
+        The body
+    </div>
   </metal:body>
 
 

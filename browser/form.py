@@ -17,7 +17,7 @@
 #
 
 """
-View class for Node objects.
+Classes for form presentation and processing.
 
 $Id$
 """
@@ -58,4 +58,21 @@ class CreateObjectForm(NodeView, Form):
 class CreateObject(FormController):
 
     def update(self):
+        prefix = 'form.'
+        form = self.request.form
         print 'updating...'
+        # determine name
+        # create object, assign basic concepts (type, ...)
+        for k in form.keys():
+            if k.startswith(prefix):
+                fn = k[len(prefix):]
+                value = form[k]
+                if fn.startswith('concept.search.'):
+                    self.assignConcepts(fn, value)
+                else:
+                    pass
+                    #setattr(obj, fn, value)
+                print fn, value
+
+    def assignConcepts(self, fieldName, value):
+        pass
