@@ -1,6 +1,6 @@
 <metal:block define-macro="create">
-    <div>
-      <form method="get">
+    <div tal:define="dummy view/setUp">
+      <form method="post">
         <input type="hidden" name="form.action" value="create"
                tal:attributes="value view/form_action" />
         <table cellpadding="3" class="form">
@@ -10,6 +10,7 @@
                     i18n:translate="">Create Information Object</span>
             </th>
           </tr>
+
           <tr tal:repeat="widget view/widgets">
             <td class="label"
                 tal:define="hint widget/hint">
@@ -30,6 +31,7 @@
               </div>
             </td>
           </tr>
+
           <tr>
             <td colspan="4" class="headline">Assign Concept(s)</td>
           </tr>

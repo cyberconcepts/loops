@@ -346,20 +346,15 @@ We first need a view manager:
   >>> nodeChecker = NamesChecker(('body',))
   >>> defineChecker(Node, nodeChecker)
 
-  >>> loopsRoot['views'] = ViewManager()
-  >>> views = loopsRoot['views']
+  >>> views = loopsRoot['views'] = ViewManager()
 
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:
 
-  >>> m1 = Node(u'Menu')
-  >>> views['m1'] = m1
-  >>> m11 = Node(u'Zope')
-  >>> m1['m11'] = m11
-  >>> m111 = Node(u'Zope in General')
-  >>> m11['m111'] = m111
-  >>> m112 = Node(u'Zope 3')
-  >>> m11['m112'] = m112
+  >>> m1 = views['m1'] = Node(u'Menu')
+  >>> m11 = m1['m11'] = Node(u'Zope')
+  >>> m111 = m11['m111'] = Node(u'Zope in General')
+  >>> m112 = m11['m112'] = Node(u'Zope 3')
   >>> m112.title
   u'Zope 3'
   >>> m112.description
@@ -616,8 +611,56 @@ to the bottom, and to the top.
   >>> m11.keys()
   ['m111', 'm114', 'm112', 'm113']
 
+
+End-user Forms
+==============
+
+The browser.form and related modules provide additional support for forms
+that are shown in the end-user interface.
+
+  >>> from loops.browser.form import CreateObjectForm, CreateObject, ResourceNameChooser
+  >>> form = CreateObjectForm(m112, TestRequest)
+
+  >>> from loops.interfaces import INote, ITypeConcept
+  >>> from loops.type import TypeConcept
+  >>> from loops.resource import NoteAdapter
+  >>> component.provideAdapter(TypeConcept)
+  >>> component.provideAdapter(NoteAdapter)
+  >>> note_tc = concepts['note'] = Concept('Note')
+  >>> note_tc.conceptType = typeObject
+  >>> ITypeConcept(note_tc).typeInterface = INote
+
+  >>> component.provideAdapter(ResourceNameChooser)
+  >>> request = TestRequest(form={'form.title': 'Test Note'})
+  >>> view = NodeView(m112, request)
+  >>> cont = CreateObject(view, request)
+  >>> cont.update()
+  True
+  >>> sorted(resources.keys())
+  [...u'test_note'...]
+  >>> resources['test_note'].title
+  'Test Note'
+
+If there is a concept selected in the combo box we assign this to the newly
+created object:
+
+  >>> from loops import util
+  >>> topicUid = util.getUidForObject(topic)
+  >>> request = TestRequest(form={'form.title': 'Test Note',
+  ...                             'form.concept.search.text_selected': topicUid})
+  >>> view = NodeView(m112, request)
+  >>> cont = CreateObject(view, request)
+  >>> cont.update()
+  True
+  >>> sorted(resources.keys())
+  [...u'test_note-2'...]
+  >>> note = resources['test_note-2']
+  >>> sorted(t.__name__ for t in note.getConcepts())
+  [u'note', u'topic']
+
+
 Import/Export
--------------
+=============
 
 Nodes may be exported to and loaded from external sources, typically
 file representations that allow the transfer of nodes from one Zope

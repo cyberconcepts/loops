@@ -574,6 +574,8 @@
       permission="zope.ManageContent"
       />
 
+  <zope:adapter factory="loops.browser.form.ResourceNameChooser" />
+
   <!-- inner HTML views -->
 
   <page

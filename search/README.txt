@@ -119,6 +119,7 @@ purposes fairly primitive) catalog and a resource we can search for:
   ...     implements(ICatalog)
   ...     def searchResults(self, **criteria):
   ...         name = criteria.get('loops_title')
+  ...         if name.endswith('*'): name = name[:-1]
   ...         type = criteria.get('loops_type', ('resource',))
   ...         if name:
   ...              if 'concept' in type[0]:
@@ -156,10 +157,10 @@ Search via related concepts
 We first have to prepare some test concepts (topics); we also assign our test
 resource (rplone) from above to one of the topics:
 
-  >>> czope = concepts['zope'] = Concept('Zope')
-  >>> czope2 = concepts['zope2'] = Concept('Zope 2')
-  >>> czope3 = concepts['zope3'] = Concept('Zope 3')
-  >>> cplone = concepts['plone'] = Concept('Plone')
+  >>> czope = concepts['zope'] = Concept(u'Zope')
+  >>> czope2 = concepts['zope2'] = Concept(u'Zope 2')
+  >>> czope3 = concepts['zope3'] = Concept(u'Zope 3')
+  >>> cplone = concepts['plone'] = Concept(u'Plone')
   >>> for c in (czope, czope2, czope3, cplone):
   ...     c.conceptType = topic
   >>> czope.assignChild(czope2)
@@ -193,11 +194,11 @@ To support easy entry of concepts to search for we can preselect the available
 concepts (optionally restricted to a certain type) by entering text parts
 of the concepts' titles:
 
-  >>> form = {'searchType': 'loops:concept:topic', 'searchString': u'zo'}
+  >>> form = {'searchType': 'loops:concept:topic', 'searchString': u'zope'}
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  '[]'
+  "[['Zope', '23']]"
 
 TODO - more to come...
 

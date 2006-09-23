@@ -22,6 +22,8 @@ Utility functions.
 $Id$
 """
 
+from zope import component
+from zope.app.intid.interfaces import IIntIds
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
@@ -53,3 +55,15 @@ def nl2br(text):
         return '<br />\n'.join(x.replace('\r', '') for x in text.split('\n'))
     else: # gracefully handle Mac line endings
         return '<br />\n'.join(text.split('\r'))
+
+def getObjectForUid(uid):
+    if uid == '*': # wild card
+        return '*'
+    intIds = component.getUtility(IIntIds)
+    return intIds.getObject(int(uid))
+
+def getUidForObject(obj):
+    if obj == '*': # wild card
+        return '*'
+    intIds = component.getUtility(IIntIds)
+    return intIds.queryId(obj)

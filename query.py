@@ -26,12 +26,12 @@ from zope import schema, component
 from zope.interface import Interface, Attribute, implements
 from zope.app import traversing
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
+from loops import util
 from loops.util import _
 
 
@@ -82,8 +82,7 @@ class BaseQuery(object):
         if not uid:
             queue = list(self.queryConcepts(title=title, type=type))
         else:
-            intIds = component.getUtility(IIntIds)
-            queue = [intIds.getObject(int(uid))]
+            queue = [util.getObjectForUid(uid)]
         concepts = []
         while queue:
             c = queue.pop(0)
