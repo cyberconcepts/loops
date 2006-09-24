@@ -206,13 +206,16 @@
 <metal:actions define-macro="actions">
     <div class="menu-2"
          tal:define="dummy view/registerDojo">
-      <a href="javascript:createObjectDialog()"
-         onclick="createObjectDialog(); return false;">
+      <a href="#"
+         onclick="objectDialog('create_object.html'); return false;">
         Create Resource...
+      </a><br />
+      <a href="#"
+         onclick="objectDialog('edit_object.html'); return false;">
+        Edit Resource...
       </a>
-      <span id="createObject">
-      </span>
     </div>
+    <span id="objectDialog"></span>
 </metal:actions>
 
 

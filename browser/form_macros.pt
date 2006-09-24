@@ -1,16 +1,82 @@
-<metal:block define-macro="create">
-    <div tal:define="dummy view/setUp">
-      <form method="post">
-        <input type="hidden" name="form.action" value="create"
+<metal:block define-macro="edit">
+    <form method="post">
+      <input type="hidden" name="form.action" value="edit"
                tal:attributes="value view/form_action" />
-        <table cellpadding="3" class="form">
+      <table cellpadding="3" class="form">
+        <tbody>
           <tr>
             <th colspan="4">
+              <br />
               <span tal:replace="view/title"
-                    i18n:translate="">Create Information Object</span>
+                    i18n:translate="">Edit Information Object
+              </span>
             </th>
           </tr>
+        </tbody>
 
+        <tbody id="form.fields">
+          <metal:fields use-macro="view/template/macros/fields" />
+        </tbody>
+
+        <tbody>
+          <tr>
+            <td colspan="4" class="headline">Assign Concept(s)</td>
+          </tr>
+          <tr metal:use-macro="view/template/macros/search_concepts" />
+          <tr metal:use-macro="view/template/macros/buttons" />
+        </tbody>
+      </table>
+    </form>
+</metal:block>
+
+
+<metal:block define-macro="create">
+    <form method="post">
+      <input type="hidden" name="form.action" value="create"
+               tal:attributes="value view/form_action" />
+      <table cellpadding="3" class="form">
+        <tbody>
+          <tr>
+            <th colspan="4">
+              <br />
+              <span tal:replace="view/title"
+                    i18n:translate="">Create Information Object</span>
+              <select name="form.type" id="form.type"
+                      tal:attributes="onChange
+                            string:return replaceFieldsNode(
+                                    'form.fields', 'form.type', 'inner_form.html')">
+                <option value=".loops/concepts/note"
+                        tal:repeat="type view/resourceTypes"
+                        tal:content="type/title"
+                        tal:attributes="value type/token;
+                                        selected python:
+                               type.token == (request.get('form.type')
+                                    or '.loops/concepts/note')">
+                  Note
+                </option>
+              </select>
+            </th>
+          </tr>
+        </tbody>
+
+        <tbody id="form.fields">
+          <metal:fields use-macro="view/template/macros/fields" />
+        </tbody>
+
+        <tbody>
+          <tr>
+            <td colspan="4" class="headline">Assign Concept(s)</td>
+          </tr>
+          <tr metal:use-macro="view/template/macros/search_concepts" />
+          <tr metal:use-macro="view/template/macros/buttons" />
+        </tbody>
+      </table>
+    </form>
+</metal:block>
+
+
+<metal:fields define-macro="fields">
+    <tal:block tal:define="dummy view/setUp">
           <tr tal:repeat="widget view/widgets">
             <td class="label"
                 tal:define="hint widget/hint">
@@ -31,42 +97,40 @@
               </div>
             </td>
           </tr>
+    </tal:block>
+</metal:fields>
 
-          <tr>
-            <td colspan="4" class="headline">Assign Concept(s)</td>
-          </tr>
-          <tr>
-            <td><label for="form.concept.search.type">Type:</label></td>
-            <td>
-              <select name="form.concept.search.type" id="form.concept.search.type"
-                      tal:attributes="onChange
-                        string:setConceptTypeForComboBox(
-                            'form.concept.search.type', 'form.concept.search.text')">
-                <tal:types repeat="type view/conceptTypesForSearch">
-                  <option value="loops:*"
-                          i18n:translate=""
-                          tal:attributes="value type/token"
-                          tal:content="type/title">Topic</option>
-                </tal:types>
-              </select>&nbsp;&nbsp;
-            </td>
-            <td><label for="form.concept.search.text">Search text:</label></td>
-            <td>
-              <input dojoType="comboBox" mode="remote" autoComplete="False"
-                     name="form.concept.search.text" id="form.concept.search.text"
-                     tal:attributes="dataUrl
-                        string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
-            </td>
-          </tr>
-          <tr>
+
+<tr metal:define-macro="search_concepts">
+    <td><label for="form.concept.search.type">Type:</label></td>
+    <td>
+      <select name="form.concept.search.type" id="form.concept.search.type"
+              tal:attributes="onChange
+                string:setConceptTypeForComboBox(
+                    'form.concept.search.type', 'form.concept.search.text')">
+        <tal:types repeat="type view/conceptTypesForSearch">
+          <option value="loops:*"
+                  i18n:translate=""
+                  tal:attributes="value type/token"
+                  tal:content="type/title">Topic</option>
+        </tal:types>
+      </select>&nbsp;&nbsp;
+    </td>
+    <td><label for="form.concept.search.text">Search text:</label></td>
+    <td>
+      <input dojoType="comboBox" mode="remote" autoComplete="False"
+             name="form.concept.search.text" id="form.concept.search.text"
+             tal:attributes="dataUrl
+                string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
+    </td>
+</tr>
+
+
+<tr metal:define-macro="buttons">
             <td colspan="4">
               <input type="button" value="Cancel"
-                     onclick="createObjectDlg.hide()">
+                     onclick="objectDlg.hide()">
               <input type="submit" value="Save"
-                     onclick="createObjectDlg.hide()">
+                     onclick="objectDlg.hide()">
             </td>
-          </tr>
-        </table>
-      </form>
-    </div>
-</metal:block>
+</tr>

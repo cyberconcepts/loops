@@ -303,7 +303,7 @@
       />
 
   <page
-      for="loops.interfaces.IDocument"
+      for="loops.interfaces.IResource"
       name="document.html"
       permission="zope.View"
       template="document.pt"
@@ -566,11 +566,33 @@
       permission="zope.ManageContent"
       />
 
+  <page
+      name="edit_object.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.EditObjectForm"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      name="inner_form.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.InnerForm"
+      permission="zope.ManageContent"
+      />
+
   <zope:adapter
       name="create_resource"
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.CreateObject"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="edit_resource"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.browser.form.EditObject"
       permission="zope.ManageContent"
       />
 

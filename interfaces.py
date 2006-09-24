@@ -72,7 +72,7 @@ class IConcept(ILoopsObject, IPotentialTarget):
         title=_(u'Title'),
         description=_(u'Title of the concept'),
         default=u'',
-        required=False)
+        required=True)
 
     conceptType = schema.Choice(
         title=_(u'Concept Type'),
@@ -190,7 +190,7 @@ class IBaseResource(ILoopsObject):
                 description=_(u'Title of the resource'),
                 default=u'',
                 missing_value=u'',
-                required=False)
+                required=True)
 
     resourceType = schema.Choice(
         title=_(u'Resource Type'),
@@ -228,7 +228,7 @@ class IResourceSchema(Interface):
                 description=_(u'Title of the resource'),
                 default=u'',
                 missing_value=u'',
-                required=False)
+                required=True)
 
     data = schema.Bytes(
                 title=_(u'Data'),
@@ -549,7 +549,7 @@ class IResourceAdapter(IBaseResourceSchema):
     """
 
 
-class IFile(IResourceAdapter):
+class IFile(IResourceAdapter, IResourceSchema):
     """ A media asset that is not shown on a (web) page like an image but
         may be downloaded instead.
     """

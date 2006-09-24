@@ -631,7 +631,8 @@ that are shown in the end-user interface.
   >>> ITypeConcept(note_tc).typeInterface = INote
 
   >>> component.provideAdapter(ResourceNameChooser)
-  >>> request = TestRequest(form={'form.title': 'Test Note'})
+  >>> request = TestRequest(form={'form.title': 'Test Note',
+  ...                             'form.type': '.loops/concepts/note'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
@@ -647,7 +648,8 @@ created object:
   >>> from loops import util
   >>> topicUid = util.getUidForObject(topic)
   >>> request = TestRequest(form={'form.title': 'Test Note',
-  ...                             'form.concept.search.text_selected': topicUid})
+  ...                             'form.type': '.loops/concepts/note',
+  ...                             'form.concept.search.text_selected': str(topicUid)})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()

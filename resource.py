@@ -194,6 +194,15 @@ class FileAdapter(ResourceAdapterBase):
     """
 
     implements(IFile)
+    _schemas = list(IFile) + list(IBaseResource)
+
+
+class TextDocumentAdapter(ResourceAdapterBase):
+    """ A type adapter for providing text document functionality for resources.
+    """
+
+    implements(IDocument)
+    _schemas = list(IDocument) + list(IBaseResource)
 
 
 class NoteAdapter(ResourceAdapterBase):
@@ -203,13 +212,11 @@ class NoteAdapter(ResourceAdapterBase):
     implements(INote)
     _schemas = list(INote) + list(IBaseResource)
 
-    #contentType = u'text/restructured'
-
 
 class DocumentWriteFileAdapter(object):
 
     implements(IWriteFile)
-    adapts(IDocument)
+    adapts(IResource)
 
     def __init__(self, context):
         self.context = context
@@ -222,7 +229,7 @@ class DocumentWriteFileAdapter(object):
 class DocumentReadFileAdapter(object):
 
     implements(IReadFile)
-    adapts(IDocument)
+    adapts(IResource)
 
     def __init__(self, context):
         self.context = context

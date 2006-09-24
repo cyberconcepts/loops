@@ -244,24 +244,6 @@ class ConceptConfigureView(ConceptView):
             result = [r for r in result if r.conceptType is None]
         return self.viewIterator(result)
 
-    def conceptTypes(self):
-        return util.KeywordVocabulary([(t.token, t.title)
-                    for t in ITypeManager(self.context).listTypes(('concept',))])
-
-    def conceptTypesForSearch(self):
-        general = [('loops:concept:*', 'Any'),]
-        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
-                    for t in ITypeManager(self.context).listTypes(('concept',))])
-
-    def resourceTypes(self):
-        return util.KeywordVocabulary([(t.token, t.title)
-                    for t in ITypeManager(self.context).listTypes(('resource',))])
-
-    def resourceTypesForSearch(self):
-        general = [('loops:resource:*', 'Any'),]
-        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
-                    for t in ITypeManager(self.context).listTypes(('resource',))])
-
     def predicates(self):
         preds = PredicateSourceList(self.context)
         terms = zapi.getMultiAdapter((preds, self.request), ITerms)

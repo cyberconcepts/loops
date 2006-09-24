@@ -31,36 +31,26 @@ from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import NameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from zope.formlib.form import Form, FormFields
+from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.interfaces import BadRequest
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IResourceManager
+from loops.interfaces import IResourceManager, INote
 from loops.browser.node import NodeView
 from loops.resource import Resource
+from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
 
-class CreateObjectForm(NodeView, Form):
+
+class ObjectForm(NodeView):
 
     template = ViewPageTemplateFile('form_macros.pt')
 
-    @property
-    def macro(self): return self.template.macros['create']
-
-    form_fields = FormFields(
-        schema.TextLine(__name__='title', title=_(u'Title')),
-        schema.Text(__name__='data', title=_(u'Body Text')),
-        schema.TextLine(__name__='linkUrl', title=_(u'Link'), required=False),
-    )
-
-    title = _(u'Enter Note')
-    form_action = 'create_resource'
-
     def __init__(self, context, request):
-        super(CreateObjectForm, self).__init__(context, request)
+        super(ObjectForm, self).__init__(context, request)
 
     def setUp(self):
         self.setUpWidgets()
@@ -68,6 +58,52 @@ class CreateObjectForm(NodeView, Form):
 
     def __call__(self):
         return innerHtml(self)
+
+
+class CreateObjectForm(ObjectForm, Form):
+
+    @property
+    def macro(self): return self.template.macros['create']
+
+    title = _(u'Create Resource, Type = ')
+    form_action = 'create_resource'
+
+    @property
+    def form_fields(self):
+        typeToken = self.request.get('form.type')
+        if typeToken:
+            t = self.loopsRoot.loopsTraverse(typeToken)
+            ifc = ITypeConcept(t).typeInterface
+        else:
+            ifc = INote
+        return FormFields(ifc)
+
+
+class EditObjectForm(ObjectForm, EditForm):
+
+    @property
+    def macro(self): return self.template.macros['edit']
+
+    title = _(u'Edit Resource')
+    form_action = 'edit_resource'
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.context).typeInterface
+
+    @property
+    def form_fields(self):
+        return FormFields(self.typeInterface)
+
+    def __init__(self, context, request):
+        super(EditObjectForm, self).__init__(context, request)
+        self.context = self.virtualTargetObject
+
+
+class InnerForm(ObjectForm):
+
+    @property
+    def macro(self): return self.template.macros['fields']
 
 
 class CreateObject(FormController):
@@ -87,12 +123,13 @@ class CreateObject(FormController):
             raise BadRequest('Title field is empty')
         name = INameChooser(container).chooseName(title, obj)
         container[name] = obj
-        obj.resourceType = self.loopsRoot.getConceptManager()['note']
+        tc = form.get('form.type') or '.loops/concepts/note'
+        obj.resourceType = self.loopsRoot.loopsTraverse(tc)
         adapter = IType(obj).typeInterface(obj)
         for k in form.keys():
             if k.startswith(prefix):
                 fn = k[len(prefix):]
-                if fn in ('action',):
+                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
                     continue
                 value = form[k]
                 if fn.startswith(conceptPrefix):
@@ -104,7 +141,7 @@ class CreateObject(FormController):
         return True
 
     def assignConcepts(self, obj, fieldName, value):
-        if fieldName == 'search.text_selected':
+        if value and fieldName == 'search.text_selected':
             concept = util.getObjectForUid(value)
             obj.assignConcept(concept)
 
@@ -117,3 +154,36 @@ class ResourceNameChooser(NameChooser):
         name = title.replace(' ', '_').lower()
         name = super(ResourceNameChooser, self).chooseName(name, obj)
         return name
+
+
+class EditObject(FormController):
+
+    @Lazy
+    def loopsRoot(self):
+        return self.view.loopsRoot
+
+    def update(self):
+        prefix = 'form.'
+        conceptPrefix = 'concept.'
+        form = self.request.form
+        obj = self.view.virtualTargetObject
+        adapter = IType(obj).typeInterface(obj)
+        for k in form.keys():
+            if k.startswith(prefix):
+                fn = k[len(prefix):]
+                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
+                    continue
+                value = form[k]
+                if fn.startswith(conceptPrefix):
+                    self.assignConcepts(obj, fn[len(conceptPrefix):], value)
+                else:
+                    setattr(adapter, fn, value)
+        notify(ObjectModifiedEvent(obj))
+        return True
+
+    def assignConcepts(self, obj, fieldName, value):
+        if value and fieldName == 'search.text_selected':
+            concept = util.getObjectForUid(value)
+            obj.assignConcept(concept)
+
+

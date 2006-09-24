@@ -42,6 +42,7 @@ from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IView
+from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
@@ -170,6 +171,15 @@ class BaseView(GenericView):
         for o in objs:
             yield BaseView(o, request)
 
+    def resourceTypes(self):
+        return util.KeywordVocabulary([(t.token, t.title)
+                    for t in ITypeManager(self.context).listTypes(('resource',))
+                    if t.factory == Resource])
+
+    def conceptTypes(self):
+        return util.KeywordVocabulary([(t.token, t.title)
+                    for t in ITypeManager(self.context).listTypes(('concept',))])
+
     def typesForSearch(self):
         general = [('loops:resource:*', 'Any Resource'),
                    ('loops:concept:*', 'Any Concept'),]
@@ -179,9 +189,13 @@ class BaseView(GenericView):
 
     def conceptTypesForSearch(self):
         general = [('loops:concept:*', 'Any Concept'),]
-        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
-                        for t in ITypeManager(self.context).types
-                            if 'concept' in t.qualifiers]))
+        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
+                    for t in ITypeManager(self.context).listTypes(('concept',))])
+
+    def resourceTypesForSearch(self):
+        general = [('loops:resource:*', 'Any Resource'),]
+        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
+                    for t in ITypeManager(self.context).listTypes(('resource',))])
 
     @Lazy
     def uniqueId(self):

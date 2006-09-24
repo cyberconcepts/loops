@@ -13,9 +13,12 @@ function focusOpener() {
     }
 }
 
-/*function listConceptsForComboBox() {
-    return [['Zope', 'zope'], ]
-}*/
+function replaceFieldsNode(targetId, typeId, url) {
+    token = dojo.byId(typeId).value;
+    dojo.io.updateNode(targetId, {
+            url: url + '?form.type=' + token,
+    });
+}
 
 function submitReplacing(targetId, formId, actionUrl) {
     dojo.io.updateNode(targetId, {
@@ -54,19 +57,17 @@ function setConceptTypeForComboBox(typeId, cbId) {
     dp.searchUrl = newUrl;
 }
 
-var createObjectDlg = false;
+var objectDlg = false;
 
-function createObjectDialog() {
-    //createObjectDlg = dojo.widget.byId('createObject');
-    //createObjectDlg = false;
+function objectDialog(url) {
     dojo.require('dojo.widget.Dialog');
     dojo.require('dojo.widget.ComboBox');
-    if (!createObjectDlg) {
-       createObjectDlg = dojo.widget.fromScript('Dialog',
+    if (!objectDlg) {
+       objectDlg = dojo.widget.fromScript('Dialog',
             {bgColor: 'white', bgOpacity: 0.5, toggle: 'fade', toggleDuration: 250,
              executeScripts: true,
-             href: 'create_object.html'
-            }, dojo.byId('createObject'));
+             href: url
+            }, dojo.byId('objectDialog'));
     }
-    createObjectDlg.show();
+    objectDlg.show();
 }
