@@ -42,7 +42,7 @@ from zope.event import notify
 
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
-from cybertools.typology.interfaces import ITypeManager
+from cybertools.typology.interfaces import IType, ITypeManager
 
 from interfaces import IBaseResource, IResource
 from interfaces import IFile, INote
@@ -251,13 +251,18 @@ class IndexAttributes(object):
 
     def text(self):
         context = self.context
+        ti = IType(context).typeInterface
+        if ti is not None:
+            adapted = ti(context)
+            #transform = component.queryAdapter(
+            #           adapted, ITextTransform, name=context.contentType)
+            #if transform is not None:
+            #    return transform()
         if not context.contentType.startswith('text'):
             return u''
         data = context.data
         if type(data) != unicode:
             data = data.decode('UTF-8')
-        # TODO: transform to plain text
-        #return ' '.join((zapi.getName(context), context.title, data)).strip()
         return data
 
     def title(self):

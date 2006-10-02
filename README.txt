@@ -317,6 +317,8 @@ Index attributes adapter
 ------------------------
 
   >>> from loops.resource import IndexAttributes
+  >>> from loops.type import LoopsType
+  >>> component.provideAdapter(LoopsType)
   >>> idx = IndexAttributes(doc1)
   >>> idx.text()
   u''

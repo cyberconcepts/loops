@@ -57,8 +57,9 @@ class ObjectForm(NodeView):
 
     def setUp(self):
         self.setUpWidgets()
-        # TODO: such stuff should depend on self.typeInterface
-        self.widgets['data'].height = 3
+        if self.typeInterface in widgetControllers:
+            wc = widgetControllers[self.typeInterface]()
+            wc.modifyWidgetSetup(self.widgets)
 
     def __call__(self):
         return innerHtml(self)
@@ -67,6 +68,15 @@ class ObjectForm(NodeView):
     def defaultPredicate(self):
         return util.getUidForObject(
                 self.loopsRoot.getConceptManager().getDefaultPredicate())
+
+
+class NoteWidgetController(object):
+
+    def modifyWidgetSetup(self, widgets):
+        widgets['data'].height = 5
+
+
+widgetControllers = {INote: NoteWidgetController}
 
 
 class EditObjectForm(ObjectForm, EditForm):
