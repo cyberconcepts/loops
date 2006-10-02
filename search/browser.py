@@ -80,7 +80,7 @@ class Search(BaseView):
         result = ConceptQuery(self).query(title=title, type=type)
         registry = component.getUtility(IRelationRegistry)
         # simple way to provide JSON format:
-        return str(sorted([[`o.title`[2:-1],
+        return str(sorted([[`o.title`[2:-1] + ' (%s)' % `o.conceptType.title`[2:-1],
                             `registry.getUniqueIdForObject(o)`]
                         for o in result
                         if o.getLoopsRoot() == self.loopsRoot])).replace('\\\\x', '\\x')

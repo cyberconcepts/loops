@@ -46,7 +46,7 @@ from cybertools.typology.interfaces import ITypeManager
 
 from interfaces import IBaseResource, IResource
 from interfaces import IFile, INote
-from interfaces import IDocument, IDocumentSchema, IDocumentView
+from interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
 from interfaces import ILoopsContained
@@ -222,7 +222,7 @@ class DocumentWriteFileAdapter(object):
         self.context = context
 
     def write(self, data):
-        self.context.data = unicode(data.replace('\r', ''), 'UTF-8')
+        ITextDocument(self.context).data = unicode(data.replace('\r', ''), 'UTF-8')
         notify(ObjectModifiedEvent(self.context, Attributes(IDocument, 'data')))
 
 

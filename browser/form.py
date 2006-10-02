@@ -37,8 +37,9 @@ from zope.publisher.interfaces import BadRequest
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IResourceManager, INote
+from loops.interfaces import IResourceManager, INote, IDocument
 from loops.browser.node import NodeView
+from loops.browser.concept import ConceptRelationView
 from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
@@ -54,6 +55,7 @@ class ObjectForm(NodeView):
 
     def setUp(self):
         self.setUpWidgets()
+        # TODO: such stuff should depend on self.typeInterface
         self.widgets['data'].height = 3
 
     def __call__(self):
@@ -67,6 +69,7 @@ class CreateObjectForm(ObjectForm, Form):
 
     title = _(u'Create Resource, Type = ')
     form_action = 'create_resource'
+    dialog_name = 'create'
 
     @property
     def form_fields(self):
@@ -76,7 +79,14 @@ class CreateObjectForm(ObjectForm, Form):
             ifc = ITypeConcept(t).typeInterface
         else:
             ifc = INote
+        self.typeInterface = ifc
         return FormFields(ifc)
+
+
+class InnerForm(CreateObjectForm):
+
+    @property
+    def macro(self): return self.template.macros['fields']
 
 
 class EditObjectForm(ObjectForm, EditForm):
@@ -86,24 +96,24 @@ class EditObjectForm(ObjectForm, EditForm):
 
     title = _(u'Edit Resource')
     form_action = 'edit_resource'
+    dialog_name = 'edit'
 
     @Lazy
     def typeInterface(self):
-        return IType(self.context).typeInterface
+        return IType(self.context).typeInterface or IDocument
 
     @property
     def form_fields(self):
         return FormFields(self.typeInterface)
 
+    @property
+    def assignments(self):
+        for c in self.context.getConceptRelations():
+            yield ConceptRelationView(c, self.request)
+
     def __init__(self, context, request):
         super(EditObjectForm, self).__init__(context, request)
         self.context = self.virtualTargetObject
-
-
-class InnerForm(ObjectForm):
-
-    @property
-    def macro(self): return self.template.macros['fields']
 
 
 class CreateObject(FormController):

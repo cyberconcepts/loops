@@ -292,6 +292,10 @@ class NodeView(BaseView):
             return BaseView(target, self.request).url
 
     @Lazy
+    def hasEditableTarget(self):
+        return IResource.providedBy(self.virtualTargetObject)
+
+    @Lazy
     def inlineEditable(self):
         target = self.virtualTarget
         return target and target.inlineEditable or False

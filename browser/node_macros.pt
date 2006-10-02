@@ -26,24 +26,26 @@
           <div tal:define="target nocall:item/target"
                tal:condition="nocall:target">
             <tal:ignore condition="nothing">
-                <metal:editicons define-macro="editicons">
-                  <div class="subcolumn" id="xedit_icon"
+                <div metal:define-macro="editicons"
+                     style="float: right; border: 1px solid #ccc;
+                            margin-top: 1em">
+                  <span id="xedit_icon"
                        tal:condition="item/xeditable | nothing">
                     <a href="#" title="Edit" style="padding: 5px"
                        tal:attributes="href string:${item/realTargetUrl}/external_edit;
                                        title string:Edit '${target/title}' with External Editor"><img
                                   src="edit.gif" alt="Edit"
                                   tal:attributes="src context/++resource++edit.gif" /></a>
-                  </div>
-                  <div class="subcolumn" id="inlineedit_icon"
+                  </span>
+                  <span id="inlineedit_icon"
                        tal:condition="item/inlineEditable">
                     <a href="#" title="Edit" style="padding: 5px"
                        tal:attributes="title string:Edit '${target/title}' with Inline Editor;
                                        onclick python: item.inlineEdit(id)"><img
                                   src="edit.gif" alt="Edit"
                                   tal:attributes="src context/++resource++edit.gif" /></a>
-                  </div>
-                </metal:editicons>
+                  </span>
+                </div>
             </tal:ignore>
             <div class="content-1 subcolumn" id="1.body"
                  tal:define="node nocall:item;
@@ -204,18 +206,23 @@
 
 
 <metal:actions define-macro="actions">
-    <div class="menu-2"
-         tal:define="dummy view/registerDojo">
-      <a href="#"
-         onclick="objectDialog('create_object.html'); return false;">
-        Create Resource...
-      </a><br />
-      <a href="#"
-         onclick="objectDialog('edit_object.html'); return false;">
-        Edit Resource...
-      </a>
-    </div>
-    <span id="objectDialog"></span>
+    <tal:actions define="dummy view/registerDojo">
+      <div class="menu-2">
+          <a href="#"
+             onclick="objectDialog('create', 'create_object.html'); return false;">
+            Create Resource...
+          </a>
+      </div>
+      <div class="menu-2"
+           tal:condition="view/hasEditableTarget">
+          <a href="#"
+             onclick="objectDialog('edit', 'edit_object.html'); return false;">
+            Edit Resource...
+          </a>
+      </div>
+    </tal:actions>
+    <span id="dialog.create"></span>
+    <span id="dialog.edit"></span>
 </metal:actions>
 
 

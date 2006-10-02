@@ -33,13 +33,15 @@ function inlineEdit(id, saveUrl) {
     //dojo.require('dojo.widget.Editor');
     var iconNode = dojo.byId('inlineedit_icon');
     iconNode.style.visibility = 'hidden';
-    var editor = dojo.widget.fromScript('Editor',
+    //var editor = dojo.widget.fromScript('Editor',
+    editor = dojo.widget.createWidget('Editor',
         {items: ['save', '|', 'formatblock', '|',
                  'insertunorderedlist', 'insertorderedlist', '|',
                  'bold', 'italic', '|', 'createLink', 'insertimage'],
          saveUrl: saveUrl,
          closeOnSave: true,
          htmlEditing: true,
+         //onClose: function() {
          onSave: function() {
             this.disableToolbar(true);
             iconNode.style.visibility = 'visible';
@@ -57,17 +59,34 @@ function setConceptTypeForComboBox(typeId, cbId) {
     dp.searchUrl = newUrl;
 }
 
-var objectDlg = false;
+var dialogs = {}
 
-function objectDialog(url) {
+function objectDialog(dlgName, url) {
     dojo.require('dojo.widget.Dialog');
     dojo.require('dojo.widget.ComboBox');
-    if (!objectDlg) {
-       objectDlg = dojo.widget.fromScript('Dialog',
+    dlg = dialogs[dlgName];
+    if (!dlg) {
+        //dlg = dojo.widget.fromScript('Dialog',
+        dlg = dojo.widget.createWidget('Dialog',
             {bgColor: 'white', bgOpacity: 0.5, toggle: 'fade', toggleDuration: 250,
              executeScripts: true,
              href: url
-            }, dojo.byId('objectDialog'));
+            }, dojo.byId('dialog.' + dlgName));
+        dialogs[dlgName] = dlg;
     }
-    objectDlg.show();
+    dlg.show();
 }
+
+function addConceptAssignment() {
+    node = dojo.byId('form.assignments');
+    token = document.getElementsByName('form.concept.search.text_selected')[0].value;
+    if (token.length == 0) {return false;}
+    title = document.getElementsByName('form.concept.search.text')[0].value;
+    var td = document.createElement('td');
+    td.setAttribute('colspan', '5');
+    td.innerHTML = '<input type="hidden" name="form.assignments.tokens:list" value="' + token + '" /><input type="checkbox" checked /><span>' + title + '</span>';
+    var tr = document.createElement('tr');
+    tr.appendChild(td);
+    node.appendChild(tr);
+}
+

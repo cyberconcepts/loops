@@ -122,6 +122,11 @@ class ResourceView(BaseView):
         for r in self.context.getConceptRelations():
             yield ConceptRelationView(r, self.request)
 
+    def relatedConcepts(self):
+        for c in self.concepts():
+            if c.isProtected: continue
+            yield c
+
     def clients(self):
         for node in self.context.getClients():
             yield NodeView(node, self.request)

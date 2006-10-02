@@ -1,12 +1,12 @@
 <metal:block define-macro="render">
   <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
-    <h1 tal:content="item/title">Title</h1>
     <tal:body define="itemNum view/itemNum;
                       id string:$itemNum.body;">
       <tal:edit define="target nocall:item;
                         item nocall:node|nocall:view;">
         <div metal:use-macro="views/node_macros/editicons" />
       </tal:edit>
+      <h1 tal:content="item/title">Title</h1>
       <div class="content-1" id="1.body"
            tal:attributes="id id;"
            tal:content="structure item/render">
@@ -66,11 +66,11 @@
 
 <metal:actions define-macro="related">
           <div class="menu-2"
-               tal:repeat="concept macro/info/concepts">
+               tal:repeat="concept macro/info/relatedConcepts">
             <a href="#"
-               tal:content="concept/title"
                tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
-              Concept
+              <span tal:replace="concept/title">Concept</span>
+              (<i tal:content="concept/typeTitle">Type</i>)
             </a>
           </div>
 </metal:actions>

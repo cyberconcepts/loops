@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <td></td>
-              <td colspan="2">
+              <td colspan="3">
                 <input type="submit" name="button.search" value="Search" class="submit"
                        tal:attributes="onclick python:
                                 item.submitReplacing(resultsId, formId, view)" />
@@ -83,7 +83,7 @@
 <metal:text define-macro="type">
   <tr>
     <td metal:use-macro="macros/minus"/>
-    <td colspan="2">
+    <td colspan="3">
       <h3>Type(s) to search for</h3>
     </td>
   <tr>
@@ -105,7 +105,7 @@
              title="Add type"
              tal:condition="nothing" />&nbsp;
     </td>
-    <td></td>
+    <td colspan="2"></td>
   </tr>
 </metal:text>
 
@@ -113,7 +113,7 @@
 <metal:text define-macro="text">
   <tr>
     <td metal:use-macro="macros/minus"/>
-    <td colspan="2">
+    <td colspan="3">
       <h3>Search text</h3>
     </td>
   <tr>
@@ -151,7 +151,7 @@
 <metal:text define-macro="concept">
   <tr>
     <td metal:use-macro="macros/minus"/>
-    <td colspan="2">
+    <td colspan="3">
       <h3>Search via related concepts</h3>
     </td>
   <tr>

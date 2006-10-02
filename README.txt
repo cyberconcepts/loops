@@ -618,8 +618,11 @@ End-user Forms
 The browser.form and related modules provide additional support for forms
 that are shown in the end-user interface.
 
+Creating an object
+------------------
+
   >>> from loops.browser.form import CreateObjectForm, CreateObject, ResourceNameChooser
-  >>> form = CreateObjectForm(m112, TestRequest)
+  >>> form = CreateObjectForm(m112, TestRequest())
 
   >>> from loops.interfaces import INote, ITypeConcept
   >>> from loops.type import TypeConcept
@@ -631,8 +634,8 @@ that are shown in the end-user interface.
   >>> ITypeConcept(note_tc).typeInterface = INote
 
   >>> component.provideAdapter(ResourceNameChooser)
-  >>> request = TestRequest(form={'form.title': 'Test Note',
-  ...                             'form.type': '.loops/concepts/note'})
+  >>> request = TestRequest(form={'form.title': u'Test Note',
+  ...                             'form.type': u'.loops/concepts/note'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
@@ -640,15 +643,15 @@ that are shown in the end-user interface.
   >>> sorted(resources.keys())
   [...u'test_note'...]
   >>> resources['test_note'].title
-  'Test Note'
+  u'Test Note'
 
 If there is a concept selected in the combo box we assign this to the newly
 created object:
 
   >>> from loops import util
   >>> topicUid = util.getUidForObject(topic)
-  >>> request = TestRequest(form={'form.title': 'Test Note',
-  ...                             'form.type': '.loops/concepts/note',
+  >>> request = TestRequest(form={'form.title': u'Test Note',
+  ...                             'form.type': u'.loops/concepts/note',
   ...                             'form.concept.search.text_selected': str(topicUid)})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
@@ -659,6 +662,21 @@ created object:
   >>> note = resources['test_note-2']
   >>> sorted(t.__name__ for t in note.getConcepts())
   [u'note', u'topic']
+
+Editing an object
+-----------------
+
+  >>> from loops.browser.form import EditObjectForm, EditObject
+  >>> m112.target = resources['test_note']
+  >>> form = EditObjectForm(m112, TestRequest())
+
+  >>> request = TestRequest(form={'form.title': u'Test Note - changed'})
+  >>> view = NodeView(m112, request)
+  >>> cont = EditObject(view, request)
+  >>> cont.update()
+  True
+  >>> resources['test_note'].title
+  u'Test Note - changed'
 
 
 Import/Export

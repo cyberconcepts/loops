@@ -1,4 +1,4 @@
-===================================================================
+4===================================================================
 loops.search - Provide search functionality for the loops framework
 ===================================================================
 
@@ -198,7 +198,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  "[['Zope', '23']]"
+  "[['Zope (Topic)', '23']]"
 
 TODO - more to come...
 

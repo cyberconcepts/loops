@@ -5,7 +5,7 @@
       <table cellpadding="3" class="form">
         <tbody>
           <tr>
-            <th colspan="4">
+            <th colspan="5">
               <br />
               <span tal:replace="view/title"
                     i18n:translate="">Edit Information Object
@@ -20,8 +20,9 @@
 
         <tbody>
           <tr>
-            <td colspan="4" class="headline">Assign Concept(s)</td>
+            <td colspan="5" class="headline">Concept Assignments</td>
           </tr>
+          <tr metal:use-macro="view/template/macros/assignments" />
           <tr metal:use-macro="view/template/macros/search_concepts" />
           <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
@@ -37,7 +38,7 @@
       <table cellpadding="3" class="form">
         <tbody>
           <tr>
-            <th colspan="4">
+            <th colspan="5">
               <br />
               <span tal:replace="view/title"
                     i18n:translate="">Create Information Object</span>
@@ -65,7 +66,7 @@
 
         <tbody>
           <tr>
-            <td colspan="4" class="headline">Assign Concept(s)</td>
+            <td colspan="5" class="headline">Assign Concept(s)</td>
           </tr>
           <tr metal:use-macro="view/template/macros/search_concepts" />
           <tr metal:use-macro="view/template/macros/buttons" />
@@ -86,7 +87,7 @@
                                tal:content="widget/label">label</span>
               </label>
             </td>
-            <td class="field" colspan="3"
+            <td class="field" colspan="4"
                 tal:define="hint widget/hint">
               <div class="widget" tal:content="structure widget">
                 <input type="text" />
@@ -99,6 +100,21 @@
           </tr>
     </tal:block>
 </metal:fields>
+
+
+<metal:assignments define-macro="assignments">
+    <tbody id="form.assignments">
+      <tr tal:repeat="relation view/assignments">
+        <td colspan="5">
+          <input type="hidden" name="form.assignments.tokens:list"
+                 tal:attributes="value relation/token" />
+          <input type="checkbox" checked />
+          <span tal:content="relation/title">Something</span>
+          (<span tal:content="relation/typeTitle">Topic</span>)
+        </td>
+      </tr>
+    </tbody>
+</metal:assignments>
 
 
 <tr metal:define-macro="search_concepts">
@@ -123,14 +139,19 @@
              tal:attributes="dataUrl
                 string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
     </td>
+    <td>
+      <input type="button" value="Select"
+             onClick="addConceptAssignment()" />
+    </td>
 </tr>
 
 
 <tr metal:define-macro="buttons">
-            <td colspan="4">
-              <input type="button" value="Cancel"
-                     onclick="objectDlg.hide()">
-              <input type="submit" value="Save"
-                     onclick="objectDlg.hide()">
+            <td colspan="5"
+                tal:define="dlgName view/dialog_name">
+              <input type="button" value="Cancel" onClick="dlg.hide();"
+                     tal:attributes="onClick string:dialogs['$dlgName'].hide()">
+              <input type="submit" value="Save" onClick="dlg.hide()"
+                     tal:attributes="onClick string:dialogs['$dlgName'].hide()">
             </td>
 </tr>
