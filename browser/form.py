@@ -156,7 +156,11 @@ class EditObject(FormController):
 
     def updateFields(self, obj):
         form = self.request.form
-        adapter = IType(obj).typeInterface(obj)
+        ti = IType(obj).typeInterface
+        if ti is not None:
+            adapted = IType(obj).typeInterface(obj)
+        else:
+            adapted = obj
         for k in form.keys():
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
@@ -166,7 +170,7 @@ class EditObject(FormController):
                 if fn.startswith(self.conceptPrefix) and value:
                     self.assignConcepts(obj, fn[len(self.conceptPrefix):], value)
                 else:
-                    setattr(adapter, fn, value)
+                    setattr(adapted, fn, value)
         notify(ObjectModifiedEvent(obj))
 
     def assignConcepts(self, obj, fieldName, value):
