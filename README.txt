@@ -650,9 +650,11 @@ created object:
 
   >>> from loops import util
   >>> topicUid = util.getUidForObject(topic)
+  >>> predicateUid = util.getUidForObject(concepts.getDefaultPredicate())
   >>> request = TestRequest(form={'form.title': u'Test Note',
   ...                             'form.type': u'.loops/concepts/note',
-  ...                             'form.concept.search.text_selected': str(topicUid)})
+  ...                             'form.assignments.selected':
+  ...                                   [':'.join((topicUid, predicateUid))]})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()

@@ -79,12 +79,17 @@ function objectDialog(dlgName, url) {
 
 function addConceptAssignment() {
     node = dojo.byId('form.assignments');
-    token = document.getElementsByName('form.concept.search.text_selected')[0].value;
-    if (token.length == 0) {return false;}
-    title = document.getElementsByName('form.concept.search.text')[0].value;
+    cToken = document.getElementsByName('concept.search.text_selected')[0].value;
+    if (cToken.length == 0) {
+        alert('Please select a concept!');
+        return false;
+    }
+    pToken = dojo.byId('concept.search.predicate').value;
+    token = cToken + ':' + pToken;
+    title = document.getElementsByName('concept.search.text')[0].value;
     var td = document.createElement('td');
     td.setAttribute('colspan', '5');
-    td.innerHTML = '<input type="hidden" name="form.assignments.tokens:list" value="' + token + '" /><input type="checkbox" checked /><span>' + title + '</span>';
+    td.innerHTML = '<input type="checkbox" name="form.assignments.selected:list" value="' + token + '" checked><span>' + title + '</span>';
     var tr = document.createElement('tr');
     tr.appendChild(td);
     node.appendChild(tr);

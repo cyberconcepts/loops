@@ -68,6 +68,7 @@
           <tr>
             <td colspan="5" class="headline">Assign Concept(s)</td>
           </tr>
+          <tr metal:use-macro="view/template/macros/assignments" />
           <tr metal:use-macro="view/template/macros/search_concepts" />
           <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
@@ -106,9 +107,10 @@
     <tbody id="form.assignments">
       <tr tal:repeat="relation view/assignments">
         <td colspan="5">
-          <input type="hidden" name="form.assignments.tokens:list"
-                 tal:attributes="value relation/token" />
-          <input type="checkbox" checked />
+          <input type="hidden" name="form.assignments.old:list"
+                 tal:attributes="value relation/uidToken" checked />
+          <input type="checkbox" name="form.assignments.selected:list"
+                 tal:attributes="value relation/uidToken" checked />
           <span tal:content="relation/title">Something</span>
           (<span tal:content="relation/typeTitle">Topic</span>)
         </td>
@@ -118,12 +120,12 @@
 
 
 <tr metal:define-macro="search_concepts">
-    <td><label for="form.concept.search.type">Type:</label></td>
+    <td><label for="concept.search.type">Type:</label></td>
     <td>
-      <select name="form.concept.search.type" id="form.concept.search.type"
+      <select id="concept.search.type"
               tal:attributes="onChange
                 string:setConceptTypeForComboBox(
-                    'form.concept.search.type', 'form.concept.search.text')">
+                    'concept.search.type', 'concept.search.text')">
         <tal:types repeat="type view/conceptTypesForSearch">
           <option value="loops:*"
                   i18n:translate=""
@@ -132,10 +134,13 @@
         </tal:types>
       </select>&nbsp;&nbsp;
     </td>
-    <td><label for="form.concept.search.text">Search text:</label></td>
+    <td><label for="concept.search.text">Search text:</label></td>
     <td>
+      <input type="hidden"
+             id="concept.search.predicate"
+             tal:attributes="value view/defaultPredicate" />
       <input dojoType="comboBox" mode="remote" autoComplete="False"
-             name="form.concept.search.text" id="form.concept.search.text"
+             name="concept.search.text" id="concept.search.text"
              tal:attributes="dataUrl
                 string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
     </td>

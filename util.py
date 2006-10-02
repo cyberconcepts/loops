@@ -66,4 +66,4 @@ def getUidForObject(obj):
     if obj == '*': # wild card
         return '*'
     intIds = component.getUtility(IIntIds)
-    return intIds.queryId(obj)
+    return str(intIds.queryId(obj))

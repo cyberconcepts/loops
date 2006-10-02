@@ -269,6 +269,11 @@ class ConceptRelationView(BaseView):
                          self.loopsRoot.getLoopsUri(self.predicate)))
 
     @Lazy
+    def uidToken(self):
+        return ':'.join((util.getUidForObject(self.context),
+                         util.getUidForObject(self.predicate)))
+
+    @Lazy
     def isProtected(self):
         return zapi.getName(self.predicate) == 'hasType'
 

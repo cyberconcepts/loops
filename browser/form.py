@@ -46,6 +46,8 @@ from loops import util
 from loops.util import _
 
 
+# forms
+
 class ObjectForm(NodeView):
 
     template = ViewPageTemplateFile('form_macros.pt')
@@ -61,32 +63,10 @@ class ObjectForm(NodeView):
     def __call__(self):
         return innerHtml(self)
 
-
-class CreateObjectForm(ObjectForm, Form):
-
-    @property
-    def macro(self): return self.template.macros['create']
-
-    title = _(u'Create Resource, Type = ')
-    form_action = 'create_resource'
-    dialog_name = 'create'
-
-    @property
-    def form_fields(self):
-        typeToken = self.request.get('form.type')
-        if typeToken:
-            t = self.loopsRoot.loopsTraverse(typeToken)
-            ifc = ITypeConcept(t).typeInterface
-        else:
-            ifc = INote
-        self.typeInterface = ifc
-        return FormFields(ifc)
-
-
-class InnerForm(CreateObjectForm):
-
-    @property
-    def macro(self): return self.template.macros['fields']
+    @Lazy
+    def defaultPredicate(self):
+        return util.getUidForObject(
+                self.loopsRoot.getConceptManager().getDefaultPredicate())
 
 
 class EditObjectForm(ObjectForm, EditForm):
@@ -109,22 +89,103 @@ class EditObjectForm(ObjectForm, EditForm):
     @property
     def assignments(self):
         for c in self.context.getConceptRelations():
-            yield ConceptRelationView(c, self.request)
+            r = ConceptRelationView(c, self.request)
+            if r.isProtected: continue
+            yield r
 
     def __init__(self, context, request):
         super(EditObjectForm, self).__init__(context, request)
         self.context = self.virtualTargetObject
 
 
-class CreateObject(FormController):
+class CreateObjectForm(ObjectForm, Form):
+
+    @property
+    def macro(self): return self.template.macros['create']
+
+    title = _(u'Create Resource, Type = ')
+    form_action = 'create_resource'
+    dialog_name = 'create'
+
+    @property
+    def form_fields(self):
+        typeToken = self.request.get('form.type')
+        if typeToken:
+            t = self.loopsRoot.loopsTraverse(typeToken)
+            ifc = ITypeConcept(t).typeInterface
+        else:
+            ifc = INote
+        self.typeInterface = ifc
+        return FormFields(ifc)
+
+    @property
+    def assignments(self):
+        return ()
+
+
+class InnerForm(CreateObjectForm):
+
+    @property
+    def macro(self): return self.template.macros['fields']
+
+
+# processing form input
+
+class EditObject(FormController):
+
+    prefix = 'form.'
+    conceptPrefix = 'assignments.'
+
+    def update(self):
+        self.updateFields(self.view.virtualTargetObject)
+        return True
 
     @Lazy
     def loopsRoot(self):
         return self.view.loopsRoot
 
+    def updateFields(self, obj):
+        form = self.request.form
+        adapter = IType(obj).typeInterface(obj)
+        for k in form.keys():
+            if k.startswith(self.prefix):
+                fn = k[len(self.prefix):]
+                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
+                    continue
+                value = form[k]
+                if fn.startswith(self.conceptPrefix) and value:
+                    self.assignConcepts(obj, fn[len(self.conceptPrefix):], value)
+                else:
+                    setattr(adapter, fn, value)
+        notify(ObjectModifiedEvent(obj))
+
+    def assignConcepts(self, obj, fieldName, value):
+        old = []
+        selected = []
+        for v in value:
+            if fieldName == 'old':
+                old.append(v)
+            elif fieldName == 'selected':
+                selected.append(v)
+        for v in old:
+            if v not in selected:
+                c, p = v.split(':')
+                concept = util.getObjectForUid(c)
+                predicate = util.getObjectForUid(p)
+                obj.deassignConcept(concept, [predicate])
+        for v in selected:
+            if v not in old:
+                c, p = v.split(':')
+                concept = util.getObjectForUid(c)
+                predicate = util.getObjectForUid(p)
+                exists = obj.getConceptRelations(predicates=[p], concept=concept)
+                if not exists:
+                    obj.assignConcept(concept, predicate)
+
+
+class CreateObject(EditObject):
+
     def update(self):
-        prefix = 'form.'
-        conceptPrefix = 'concept.'
         form = self.request.form
         obj = Resource()
         container = self.loopsRoot.getResourceManager()
@@ -135,25 +196,9 @@ class CreateObject(FormController):
         container[name] = obj
         tc = form.get('form.type') or '.loops/concepts/note'
         obj.resourceType = self.loopsRoot.loopsTraverse(tc)
-        adapter = IType(obj).typeInterface(obj)
-        for k in form.keys():
-            if k.startswith(prefix):
-                fn = k[len(prefix):]
-                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
-                    continue
-                value = form[k]
-                if fn.startswith(conceptPrefix):
-                    self.assignConcepts(obj, fn[len(conceptPrefix):], value)
-                else:
-                    setattr(adapter, fn, value)
         notify(ObjectCreatedEvent(obj))
-        notify(ObjectModifiedEvent(obj))
+        self.updateFields(obj)
         return True
-
-    def assignConcepts(self, obj, fieldName, value):
-        if value and fieldName == 'search.text_selected':
-            concept = util.getObjectForUid(value)
-            obj.assignConcept(concept)
 
 
 class ResourceNameChooser(NameChooser):
@@ -164,36 +209,4 @@ class ResourceNameChooser(NameChooser):
         name = title.replace(' ', '_').lower()
         name = super(ResourceNameChooser, self).chooseName(name, obj)
         return name
-
-
-class EditObject(FormController):
-
-    @Lazy
-    def loopsRoot(self):
-        return self.view.loopsRoot
-
-    def update(self):
-        prefix = 'form.'
-        conceptPrefix = 'concept.'
-        form = self.request.form
-        obj = self.view.virtualTargetObject
-        adapter = IType(obj).typeInterface(obj)
-        for k in form.keys():
-            if k.startswith(prefix):
-                fn = k[len(prefix):]
-                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
-                    continue
-                value = form[k]
-                if fn.startswith(conceptPrefix):
-                    self.assignConcepts(obj, fn[len(conceptPrefix):], value)
-                else:
-                    setattr(adapter, fn, value)
-        notify(ObjectModifiedEvent(obj))
-        return True
-
-    def assignConcepts(self, obj, fieldName, value):
-        if value and fieldName == 'search.text_selected':
-            concept = util.getObjectForUid(value)
-            obj.assignConcept(concept)
-
 
