@@ -146,6 +146,9 @@ class EditObject(FormController):
     prefix = 'form.'
     conceptPrefix = 'assignments.'
 
+    old = None
+    selected = None
+
     def update(self):
         self.updateFields(self.view.virtualTargetObject)
         return True
@@ -168,27 +171,31 @@ class EditObject(FormController):
                     continue
                 value = form[k]
                 if fn.startswith(self.conceptPrefix) and value:
-                    self.assignConcepts(obj, fn[len(self.conceptPrefix):], value)
+                    self.collectConcepts(fn[len(self.conceptPrefix):], value)
                 else:
                     setattr(adapted, fn, value)
+        if self.old or self.selected:
+            self.assignConcepts(obj)
         notify(ObjectModifiedEvent(obj))
 
-    def assignConcepts(self, obj, fieldName, value):
-        old = []
-        selected = []
+    def collectConcepts(self, fieldName, value):
+        if self.old is None: self.old = []
+        if self.selected is None: self.selected = []
         for v in value:
             if fieldName == 'old':
-                old.append(v)
+                self.old.append(v)
             elif fieldName == 'selected':
-                selected.append(v)
-        for v in old:
-            if v not in selected:
+                self.selected.append(v)
+
+    def assignConcepts(self, obj):
+        for v in self.old:
+            if v not in self.selected:
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)
                 obj.deassignConcept(concept, [predicate])
-        for v in selected:
-            if v not in old:
+        for v in self.selected:
+            if v not in self.old:
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)

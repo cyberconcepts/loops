@@ -42,6 +42,7 @@ from zope.event import notify
 
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
+from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
 
 from interfaces import IBaseResource, IResource
@@ -58,7 +59,20 @@ from view import TargetRelation
 _ = MessageFactory('loops')
 
 
+class ResourceManager(BTreeContainer):
+
+    implements(IResourceManager, ILoopsContained)
+
+    def getLoopsRoot(self):
+        return zapi.getParent(self)
+
+    def getViewManager(self):
+        return self.getLoopsRoot().getViewManager()
+
+
 class Resource(Image, Contained):
+
+    # TODO: remove dependency on Image
 
     implements(IBaseResource, IResource, IResourceManagerContained, IRelatable, ISized)
 
@@ -155,6 +169,8 @@ class Resource(Image, Contained):
         return '%i Bytes' % self.getSize()
 
 
+# Document and MediaAsset are legacy classes, will become obsolete
+
 class Document(Resource):
 
     implements(IDocument)
@@ -165,7 +181,7 @@ class Document(Resource):
         self.title = title
 
     _data = u''
-    def setData(self, data): self._data = data
+    def setData(self, data): self._data = data.replace('\r', '')
     def getData(self): return self._data
     data = property(getData, setData)
 
@@ -175,19 +191,7 @@ class MediaAsset(Resource):
     implements(IMediaAsset)
 
 
-class ResourceManager(BTreeContainer):
-
-    implements(IResourceManager, ILoopsContained)
-
-    def getLoopsRoot(self):
-        return zapi.getParent(self)
-
-    def getViewManager(self):
-        return self.getLoopsRoot().getViewManager()
-
-
-# adapters and similar stuff
-
+# type adapters
 
 class FileAdapter(ResourceAdapterBase):
     """ A type adapter for providing file functionality for resources.
@@ -197,7 +201,20 @@ class FileAdapter(ResourceAdapterBase):
     _schemas = list(IFile) + list(IBaseResource)
 
 
-class TextDocumentAdapter(ResourceAdapterBase):
+class DocumentAdapter(ResourceAdapterBase):
+    """ Common base class for all resource types with a text-like
+        data attribute.
+    """
+
+    # let the adapter handle the data attribute:S
+    _attributes = ResourceAdapterBase._attributes + ('data',)
+
+    def setData(self, data): self.context._data = data.replace('\r', '')
+    def getData(self): return self.context._data
+    data = property(getData, setData)
+
+
+class TextDocumentAdapter(DocumentAdapter):
     """ A type adapter for providing text document functionality for resources.
     """
 
@@ -205,13 +222,15 @@ class TextDocumentAdapter(ResourceAdapterBase):
     _schemas = list(IDocument) + list(IBaseResource)
 
 
-class NoteAdapter(ResourceAdapterBase):
-    """ A type adapter for providing note functionality for resources.
+class NoteAdapter(DocumentAdapter):
+    """ A note is a short text document with an associated link.
     """
 
     implements(INote)
     _schemas = list(INote) + list(IBaseResource)
 
+
+# other adapters
 
 class DocumentWriteFileAdapter(object):
 
@@ -254,10 +273,14 @@ class IndexAttributes(object):
         ti = IType(context).typeInterface
         if ti is not None:
             adapted = ti(context)
-            #transform = component.queryAdapter(
-            #           adapted, ITextTransform, name=context.contentType)
-            #if transform is not None:
-            #    return transform()
+            transform = component.queryAdapter(
+                   adapted, ITextTransform, name=context.contentType)
+            if transform is not None:
+                rfa = component.queryAdapter(IReadFile, adapted)
+                if rfa is None:
+                    return transform(StringIO(context.data))
+                else:
+                    return transform(rfa)
         if not context.contentType.startswith('text'):
             return u''
         data = context.data
