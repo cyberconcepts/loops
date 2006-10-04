@@ -200,13 +200,20 @@ class FileAdapter(ResourceAdapterBase):
     implements(IFile)
     _schemas = list(IFile) + list(IBaseResource)
 
+    # let the adapter handle the data attribute:
+    _attributes = ResourceAdapterBase._attributes + ('data',)
+
+    def setData(self, data): self.context.data = data
+    def getData(self): return self.context.data
+    data = property(getData, setData)
+
 
 class DocumentAdapter(ResourceAdapterBase):
     """ Common base class for all resource types with a text-like
         data attribute.
     """
 
-    # let the adapter handle the data attribute:S
+    # let the adapter handle the data attribute:
     _attributes = ResourceAdapterBase._attributes + ('data',)
 
     def setData(self, data): self.context._data = data.replace('\r', '')

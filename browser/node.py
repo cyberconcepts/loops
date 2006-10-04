@@ -46,7 +46,7 @@ from zope.event import notify
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
 from cybertools.browser.view import GenericView
-from cybertools.typology.interfaces import ITypeManager
+from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
@@ -74,8 +74,8 @@ class NodeView(BaseView):
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=self.template.macros['menu'])
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            cm.register('portlet_right', 'clipboard', title='Clipboard',
-                        subMacro=self.template.macros['clipboard'])
+            #cm.register('portlet_right', 'clipboard', title='Clipboard',
+            #            subMacro=self.template.macros['clipboard'])
             # this belongs to loops.organize; how to register portlets
             # from sub- (other) packages?
             # see controller / configurator: use multiple configurators;
@@ -246,13 +246,17 @@ class NodeView(BaseView):
 
     def targetDefaultView(self):
         target = self.virtualTargetObject
-        #target = self.request.annotations.get('loops.view', {}).get('target')
-        #if target is None:
-        #    target = self.targetObject
         if target is not None:
+            ti = IType(target).typeInterface
             name = zapi.getDefaultViewName(target, self.request)
-            targetView = zapi.getMultiAdapter((target, self.request),
-                    name=name)
+            targetView = None
+            if ti is not None:
+                adapted = ti(target)
+                targetView = component.queryMultiAdapter((adapted, self.request),
+                        name=name)
+            if targetView is None:
+                targetView = component.getMultiAdapter((target, self.request),
+                        name=name)
             if name == 'index.html' and hasattr(targetView, 'show'):
                 return targetView.show()
             return targetView()

@@ -1,5 +1,5 @@
 <metal:block define-macro="edit">
-    <form method="post">
+    <form method="post" action="." enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="edit"
                tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
@@ -32,7 +32,7 @@
 
 
 <metal:block define-macro="create">
-    <form method="post">
+    <form method="post" action="." enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="create"
                tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
@@ -108,9 +108,10 @@
       <tr tal:repeat="relation view/assignments">
         <td colspan="5">
           <input type="hidden" name="form.assignments.old:list"
-                 tal:attributes="value relation/uidToken" checked />
-          <input type="checkbox" name="form.assignments.selected:list"
-                 tal:attributes="value relation/uidToken" checked />
+                 tal:attributes="value relation/uidToken"
+                 tal:condition="relation/other" />
+          <input type="checkbox" checked name="form.assignments.selected:list"
+                 tal:attributes="value relation/uidToken;" />
           <span tal:content="relation/title">Something</span>
           (<span tal:content="relation/typeTitle">Topic</span>)
         </td>

@@ -32,12 +32,14 @@ from zope.app.container.contained import NameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.formlib.form import Form, EditForm, FormFields
+from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IResourceManager, INote, IDocument
+from loops.concept import ResourceRelation
+from loops.interfaces import IConcept, IResourceManager, INote, IDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.resource import Resource
@@ -128,8 +130,13 @@ class CreateObjectForm(ObjectForm, Form):
         self.typeInterface = ifc
         return FormFields(ifc)
 
-    @property
+    #@property
     def assignments(self):
+        target = self.virtualTargetObject
+        if (IConcept.providedBy(target) and
+            target.conceptType != self.loopsRoot.getConceptManager().getTypeConcept()):
+            rv = ConceptRelationView(ResourceRelation(target, None), self.request)
+            return (rv,)
         return ()
 
 
@@ -167,12 +174,14 @@ class EditObject(FormController):
         for k in form.keys():
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
-                if fn in ('action', 'type',) or fn.endswith('-empty-marker'):
+                if fn in ('action', 'type', 'data.used') or fn.endswith('-empty-marker'):
                     continue
                 value = form[k]
                 if fn.startswith(self.conceptPrefix) and value:
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
                 else:
+                    if isinstance(value, FileUpload):
+                        value = value.read()
                     setattr(adapted, fn, value)
         if self.old or self.selected:
             self.assignConcepts(obj)
