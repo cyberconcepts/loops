@@ -1,6 +1,6 @@
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-        <div class="subcolumn">
+        <div class="subcolumn" style="width: 30%">
           <div style="margin-right: 50px">
             <metal:fields use-macro="item/template/macros/conceptparents" />
           </div>
@@ -13,7 +13,7 @@
             <metal:fields use-macro="item/template/macros/conceptchildren" />
           </div>
         </div>
-        <div class="subcolumn" style="margin-top: 60px">
+        <div class="subcolumn" style="margin-top: 60px; width: 30%">
           <metal:fields use-macro="item/template/macros/conceptresources" />
         </div>
   </div>
