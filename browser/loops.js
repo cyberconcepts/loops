@@ -79,14 +79,23 @@ function objectDialog(dlgName, url) {
 
 function addConceptAssignment() {
     node = dojo.byId('form.assignments');
-    cToken = document.getElementsByName('concept.search.text_selected')[0].value;
+    els = document.forms[0].elements;
+    for (var i=0; i<els.length; i++) {
+        el = els[i];
+        if (el.name == 'concept.search.text_selected') {
+            cToken = el.value;
+        } else if (el.name == 'concept.search.text') {
+            title = el.value;
+        }
+    }
+    //cToken = document.getElementsByName('concept.search.text_selected')[0].value;
     if (cToken.length == 0) {
         alert('Please select a concept!');
         return false;
     }
     pToken = dojo.byId('concept.search.predicate').value;
     token = cToken + ':' + pToken;
-    title = document.getElementsByName('concept.search.text')[0].value;
+    //title = document.getElementsByName('concept.search.text')[0].value;
     var td = document.createElement('td');
     td.setAttribute('colspan', '5');
     td.innerHTML = '<input type="checkbox" name="form.assignments.selected:list" value="' + token + '" checked><span>' + title + '</span>';
