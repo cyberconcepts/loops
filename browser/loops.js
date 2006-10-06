@@ -16,7 +16,7 @@ function focusOpener() {
 function replaceFieldsNode(targetId, typeId, url) {
     token = dojo.byId(typeId).value;
     dojo.io.updateNode(targetId, {
-            url: url + '?form.type=' + token,
+            url: url + '?form.type=' + token
     });
 }
 

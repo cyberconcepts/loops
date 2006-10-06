@@ -34,6 +34,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
+from zope.security.proxy import isinstance
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
