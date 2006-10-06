@@ -14,8 +14,14 @@
           </tr>
         </tbody>
 
-        <tbody id="form.fields">
-          <metal:fields use-macro="view/template/macros/fields" />
+        <tbody>
+          <tr>
+            <td colspan="5">
+              <div id="form.fields">
+                <metal:fields use-macro="view/template/macros/fields" />
+              </div>
+            </td>
+          </tr>
         </tbody>
 
         <tbody>
@@ -34,7 +40,7 @@
 <metal:block define-macro="create">
     <form method="post" action="." enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="create"
-               tal:attributes="value view/form_action" />
+             tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
         <tbody>
           <tr>
@@ -45,7 +51,8 @@
               <select name="form.type" id="form.type"
                       tal:attributes="onChange
                             string:return replaceFieldsNode(
-                                    'form.fields', 'form.type', 'inner_form.html')">
+                                    'form.fields', 'form.type',
+                                    '${view/url}/inner_form.html')">
                 <option value=".loops/concepts/note"
                         tal:repeat="type view/resourceTypes"
                         tal:content="type/title"
@@ -60,8 +67,14 @@
           </tr>
         </tbody>
 
-        <tbody id="form.fields">
-          <metal:fields use-macro="view/template/macros/fields" />
+        <tbody>
+          <tr>
+            <td colspan="5">
+              <div id="form.fields">
+                <metal:fields use-macro="view/template/macros/fields" />
+              </div>
+            </td>
+          </tr>
         </tbody>
 
         <tbody>
@@ -79,8 +92,9 @@
 
 <metal:fields define-macro="fields">
     <tal:block tal:define="dummy view/setUp">
+      <table width="100%">
           <tr tal:repeat="widget view/widgets">
-            <td class="label"
+            <td class="label" width="10%"
                 tal:define="hint widget/hint">
               <label tal:attributes="for widget/name">
                 <span class="required" tal:condition="widget/required"
@@ -88,7 +102,7 @@
                                tal:content="widget/label">label</span>
               </label>
             </td>
-            <td class="field" colspan="4"
+            <td class="field" colspan="4" width="90%"
                 tal:define="hint widget/hint">
               <div class="widget" tal:content="structure widget">
                 <input type="text" />
@@ -99,6 +113,7 @@
               </div>
             </td>
           </tr>
+      </table>
     </tal:block>
 </metal:fields>
 

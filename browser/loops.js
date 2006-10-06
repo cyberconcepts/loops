@@ -15,9 +15,8 @@ function focusOpener() {
 
 function replaceFieldsNode(targetId, typeId, url) {
     token = dojo.byId(typeId).value;
-    dojo.io.updateNode(targetId, {
-            url: url + '?form.type=' + token
-    });
+    uri = url + '?form.type=' + token;
+    dojo.io.updateNode(targetId, uri);
 }
 
 function submitReplacing(targetId, formId, actionUrl) {
@@ -81,7 +80,7 @@ function addConceptAssignment() {
     dojo.require('dojo.html')
     node = dojo.byId('form.assignments');
     els = document.forms[0].elements;
-    for (var i=0; i<els.length; i++) { //getElementsByName does not work in IE
+    for (var i=0; i<els.length; i++) { //getElementsByName does not work here in IE
         el = els[i];
         if (el.name == 'concept.search.text_selected') {
             cToken = el.value;
@@ -100,7 +99,6 @@ function addConceptAssignment() {
     td.innerHTML = '<input type="checkbox" name="form.assignments.selected:list" value="' + token + '" checked><span>' + title + '</span>';
     var tr = document.createElement('tr');
     tr.appendChild(td);
-    //alert(tr.firstChild.attributes['colSpan'].value);
     node.appendChild(tr);
 }
 
