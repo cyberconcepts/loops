@@ -194,7 +194,7 @@ class EditObject(FormController):
         for v in value:
             if fieldName == 'old':
                 self.old.append(v)
-            elif fieldName == 'selected':
+            elif fieldName == 'selected' and v not in self.selected:
                 self.selected.append(v)
 
     def assignConcepts(self, obj):
