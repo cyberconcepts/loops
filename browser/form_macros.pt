@@ -1,7 +1,7 @@
 <metal:block define-macro="edit">
-    <form method="post" action="." enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="edit"
-               tal:attributes="value view/form_action" />
+             tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
         <tbody>
           <tr>
@@ -38,7 +38,7 @@
 
 
 <metal:block define-macro="create">
-    <form method="post" action="." enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">

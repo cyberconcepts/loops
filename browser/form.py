@@ -65,6 +65,9 @@ class ObjectForm(NodeView):
             wc.modifyWidgetSetup(self.widgets)
 
     def __call__(self):
+        response = self.request.response
+        response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
+        response.setHeader('Pragma', 'no-cache')
         return innerHtml(self)
 
     @Lazy
@@ -131,7 +134,7 @@ class CreateObjectForm(ObjectForm, Form):
         self.typeInterface = ifc
         return FormFields(ifc)
 
-    #@property
+    @property
     def assignments(self):
         target = self.virtualTargetObject
         if (IConcept.providedBy(target) and
