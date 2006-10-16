@@ -235,12 +235,36 @@ class CreateObject(EditObject):
         return True
 
 
+specialCharacters = {
+    '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
+    '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
+
 class ResourceNameChooser(NameChooser):
 
     adapts(IResourceManager)
 
     def chooseName(self, title, obj):
-        name = title.replace(' ', '_').lower()
-        name = super(ResourceNameChooser, self).chooseName(name, obj)
-        return name
+        result = []
+        if len(title) > 15:
+            words = title.split()
+            if len(words) > 1:
+                title = '_'.join((words[0], words[-1]))
+        for c in title:
+            try:
+                c = c.encode('ISO8859-15')
+            except UnicodeEncodeError:
+                continue
+            if c in specialCharacters:
+                result.append(specialCharacters[c].lower())
+                continue
+            if ord(c) > 127:
+                c = chr(ord(c) & 127)
+            if c in ('_., '):
+                result.append('_')
+            elif not c.isalpha() and not c.isdigit():
+                continue
+            else:
+                result.append(c.lower())
+        name = unicode(''.join(result))
+        return super(ResourceNameChooser, self).chooseName(name, obj)
 

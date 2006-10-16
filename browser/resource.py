@@ -34,6 +34,7 @@ from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
+from zope.documenttemplate.dt_util import html_quote
 
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset
@@ -112,10 +113,14 @@ class ResourceView(BaseView):
         return self
 
     def show(self):
-        data = self.context.data
+        context = self.context
+        data = context.data
         response = self.request.response
-        response.setHeader('Content-Type', self.context.contentType)
+        response.setHeader('Content-Type', context.contentType)
         response.setHeader('Content-Length', len(data))
+        if not context.contentType.startswith('image/'):
+            response.setHeader('Content-Disposition',
+                            'attachment; filename=%s' % zapi.getName(context))
         return data
 
     def concepts(self):
@@ -202,9 +207,12 @@ class DocumentView(ResourceView):
         """ Return the rendered content (data) of the context object.
         """
         text = self.context.data
-        typeKey = renderingFactories.get(self.context.contentType, None)
+        contentType = self.context.contentType
+        typeKey = renderingFactories.get(contentType, None)
         if typeKey is None:
-            return text
+            if contentType == 'text/html':
+                return text
+            return u'<pre>%s</pre>' % html_quote(text)
         source = zapi.createObject(typeKey, text)
         view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()

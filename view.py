@@ -196,4 +196,4 @@ class NodeTraverser(ItemTraverser):
                 request.annotations['loops.view'] = viewAnnotations
                 return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
- 
+

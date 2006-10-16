@@ -206,6 +206,23 @@ Now let's have a look at resources.
   >>> img1_type.title
   u'File'
 
+Using the type machinery we can also specify options that may be used
+for controlling e.g. storage for external files.
+
+  >>> extfile = concepts['extfile'] = Concept(u'External File')
+  >>> ef1 = resources['ef1'] = Resource(u'Extfile #1')
+  >>> ef1.resourceType = extfile
+  >>> ef1_type = IType(ef1)
+  >>> IType(ef1).options
+  []
+  >>> extfile_ad = TypeConcept(extfile)
+  >>> extfile_ad.options = ['dummy', 'storage:varsubdir',
+  ...           'storage_parameters:extfiles']
+  >>> IType(ef1).options
+  ['dummy', 'storage:varsubdir', 'storage_parameters:extfiles']
+  >>> IType(ef1).optionsDict
+  {'default': ['dummy'], 'storage_parameters': 'extfiles', 'storage': 'varsubdir'}
+
 Can we find out somehow which types are available? This is the time to look
 for a type manager. This could be a utility; but in the loops package it
 is again an adapter, now for the loops root object. Nevertheless one can

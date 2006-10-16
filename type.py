@@ -99,6 +99,21 @@ class LoopsType(BaseType):
         # TODO: unify this type attribute naming...
         return self.context.resourceType
 
+    @Lazy
+    def options(self):
+        return ITypeConcept(self.typeProvider).options or []
+
+    @Lazy
+    def optionsDict(self):
+        result = {'default': []}
+        for opt in self.options:
+            if ':' in opt:
+                key, value = opt.split(':', 1)
+                result[key] = value
+            else:
+                result['default'].append(opt)
+        return result
+
 
 class LoopsTypeInfo(LoopsType):
     """ The type info class used by the type manager for listing types.
@@ -236,6 +251,14 @@ class TypeConcept(AdapterBase):
     def setTypeInterface(self, ifc):
         self.context._typeInterface = ifc
     typeInterface = property(getTypeInterface, setTypeInterface)
+
+    def getOptions(self):
+        return getattr(self.context, '_options', [])
+        #return super(TypeConcept, self).options or []
+    def setOptions(self, value):
+        self.context._options = value
+        #super(TypeConcept, self).options = value
+    options = property(getOptions, setOptions)
 
 
 class TypeInterfaceSourceList(object):

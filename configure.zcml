@@ -340,6 +340,11 @@
   <adapter factory="loops.target.ConceptProxy"
            permission="zope.ManageContent" />
 
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/pdf"
+           factory="cybertools.text.pdf.PdfTransform" />
+
   <vocabulary
       factory="loops.concept.ConceptTypeSourceList"
       name="loops.conceptTypeSource"

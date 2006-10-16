@@ -288,6 +288,8 @@ class NodeView(BaseView):
         targetId = self.targetId
         if targetId is not None:
             return '%s/.target%s' % (self.url, targetId)
+        else:
+            return self.url
 
     @Lazy
     def realTargetUrl(self):

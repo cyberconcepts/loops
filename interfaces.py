@@ -539,6 +539,13 @@ class ITypeConcept(Interface):
         default=u'',
         required=False)
 
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
+        required=False)
+
     # storage = schema.Choice()
 
 
@@ -552,6 +559,12 @@ class IResourceAdapter(IBaseResourceSchema):
 class IFile(IResourceAdapter, IResourceSchema):
     """ A media asset that is not shown on a (web) page like an image but
         may be downloaded instead.
+    """
+
+
+class IExternalFile(IFile):
+    """ A file whose content (data attribute) is not stored in the ZODB
+        but somewhere else, typically in the file system.
     """
 
 
@@ -588,28 +601,5 @@ class IViewConfiguratorSchema(Interface):
         description=_(u'Name of the skin to use for this part of the site'),
         default=u'',
         required=False)
-
-
-# the next two interfaces are obsolete, they will be replaced by IResourceStorage:
-
-class IFileSystemResource(Interface):
-
-    fsPath = schema.BytesLine(
-                title=_(u'Filesystem Path'),
-                description=_(u'Optional path to a file in the filesystem '
-                               'to be used for storing the resource'),
-                default='',
-                missing_value='',
-                required=False)
-
-
-class IControlledResource(Interface):
-
-    readOnly = schema.Bool(
-                title=_(u'Read only'),
-                description=_(u'Check this if resource may not be modified '
-                               'after being first filled with non-empty content'),
-                default=False,
-                required=False)
 
 

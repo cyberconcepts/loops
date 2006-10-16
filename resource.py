@@ -22,6 +22,7 @@ Definition of the Concept class.
 $Id$
 """
 
+from zope import component
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
@@ -42,6 +43,7 @@ from zope.event import notify
 
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelatable
+from cybertools.storage.interfaces import IExternalStorage
 from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
 
@@ -208,6 +210,38 @@ class FileAdapter(ResourceAdapterBase):
     data = property(getData, setData)
 
 
+class ExternalFileAdapter(FileAdapter):
+
+    @Lazy
+    def externalAddress(self):
+        # or is this an editable attribute?
+        # or some sort of subpath set during import?
+        # anyway: an attribute of the context object.
+        return self.context.__name__
+
+    @Lazy
+    def options(self):
+        return IType(self.context).optionsDict
+
+    @Lazy
+    def storageName(self):
+        return self.options.get('storage')
+
+    @Lazy
+    def storageParams(self):
+        return self.options.get('storage_parameters')
+
+    def setData(self, data):
+        storage = component.getUtility(IExternalStorage, name=self.storageName)
+        storage.setData(self.externalAddress, data, params=self.storageParams)
+
+    def getData(self):
+        storage = component.getUtility(IExternalStorage)
+        return storage.getData(self.externalAddress, params=self.storageParams)
+
+    data = property(getData, setData)
+
+
 class DocumentAdapter(ResourceAdapterBase):
     """ Common base class for all resource types with a text-like
         data attribute.
@@ -280,8 +314,8 @@ class IndexAttributes(object):
         ti = IType(context).typeInterface
         if ti is not None:
             adapted = ti(context)
-            transform = component.queryAdapter(
-                   adapted, ITextTransform, name=context.contentType)
+            transform = component.queryAdapter(adapted, ITextTransform,
+                                               name=context.contentType)
             if transform is not None:
                 rfa = component.queryAdapter(IReadFile, adapted)
                 if rfa is None:

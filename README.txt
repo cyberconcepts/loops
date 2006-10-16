@@ -549,10 +549,10 @@ view for rendering.)
   >>> component.provideAdapter(LoopsType)
   >>> view = NodeView(m112, TestRequest())
   >>> view.renderTarget()
-  u''
+  u'<pre></pre>'
   >>> doc1.data = u'Test data\n\nAnother paragraph'
   >>> view.renderTarget()
-  u'Test data\n\nAnother paragraph'
+  u'<pre>Test data\n\nAnother paragraph</pre>'
   >>> doc1.contentType = 'text/restructured'
   >>> view.renderTarget()
   u'<p>Test data</p>\n<p>Another paragraph</p>\n'
@@ -666,6 +666,18 @@ created object:
   >>> note = resources['test_note-2']
   >>> sorted(t.__name__ for t in note.getConcepts())
   [u'note', u'topic']
+
+When creating an object its name is automatically generated using the title
+of the object. Let's make sure that the name chooser also handles special
+and possibly critcal cases:
+
+  >>> nc = ResourceNameChooser(resources)
+  >>> nc.chooseName(u'abc: (cde)', None)
+  u'abc_cde'
+  >>> nc.chooseName(u'\xdcml\xe4ut', None)
+  u'uemlaeut'
+  >>> nc.chooseName(u'A very very loooooong title', None)
+  u'a_title'
 
 Editing an object
 -----------------
