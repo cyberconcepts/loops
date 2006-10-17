@@ -58,3 +58,9 @@ class LoopsMenu(BrowserMenu):
                          getMenu(item.submenuId, object, request)) or None}
             for order, action, item in result]
 
+
+def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
+                                         (u'>', u'&gt;' ), (u'"', u'&quot;'))):
+    for re, name in character_entities:
+        text = text.replace(re, name)
+    return text

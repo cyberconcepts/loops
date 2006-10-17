@@ -34,7 +34,6 @@ from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
-from zope.documenttemplate.dt_util import html_quote
 
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset
@@ -42,6 +41,7 @@ from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView
 from loops.interfaces import ITypeConcept
+from loops.browser.util import html_quote
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -210,7 +210,7 @@ class DocumentView(ResourceView):
         contentType = self.context.contentType
         typeKey = renderingFactories.get(contentType, None)
         if typeKey is None:
-            if contentType == 'text/html':
+            if contentType == u'text/html':
                 return text
             return u'<pre>%s</pre>' % html_quote(text)
         source = zapi.createObject(typeKey, text)

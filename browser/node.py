@@ -68,8 +68,8 @@ class NodeView(BaseView):
 
     def setupController(self):
         cm = self.controller.macros
-        cm.register('css', identifier='loops.css',
-                    resourceName='loops.css', media='all')
+        cm.register('css', identifier='loops.css', resourceName='loops.css',
+                    media='all', position=3)
         cm.register('js', 'loops.js', resourceName='loops.js')
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=self.template.macros['menu'])

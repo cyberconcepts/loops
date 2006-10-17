@@ -5,6 +5,16 @@
 
 */
 
+a:hover {
+    background-color: #f0f0ff;
+    text-decoration: none;
+}
+
+pre {
+    overflow: scroll;
+    max-height: 35em;
+}
+
 .box {
     margin: 12px;
 }
@@ -73,6 +83,7 @@ div.image {
     margin-top: 10px;
     margin-right: 5px;
 }
+
 
 /* search stuff */
 
