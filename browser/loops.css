@@ -5,8 +5,13 @@
 
 */
 
-a:hover {
+a[href]:hover {
     background-color: #f0f0ff;
+    text-decoration: none;
+}
+
+.even a[href]:hover {
+    background-color: #ebebe2;
     text-decoration: none;
 }
 
