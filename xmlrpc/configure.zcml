@@ -1,0 +1,19 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/xmlrpc"
+   i18n_domain="zope">
+
+  <view
+      name="xrf"
+      for="loops.interfaces.ILoops"
+      class="loops.xmlrpc.common.LoopsMethods"
+      methods="getStartObject getObjectById getObjectByName
+               getDefaultPredicate getTypePredicate getTypeConcept
+               getConceptTypes getPredicates
+               getChildren getParents"
+      permission="zope.ManageContent"
+      />
+
+</configure>

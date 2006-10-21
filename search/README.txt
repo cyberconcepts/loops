@@ -103,7 +103,7 @@ a controller attribute for the search view.
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'return submitReplacing("1.results", "1.search.form",
-       "http://127.0.0.1/loops/views/page/.target19/@@searchresults.html")'
+       "http://127.0.0.1/loops/views/page/.target9/@@searchresults.html")'
 
 Basic (text/title) search
 -------------------------
@@ -198,7 +198,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  "[['Zope (Topic)', '23']]"
+  "[['Zope (Topic)', '11']]"
 
 TODO - more to come...
 

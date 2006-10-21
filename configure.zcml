@@ -371,5 +371,6 @@
   <include package=".process" />
   <include package=".search" />
   <include package=".browser" />
+  <include package=".xmlrpc" />
 
 </configure>
