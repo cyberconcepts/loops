@@ -102,7 +102,10 @@ def formatRelations(rels, useSecond=True):
             predIds[predId] = len(result)
             result.append({'id': predId, 'name': getName(pred),
                            'title': pred.title, 'objects': []})
-        result[predIds[predId]]['objects'].append(
-            objectAsDict(useSecond and rel.second or rel.first))
+        if useSecond:
+            other = rel.second
+        else:
+            other = rel.first
+        result[predIds[predId]]['objects'].append(objectAsDict(other))
     return result
 

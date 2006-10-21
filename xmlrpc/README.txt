@@ -92,7 +92,7 @@ Now we are ready to deal with children and parents...
   >>> pa[0]['name']
   u'hasType'
   >>> sorted(p['name'] for p in pa[0]['objects'])
-  u'predicate'
+  [u'predicate']
 
 
 Fin de partie
