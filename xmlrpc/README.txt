@@ -86,7 +86,7 @@ Now we are ready to deal with children and parents...
   >>> sorted(c['name'] for c in ch[0]['objects'])
   [u'domain', u'file', u'image', u'predicate', u'textdocument', u'type']
 
-  >>> pa = xrf.getParents('5')
+  >>> pa = xrf.getParents('6')
   >>> len(pa)
   1
   >>> pa[0]['name']
