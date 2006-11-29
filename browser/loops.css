@@ -6,12 +6,16 @@
 */
 
 a[href]:hover {
-    background-color: #f0f0ff;
+    background-color: #f8f8ff;
     text-decoration: none;
 }
 
+.box div.body div.even {
+    background-color: #f4f4f4;
+}
+
 .even a[href]:hover {
-    background-color: #ebebe2;
+    background-color: #f4f4f4;
     text-decoration: none;
 }
 
@@ -67,7 +71,13 @@ pre {
     border-bottom: None;
 }
 
+div.menu-1, div.menu-2 {
+    border-top: 1px solid #eeeeee;
+    font-weight: bold;
+}
+
 .box div.body div.menu-3 {
+    border-top: none;
     padding-left: 1.5em;
 }
 

@@ -208,15 +208,14 @@
 <metal:actions define-macro="actions">
     <tal:actions define="dummy view/registerDojo;
                          url view/virtualTargetUrl">
-      <div class="menu-2">
+      <div>
           <a href="#"
              onclick="objectDialog('create', 'create_object.html'); return false;"
              tal:attributes="onclick string:objectDialog('create', '$url/create_object.html');; return false;;">
             Create Resource...
           </a>
       </div>
-      <div class="menu-2"
-           tal:condition="view/hasEditableTarget">
+      <div tal:condition="view/hasEditableTarget">
           <a href="#"
              onclick="objectDialog('edit', 'edit_object.html'); return false;"
              tal:attributes="onclick string:objectDialog('edit', '$url/edit_object.html');; return false;;">

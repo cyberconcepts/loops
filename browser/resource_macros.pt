@@ -65,8 +65,7 @@
 
 
 <metal:actions define-macro="related">
-          <div class="menu-2"
-               tal:repeat="concept macro/info/relatedConcepts">
+          <div tal:repeat="concept macro/info/relatedConcepts">
             <a href="#"
                tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
               <span tal:replace="concept/title">Concept</span>
