@@ -319,6 +319,15 @@
              set_schema="loops.interfaces.IFile" />
   </class>
 
+  <adapter factory="loops.resource.ExternalFileAdapter" trusted="True"
+           provides="loops.interfaces.IExternalFile" />
+  <class class="loops.resource.ExternalFileAdapter">
+    <require permission="zope.View"
+             interface="loops.interfaces.IFile" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IFile" />
+  </class>
+
   <adapter factory="loops.resource.NoteAdapter" trusted="True" />
   <class class="loops.resource.NoteAdapter">
     <require permission="zope.View"
@@ -344,6 +353,13 @@
            provides="cybertools.text.interfaces.ITextTransform"
            name="application/pdf"
            factory="cybertools.text.pdf.PdfTransform" />
+
+  <!-- utilities -->
+
+  <utility
+      factory="cybertools.storage.filesystem.instanceVarSubdirectoryStorage"
+      name="varsubdir"
+      />
 
   <vocabulary
       factory="loops.concept.ConceptTypeSourceList"

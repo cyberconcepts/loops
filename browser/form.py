@@ -172,7 +172,7 @@ class EditObject(FormController):
         form = self.request.form
         ti = IType(obj).typeInterface
         if ti is not None:
-            adapted = IType(obj).typeInterface(obj)
+            adapted = ti(obj)
         else:
             adapted = obj
         for k in form.keys():

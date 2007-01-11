@@ -48,7 +48,7 @@ from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
 
 from interfaces import IBaseResource, IResource
-from interfaces import IFile, INote
+from interfaces import IFile, IExternalFile, INote
 from interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
 from interfaces import IMediaAsset, IMediaAssetView
 from interfaces import IResourceManager, IResourceManagerContained
@@ -212,6 +212,8 @@ class FileAdapter(ResourceAdapterBase):
 
 class ExternalFileAdapter(FileAdapter):
 
+    implements(IExternalFile)
+
     @Lazy
     def externalAddress(self):
         # or is this an editable attribute?
@@ -229,14 +231,15 @@ class ExternalFileAdapter(FileAdapter):
 
     @Lazy
     def storageParams(self):
-        return self.options.get('storage_parameters')
+        params = self.options.get('storage_parameters') or 'extfiles'
+        return dict(subdirectory=params)
 
     def setData(self, data):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         storage.setData(self.externalAddress, data, params=self.storageParams)
 
     def getData(self):
-        storage = component.getUtility(IExternalStorage)
+        storage = component.getUtility(IExternalStorage, name=self.storageName)
         return storage.getData(self.externalAddress, params=self.storageParams)
 
     data = property(getData, setData)
@@ -319,7 +322,8 @@ class IndexAttributes(object):
             if transform is not None:
                 rfa = component.queryAdapter(IReadFile, adapted)
                 if rfa is None:
-                    return transform(StringIO(context.data))
+                    data = transform(StringIO(adapted.data))
+                    return data
                 else:
                     return transform(rfa)
         if not context.contentType.startswith('text'):
