@@ -42,25 +42,34 @@ top-level type concept:
 
   >>> from loops.xmlrpc.common import LoopsMethods
   >>> xrf = LoopsMethods(loopsRoot, TestRequest())
-  >>> xrf.getStartObject()
-  {'title': u'Type', 'type': '0', 'id': '0', 'name': u'type'}
+  >>> startObj = xrf.getStartObject()
+  >>> sorted(startObj.keys())
+  ['children', 'id', 'name', 'parents', 'title', 'type']
+  >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
+  ('0', u'type', u'Type', '0')
 
 If we provide a concept named "domain" this will be used as starting point:
 
   >>> from loops.concept import Concept
   >>> domain = concepts[u'domain'] = Concept(u'Domain')
   >>> domain.conceptType = concepts.getTypeConcept()
-  >>> xrf.getStartObject()
-  {'title': u'Domain', 'type': '0', 'id': '7', 'name': u'domain'}
+  >>> startObj = xrf.getStartObject()
+  >>> sorted(startObj.keys())
+  ['children', 'id', 'name', 'parents', 'title', 'type']
+  >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
+  ('7', u'domain', u'Domain', '0')
 
 There are a few standard objects we can retrieve directly:
 
-  >>> xrf.getDefaultPredicate()
-  {'title': u'subobject', 'type': '4', 'id': '6', 'name': u'standard'}
-  >>> xrf.getTypePredicate()
-  {'title': u'has Type', 'type': '4', 'id': '5', 'name': u'hasType'}
-  >>> xrf.getTypeConcept()
-  {'title': u'Type', 'type': '0', 'id': '0', 'name': u'type'}
+  >>> defaultPred = xrf.getDefaultPredicate()
+  >>> defaultPred['id'], defaultPred['name']
+  ('6', u'standard')
+  >>> typePred = xrf.getTypePredicate()
+  >>> typePred['id'], typePred['name']
+  ('5', u'hasType')
+  >>> typeConcept = xrf.getTypeConcept()
+  >>> typeConcept['id'], typeConcept['name']
+  ('0', u'type')
 
 In addition we can get a list of all types and all predicates available:
 
@@ -71,12 +80,32 @@ In addition we can get a list of all types and all predicates available:
 
 We can also retrieve a certain object by its id or its name:
 
-  >>> xrf.getObjectById('2')
-  {'title': u'Image', 'type': '0', 'id': '2', 'name': u'image'}
-  >>> xrf.getObjectByName(u'textdocument')
-  {'title': u'Text Document', 'type': '0', 'id': '3', 'name': u'textdocument'}
+  >>> obj2 = xrf.getObjectById('2')
+  >>> obj2['id'], obj2['name']
+  ('2', u'image')
+  >>> textdoc = xrf.getObjectByName(u'textdocument')
+  >>> textdoc['id'], textdoc['name']
+  ('3', u'textdocument')
 
-Now we are ready to deal with children and parents...
+All methods that retrieve one object also returns its children and parents:
+
+  >>> ch = typeConcept['children']
+  >>> len(ch)
+  1
+  >>> ch[0]['name']
+  u'hasType'
+  >>> sorted(c['name'] for c in ch[0]['objects'])
+  [u'domain', u'file', u'image', u'predicate', u'textdocument', u'type']
+
+  >>> pa = defaultPred['parents']
+  >>> len(pa)
+  1
+  >>> pa[0]['name']
+  u'hasType'
+  >>> sorted(p['name'] for p in pa[0]['objects'])
+  [u'predicate']
+
+We can also retrieve children and parents explicitely:
 
   >>> ch = xrf.getChildren('0')
   >>> len(ch)

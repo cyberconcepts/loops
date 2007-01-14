@@ -45,22 +45,22 @@ class LoopsMethods(MethodPublisher):
 
     def getStartObject(self):
         so = self.concepts.get('domain', self.concepts.getTypeConcept())
-        return objectAsDict(so)
+        return self.getObjectWithChildren(so)
 
     def getObjectById(self, id):
-        return objectAsDict(getObjectForUid(id))
+        return self.getObjectWithChildren(getObjectForUid(id))
 
     def getObjectByName(self, name):
-        return objectAsDict(self.concepts[name])
+        return self.getObjectWithChildren(self.concepts[name])
 
     def getDefaultPredicate(self):
-        return objectAsDict(self.concepts.getDefaultPredicate())
+        return self.getObjectWithChildren(self.concepts.getDefaultPredicate())
 
     def getTypePredicate(self):
-        return objectAsDict(self.concepts.getTypePredicate())
+        return self.getObjectWithChildren(self.concepts.getTypePredicate())
 
     def getTypeConcept(self):
-        return objectAsDict(self.concepts.getTypeConcept())
+        return self.getObjectWithChildren(self.concepts.getTypeConcept())
 
     def getConceptTypes(self):
         tc = self.concepts.getTypeConcept()
@@ -76,15 +76,22 @@ class LoopsMethods(MethodPublisher):
         obj = getObjectForUid(id)
         preds = [getObjectForUid(p) for p in predicates]
         child = child and getObjectForUid(child) or None
-        rels = obj.getChildRelations(preds, child)
+        rels = obj.getChildRelations(preds or None, child)
         return formatRelations(rels)
 
     def getParents(self, id, predicates=[], parent=''):
         obj = getObjectForUid(id)
         preds = [getObjectForUid(p) for p in predicates]
         parent = parent and getObjectForUid(parent) or None
-        rels = obj.getParentRelations(preds, parent)
+        rels = obj.getParentRelations(preds or None, parent)
         return formatRelations(rels, useSecond=False)
+
+    def getObjectWithChildren(self, obj):
+        mapping = objectAsDict(obj)
+        mapping['children'] = formatRelations(obj.getChildRelations())
+        mapping['parents'] = formatRelations(
+                                obj.getParentRelations(), useSecond=False)
+        return mapping
 
 
 def objectAsDict(obj):
