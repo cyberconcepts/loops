@@ -1,0 +1,21 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <adapter
+      factory="loops.rest.traversal.LoopsTraverser"
+      for="loops.interfaces.ILoops
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      permission="zope.Public" />
+
+  <adapter factory="loops.rest.common.ConceptView" />
+  <class class="loops.rest.common.ConceptView">
+    <require permission="zope.View"
+             interface="loops.rest.common.IRESTView" />
+  </class>
+
+</configure>

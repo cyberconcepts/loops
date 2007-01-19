@@ -23,38 +23,4 @@
 $Id$
 """
 
-from zope.app import zapi
-from zope.app.folder.folder import Folder
-from zope.interface import implements
-from interfaces import ILoops
-
-loopsPrefix = '.loops'
-
-class Loops(Folder):
-
-    implements(ILoops)
-
-    _skinName = ''
-    def getSkinName(self): return self._skinName
-    def setSkinName(self, skinName): self._skinName = skinName
-    skinName = property(getSkinName, setSkinName)
-
-    def getLoopsRoot(self):
-        return self
-
-    def getConceptManager(self):
-        return self['concepts']
-
-    def getResourceManager(self):
-        return self['resources']
-
-    def getViewManager(self):
-        return self['views']
-
-    def getLoopsUri(self, obj):
-        return str(loopsPrefix + zapi.getPath(obj)[len(zapi.getPath(self)):])
-
-    def loopsTraverse(self, uri):
-        prefix = loopsPrefix + '/'
-        if uri.startswith(prefix):
-            return zapi.traverse(self, uri[len(prefix):])
+from loops.base import Loops

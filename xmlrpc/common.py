@@ -17,7 +17,7 @@
 #
 
 """
-Tournament and Assessment views.
+XML-RPC views.
 
 $Id$
 """
