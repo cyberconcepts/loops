@@ -44,7 +44,7 @@ class FlashView(object):
     def loopsRoot(self):
         return self.context.getLoopsRoot()
 
-    #@Lazy
+    @Lazy
     def loopsUrl(self):
         return absoluteURL(self.loopsRoot, self.request)
 
