@@ -1,0 +1,38 @@
+<html tal:define="dummy view/setHeaders;
+                  hostURL view/loopsUrl;
+                  movie context/++resource++loops.swf">
+
+<head>
+  <title>loops</title>
+</head>
+
+<body bgcolor="#E2E3DE" leftmargin="0" topmargin="0" rightmargin="0"
+      bottommargin="0" marginwidth="0" marginheight="0"
+      style="background-image:url(bg_grey.gif);"
+      tal:attributes="style string:background-image:url(${context/++resource++bg_grey.gif})">
+
+  <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center" valign="middle">
+        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+                codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+                width="960" height="680" id="loops" align="">
+          <param name=movie value="loops.swf?hostURL=http://z3.loops.cy55.de/loopsdms/"
+                 tal:attributes="value string:$movie?hostURL=$hostURL/">
+          <param name=quality value=high>
+          <param name="wmode" value="transparent">
+          <embed src="loops.swf?hostURL=http://z3.loops.cy55.de/loopsdms/"
+                 tal:attributes="src string:$movie?hostURL=$hostURL/"
+                 quality=high
+                 width="960" height="680" name="scorm" align=""
+                 wmode="transparent"
+                 type="application/x-shockwave-flash"
+                 pluginspage="http://www.macromedia.com/go/getflashplayer">
+          </embed>
+        </object>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

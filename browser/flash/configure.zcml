@@ -1,0 +1,21 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <!-- Flash user interface -->
+
+  <page
+      name="swf.html"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.browser.flash.flash.FlashView"
+      template="flash.pt"
+      permission="zope.View"
+      />
+
+  <resource name="loops.swf" file="loops.swf" />
+  <resource name="bg_grey.gif" file="bg_gradient_grey.gif" />
+
+</configure>

@@ -49,7 +49,7 @@
 
     <require
         permission="zope.View"
-        attributes="getLoopsUri loopsTraverse getConceptManager
+        attributes="getLoopsRoot getLoopsUri loopsTraverse getConceptManager
                     getResourceManager getViewManager skinName" />
 
     <require
