@@ -29,6 +29,7 @@ from zope.app.traversing.api import getName
 from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
+from loops.concept import Concept
 from loops.util import getUidForObject, getObjectForUid
 
 class LoopsMethods(MethodPublisher):
@@ -65,6 +66,7 @@ class LoopsMethods(MethodPublisher):
     def getConceptTypes(self):
         tc = self.concepts.getTypeConcept()
         types = tc.getChildren((self.concepts.getTypePredicate(),))
+        #types = [t for t in types if ITypeConcept(t).typeInterface ... ]
         return [objectAsDict(t) for t in types]
 
     def getPredicates(self):
@@ -106,6 +108,13 @@ class LoopsMethods(MethodPublisher):
         child = getObjectForUid(childId)
         obj.deassignChild(child, [pred])
         return 'OK'
+
+    def createConcept(self, typeId, name, title):
+        type = getObjectForUid(typeId)
+        c = self.concepts[name] = Concept(title)
+        c.conceptType = type
+        # notify
+        return getUidForObject(c)
 
 
 def objectAsDict(obj):

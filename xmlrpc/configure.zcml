@@ -26,7 +26,7 @@
                getDefaultPredicate getTypePredicate getTypeConcept
                getConceptTypes getPredicates
                getChildren getParents
-               assignChild deassignChild"
+               assignChild deassignChild createConcept"
       permission="loops.xmlrpc.ManageConcepts"
       />
 

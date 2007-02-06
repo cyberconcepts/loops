@@ -41,18 +41,15 @@ Let's look what setup has provided us with:
 
 Now let's add a few more concepts:
 
-  >>> topic = concepts[u'topic'] = Concept()
-  >>> topic.title = u'Topic'
+  >>> topic = concepts[u'topic'] = Concept(u'Topic')
   >>> intIds.register(topic)
   7
-  >>> zope = concepts[u'zope'] = Concept()
+  >>> zope = concepts[u'zope'] = Concept(u'Zope')
   >>> zope.conceptType = topic
-  >>> zope.title = u'Zope'
   >>> intIds.register(zope)
   8
-  >>> zope3 = concepts[u'zope3'] = Concept()
+  >>> zope3 = concepts[u'zope3'] = Concept(u'Zope 3')
   >>> zope3.conceptType = topic
-  >>> zope3.title = u'Zope 3'
   >>> intIds.register(zope3)
   9
 
@@ -149,8 +146,13 @@ Updating the concept map
   >>> zope3Id = xrf.getObjectByName('zope3')['id']
   >>> xrf.assignChild(zopeId, zope3Id, defaultPred['id'])
   'OK'
+
   >>> xrf.deassignChild(zopeId, zope3Id, defaultPred['id'])
   'OK'
+
+  >>> topicId = xrf.getObjectByName('topic')['id']
+  >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
+  '12'
 
 
 Fin de partie
