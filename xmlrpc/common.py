@@ -100,6 +100,13 @@ class LoopsMethods(MethodPublisher):
         obj.assignChild(child, pred)
         return 'OK'
 
+    def deassignChild(self, objId, predicateId, childId):
+        obj = getObjectForUid(objId)
+        pred = getObjectForUid(predicateId)
+        child = getObjectForUid(childId)
+        obj.deassignChild(child, [pred])
+        return 'OK'
+
 
 def objectAsDict(obj):
     mapping = {'id': getUidForObject(obj), 'name': getName(obj), 'title': obj.title,

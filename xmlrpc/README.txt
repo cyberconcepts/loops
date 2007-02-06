@@ -149,6 +149,8 @@ Updating the concept map
   >>> zope3Id = xrf.getObjectByName('zope3')['id']
   >>> xrf.assignChild(zopeId, zope3Id, defaultPred['id'])
   'OK'
+  >>> xrf.deassignChild(zopeId, zope3Id, defaultPred['id'])
+  'OK'
 
 
 Fin de partie
