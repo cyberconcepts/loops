@@ -69,8 +69,8 @@ class LoopsMethods(MethodPublisher):
 
     def getPredicates(self):
         pt = self.concepts.getDefaultPredicate().conceptType
-        types = pt.getChildren((self.concepts.getTypePredicate(),))
-        return [objectAsDict(t) for t in types]
+        preds = pt.getChildren((self.concepts.getTypePredicate(),))
+        return [objectAsDict(p) for p in preds]
 
     def getChildren(self, id, predicates=[], child=''):
         obj = getObjectForUid(id)
@@ -92,6 +92,13 @@ class LoopsMethods(MethodPublisher):
         mapping['parents'] = formatRelations(
                                 obj.getParentRelations(), useSecond=False)
         return mapping
+
+    def assignChild(self, objId, predicateId, childId):
+        obj = getObjectForUid(objId)
+        pred = getObjectForUid(predicateId)
+        child = getObjectForUid(childId)
+        obj.assignChild(child, pred)
+        return 'OK'
 
 
 def objectAsDict(obj):

@@ -11,6 +11,7 @@ Let's do some basic set up
 
   >>> from zope import component, interface
   >>> from zope.publisher.browser import TestRequest
+  >>> from loops.concept import Concept
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
@@ -19,7 +20,8 @@ ZCML setup):
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> component.provideUtility(DummyRelationRegistry())
   >>> from cybertools.relation.tests import IntIdsStub
-  >>> component.provideUtility(IntIdsStub())
+  >>> intIds = IntIdsStub()
+  >>> component.provideUtility(intIds)
 
   >>> from loops.type import ConceptType, TypeConcept
   >>> component.provideAdapter(ConceptType)
@@ -36,6 +38,23 @@ Let's look what setup has provided us with:
 
   >>> list(concepts)
   [u'file', u'hasType', u'image', u'predicate', u'standard', u'textdocument', u'type']
+
+Now let's add a few more concepts:
+
+  >>> topic = concepts[u'topic'] = Concept()
+  >>> topic.title = u'Topic'
+  >>> intIds.register(topic)
+  7
+  >>> zope = concepts[u'zope'] = Concept()
+  >>> zope.conceptType = topic
+  >>> zope.title = u'Zope'
+  >>> intIds.register(zope)
+  8
+  >>> zope3 = concepts[u'zope3'] = Concept()
+  >>> zope3.conceptType = topic
+  >>> zope3.title = u'Zope 3'
+  >>> intIds.register(zope3)
+  9
 
 Navigation typically starts at a start object, which by default ist the
 top-level type concept:
@@ -57,7 +76,7 @@ If we provide a concept named "domain" this will be used as starting point:
   >>> sorted(startObj.keys())
   ['children', 'id', 'name', 'parents', 'title', 'type']
   >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
-  ('7', u'domain', u'Domain', '0')
+  ('10', u'domain', u'Domain', '0')
 
 There are a few standard objects we can retrieve directly:
 
@@ -122,6 +141,14 @@ We can also retrieve children and parents explicitely:
   u'hasType'
   >>> sorted(p['name'] for p in pa[0]['objects'])
   [u'predicate']
+
+Updating the concept map
+------------------------
+
+  >>> zopeId = xrf.getObjectByName('zope')['id']
+  >>> zope3Id = xrf.getObjectByName('zope3')['id']
+  >>> xrf.assignChild(zopeId, zope3Id, defaultPred['id'])
+  'OK'
 
 
 Fin de partie
