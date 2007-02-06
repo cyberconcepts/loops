@@ -152,7 +152,7 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  '12'
+  {'title': u'Zope 2', 'type': '7', 'id': '12', 'name': u'zope2'}
 
 
 Fin de partie

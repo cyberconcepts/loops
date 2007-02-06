@@ -23,6 +23,8 @@ $Id$
 """
 
 from zope.interface import implements
+from zope.event import notify
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.publisher.xmlrpc import XMLRPCView
 from zope.app.publisher.xmlrpc import MethodPublisher
 from zope.app.traversing.api import getName
@@ -113,8 +115,9 @@ class LoopsMethods(MethodPublisher):
         type = getObjectForUid(typeId)
         c = self.concepts[name] = Concept(title)
         c.conceptType = type
-        # notify
-        return getUidForObject(c)
+        notify(ObjectCreatedEvent(c))
+        notify(ObjectModifiedEvent(c))
+        return objectAsDict(c)
 
 
 def objectAsDict(obj):
