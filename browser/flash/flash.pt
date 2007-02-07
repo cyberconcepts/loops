@@ -27,7 +27,7 @@
                  tal:attributes="src string:$movie?hostURL=$hostURL/"
                  quality=high
                  width="960" height="680" name="scorm" align=""
-                 wmode="transparent"
+                 wmode="opaque"
                  type="application/x-shockwave-flash"
                  pluginspage="http://www.macromedia.com/go/getflashplayer">
           </embed>
