@@ -18,6 +18,10 @@
       permission="loops.xmlrpc.ManageConcepts"
       role="loops.xmlrpc.ConceptManager" />
 
+  <!--<zope:grant
+      permission="loops.xmlrpc.ManageConcepts"
+      role="zope.ContentManager" />-->
+
   <view
       name="xrf"
       for="loops.interfaces.ILoops"

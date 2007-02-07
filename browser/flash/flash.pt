@@ -22,7 +22,7 @@
           <param name=movie value="loops.swf?hostURL=http://z3.loops.cy55.de/loopsdms/cq/"
                  tal:attributes="value string:$movie?hostURL=$hostURL/">
           <param name=quality value=high>
-          <param name="wmode" value="transparent">
+          <param name="wmode" value="opaque">
           <embed src="loops.swf?hostURL=http://z3.loops.cy55.de/loopsdms/cq/"
                  tal:attributes="src string:$movie?hostURL=$hostURL/"
                  quality=high
