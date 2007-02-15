@@ -28,7 +28,8 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
-from zope.app.container.browser.adding import ContentAdding
+#from zope.app.container.browser.adding import ContentAdding
+from zope.app.container.browser.adding import Adding
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
@@ -214,6 +215,8 @@ class NodeView(BaseView):
             prefix = super(NodeView, self.menu).headTitle + ' - '
         else:
             prefix = ''
+        if self.virtualTarget:
+            return prefix + self.virtualTarget.headTitle
         return prefix + super(NodeView, self).headTitle
 
     @Lazy
@@ -508,7 +511,7 @@ class ConfigureView(NodeView):
             yield BaseView(o, request)
 
 
-class NodeAdding(ContentAdding):
+class NodeAdding(Adding):
 
     def addingInfo(self):
         info = super(NodeAdding, self).addingInfo()
