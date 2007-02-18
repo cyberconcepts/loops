@@ -22,6 +22,7 @@ Definition of the View and related classses.
 $Id$
 """
 
+from zope import component
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
@@ -185,9 +186,19 @@ class NodeTraverser(ItemTraverser):
         if name == '.loops':
             return self.context.getLoopsRoot()
         if name.startswith('.target'):
+            traversalStack = request._traversal_stack
+            while traversalStack and traversalStack[0].startswith('.target'):
+                # skip obsolete target references in the url
+                name = traversalStack.pop(0)
+            traversedNames = request._traversed_names
+            if traversedNames:
+                lastTraversed = traversedNames[-1]
+                if lastTraversed.startswith('.target') and lastTraversed != name:
+                    # let <base .../> tag show the current object
+                    traversedNames[-1] = name
             if len(name) > len('.target'):
                 uid = int(name[len('.target'):])
-                target = zapi.getUtility(IIntIds).getObject(uid)
+                target = component.getUtility(IIntIds).getObject(uid)
             else:
                 target = self.context.target
             if target is not None:

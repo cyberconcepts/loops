@@ -25,24 +25,21 @@ $Id$
 from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
-#from zope.app.container.browser.adding import ContentAdding
 from zope.app.container.browser.adding import Adding
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.dottedname.resolve import resolve
 from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
-
-from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
-from zope.event import notify
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator

@@ -9,7 +9,7 @@ from loops.organize.party import Person
 class Test(unittest.TestCase):
     "Basic tests for the organize sub-package."
 
-    def testSomethin(self):
+    def testSomething(self):
         pass
 
 

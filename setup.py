@@ -22,7 +22,7 @@ Automatic setup of a loops site.
 $Id$
 """
 
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
 from zope import component
 from zope.component import adapts
@@ -67,7 +67,7 @@ class SetupManager(object):
         resources = self.addObject(loopsRoot, ResourceManager, 'resources')
         views = self.addObject(loopsRoot, ViewManager, 'views')
         return concepts, resources, views
-        
+
     def setupCoreConcepts(self, conceptManager):
         typeConcept = self.addObject(conceptManager, Concept, 'type', title=u'Type')
         hasType = self.addObject(conceptManager, Concept, 'hasType', title=u'has Type')
@@ -75,7 +75,7 @@ class SetupManager(object):
         standard = self.addObject(conceptManager, Concept, 'standard', title=u'subobject')
         file = self.addObject(conceptManager, Concept, 'file', title=u'File')
         image = self.addObject(conceptManager, Concept, 'image', title=u'Image')
-        textdocument = self.addObject(conceptManager, Concept, 
+        textdocument = self.addObject(conceptManager, Concept,
                                       'textdocument', title=u'Text Document')
         for c in (typeConcept, file, image, textdocument, predicate):
             c.conceptType = typeConcept

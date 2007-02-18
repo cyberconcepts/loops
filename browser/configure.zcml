@@ -494,7 +494,7 @@
       menu="zmi_views" title="Configure"
       />
 
-  <editform
+  <!--<editform
       label="Edit Media Asset"
       name="edit_target.html"
       schema="loops.interfaces.IMediaAsset"
@@ -514,7 +514,7 @@
       template="edit.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit Document"
-      />
+      />-->
 
   <page
       name="node.html"
@@ -594,6 +594,14 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.EditObject"
       permission="zope.ManageContent"
+      />
+
+  <zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="loops.interfaces.IFile"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory="loops.browser.form.UploadWidget"
+      permission="zope.Public"
       />
 
   <zope:adapter factory="loops.browser.form.ResourceNameChooser" />

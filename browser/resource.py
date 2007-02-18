@@ -26,7 +26,7 @@ from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.formlib.form import FormFields

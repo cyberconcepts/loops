@@ -25,10 +25,12 @@ $Id$
 from zope import component, interface, schema
 from zope.component import adapts
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import NameChooser
+#from zope.app.content_types import guess_content_types
+from zope.app.form.browser.textwidgets import FileWidget, TextAreaWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.formlib.form import Form, EditForm, FormFields
@@ -47,6 +49,21 @@ from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
+
+
+# special widgets
+
+class UploadWidget(FileWidget):
+
+    def _toFieldValue(self, input):
+        fn = getattr(input, 'filename', '') # zope.publisher.browser.FileUpload
+        self.request.form['filename'] = fn
+        if input:
+            self.request.form['_tempfilename'] = input.headers.get('_tempfilename')
+        # f = self.context
+        # f.extfiledata = tempfilename  # provide for rename
+        # f.contentType = guess_content_types(fn)
+        return super(UploadWidget, self)._toFieldValue(input)
 
 
 # forms
@@ -83,6 +100,8 @@ class NoteWidgetController(object):
 
 
 widgetControllers = {INote: NoteWidgetController}
+
+# specialWidgets = {(IFile, 'data'): UploadWidget}
 
 
 class EditObjectForm(ObjectForm, EditForm):

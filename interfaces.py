@@ -29,7 +29,7 @@ from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
-from zope.app.size.interfaces import ISized
+from zope.size.interfaces import ISized
 from cybertools.relation.interfaces import IRelation
 
 import util

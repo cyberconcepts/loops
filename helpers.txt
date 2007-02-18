@@ -15,7 +15,6 @@ Let's first do some basic imports
 
   >>> from zope import interface, component
   >>> from zope.app import zapi
-  >>> from zope.app.tests import ztapi
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
 
@@ -23,8 +22,7 @@ and provide a relation registry:
 
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+  >>> component.provideUtility(DummyRelationRegistry())
 
 and care for some type adapter machinery:
 
@@ -96,7 +94,7 @@ purpose:
 
   >>> from cybertools.typology.interfaces import IType
   >>> from loops.type import ConceptType
-  >>> ztapi.provideAdapter(IConcept, IType, ConceptType)
+  >>> component.provideAdapter(ConceptType)
   >>> cc1_type = IType(cc1)
 
 As we have not yet associated a type with one of our content objects we get
@@ -182,7 +180,7 @@ Now let's have a look at resources.
 
   >>> from loops.interfaces import IResource, IDocument
   >>> from loops.type import ResourceType
-  >>> ztapi.provideAdapter(IDocument, IType, ResourceType)
+  >>> component.provideAdapter(ResourceType, (IDocument,), IType)
 
   >>> doc1_type = IType(doc1)
   >>> doc1_type.title
@@ -231,7 +229,7 @@ get a type manager from all loops objects, always with the same context:
   >>> from cybertools.typology.interfaces import ITypeManager
   >>> from loops.interfaces import ILoopsObject
   >>> from loops.type import LoopsTypeManager
-  >>> ztapi.provideAdapter(ILoopsObject, ITypeManager, LoopsTypeManager)
+  >>> component.provideAdapter(LoopsTypeManager)
   >>> typeManager = ITypeManager(loopsRoot)
   >>> typeManager.context == ITypeManager(cc1).context == loopsRoot
   True
@@ -366,8 +364,8 @@ view/multi-adapter with this name:
 Controlling presentation using view properties
 ----------------------------------------------
 
-  >>> from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
-  >>> from zope.app.annotation.attribute import AttributeAnnotations
+  >>> from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
+  >>> from zope.annotation.attribute import AttributeAnnotations
   >>> from loops.interfaces import INode
 
 First we have to make sure we can use attribute annotations with our nodes,

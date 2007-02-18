@@ -23,9 +23,9 @@ $Id$
 """
 
 from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.zopedublincore import ScalarProperty
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.zopedublincore import ScalarProperty
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy

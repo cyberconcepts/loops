@@ -20,7 +20,6 @@ with lower-level aspects like type or state management.
 
   >>> from zope import component
   >>> from zope.app import zapi
-  >>> from zope.app.tests import ztapi
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
 
@@ -54,16 +53,12 @@ Now we want to relate the second concept to the first one.
 In order to do this we first have to provide a relation registry. For
 testing we use a simple dummy implementation.
 
-  >>> from zope.app.intid.interfaces import IIntIds
   >>> from cybertools.relation.tests import IntIdsStub
-  >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IIntIds, IntIdsStub())
+  >>> component.provideUtility(IntIdsStub())
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> ztapi.provideUtility(IRelationRegistry, DummyRelationRegistry())
+  >>> component.provideUtility(DummyRelationRegistry())
   >>> from cybertools.relation.registry import RelationRegistry
-  >>> #ztapi.provideUtility(IRelationRegistry, RelationRegistry())
-  >>> #zapi.getUtility(IRelationRegistry).setupIndexes()
 
 As relationships are based on predicates that are themselves concepts we
 also need a default predicate concept; the default name for this is
@@ -124,7 +119,7 @@ type manager.
   >>> from cybertools.typology.interfaces import ITypeManager
   >>> from loops.interfaces import ILoopsObject
   >>> from loops.type import LoopsTypeManager, LoopsType
-  >>> ztapi.provideAdapter(ILoopsObject, ITypeManager, LoopsTypeManager)
+  >>> component.provideAdapter(LoopsTypeManager, (ILoopsObject,), ITypeManager)
 
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
@@ -205,8 +200,7 @@ types and predicates.
   >>> from loops.browser.common import LoopsTerms
   >>> from zope.app.form.browser.interfaces import ITerms
   >>> from zope.schema.interfaces import IIterableSource
-  >>> ztapi.provideAdapter(IIterableSource, ITerms, LoopsTerms,
-  ...                      with=(IBrowserRequest,))
+  >>> component.provideAdapter(LoopsTerms, (IIterableSource, IBrowserRequest), ITerms)
 
   >>> sorted((t.title, t.token) for t in view.conceptTypes())
   [(u'Topic', '.loops/concepts/topic'), (u'Type', '.loops/concepts/type'),
@@ -421,8 +415,8 @@ out - this is usually done through ZCML.)
   >>> from loops.util import removeTargetRelation
   >>> from loops.interfaces import ITargetRelation
   >>> from cybertools.relation.interfaces import IRelationInvalidatedEvent
-  >>> ztapi.subscribe([ITargetRelation, IRelationInvalidatedEvent], None,
-  ...                 removeTargetRelation)
+  >>> component.getSiteManager().registerHandler(removeTargetRelation,
+  ...                       (ITargetRelation, IRelationInvalidatedEvent))
 
   >>> m111.target = cc1
   >>> m111.target is cc1
@@ -493,10 +487,8 @@ view; these views we have to provide as multi-adapters:
 
   >>> from loops.browser.node import ConfigureView
   >>> from loops.browser.resource import DocumentView, ResourceView
-  >>> ztapi.provideAdapter(IDocument, Interface, DocumentView,
-  ...                      with=(IBrowserRequest,))
-  >>> ztapi.provideAdapter(IResource, Interface, ResourceView,
-  ...                      with=(IBrowserRequest,))
+  >>> component.provideAdapter(DocumentView, (IDocument, IBrowserRequest), Interface)
+  >>> component.provideAdapter(ResourceView, (IResource, IBrowserRequest), Interface)
 
   >>> form = {'action': 'create', 'create.title': 'New Resource',
   ...         'create.type': 'loops.resource.MediaAsset',}
@@ -538,11 +530,10 @@ view for rendering.)
 
   >>> from zope.component.interfaces import IFactory
   >>> from zope.app.renderer import rest
-  >>> ztapi.provideUtility(IFactory, rest.ReStructuredTextSourceFactory,
-  ...                      'zope.source.rest')
-  >>> ztapi.provideAdapter(rest.IReStructuredTextSource, Interface,
-  ...                      rest.ReStructuredTextToHTMLRenderer,
-  ...                      with=(IBrowserRequest,))
+  >>> component.provideUtility(rest.ReStructuredTextSourceFactory, IFactory,
+  ...                          'zope.source.rest')
+  >>> component.provideAdapter(rest.ReStructuredTextToHTMLRenderer,
+  ...                (rest.IReStructuredTextSource, IBrowserRequest), Interface)
 
   >>> m112.target = doc1
 
@@ -557,18 +548,6 @@ view for rendering.)
   >>> view.renderTarget()
   u'<p>Test data</p>\n<p>Another paragraph</p>\n'
 
-It is possible to edit a target's attributes directly in an
-edit form provided by the node:
-
-  >>> from loops.target import DocumentProxy, MediaAssetProxy
-  >>> ztapi.provideAdapter(INode, IDocumentView, DocumentProxy)
-  >>> ztapi.provideAdapter(INode, IMediaAssetView, MediaAssetProxy)
-
-  >>> proxy = zapi.getAdapter(m111, IDocumentView)
-  >>> proxy.title = u'Set via proxy'
-  >>> resources['doc1'].title
-  u'Set via proxy'
-
 If the target object is removed from its container all references
 to it are removed as well. (To make this work we have to handle
 the IObjectRemovedEvent; this is usually done via ZCML in the
@@ -577,13 +556,25 @@ cybertools.relation package.)
   >>> from zope.app.container.interfaces import IObjectRemovedEvent
   >>> from zope.interface import Interface
   >>> from cybertools.relation.registry import invalidateRelations
-  >>> ztapi.subscribe([Interface, IObjectRemovedEvent], None,
-  ...                 invalidateRelations)
+  >>> component.getSiteManager().registerHandler(invalidateRelations,
+  ...                                      (Interface, IObjectRemovedEvent))
 
   >>> del resources['doc1']
   >>> m111.target
   >>> IMediaAssetView.providedBy(m111)
   False
+
+Views Related to Virtual Targets
+--------------------------------
+
+From a node usually any object in the concept or resource space can
+be accessed as a `virtual target`. This is done by putting ".targetNNN"
+at the end of the URL, with NNN being the unique id of the concept
+or resource.
+
+  >>> from loops.view import NodeTraverser
+  >>> from zope.publisher.interfaces.browser import IBrowserPublisher
+  >>> component.provideAdapter(NodeTraverser, provides=IBrowserPublisher)
 
 Ordering Nodes
 --------------

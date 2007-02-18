@@ -23,7 +23,7 @@ $Id$
 """
 
 from zope.app import zapi
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
 from zope.formlib.form import FormFields
 from loops import Loops

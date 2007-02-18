@@ -39,6 +39,9 @@ def getPrincipalFolder(context=None):
         if not authPluginId in pau.authenticatorPlugins:
             raise ValueError(u'There is no loops authenticator '
                               'plugin available.')
-        return component.queryUtility(IAuthenticatorPlugin, authPluginId,
-                                         context=pau)
+        #return component.queryUtility(IAuthenticatorPlugin, authPluginId,
+        #                                 context=pau)
+        for name, plugin in pau.getAuthenticatorPlugins():
+            if name == authPluginId:
+                return plugin
 

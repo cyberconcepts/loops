@@ -23,7 +23,7 @@ $Id$
 """
 
 from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
@@ -31,8 +31,9 @@ from zope.formlib import form
 from zope.formlib.form import FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
-from zope.app.publisher.browser import applySkin
-from zope.publisher.interfaces.browser import ISkin
+from zope.publisher.browser import applySkin
+#from zope.publisher.interfaces.browser import ISkin
+from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
@@ -92,7 +93,7 @@ class BaseView(GenericView):
     def setSkin(self, skinName):
         skin = None
         if skinName and IView.providedBy(self.context):
-            skin = zapi.queryUtility(ISkin, skinName)
+            skin = zapi.queryUtility(IBrowserSkinType, skinName)
             if skin:
                 applySkin(self.request, skin)
         self.skin = skin

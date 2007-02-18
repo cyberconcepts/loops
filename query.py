@@ -24,7 +24,7 @@ $Id$
 
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
-from zope.app import traversing
+from zope import traversing
 from zope.app.catalog.interfaces import ICatalog
 from zope.cachedescriptors.property import Lazy
 

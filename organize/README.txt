@@ -10,18 +10,18 @@ Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-  
+
   >>> from zope import component, interface
   >>> from zope.app import zapi
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
-  
+
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> relations = DummyRelationRegistry()
-  >>> component.provideUtility(relations, IRelationRegistry)
+  >>> component.provideUtility(relations)
 
   >>> from cybertools.typology.interfaces import IType
   >>> from loops.interfaces import IConcept, ITypeConcept
@@ -34,7 +34,7 @@ ZCML setup):
   >>> from loops.organize.setup import SetupManager
   >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
   ...                           name='organize')
-  
+
   >>> from loops import Loops
   >>> loopsRoot = site['loops'] = Loops()
   >>> loopsId = relations.getUniqueIdForObject(loopsRoot)
@@ -42,10 +42,10 @@ ZCML setup):
   >>> from loops.setup import SetupManager
   >>> setup = SetupManager(loopsRoot)
   >>> concepts, resources, views = setup.setup()
-  
+
   >>> type = concepts['type']
   >>> person = concepts['person']
-  
+
   >>> from loops.concept import Concept
   >>> johnC = concepts['john'] = Concept(u'John')
   >>> johnC.conceptType = person
@@ -94,7 +94,7 @@ For testing, we first have to provide the needed utilities and settings
   >>> from zope.app.security.principalregistry import PrincipalRegistry
   >>> auth = PrincipalRegistry()
   >>> component.provideUtility(auth, IAuthentication)
-      
+
   >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
   >>> from zope.app.principalannotation import PrincipalAnnotationUtility
   >>> principalAnnotations = PrincipalAnnotationUtility()
@@ -112,7 +112,7 @@ Change a userId assignment:
 
   >>> principal = auth.definePrincipal('users.johnny', u'Johnny', login='johnny')
   >>> john.userId = 'users.johnny'
-      
+
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
   >>> annotations[ANNOTATION_KEY][loopsId] == johnC
   True
@@ -174,19 +174,14 @@ with a principal folder:
   >>> from zope.app.appsetup.bootstrap import ensureUtility
   >>> from zope.app.authentication.authentication import PluggableAuthentication
   >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-  ...               copy_to_zlog=False)
-  ''
+  ...               copy_to_zlog=False, asObject=True)
+  <...PluggableAuthentication...>
   >>> pau = component.getUtility(IAuthentication, context=site)
 
-  >>> from zope.app.component.site import UtilityRegistration
   >>> from zope.app.authentication.principalfolder import PrincipalFolder
   >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
   >>> pFolder = PrincipalFolder('loops.')
   >>> pau['loops'] = pFolder
-  >>> reg = UtilityRegistration('loops', IAuthenticatorPlugin, pFolder)
-  >>> pau.registrationManager.addRegistration(reg)
-  'UtilityRegistration'  
-  >>> reg.status = u'Active'
   >>> pau.authenticatorPlugins = ('loops',)
 
 In addition, we have to create at least one node in the view space
@@ -205,7 +200,7 @@ sure that a principal object can be served by a corresponding factory):
 
   >>> from zope.app.authentication.principalfolder import FoundPrincipalFactory
   >>> component.provideAdapter(FoundPrincipalFactory)
-  
+
   >>> data = {'loginName': u'newuser',
   ...         'password': u'quack',
   ...         'passwordConfirm': u'quack',

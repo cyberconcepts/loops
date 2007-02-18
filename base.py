@@ -23,8 +23,10 @@
 $Id$
 """
 
+from zope.app.container.btree import BTreeContainer
 from zope.app.folder.folder import Folder
-from zope.app.traversing.api import getPath, traverse
+from zope.app.folder.interfaces import IFolder
+from zope.traversing.api import getPath, traverse
 from zope.interface import implements
 
 from loops.interfaces import ILoops
@@ -33,8 +35,16 @@ loopsPrefix = '.loops'
 
 
 class Loops(Folder):
+#class Loops(BTreeContainer):
 
     implements(ILoops)
+
+    def getSiteManager(self):
+        return self.__parent__.getSiteManager()
+
+    @property
+    def _SampleContainer__data(self):
+        return self.data
 
     _skinName = ''
     def getSkinName(self): return self._skinName

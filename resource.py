@@ -28,8 +28,8 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
 from zope.app.file.interfaces import IFile
-from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
-from zope.app.size.interfaces import ISized
+from zope.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.size.interfaces import ISized
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
@@ -38,7 +38,7 @@ from zope import schema
 from persistent import Persistent
 from cStringIO import StringIO
 
-from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
+from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 from zope.event import notify
 
 from cybertools.relation.registry import getRelations
@@ -285,6 +285,7 @@ class DocumentWriteFileAdapter(object):
         self.context = context
 
     def write(self, data):
+        # TODO: use typeInterface...
         ITextDocument(self.context).data = unicode(data.replace('\r', ''), 'UTF-8')
         notify(ObjectModifiedEvent(self.context, Attributes(IDocument, 'data')))
 

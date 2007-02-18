@@ -20,7 +20,7 @@
   <interface interface=".interfaces.ILoops"
              type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".Loops">
+  <class class="loops.Loops">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -56,7 +56,7 @@
         permission="zope.ManageContent"
         set_schema=".interfaces.ILoops" />
 
-  </content>
+  </class>
 
   <!-- concept manager and concept -->
 

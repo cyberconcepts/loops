@@ -24,7 +24,7 @@ $Id$
 """
 
 from zope import interface, component
-from zope.app import traversing
+from zope import traversing
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.formlib.namedtemplate import NamedTemplate, NamedTemplateImplementation

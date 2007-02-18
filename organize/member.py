@@ -29,7 +29,7 @@ from zope.interface import implements
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import InternalPrincipal
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.security.interfaces import IAuthentication
 from zope.event import notify
 from zope.i18nmessageid import MessageFactory

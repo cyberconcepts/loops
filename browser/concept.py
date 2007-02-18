@@ -25,7 +25,7 @@ $Id$
 from zope import interface, component, schema
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.form.interfaces import IDisplayWidget

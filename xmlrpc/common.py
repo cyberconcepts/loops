@@ -24,10 +24,10 @@ $Id$
 
 from zope.interface import implements
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.publisher.xmlrpc import XMLRPCView
 from zope.app.publisher.xmlrpc import MethodPublisher
-from zope.app.traversing.api import getName
+from zope.traversing.api import getName
 from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
