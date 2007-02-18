@@ -12,7 +12,7 @@
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
       permission="zope.Public" />
 
-  <adapter factory="loops.rest.common.ConceptView" />
+  <adapter factory="loops.rest.common.ConceptView" name="rest" />
   <class class="loops.rest.common.ConceptView">
     <require permission="zope.View"
              interface="loops.rest.common.IRESTView" />

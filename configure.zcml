@@ -63,7 +63,7 @@
   <interface interface=".interfaces.IConceptManager"
              type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".concept.ConceptManager">
+  <class class=".concept.ConceptManager">
 
     <factory id="loops.ConceptManager"
              description="Concept manager" />
@@ -80,13 +80,13 @@
         permission="zope.View"
         attributes="getTypePredicate getDefaultPredicate getTypeConcept" />
 
-  </content>
+  </class>
 
   <interface
       interface=".interfaces.IConcept"
       type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".concept.Concept">
+  <class class=".concept.Concept">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -103,14 +103,14 @@
         permission="zope.ManageContent"
         set_schema=".interfaces.IConcept" />
 
-  </content>
+  </class>
 
   <!-- resource manager and resource -->
 
   <interface interface=".interfaces.IResourceManager"
              type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".resource.ResourceManager">
+  <class class=".resource.ResourceManager">
 
     <factory id="loops.ResourceManager"
              description="Resource manager" />
@@ -123,7 +123,7 @@
         permission="zope.ManageContent"
         interface="zope.app.container.interfaces.IWriteContainer" />
 
-  </content>
+  </class>
 
   <interface
       interface=".interfaces.IResource"
@@ -153,7 +153,7 @@
       interface=".interfaces.IDocument"
       type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".resource.Document">
+  <class class=".resource.Document">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -171,13 +171,13 @@
         permission="zope.ManageContent"
         set_schema=".interfaces.IDocument" />
 
-  </content>
+  </class>
 
   <interface
       interface=".interfaces.IMediaAsset"
       type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".resource.MediaAsset">
+  <class class=".resource.MediaAsset">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -196,7 +196,7 @@
         permission="zope.ManageContent"
         set_schema=".interfaces.IBaseResource" />
 
-  </content>
+  </class>
 
   <!--<adapter
       factory="zope.app.file.image.ImageSized"
@@ -209,7 +209,7 @@
   <interface interface=".interfaces.IViewManager"
              type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".view.ViewManager">
+  <class class=".view.ViewManager">
 
     <factory id="loops.ViewManager"
              description="View manager" />
@@ -223,13 +223,13 @@
         interface="zope.app.container.interfaces.IWriteContainer"
         attributes="updateOrder" />
 
-  </content>
+  </class>
 
   <interface
       interface=".interfaces.INode"
       type="zope.app.content.interfaces.IContentType" />
 
-  <content class=".view.Node">
+  <class class=".view.Node">
 
     <!--<implements
        interface="loops.interfaces.ILoopsObject" />-->
@@ -253,7 +253,7 @@
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />-->
 
-  </content>
+  </class>
 
   <!-- adapters -->
 
@@ -376,10 +376,14 @@
       name="loops.TypeInterfaceSource"
       />
 
-  <vocabulary
+  <!--<vocabulary
       factory="loops.concept.PredicateSourceList"
       name="loops.PredicateSource"
-      />
+      />-->
+
+  <utility component="loops.concept.PredicateSourceList"
+           provides="zope.schema.interfaces.IVocabularyFactory"
+           name="loops.PredicateSource" />
 
 
   <include package=".knowledge" />
