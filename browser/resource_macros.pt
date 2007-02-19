@@ -39,10 +39,19 @@
 <metal:block define-macro="download">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
-    <a href="#"
-       tal:attributes="href string:${view/url}/.target${view/targetId}/view">
-     Download '<span tal:replace="item/title" />'
-    </a>
+    <p>
+      <a href="#"
+         tal:attributes="href string:${view/url}/.target${view/targetId}/view">
+        Download
+      </a>
+      <tal:xedit condition="view/xeditable"> |
+        <a href="#" title="Edit with External Editor"
+           tal:define="url string:${view/url}/.target${view/targetId}"
+           tal:attributes="href string:$url/external_edit">
+         Open for editing
+        </a>
+       </tal:xedit>
+     </p>
   </div>
 </metal:block>
 

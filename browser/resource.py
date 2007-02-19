@@ -37,9 +37,9 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset
-from loops.browser.common import EditForm, BaseView
+from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
-from loops.browser.node import NodeView
+from loops.browser.node import NodeView, node_macros
 from loops.interfaces import ITypeConcept
 from loops.browser.util import html_quote
 
@@ -113,15 +113,29 @@ class ResourceView(BaseView):
         return self
 
     def show(self):
+        """ show means: "download"..."""
         context = self.context
+        ti = IType(context).typeInterface
+        if ti is not None:
+            context = ti(context)
         data = context.data
         response = self.request.response
         response.setHeader('Content-Type', context.contentType)
         response.setHeader('Content-Length', len(data))
         if not context.contentType.startswith('image/'):
             response.setHeader('Content-Disposition',
-                            'attachment; filename=%s' % zapi.getName(context))
+                            'attachment; filename=%s' % zapi.getName(self.context))
         return data
+
+    def getActions(self, category='object'):
+        renderer = node_macros.macros['external_edit']
+        node = self.request.annotations.get('loops.view', {}).get('node')
+        if node is not None:
+            nodeView = NodeView(node, self.request)
+            url = nodeView.virtualTargetUrl
+        else:
+            url = self.url
+        return [Action(renderer, url)]
 
     def concepts(self):
         for r in self.context.getConceptRelations():

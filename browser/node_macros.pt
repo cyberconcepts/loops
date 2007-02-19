@@ -243,6 +243,15 @@
 
 <!-- edit and other links -->
 
+<metal:xedit define-macro="external_edit"
+             tal:define="url action/url">
+    <a href="#" title="Edit with External Editor"
+       tal:attributes="href string:$url/external_edit"
+       ><img src="edit.gif" alt="External Editor"
+             tal:attributes="src context/++resource++edit.gif" /></a>
+</metal:xedit>
+
+
 <metal:editlink define-macro="editlink">
     <a target="zmi"
        tal:define="url string:${item/url}/@@edit.html'"

@@ -202,9 +202,15 @@ class NodeTraverser(ItemTraverser):
             else:
                 target = self.context.target
             if target is not None:
-                viewAnnotations = request.annotations.get('loops.view', {})
-                viewAnnotations['target'] = target
-                request.annotations['loops.view'] = viewAnnotations
-                return self.context
+                # remember self.context in request
+                viewAnnotations = request.annotations.setdefault('loops.view', {})
+                viewAnnotations['node'] = self.context
+                if request.method == 'PUT':
+                    # we have to use the target object directly
+                    return target
+                else:
+                    # we'll use the target object in the node's context
+                    viewAnnotations['target'] = target
+                    return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
 

@@ -286,8 +286,15 @@ class DocumentWriteFileAdapter(object):
 
     def write(self, data):
         # TODO: use typeInterface...
-        ITextDocument(self.context).data = unicode(data.replace('\r', ''), 'UTF-8')
-        notify(ObjectModifiedEvent(self.context, Attributes(IDocument, 'data')))
+        ti = IType(self.context).typeInterface
+        context = ti is None and self.context or ti(self.context)
+        if ITextDocument.providedBy(context):
+            context.data = unicode(data.replace('\r', ''), 'UTF-8')
+        else:
+            # TODO: make use of tmpfile when using external files
+            context.data = data
+        #ITextDocument(self.context).data = unicode(data.replace('\r', ''), 'UTF-8')
+        notify(ObjectModifiedEvent(self.context, Attributes(IResource, 'data')))
 
 
 class DocumentReadFileAdapter(object):

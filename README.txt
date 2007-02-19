@@ -564,18 +564,6 @@ cybertools.relation package.)
   >>> IMediaAssetView.providedBy(m111)
   False
 
-Views Related to Virtual Targets
---------------------------------
-
-From a node usually any object in the concept or resource space can
-be accessed as a `virtual target`. This is done by putting ".targetNNN"
-at the end of the URL, with NNN being the unique id of the concept
-or resource.
-
-  >>> from loops.view import NodeTraverser
-  >>> from zope.publisher.interfaces.browser import IBrowserPublisher
-  >>> component.provideAdapter(NodeTraverser, provides=IBrowserPublisher)
-
 Ordering Nodes
 --------------
 
@@ -605,8 +593,8 @@ to the bottom, and to the top.
   ['m111', 'm114', 'm112', 'm113']
 
 
-End-user Forms
-==============
+End-user Forms and Special Views
+================================
 
 The browser.form and related modules provide additional support for forms
 that are shown in the end-user interface.
@@ -670,7 +658,7 @@ and possibly critcal cases:
   >>> nc.chooseName(u'A very very loooooong title', None)
   u'a_title'
 
-Editing an object
+Editing an Object
 -----------------
 
   >>> from loops.browser.form import EditObjectForm, EditObject
@@ -684,6 +672,40 @@ Editing an object
   True
   >>> resources['test_note'].title
   u'Test Note - changed'
+
+Virtual Targets
+---------------
+
+From a node usually any object in the concept or resource space can
+be accessed as a `virtual target`. This is done by putting ".targetNNN"
+at the end of the URL, with NNN being the unique id of the concept
+or resource.
+
+  >>> from loops.view import NodeTraverser
+
+  >>> magic = '.target' + util.getUidForObject(note)
+  >>> url = 'http://127.0.0.1/loops/views/m1/m11/m111/' + magic + '/@@node.html'
+  >>> #request = TestRequest(environ=dict(SERVER_URL=url))
+  >>> request = TestRequest()
+  >>> NodeTraverser(m111, request).publishTraverse(request, magic)
+  <loops.view.Node object ...>
+  >>> view = NodeView(m111, request)
+  >>> view.virtualTargetObject
+  <loops.resource.Resource object ...>
+
+A virtual target may be edited in the same way like directly assigned targets,
+see above, "Editing an Object". In addition, target objects may be viewed
+and edited in special ways, depending on the target object's type.
+
+In order to provide suitable links for viewing or editing a target you may
+ask a view which view and edit actions it supports. We directly use the
+target object's view here:
+
+  >>> view.virtualTarget.getActions()
+  [<loops.browser.common.Action object ...>]
+  >>> action = view.virtualTarget.getActions()[0]
+  >>> action.url
+  'http://127.0.0.1/loops/views/m1/m11/m111/.target16'
 
 
 Import/Export

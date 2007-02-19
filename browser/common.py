@@ -23,10 +23,11 @@ $Id$
 """
 
 from zope.app import zapi
-from zope.dublincore.interfaces import IZopeDublinCore
+from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.formlib import form
 from zope.formlib.form import FormFields
 from zope.formlib.namedtemplate import NamedTemplate
@@ -38,6 +39,7 @@ from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.browser import absoluteURL
 
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
@@ -78,7 +80,7 @@ class EditForm(form.EditForm):
     def deleteObjectAction(self):
         return None  # better not to show the edit button at the moment
         parent = zapi.getParent(self.context)
-        parentUrl = zapi.absoluteURL(parent, self.request)
+        parentUrl = absoluteURL(parent, self.request)
         return parentUrl + '/contents.html'
 
 
@@ -93,7 +95,7 @@ class BaseView(GenericView):
     def setSkin(self, skinName):
         skin = None
         if skinName and IView.providedBy(self.context):
-            skin = zapi.queryUtility(IBrowserSkinType, skinName)
+            skin = component.queryUtility(IBrowserSkinType, skinName)
             if skin:
                 applySkin(self.request, skin)
         self.skin = skin
@@ -112,7 +114,7 @@ class BaseView(GenericView):
 
     @Lazy
     def url(self):
-        return zapi.absoluteURL(self.context, self.request)
+        return absoluteURL(self.context, self.request)
 
     @Lazy
     def view(self):
@@ -164,7 +166,7 @@ class BaseView(GenericView):
     def typeUrl(self):
         provider = self.typeProvider
         if provider is not None:
-            return zapi.absoluteURL(provider, self.request)
+            return absoluteURL(provider, self.request)
         return None
 
     def viewIterator(self, objs):
@@ -206,6 +208,12 @@ class BaseView(GenericView):
     def editable(self):
         return canWrite(self.context, 'title')
 
+    def getActions(self, category):
+        """ Return a list of actions that provide the view and edit actions
+            available for the context object.
+        """
+        return []
+
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
             return "openEditWindow('%s/@@%s')" % (self.url, viewName)
@@ -233,6 +241,20 @@ class BaseView(GenericView):
         cm = self.controller.macros
         cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
 
+
+# actions
+
+class Action(object):
+
+    def __init__(self, renderer, url, **kw):
+        self.renderer = renderer
+        self.url = url
+        self.__dict__.update(kw)
+        #for k in kw:
+        #    setattr(self, k, kw[k])
+
+
+# vocabulary stuff
 
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection

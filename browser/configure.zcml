@@ -557,6 +557,14 @@
       permission="zope.View"
       />
 
+  <page
+      name="external_edit"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.NodeView"
+      attribute="externalEdit"
+      permission="zope.ManageContent">
+  </page>
+
   <!-- forms (end-user view) -->
 
   <page
@@ -653,7 +661,7 @@
 
   <zope:view factory="loops.view.NodeTraverser"
         for="loops.interfaces.INode"
-        type="zope.publisher.interfaces.browser.IBrowserRequest"
+        type="zope.publisher.interfaces.http.IHTTPRequest"
         provides="zope.publisher.interfaces.browser.IBrowserPublisher"
         allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
         permission="zope.Public" />

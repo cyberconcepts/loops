@@ -37,6 +37,7 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.formlib.namedtemplate import NamedTemplate
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -45,6 +46,7 @@ from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
 from cybertools.browser.view import GenericView
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.xedit.browser import ExternalEditorView
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
@@ -52,6 +54,9 @@ from loops import util
 from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+
+
+node_macros = ViewPageTemplateFile('node_macros.pt')
 
 
 class NodeView(BaseView):
@@ -171,7 +176,8 @@ class NodeView(BaseView):
         # TODO: replace by something like: return self.target.macroName
         target = self.targetObject
         if (target is None or IDocument.providedBy(target)
-                or (IResource.providedBy(target) and target.contentType.startswith('text/'))):
+                or (IResource.providedBy(target) and
+                    target.contentType.startswith('text/'))):
             return 'textbody'
         if IConcept.providedBy(target):
             return 'conceptbody'
@@ -182,6 +188,8 @@ class NodeView(BaseView):
     @Lazy
     def editable(self):
         return canWrite(self.context, 'body')
+
+    # menu stuff
 
     @Lazy
     def menuObject(self):
@@ -244,6 +252,8 @@ class NodeView(BaseView):
     def active(self, item):
         return item.context == self.context or item.context in self.parents
 
+    # virtual target support
+
     def targetDefaultView(self):
         target = self.virtualTargetObject
         if target is not None:
@@ -297,6 +307,14 @@ class NodeView(BaseView):
         if target is not None:
             return BaseView(target, self.request).url
 
+    # target viewing and editing support
+
+    def getActions(self, category='object'):
+        #target = self.virtualTarget
+        #if target is not None:
+        #    return target.getActions(category)
+        return []  # TODO: what about editing the node itself?
+
     @Lazy
     def hasEditableTarget(self):
         return IResource.providedBy(self.virtualTargetObject)
@@ -312,6 +330,20 @@ class NodeView(BaseView):
         jsCall = 'dojo.require("dojo.widget.Editor")'
         cm.register('js-execute', jsCall, jsCall=jsCall)
         return 'return inlineEdit("%s", "%s/inline_save")' % (id, self.virtualTargetUrl)
+
+    def externalEdit(self):
+        target = self.virtualTargetObject
+        if target is None:
+            target = self.context
+            url = self.url
+        else:
+            ti = IType(target).typeInterface
+            if ti is not None:
+                target = ti(target)
+                url = self.virtualTargetUrl
+        return ExternalEditorView(target, self.request).load(url=url)
+
+    # helper methods
 
     def registerDojoDialog(self):
         self.registerDojo()
