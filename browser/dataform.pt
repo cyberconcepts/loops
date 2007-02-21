@@ -158,7 +158,7 @@ function toggleFormFieldHelp(ob,state) {
 <form metal:use-macro="views/resource_macros/delete_object" />
 
 <script type="text/javascript" metal:define-slot="trackChanges">
-  zc_trackChanges(document.getElementById('zc.page.browser_form'));
+  //zc_trackChanges(document.getElementById('zc.page.browser_form'));
 </script>
 
 <script type="text/javascript"

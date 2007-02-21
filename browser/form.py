@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import NameChooser
-#from zope.app.content_types import guess_content_types
 from zope.app.form.browser.textwidgets import FileWidget, TextAreaWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.contenttype import guess_content_type
 from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
@@ -56,13 +56,18 @@ from loops.util import _
 class UploadWidget(FileWidget):
 
     def _toFieldValue(self, input):
+        # not used at the moment as the context object is updated
+        # via EditObject.updateFields()
         fn = getattr(input, 'filename', '') # zope.publisher.browser.FileUpload
         self.request.form['filename'] = fn
         if input:
             self.request.form['_tempfilename'] = input.headers.get('_tempfilename')
         # f = self.context
         # f.extfiledata = tempfilename  # provide for rename
-        # f.contentType = guess_content_types(fn)
+        if fn:
+            contentType = guess_content_type(fn)
+            if contentType:
+                request.form['form.contentType'] = contentType
         return super(UploadWidget, self)._toFieldValue(input)
 
 
@@ -119,7 +124,10 @@ class EditObjectForm(ObjectForm, EditForm):
 
     @property
     def form_fields(self):
-        return FormFields(self.typeInterface)
+        ff = FormFields(self.typeInterface)
+        # if self.typeInterface in (IFile, IExternalFile):
+        #ff['data'].custom_widget = UploadWidget
+        return ff
 
     @property
     def assignments(self):
@@ -151,7 +159,9 @@ class CreateObjectForm(ObjectForm, Form):
         else:
             ifc = INote
         self.typeInterface = ifc
-        return FormFields(ifc)
+        ff = FormFields(ifc)
+        #ff['data'].custom_widget = UploadWidget
+        return ff
 
     @property
     def assignments(self):
@@ -188,6 +198,7 @@ class EditObject(FormController):
         return self.view.loopsRoot
 
     def updateFields(self, obj):
+        # TODO: replace with `applyChanges()`
         form = self.request.form
         ti = IType(obj).typeInterface
         if ti is not None:
@@ -204,7 +215,12 @@ class EditObject(FormController):
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
                 else:
                     if isinstance(value, FileUpload):
+                        filename = getattr(value, 'filename', '')
                         value = value.read()
+                        if filename:
+                            contentType = guess_content_type(filename, value[:100])
+                            if contentType:
+                                self.request.form['form.contentType'] = contentType[0]
                     setattr(adapted, fn, value)
         if self.old or self.selected:
             self.assignConcepts(obj)
