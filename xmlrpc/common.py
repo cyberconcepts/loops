@@ -32,7 +32,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
 from loops.concept import Concept
-from loops.util import getUidForObject, getObjectForUid
+from loops.util import getUidForObject, getObjectForUid, toUnicode
 
 class LoopsMethods(MethodPublisher):
     """ XML-RPC methods for the loops root object.
@@ -113,6 +113,7 @@ class LoopsMethods(MethodPublisher):
 
     def createConcept(self, typeId, name, title):
         type = getObjectForUid(typeId)
+        title = toUnicode(title)
         c = self.concepts[name] = Concept(title)
         c.conceptType = type
         notify(ObjectCreatedEvent(c))

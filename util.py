@@ -67,3 +67,10 @@ def getUidForObject(obj):
         return '*'
     intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
+
+
+def toUnicode(text):
+    if type(text) is not unicode:
+        return text.decode('UTF-8')
+    else:
+        return text
