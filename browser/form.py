@@ -198,7 +198,6 @@ class EditObject(FormController):
         return self.view.loopsRoot
 
     def updateFields(self, obj):
-        # TODO: replace with `applyChanges()`
         form = self.request.form
         ti = IType(obj).typeInterface
         if ti is not None:
@@ -218,6 +217,7 @@ class EditObject(FormController):
                         filename = getattr(value, 'filename', '')
                         value = value.read()
                         if filename:
+                            #self.request.form['filename'] = filename
                             contentType = guess_content_type(filename, value[:100])
                             if contentType:
                                 self.request.form['form.contentType'] = contentType[0]
@@ -256,50 +256,21 @@ class CreateObject(EditObject):
 
     def update(self):
         form = self.request.form
-        obj = Resource()
         container = self.loopsRoot.getResourceManager()
         title = form.get('form.title')
         if not title:
             raise BadRequest('Title field is empty')
-        name = INameChooser(container).chooseName(title, obj)
+        obj = Resource(title)
+        data = form.get('form.data')
+        if data and isinstance(data, FileUpload):
+            name = getattr(data, 'filename', None)
+        else:
+            name = None
+        name = INameChooser(container).chooseName(name, obj)
         container[name] = obj
         tc = form.get('form.type') or '.loops/concepts/note'
         obj.resourceType = self.loopsRoot.loopsTraverse(tc)
         notify(ObjectCreatedEvent(obj))
         self.updateFields(obj)
         return True
-
-
-specialCharacters = {
-    '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
-    '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
-
-class ResourceNameChooser(NameChooser):
-
-    adapts(IResourceManager)
-
-    def chooseName(self, title, obj):
-        result = []
-        if len(title) > 15:
-            words = title.split()
-            if len(words) > 1:
-                title = '_'.join((words[0], words[-1]))
-        for c in title:
-            try:
-                c = c.encode('ISO8859-15')
-            except UnicodeEncodeError:
-                continue
-            if c in specialCharacters:
-                result.append(specialCharacters[c].lower())
-                continue
-            if ord(c) > 127:
-                c = chr(ord(c) & 127)
-            if c in ('_., '):
-                result.append('_')
-            elif not c.isalpha() and not c.isdigit():
-                continue
-            else:
-                result.append(c.lower())
-        name = unicode(''.join(result))
-        return super(ResourceNameChooser, self).chooseName(name, obj)
 

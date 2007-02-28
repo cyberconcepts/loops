@@ -602,7 +602,8 @@ that are shown in the end-user interface.
 Creating an object
 ------------------
 
-  >>> from loops.browser.form import CreateObjectForm, CreateObject, ResourceNameChooser
+  >>> from loops.common import NameChooser
+  >>> from loops.browser.form import CreateObjectForm, CreateObject
   >>> form = CreateObjectForm(m112, TestRequest())
 
   >>> from loops.interfaces import INote, ITypeConcept
@@ -614,7 +615,7 @@ Creating an object
   >>> note_tc.conceptType = typeObject
   >>> ITypeConcept(note_tc).typeInterface = INote
 
-  >>> component.provideAdapter(ResourceNameChooser)
+  >>> component.provideAdapter(NameChooser)
   >>> request = TestRequest(form={'form.title': u'Test Note',
   ...                             'form.type': u'.loops/concepts/note'})
   >>> view = NodeView(m112, request)
@@ -646,16 +647,16 @@ created object:
   >>> sorted(t.__name__ for t in note.getConcepts())
   [u'note', u'topic']
 
-When creating an object its name is automatically generated using the title
+When creating an object its name may be automatically generated using the title
 of the object. Let's make sure that the name chooser also handles special
 and possibly critcal cases:
 
-  >>> nc = ResourceNameChooser(resources)
-  >>> nc.chooseName(u'abc: (cde)', None)
+  >>> nc = NameChooser(resources)
+  >>> nc.chooseName(u'', Resource(u'abc: (cde)'))
   u'abc_cde'
-  >>> nc.chooseName(u'\xdcml\xe4ut', None)
+  >>> nc.chooseName(u'', Resource(u'\xdcml\xe4ut'))
   u'uemlaeut'
-  >>> nc.chooseName(u'A very very loooooong title', None)
+  >>> nc.chooseName(u'', Resource(u'A very very loooooong title'))
   u'a_title'
 
 Editing an Object

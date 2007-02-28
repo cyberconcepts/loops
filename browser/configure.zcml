@@ -612,8 +612,6 @@
       permission="zope.Public"
       />
 
-  <zope:adapter factory="loops.browser.form.ResourceNameChooser" />
-
   <!-- inner HTML views -->
 
   <page

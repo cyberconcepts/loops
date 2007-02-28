@@ -22,14 +22,14 @@ Common stuff.
 $Id$
 """
 
-from zope.app import zapi
+from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.zopedublincore import ScalarProperty
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
-from loops.interfaces import ILoopsObject, IConcept, IResource
+from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
 from loops.interfaces import IResourceAdapter
 
 
@@ -93,3 +93,42 @@ class LoopsDCAdapter(ZDCAnnotatableAdapter):
     title = property(Title, setTitle)
 
 
+class NameChooser(BaseNameChooser):
+
+    adapts(ILoopsContained)
+
+    def chooseName(self, name, obj):
+        if not name:
+            name = self.generateName(obj)
+        name = super(NameChooser, self).chooseName(name, obj)
+        return name
+
+    def generateName(self, obj):
+        title = obj.title
+        result = []
+        if len(title) > 15:
+            words = title.split()
+            if len(words) > 1:
+                title = '_'.join((words[0], words[-1]))
+        for c in title:
+            try:
+                c = c.encode('ISO8859-15')
+            except UnicodeEncodeError:
+                continue
+            if c in self.specialCharacters:
+                result.append(self.specialCharacters[c].lower())
+                continue
+            if ord(c) > 127:
+                c = chr(ord(c) & 127)
+            if c in ('_., '):
+                result.append('_')
+            elif not c.isalpha() and not c.isdigit():
+                continue
+            else:
+                result.append(c.lower())
+        name = unicode(''.join(result))
+        return name
+
+    specialCharacters = {
+        '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
+        '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}

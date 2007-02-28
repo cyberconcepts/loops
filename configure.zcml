@@ -289,6 +289,8 @@
   <adapter factory="loops.resource.DocumentReadFileAdapter" />
   <adapter factory="loops.resource.DocumentWriteFileAdapter" />
 
+  <adapter factory="loops.common.NameChooser" />
+
   <adapter factory="loops.type.LoopsType" />
   <adapter factory="loops.type.ConceptType" />
   <adapter factory="loops.type.ResourceType"
