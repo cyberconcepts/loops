@@ -356,6 +356,11 @@
            name="application/pdf"
            factory="cybertools.text.pdf.PdfTransform" />
 
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/msword"
+           factory="cybertools.text.doc.DocTransform" />
+
   <!-- utilities -->
 
   <utility
