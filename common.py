@@ -42,29 +42,31 @@ class AdapterBase(object):
 
     adapts(IConcept)
 
-    _attributes = ('context', '__parent__', )
-    _schemas = list(IConcept)
+    _adapterAttributes = ('context', '__parent__', )
+    _contextAttributes = list(IConcept)
 
     def __init__(self, context):
-        self.context = context # to get the permission stuff right
-        self.__parent__ = context
+        self.context = context
+        self.__parent__ = context # to get the permission stuff right
 
     def __getattr__(self, attr):
         self.checkAttr(attr)
         return getattr(self.context, '_' + attr, None)
 
     def __setattr__(self, attr, value):
-        if attr in self._attributes:
+        if attr in self._adapterAttributes:
             object.__setattr__(self, attr, value)
         else:
             self.checkAttr(attr)
             setattr(self.context, '_' + attr, value)
 
     def checkAttr(self, attr):
-        if attr not in self._schemas:
+        if attr not in self._contextAttributes:
             raise AttributeError(attr)
 
     def __eq__(self, other):
+        if other is None:
+            return False
         return self.context == other.context
 
 
@@ -72,7 +74,7 @@ class ResourceAdapterBase(AdapterBase):
 
     adapts(IResource)
 
-    _schemas = list(IResourceAdapter)
+    _contextAttributes = list(IResourceAdapter)
 
 
 # other adapters

@@ -72,8 +72,8 @@ class Person(AdapterBase, BasePerson):
 
     implements(IPerson)
 
-    _attributes = ('context', '__parent__', 'userId', 'phoneNumbers')
-    _schemas = list(IPerson) + list(IConcept)
+    _adapterAttributes = ('context', '__parent__', 'userId', 'phoneNumbers')
+    _contextAttributes = list(IPerson) + list(IConcept)
 
     def getUserId(self):
         return getattr(self.context, '_userId', None)
@@ -162,8 +162,8 @@ class Address(AdapterBase):
 
     implements(IAddress)
 
-    _attributes = ('context', '__parent__', 'lines')
-    _schemas = list(IAddress) + list(IConcept)
+    _adapterAttributes = ('context', '__parent__', 'lines')
+    _contextAttributes = list(IAddress) + list(IConcept)
 
     def getLines(self):
         return getattr(self.context, '_lines', [])

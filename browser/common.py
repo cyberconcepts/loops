@@ -141,6 +141,13 @@ class BaseView(GenericView):
         return self.context
 
     @Lazy
+    def uniqueId(self):
+        return util.getUidForObject(self.context)
+        #return zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.context)
+
+    # type stuff
+
+    @Lazy
     def type(self):
         return IType(self.context)
 
@@ -174,35 +181,47 @@ class BaseView(GenericView):
         for o in objs:
             yield BaseView(o, request)
 
+    # type listings
+
+    def listTypes(self, include=None, exclude=None, sortOn='title'):
+        types = [dict(token=t.token, title=t.title)
+                    for t in ITypeManager(self.context).listTypes(include, exclude)]
+        if sortOn:
+            types.sort(key=lambda x: x[sortOn])
+        return types
+
     def resourceTypes(self):
-        return util.KeywordVocabulary([(t.token, t.title)
-                    for t in ITypeManager(self.context).listTypes(('resource',))
-                    if t.factory == Resource])
+        return util.KeywordVocabulary(self.listTypes(('resource',) ('hidden',)))
+            #if t.factory == Resource]) # ? if necessary -> type.qualifiers
 
     def conceptTypes(self):
-        return util.KeywordVocabulary([(t.token, t.title)
-                    for t in ITypeManager(self.context).listTypes(('concept',))])
+        return util.KeywordVocabulary(self.listTypes(('concept',), ('hidden',)))
+
+    def listTypesForSearch(self, include=None, exclude=None, sortOn='title'):
+        types = [dict(token=t.tokenForSearch, title=t.title)
+                    for t in ITypeManager(self.context).listTypes(include, exclude)]
+        if sortOn:
+            types.sort(key=lambda x: x[sortOn])
+        return types
 
     def typesForSearch(self):
         general = [('loops:resource:*', 'Any Resource'),
                    ('loops:concept:*', 'Any Concept'),]
-        return util.KeywordVocabulary(general + sorted([(t.tokenForSearch, t.title)
-                        for t in ITypeManager(self.context).types])
-                        + [('loops:*', 'Any')])
+        return util.KeywordVocabulary(general
+                            + self.listTypesForSearch(exclude=('system', 'hidden',))
+                            + [('loops:*', 'Any')])
 
     def conceptTypesForSearch(self):
         general = [('loops:concept:*', 'Any Concept'),]
-        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
-                    for t in ITypeManager(self.context).listTypes(('concept',))])
+        return util.KeywordVocabulary(general
+                            + self.listTypesForSearch(('concept',), ('system', 'hidden',),))
 
     def resourceTypesForSearch(self):
         general = [('loops:resource:*', 'Any Resource'),]
-        return util.KeywordVocabulary(general + [(t.tokenForSearch, t.title)
-                    for t in ITypeManager(self.context).listTypes(('resource',))])
+        return util.KeywordVocabulary(general
+                            + self.listTypesForSearch(('resource',), ('system', 'hidden'),))
 
-    @Lazy
-    def uniqueId(self):
-        return zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.context)
+    # controllling editing
 
     @Lazy
     def editable(self):

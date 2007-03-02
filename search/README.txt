@@ -78,13 +78,13 @@ zcml in real life:
 
   >>> t = searchView.typesForSearch()
   >>> len(t)
-  11
+  9
   >>> t.getTermByToken('loops:resource:*').title
   'Any Resource'
 
   >>> t = searchView.conceptTypesForSearch()
   >>> len(t)
-  5
+  3
   >>> t.getTermByToken('loops:concept:*').title
   'Any Concept'
 

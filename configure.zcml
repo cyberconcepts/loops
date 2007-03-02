@@ -78,7 +78,8 @@
 
     <require
         permission="zope.View"
-        attributes="getTypePredicate getDefaultPredicate getTypeConcept" />
+        attributes="getTypePredicate getDefaultPredicate getTypeConcept
+                    getPredicateType" />
 
   </class>
 

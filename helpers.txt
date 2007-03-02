@@ -130,7 +130,7 @@ So let's check the type of the type object:
   >>> type_type.tokenForSearch
   'loops:concept:type'
   >>> type_type.qualifiers
-  ('concept',)
+  ('concept', 'system')
 
 Now we register another type ('topic') and assign it to cc1:
 
@@ -151,7 +151,7 @@ lazy properties, one should always get a new adapter:
   >>> cc1_type.typeProvider == topic
   True
   >>> topic_type.qualifiers
-  ('concept',)
+  ('concept', 'system')
   >>> topic_type.defaultContainer
   <loops.concept.ConceptManager object ...>
   >>> topic_type.factory

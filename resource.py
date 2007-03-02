@@ -200,10 +200,9 @@ class FileAdapter(ResourceAdapterBase):
     """
 
     implements(IFile)
-    _schemas = list(IFile) + list(IBaseResource)
 
-    # let the adapter handle the data attribute:
-    _attributes = ResourceAdapterBase._attributes + ('data',)
+    _contextAttributes = list(IFile) + list(IBaseResource)
+    _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
     def setData(self, data): self.context.data = data
     def getData(self): return self.context.data
@@ -251,7 +250,7 @@ class DocumentAdapter(ResourceAdapterBase):
     """
 
     # let the adapter handle the data attribute:
-    _attributes = ResourceAdapterBase._attributes + ('data',)
+    _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
     def setData(self, data): self.context._data = data.replace('\r', '')
     def getData(self): return self.context._data
@@ -263,7 +262,7 @@ class TextDocumentAdapter(DocumentAdapter):
     """
 
     implements(IDocument)
-    _schemas = list(IDocument) + list(IBaseResource)
+    _contextAttributes = list(IDocument) + list(IBaseResource)
 
 
 class NoteAdapter(DocumentAdapter):
@@ -271,7 +270,7 @@ class NoteAdapter(DocumentAdapter):
     """
 
     implements(INote)
-    _schemas = list(INote) + list(IBaseResource)
+    _contextAttributes = list(INote) + list(IBaseResource)
 
 
 # other adapters

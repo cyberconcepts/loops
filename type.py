@@ -22,13 +22,14 @@ Type management stuff.
 $Id$
 """
 
-from zope.app import zapi
+from zope import component, schema
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
-from zope import schema
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
+
 from cybertools.typology.type import BaseType, TypeManager
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
@@ -44,7 +45,8 @@ class LoopsType(BaseType):
 
     adapts(ILoopsObject)
 
-    factoryMapping = dict(concept=Concept, resource=Resource, document=Document)
+    factoryMapping = dict(concept=Concept, resource=Resource)
+                          #document=Document)
     containerMapping = dict(concept='concepts', resource='resources')
 
     @Lazy
@@ -60,27 +62,31 @@ class LoopsType(BaseType):
     @Lazy
     def tokenForSearch(self):
         tp = self.typeProvider
-        typeName = tp is None and 'unknown' or str(zapi.getName(tp))
+        typeName = tp is None and 'unknown' or str(getName(tp))
         return ':'.join(('loops', self.qualifiers[0], typeName,))
 
     @Lazy
     def typeInterface(self):
-        adapter = zapi.queryAdapter(self.typeProvider, ITypeConcept)
+        adapter = component.queryAdapter(self.typeProvider, ITypeConcept)
         if adapter is not None:
             return removeSecurityProxy(adapter.typeInterface)
         else:
-            conceptType = self.typeProvider
-            typeConcept = self.root.getConceptManager().getTypeConcept()
-            if conceptType is typeConcept:
-                return ITypeConcept
+            if self.typeProvider is self.typeConcept:
+                return ITypeConcept # typeConcept always is a type concept
         return None
 
     @Lazy
     def qualifiers(self):
         ti = self.typeInterface
         if ti is None or not issubclass(ti, IResourceAdapter):
-            return ('concept',)
-        return ('resource',)
+            qu = ['concept',]
+        else:
+            qu = ['resource',]
+        # check typeProvider for additional qualifiers:
+        if self.typeProvider in (self.typeConcept, self.predicateType,):
+            qu.append('system')
+        # how to set a type to 'hidden'?
+        return tuple(qu)
 
     @Lazy
     def factory(self):
@@ -90,10 +96,6 @@ class LoopsType(BaseType):
     @Lazy
     def defaultContainer(self):
         return self.root[self.containerMapping.get(self.qualifiers[0], 'concept')]
-
-    @Lazy
-    def root(self):
-        return self.context.getLoopsRoot()
 
     @Lazy
     def typeProvider(self):
@@ -114,6 +116,20 @@ class LoopsType(BaseType):
             else:
                 result['default'].append(opt)
         return result
+
+    # general infos
+
+    @Lazy
+    def root(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
+    def typeConcept(self):
+        return self.root.getConceptManager().getTypeConcept()
+
+    @Lazy
+    def predicateType(self):
+        return self.root.getConceptManager().getPredicateType()
 
 
 class LoopsTypeInfo(LoopsType):
@@ -144,13 +160,10 @@ class ConceptTypeInfo(LoopsTypeInfo):
 
 class ResourceType(LoopsType):
     """ The 'old-style' resource type - different classes (Document, MediaAsset)
-        per type. Will be replaced by new style types that are governed by
+        per type. Are replaced by new style types that are governed by
         type concepts as is already the case for concepts.
     """
 
-    #adapts(IResource)
-
-    #typeTitles = {'MediaAsset': u'Media Asset'}
     typeTitles = {}
 
     typeInterface = None
@@ -165,8 +178,6 @@ class ResourceType(LoopsType):
     @Lazy
     def token(self):
         return '.'.join((self.factory.__module__, self.className))
-        #cn = self.className
-        #return '/'.join(('.loops/resources', cn.lower(),))
 
     @Lazy
     def tokenForSearch(self):
@@ -240,7 +251,7 @@ class TypeConcept(AdapterBase):
 
     implements(ITypeConcept)
 
-    _schemas = list(ITypeConcept) + list(IConcept)
+    _contextAttributes = list(ITypeConcept) + list(IConcept)
 
     def getTypeInterface(self):
         ti = getattr(self.context, '_typeInterface', None)
@@ -255,10 +266,8 @@ class TypeConcept(AdapterBase):
 
     def getOptions(self):
         return getattr(self.context, '_options', [])
-        #return super(TypeConcept, self).options or []
     def setOptions(self, value):
         self.context._options = value
-        #super(TypeConcept, self).options = value
     options = property(getOptions, setOptions)
 
 

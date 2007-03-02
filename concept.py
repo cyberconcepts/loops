@@ -149,10 +149,6 @@ class Concept(Contained, Persistent):
 
     def deassignChild(self, child, predicates=None):
         registry = zapi.getUtility(IRelationRegistry)
-        #relations = []
-        #for rs in relationships:
-        #    relations.extend(registry.query(first=self, second=concept,
-        #                                    relationship=rs))
         for rel in self.getChildRelations(predicates, child):
             registry.unregister(rel)
 
@@ -192,6 +188,7 @@ class ConceptManager(BTreeContainer):
     typeConcept = None
     typePredicate = None
     defaultPredicate = None
+    predicateType = None
 
     def getLoopsRoot(self):
         return zapi.getParent(self)
@@ -209,19 +206,27 @@ class ConceptManager(BTreeContainer):
             self.defaultPredicate = self['standard']
         return self.defaultPredicate
 
+    def getPredicateType(self):
+        if self.predicateType is None:
+            dp = self.getDefaultPredicate()
+            self.predicateType = dp.conceptType
+        return self.predicateType
+
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
 
 
 # adapters and similar components
 
-class ConceptSourceList(object):
+class xxxConceptSourceList(object):
+
+    # seems to be obsolete
 
     implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
-        #self.context = context
-        self.context = removeSecurityProxy(context)
+        self.context = context
+        #self.context = removeSecurityProxy(context)
         root = self.context.getLoopsRoot()
         self.concepts = root.getConceptManager()
 

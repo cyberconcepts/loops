@@ -100,7 +100,7 @@ class Topic(AdapterBase, KnowledgeAdapterMixin):
     """
 
     implements(IKnowledgeElement)
-    _attributes = ('context', '__parent__', 'parent')
+    _adapterAttributes = ('context', '__parent__', 'parent')
 
     def getParent(self):
         parents = self.context.getParents((self.standardPred,))

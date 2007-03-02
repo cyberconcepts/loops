@@ -39,6 +39,6 @@ class Task(AdapterBase):
 
     implements(ITask)
 
-    _attributes = ('context', '__parent__',)
-    _schemas = list(ITask) + list(IConcept)
+    _adapterAttributes = ('context', '__parent__',)
+    _contextAttributes = list(ITask) + list(IConcept)
 

@@ -77,11 +77,11 @@ class Search(BaseView):
         request.response.setHeader('Content-Type', 'text/plain; charset=UTF-8')
         title = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
         type = request.get('searchType') or 'loops:concept:*'
-        result = ConceptQuery(self).query(title=title, type=type)
-        registry = component.getUtility(IRelationRegistry)
+        result = ConceptQuery(self).query(title=title, type=type, exclude=('system',))
+        #registry = component.getUtility(IRelationRegistry)
         # simple way to provide JSON format:
         return str(sorted([[`o.title`[2:-1] + ' (%s)' % `o.conceptType.title`[2:-1],
-                            `registry.getUniqueIdForObject(o)`]
+                            `int(util.getUidForObject(o))`]
                         for o in result
                         if o.getLoopsRoot() == self.loopsRoot])).replace('\\\\x', '\\x')
         #return str(sorted([[`o.title`[2:-1], `traversing.api.getName(o)`[2:-1]]

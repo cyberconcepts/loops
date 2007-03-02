@@ -155,21 +155,28 @@ class IConceptView(Interface):
     """ Used for accessing a concept via a node's target attribute"""
 
 
-class IConceptManager(ILoopsObject, IContainer):
+#class IConceptManager(ILoopsObject, IContainer):
+class IConceptManager(ILoopsObject):
     """ A manager/container for concepts.
     """
     contains(IConcept)
+
+    def getTypeConcept():
+        """ Return the concept that provides the type object,
+            i.e. the type of all types.
+        """
 
     def getTypePredicate():
         """ Return the concept that provides the type predicate.
         """
 
-    def getTypeConcept():
-        """ Return the concept that provides the type object.
-        """
-
     def getDefaultPredicate():
         """ Return the concept that provides the default (standard) predicate.
+        """
+
+    def getPredicateType():
+        """ Return the concept that provides the predicate type object,
+            i.e. the type of all predicates.
         """
 
 class IConceptManagerContained(Interface):

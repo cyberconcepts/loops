@@ -28,6 +28,7 @@ from zope import traversing
 from zope.app.catalog.interfaces import ICatalog
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
@@ -59,7 +60,7 @@ class BaseQuery(object):
     def loopsRoot(self):
         return self.context.context.getLoopsRoot()
 
-    def queryConcepts(self, title=None, type=None):
+    def queryConcepts(self, title=None, type=None, **kw):
         if type.endswith('*'):
             start = type[:-1]
             end = start + '\x7f'
@@ -71,16 +72,23 @@ class BaseQuery(object):
         else:
             result = cat.searchResults(loops_type=(start, end))
         result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        if 'exclude' in kw:
+            r1 = set()
+            for r in result:
+                qur = IType(r).qualifiers
+                if not [qux for qux in kw['exclude'] if qux in qur]:
+                    r1.add(r)
+            result = r1
         return result
 
-    def queryConceptsWithChildren(self, title=None, type=None, uid=None):
+    def queryConceptsWithChildren(self, title=None, type=None, uid=None, **kw):
         if title:  # there are a few characters that the index doesn't like
             title = title.replace('(', ' ').replace(')', ' ')
         if not title and not uid and (type is None or '*' in type):
             return None
         result = set()
         if not uid:
-            queue = list(self.queryConcepts(title=title, type=type))
+            queue = list(self.queryConcepts(title=title, type=type, **kw))
         else:
             queue = [util.getObjectForUid(uid)]
         concepts = []
@@ -100,7 +108,7 @@ class BaseQuery(object):
 class FullQuery(BaseQuery):
 
     def query(self, text=None, type=None, useTitle=True, useFull=False,
-                    conceptTitle=None, conceptUid=None, conceptType=None):
+                    conceptTitle=None, conceptUid=None, conceptType=None, **kw):
         result = set()
         rc = self.queryConceptsWithChildren(title=conceptTitle, uid=conceptUid,
                                             type=conceptType)
@@ -136,10 +144,10 @@ class ConceptQuery(BaseQuery):
     """ Find concepts of type `type` whose title starts with `title`.
     """
 
-    def query(self, title=None, type=None):
+    def query(self, title=None, type=None, **kw):
         if title and not title.endswith('*'):
             title += '*'
-        return self.queryConcepts(title=title, type=type)
+        return self.queryConcepts(title=title, type=type, **kw)
 
 
 # QueryConcept: concept objects that allow querying the database.
@@ -161,7 +169,7 @@ class QueryConcept(AdapterBase):
 
     implements(IQueryConcept)
 
-    _schemas = list(IQueryConcept) + list(IConcept)
+    _contextAttributes = list(IQueryConcept) + list(IConcept)
 
 
 TypeInterfaceSourceList.typeInterfaces += (IQueryConcept,)
