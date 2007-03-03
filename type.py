@@ -218,7 +218,8 @@ class LoopsTypeManager(TypeManager):
 
     @property
     def types(self):
-        return self.conceptTypes() + self.resourceTypes()
+        return self.conceptTypes()
+        #return self.conceptTypes() + self.resourceTypes()
 
     def listTypes(self, include=None, exclude=None):
         for t in self.types:

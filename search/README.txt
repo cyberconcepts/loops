@@ -78,7 +78,7 @@ zcml in real life:
 
   >>> t = searchView.typesForSearch()
   >>> len(t)
-  9
+  8
   >>> t.getTermByToken('loops:resource:*').title
   'Any Resource'
 

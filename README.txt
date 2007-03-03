@@ -495,8 +495,7 @@ view; these views we have to provide as multi-adapters:
   >>> view = ConfigureView(m111, TestRequest(form = form))
   >>> sorted((t.token, t.title) for t in view.targetTypes())
   [('.loops/concepts/topic', u'Topic'), ('.loops/concepts/type', u'Type'),
-      ('.loops/concepts/unknown', u'Unknown Type'),
-      ('loops.resource.Document', u'Document')]
+      ('.loops/concepts/unknown', u'Unknown Type')]
   >>> view.update()
   True
   >>> sorted(resources.keys())
