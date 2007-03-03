@@ -42,7 +42,8 @@ from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.typology.interfaces import IType
 from loops.concept import ResourceRelation
-from loops.interfaces import IConcept, IResourceManager, INote, IDocument
+from loops.interfaces import IConcept, IResourceManager, IDocument
+from loops.interfaces import IFile, IExternalFile, INote
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.resource import Resource
@@ -98,15 +99,32 @@ class ObjectForm(NodeView):
                 self.loopsRoot.getConceptManager().getDefaultPredicate())
 
 
-class NoteWidgetController(object):
+class WidgetController(object):
+
+    def modifyFormFields(self, formFields):
+        return formFields
+
+    def modifyWidgetSetup(self, widgets):
+        pass
+
+
+class NoteWidgetController(WidgetController):
 
     def modifyWidgetSetup(self, widgets):
         widgets['data'].height = 5
 
 
-widgetControllers = {INote: NoteWidgetController}
+class FileWidgetController(WidgetController):
 
-# specialWidgets = {(IFile, 'data'): UploadWidget}
+    def modifyFormFields(self, formFields):
+        return formFields.omit('contentType')
+
+
+widgetControllers = {
+    INote: NoteWidgetController,
+    IFile: FileWidgetController,
+    IExternalFile: FileWidgetController,
+}
 
 
 class EditObjectForm(ObjectForm, EditForm):
@@ -118,6 +136,10 @@ class EditObjectForm(ObjectForm, EditForm):
     form_action = 'edit_resource'
     dialog_name = 'edit'
 
+    def __init__(self, context, request):
+        super(EditObjectForm, self).__init__(context, request)
+        self.context = self.virtualTargetObject
+
     @Lazy
     def typeInterface(self):
         return IType(self.context).typeInterface or IDocument
@@ -125,8 +147,9 @@ class EditObjectForm(ObjectForm, EditForm):
     @property
     def form_fields(self):
         ff = FormFields(self.typeInterface)
-        # if self.typeInterface in (IFile, IExternalFile):
-        #ff['data'].custom_widget = UploadWidget
+        if self.typeInterface in widgetControllers:
+            wc = widgetControllers[self.typeInterface]()
+            ff = wc.modifyFormFields(ff)
         return ff
 
     @property
@@ -135,10 +158,6 @@ class EditObjectForm(ObjectForm, EditForm):
             r = ConceptRelationView(c, self.request)
             if r.isProtected: continue
             yield r
-
-    def __init__(self, context, request):
-        super(EditObjectForm, self).__init__(context, request)
-        self.context = self.virtualTargetObject
 
 
 class CreateObjectForm(ObjectForm, Form):
@@ -161,6 +180,9 @@ class CreateObjectForm(ObjectForm, Form):
         self.typeInterface = ifc
         ff = FormFields(ifc)
         #ff['data'].custom_widget = UploadWidget
+        if self.typeInterface in widgetControllers:
+            wc = widgetControllers[self.typeInterface]()
+            ff = wc.modifyFormFields(ff)
         return ff
 
     @property
@@ -220,7 +242,9 @@ class EditObject(FormController):
                             #self.request.form['filename'] = filename
                             contentType = guess_content_type(filename, value[:100])
                             if contentType:
-                                self.request.form['form.contentType'] = contentType[0]
+                                ct = contentType[0]
+                                self.request.form['form.contentType'] = ct
+                                adapted.contentType = ct
                     setattr(adapted, fn, value)
         if self.old or self.selected:
             self.assignConcepts(obj)

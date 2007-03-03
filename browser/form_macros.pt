@@ -6,26 +6,17 @@
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
-        <tbody>
-          <tr>
-            <th colspan="5">
-              <br />
+        <tbody><tr><th colspan="5"><br />
               <span tal:replace="view/title"
                     i18n:translate="">Edit Information Object
               </span>
-            </th>
-          </tr>
-        </tbody>
+        </th></tr></tbody>
 
-        <tbody>
-          <tr>
-            <td colspan="5">
+        <tbody><tr><td colspan="5">
               <div id="form.fields">
                 <metal:fields use-macro="view/template/macros/fields" />
               </div>
-            </td>
-          </tr>
-        </tbody>
+        </td></tr></tbody>
 
         <tbody>
           <tr>
@@ -45,10 +36,7 @@
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
-        <tbody>
-          <tr>
-            <th colspan="5">
-              <br />
+        <tbody><tr><th colspan="5"><br />
               <span tal:replace="view/title"
                     i18n:translate="">Create Information Object</span>
               <select name="form.type" id="form.type"
@@ -66,19 +54,13 @@
                   Note
                 </option>
               </select>
-            </th>
-          </tr>
-        </tbody>
+        </th></tr></tbody>
 
-        <tbody>
-          <tr>
-            <td colspan="5">
+        <tbody><tr><td colspan="5">
               <div id="form.fields">
                 <metal:fields use-macro="view/template/macros/fields" />
               </div>
-            </td>
-          </tr>
-        </tbody>
+        </td></tr></tbody>
 
         <tbody>
           <tr>

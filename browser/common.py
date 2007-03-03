@@ -143,7 +143,6 @@ class BaseView(GenericView):
     @Lazy
     def uniqueId(self):
         return util.getUidForObject(self.context)
-        #return zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.context)
 
     # type stuff
 
@@ -191,7 +190,7 @@ class BaseView(GenericView):
         return types
 
     def resourceTypes(self):
-        return util.KeywordVocabulary(self.listTypes(('resource',) ('hidden',)))
+        return util.KeywordVocabulary(self.listTypes(('resource',), ('hidden',)))
             #if t.factory == Resource]) # ? if necessary -> type.qualifiers
 
     def conceptTypes(self):
