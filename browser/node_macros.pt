@@ -133,9 +133,7 @@
                  tal:define="target nocall:item/target">
   <div class="content-1"
        tal:content="structure item/body"
-       tal:attributes="ondblclick python:
-                target and target.openEditWindow('resources.html')
-                        or item.openEditWindow();
+       tal:attributes="ondblclick python: item.openEditWindow();
                        id string:${view/itemNum}.body;">
     Listing
   </div><br />
@@ -146,6 +144,11 @@
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Resource Title</a>
+          <div style="margin-left: 3em"
+               tal:define="description related/description"
+               tal:condition="description">
+            <i tal:content="description">Description</i>
+          </div>
     </div>
   </div>
 </metal:resources>
@@ -168,6 +171,11 @@
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Resource Title</a>
+          <div style="margin-left: 3em"
+               tal:define="description related/description"
+               tal:condition="description">
+            <i tal:content="description">Description</i>
+          </div>
     </div>
   </div>
 </metal:children>

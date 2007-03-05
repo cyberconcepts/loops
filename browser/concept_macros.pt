@@ -45,11 +45,35 @@
            tal:define="children python: list(item.children())"
            tal:condition="children">
         <h2>Children</h2><br />
-        <div tal:repeat="related children">
-          <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
-             tal:content="related/title">Concept Title</a>
-        </div>
+        <table class="listing">
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Modification Date</th>
+          </tr>
+          <tal:items repeat="related children">
+            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd'">
+              <tr tal:attributes="class class">
+                <td valign="top">
+                  <a href="#"
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId}">
+                    <span tal:replace="related/title">Resource Title</span>
+                  </a>
+                </td>
+                <td><span tal:replace="related/typeTitle">Type</span></td>
+                <td><span tal:replace="related/modified">Type</span></td>
+              </tr>
+              <tr tal:define="description related/description"
+                  tal:condition="description"
+                  tal:attributes="class class">
+                <td>&nbsp;</td>
+                <td colspan="2">
+                  <i tal:content="description">describing...</i>
+                </td>
+              </tr>
+            </tal:item>
+          </tal:items>
+        </table>
       </div>
 </metal:children>
 
@@ -81,8 +105,9 @@
               <tr tal:define="description related/description"
                   tal:condition="description"
                   tal:attributes="class class">
-                <td colspan="3" style="padding-left: 3em">
-                  <span tal:replace="description">describing...</span>
+                <td>&nbsp;</td>
+                <td colspan="2">
+                  <i tal:content="description">describing...</i>
                 </td>
               </tr>
             </tal:item>
