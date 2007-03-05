@@ -66,8 +66,7 @@
               <tr tal:define="description related/description"
                   tal:condition="description"
                   tal:attributes="class class">
-                <td>&nbsp;</td>
-                <td colspan="2">
+                <td colspan="3" style="padding-left: 7em">
                   <i tal:content="description">describing...</i>
                 </td>
               </tr>
@@ -105,8 +104,7 @@
               <tr tal:define="description related/description"
                   tal:condition="description"
                   tal:attributes="class class">
-                <td>&nbsp;</td>
-                <td colspan="2">
+                <td colspan="3" style="padding-left: 7em">
                   <i tal:content="description">describing...</i>
                 </td>
               </tr>

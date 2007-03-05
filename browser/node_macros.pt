@@ -144,7 +144,7 @@
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Resource Title</a>
-          <div style="margin-left: 3em"
+          <div style="margin-left: 5em"
                tal:define="description related/description"
                tal:condition="description">
             <i tal:content="description">Description</i>
@@ -171,7 +171,7 @@
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Resource Title</a>
-          <div style="margin-left: 3em"
+          <div style="margin-left: 5em"
                tal:define="description related/description"
                tal:condition="description">
             <i tal:content="description">Description</i>

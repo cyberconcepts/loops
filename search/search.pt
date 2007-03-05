@@ -50,17 +50,29 @@
             <tr>
               <th i18n:translate="label_title">Title</th>
               <th i18n:translate="label_type">Type</th>
+              <th i18n:translate="label_modifdate">Modification Date</th>
             </tr>
           </thead>
           <tbody>
-            <tr tal:repeat="row view/results">
-              <td>
-                <a tal:attributes="href string:${view/url}/.target${row/uniqueId}"
-                   tal:content="row/title" />
-              </td>
-              <td tal:content="row/typeTitle">
-              </td>
-            </tr>
+            <tal:items tal:repeat="row view/results">
+              <tal:item define="class python: repeat['row'].odd() and 'even' or 'odd'">
+                <tr tal:attributes="class class">
+                  <td>
+                    <a tal:attributes="href string:${view/url}/.target${row/uniqueId}"
+                       tal:content="row/title" />
+                  </td>
+                  <td tal:content="row/typeTitle">Type</td>
+                  <td><span tal:replace="row/modified">Type</span></td>
+                </tr>
+                <tr tal:define="description row/description"
+                    tal:condition="description"
+                    tal:attributes="class class">
+                  <td colspan="3" style="padding-left: 7em">
+                    <i tal:content="description">describing...</i>
+                  </td>
+                </tr>
+              </tal:item>
+            </tal:items>
           </tbody>
         </table>
       </fieldset>
