@@ -83,6 +83,9 @@ class ObjectForm(NodeView):
 
     def setUp(self):
         self.setUpWidgets()
+        desc = self.widgets.get('description')
+        if desc:
+            desc.height = 2
         if self.typeInterface in widgetControllers:
             wc = widgetControllers[self.typeInterface]()
             wc.modifyWidgetSetup(self.widgets)
@@ -109,6 +112,9 @@ class WidgetController(object):
 
 
 class NoteWidgetController(WidgetController):
+
+    def modifyFormFields(self, formFields):
+        return formFields.omit('description')
 
     def modifyWidgetSetup(self, widgets):
         widgets['data'].height = 5

@@ -39,6 +39,7 @@
 <metal:block define-macro="download">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
+    <p tal:content="item/description">Description</p>
     <p>
       <a href="#"
          tal:attributes="href string:${view/url}/.target${view/targetId}/view">

@@ -22,6 +22,7 @@ Definition of the Concept and related classes.
 $Id$
 """
 
+from zope import component, schema
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
@@ -29,8 +30,8 @@ from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
-from zope import schema
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
@@ -83,10 +84,18 @@ class Concept(Contained, Persistent):
 
     proxyInterface = IConceptView
 
+    def __init__(self, title=u''):
+        self.title = title
+
     _title = u''
     def getTitle(self): return self._title
     def setTitle(self, title): self._title = title
     title = property(getTitle, setTitle)
+
+    _description = u''
+    def getDescription(self): return self._description
+    def setDescription(self, description): self._description = description
+    description = property(getDescription, setDescription)
 
     def getConceptType(self):
         typePred = self.getConceptManager().getTypePredicate()
@@ -106,9 +115,6 @@ class Concept(Contained, Persistent):
                 self.deassignParent(current, [typePred])
             self.assignParent(concept, typePred)
     conceptType = property(getConceptType, setConceptType)
-
-    def __init__(self, title=u''):
-        self.title = title
 
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
@@ -299,9 +305,10 @@ class IndexAttributes(object):
     def text(self):
         context = self.context
         # TODO: include attributes provided by concept type
-        return ' '.join((zapi.getName(context), context.title,))
+        return ' '.join((getName(context), context.title,))
 
     def title(self):
         context = self.context
-        return ' '.join((zapi.getName(context), context.title,))
+        return ' '.join((getName(context),
+                         context.title, context.description)).strip()
 

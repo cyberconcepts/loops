@@ -1,21 +1,9 @@
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-        <div class="subcolumn" style="width: 49%">
-          <div style="margin-right: 50px">
-            <metal:fields use-macro="item/template/macros/conceptparents" />
-          </div>
-          <fieldset class="box"
-                    style="margin: 30px 20px 15px 30px">
-            <metal:fields use-macro="item/template/macros/concepttitle" />
-            <metal:fields use-macro="item/template/macros/conceptfields" />
-          </fieldset>
-          <div style="margin-right: 50px">
-            <metal:fields use-macro="item/template/macros/conceptchildren" />
-          </div>
-        </div>
-        <div class="subcolumn" style="margin-top: 60px; width: 49%">
+          <metal:fields use-macro="item/template/macros/concepttitle" />
+          <metal:fields use-macro="item/template/macros/conceptfields" /><br />
+          <metal:fields use-macro="item/template/macros/conceptchildren" /><br />
           <metal:fields use-macro="item/template/macros/conceptresources" />
-        </div>
   </div>
 </metal:data>
 
@@ -39,41 +27,68 @@
 
 
 <metal:parents define-macro="conceptparents">
-      <fieldset tal:attributes="class string:content-$level box;
-                                ondblclick python: item.openEditWindow('configure.html')">
-        <legend>Parents</legend>
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('configure.html')">
+        <h2>Parents</h2>
         <div tal:repeat="related item/parents">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Concept Title</a>
         </div>
-      </fieldset>
+      </div>
 </metal:parents>
 
 
 <metal:children define-macro="conceptchildren">
-      <fieldset tal:attributes="class string:content-$level box;
-                                ondblclick python: item.openEditWindow('configure.html')">
-        <legend>Children</legend>
-        <div tal:repeat="related item/children">
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('configure.html')"
+           tal:define="children python: list(item.children())"
+           tal:condition="children">
+        <h2>Children</h2><br />
+        <div tal:repeat="related children">
           <a href="#"
              tal:attributes="href string:${view/url}/.target${related/uniqueId}"
              tal:content="related/title">Concept Title</a>
         </div>
-      </fieldset>
+      </div>
 </metal:children>
 
 
 <metal:resources define-macro="conceptresources">
-      <fieldset tal:attributes="class string:content-$level box;
-                                ondblclick python: item.openEditWindow('resources.html')">
-        <legend>Resources</legend>
-        <div tal:repeat="related item/resources">
-          <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
-             tal:content="related/title">Resource Title</a>
-        </div>
-      </fieldset>
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('resources.html')"
+           tal:define="resources python: list(item.resources())"
+           tal:condition="resources">
+        <h2>Resources</h2><br />
+        <table class="listing">
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Modification Date</th>
+          </tr>
+          <tal:items repeat="related resources">
+            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd'">
+              <tr tal:attributes="class class">
+                <td valign="top">
+                  <a href="#"
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId}">
+                    <span tal:replace="related/title">Resource Title</span>
+                  </a>
+                </td>
+                <td><span tal:replace="related/typeTitle">Type</span></td>
+                <td><span tal:replace="related/modified">Type</span></td>
+              </tr>
+              <tr tal:define="description related/description"
+                  tal:condition="description"
+                  tal:attributes="class class">
+                <td colspan="3" style="padding-left: 3em">
+                  <span tal:replace="description">describing...</span>
+                </td>
+              </tr>
+            </tal:item>
+          </tal:items>
+        </table>
+      </div>
 </metal:resources>
 
 
@@ -87,3 +102,18 @@
     </metal:listing>
   </div>
 </metal:listing>
+
+
+<!-- portlets -->
+
+<metal:actions define-macro="parents">
+          <div tal:repeat="concept macro/info/parents">
+            <a href="#"
+               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
+              <span tal:replace="concept/title">Concept</span>
+              (<i tal:content="concept/typeTitle">Type</i>)
+            </a>
+          </div>
+</metal:actions>
+
+

@@ -40,6 +40,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
+from zope.traversing.api import getName
 
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
@@ -126,7 +127,11 @@ class BaseView(GenericView):
 
     @Lazy
     def title(self):
-        return self.context.title or zapi.getName(self.context)
+        return self.context.title or getName(self.context)
+
+    @Lazy
+    def description(self):
+        return self.context.description
 
     @Lazy
     def dcTitle(self):

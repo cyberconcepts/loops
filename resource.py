@@ -22,19 +22,19 @@ Definition of the Concept class.
 $Id$
 """
 
-from zope import component
+from zope import component, schema
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
 from zope.app.file.interfaces import IFile
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
-from zope.size.interfaces import ISized
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
-from zope import schema
+from zope.size.interfaces import ISized
+from zope.traversing.api import getName
 from persistent import Persistent
 from cStringIO import StringIO
 
@@ -78,13 +78,23 @@ class Resource(Image, Contained):
 
     implements(IBaseResource, IResource, IResourceManagerContained, IRelatable, ISized)
 
-    proxyInterface = IMediaAssetView
+    proxyInterface = IMediaAssetView  # obsolete!
 
     _size = _width = _height = 0
 
     def __init__(self, title=u''):
         super(Resource, self).__init__()
         self.title = title
+
+    _title = u''
+    def getTitle(self): return self._title
+    def setTitle(self, title): self._title = title
+    title = property(getTitle, setTitle)
+
+    _description = u''
+    def getDescription(self): return self._description
+    def setDescription(self, description): self._description = description
+    description = property(getDescription, setDescription)
 
     def getResourceType(self):
         cm = self.getLoopsRoot().getConceptManager()
@@ -107,11 +117,6 @@ class Resource(Image, Contained):
                 self.deassignConcept(current, [typePred])
             self.assignConcept(concept, typePred)
     resourceType = property(getResourceType, setResourceType)
-
-    _title = u''
-    def getTitle(self): return self._title
-    def setTitle(self, title): self._title = title
-    title = property(getTitle, setTitle)
 
     def _setData(self, data):
         dataFile = StringIO(data)  # let File tear it into pieces
@@ -342,7 +347,8 @@ class IndexAttributes(object):
 
     def title(self):
         context = self.context
-        return ' '.join((zapi.getName(context), context.title,)).strip()
+        return ' '.join((getName(context),
+                         context.title, context.description)).strip()
 
 
 class ResourceTypeSourceList(object):

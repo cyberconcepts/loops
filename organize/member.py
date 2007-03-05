@@ -62,6 +62,7 @@ class MemberRegistrationManager(object):
         # step 2: create a corresponding person concept:
         cm = self.context.getConceptManager()
         id = baseId = 'person.' + userId
+        # TODO: use NameChooser
         num = 0
         while id in cm:
             num +=1

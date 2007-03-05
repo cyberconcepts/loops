@@ -74,6 +74,14 @@ class IConcept(ILoopsObject, IPotentialTarget):
         default=u'',
         required=True)
 
+    description = schema.Text(
+                title=_(u'Description'),
+                description=_(u'A medium-length description describing the '
+                               'content and the purpose of the object'),
+                default=u'',
+                missing_value=u'',
+                required=False)
+
     conceptType = schema.Choice(
         title=_(u'Concept Type'),
         description=_(u"The type of the concept, specified by a relation to "
@@ -199,6 +207,14 @@ class IBaseResource(ILoopsObject):
                 missing_value=u'',
                 required=True)
 
+    description = schema.Text(
+                title=_(u'Description'),
+                description=_(u'A medium-length description describing the '
+                               'content and the purpose of the object'),
+                default=u'',
+                missing_value=u'',
+                required=False)
+
     resourceType = schema.Choice(
         title=_(u'Resource Type'),
         description=_(u"The type of the resource, specified by a relation to "
@@ -236,6 +252,14 @@ class IResourceSchema(Interface):
                 default=u'',
                 missing_value=u'',
                 required=True)
+
+    description = schema.Text(
+                title=_(u'Description'),
+                description=_(u'A medium-length description describing the '
+                               'content and the purpose of the object'),
+                default=u'',
+                missing_value=u'',
+                required=False)
 
     data = schema.Bytes(
                 title=_(u'Data'),
@@ -312,7 +336,7 @@ class IDocument(IDocumentSchema, IResource):
     """
 
 
-# media asset is probably obsolete - replaced by plain Resource with
+# media asset is obsolete - replaced by plain Resource with
 # resourceType = file.
 
 class IMediaAssetView(IResourceSchema):

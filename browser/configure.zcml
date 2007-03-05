@@ -333,27 +333,6 @@
       permission="zope.View"
       />
 
-  <!-- media asset -->
-
-  <!--<editform
-      label="Edit Media Asset"
-      name="edit.html"
-      schema="loops.interfaces.IMediaAssetSchema"
-      fields="title data contentType"
-      for="loops.interfaces.IMediaAsset"
-      template="edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Media Asset"
-      />-->
-
-  <!--<page
-      name="edit.html"
-      for="loops.interfaces.IMediaAsset"
-      class="loops.browser.resource.MediaAssetEditForm"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />-->
-
   <!-- view manager -->
 
   <addform
@@ -493,28 +472,6 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure"
       />
-
-  <!--<editform
-      label="Edit Media Asset"
-      name="edit_target.html"
-      schema="loops.interfaces.IMediaAsset"
-      fields="title data contentType"
-      for="loops.interfaces.IMediaAssetView"
-      template="edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Media Asset"
-      />
-
-  <editform
-      label="Edit Document"
-      name="edit_target.html"
-      schema="loops.interfaces.IDocument"
-      fields="title data contentType"
-      for="loops.interfaces.IDocumentView"
-      template="edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Document"
-      />-->
 
   <page
       name="node.html"

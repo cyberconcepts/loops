@@ -62,6 +62,12 @@ class ConceptEditForm(EditForm):
             fields = FormFields(fields, typeInterface)
         return fields
 
+    def setUpWidgets(self, ignore_request=False):
+        super(ConceptEditForm, self).setUpWidgets(ignore_request)
+        desc = self.widgets.get('description')
+        if desc:
+            desc.height = 2
+
 
 class ConceptView(BaseView):
 
@@ -70,6 +76,14 @@ class ConceptView(BaseView):
     @Lazy
     def macro(self):
         return self.template.macros['conceptdata']
+
+    def __init__(self, context, request):
+        super(ConceptView, self).__init__(context, request)
+        cont = self.controller
+        if cont is not None:
+            cont.macros.register('portlet_right', 'parents', title='Parents',
+                         subMacro=self.template.macros['parents'],
+                         position=0, info=self)
 
     def fieldData(self):
         ti = IType(self.context).typeInterface

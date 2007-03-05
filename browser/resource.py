@@ -67,6 +67,12 @@ class ResourceEditForm(EditForm):
             fields = FormFields(fields.omit(*omit), typeInterface)
         return fields
 
+    def setUpWidgets(self, ignore_request=False):
+        super(ResourceEditForm, self).setUpWidgets(ignore_request)
+        desc = self.widgets.get('description')
+        if desc:
+            desc.height = 2
+
 
 class DocumentEditForm(EditForm):
     form_fields = FormFields(IDocument)
