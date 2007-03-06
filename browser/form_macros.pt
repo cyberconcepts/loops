@@ -105,6 +105,19 @@
 
 <metal:assignments define-macro="assignments">
     <tbody id="form.assignments">
+      <tr tal:repeat="type view/presetTypesForAssignment">
+        <td><span i18n:translate="">Type: </span></td>
+        <td><b tal:content="type/title" /></td>
+        <td><span i18n:translate="">Select value: </span></td>
+        <td colspan="2">
+          <select name="form.assignments.selected:list">
+            <tal:concepts repeat="concept python: view.conceptsForType(type['token'])">
+              <option tal:attributes="value concept/token"
+                      tal:content="concept/title">Zope Corp</option>
+            </tal:concepts>
+          </select>
+        </td>
+      </tr>
       <tr tal:repeat="relation view/assignments">
         <td colspan="5">
           <input type="hidden" name="form.assignments.old:list"

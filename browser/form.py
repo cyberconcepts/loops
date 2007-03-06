@@ -40,12 +40,13 @@ from zope.security.proxy import isinstance
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
-from cybertools.typology.interfaces import IType
+from cybertools.typology.interfaces import IType, ITypeManager
 from loops.concept import ResourceRelation
 from loops.interfaces import IConcept, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
+from loops.query import ConceptQuery
 from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
@@ -98,8 +99,27 @@ class ObjectForm(NodeView):
 
     @Lazy
     def defaultPredicate(self):
-        return util.getUidForObject(
-                self.loopsRoot.getConceptManager().getDefaultPredicate())
+        return self.loopsRoot.getConceptManager().getDefaultPredicate()
+
+    @Lazy
+    def typeManager(self):
+        return ITypeManager(self.context)
+
+    @Lazy
+    def presetTypesForAssignment(self):
+        types = list(self.typeManager.listTypes(include=('assign',)))
+        assigned = [r.context.conceptType for r in self.assignments]
+        types = [t for t in types if t.typeProvider not in assigned]
+        return [dict(title=t.title, token=t.tokenForSearch) for t in types]
+
+    def conceptsForType(self, token):
+        noSelection = dict(token='none', title=u'not selected')
+        result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
+        predicateUid = util.getUidForObject(self.defaultPredicate)
+        return ([noSelection] +
+                [dict(title=o.title,
+                      token='%s:%s' % (util.getUidForObject(o), predicateUid))
+                 for o in result])
 
 
 class WidgetController(object):
@@ -241,6 +261,9 @@ class EditObject(FormController):
                 if fn.startswith(self.conceptPrefix) and value:
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
                 else:
+                    if not value and fn == 'data' and IFile.providedBy(adapted):
+                        # empty file data - don' change
+                        continue
                     if isinstance(value, FileUpload):
                         filename = getattr(value, 'filename', '')
                         value = value.read()
@@ -273,7 +296,7 @@ class EditObject(FormController):
                 predicate = util.getObjectForUid(p)
                 obj.deassignConcept(concept, [predicate])
         for v in self.selected:
-            if v not in self.old:
+            if v != 'none' and v not in self.old:
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)

@@ -608,6 +608,45 @@ Creating an object
   >>> from loops.browser.form import CreateObjectForm, CreateObject
   >>> form = CreateObjectForm(m112, TestRequest())
 
+The form provides a set of data entry fields derived from the interface
+associated with the new object's resource (or concept) type.
+
+In addition it allows to assign concepts as parents to the object. Beside
+an integrated free search for concepts to assign there may be a list of
+preset concepts, e.g. depending on the target of the current node:
+
+  >>> form.assignments
+  ()
+  >>> m112.target = cc1
+  >>> form = CreateObjectForm(m112, TestRequest())
+  >>> form.assignments
+  (<...ConceptRelationView object ...>,)
+
+There also may be preset concept types that directly provide lists of
+concepts to select from.
+
+To show this let's start with a new type, the customer type.
+
+  >>> customer = concepts['customer'] = Concept('Customer')
+  >>> customer.conceptType = concepts.getTypeConcept()
+  >>> from loops.type import ConceptType, TypeConcept
+  >>> custType = TypeConcept(customer)
+  >>> custType.options
+  []
+  >>> cust1 = concepts['cust1'] = Concept(u'Zope Corporation')
+  >>> cust2 = concepts['cust2'] = Concept(u'cyberconcepts')
+  >>> for c in (cust1, cust2): c.conceptType = customer
+  >>> custType.options = ('qualifier:assign',)
+  >>> ConceptType(cust1).qualifiers
+  ('concept', 'assign')
+
+  >>> form = CreateObjectForm(m112, TestRequest())
+  >>> form.presetTypesForAssignment
+  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
+
+OK, so much about the form - now we want to create a new object based
+on data provided in this form:
+
   >>> from loops.interfaces import INote, ITypeConcept
   >>> from loops.type import TypeConcept
   >>> from loops.resource import NoteAdapter
@@ -708,7 +747,7 @@ target object's view here:
   [<loops.browser.common.Action object ...>]
   >>> action = view.virtualTarget.getActions()[0]
   >>> action.url
-  'http://127.0.0.1/loops/views/m1/m11/m111/.target16'
+  'http://127.0.0.1/loops/views/m1/m11/m111/.target19'
 
 
 Import/Export
