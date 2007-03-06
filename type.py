@@ -107,7 +107,8 @@ class LoopsType(BaseType):
 
     @Lazy
     def options(self):
-        return ITypeConcept(self.typeProvider).options or []
+        tp = self.typeProvider
+        return tp and ITypeConcept(tp).options or []
 
     @Lazy
     def optionsDict(self):
