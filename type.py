@@ -85,6 +85,9 @@ class LoopsType(BaseType):
         # check typeProvider for additional qualifiers:
         if self.typeProvider in (self.typeConcept, self.predicateType,):
             qu.append('system')
+        addQualifiers = self.optionsDict.get('qualifier')
+        if addQualifiers:
+            qu.extend(addQualifiers.split(','))
         # how to set a type to 'hidden'?
         return tuple(qu)
 

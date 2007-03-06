@@ -64,6 +64,20 @@ class Search(BaseView):
         self.maxRowNum = n
         return n
 
+    @Lazy
+    def presetSearchTypes(self):
+        """ Return a list of concept type info dictionaries (see BaseView)
+            that should be displayed on a separate search parameter row.
+        """
+        #return ITypeManager(self.context).listTypes(include=('search',))
+        return self.listTypesForSearch(include=('search',))
+
+    def conceptsForType(self, token):
+        noSelection = dict(token='none', title=u'not selected')
+        result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
+        return [noSelection] + [dict(title=o.title, token=util.getUidForObject(o))
+                                    for o in result]
+
     def initDojo(self):
         self.registerDojo()
         cm = self.controller.macros
@@ -106,18 +120,33 @@ class SearchResults(BaseView):
 
     @Lazy
     def results(self):
-        request = self.request
-        type = request.get('search.1.text', 'loops:*')
-        text = request.get('search.2.text')
-        useTitle = request.get('search.2.title')
-        useFull = request.get('search.2.full')
-        conceptType = request.get('search.3.type', 'loops:concept:*')
-        conceptTitle = request.get('search.3.text')
-        conceptUid = request.get('search.3.text_selected')
+        form = self.request.form
+        type = form.get('search.1.text', 'loops:*')
+        text = form.get('search.2.text')
+        useTitle = form.get('search.2.title')
+        useFull = form.get('search.2.full')
+        conceptType = form.get('search.3.type', 'loops:concept:*')
+        conceptTitle = form.get('search.3.text')
+        conceptUid = form.get('search.3.text_selected')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=useTitle, useFull=useFull,
                            conceptTitle=conceptTitle, conceptUid=conceptUid,
-                           conceptType= conceptType)
+                           conceptType=conceptType)
+        rowNum = 4
+        while rowNum < 10:
+            addCriteria = form.get('search.%i.text_selected' % rowNum)
+            rowNum += 1
+            if not addCriteria:
+                break
+            if addCriteria == 'none':
+                continue
+            addSelection = FullQuery(self).query(text=text, type=type,
+                                useTitle=useTitle, useFull=useFull,
+                                conceptUid=addCriteria)
+            if result:
+                result = [r for r in result if r in addSelection]
+            else:
+                result = addSelection
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
 

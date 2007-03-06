@@ -84,6 +84,7 @@
 
 <div metal:define-macro="search_row" id="1.1.row"
            tal:define="rowNum item/rowNum;
+                       basicIdPrefix idPrefix;
                        idPrefix string:$idPrefix.$rowNum;
                        namePrefix string:search.$rowNum;
                        param search_param | item/searchParam"
@@ -164,8 +165,36 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3>Search via related concepts</h3>
+      <h3 i18n:translate="">Search via related concepts</h3>
     </td>
+  <tr tal:repeat="type item/presetSearchTypes">
+    <tal:preset define="rowNum item/rowNum;
+                        idPrefix string:$basicIdPrefix.$rowNum;
+                        namePrefix string:search.$rowNum;">
+      <td></td>
+      <td>
+        <span i18n:translate="">Type: </span>
+        <b tal:content="type/title" />
+        <input type="hidden" name="type" value=""
+               tal:attributes="name string:$namePrefix.type;
+                               value type/token" />
+      </td>
+      <td>
+        <label for="text"
+               tal:attributes="for string:$idPrefix.text">Select value:</label>
+      </td>
+      <td>
+        <select name="text_selected"
+                tal:attributes="name string:$namePrefix.text_selected;
+                                id string:$idPrefix.text;">
+          <tal:concepts repeat="concept python: item.conceptsForType(type['token'])">
+            <option tal:attributes="value concept/token"
+                    tal:content="concept/title">Zope Corp</option>
+          </tal:concepts>
+        </select>
+      </td>
+    </tal:preset>
+  </tr>
   <tr>
     <td></td>
     <td>

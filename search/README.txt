@@ -1,4 +1,4 @@
-4===================================================================
+===================================================================
 loops.search - Provide search functionality for the loops framework
 ===================================================================
 
@@ -118,17 +118,21 @@ purposes fairly primitive) catalog and a resource we can search for:
   >>> class DummyCat(object):
   ...     implements(ICatalog)
   ...     def searchResults(self, **criteria):
+  ...         result = []
   ...         name = criteria.get('loops_title')
-  ...         if name.endswith('*'): name = name[:-1]
-  ...         type = criteria.get('loops_type', ('resource',))
-  ...         if name:
-  ...              if 'concept' in type[0]:
-  ...                  result = concepts.get(name)
-  ...              else:
-  ...                  result = resources.get(name)
-  ...              if result:
-  ...                  return [result]
-  ...         return []
+  ...         if name and name.endswith('*'): name = name[:-1]
+  ...         typeToken = criteria.get('loops_type', ('resource',))
+  ...         if name or typeToken:
+  ...             if 'concept' in typeToken[0]:
+  ...                  if name:
+  ...                      result = concepts.get(name)
+  ...                  else:
+  ...                      tp = concepts[typeToken[0].split(':')[-1]]
+  ...                      result = list(tp.getChildren())
+  ...             else:
+  ...                 result = resources.get(name)
+  ...         if not result: return []
+  ...         return type(result) is list and result or [result]
   >>> component.provideUtility(DummyCat())
 
   >>> from loops.resource import Resource
@@ -200,6 +204,59 @@ of the concepts' titles:
   >>> view.listConcepts()
   "[['Zope (Topic)', '11']]"
 
-TODO - more to come...
+Preset Concept Types on Search Forms
+------------------------------------
 
+Often we want to include certain types in our search. We can instruct
+the search form to include lines for these types by giving these types
+a certain qualifier, via the option attribute of the type interface.
+
+Let's start with a new type, the customer type.
+
+  >>> customer = concepts['customer'] = Concept('Customer')
+  >>> customer.conceptType = typeConcept
+  >>> custType = ITypeConcept(customer)
+  >>> custType.options
+  []
+
+  >>> cust1 = concepts['cust1'] = Concept(u'Zope Corporation')
+  >>> cust2 = concepts['cust2'] = Concept(u'cyberconcepts')
+  >>> for c in (cust1, cust2): c.conceptType = customer
+
+  >>> from cybertools.typology.interfaces import IType
+  >>> IType(cust1).qualifiers
+  ('concept',)
+
+  >>> searchView = Search(search, TestRequest())
+  >>> list(searchView.presetSearchTypes)
+  []
+
+We can now add a 'search' qualifier to the customer type's options
+and thus include the customer type in the preset search types.
+
+  >>> custType.options = ('qualifier:search',)
+  >>> IType(cust1).qualifiers
+  ('concept', 'search')
+  >>> searchView = Search(search, TestRequest())
+  >>> list(searchView.presetSearchTypes)
+  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
+
+  >>> searchView.conceptsForType('loops:concept:customer')
+  [{'token': 'none', 'title': u'not selected'},
+   {'token': '17', 'title': u'Zope Corporation'},
+   {'token': '18', 'title': u'cyberconcepts'}]
+
+Let's use this new search option for querying:
+
+  >>> form = {'search.4.text_selected': u'17'}
+  >>> resultsView = SearchResults(page, TestRequest(form=form))
+  >>> results = list(resultsView.results)
+  >>> results[0].title
+  u'Zope Corporation'
+
+
+Automatic Filtering
+-------------------
+
+TODO - more to come...
 

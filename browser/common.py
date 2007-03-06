@@ -225,7 +225,7 @@ class BaseView(GenericView):
         return util.KeywordVocabulary(general
                             + self.listTypesForSearch(('resource',), ('system', 'hidden'),))
 
-    # controllling editing
+    # controlling editing
 
     @Lazy
     def editable(self):

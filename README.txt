@@ -121,6 +121,9 @@ type manager.
   >>> from loops.type import LoopsTypeManager, LoopsType
   >>> component.provideAdapter(LoopsTypeManager, (ILoopsObject,), ITypeManager)
 
+  >>> from loops.type import TypeConcept
+  >>> component.provideAdapter(TypeConcept)
+
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
   >>> sorted(t.title for t in types)

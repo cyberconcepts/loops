@@ -64,6 +64,13 @@ def nl2br(text):
     else: # gracefully handle Mac line endings
         return '<br />\n'.join(text.split('\r'))
 
+def toUnicode(text):
+    if type(text) is not unicode:
+        return text.decode('UTF-8')
+    else:
+        return text
+
+
 def getObjectForUid(uid):
     if uid == '*': # wild card
         return '*'
@@ -76,9 +83,3 @@ def getUidForObject(obj):
     intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
 
-
-def toUnicode(text):
-    if type(text) is not unicode:
-        return text.decode('UTF-8')
-    else:
-        return text
