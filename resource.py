@@ -34,7 +34,7 @@ from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from zope.size.interfaces import ISized
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 from persistent import Persistent
 from cStringIO import StringIO
 
@@ -111,8 +111,7 @@ class Resource(Image, Contained):
         if current != concept:
             typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()
             if typePred is None:
-                raise ValueError('No type predicate found for '
-                                + zapi.getName(self))
+                raise ValueError('No type predicate found for ' + getName(self))
             if current is not None:
                 self.deassignConcept(current, [typePred])
             self.assignConcept(concept, typePred)
@@ -123,6 +122,7 @@ class Resource(Image, Contained):
         super(Resource, self)._setData(dataFile)
         if not self.contentType:
             self.guessContentType(data)
+        self._size = len(data)
     data = property(Image._getData, _setData)
 
     def guessContentType(self, data):
@@ -167,13 +167,32 @@ class Resource(Image, Contained):
     # ISized interface
 
     def getSize(self):
+        if self._size:
+            return self._size
+        tp = IType(self, None)
+        if tp is not None:
+            ti = tp.typeInterface
+            if ti is not None:
+                return len(ti(self).data)
         return len(self.data)
 
     def sizeForSorting(self):
         return 'byte', self.getSize()
 
     def sizeForDisplay(self):
-        return '%i Bytes' % self.getSize()
+        size = self.getSize()
+        kb = 1024.0
+        unit = 'B'
+        if size < kb:
+            return '%.0f %s' % (size, unit)
+        unit = 'kB'
+        size = size / kb
+        if size >= kb:
+            unit = 'MB'
+            size = size / kb
+        size = round(size, 1)
+        return '%.1f %s' % (size, unit)
+        #return '%s %s' % (util.getNiceNumber(size), unit)
 
 
 # Document and MediaAsset are legacy classes, will become obsolete
@@ -188,7 +207,9 @@ class Document(Resource):
         self.title = title
 
     _data = u''
-    def setData(self, data): self._data = data.replace('\r', '')
+    def setData(self, data):
+        self._data = data.replace('\r', '')
+        self._size = len(data)
     def getData(self): return self._data
     data = property(getData, setData)
 
@@ -241,6 +262,7 @@ class ExternalFileAdapter(FileAdapter):
     def setData(self, data):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         storage.setData(self.externalAddress, data, params=self.storageParams)
+        self.context._size = len(data)
 
     def getData(self):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
@@ -257,7 +279,9 @@ class DocumentAdapter(ResourceAdapterBase):
     # let the adapter handle the data attribute:
     _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
-    def setData(self, data): self.context._data = data.replace('\r', '')
+    def setData(self, data):
+        self.context._data = data.replace('\r', '')
+        self.context._size = len(data)
     def getData(self): return self.context._data
     data = property(getData, setData)
 

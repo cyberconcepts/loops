@@ -7,6 +7,9 @@
         <div metal:use-macro="views/node_macros/editicons" />
       </tal:edit>
       <h1 tal:content="item/title">Title</h1>
+      <p tal:define="description item/description"
+         tal:condition="description">
+        <i tal:content="description">Description</i></p>
       <div class="content-1" id="1.body"
            tal:attributes="id id;"
            tal:content="structure item/render">
@@ -30,6 +33,7 @@
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
+    <p><i tal:content="item/description">Description</i></p>
     <img src="#"
          tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
   </div>
@@ -39,7 +43,7 @@
 <metal:block define-macro="download">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <h3 tal:content="item/title">Title</h3>
-    <p tal:content="item/description">Description</p>
+    <p><i tal:content="item/description">Description</i></p>
     <p>
       <a href="#"
          tal:attributes="href string:${view/url}/.target${view/targetId}/view">
