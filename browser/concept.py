@@ -30,6 +30,7 @@ from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
@@ -80,7 +81,8 @@ class ConceptView(BaseView):
     def __init__(self, context, request):
         super(ConceptView, self).__init__(context, request)
         cont = self.controller
-        if cont is not None:
+        if (cont is not None and not IUnauthenticatedPrincipal.providedBy(
+                                                    self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title='Parents',
                          subMacro=self.template.macros['parents'],
                          position=0, info=self)

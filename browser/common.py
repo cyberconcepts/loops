@@ -239,18 +239,19 @@ class BaseView(GenericView):
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
-            return "openEditWindow('%s/@@%s')" % (self.url, viewName)
+            #if self.request.principal.id == 'rootadmin'
+                return "openEditWindow('%s/@@%s')" % (self.url, viewName)
         return ''
 
     @Lazy
     def xeditable(self):
-        return self.request.principal.id == 'rootadmin'
-        #return getattr(self.context, 'contentType', '').startswith('text/')
+        ct = getattr(self.context, 'contentType', '')
+        if ct.startswith('text/'):
+            return self.request.principal.id == 'rootadmin'
+        return canWrite(self.context, 'title')
 
     @Lazy
     def inlineEditingActive(self):
-        #return False
-        #return self.request.principal.id == 'rootadmin'
         # this may depend on system and user settings...
         return True
 

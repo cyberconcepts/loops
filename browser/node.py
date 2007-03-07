@@ -76,7 +76,8 @@ class NodeView(BaseView):
         cm.register('js', 'loops.js', resourceName='loops.js')
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=self.template.macros['menu'])
-        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+        #if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+        if canWrite(self.context, 'title'):
             #cm.register('portlet_right', 'clipboard', title='Clipboard',
             #            subMacro=self.template.macros['clipboard'])
             # this belongs to loops.organize; how to register portlets

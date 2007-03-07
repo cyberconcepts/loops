@@ -386,7 +386,14 @@ Now we are ready to set up a view on our page node:
 
 The elements responsible for presentation are controlled by a controller
 object; note that we have to provide a named template 'loops.node_macros' that
-is used to retrieve a macro used by NodeView:
+is used to retrieve a macro used by NodeView.
+
+As the display of the standard macros is controlled by permissions we have
+to install a checker first.
+
+  >>> from zope.security.checker import NamesChecker, defineChecker
+  >>> nodeChecker = NamesChecker(('body', 'title',))
+  >>> defineChecker(Node, nodeChecker)
 
   >>> from cybertools.browser.controller import Controller
   >>> from loops.browser.util import node_macros

@@ -30,7 +30,7 @@
                      style="float: right; border: 1px solid #ccc;
                             margin-top: 1em">
                   <span id="xedit_icon"
-                       tal:condition="item/xeditable | nothing">
+                       tal:condition="target/xeditable | nothing">
                     <a href="#" title="Edit" style="padding: 5px"
                        tal:attributes="href string:${item/realTargetUrl}/external_edit;
                                        title string:Edit '${target/title}' with External Editor"><img

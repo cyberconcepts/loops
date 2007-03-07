@@ -32,10 +32,10 @@
 
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
-    <h3 tal:content="item/title">Title</h3>
-    <p><i tal:content="item/description">Description</i></p>
+    <h3 tal:content="item/title">Title</h3><br />
     <img src="#"
          tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
+    <p><i tal:content="item/description">Description</i></p>
   </div>
 </metal:block>
 
