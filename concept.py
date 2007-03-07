@@ -63,6 +63,12 @@ class BaseRelation(DyadicRelation):
         id = zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.predicate)
         return '.'.join((baseName, str(id)))
 
+    # Problem with reindex catalog, needs __parent__ - but this does not help:
+    #__parent__ = None
+    #@property
+    #def __parent__(self):
+    #    return self.first
+
 
 class ConceptRelation(BaseRelation):
     """ A relation between concept objects.

@@ -88,7 +88,7 @@ class ObjectForm(NodeView):
         if desc:
             desc.height = 2
         if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface]()
+            wc = widgetControllers[self.typeInterface](self.context, self.request)
             wc.modifyWidgetSetup(self.widgets)
 
     def __call__(self):
@@ -124,6 +124,10 @@ class ObjectForm(NodeView):
 
 class WidgetController(object):
 
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
     def modifyFormFields(self, formFields):
         return formFields
 
@@ -143,6 +147,8 @@ class NoteWidgetController(WidgetController):
 class FileWidgetController(WidgetController):
 
     def modifyFormFields(self, formFields):
+        if self.request.principal.id == 'rootadmin':
+            return formFields
         return formFields.omit('contentType')
 
 
@@ -174,7 +180,7 @@ class EditObjectForm(ObjectForm, EditForm):
     def form_fields(self):
         ff = FormFields(self.typeInterface)
         if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface]()
+            wc = widgetControllers[self.typeInterface](self.context, self.request)
             ff = wc.modifyFormFields(ff)
         return ff
 
@@ -207,7 +213,7 @@ class CreateObjectForm(ObjectForm, Form):
         ff = FormFields(ifc)
         #ff['data'].custom_widget = UploadWidget
         if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface]()
+            wc = widgetControllers[self.typeInterface](self.context, self.request)
             ff = wc.modifyFormFields(ff)
         return ff
 
