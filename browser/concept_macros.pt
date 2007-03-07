@@ -85,10 +85,10 @@
         <h2>Resources</h2><br />
         <table class="listing">
           <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Size</th>
-            <th>Modification Date</th>
+            <th i18n:translate="label_title">Title</th>
+            <th i18n:translate="label_type">Type</th>
+            <th i18n:translate="label_size">Size</th>
+            <th i18n:translate="label_modifdate">Modification Date</th>
           </tr>
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd'">
@@ -100,7 +100,9 @@
                   </a>
                 </td>
                 <td><span tal:replace="related/typeTitle">Type</span></td>
-                <td><span tal:replace="related/context/sizeForDisplay">Type</span></td>
+                <td style="text-align: right">
+                  <span tal:replace="related/context/sizeForDisplay">Type</span>
+                </td>
                 <td><span tal:replace="related/modified">Type</span></td>
               </tr>
               <tr tal:define="description related/description"

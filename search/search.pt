@@ -50,6 +50,7 @@
             <tr>
               <th i18n:translate="label_title">Title</th>
               <th i18n:translate="label_type">Type</th>
+              <th i18n:translate="label_size">Size</th>
               <th i18n:translate="label_modifdate">Modification Date</th>
             </tr>
           </thead>
@@ -62,7 +63,10 @@
                        tal:content="row/title" />
                   </td>
                   <td tal:content="row/typeTitle">Type</td>
-                  <td><span tal:replace="row/modified">Type</span></td>
+                  <td style="text-align: right">
+                    <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
+                  </td>
+                  <td><span tal:replace="row/modified">modified</span></td>
                 </tr>
                 <tr tal:define="description row/description"
                     tal:condition="description"
