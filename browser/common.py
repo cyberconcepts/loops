@@ -245,7 +245,7 @@ class BaseView(GenericView):
 
     @Lazy
     def xeditable(self):
-        ct = getattr(self.context, 'contentType', '')
+        ct = getattr(self.context, 'contentType', 'application/pdf')
         if ct == 'application/pdf':
             return False
         if ct.startswith('text/'):
