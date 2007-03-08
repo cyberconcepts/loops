@@ -152,7 +152,7 @@
     <td>
       <input type="hidden"
              id="concept.search.predicate"
-             tal:attributes="value view/defaultPredicate" />
+             tal:attributes="value view/defaultPredicateUid" />
       <input dojoType="comboBox" mode="remote" autoComplete="False"
              name="concept.search.text" id="concept.search.text"
              tal:attributes="dataUrl

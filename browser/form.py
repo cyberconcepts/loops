@@ -102,6 +102,10 @@ class ObjectForm(NodeView):
         return self.loopsRoot.getConceptManager().getDefaultPredicate()
 
     @Lazy
+    def defaultPredicateUid(self):
+        return util.getUidForObject(self.defaultPredicate)
+
+    @Lazy
     def typeManager(self):
         return ITypeManager(self.context)
 
@@ -115,7 +119,7 @@ class ObjectForm(NodeView):
     def conceptsForType(self, token):
         noSelection = dict(token='none', title=u'not selected')
         result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
-        predicateUid = util.getUidForObject(self.defaultPredicate)
+        predicateUid = self.defaultPredicateUid
         return ([noSelection] +
                 [dict(title=o.title,
                       token='%s:%s' % (util.getUidForObject(o), predicateUid))

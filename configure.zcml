@@ -352,6 +352,8 @@
   <adapter factory="loops.target.ConceptProxy"
            permission="zope.ManageContent" />
 
+  <!-- text conversions, e.g. for full-text indexing -->
+
   <adapter for="loops.interfaces.IFile"
            provides="cybertools.text.interfaces.ITextTransform"
            name="application/pdf"
@@ -361,6 +363,16 @@
            provides="cybertools.text.interfaces.ITextTransform"
            name="application/msword"
            factory="cybertools.text.doc.DocTransform" />
+
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/vnd.ms-powerpoint"
+           factory="cybertools.text.ppt.PptTransform" />
+
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/vnd.ms-excel"
+           factory="cybertools.text.xls.XlsTransform" />
 
   <!-- utilities -->
 
