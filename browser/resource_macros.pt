@@ -22,10 +22,11 @@
 
 <metal:block define-macro="render_note">
   <metal:render use-macro="item/template/macros/render" />
-  <div class="content-1" id="1.link">
+  <div class="content-1" id="1.link"
+       tal:define="linkUrl item/linkUrl">
     <a href="."
-       tal:attributes="href item/linkUrl"
-       tal:condition="item/linkUrl">more...</a>
+       tal:attributes="href linkUrl"
+       tal:condition="python: linkUrl and linkUrl != 'http://'">more...</a>
   </div>
 </metal:block>
 

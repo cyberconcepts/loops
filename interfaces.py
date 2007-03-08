@@ -619,7 +619,7 @@ class INote(ITextDocument):
     linkUrl = schema.TextLine(
         title=_(u'Link URL'),
         description=_(u'An (optional) link associated with this note'),
-        default=u'',
+        default=u'http://',
         required=False)
 
 

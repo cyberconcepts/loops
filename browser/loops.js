@@ -52,10 +52,12 @@ function inlineEdit(id, saveUrl) {
 
 function setConceptTypeForComboBox(typeId, cbId) {
     var t = dojo.byId(typeId).value;
-    var dp = dojo.widget.manager.getWidgetById(cbId).dataProvider;
+    var cb = dojo.widget.manager.getWidgetById(cbId)
+    var dp = cb.dataProvider;
     var baseUrl = dp.searchUrl.split('&')[0];
     var newUrl = baseUrl + '&searchType=' + t;
     dp.searchUrl = newUrl;
+    cb.setValue('');
 }
 
 var dialogs = {}

@@ -36,7 +36,7 @@ from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IBaseResource, IDocument, IMediaAsset
+from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
@@ -113,8 +113,10 @@ class ResourceView(BaseView):
            if viewName:
                return component.queryMultiAdapter((context, self.request),
                            name=viewName)
-        if context.contentType.startswith('text/'):
-            # TODO: This should be controlled by resourceType
+        ct = context.contentType
+        #if ct.startswith('text/') and ct != 'text/rtf':
+        ti = IType(context).typeInterface
+        if not ti or issubclass(ti, ITextDocument):
             return DocumentView(context, self.request)
         return self
 
