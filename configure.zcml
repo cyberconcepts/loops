@@ -366,6 +366,11 @@
 
   <adapter for="loops.interfaces.IFile"
            provides="cybertools.text.interfaces.ITextTransform"
+           name="text/rtf"
+           factory="cybertools.text.rtf.RtfTransform" />
+
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
            name="application/vnd.ms-powerpoint"
            factory="cybertools.text.ppt.PptTransform" />
 
