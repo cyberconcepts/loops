@@ -47,6 +47,11 @@
     <p><i tal:content="item/description">Description</i></p>
     <p>
       <a href="#"
+         tal:condition="nothing"
+         tal:attributes="href string:${view/url}/.target${view/targetId}/download.html">
+        Download
+      </a>
+      <a href="#"
          tal:attributes="href string:${view/url}/.target${view/targetId}/view">
         Download
       </a>

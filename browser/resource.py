@@ -120,8 +120,12 @@ class ResourceView(BaseView):
             return DocumentView(context, self.request)
         return self
 
-    def show(self):
+    def show(self, useAttachment=False):
         """ show means: "download"..."""
+        #data = self.openForView()
+        #response.setHeader('Content-Disposition',
+        #                   'attachment; filename=%s' % zapi.getName(self.context))
+        #return data
         context = self.context
         ti = IType(context).typeInterface
         if ti is not None:
@@ -130,10 +134,15 @@ class ResourceView(BaseView):
         response = self.request.response
         response.setHeader('Content-Type', context.contentType)
         response.setHeader('Content-Length', len(data))
-        if not context.contentType.startswith('image/'):
+        ct = context.contentType
+        if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
             response.setHeader('Content-Disposition',
                             'attachment; filename=%s' % zapi.getName(self.context))
         return data
+
+    def download(self):
+        """ Force download, e.g. of a PDF file """
+        return self.show(True)
 
     def getActions(self, category='object'):
         renderer = node_macros.macros['external_edit']

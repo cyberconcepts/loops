@@ -44,6 +44,7 @@ from zope.traversing.api import getName
 
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IView
 from loops.resource import Resource
@@ -172,6 +173,17 @@ class BaseView(GenericView):
     @Lazy
     def typeTitle(self):
         return self.type.title
+
+    @Lazy
+    def longTypeTitle(self):
+        t = self.typeTitle
+        ct = getattr(self.context, 'contentType')
+        if ct:
+            ext = mimetypes.extensions.get(ct)
+            if ext:
+                #return '%s (%s)' % (t, ext.upper())
+                return ext.upper()
+        return t
 
     @Lazy
     def typeUrl(self):

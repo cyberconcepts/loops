@@ -249,6 +249,13 @@
       class=".resource.ResourceView"
       attribute="show" />
 
+  <page
+      for="loops.interfaces.IResource"
+      name="download.html"
+      permission="zope.View"
+      class=".resource.ResourceView"
+      attribute="download" />
+
   <zope:adapter
       for="loops.interfaces.IResource
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -593,6 +600,14 @@
       for="loops.interfaces.INode"
       class=".node.NodeView"
       attribute="targetDefaultView"
+      permission="zope.View"
+      />
+
+  <page
+      name="download.html"
+      for="loops.interfaces.INode"
+      class=".node.NodeView"
+      attribute="targetDownload"
       permission="zope.View"
       />
 

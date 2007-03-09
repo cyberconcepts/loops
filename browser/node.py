@@ -255,11 +255,10 @@ class NodeView(BaseView):
 
     # virtual target support
 
-    def targetDefaultView(self):
+    def targetView(self, name='index.html', methodName='show'):
         target = self.virtualTargetObject
         if target is not None:
             ti = IType(target).typeInterface
-            name = zapi.getDefaultViewName(target, self.request)
             targetView = None
             if ti is not None:
                 adapted = ti(target)
@@ -270,8 +269,21 @@ class NodeView(BaseView):
                         name=name)
             if name == 'index.html' and hasattr(targetView, 'show'):
                 return targetView.show()
+            method = getattr(targetView, methodName, None)
+            if method:
+                return method()
             return targetView()
         return u''
+
+    def targetDefaultView(self):
+        target = self.virtualTargetObject
+        if target is not None:
+            name = zapi.getDefaultViewName(target, self.request)
+            return self.targetView(name)
+        return u''
+
+    def targetDownload(self):
+        return self.targetView('download.html', 'download')
 
     @Lazy
     def virtualTargetObject(self):
