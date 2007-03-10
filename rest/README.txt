@@ -34,8 +34,9 @@ ZCML setup):
 
 Let's look what setup has provided us with:
 
-  >>> list(concepts)
-  [u'file', u'hasType', u'image', u'predicate', u'standard', u'textdocument', u'type']
+  >>> sorted(concepts)
+  [u'domain', u'file', u'hasType', u'note', u'predicate', u'query',
+   u'standard', u'textdocument', u'type']
 
 
 loops Traversal
@@ -54,14 +55,14 @@ returns a REST view of the object.
   >>> component.provideAdapter(ConceptView)
 
 Navigation typically starts at a start object, which by default ist the
-top-level type concept:
+domain type concept (or the top-level type concept, if there is no domain type):
 
   >>> request = TestRequest()
   >>> obj = LoopsTraverser(loopsRoot, request).publishTraverse(request, 'startObject')
   >>> obj
   <loops.rest.common.ConceptView object at ...>
   >>> obj.context.title
-  u'Type'
+  u'Domain'
 
 The traversal adapter returns a view that when called renders the
 representation of its context object:

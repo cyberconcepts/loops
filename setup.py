@@ -28,8 +28,10 @@ from zope import component
 from zope.component import adapts
 from zope.interface import implements, Interface
 
-from loops.interfaces import ILoops, ITypeConcept, IFile, IImage, ITextDocument
+from loops.interfaces import ILoops, ITypeConcept
+from loops.interfaces import IFile, IImage, ITextDocument, INote
 from loops.concept import ConceptManager, Concept
+from loops.query import IQueryConcept
 from loops.resource import ResourceManager
 from loops.view import ViewManager, Node
 
@@ -73,16 +75,21 @@ class SetupManager(object):
         hasType = self.addObject(conceptManager, Concept, 'hasType', title=u'has Type')
         predicate = self.addObject(conceptManager, Concept, 'predicate', title=u'Predicate')
         standard = self.addObject(conceptManager, Concept, 'standard', title=u'subobject')
+        domain = self.addObject(conceptManager, Concept, 'domain', title=u'Domain')
+        query = self.addObject(conceptManager, Concept, 'query', title=u'Query')
         file = self.addObject(conceptManager, Concept, 'file', title=u'File')
-        image = self.addObject(conceptManager, Concept, 'image', title=u'Image')
+        #image = self.addObject(conceptManager, Concept, 'image', title=u'Image')
         textdocument = self.addObject(conceptManager, Concept,
-                                      'textdocument', title=u'Text Document')
-        for c in (typeConcept, file, image, textdocument, predicate):
+                                      'textdocument', title=u'Text')
+        note = self.addObject(conceptManager, Concept, 'note', title=u'Note')
+        for c in (typeConcept, domain, query, file, textdocument, predicate):
             c.conceptType = typeConcept
         ITypeConcept(typeConcept).typeInterface = ITypeConcept
+        ITypeConcept(query).typeInterface = IQueryConcept
         ITypeConcept(file).typeInterface = IFile
-        ITypeConcept(image).typeInterface = IImage
+        #ITypeConcept(image).typeInterface = IImage
         ITypeConcept(textdocument).typeInterface = ITextDocument
+        ITypeConcept(note).typeInterface = INote
         hasType.conceptType = predicate
         standard.conceptType = predicate
 

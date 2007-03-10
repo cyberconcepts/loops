@@ -215,7 +215,7 @@ class ConceptManager(BTreeContainer):
 
     def getDefaultPredicate(self):
         if self.defaultPredicate is None:
-            self.defaultPredicate = self['standard']
+            self.defaultPredicate = self.get('standard')
         return self.defaultPredicate
 
     def getPredicateType(self):

@@ -37,9 +37,9 @@ ZCML setup):
   >>> typeConcept = concepts['type']
 
   >>> from loops.concept import Concept
-  >>> query = concepts['query'] = Concept(u'Query')
   >>> topic = concepts['topic'] = Concept(u'Topic')
-  >>> for c in (query, topic): c.conceptType = typeConcept
+  >>> for c in (topic,): c.conceptType = typeConcept
+  >>> query = concepts['query']
 
 In addition we create a concept that holds the search page and a node
 (page) that links to this concept:
@@ -84,7 +84,7 @@ zcml in real life:
 
   >>> t = searchView.conceptTypesForSearch()
   >>> len(t)
-  3
+  4
   >>> t.getTermByToken('loops:concept:*').title
   'Any Concept'
 
