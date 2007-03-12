@@ -64,7 +64,7 @@ relations to other objects the expert package provides methods
 for selecting and filtering related objects using our basic querying
 syntax (that in turn is based on hurry.query).
 
-  >>> result = query.Children()
+  >>> #result = query.Children()
 
 
 Fin de partie
