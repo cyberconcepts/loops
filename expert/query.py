@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,29 @@ $Id$
 """
 
 from zope import interface, component
-from zope.app import zapi
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
+
+from hurry.query.query import Text as BaseText
+from hurry.query.query import Eq, Between
+
+
+titleIndex = ('', 'loops_title')
+textIndex = ('', 'loops_text')
+typeIndex = ('', 'loops_type')
+
+
+def Title(value):
+    return BaseText(titleIndex, value)
+
+def Text(value):
+    return BaseText(textIndex, value)
+
+def Type(value):
+    if value.endswith('*'):
+        v1 = value[:-1]
+        v2 = value[:-1] + '\x7f'
+        return Between(typeIndex, v1, v2)
+    return Eq(typeIndex, value)
 

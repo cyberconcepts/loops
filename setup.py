@@ -94,11 +94,15 @@ class SetupManager(object):
         standard.conceptType = predicate
 
     def addObject(self, container, class_, name, **kw):
-        if name in container:
-            return container[name]
-        obj = container[name] = class_()
-        for attr in kw:
-            setattr(obj, attr, kw[attr])
-        notify(ObjectCreatedEvent(obj))
-        notify(ObjectModifiedEvent(obj))
-        return obj
+        return addObject(container, class_, name, **kw)
+
+
+def addObject(container, class_, name, **kw):
+    if name in container:
+        return container[name]
+    obj = container[name] = class_()
+    for attr in kw:
+        setattr(obj, attr, kw[attr])
+    notify(ObjectCreatedEvent(obj))
+    notify(ObjectModifiedEvent(obj))
+    return obj

@@ -16,62 +16,56 @@ Setting up a loops Site and Utilities
 
 Let's do some basic set up
 
+  >>> from zope import component, interface
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
 
-  >>> from zope import component, interface
-
 and build a simple loops site with a concept manager and some concepts
 (with a relation registry, a catalog, and all the type machinery - what
-in real life is done via standard ZCML setup):
+in real life is done via standard ZCML setup or via local utility
+configuration):
 
-  >>> from cybertools.relation.tests import IntIdsStub
-  >>> component.provideUtility(IntIdsStub())
-  >>> from cybertools.relation.registry import RelationRegistry
-  >>> from cybertools.relation.interfaces import IRelationRegistry
-  >>> relations = RelationRegistry()
-  >>> relations.setupIndexes()
-  >>> component.provideUtility(relations, IRelationRegistry)
-
-  >>> from loops.type import ConceptType, TypeConcept
-  >>> component.provideAdapter(ConceptType)
-  >>> component.provideAdapter(TypeConcept)
-
-  >>> from zope.app.catalog.catalog import Catalog
-  >>> catalog = Catalog()
-  >>> from zope.app.catalog.interfaces import ICatalog
-  >>> component.provideUtility(catalog, ICatalog)
-
-  >>> from zope.app.catalog.field import FieldIndex
-  >>> from zope.app.catalog.text import TextIndex
-  >>> from loops.interfaces import IIndexAttributes
-  >>> catalog['loops_title'] = TextIndex('title', IIndexAttributes)
-  >>> catalog['loops_text'] = TextIndex('text', IIndexAttributes)
-  >>> catalog['loops_type'] = TextIndex('type', IIndexAttributes)
-
-  >>> from loops import Loops
-  >>> loopsRoot = site['loops'] = Loops()
-
-  >>> from loops.knowledge.setup import SetupManager
-  >>> component.provideAdapter(SetupManager, name='knowledge')
-  >>> from loops.setup import SetupManager
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
-
-  >>> from loops import util
-  >>> from loops.concept import IndexAttributes
-  >>> component.provideAdapter(IndexAttributes)
-
-  >>> from loops.concept import Concept
-
-  >>> for c in concepts:
-  ...     catalog.index_doc(util.getUidForObject(c), c)
+  >>> from loops.expert.testsetup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
 
   >>> #sorted(concepts)
+  >>> #sorted(resources)
+  >>> len(concepts) + len(resources)
+  35
+
+  >>> #from zope.app.catalog.interfaces import ICatalog
+  >>> #sorted(component.getUtility(ICatalog).keys())
 
 
-Text Queries
-============
+Type- and Text-based Queries
+============================
+
+  >>> from loops.expert import query
+  >>> t = query.Title('ty*')
+  >>> list(t.apply())
+  [0, 1, 39]
+
+  >>> t = query.Type('loops:*')
+  >>> len(list(t.apply()))
+  35
+
+  >>> t = query.Type('loops:concept:predicate')
+  >>> len(list(t.apply()))
+  6
+
+  >>> t = query.Type('loops:concept:predicate') & query.Title('t*')
+  >>> list(t.apply())
+  [1]
+
+
+Relationship-based Queries
+==========================
+
+In addition to the simple methods of concepts and resources for accessing
+relations to other objects the expert package provides methods
+for selecting and filtering related objects using our basic querying
+syntax (that in turn is based on hurry.query).
 
 
 Fin de partie
