@@ -34,28 +34,25 @@ configuration):
   >>> len(concepts) + len(resources)
   35
 
-  >>> #from zope.app.catalog.interfaces import ICatalog
-  >>> #sorted(component.getUtility(ICatalog).keys())
-
 
 Type- and Text-based Queries
 ============================
 
   >>> from loops.expert import query
-  >>> t = query.Title('ty*')
-  >>> list(t.apply())
+  >>> qu = query.Title('ty*')
+  >>> list(qu.apply())
   [0, 1, 39]
 
-  >>> t = query.Type('loops:*')
-  >>> len(list(t.apply()))
+  >>> qu = query.Type('loops:*')
+  >>> len(list(qu.apply()))
   35
 
-  >>> t = query.Type('loops:concept:predicate')
-  >>> len(list(t.apply()))
+  >>> qu = query.Type('loops:concept:predicate')
+  >>> len(list(qu.apply()))
   6
 
-  >>> t = query.Type('loops:concept:predicate') & query.Title('t*')
-  >>> list(t.apply())
+  >>> qu = query.Type('loops:concept:predicate') & query.Title('t*')
+  >>> list(qu.apply())
   [1]
 
 
@@ -66,6 +63,8 @@ In addition to the simple methods of concepts and resources for accessing
 relations to other objects the expert package provides methods
 for selecting and filtering related objects using our basic querying
 syntax (that in turn is based on hurry.query).
+
+  >>> result = query.Children()
 
 
 Fin de partie
