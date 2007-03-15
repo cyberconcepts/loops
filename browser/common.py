@@ -37,7 +37,7 @@ from zope.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
-from zope.security import canAccess, canWrite
+from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
@@ -252,6 +252,7 @@ class BaseView(GenericView):
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
             #if self.request.principal.id == 'rootadmin'
+            if checkPermission('zope.ManageSite', self.context):
                 return "openEditWindow('%s/@@%s')" % (self.url, viewName)
         return ''
 
@@ -260,8 +261,9 @@ class BaseView(GenericView):
         ct = getattr(self.context, 'contentType', '')
         if not ct or ct == 'application/pdf':
             return False
-        if ct.startswith('text/'):
-            return self.request.principal.id == 'rootadmin'
+        if ct.startswith('text/') and ct != 'text/rtf':
+            return checkPermission('zope.ManageSite', self.context)
+            #return self.request.principal.id == 'rootadmin'
         return canWrite(self.context, 'title')
 
     @Lazy
