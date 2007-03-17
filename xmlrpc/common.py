@@ -149,7 +149,7 @@ def objectAsDict(obj):
         adapter = ti(obj)
         for attr in (list(adapter._adapterAttributes) + list(ti)):
             if attr not in ('__parent__', 'context', 'id', 'name',
-                            'title', 'description', 'type'):
+                            'title', 'description', 'type', 'data'):
                 value = getattr(adapter, attr)
                 # TODO: better selection and conversion
                 if value is None or type(value) in (str, unicode):
