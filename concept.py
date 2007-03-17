@@ -122,6 +122,9 @@ class Concept(Contained, Persistent):
             self.assignParent(concept, typePred)
     conceptType = property(getConceptType, setConceptType)
 
+    def getType(self):
+        return self.conceptType
+
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 

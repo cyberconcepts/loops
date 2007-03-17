@@ -70,4 +70,3 @@ class Loops(Folder):
         prefix = loopsPrefix + '/'
         if uri.startswith(prefix):
             return traverse(self, uri[len(prefix):])
-

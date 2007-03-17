@@ -31,6 +31,7 @@ from zope.traversing.api import getName
 from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.typology.interfaces import IType
 from loops.concept import Concept
 from loops.util import getUidForObject, getObjectForUid, toUnicode
 
@@ -90,11 +91,19 @@ class LoopsMethods(MethodPublisher):
         rels = obj.getParentRelations(preds or None, parent)
         return formatRelations(rels, useSecond=False)
 
+    def getResources(self, id, predicates=[], resource=''):
+        obj = getObjectForUid(id)
+        preds = [getObjectForUid(p) for p in predicates]
+        resource = resource and getObjectForUid(child) or None
+        rels = obj.getResourceRelations(preds or None, resource)
+        return formatRelations(rels)
+
     def getObjectWithChildren(self, obj):
         mapping = objectAsDict(obj)
         mapping['children'] = formatRelations(obj.getChildRelations())
         mapping['parents'] = formatRelations(
                                 obj.getParentRelations(), useSecond=False)
+        mapping['resources'] = formatRelations(obj.getResourceRelations())
         return mapping
 
     def assignChild(self, objId, predicateId, childId):
@@ -122,8 +131,22 @@ class LoopsMethods(MethodPublisher):
 
 
 def objectAsDict(obj):
-    mapping = {'id': getUidForObject(obj), 'name': getName(obj), 'title': obj.title,
-               'type': getUidForObject(obj.conceptType)}
+    objType = IType(obj)
+    mapping = {'id': getUidForObject(obj), 'name': getName(obj),
+               'title': obj.title, 'description': obj.description,
+               'type': getUidForObject(objType.typeProvider)}
+    ti = objType.typeInterface
+    if ti is not None:
+        adapter = ti(obj)
+        for attr in (list(adapter._adapterAttributes) + list(ti)):
+            if attr not in ('__parent__', 'context', 'id', 'name',
+                            'title', 'description', 'type'):
+                value = getattr(adapter, attr)
+                # TODO: better selection and conversion
+                if value is None or type(value) in (str, unicode):
+                    mapping[attr] = value or u''
+                elif type(value) is list:
+                    mapping[attr] = ' | '.join(value)
     return mapping
 
 def formatRelations(rels, useSecond=True):

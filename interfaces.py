@@ -75,12 +75,12 @@ class IConcept(ILoopsObject, IPotentialTarget):
         required=True)
 
     description = schema.Text(
-                title=_(u'Description'),
-                description=_(u'A medium-length description describing the '
-                               'content and the purpose of the object'),
-                default=u'',
-                missing_value=u'',
-                required=False)
+        title=_(u'Description'),
+        description=_(u'A medium-length description describing the '
+                       'content and the purpose of the object'),
+        default=u'',
+        missing_value=u'',
+        required=False)
 
     conceptType = schema.Choice(
         title=_(u'Concept Type'),
@@ -89,6 +89,10 @@ class IConcept(ILoopsObject, IPotentialTarget):
         default=None,
         source="loops.conceptTypeSource",
         required=False)
+
+    def getType():
+        """ Return a concept that provides the object's type.
+        """
 
     def getChildren(predicates=None):
         """ Return a sequence of concepts related to self as child concepts,
@@ -222,6 +226,11 @@ class IBaseResource(ILoopsObject):
         default=None,
         source="loops.resourceTypeSource",
         required=False)
+
+    def getType():
+        """ Return a concept that provides the object's type, i.e. the
+            resourceType attribute.
+        """
 
     data = schema.Bytes(
                 title=_(u'Data'),

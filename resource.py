@@ -117,6 +117,9 @@ class Resource(Image, Contained):
             self.assignConcept(concept, typePred)
     resourceType = property(getResourceType, setResourceType)
 
+    def getType(self):
+        return self.resourceType
+
     def _setData(self, data):
         dataFile = StringIO(data)  # let File tear it into pieces
         super(Resource, self)._setData(dataFile)

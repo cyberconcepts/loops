@@ -12,6 +12,7 @@ Let's do some basic set up
   >>> from zope import component, interface
   >>> from zope.publisher.browser import TestRequest
   >>> from loops.concept import Concept
+  >>> from loops.resource import Resource
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
@@ -23,7 +24,8 @@ ZCML setup):
   >>> intIds = IntIdsStub()
   >>> component.provideUtility(intIds)
 
-  >>> from loops.type import ConceptType, TypeConcept
+  >>> from loops.type import LoopsType, ConceptType, TypeConcept
+  >>> component.provideAdapter(LoopsType)
   >>> component.provideAdapter(ConceptType)
   >>> component.provideAdapter(TypeConcept)
 
@@ -31,28 +33,30 @@ ZCML setup):
   >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.setup import SetupManager
+  >>> from loops.organize.setup import SetupManager as OrganizeSetupManager
+  >>> component.provideAdapter(OrganizeSetupManager, name='organize')
   >>> setup = SetupManager(loopsRoot)
   >>> concepts, resources, views = setup.setup()
 
 Let's look what setup has provided us with:
 
   >>> sorted(concepts)
-  [u'domain', u'file', u'hasType', u'note', u'predicate', u'query',
+  [u'domain', u'file', u'hasType', u'note', u'person', u'predicate', u'query',
    u'standard', u'textdocument', u'type']
 
 Now let's add a few more concepts:
 
   >>> topic = concepts[u'topic'] = Concept(u'Topic')
   >>> intIds.register(topic)
-  8
+  9
   >>> zope = concepts[u'zope'] = Concept(u'Zope')
   >>> zope.conceptType = topic
   >>> intIds.register(zope)
-  9
+  10
   >>> zope3 = concepts[u'zope3'] = Concept(u'Zope 3')
   >>> zope3.conceptType = topic
   >>> intIds.register(zope3)
-  10
+  11
 
 Navigation typically starts at a start object, which by default ist the
 domain concept (if present, otherwise the top-level type concept):
@@ -61,7 +65,8 @@ domain concept (if present, otherwise the top-level type concept):
   >>> xrf = LoopsMethods(loopsRoot, TestRequest())
   >>> startObj = xrf.getStartObject()
   >>> sorted(startObj.keys())
-  ['children', 'id', 'name', 'parents', 'title', 'type']
+  ['children', 'description', 'id', 'name', 'options', 'parents', 'resources',
+   'title', 'type', 'typeInterface', 'viewName']
   >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
   ('1', u'domain', u'Domain', '0')
 
@@ -80,7 +85,7 @@ There are a few standard objects we can retrieve directly:
 In addition we can get a list of all types and all predicates available:
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
-  [u'domain', u'file', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
   [u'hasType', u'standard']
 
@@ -101,7 +106,7 @@ All methods that retrieve one object also returns its children and parents:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -119,7 +124,7 @@ We can also retrieve children and parents explicitely:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
 
   >>> pa = xrf.getParents('6')
   >>> len(pa)
@@ -128,6 +133,34 @@ We can also retrieve children and parents explicitely:
   u'hasType'
   >>> sorted(p['name'] for p in pa[0]['objects'])
   [u'predicate']
+
+Resources
+---------
+
+  >>> from loops.resource import TextDocumentAdapter
+  >>> from loops.interfaces import IResource, ITextDocument
+  >>> component.provideAdapter(TextDocumentAdapter, (IResource,), ITextDocument)
+
+  >>> zope3Id = xrf.getObjectByName('zope3')['id']
+  >>> td01 = resources['td01'] = Resource(u'Doc1')
+  >>> td01.resourceType = concepts['textdocument']
+  >>> zope3.assignResource(td01)
+
+  >>> obj = xrf.getObjectById(zope3Id)
+  >>> obj['resources'][0]['objects'][0]['title']
+  u'Doc1'
+
+Attributes
+----------
+
+  >>> from loops.organize.party import Person
+  >>> from loops.organize.interfaces import IPerson
+  >>> component.provideAdapter(Person, provides=IPerson)
+  >>> p01 = concepts['p01'] = Concept(u'John Smith')
+  >>> p01.conceptType = concepts['person']
+
+  >>> john = xrf.getObjectByName('p01')
+  >>> #john
 
 Updating the concept map
 ------------------------
@@ -142,7 +175,13 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'title': u'Zope 2', 'type': '8', 'id': '12', 'name': u'zope2'}
+  {'description': u'', 'title': u'Zope 2', 'type': '9', 'id': '15',
+   'name': u'zope2'}
+
+Changing the attributes of a concept
+------------------------------------
+
+Not implemented yet.
 
 
 Fin de partie
