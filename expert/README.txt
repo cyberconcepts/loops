@@ -64,7 +64,10 @@ relations to other objects the expert package provides methods
 for selecting and filtering related objects using our basic querying
 syntax (that in turn is based on hurry.query).
 
-  >>> #result = query.Children()
+  >>> stateNew = concepts['new']
+  >>> qu = query.Resources(stateNew)
+  >>> list(qu.apply())
+  [55, 60]
 
 
 Fin de partie

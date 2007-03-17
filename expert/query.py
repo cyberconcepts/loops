@@ -22,14 +22,19 @@ Generic query functionality for retrieving stuff from a loops database
 $Id$
 """
 
+from BTrees.IIBTree import IITreeSet
+from BTrees.IFBTree import IFBTree, IFTreeSet
+
 from zope import interface, component
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 
+from hurry.query.query import Term
 from hurry.query.query import Text as BaseText
 from hurry.query.query import Eq, Between
 
+from loops import util
 
 titleIndex = ('', 'loops_title')
 textIndex = ('', 'loops_text')
@@ -49,3 +54,17 @@ def Type(value):
         return Between(typeIndex, v1, v2)
     return Eq(typeIndex, value)
 
+
+class Resources(Term):
+
+    def __init__(self, concept, **kw):
+        self.context = concept
+        self.kwargs = kw
+
+    def apply(self):
+        result = IFTreeSet()
+        #result = IFBTree()
+        for r in self.context.getResources():
+            result.insert(int(util.getUidForObject(r)))
+            #result[int(util.getUidForObject(r))] = 1.0
+        return result
