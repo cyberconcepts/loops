@@ -29,8 +29,8 @@
       methods="getStartObject getObjectById getObjectByName
                getDefaultPredicate getTypePredicate getTypeConcept
                getConceptTypes getPredicates
-               getChildren getParents
-               assignChild deassignChild createConcept"
+               getChildren getParents getResources
+               assignChild deassignChild createConcept editConcept"
       permission="loops.xmlrpc.ManageConcepts"
       />
 

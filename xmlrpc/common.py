@@ -129,6 +129,15 @@ class LoopsMethods(MethodPublisher):
         notify(ObjectModifiedEvent(c))
         return objectAsDict(c)
 
+    def editConcept(self, objId, attr, value):
+        obj = getObjectForUid(objId)
+        ti = IType(obj).typeInterface
+        if ti is not None:
+            obj = ti(obj)
+        setattr(obj, attr, toUnicode(value))
+        notify(ObjectModifiedEvent(obj))
+        return 'OK'
+
 
 def objectAsDict(obj):
     objType = IType(obj)

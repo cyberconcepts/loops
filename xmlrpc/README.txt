@@ -181,7 +181,13 @@ Updating the concept map
 Changing the attributes of a concept
 ------------------------------------
 
-Not implemented yet.
+  >>> xrf.editConcept(john['id'], 'firstName', u'John')
+  'OK'
+  >>> john = xrf.getObjectById(john['id'])
+  >>> john['firstName']
+  u'John'
+  >>> john['lastName']
+  u''
 
 
 Fin de partie
