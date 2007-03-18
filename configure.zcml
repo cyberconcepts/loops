@@ -7,6 +7,23 @@
 
   <!-- security definitions -->
 
+  <permission
+      id="loops.xmlrpc.ManageConcepts"
+      title="[xmlrpc-manage-concepts-permission] Manage Concepts"
+      />
+
+  <role
+      id="loops.xmlrpc.ConceptManager"
+      title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
+
+  <grant
+      permission="loops.xmlrpc.ManageConcepts"
+      role="loops.xmlrpc.ConceptManager" />
+
+  <!--<zope:grant
+      permission="loops.xmlrpc.ManageConcepts"
+      role="zope.ContentManager" />-->
+
   <!-- event subscribers -->
 
   <subscriber

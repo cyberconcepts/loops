@@ -12,7 +12,7 @@
       for="loops.interfaces.ILoopsObject"
       class="loops.browser.flash.flash.FlashView"
       template="flash.pt"
-      permission="zope.ManageContent"
+      permission="loops.xmlrpc.ManageConcepts"
       />
 
   <resource name="loops.swf" file="loops.swf" />

@@ -65,8 +65,8 @@ domain concept (if present, otherwise the top-level type concept):
   >>> xrf = LoopsMethods(loopsRoot, TestRequest())
   >>> startObj = xrf.getStartObject()
   >>> sorted(startObj.keys())
-  ['children', 'description', 'id', 'name', 'options', 'parents', 'resources',
-   'title', 'type', 'typeInterface', 'viewName']
+  ['children', 'description', 'id', 'name', 'parents', 'resources',
+   'title', 'type', 'viewName']
   >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
   ('1', u'domain', u'Domain', '0')
 

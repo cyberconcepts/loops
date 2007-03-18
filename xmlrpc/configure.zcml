@@ -5,23 +5,6 @@
    xmlns="http://namespaces.zope.org/xmlrpc"
    i18n_domain="zope">
 
-  <zope:permission
-      id="loops.xmlrpc.ManageConcepts"
-      title="[xmlrpc-manage-concepts-permission] Manage Concepts"
-      />
-
-  <zope:role
-      id="loops.xmlrpc.ConceptManager"
-      title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
-
-  <zope:grant
-      permission="loops.xmlrpc.ManageConcepts"
-      role="loops.xmlrpc.ConceptManager" />
-
-  <!--<zope:grant
-      permission="loops.xmlrpc.ManageConcepts"
-      role="zope.ContentManager" />-->
-
   <view
       name="xrf"
       for="loops.interfaces.ILoops"

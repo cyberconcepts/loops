@@ -28,6 +28,7 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.publisher.xmlrpc import XMLRPCView
 from zope.app.publisher.xmlrpc import MethodPublisher
 from zope.traversing.api import getName
+from zope.schema.interfaces import ITextLine
 from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
@@ -134,6 +135,7 @@ class LoopsMethods(MethodPublisher):
         ti = IType(obj).typeInterface
         if ti is not None:
             obj = ti(obj)
+        # TODO: provide conversion if necessary
         setattr(obj, attr, toUnicode(value))
         notify(ObjectModifiedEvent(obj))
         return 'OK'
@@ -147,15 +149,17 @@ def objectAsDict(obj):
     ti = objType.typeInterface
     if ti is not None:
         adapter = ti(obj)
-        for attr in (list(adapter._adapterAttributes) + list(ti)):
+        #for attr in (list(adapter._adapterAttributes) + list(ti)):
+        for attr in list(ti):
             if attr not in ('__parent__', 'context', 'id', 'name',
                             'title', 'description', 'type', 'data'):
                 value = getattr(adapter, attr)
-                # TODO: better selection and conversion
-                if value is None or type(value) in (str, unicode):
+                # TODO: provide conversion and schema information
+                #if value is None or type(value) in (str, unicode):
+                if ITextLine.providedBy(ti[attr]):
                     mapping[attr] = value or u''
-                elif type(value) is list:
-                    mapping[attr] = ' | '.join(value)
+                #elif type(value) is list:
+                #    mapping[attr] = ' | '.join(value)
     return mapping
 
 def formatRelations(rels, useSecond=True):
