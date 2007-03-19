@@ -40,11 +40,12 @@ from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 
-from interfaces import IView, INode
-from interfaces import IViewManager, INodeContained
-from interfaces import ILoopsContained
-from interfaces import ITargetRelation
-from interfaces import IConcept
+from loops.interfaces import IView, INode
+from loops.interfaces import IViewManager, INodeContained
+from loops.interfaces import ILoopsContained
+from loops.interfaces import ITargetRelation
+from loops.interfaces import IConcept
+from loops.versioning.versioninfo import getVersionInfo
 
 
 class View(object):
@@ -202,6 +203,8 @@ class NodeTraverser(ItemTraverser):
             else:
                 target = self.context.target
             if target is not None:
+                # provide versioning info and switch to correct version if appropriate
+                target, versionInfo = getVersionInfo(target, request)
                 # remember self.context in request
                 viewAnnotations = request.annotations.setdefault('loops.view', {})
                 viewAnnotations['node'] = self.context
@@ -211,6 +214,7 @@ class NodeTraverser(ItemTraverser):
                 else:
                     # we'll use the target object in the node's context
                     viewAnnotations['target'] = target
+                    viewAnnotations['versionInfo'] = versionInfo
                     return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
 

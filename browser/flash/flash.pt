@@ -1,6 +1,8 @@
 <html tal:define="dummy view/setHeaders;
                   hostURL view/loopsUrl;
-                  movie context/++resource++loops.swf">
+                  logoURL context/++resource++loops_logo.jpg;
+                  movie context/++resource++loops.swf;
+                  ">
 
 <head>
   <title>loops</title>
@@ -24,7 +26,7 @@
           <param name=quality value=high>
           <param name="wmode" value="opaque">
           <embed src="loops.swf?hostURL=http://z3.loops.cy55.de/loopsdms/cq/"
-                 tal:attributes="src string:$movie?hostURL=$hostURL/"
+                 tal:attributes="src string:$movie?hostURL=$hostURL/&logoURL=$logoURL"
                  quality=high
                  width="960" height="680" name="scorm" align=""
                  wmode="opaque"

@@ -147,6 +147,7 @@ class Resource(Image, Contained):
     def getClients(self, relationships=None):
         if relationships is None:
             relationships = [TargetRelation]
+        # Versioning: obj = IVersionable(self).master
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 

@@ -5,6 +5,8 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <resource name="loops_logo.jpg" file="loops_logo.jpg" />
+
   <!-- Flash user interface -->
 
   <page

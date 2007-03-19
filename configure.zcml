@@ -431,6 +431,7 @@
   <include package=".knowledge" />
   <include package=".organize" />
   <include package=".process" />
+  <include package=".versioning" />
   <include package=".search" />
   <include package=".browser" />
   <include package=".xmlrpc" />

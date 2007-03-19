@@ -1,0 +1,19 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <zope:adapter factory="loops.versioning.versionable.VersionableResource"
+                trusted="True" />
+
+  <zope:class class="loops.versioning.versionable.VersionableResource">
+    <require permission="zope.View"
+             interface="loops.versioning.interfaces.IVersionable" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.versioning.interfaces.IVersionable" />
+  </zope:class>
+
+</configure>
