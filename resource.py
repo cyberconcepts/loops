@@ -47,16 +47,17 @@ from cybertools.storage.interfaces import IExternalStorage
 from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
 
-from interfaces import IBaseResource, IResource
-from interfaces import IFile, IExternalFile, INote
-from interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
-from interfaces import IMediaAsset, IMediaAssetView
-from interfaces import IResourceManager, IResourceManagerContained
-from interfaces import ILoopsContained
-from interfaces import IIndexAttributes
-from concept import ResourceRelation
-from common import ResourceAdapterBase
-from view import TargetRelation
+from loops.interfaces import IBaseResource, IResource
+from loops.interfaces import IFile, IExternalFile, INote
+from loops.interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
+from loops.interfaces import IMediaAsset, IMediaAssetView
+from loops.interfaces import IResourceManager, IResourceManagerContained
+from loops.interfaces import ILoopsContained
+from loops.interfaces import IIndexAttributes
+from loops.concept import ResourceRelation
+from loops.common import ResourceAdapterBase
+from loops.versioning.util import getMaster
+from loops.view import TargetRelation
 
 _ = MessageFactory('loops')
 
@@ -147,26 +148,31 @@ class Resource(Image, Contained):
     def getClients(self, relationships=None):
         if relationships is None:
             relationships = [TargetRelation]
-        # Versioning: obj = IVersionable(self).master
-        rels = getRelations(second=self, relationships=relationships)
+        obj = getMaster(self)  # use the master version for relations
+        rels = getRelations(second=obj, relationships=relationships)
         return [r.first for r in rels]
 
     # concept relations
+    # note: we always use the master version for relations, see getMaster()
 
     def getConceptRelations (self, predicates=None, concept=None):
         predicates = predicates is None and ['*'] or predicates
-        relationships = [ResourceRelation(None, self, p) for p in predicates]
+        obj = getMaster(self)
+        relationships = [ResourceRelation(None, obj, p) for p in predicates]
         # TODO: sort...
-        return getRelations(first=concept, second=self, relationships=relationships)
+        return getRelations(first=concept, second=obj, relationships=relationships)
 
     def getConcepts(self, predicates=None):
-        return [r.first for r in self.getConceptRelations(predicates)]
+        obj = getMaster(self)
+        return [r.first for r in obj.getConceptRelations(predicates)]
 
     def assignConcept(self, concept, predicate=None):
-        concept.assignResource(self, predicate)
+        obj = getMaster(self)
+        concept.assignResource(obj, predicate)
 
     def deassignConcept(self, concept, predicates=None):
-        concept.deassignResource(self, predicates)
+        obj = getMaster(self)
+        concept.deassignResource(obj, predicates)
 
     # ISized interface
 

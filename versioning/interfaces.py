@@ -64,7 +64,3 @@ class IVersionable(Interface):
             The level provides the position in the variantIds tuple.
         """
 
-
-class IVersionInfo(Interface):
-    """ Versioning metadata, e.g. criteria for version selection.
-    """

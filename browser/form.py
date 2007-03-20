@@ -51,6 +51,7 @@ from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
+from loops.versioning.interfaces import IVersionable
 
 
 # special widgets
@@ -248,7 +249,14 @@ class EditObject(FormController):
     selected = None
 
     def update(self):
-        self.updateFields(self.view.virtualTargetObject)
+        # create new version if necessary
+        target = self.view.virtualTargetObject
+        obj = self.checkCreateVersion(target)
+        if obj != target:
+            # make sure new version is used by the view
+            self.view.virtualTargetObject = obj
+            self.request.annotations['loops.view']['target'] = obj
+        self.updateFields(obj)
         return True
 
     @Lazy
@@ -313,6 +321,14 @@ class EditObject(FormController):
                 exists = obj.getConceptRelations(predicates=[p], concept=concept)
                 if not exists:
                     obj.assignConcept(concept, predicate)
+
+    def checkCreateVersion(self, obj):
+        form = self.request.form
+        if form.get('version.create'):
+            versionable = IVersionable(obj)
+            level = int(form.get('version.level', 1))
+            return versionable.createVersion(level)
+        return obj
 
 
 class CreateObject(EditObject):

@@ -13,6 +13,7 @@ Setting up a loops Site and Utilities
 Let's do some basic set up
 
   >>> from zope import component, interface
+  >>> from zope.traversing.api import getName
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
 
@@ -42,6 +43,8 @@ We can access versioning information for an object by using an IVersionable
 adapter on the object.
 
   >>> d001 = resources['d001.txt']
+  >>> d001.title
+  u'Doc 001'
   >>> vD001 = IVersionable(d001)
 
 If there aren't any versions associated with the object we get the default
@@ -55,14 +58,70 @@ values:
   {}
   >>> vD001.currentVersion is d001
   True
-  >>> vD001.releasedVersion is d001
+  >>> vD001.releasedVersion is None
   True
 
 Now we can create a new version for our document:
 
-  >>> d001v1_1 = vD001.createVersion()
-  >>> sorted(resources)
+  >>> d001v1_2 = vD001.createVersion()
+  >>> getName(d001v1_2)
+  u'd001_1.2.txt'
+  >>> d001v1_2.title
+  u'Doc 001'
 
-  >>> vD001v1_1 = IVersionable(d001v1_1)
-  >>> vD001v1_1.versionId
+  >>> vD001v1_2 = IVersionable(d001v1_2)
+  >>> vD001v1_2.versionId
   '1.2'
+
+  >>> vD001.currentVersion is d001v1_2
+  True
+  >>> vD001.master is d001
+  True
+  >>> vD001v1_2.master is d001
+  True
+
+  >>> sorted(vD001.versions)
+  ['1.1', '1.2']
+
+When we use a higer level (i.e. a lower number for level) to denote
+a major version change, the lower levels are reset to 1:
+
+  >>> d001v2_1 = vD001.createVersion(0)
+  >>> getName(d001v2_1)
+  u'd001_2.1.txt'
+
+
+Providing the Correct Version
+=============================
+
+When accessing resources as targets for view nodes, the node's traversal adapter
+(see loops.view.NodeTraverser) uses the versioning framework to retrieve
+the correct version of a resource by calling the getVersion() function.
+
+  >>> from loops.versioning.util import getVersion
+  >>> from zope.publisher.browser import TestRequest
+
+The default version is always the released or - if this is not available -
+the current version (i.e. the version created most recently):
+
+  >>> IVersionable(getVersion(d001, TestRequest())).versionId
+  '2.1'
+
+  >>> IVersionable(getVersion(d001v1_2, TestRequest())).versionId
+  '2.1'
+
+  >>> d002 = resources['d002.txt']
+  >>> IVersionable(getVersion(d002, TestRequest())).versionId
+  '1.1'
+
+When using the expression "version=this" as a URL parameter the object
+addressed will be returned without looking for a special version:
+
+  >>> IVersionable(getVersion(d001, TestRequest(form=dict(version='this')))).versionId
+  '1.1'
+
+In addition it is possible to explicitly retrieve a certain version:
+
+  >>> IVersionable(getVersion(d001v1_2, TestRequest(form=dict(version='1.1')))).versionId
+  '1.1'
+

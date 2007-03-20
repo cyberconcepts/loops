@@ -5,6 +5,8 @@
     <form method="post" enctype="multipart/form-data">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
+      <input type="hidden" name="version"
+             tal:attributes="value request/version | nothing" />
       <table cellpadding="3" class="form">
         <tbody><tr><th colspan="5"><br />
               <span tal:replace="view/title"
@@ -24,6 +26,7 @@
           </tr>
           <tr metal:use-macro="view/template/macros/assignments" />
           <tr metal:use-macro="view/template/macros/search_concepts" />
+          <tr metal:use-macro="view/template/macros/versioning" />
           <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
       </table>
@@ -163,6 +166,33 @@
              onClick="addConceptAssignment()" />
     </td>
 </tr>
+
+
+<metal:versioning define-macro="versioning"
+                  tal:define="versionInfo view/versionInfo"
+                  tal:condition="versionInfo">
+      <tr>
+        <td colspan="5" class="headline">Versioning</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          Version:
+          <span tal:content="versionInfo">1.1 (current, released)</span>
+        </td>
+        <td title="Select if you want to create a new version">
+          <input type="checkbox"
+                 name="version.create" id="version.create"
+                 value="create" />
+          <label for="version.create">New version:</label>
+        </td>
+        <td colspan="2">
+          <select name="version.level">
+              <option value="1">minor</option>
+              <option value="0">major</option>
+          </select>
+        </td>
+      </tr>
+</metal:versioning>
 
 
 <tr metal:define-macro="buttons">

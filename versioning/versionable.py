@@ -24,8 +24,9 @@ $Id$
 
 from BTrees.OOBTree import OOBTree
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implements, Attribute
 from zope.cachedescriptors.property import Lazy
+from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
 from cybertools.text.mimetypes import extensions
@@ -55,15 +56,18 @@ class VersionableResource(object):
             return default
         return value
 
-    def initVersioningAttribute(self, attr, value):
-        attrName = attrPattern % attr
-        value = getattr(self.context, attrName, _not_found)
-        if value is _not_found:
-            setattr(self.context, attrName, value)
-
     def setVersioningAttribute(self, attr, value):
         attrName = attrPattern % attr
         setattr(self.context, attrName, value)
+
+    def initVersions(self):
+        attrName = attrPattern % 'versions'
+        value = getattr(self.context, attrName, _not_found)
+        if value is _not_found:
+            versions = OOBTree()
+            versions['1.1'] = self.context
+            setattr(self.context, attrName, versions)
+        #self.versions['1.1'] = self.context
 
     @Lazy
     def versionNumbers(self):
@@ -98,7 +102,7 @@ class VersionableResource(object):
     @property
     def releasedVersion(self):
         m = self.versionableMaster
-        return self.versionableMaster.getVersioningAttribute('releasedVersion', self.master)
+        return self.versionableMaster.getVersioningAttribute('releasedVersion', None)
 
     def createVersion(self, level=1):
         context = self.context
@@ -108,6 +112,9 @@ class VersionableResource(object):
         while len(vn) <= level:
             vn.append(1)
         vn[level] += 1
+        for l in range(level+1, len(vn)):
+            # reset lower levels
+            vn[l] = 1
         # create new object
         cls = context.__class__
         obj = cls()
@@ -123,18 +130,17 @@ class VersionableResource(object):
                                  versionId)
         getParent(context)[name] = obj
         # set resource attributes
-        obj.resourceType = context.resourceType
         ti = IType(context).typeInterface
-        if ti is not None:
-            adaptedContext = ti(context)
-            adaptedObj = ti(obj)
-            for attr in ti:
-                if attr not in ('resourceType',):
-                    setattr(adaptedObj, attr, getattr(adaptedContext, attr))
+        attrs = set((ti and list(ti) or [])
+                    + ['title', 'description', 'data', 'contentType'])
+        adaptedContext = ti and ti(context) or context
+        adaptedObj = ti and ti(obj) or obj
+        for attr in attrs:
+            setattr(adaptedObj, attr, getattr(adaptedContext, attr))
         # set attributes of the master version
-        versionableMaster.initVersioningAttribute('versions', OOBTree())
-        self.versions[versionId] = obj
         versionableMaster.setVersioningAttribute('currentVersion', obj)
+        versionableMaster.initVersions()
+        self.versions[versionId] = obj
         return obj
 
     def generateName(self, name, ext, versionId):

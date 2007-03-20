@@ -51,6 +51,7 @@ from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
+from loops.versioning.interfaces import IVersionable
 
 
 class NameField(schema.ASCIILine):
@@ -236,6 +237,22 @@ class BaseView(GenericView):
         general = [('loops:resource:*', 'Any Resource'),]
         return util.KeywordVocabulary(general
                             + self.listTypesForSearch(('resource',), ('system', 'hidden'),))
+
+    # versioning
+
+    @Lazy
+    def versionInfo(self):
+        context = self.context
+        versionable = IVersionable(context, None)
+        if versionable is None:
+            return ''
+        versionId = versionable.versionId
+        current = (versionable.currentVersion == context) and 'current' or ''
+        released = (versionable.releasedVersion == context) and 'released' or ''
+        if not current and not released:
+            return versionId
+        addInfo = ', '.join(e for e in (current, released) if e)
+        return '%s (%s)' % (versionId, addInfo)
 
     # controlling editing
 

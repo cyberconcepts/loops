@@ -45,7 +45,7 @@ from loops.interfaces import IViewManager, INodeContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import ITargetRelation
 from loops.interfaces import IConcept
-from loops.versioning.versioninfo import getVersionInfo
+from loops.versioning.util import getVersion
 
 
 class View(object):
@@ -203,8 +203,6 @@ class NodeTraverser(ItemTraverser):
             else:
                 target = self.context.target
             if target is not None:
-                # provide versioning info and switch to correct version if appropriate
-                target, versionInfo = getVersionInfo(target, request)
                 # remember self.context in request
                 viewAnnotations = request.annotations.setdefault('loops.view', {})
                 viewAnnotations['node'] = self.context
@@ -212,9 +210,10 @@ class NodeTraverser(ItemTraverser):
                     # we have to use the target object directly
                     return target
                 else:
+                    # switch to correct version if appropriate
+                    target = getVersion(target, request)
                     # we'll use the target object in the node's context
                     viewAnnotations['target'] = target
-                    viewAnnotations['versionInfo'] = versionInfo
                     return self.context
         return super(NodeTraverser, self).publishTraverse(request, name)
 

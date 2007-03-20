@@ -3,7 +3,7 @@
 import unittest, doctest
 from zope.testing.doctestunit import DocFileSuite
 from zope.interface.verify import verifyClass
-from loops.versioning import versioninfo
+from loops.versioning import versionable
 
 class Test(unittest.TestCase):
     "Basic tests for the expert sub-package."
