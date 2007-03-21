@@ -241,6 +241,18 @@ class BaseView(GenericView):
     # versioning
 
     @Lazy
+    def versionId(self):
+        context = self.context
+        versionable = IVersionable(context, None)
+        return versionable and versionable.versionId or ''
+
+    @Lazy
+    def currentVersionId(self):
+        context = self.context
+        versionable = IVersionable(context, None)
+        return versionable and versionable.currentVersion.versionId or ''
+
+    @Lazy
     def versionInfo(self):
         context = self.context
         versionable = IVersionable(context, None)

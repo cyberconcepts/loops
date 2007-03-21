@@ -87,6 +87,7 @@
           <tr>
             <th i18n:translate="label_title">Title</th>
             <th i18n:translate="label_type">Type</th>
+            <th i18n:translate="label_version">V</th>
             <th i18n:translate="label_size">Size</th>
             <th i18n:translate="label_modifdate">Modification Date</th>
           </tr>
@@ -102,6 +103,9 @@
                   </a>
                 </td>
                 <td><span tal:replace="related/longTypeTitle">Type</span></td>
+                <td style="text-align: center">
+                  <span tal:replace="related/versionId">1.1</span>
+                </td>
                 <td style="text-align: right">
                   <span tal:replace="related/context/sizeForDisplay">Type</span>
                 </td>

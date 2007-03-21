@@ -37,7 +37,6 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.formlib.namedtemplate import NamedTemplate
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
@@ -99,11 +98,12 @@ class NodeView(BaseView):
 
     @Lazy
     def item(self):
+        viewName = self.request.get('loops.viewName') or ''
+        # was there a .target... element in the URL?
         #target = self.virtualTargetObject  # ignores page even for direktly assignd target
         target = self.request.annotations.get('loops.view', {}).get('target')
-        # was there a .target... element in the URL?
         if target is not None:
-            basicView = zapi.getMultiAdapter((target, self.request))
+            basicView = zapi.getMultiAdapter((target, self.request), name=viewName)
             # xxx: obsolete when self.targetObject is virtual target:
             return basicView.view
         return self.page

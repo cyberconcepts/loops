@@ -1,0 +1,54 @@
+<metal:resources define-macro="versions">
+      <div tal:attributes="class string:content-$level;
+                           ondblclick python: item.openEditWindow('resources.html')"
+           tal:define="versions python: list(item.versions())"
+           tal:condition="versions">
+        <h2>Versions</h2><br />
+        <table class="listing">
+          <tr>
+            <th i18n:translate="label_title">Title</th>
+            <th i18n:translate="label_type">Type</th>
+            <th i18n:translate="label_version">V</th>
+            <th i18n:translate="label_size">Size</th>
+            <th i18n:translate="label_modifdate">Modification Date</th>
+          </tr>
+          <tal:items repeat="related versions">
+            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
+                              description related/description">
+              <tr tal:attributes="class class">
+                <td valign="top">
+                  <a href="#"
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                                     title description">
+                    <span tal:replace="related/title">Resource Title</span>
+                  </a>
+                </td>
+                <td><span tal:replace="related/longTypeTitle">Type</span></td>
+                <td style="text-align: center">
+                  <span tal:replace="related/versionId">1.1</span>
+                </td>
+                <td style="text-align: right">
+                  <span tal:replace="related/context/sizeForDisplay">Type</span>
+                </td>
+                <td><span tal:replace="related/modified">Type</span></td>
+              </tr>
+            </tal:item>
+          </tal:items>
+        </table>
+      </div>
+</metal:resources>
+
+
+<!-- portlets -->
+
+<metal:versions define-macro="portlet_versions">
+          <!--<div tal:repeat="concept macro/info/versions">
+            <a href="#"
+               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
+              <span tal:replace="concept/title">Concept</span>
+              (<i tal:content="concept/typeTitle">Type</i>)
+            </a>
+          </div>-->
+</metal:versions>
+
+

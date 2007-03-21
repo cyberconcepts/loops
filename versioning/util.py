@@ -36,17 +36,16 @@ def getVersion(obj, request):
     versionable = IVersionable(obj, None)
     if versionable is None:
         return obj
-    if not versionRequest:
-        # find and return a standard version
-        v = versionable.releasedVersion
-        if v is None:
-            v = versionable.currentVersion
-        return v
-    # we might have a versionId in the request
-    v = versionable.versions.get(versionRequest)
-    if v is not None:
-        return v
-    return obj
+    if versionRequest:
+        # we might have a versionId in the request
+        v = versionable.versions.get(versionRequest)
+        if v is not None:
+            return v
+    # find and return a standard version
+    v = versionable.releasedVersion
+    if v is None:
+        v = versionable.currentVersion
+    return v
 
 
 def getMaster(obj):

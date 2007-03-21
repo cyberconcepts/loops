@@ -47,6 +47,7 @@ from loops.interfaces import IConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import EditForm, BaseView, LoopsTerms
 from loops import util
+from loops.versioning.util import getVersion
 
 
 class ConceptEditForm(EditForm):
@@ -276,6 +277,7 @@ class ConceptRelationView(BaseView):
         else:
             self.context = relation.first
             self.other = relation.second
+        self.context = getVersion(self.context, request)
         self.predicate = relation.predicate
         self.request = request
 

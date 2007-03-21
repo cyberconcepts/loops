@@ -16,4 +16,13 @@
              set_schema="loops.versioning.interfaces.IVersionable" />
   </zope:class>
 
+  <!-- user interface -->
+
+  <browser:page
+      name="listversions"
+      for="loops.interfaces.IResource"
+      class="loops.versioning.browser.ListVersions"
+      permission="zope.View"
+      />
+
 </configure>
