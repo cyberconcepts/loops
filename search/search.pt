@@ -64,7 +64,7 @@
                                        title description"
                        tal:content="row/title" />
                   </td>
-                  <td tal:content="row/longTypeTitle">Type</td>
+                  <td tal:content="row/longTypeTitle|row/typeTitle">Type</td>
                   <td style="text-align: right">
                     <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
                   </td>
