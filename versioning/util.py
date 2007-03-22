@@ -25,11 +25,11 @@ $Id$
 from loops.versioning.interfaces import IVersionable
 
 
-def getVersion(obj, request):
+def getVersion(obj, request=None):
     """ Check if another version should be used for the object
         provided and return it.
     """
-    versionRequest = request.form.get('version')
+    versionRequest = request and request.get('version') or None
     if versionRequest == 'this':
         # we really want this object, not another version
         return obj
@@ -53,4 +53,11 @@ def getMaster(obj):
     if versionable is None:
         return obj
     return versionable.master
+
+
+def cleanupVersionsOnList(lst):
+    result = []
+    for el in lst:
+        result.append(el)
+    return result
 

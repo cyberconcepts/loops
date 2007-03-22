@@ -91,6 +91,14 @@ class VersionableResource(object):
         """ The adapted master... """
         return IVersionable(self.master)
 
+    @Lazy
+    def parent(self):
+        return self.getVersioningAttribute('parent', None)
+
+    @Lazy
+    def comment(self):
+        return self.getVersioningAttribute('comment', u'')
+
     @property
     def versions(self):
         return self.versionableMaster.getVersioningAttribute('versions', {})
@@ -104,7 +112,7 @@ class VersionableResource(object):
         m = self.versionableMaster
         return self.versionableMaster.getVersioningAttribute('releasedVersion', None)
 
-    def createVersion(self, level=1):
+    def createVersion(self, level=1, comment=u''):
         context = self.context
         versionableMaster = self.versionableMaster
         # get the new version numbers
@@ -123,6 +131,8 @@ class VersionableResource(object):
         versionableObj.setVersioningAttribute('versionNumbers', tuple(vn))
         versionableObj.setVersioningAttribute('variantIds', self.variantIds)
         versionableObj.setVersioningAttribute('master', self.master)
+        versionableObj.setVersioningAttribute('parent', context)
+        versionableObj.setVersioningAttribute('comment', comment)
         # generate name for new object, register in parent
         versionId = versionableObj.versionId
         name = self.generateName(getName(context),

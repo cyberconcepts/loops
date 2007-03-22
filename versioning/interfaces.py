@@ -43,6 +43,11 @@ class IVersionable(Interface):
                         'version-independent attributes and central '
                         'versioning metadata')
 
+    parent = Attribute(u'The version this one was created from')
+
+    comment = Attribute(u'Somme informative text provided when creating '
+                        'this version')
+
     # attributes taken from the master version:
 
     versions = Attribute(u'A dictionary of all versions of this object')

@@ -3,6 +3,7 @@
                            ondblclick python: item.openEditWindow('resources.html')"
            tal:define="versions python: list(item.versions())"
            tal:condition="versions">
+        <h1 tal:content="item/title">Title</h1>
         <h2>Versions</h2><br />
         <table class="listing">
           <tr>
@@ -18,7 +19,7 @@
               <tr tal:attributes="class class">
                 <td valign="top">
                   <a href="#"
-                     tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId}?version=this;
                                      title description">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
@@ -42,13 +43,11 @@
 <!-- portlets -->
 
 <metal:versions define-macro="portlet_versions">
-          <!--<div tal:repeat="concept macro/info/versions">
-            <a href="#"
-               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
-              <span tal:replace="concept/title">Concept</span>
-              (<i tal:content="concept/typeTitle">Type</i>)
-            </a>
-          </div>-->
+  <div>
+    <a href="#"
+       tal:attributes="href string:${view/url}/.target${macro/info/uniqueId}?loops.viewName=listversions">
+      <span i18n:translate="">All versions</span>
+    </a>
+  </div>
 </metal:versions>
-
 

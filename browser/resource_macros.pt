@@ -58,7 +58,7 @@
       <tal:xedit condition="item/xeditable"> |
         <a href="#" title="Edit with External Editor"
            tal:define="url string:${view/url}/.target${view/targetId}"
-           tal:attributes="href string:$url/external_edit">
+           tal:attributes="href string:$url/external_edit?version=this">
          Open for editing
         </a>
        </tal:xedit>

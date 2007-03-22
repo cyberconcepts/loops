@@ -32,7 +32,7 @@
                   <span id="xedit_icon"
                        tal:condition="target/xeditable | nothing">
                     <a href="#" title="Edit" style="padding: 5px"
-                       tal:attributes="href string:${item/realTargetUrl}/external_edit;
+                       tal:attributes="href string:${item/realTargetUrl}/external_edit?version=this;
                                        title string:Edit '${target/title}' with External Editor"><img
                                   src="edit.gif" alt="Edit"
                                   tal:attributes="src context/++resource++edit.gif" /></a>

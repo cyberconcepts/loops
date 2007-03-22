@@ -32,22 +32,16 @@ from loops.versioning.interfaces import IVersionable
 from loops.versioning.util import getVersion
 
 
+version_macros = ViewPageTemplateFile('version_macros.pt')
+
+
 class ListVersions(BaseView):
 
-    template = ViewPageTemplateFile('version_macros.pt')
+    template = version_macros
 
     @Lazy
     def macro(self):
         return self.template.macros['versions']
-
-    def __init__(self, context, request):
-        super(ListVersions, self).__init__(context, request)
-        cont = self.controller
-        if (cont is not None and not IUnauthenticatedPrincipal.providedBy(
-                                                    self.request.principal)):
-            cont.macros.register('portlet_right', 'versions', title='Versions',
-                         subMacro=self.template.macros['portlet_versions'],
-                         info=self)
 
     def versions(self):
         versionable = IVersionable(self.context)

@@ -103,8 +103,12 @@
                   </a>
                 </td>
                 <td><span tal:replace="related/longTypeTitle">Type</span></td>
-                <td style="text-align: center">
-                  <span tal:replace="related/versionId">1.1</span>
+                <td style="text-align: center"
+                    tal:define="versionId related/versionId">
+                  <a href="#"
+                     tal:content="versionId"
+                     tal:omit-tag="python: versionId=='1.1'"
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId}?loops.viewName=listversions">1.1</a>
                 </td>
                 <td style="text-align: right">
                   <span tal:replace="related/context/sizeForDisplay">Type</span>

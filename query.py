@@ -32,6 +32,7 @@ from cybertools.typology.interfaces import IType
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
+from loops.versioning.util import getVersion
 from loops import util
 from loops.util import _
 
@@ -101,7 +102,7 @@ class BaseQuery(object):
                     queue.append(child)
         for c in concepts:
             result.add(c)
-            result.update(c.getResources())
+            result.update(getVersion(r) for r in c.getResources())
         return result
 
 
@@ -136,7 +137,9 @@ class FullQuery(BaseQuery):
                 result = result.intersection(rc)
             else:
                 result = rc
-        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        result = set(r for r in result
+                            if r.getLoopsRoot() == self.loopsRoot
+                               and getVersion(r) == r)
         return result
 
 

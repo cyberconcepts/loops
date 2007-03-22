@@ -36,12 +36,14 @@ from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
-from loops.interfaces import ITypeConcept
 from loops.browser.util import html_quote
+from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
+from loops.interfaces import ITypeConcept
+from loops.versioning.browser import version_macros
+from loops.versioning.interfaces import IVersionable
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -103,6 +105,13 @@ class ResourceView(BaseView):
                 cont.macros.register('portlet_right', 'related', title='Related Items',
                              subMacro=self.template.macros['related'],
                              position=0, info=self)
+                if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+                    versionable = IVersionable(self.context, None)
+                    if versionable is not None and len(versionable.versions) > 1:
+                            cont.macros.register('portlet_right', 'versions',
+                                    title='Version ' + versionable.versionId,
+                                    subMacro=version_macros.macros['portlet_versions'],
+                                    position=1, info=self)
 
     @Lazy
     def view(self):
