@@ -342,7 +342,7 @@ We first need a view manager:
 
   >>> from loops.view import ViewManager, Node
   >>> from zope.security.checker import NamesChecker, defineChecker
-  >>> nodeChecker = NamesChecker(('body',))
+  >>> nodeChecker = NamesChecker(('body', 'title',))
   >>> defineChecker(Node, nodeChecker)
 
   >>> views = loopsRoot['views'] = ViewManager()

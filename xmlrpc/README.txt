@@ -48,15 +48,15 @@ Now let's add a few more concepts:
 
   >>> topic = concepts[u'topic'] = Concept(u'Topic')
   >>> intIds.register(topic)
-  9
+  10
   >>> zope = concepts[u'zope'] = Concept(u'Zope')
   >>> zope.conceptType = topic
   >>> intIds.register(zope)
-  10
+  11
   >>> zope3 = concepts[u'zope3'] = Concept(u'Zope 3')
   >>> zope3.conceptType = topic
   >>> intIds.register(zope3)
-  11
+  12
 
 Navigation typically starts at a start object, which by default ist the
 domain concept (if present, otherwise the top-level type concept):
@@ -74,10 +74,10 @@ There are a few standard objects we can retrieve directly:
 
   >>> defaultPred = xrf.getDefaultPredicate()
   >>> defaultPred['id'], defaultPred['name']
-  ('7', u'standard')
+  ('8', u'standard')
   >>> typePred = xrf.getTypePredicate()
   >>> typePred['id'], typePred['name']
-  ('6', u'hasType')
+  ('7', u'hasType')
   >>> typeConcept = xrf.getTypeConcept()
   >>> typeConcept['id'], typeConcept['name']
   ('0', u'type')
@@ -85,7 +85,8 @@ There are a few standard objects we can retrieve directly:
 In addition we can get a list of all types and all predicates available:
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
-  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
+   u'textdocument', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
   [u'hasType', u'standard']
 
@@ -96,7 +97,7 @@ We can also retrieve a certain object by its id or its name:
   ('2', u'query')
   >>> textdoc = xrf.getObjectByName(u'textdocument')
   >>> textdoc['id'], textdoc['name']
-  ('4', u'textdocument')
+  ('5', u'textdocument')
 
 All methods that retrieve one object also returns its children and parents:
 
@@ -106,7 +107,8 @@ All methods that retrieve one object also returns its children and parents:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
+   u'textdocument', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -124,9 +126,10 @@ We can also retrieve children and parents explicitely:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'person', u'predicate', u'query', u'textdocument', u'type']
+  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
+   u'textdocument', u'type']
 
-  >>> pa = xrf.getParents('6')
+  >>> pa = xrf.getParents('7')
   >>> len(pa)
   1
   >>> pa[0]['name']
@@ -175,7 +178,7 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '9', 'id': '15',
+  {'description': u'', 'title': u'Zope 2', 'type': '10', 'id': '16',
    'name': u'zope2'}
 
 Changing the attributes of a concept

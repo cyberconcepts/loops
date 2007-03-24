@@ -236,7 +236,7 @@ get a type manager from all loops objects, always with the same context:
 
   >>> types = typeManager.types
   >>> sorted(t.token for t in types)
-  ['.loops/concepts/domain', '.loops/concepts/file',
+  ['.loops/concepts/domain', '.loops/concepts/file', '.loops/concepts/note',
    '.loops/concepts/predicate', '.loops/concepts/query',
    '.loops/concepts/textdocument', '.loops/concepts/topic',
    '.loops/concepts/type']
@@ -253,7 +253,8 @@ condition:
    '.loops/concepts/query', '.loops/concepts/topic', '.loops/concepts/type']
   >>> types = typeManager.listTypes(exclude=('concept',))
   >>> sorted(t.token for t in types)
-  ['.loops/concepts/file', '.loops/concepts/textdocument']
+  ['.loops/concepts/file',  '.loops/concepts/note',
+   '.loops/concepts/textdocument']
 
 
 Type-based interfaces and adapters

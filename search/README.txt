@@ -78,7 +78,7 @@ zcml in real life:
 
   >>> t = searchView.typesForSearch()
   >>> len(t)
-  8
+  9
   >>> t.getTermByToken('loops:resource:*').title
   'Any Resource'
 
@@ -103,7 +103,7 @@ a controller attribute for the search view.
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'return submitReplacing("1.results", "1.search.form",
-       "http://127.0.0.1/loops/views/page/.target9/@@searchresults.html")'
+       "http://127.0.0.1/loops/views/page/.target10/@@searchresults.html")'
 
 Basic (text/title) search
 -------------------------
@@ -202,7 +202,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  "[['Zope (Topic)', '11']]"
+  "[['Zope (Topic)', '12']]"
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -243,12 +243,12 @@ and thus include the customer type in the preset search types.
 
   >>> searchView.conceptsForType('loops:concept:customer')
   [{'token': 'none', 'title': u'not selected'},
-   {'token': '17', 'title': u'Zope Corporation'},
-   {'token': '18', 'title': u'cyberconcepts'}]
+   {'token': '18', 'title': u'Zope Corporation'},
+   {'token': '19', 'title': u'cyberconcepts'}]
 
 Let's use this new search option for querying:
 
-  >>> form = {'search.4.text_selected': u'17'}
+  >>> form = {'search.4.text_selected': u'18'}
   >>> resultsView = SearchResults(page, TestRequest(form=form))
   >>> results = list(resultsView.results)
   >>> results[0].title

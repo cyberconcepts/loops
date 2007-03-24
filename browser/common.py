@@ -38,6 +38,7 @@ from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite, checkPermission
+from zope.security.interfaces import ForbiddenAttribute
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
@@ -90,10 +91,15 @@ class EditForm(form.EditForm):
 class BaseView(GenericView):
 
     def __init__(self, context, request):
-        # TODO: get rid of removeSecurityProxy() call
         super(BaseView, self).__init__(context, request)
+        # TODO: get rid of removeSecurityProxy() call
         self.context = removeSecurityProxy(context)
         self.setSkin(self.loopsRoot.skinName)
+        try:
+            if not canAccess(context, 'title'):
+                request.response.redirect('login.html')
+        except ForbiddenAttribute:  # ignore when testing
+            pass
 
     def setSkin(self, skinName):
         skin = None
@@ -280,8 +286,7 @@ class BaseView(GenericView):
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
-            #if self.request.principal.id == 'rootadmin'
-            if checkPermission('zope.ManageSite', self.context):
+            if checkPermission('loops.ManageSite', self.context):
                 return "openEditWindow('%s/@@%s')" % (self.url, viewName)
         return ''
 
@@ -291,8 +296,7 @@ class BaseView(GenericView):
         if not ct or ct == 'application/pdf':
             return False
         if ct.startswith('text/') and ct != 'text/rtf':
-            return checkPermission('zope.ManageSite', self.context)
-            #return self.request.principal.id == 'rootadmin'
+            return checkPermission('loops.ManageSite', self.context)
         return canWrite(self.context, 'title')
 
     @Lazy

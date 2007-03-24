@@ -36,7 +36,7 @@ from zope.contenttype import guess_content_type
 from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
-from zope.security.proxy import isinstance
+from zope.security.proxy import isinstance, removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
@@ -211,7 +211,7 @@ class CreateObjectForm(ObjectForm, Form):
         typeToken = self.request.get('form.type')
         if typeToken:
             t = self.loopsRoot.loopsTraverse(typeToken)
-            ifc = ITypeConcept(t).typeInterface
+            ifc = removeSecurityProxy(ITypeConcept(t).typeInterface)
         else:
             ifc = INote
         self.typeInterface = ifc

@@ -264,7 +264,7 @@ class TypeConcept(AdapterBase):
             conceptType = self.context
             if conceptType == conceptType.getLoopsRoot().getConceptManager().getTypeConcept():
                 return ITypeConcept
-        return ti
+        return removeSecurityProxy(ti)
     def setTypeInterface(self, ifc):
         self.context._typeInterface = ifc
     typeInterface = property(getTypeInterface, setTypeInterface)

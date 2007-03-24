@@ -9,7 +9,7 @@
 
   <permission
       id="loops.xmlrpc.ManageConcepts"
-      title="[xmlrpc-manage-concepts-permission] Manage Concepts"
+      title="[loops-xmlrpc-manage-concepts-permission] loops: Manage Concepts (XML-RPC)"
       />
 
   <role
@@ -20,9 +20,22 @@
       permission="loops.xmlrpc.ManageConcepts"
       role="loops.xmlrpc.ConceptManager" />
 
-  <!--<zope:grant
+  <permission
+      id="loops.ManageSite"
+      title="[loops-manage-site-permission] loops: Manage Site"
+      />
+
+  <role
+      id="loops.SiteManager"
+      title="[loops-manage-site-role] loops: Site Manager" />
+
+  <grant
+      permission="loops.ManageSite"
+      role="loops.SiteManager" />
+
+  <grant
       permission="loops.xmlrpc.ManageConcepts"
-      role="zope.ContentManager" />-->
+      role="loops.SiteManager" />
 
   <!-- event subscribers -->
 

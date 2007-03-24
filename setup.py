@@ -82,7 +82,7 @@ class SetupManager(object):
         textdocument = self.addObject(conceptManager, Concept,
                                       'textdocument', title=u'Text')
         note = self.addObject(conceptManager, Concept, 'note', title=u'Note')
-        for c in (typeConcept, domain, query, file, textdocument, predicate):
+        for c in (typeConcept, domain, query, note, file, textdocument, predicate):
             c.conceptType = typeConcept
         ITypeConcept(typeConcept).typeInterface = ITypeConcept
         ITypeConcept(query).typeInterface = IQueryConcept
