@@ -38,7 +38,7 @@ from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, canWrite, checkPermission
-from zope.security.interfaces import ForbiddenAttribute
+from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
@@ -97,8 +97,8 @@ class BaseView(GenericView):
         self.setSkin(self.loopsRoot.skinName)
         try:
             if not canAccess(context, 'title'):
-                #raise Unauthorized
-                request.response.redirect('login.html')
+                raise Unauthorized
+                #request.response.redirect('login.html')
         except ForbiddenAttribute:  # ignore when testing
             pass
 
