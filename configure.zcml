@@ -80,7 +80,7 @@
     <require
         permission="zope.View"
         attributes="getLoopsRoot getLoopsUri loopsTraverse getConceptManager
-                    getResourceManager getViewManager skinName" />
+                    getResourceManager getViewManager skinName options" />
 
     <require
         permission="zope.ManageContent"

@@ -584,6 +584,17 @@ class ViewPropertiesConfigurator(object):
         return setting.get('skinName', {}).get('value', '')
     skinName = property(getSkinName, setSkinName)
 
+    def setOptions(self, options):
+        ann = IAnnotations(self.context)
+        setting = ann.get(configurator.ANNOTATION_KEY, {})
+        setting['options'] = {'value': options}
+        ann[configurator.ANNOTATION_KEY] = setting
+    def getOptions(self):
+        ann = IAnnotations(self.context)
+        setting = ann.get(configurator.ANNOTATION_KEY, {})
+        return setting.get('options', {}).get('value', [])
+    options = property(getOptions, setOptions)
+
 
 class NodeViewConfigurator(configurator.ViewConfigurator):
     """ Take properties from next menu item...

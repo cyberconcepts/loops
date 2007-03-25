@@ -51,6 +51,10 @@ class Loops(Folder):
     def setSkinName(self, skinName): self._skinName = skinName
     skinName = property(getSkinName, setSkinName)
 
+    def getOptions(self): return getattr(self, '_options', [])
+    def setOptions(self, value): self._options = value
+    options = property(getOptions, setOptions)
+
     def getLoopsRoot(self):
         return self
 

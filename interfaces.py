@@ -498,6 +498,13 @@ class ILoops(ILoopsObject):
         default='',
         required=False)
 
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
+        required=False)
+
     def getLoopsUri(obj):
         """ Return the relativ path to obj, starting with '.loops/...'.
         """
@@ -640,6 +647,13 @@ class IViewConfiguratorSchema(Interface):
         title=_(u'Skin Name'),
         description=_(u'Name of the skin to use for this part of the site'),
         default=u'',
+        required=False)
+
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
         required=False)
 
 

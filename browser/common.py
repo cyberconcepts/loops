@@ -97,6 +97,7 @@ class BaseView(GenericView):
         self.setSkin(self.loopsRoot.skinName)
         try:
             if not canAccess(context, 'title'):
+                #raise Unauthorized
                 request.response.redirect('login.html')
         except ForbiddenAttribute:  # ignore when testing
             pass
@@ -247,6 +248,14 @@ class BaseView(GenericView):
     # versioning
 
     @Lazy
+    def useVersioning(self):
+        if 'useVersioning' in self.loopsRoot.options:
+            return True
+        options = getattr(self.controller, 'options', None)
+        if options:
+            return 'useVersioning' in options.value
+
+    @Lazy
     def versionId(self):
         context = self.context
         versionable = IVersionable(context, None)
@@ -260,6 +269,8 @@ class BaseView(GenericView):
 
     @Lazy
     def versionInfo(self):
+        if not self.useVersioning:
+            return None
         context = self.context
         versionable = IVersionable(context, None)
         if versionable is None:
