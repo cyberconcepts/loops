@@ -52,23 +52,18 @@
             <th>Modification Date</th>
           </tr>
           <tal:items repeat="related children">
-            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd'">
+            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
+                              description related/description">
               <tr tal:attributes="class class">
                 <td valign="top">
                   <a href="#"
-                     tal:attributes="href string:${view/url}/.target${related/uniqueId}">
+                     tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                                     title description">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
                 </td>
                 <td><span tal:replace="related/typeTitle">Type</span></td>
                 <td><span tal:replace="related/modified">Type</span></td>
-              </tr>
-              <tr tal:define="description related/description"
-                  tal:condition="description"
-                  tal:attributes="class class">
-                <td colspan="3" style="padding-left: 7em">
-                  <i tal:content="description">describing...</i>
-                </td>
               </tr>
             </tal:item>
           </tal:items>
