@@ -257,7 +257,9 @@ class EditObject(FormController):
             self.view.virtualTargetObject = obj
             self.request.annotations['loops.view']['target'] = obj
         self.updateFields(obj)
-        return True
+        self.request.response.redirect(self.view.virtualTargetUrl)
+        return False
+        #return True
 
     @Lazy
     def loopsRoot(self):
@@ -351,5 +353,7 @@ class CreateObject(EditObject):
         obj.resourceType = self.loopsRoot.loopsTraverse(tc)
         notify(ObjectCreatedEvent(obj))
         self.updateFields(obj)
-        return True
+        self.request.response.redirect(self.view.virtualTargetUrl)
+        return False
+        #return True
 

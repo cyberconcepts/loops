@@ -342,7 +342,8 @@ class NodeView(BaseView):
         cm = self.controller.macros
         jsCall = 'dojo.require("dojo.widget.Editor")'
         cm.register('js-execute', jsCall, jsCall=jsCall)
-        return 'return inlineEdit("%s", "%s/inline_save")' % (id, self.virtualTargetUrl)
+        return ('return inlineEdit("%s", "%s/inline_save")'
+                                        % (id, self.virtualTargetUrl))
 
     def externalEdit(self):
         target = self.virtualTargetObject
@@ -383,6 +384,9 @@ class InlineEdit(NodeView):
 
     def save(self):
         target = self.virtualTargetObject
+        ti = IType(target).typeInterface
+        if ti is not None:
+            target = ti(target)
         data = self.request.form['editorContent']
         if type(data) != unicode:
             try:
@@ -393,6 +397,9 @@ class InlineEdit(NodeView):
         #    data = data.decode('UTF-8')
         target.data = data
         notify(ObjectModifiedEvent(target, Attributes(IResource, 'data')))
+        #versionParam = self.hasVersions and '?version=this' or ''
+        #self.request.response.redirect(self.virtualTargetUrl + versionParam)
+        return 'OK'
 
 
 class CreateObject(NodeView, Form):

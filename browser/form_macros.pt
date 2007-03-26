@@ -159,7 +159,7 @@
       <input dojoType="comboBox" mode="remote" autoComplete="False"
              name="concept.search.text" id="concept.search.text"
              tal:attributes="dataUrl
-                string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
+                string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
     </td>
     <td>
       <input type="button" value="Select"

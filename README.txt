@@ -662,7 +662,7 @@ on data provided in this form:
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
-  True
+  False
   >>> sorted(resources.keys())
   [...u'test_note'...]
   >>> resources['test_note'].title
@@ -681,7 +681,7 @@ created object:
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
-  True
+  False
   >>> sorted(resources.keys())
   [...u'test_note-2'...]
   >>> note = resources['test_note-2']
@@ -711,7 +711,7 @@ Editing an Object
   >>> view = NodeView(m112, request)
   >>> cont = EditObject(view, request)
   >>> cont.update()
-  True
+  False
   >>> resources['test_note'].title
   u'Test Note - changed'
 
