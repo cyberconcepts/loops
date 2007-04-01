@@ -77,10 +77,12 @@
              interface="loops.organize.interfaces.IMemberRegistrationManager" />
   </zope:class>
 
-  <browser:page name="registration.html"
-        for="loops.interfaces.IView"
+  <browser:page
+        for="loops.interfaces.INode"
+        name="register_user.html"
         class="loops.organize.browser.MemberRegistration"
-        permission="zope.Public" />
+        permission="zope.Public"
+        />
 
   <zope:view
       type="zope.publisher.interfaces.browser.IBrowserRequest"

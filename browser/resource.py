@@ -27,11 +27,13 @@ from zope import component
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.dublincore.interfaces import ICMFDublinCore
+from zope.app.form.browser.textwidgets import FileWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.formlib.form import FormFields
 from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
 from zope.proxy import removeAllProxies
+from zope.schema.interfaces import IBytes
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 
@@ -54,6 +56,14 @@ renderingFactories = {
 }
 
 
+class CustomFileWidget(FileWidget):
+
+    def hasInput(self):
+        print 'hasInput', self.request.form.get(self.name)
+        if not self.request.form.get(self.name):
+            return False
+
+
 class ResourceEditForm(EditForm):
 
     @Lazy
@@ -67,6 +77,9 @@ class ResourceEditForm(EditForm):
         if typeInterface is not None:
             omit = [f for f in typeInterface if f in IBaseResource]
             fields = FormFields(fields.omit(*omit), typeInterface)
+        dataField = fields['data']
+        if IBytes.providedBy(dataField):
+            dataField.customWidget = CustomFileWidget
         return fields
 
     def setUpWidgets(self, ignore_request=False):

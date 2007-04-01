@@ -62,7 +62,8 @@ class NodeView(BaseView):
 
     _itemNum = 0
 
-    template = NamedTemplate('loops.node_macros')
+    #template = NamedTemplate('loops.node_macros')
+    template = node_macros
 
     @Lazy
     def macro(self):
@@ -74,7 +75,7 @@ class NodeView(BaseView):
                     media='all', position=3)
         cm.register('js', 'loops.js', resourceName='loops.js')
         cm.register('portlet_left', 'navigation', title='Navigation',
-                    subMacro=self.template.macros['menu'])
+                    subMacro=node_macros.macros['menu'])
         #if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
         if canWrite(self.context, 'title'):
             #cm.register('portlet_right', 'clipboard', title='Clipboard',
@@ -84,7 +85,7 @@ class NodeView(BaseView):
             # see controller / configurator: use multiple configurators;
             # register additional configurators (adapters) from within package.
             cm.register('portlet_right', 'actions', title='Actions',
-                        subMacro=self.template.macros['actions'])
+                        subMacro=node_macros.macros['actions'])
 
     @Lazy
     def view(self):

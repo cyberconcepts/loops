@@ -34,6 +34,7 @@ from zope.component import adapts
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from zope.size.interfaces import ISized
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
 from cStringIO import StringIO
@@ -52,6 +53,7 @@ from loops.interfaces import IFile, IExternalFile, INote
 from loops.interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
 from loops.interfaces import IMediaAsset, IMediaAssetView
 from loops.interfaces import IResourceManager, IResourceManagerContained
+from loops.interfaces import ITypeConcept
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
 from loops.concept import ResourceRelation
@@ -77,9 +79,12 @@ class Resource(Image, Contained):
 
     # TODO: remove dependency on Image
 
-    implements(IBaseResource, IResource, IResourceManagerContained, IRelatable, ISized)
+    implements(IBaseResource, IResource, IResourceManagerContained,
+               IRelatable, ISized)
 
     proxyInterface = IMediaAssetView  # obsolete!
+
+    storageName = None
 
     _size = _width = _height = 0
 
@@ -106,10 +111,16 @@ class Resource(Image, Contained):
         # TODO (?): check for multiple types (->Error)
         return concepts and concepts[0] or cm.get('file', None)
     def setResourceType(self, concept):
-        if concept is None:
+        if concept is None: # this should not happen
             return
         current = self.getResourceType()
         if current != concept:
+            # change storage if necessary, and migrate data
+            oldType = IType(self)
+            from loops.type import ConceptTypeInfo
+            newType = ConceptTypeInfo(concept)
+            self.migrateStorage(oldType, newType)
+            # assign new type parent
             typePred = self.getLoopsRoot().getConceptManager().getTypePredicate()
             if typePred is None:
                 raise ValueError('No type predicate found for ' + getName(self))
@@ -122,6 +133,8 @@ class Resource(Image, Contained):
         return self.resourceType
 
     def _setData(self, data):
+        #if not data:
+        #    return
         dataFile = StringIO(data)  # let File tear it into pieces
         super(Resource, self)._setData(dataFile)
         if not self.contentType:
@@ -130,6 +143,7 @@ class Resource(Image, Contained):
     data = property(Image._getData, _setData)
 
     def guessContentType(self, data):
+        # probably obsolete, use zope.contenttype.guess_content_type()
         if not isinstance(data, str): # seems to be a file object
             data = data.read(20)
         if data.startswith('%PDF'):
@@ -204,6 +218,32 @@ class Resource(Image, Contained):
         return '%.1f %s' % (size, unit)
         #return '%s %s' % (util.getNiceNumber(size), unit)
 
+    # storage migration
+
+    def migrateStorage(self, oldType, newType):
+        oldType = removeSecurityProxy(oldType)
+        newType = removeSecurityProxy(newType)
+        context = removeSecurityProxy(self)
+        oldAdapted = newAdapted = context
+        oldTi = removeSecurityProxy(oldType.typeInterface)
+        if oldTi is not None:
+            oldAdapted = oldTi(context)
+        newTi = removeSecurityProxy(newType.typeInterface)
+        newOptions = {}
+        if newTi is not None:
+            newAdapted = newTi(context)
+            # make sure we use options of new type:
+            newOptions = newType.optionsDict
+            object.__setattr__(newAdapted, 'options', newOptions)
+        #print 'migrateStorage:', newAdapted, newOptions, oldAdapted, oldAdapted.storageName
+        if newOptions.get('storage') != oldAdapted.storageName:
+            data = oldAdapted.data
+            #print 'data', data
+            oldAdapted.data = ''            # clear old storage
+            context._storageName = None     # let's take storage from new type options
+            context._storageParams = None   # "
+            newAdapted.data = data
+
 
 # Document and MediaAsset are legacy classes, will become obsolete
 
@@ -240,14 +280,40 @@ class FileAdapter(ResourceAdapterBase):
     _contextAttributes = list(IFile) + list(IBaseResource)
     _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
-    def setData(self, data): self.context.data = data
+    def setData(self, data):
+        #if self.storageName is None:
+        #    self.storageName = 'zopefile'
+        self.storageName = None
+        self.context.data = data
     def getData(self): return self.context.data
     data = property(getData, setData)
+
+    @Lazy
+    def options(self):
+        return IType(self.context).optionsDict
+
+    def getStorageName(self):
+        return (getattr(self.context, '_storageName', None)
+             or self.options.get('storage', None))
+    def setStorageName(self, value):
+        self.context._storageName = value
+    storageName = property(getStorageName, setStorageName)
 
 
 class ExternalFileAdapter(FileAdapter):
 
     implements(IExternalFile)
+
+    def getStorageParams(self):
+        params = getattr(self.context, '_storageParams', None)
+        if params is not None:
+            return params
+        else:
+            value = self.options.get('storage_parameters') or 'extfiles'
+            return dict(subdirectory=value)
+    def setStorageParams(self, value):
+        self.context._storageParams = value
+    storageParams = property(getStorageParams, setStorageParams)
 
     @Lazy
     def externalAddress(self):
@@ -256,23 +322,17 @@ class ExternalFileAdapter(FileAdapter):
         # anyway: an attribute of the context object.
         return self.context.__name__
 
-    @Lazy
-    def options(self):
-        return IType(self.context).optionsDict
-
-    @Lazy
-    def storageName(self):
-        return self.options.get('storage')
-
-    @Lazy
-    def storageParams(self):
-        params = self.options.get('storage_parameters') or 'extfiles'
-        return dict(subdirectory=params)
-
     def setData(self, data):
-        storage = component.getUtility(IExternalStorage, name=self.storageName)
-        storage.setData(self.externalAddress, data, params=self.storageParams)
+        if not data:
+            return
+        storageParams = self.storageParams
+        storageName = self.storageName
+        storage = component.getUtility(IExternalStorage, name=storageName)
+        storage.setData(self.externalAddress, data, params=storageParams)
         self.context._size = len(data)
+        # remember storage settings:
+        self.storageParams = storageParams
+        self.storageName = storageName
 
     def getData(self):
         storage = component.getUtility(IExternalStorage, name=self.storageName)

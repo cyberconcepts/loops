@@ -141,8 +141,10 @@ Resources
 ---------
 
   >>> from loops.resource import TextDocumentAdapter
-  >>> from loops.interfaces import IResource, ITextDocument
+  >>> from loops.interfaces import IResource, ITextDocument, IFile
   >>> component.provideAdapter(TextDocumentAdapter, (IResource,), ITextDocument)
+  >>> from loops.resource import FileAdapter
+  >>> component.provideAdapter(FileAdapter, provides=IFile)
 
   >>> zope3Id = xrf.getObjectByName('zope3')['id']
   >>> td01 = resources['td01'] = Resource(u'Doc1')

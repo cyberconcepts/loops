@@ -123,7 +123,8 @@
   </div><br />
   <div tal:repeat="item item/pageItems">
     <a href="#"
-       tal:attributes="href item/url"
+       tal:attributes="href item/url;
+                       title item/description"
        tal:content="item/title">Item</a>
   </div>
 </metal:body>
@@ -142,13 +143,9 @@
        tal:condition="nocall:target">
     <div tal:repeat="related item/resources">
           <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
+             tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                             title related/description"
              tal:content="related/title">Resource Title</a>
-          <div style="margin-left: 5em"
-               tal:define="description related/description"
-               tal:condition="description">
-            <i tal:content="description">Description</i>
-          </div>
     </div>
   </div>
 </metal:resources>
@@ -169,13 +166,9 @@
        tal:condition="nocall:target">
     <div tal:repeat="related item/children">
           <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
+             tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                             title related/description"
              tal:content="related/title">Resource Title</a>
-          <div style="margin-left: 5em"
-               tal:define="description related/description"
-               tal:condition="description">
-            <i tal:content="description">Description</i>
-          </div>
     </div>
   </div>
 </metal:children>

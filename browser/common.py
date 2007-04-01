@@ -25,6 +25,7 @@ $Id$
 from zope.app import zapi
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
+from zope.app.security.interfaces import IAuthentication
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -117,6 +118,17 @@ class BaseView(GenericView):
         dc = IZopeDublinCore(self.context)
         d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
+
+    @Lazy
+    def creators(self):
+        cr = IZopeDublinCore(self.context).creators or []
+        pau = component.getUtility(IAuthentication)
+        creators = []
+        for c in cr:
+            principal = pau.getPrincipal(c)
+            if principal is not None:
+                creators.append(principal.title)
+        return ', '.join(creators)
 
     @Lazy
     def loopsRoot(self):

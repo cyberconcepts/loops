@@ -207,6 +207,10 @@ Now let's have a look at resources.
 Using the type machinery we can also specify options that may be used
 for controlling e.g. storage for external files.
 
+  >>> from loops.interfaces import IFile
+  >>> from loops.resource import FileAdapter
+  >>> component.provideAdapter(FileAdapter, provides=IFile)
+
   >>> extfile = concepts['extfile'] = Concept(u'External File')
   >>> ef1 = resources['ef1'] = Resource(u'Extfile #1')
   >>> ef1.resourceType = extfile

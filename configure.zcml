@@ -344,7 +344,9 @@
              set_schema="loops.query.IQueryConcept" />
   </class>
 
-  <adapter factory="loops.resource.FileAdapter" trusted="True" />
+  <adapter factory="loops.resource.FileAdapter"
+           provides="loops.interfaces.IFile"
+           trusted="True" />
   <class class="loops.resource.FileAdapter">
     <require permission="zope.View"
              interface="loops.interfaces.IFile" />
@@ -361,7 +363,9 @@
              set_schema="loops.interfaces.IFile" />
   </class>
 
-  <adapter factory="loops.resource.NoteAdapter" trusted="True" />
+  <adapter factory="loops.resource.NoteAdapter"
+           provides="loops.interfaces.INote"
+           trusted="True" />
   <class class="loops.resource.NoteAdapter">
     <require permission="zope.View"
              interface="loops.interfaces.INote" />

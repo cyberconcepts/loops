@@ -282,7 +282,7 @@ class EditObject(FormController):
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
                 else:
                     if not value and fn == 'data' and IFile.providedBy(adapted):
-                        # empty file data - don' change
+                        # empty file data - don't change
                         continue
                     if isinstance(value, FileUpload):
                         filename = getattr(value, 'filename', '')
@@ -345,6 +345,9 @@ class CreateObject(EditObject):
         data = form.get('form.data')
         if data and isinstance(data, FileUpload):
             name = getattr(data, 'filename', None)
+            # strip path from IE uploads:
+            if '\\' in name:
+                name = name.rsplit('\\', 1)[-1]
         else:
             name = None
         name = INameChooser(container).chooseName(name, obj)

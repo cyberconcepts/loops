@@ -77,10 +77,10 @@
       for="zope.interface.Interface"
       name="loops.pageform" />
 
-  <zope:adapter
+  <!--<zope:adapter
       factory="loops.browser.util.dataform"
       for="zope.interface.Interface"
-      name="loops.dataform" />
+      name="loops.dataform" />-->
 
   <zope:adapter
       factory="loops.browser.util.concept_macros"

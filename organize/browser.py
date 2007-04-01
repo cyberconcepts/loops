@@ -41,6 +41,7 @@ from loops.browser.concept import ConceptRelationView
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
 from loops.organize.interfaces import IMemberRegistration
 from loops.organize.party import getPersonForUser
+import loops.browser.util
 
 _ = MessageFactory('zope')
 
@@ -75,11 +76,23 @@ class PasswordWidget(BasePasswordWidget):
 class MemberRegistration(Form, NodeView):
 
     form_fields = FormFields(IMemberRegistration).omit('age')
-    template = NamedTemplate('loops.dataform')
+    template = loops.browser.util.dataform
     label = _(u'Member Registration')
 
     def __init__(self, context, request):
-        NodeView.__init__(self, context, request)
+        #NodeView.__init__(self, context, request)
+        super(MemberRegistration, self).__init__(context, request)
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['content']
+
+    @Lazy
+    def item(self):
+        return self
+
+    def __call__(self, *args, **kw):
+        return NodeView.__call__(self, *args, **kw)
 
     @action(_(u'Register'))
     def handle_register_action(self, action, data):

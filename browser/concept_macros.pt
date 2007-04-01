@@ -86,6 +86,7 @@
                 tal:condition="view/useVersioning">V</th>
             <th i18n:translate="label_size">Size</th>
             <th i18n:translate="label_modifdate">Modification Date</th>
+            <th i18n:translate="label_authors">Author(s)</th>
           </tr>
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
@@ -111,13 +112,8 @@
                 <td style="text-align: right">
                   <span tal:replace="related/context/sizeForDisplay">Type</span>
                 </td>
-                <td><span tal:replace="related/modified">Type</span></td>
-              </tr>
-              <tr tal:condition="nothing"
-                  tal:attributes="class class">
-                <td colspan="4" style="padding-left: 7em">
-                  <i tal:content="description">describing...</i>
-                </td>
+                <td><span tal:replace="related/modified">2007-03-30</span></td>
+                <td><span tal:replace="related/creators">John</span></td>
               </tr>
             </tal:item>
           </tal:items>

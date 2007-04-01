@@ -29,6 +29,8 @@ from zope.dublincore.zopedublincore import ScalarProperty
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
+
+from cybertools.storage.interfaces import IStorageInfo
 from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
 from loops.interfaces import IResourceAdapter
 
@@ -72,9 +74,14 @@ class AdapterBase(object):
 
 class ResourceAdapterBase(AdapterBase):
 
+    implements(IStorageInfo)
     adapts(IResource)
 
+    _adapterAttributes = ('storageName', 'storageParams', ) + AdapterBase._adapterAttributes
     _contextAttributes = list(IResourceAdapter)
+
+    storageName = None
+    storageParams = None
 
 
 # other adapters

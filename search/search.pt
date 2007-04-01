@@ -54,6 +54,7 @@
                   tal:condition="view/useVersioning">V</th>
               <th i18n:translate="label_size">Size</th>
               <th i18n:translate="label_modifdate">Modification Date</th>
+              <th i18n:translate="label_authors">Author(s)</th>
             </tr>
           </thead>
           <tbody>
@@ -80,12 +81,7 @@
                     <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
                   </td>
                   <td><span tal:replace="row/modified">modified</span></td>
-                </tr>
-                <tr tal:condition="nothing"
-                    tal:attributes="class class">
-                  <td colspan="3" style="padding-left: 7em">
-                    <i tal:content="description">describing...</i>
-                  </td>
+                  <td><span tal:replace="row/creators">John</span></td>
                 </tr>
               </tal:item>
             </tal:items>

@@ -651,7 +651,7 @@ on data provided in this form:
   >>> from loops.type import TypeConcept
   >>> from loops.resource import NoteAdapter
   >>> component.provideAdapter(TypeConcept)
-  >>> component.provideAdapter(NoteAdapter)
+  >>> component.provideAdapter(NoteAdapter, provides=INote)
   >>> note_tc = concepts['note'] = Concept('Note')
   >>> note_tc.conceptType = typeObject
   >>> ITypeConcept(note_tc).typeInterface = INote

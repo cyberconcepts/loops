@@ -90,6 +90,7 @@ class SetupManager(object):
         #ITypeConcept(image).typeInterface = IImage
         ITypeConcept(textdocument).typeInterface = ITextDocument
         ITypeConcept(note).typeInterface = INote
+        #ITypeConcept(note).viewName = 'note.html'
         hasType.conceptType = predicate
         standard.conceptType = predicate
 
