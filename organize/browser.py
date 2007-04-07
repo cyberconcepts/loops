@@ -73,15 +73,15 @@ class PasswordWidget(BasePasswordWidget):
         return value
 
 
-class MemberRegistration(Form, NodeView):
+class MemberRegistration(NodeView, Form):
 
     form_fields = FormFields(IMemberRegistration).omit('age')
     template = loops.browser.util.dataform
     label = _(u'Member Registration')
 
     def __init__(self, context, request):
-        #NodeView.__init__(self, context, request)
         super(MemberRegistration, self).__init__(context, request)
+        self.setUpWidgets()
 
     @Lazy
     def macro(self):
@@ -91,11 +91,14 @@ class MemberRegistration(Form, NodeView):
     def item(self):
         return self
 
-    def __call__(self, *args, **kw):
-        return NodeView.__call__(self, *args, **kw)
+    def xupdate(self):
+        # see cybertools.browser.view.GenericView.update()
+        NodeView.update(self)
+        Form.update(self)
 
     @action(_(u'Register'))
     def handle_register_action(self, action, data):
+        print 'register'
         self.register(data)
 
     def register(self, data=None):
