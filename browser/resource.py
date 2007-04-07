@@ -59,14 +59,14 @@ renderingFactories = {
 class CustomFileWidget(FileWidget):
 
     def hasInput(self):
-        print 'hasInput', self.request.form.get(self.name)
         if not self.request.form.get(self.name):
             return False
+        return True
 
 
 class ResourceEditForm(EditForm):
 
-    @Lazy
+    @property
     def typeInterface(self):
         return IType(self.context).typeInterface
 
@@ -78,8 +78,8 @@ class ResourceEditForm(EditForm):
             omit = [f for f in typeInterface if f in IBaseResource]
             fields = FormFields(fields.omit(*omit), typeInterface)
         dataField = fields['data']
-        if IBytes.providedBy(dataField):
-            dataField.customWidget = CustomFileWidget
+        if IBytes.providedBy(dataField.field):
+            dataField.custom_widget = CustomFileWidget
         return fields
 
     def setUpWidgets(self, ignore_request=False):

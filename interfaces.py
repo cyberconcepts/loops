@@ -608,11 +608,25 @@ class IFile(IResourceAdapter, IResourceSchema):
         may be downloaded instead.
     """
 
+    data = schema.Bytes(
+                title=_(u'Data'),
+                description=_(u'Resource raw data'),
+                default='',
+                missing_value='',
+                required=False)
+
 
 class IExternalFile(IFile):
     """ A file whose content (data attribute) is not stored in the ZODB
         but somewhere else, typically in the file system.
     """
+
+    data = schema.Bytes(
+                title=_(u'Data'),
+                description=_(u'Resource raw data'),
+                default='',
+                missing_value='',
+                required=False)
 
 
 class IImage(IResourceAdapter):

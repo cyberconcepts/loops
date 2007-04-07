@@ -323,8 +323,6 @@ class ExternalFileAdapter(FileAdapter):
         return self.context.__name__
 
     def setData(self, data):
-        if not data:
-            return
         storageParams = self.storageParams
         storageName = self.storageName
         storage = component.getUtility(IExternalStorage, name=storageName)
