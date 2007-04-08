@@ -220,7 +220,7 @@
           <a href="#"
              onclick="objectDialog('edit', 'edit_object.html'); return false;"
              tal:define="version request/version|nothing;
-                         versionPar python: version and '?version=$version' or ''"
+                         versionPar python: version and '?version=' + version or ''"
              tal:attributes="onclick string:objectDialog('edit', '$url/edit_object.html$versionPar');; return false;;">
             Edit Resource...
           </a>

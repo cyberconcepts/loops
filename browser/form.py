@@ -257,7 +257,7 @@ class EditObject(FormController):
             self.view.virtualTargetObject = obj
             self.request.annotations['loops.view']['target'] = obj
         self.updateFields(obj)
-        self.request.response.redirect(self.view.virtualTargetUrl)
+        self.request.response.redirect(self.view.virtualTargetUrl + '?version=this')
         return False
         #return True
 
