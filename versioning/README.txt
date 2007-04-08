@@ -90,6 +90,13 @@ a major version change, the lower levels are reset to 1:
   >>> getName(d001v2_1)
   u'd001_2.1.txt'
 
+The name of the new version is always derived from the name of the master
+even if we create a new version from another one:
+
+  >>> d001v2_2 = IVersionable(d001v1_2).createVersion()
+  >>> getName(d001v2_2)
+  u'd001_2.2.txt'
+
 
 Providing the Correct Version
 =============================
@@ -105,10 +112,10 @@ The default version is always the released or - if this is not available -
 the current version (i.e. the version created most recently):
 
   >>> IVersionable(getVersion(d001, TestRequest())).versionId
-  '2.1'
+  '2.2'
 
   >>> IVersionable(getVersion(d001v1_2, TestRequest())).versionId
-  '2.1'
+  '2.2'
 
   >>> d002 = resources['d002.txt']
   >>> IVersionable(getVersion(d002, TestRequest())).versionId

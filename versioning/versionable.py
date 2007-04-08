@@ -135,7 +135,7 @@ class VersionableResource(object):
         versionableObj.setVersioningAttribute('comment', comment)
         # generate name for new object, register in parent
         versionId = versionableObj.versionId
-        name = self.generateName(getName(context),
+        name = self.generateName(getName(self.master),
                                  extensions.get(context.contentType, ''),
                                  versionId)
         getParent(context)[name] = obj
