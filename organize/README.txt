@@ -212,7 +212,7 @@ and register it
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> from loops.organize.browser import MemberRegistration
-  >>> regView = MemberRegistration(menu, request)
+  >>> regView = MemberRegistration(menu, request, testing=True)
   >>> personAdapter = regView.register(data)
 
   >>> personAdapter.context.__name__, personAdapter.lastName, personAdapter.userId

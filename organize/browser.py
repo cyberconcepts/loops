@@ -79,9 +79,10 @@ class MemberRegistration(NodeView, Form):
     template = loops.browser.util.dataform
     label = _(u'Member Registration')
 
-    def __init__(self, context, request):
+    def __init__(self, context, request, testing=False):
         super(MemberRegistration, self).__init__(context, request)
-        self.setUpWidgets()
+        if not testing:
+            self.setUpWidgets()
 
     @Lazy
     def macro(self):
