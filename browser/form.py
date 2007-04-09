@@ -329,7 +329,9 @@ class EditObject(FormController):
         if form.get('version.create'):
             versionable = IVersionable(obj)
             level = int(form.get('version.level', 1))
-            return versionable.createVersion(level)
+            version = versionable.createVersion(level)
+            notify(ObjectCreatedEvent(version))
+            return version
         return obj
 
 
