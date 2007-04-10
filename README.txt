@@ -31,11 +31,18 @@ Let's start with creating a few example concepts, putting them in a
 top-level loops container and a concept manager:
 
   >>> from loops import Loops
-  >>> loopsRoot = site['loops'] = Loops()
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
+
+  >>> #sorted(concepts)
+  >>> #sorted(resources)
+  >>> len(concepts) + len(resources)
+  14
+
+  >>> loopsRoot = site['loops']
 
   >>> from loops.concept import ConceptManager, Concept
-  >>> loopsRoot['concepts'] = ConceptManager()
-  >>> concepts = loopsRoot['concepts']
   >>> cc1 = Concept()
   >>> concepts['cc1'] = cc1
   >>> cc1.title
@@ -50,21 +57,11 @@ top-level loops container and a concept manager:
 
 Now we want to relate the second concept to the first one.
 
-In order to do this we first have to provide a relation registry. For
-testing we use a simple dummy implementation.
-
-  >>> from cybertools.relation.tests import IntIdsStub
-  >>> component.provideUtility(IntIdsStub())
-  >>> from cybertools.relation.interfaces import IRelationRegistry
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> component.provideUtility(DummyRelationRegistry())
   >>> from cybertools.relation.registry import RelationRegistry
 
 As relationships are based on predicates that are themselves concepts we
 also need a default predicate concept; the default name for this is
-'standard'.
-
-  >>> concepts['standard'] = Concept(u'subconcept')
+'standard'. It has already been created during setup.
 
 Now we can assign the concept c2 as a child to c1 (using the standard
 ConceptRelation):
@@ -88,8 +85,6 @@ relation to a special kind of concept object with the magic name 'type'.
 This type object is its own type. The type relations themselves are of
 a special predicate 'hasType'.
 
-  >>> concepts['hasType'] = Concept(u'has type')
-  >>> concepts['type'] = Concept(u'Type')
   >>> typeObject = concepts['type']
   >>> typeObject.setConceptType(typeObject)
   >>> typeObject.getConceptType().title
@@ -127,16 +122,10 @@ type manager.
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
   >>> sorted(t.title for t in types)
-  [u'Topic', u'Type', u'Unknown Type']
+  [u'Domain', u'Predicate', u'Query', u'Topic', u'Type', u'Unknown Type']
 
 Using a PredicateSourceList we can retrieve a list of the available
-predicates. In order for this to work we first have to assign our predicates
-a special concept type.
-
-  >>> concepts['predicate'] = Concept(u'Predicate')
-  >>> predicate = concepts['predicate']
-  >>> concepts['hasType'].conceptType = predicate
-  >>> concepts['standard'].conceptType = predicate
+predicates.
 
   >>> from loops.concept import PredicateSourceList
   >>> predicates = PredicateSourceList(cc1)
@@ -145,7 +134,7 @@ Note that the 'hasType' predicate is suppressed from this list as the
 corresponding relation is only assigned via the conceptType attribute:
 
   >>> sorted(t.title for t in predicates)
-  [u'subconcept']
+  [u'subobject']
 
 Concept Views
 -------------
@@ -206,11 +195,15 @@ types and predicates.
   >>> component.provideAdapter(LoopsTerms, (IIterableSource, IBrowserRequest), ITerms)
 
   >>> sorted((t.title, t.token) for t in view.conceptTypes())
-  [(u'Topic', '.loops/concepts/topic'), (u'Type', '.loops/concepts/type'),
-      (u'Unknown Type', '.loops/concepts/unknown')]
+  [(u'Domain', '.loops/concepts/domain'),
+   (u'Predicate', '.loops/concepts/predicate'),
+   (u'Query', '.loops/concepts/query'),
+   (u'Topic', '.loops/concepts/topic'),
+   (u'Type', '.loops/concepts/type'),
+   (u'Unknown Type', '.loops/concepts/unknown')]
 
   >>> sorted((t.title, t.token) for t in view.predicates())
-  [(u'subconcept', '.loops/concepts/standard')]
+  [(u'subobject', '.loops/concepts/standard')]
 
 Index attributes adapter
 ------------------------
@@ -232,8 +225,6 @@ Resources and what they have to do with Concepts
 We first need a resource manager:
 
   >>> from loops.resource import ResourceManager, Resource
-  >>> loopsRoot['resources'] = ResourceManager()
-  >>> resources = loopsRoot['resources']
 
 A common type of resource is a document:
 
@@ -316,6 +307,9 @@ Index attributes adapter
   >>> from loops.resource import IndexAttributes
   >>> from loops.type import LoopsType
   >>> component.provideAdapter(LoopsType)
+  >>> from loops.resource import FileAdapter
+  >>> from loops.interfaces import IFile
+  >>> component.provideAdapter(FileAdapter, provides=IFile)
   >>> idx = IndexAttributes(doc1)
   >>> idx.text()
   u''
@@ -338,14 +332,12 @@ of a site only see views or nodes but never concepts or resources directly;
 the views or nodes, however, present informations coming from the concepts
 or resources they are related to.
 
-We first need a view manager:
+The view manager has already been created during setup.
 
   >>> from loops.view import ViewManager, Node
   >>> from zope.security.checker import NamesChecker, defineChecker
   >>> nodeChecker = NamesChecker(('body', 'title',))
   >>> defineChecker(Node, nodeChecker)
-
-  >>> views = loopsRoot['views'] = ViewManager()
 
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:
@@ -496,13 +488,15 @@ view; these views we have to provide as multi-adapters:
   >>> form = {'action': 'create', 'create.title': 'New Resource',
   ...         'create.type': 'loops.resource.MediaAsset',}
   >>> view = ConfigureView(m111, TestRequest(form = form))
-  >>> sorted((t.token, t.title) for t in view.targetTypes())
-  [('.loops/concepts/topic', u'Topic'), ('.loops/concepts/type', u'Type'),
-      ('.loops/concepts/unknown', u'Unknown Type')]
+  >>> tt = view.targetTypes()
+  >>> len(tt)
+  9
+  >>> sorted((t.token, t.title) for t in view.targetTypes())[0]
+  ('.loops/concepts/domain', u'Domain')
   >>> view.update()
   True
   >>> sorted(resources.keys())
-  [u'doc1', u'm1.m11.m111']
+  [u'd001.txt', u'd002.txt', u'd003.txt', u'doc1', u'm1.m11.m111']
 
   >>> view.target.title, view.target.token
   ('New Resource', '.loops/resources/m1.m11.m111')
@@ -625,9 +619,10 @@ preset concepts, e.g. depending on the target of the current node:
 There also may be preset concept types that directly provide lists of
 concepts to select from.
 
-To show this let's start with a new type, the customer type.
+To show this let's start with a new type, the customer type, that has
+been created during setup.
 
-  >>> customer = concepts['customer'] = Concept('Customer')
+  >>> customer = concepts['customer']
   >>> customer.conceptType = concepts.getTypeConcept()
   >>> from loops.type import ConceptType, TypeConcept
   >>> custType = TypeConcept(customer)
@@ -642,7 +637,7 @@ To show this let's start with a new type, the customer type.
 
   >>> form = CreateObjectForm(m112, TestRequest())
   >>> form.presetTypesForAssignment
-  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
+  [{'token': 'loops:concept:customer', 'title': u'Customer'}]
 
 OK, so much about the form - now we want to create a new object based
 on data provided in this form:
@@ -652,9 +647,7 @@ on data provided in this form:
   >>> from loops.resource import NoteAdapter
   >>> component.provideAdapter(TypeConcept)
   >>> component.provideAdapter(NoteAdapter, provides=INote)
-  >>> note_tc = concepts['note'] = Concept('Note')
-  >>> note_tc.conceptType = typeObject
-  >>> ITypeConcept(note_tc).typeInterface = INote
+  >>> note_tc = concepts['note']
 
   >>> component.provideAdapter(NameChooser)
   >>> request = TestRequest(form={'form.title': u'Test Note',
@@ -747,7 +740,7 @@ target object's view here:
   [<loops.browser.common.Action object ...>]
   >>> action = view.virtualTarget.getActions()[0]
   >>> action.url
-  'http://127.0.0.1/loops/views/m1/m11/m111/.target19'
+  'http://127.0.0.1/loops/views/m1/m11/m111/.target57'
 
 
 Import/Export
