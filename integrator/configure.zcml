@@ -6,4 +6,17 @@
    i18n_domain="zope"
    >
 
+  <zope:adapter factory="loops.integrator.collection.ExternalCollectionAdapter"
+                trusted="True" />
+
+  <zope:class class="loops.integrator.collection.ExternalCollectionAdapter">
+    <require permission="zope.View"
+             interface="loops.integrator.interfaces.IExternalCollection" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.integrator.interfaces.IExternalCollection" />
+  </zope:class>
+
+  <zope:utility
+      factory="loops.integrator.collection.DirectoryCollectionProvider" />
+
 </configure>

@@ -417,8 +417,11 @@
 
   <utility
       factory="cybertools.storage.filesystem.instanceVarSubdirectoryStorage"
-      name="varsubdir"
-      />
+      name="varsubdir" />
+
+  <utility
+      factory="cybertools.storage.filesystem.fullPathStorage"
+      name="fullpath" />
 
   <vocabulary
       factory="loops.concept.ConceptTypeSourceList"
@@ -447,6 +450,7 @@
 
   <include package=".knowledge" />
   <include package=".organize" />
+  <include package=".integrator" />
   <include package=".process" />
   <include package=".versioning" />
   <include package=".search" />

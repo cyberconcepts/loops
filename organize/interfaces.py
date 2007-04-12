@@ -27,7 +27,6 @@ from zope import interface, component, schema
 from zope.app import zapi
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.i18nmessageid import MessageFactory
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.interfaces import IPerson as IBasePerson

@@ -315,12 +315,20 @@ class ExternalFileAdapter(FileAdapter):
         self.context._storageParams = value
     storageParams = property(getStorageParams, setStorageParams)
 
-    @Lazy
-    def externalAddress(self):
+    def getExternalAddress(self):
+        return getattr(self.context, '_externalAddress', self.context.__name__)
+    def setExternalAddress(self, addr):
+        # TODO (?) - use intId as default?
+        self.context._externalAddress = addr
+    externalAddress = property(getExternalAddress, setExternalAddress)
+
+    #@Lazy
+    #def externalAddress(self):
         # or is this an editable attribute?
         # or some sort of subpath set during import?
         # anyway: an attribute of the context object.
-        return self.context.__name__
+        # TODO: use intId and store in special attribute for later reuse
+        #return self.context.__name__
 
     def setData(self, data):
         storageParams = self.storageParams

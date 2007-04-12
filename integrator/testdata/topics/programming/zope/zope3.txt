@@ -1,0 +1,5 @@
+This file carries some information about Zope 3, the open-source
+web application server.
+
+It is used as an example document for integrating external resources
+into loops.
