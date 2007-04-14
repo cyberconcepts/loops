@@ -231,12 +231,13 @@ class Resource(Image, Contained):
         newTi = removeSecurityProxy(newType.typeInterface)
         newOptions = {}
         if newTi is not None:
-            newAdapted = newTi(context)
-            # make sure we use options of new type:
-            newOptions = newType.optionsDict
-            object.__setattr__(newAdapted, 'options', newOptions)
+            newAdapted = newTi(context, None)
+            if newAdapted is not None:
+                # make sure we use options of new type:
+                newOptions = newType.optionsDict
+                object.__setattr__(newAdapted, 'options', newOptions)
         #print 'migrateStorage:', newAdapted, newOptions, oldAdapted, oldAdapted.storageName
-        if newOptions.get('storage') != oldAdapted.storageName:
+        if newAdapted is not None and newOptions.get('storage') != oldAdapted.storageName:
             data = oldAdapted.data
             #print 'data', data
             oldAdapted.data = ''            # clear old storage

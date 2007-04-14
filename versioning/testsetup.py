@@ -67,25 +67,25 @@ class TestSite(object):
         tTextDocument = concepts['textdocument']
 
         tCustomer = addObject(concepts, Concept, 'customer', title=u'Customer',
-                           type=tType)
+                           conceptType=tType)
         dProjects = addObject(concepts, Concept, 'projects',
-                           title=u'Project Domain', type=tDomain)
+                           title=u'Project Domain', conceptType=tDomain)
         tCustomer.assignParent(dProjects)
 
         cust1 = addObject(concepts, Concept, 'cust1',
-                           title=u'Customer 1', type=tCustomer)
+                           title=u'Customer 1', conceptType=tCustomer)
         cust2 = addObject(concepts, Concept, 'cust2',
-                           title=u'Customer 2', type=tCustomer)
+                           title=u'Customer 2', conceptType=tCustomer)
         cust3 = addObject(concepts, Concept, 'cust3',
-                           title=u'Customer 3', type=tCustomer)
+                           title=u'Customer 3', conceptType=tCustomer)
         d001 = addObject(resources, Resource, 'd001.txt',
-                           title=u'Doc 001', type=tTextDocument)
+                           title=u'Doc 001', resouceType=tTextDocument)
         d001.assignConcept(cust1)
         d002 = addObject(resources, Resource, 'd002.txt',
-                           title=u'Doc 002', type=tTextDocument)
+                           title=u'Doc 002', resouceType=tTextDocument)
         d002.assignConcept(cust3)
         d003 = addObject(resources, Resource, 'd003.txt',
-                           title=u'Doc 003', type=tTextDocument)
+                           title=u'Doc 003', resouceType=tTextDocument)
         d003.assignConcept(cust1)
 
         for c in concepts.values():

@@ -42,7 +42,7 @@ and methods of the external collect object.
   >>> from loops.integrator.collection import ExternalCollectionAdapter
   >>> tExternalCollection = concepts['extcollection']
   >>> coll01 = addObject(concepts, Concept, 'coll01',
-  ...                    title=u'Collection One', type=tExternalCollection)
+  ...                    title=u'Collection One', conceptType=tExternalCollection)
   >>> aColl01 = ExternalCollectionAdapter(coll01)
 
 An external collection carries a set of attributes that control the access

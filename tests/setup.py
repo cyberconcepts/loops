@@ -70,17 +70,17 @@ class TestSite(object):
         tFile = concepts['file']
 
         tCustomer = addObject(concepts, Concept, 'customer', title=u'Customer',
-                           type=tType)
+                           conceptType=tType)
         dProjects = addObject(concepts, Concept, 'projects',
-                           title=u'Project Domain', type=tDomain)
+                           title=u'Project Domain', conceptType=tDomain)
         tCustomer.assignParent(dProjects)
 
         d001 = addObject(resources, Resource, 'd001.txt',
-                           title=u'Doc 001', type=tTextDocument)
+                           title=u'Doc 001', resourceType=tTextDocument)
         d002 = addObject(resources, Resource, 'd002.txt',
-                           title=u'Doc 002', type=tTextDocument)
+                           title=u'Doc 002', resourceType=tTextDocument)
         d003 = addObject(resources, Resource, 'd003.txt',
-                           title=u'Doc 003', type=tTextDocument)
+                           title=u'Doc 003', resourceType=tTextDocument)
 
         self.indexAll(concepts, resources)
         return concepts, resources, views

@@ -36,7 +36,7 @@ from loops.interfaces import IResource, IConcept
 from loops.integrator.interfaces import IExternalCollection
 from loops.integrator.interfaces import IExternalCollectionProvider
 from loops.resource import Resource
-from loops.setup import addObject
+from loops.setup import addAndConfigureObject
 from loops.type import TypeInterfaceSourceList
 
 
@@ -70,13 +70,12 @@ class DirectoryCollectionProvider(object):
     def collect(self, client):
         directory = self.getDirectory(client)
         pattern = re.compile(client.pattern or '.*')
-        result = []
         for path, dirs, files in os.walk(directory):
-            if files:
-                result.extend(os.path.join(path[len(directory)+1:], f)
-                                for f in files
-                                    if pattern.match(f))
-        return result
+            if '.svn' in dirs:
+                del dirs[dirs.index('.svn')]
+            for f in files:
+                if pattern.match(f):
+                    yield os.path.join(path[len(directory)+1:], f)
 
     def createExtFileObjects(self, client, addresses, extFileType=None):
         if extFileType is None:
@@ -85,8 +84,10 @@ class DirectoryCollectionProvider(object):
         directory = self.getDirectory(client)
         for addr in addresses:
             name = addr
-            obj = addObject(rm, Resource, name,
-                            title=addr.decode('UTF-8'), type=extFileType,
+            obj = addAndConfigureObject(
+                            rm, Resource, name,
+                            title=addr.decode('UTF-8'),
+                            type=extFileType,
                             externalAddress=addr,
                             storage='fullpath',
                             storageParams=dict(subdirectory=directory))

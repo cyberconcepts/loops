@@ -13,7 +13,7 @@ from loops.concept import Concept
 from loops.resource import Resource
 from loops.integrator.interfaces import IExternalCollection
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
-from loops.setup import SetupManager, addObject
+from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
 
 dataDir = os.path.join(os.path.dirname(__file__), 'testdata')
@@ -29,11 +29,11 @@ class TestSite(BaseTestSite):
         concepts, resources, views = self.baseSetup()
 
         tType = concepts.getTypeConcept()
-        tExtFile = addObject(concepts, Concept, 'extfile',
-                                title=u'External File', type=tType,
+        tExtFile = addAndConfigureObject(concepts, Concept, 'extfile',
+                                title=u'External File', conceptType=tType,
                                 typeInterface=IExternalFile)
-        tExtCollection = addObject(concepts, Concept, 'extcollection',
-                                title=u'External Collection', type=tType,
+        tExtCollection = addAndConfigureObject(concepts, Concept, 'extcollection',
+                                title=u'External Collection', conceptType=tType,
                                 typeInterface=IExternalCollection)
 
         self.indexAll(concepts, resources)

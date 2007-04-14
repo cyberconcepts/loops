@@ -28,6 +28,7 @@ from zope import component
 from zope.component import adapts
 from zope.interface import implements, Interface
 
+from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops, ITypeConcept
 from loops.interfaces import IFile, IImage, ITextDocument, INote
 from loops.concept import ConceptManager, Concept
@@ -90,7 +91,7 @@ class SetupManager(object):
         #ITypeConcept(image).typeInterface = IImage
         ITypeConcept(textdocument).typeInterface = ITextDocument
         ITypeConcept(note).typeInterface = INote
-        #ITypeConcept(note).viewName = 'note.html'
+        ITypeConcept(note).viewName = 'note.html' # leads to error in DocTest
         hasType.conceptType = predicate
         standard.conceptType = predicate
 
@@ -105,5 +106,17 @@ def addObject(container, class_, name, **kw):
     for attr in kw:
         setattr(obj, attr, kw[attr])
     notify(ObjectCreatedEvent(obj))
+    notify(ObjectModifiedEvent(obj))
+    return obj
+
+def addAndConfigureObject(container, class_, name, **kw):
+    basicAttributes = ('title', 'description', 'conceptType', 'resourceType')
+    basicKw = dict([(k, kw[k]) for k in kw if k in basicAttributes])
+    obj = addObject(container, class_, name, **basicKw)
+    ti = IType(obj).typeInterface
+    adapted = ti is not None and ti(obj) or obj
+    adapterAttributes = [k for k in kw if k not in basicAttributes]
+    for attr in adapterAttributes:
+        setattr(obj, attr, kw[attr])
     notify(ObjectModifiedEvent(obj))
     return obj
