@@ -23,13 +23,20 @@ file system.
 $Id$
 """
 
-import os, re
+from datetime import datetime
+import os, re, stat
+
+from zope import component
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.event import notify
+from zope.app.container.interfaces import INameChooser
 from zope.component import adapts
 from zope.interface import implements, Attribute
 from zope.cachedescriptors.property import Lazy
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
+from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
 from loops.interfaces import IResource, IConcept
@@ -54,11 +61,23 @@ class ExternalCollectionAdapter(AdapterBase):
     _adapterAttributes = ('context', '__parent__',)
     _contextAttributes = list(IExternalCollection) + list(IConcept)
 
-    def create(self):
-        pass
-
     def update(self):
-        pass
+        existing = self.context.getResources()
+        old = dict((obj.externalAddress, obj) for obj in existing)
+        new = []
+        provider = component.getUtility(IExternalCollectionProvider,
+                                        name=self.providerName or '')
+        for addr, mdate in provider.collect(self):
+            if addr in old:
+                if mdate > self.lastUpdated:
+                    notify(ObjectModifiedEvent(old[addr]))
+            else:
+                new.append(addr)
+        if new:
+            newResources = provider.createExtFileObjects(self, new)
+            for r in newResources:
+                self.context.assignResource(r)
+        self.lastUpdated = datetime.today()
 
 
 class DirectoryCollectionProvider(object):
@@ -75,19 +94,24 @@ class DirectoryCollectionProvider(object):
                 del dirs[dirs.index('.svn')]
             for f in files:
                 if pattern.match(f):
-                    yield os.path.join(path[len(directory)+1:], f)
+                    # may be it would be better to return a file's hash
+                    # for checking for changes...
+                    mtime = os.stat(os.path.join(path, f))[stat.ST_MTIME]
+                    yield (os.path.join(path[len(directory)+1:], f),
+                           datetime.fromtimestamp(mtime))
 
     def createExtFileObjects(self, client, addresses, extFileType=None):
         if extFileType is None:
             extFileType = client.context.getLoopsRoot().getConceptManager()['extfile']
-        rm = client.context.getLoopsRoot().getResourceManager()
+        container = client.context.getLoopsRoot().getResourceManager()
         directory = self.getDirectory(client)
         for addr in addresses:
-            name = addr
+            name = self.generateName(container, addr)
+            title = self.generateTitle(addr)
             obj = addAndConfigureObject(
-                            rm, Resource, name,
-                            title=addr.decode('UTF-8'),
-                            type=extFileType,
+                            container, Resource, name,
+                            title=title,
+                            resourceType=extFileType,
                             externalAddress=addr,
                             storage='fullpath',
                             storageParams=dict(subdirectory=directory))
@@ -98,3 +122,14 @@ class DirectoryCollectionProvider(object):
         address = client.address or ''
         return os.path.join(baseAddress, address)
 
+    def generateName(self, container, name):
+        name = INameChooser(container).chooseName(name, None)
+        return name
+
+    def generateTitle(self, title):
+        title = os.path.split(title)[-1]
+        if '.' in title:
+            base, ext = title.rsplit('.', 1)
+            if ext.lower() in mimetypes.extensions.values():
+                title = base
+        return title.decode('UTF-8')

@@ -53,17 +53,11 @@ class IExternalCollection(Interface):
             description=_(u'A regular expression for selecting external objects '
                            'that should belong to this collection'),
             required=False)
-
-    def create():
-        """ Select external objects that should belong to a collection
-            using all the informations in the attributes,
-            create a resource of type 'extfile' for each of them,
-            and associate them with this collection.
-            Fire appropriate events.
-        """
+    lastUpdated = Attribute('Date and time of last update.')
 
     def update():
-        """ Check for new, changed, or deleted external objects.
+        """ Select external objects that should belong to a collection
+            and check for new, changed, or deleted objects.
             Create an 'extfile' resource for new ones, fire appropriate
             events for new, changed, or deleted ones.
             Resources for deleted objects are not removed but should
@@ -77,8 +71,9 @@ class IExternalCollectionProvider(Interface):
 
     def collect(clientCollection):
         """ Select objects that should belong to a collection,
-            return an iterable of local address parts of the selected external
-            objects. The object specified by the 'clientCollection' argument
+            return an iterable of tuples of local address parts of the selected external
+            objects and their last modification date/time.
+            The object specified by the 'clientCollection' argument
             is usually the caller of the method and should provide the
             IExternalCollection interface.
         """

@@ -54,7 +54,6 @@ to the external system:
   >>> aColl01.baseAddress = dataDir
   >>> aColl01.address = 'topics'
 
-
 Directory Collection Provider
 -----------------------------
 
@@ -66,24 +65,42 @@ object, the external collection itself.
   >>> dcp = DirectoryCollectionProvider()
 
   >>> sorted(dcp.collect(aColl01))
-  ['programming/BeautifulProgram.pdf', 'programming/zope/zope3.txt']
+  [('programming/BeautifulProgram.pdf', datetime.datetime(2005, 4, 7, 12, 36, 56)),
+   ('programming/zope/zope3.txt', datetime.datetime(2007, 4, 12, 15, 16, 13))]
 
-If we provide a selective pattern we get only part of the files:
+If we provide a more selective pattern we get only part of the files:
 
   >>> aColl01.pattern = r'.*\.txt'
   >>> sorted(dcp.collect(aColl01))
-  ['programming/zope/zope3.txt']
+  [('programming/zope/zope3.txt', datetime.datetime(2007, 4, 12, 15, 16, 13))]
 
 Let's now create the corresponding resource objects.
 
   >>> aColl01.pattern = ''
-  >>> addresses = dcp.collect(aColl01)
+  >>> addresses = [e[0] for e in dcp.collect(aColl01)]
   >>> res = list(dcp.createExtFileObjects(aColl01, addresses))
   >>> len(sorted(r.__name__ for r in res))
   2
   >>> xf1 = res[0]
   >>> xf1.__name__
-  u'programming/BeautifulProgram.pdf'
+  u'programming_beautifulprogram.pdf'
+  >>> xf1.title
+  u'BeautifulProgram'
+
+  >>> for r in res:
+  ...     del resources[r.__name__]
+
+Working with the External Collection
+------------------------------------
+
+  >>> component.provideUtility(DirectoryCollectionProvider())
+  >>> aColl01.update()
+  >>> res = coll01.getResources()
+  >>> len(res)
+  2
+  >>> sorted((r.__name__, r.title) for r in res)
+  [(u'programming_beautifulprogram.pdf', u'BeautifulProgram'),
+   (u'programming_zope_zope3.txt', u'zope3')]
 
 
 Fin de partie

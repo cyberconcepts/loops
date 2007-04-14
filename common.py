@@ -108,29 +108,43 @@ class NameChooser(BaseNameChooser):
 
     def chooseName(self, name, obj):
         if not name:
-            name = self.generateName(obj)
+            name = self.generateNameFromTitle(obj)
+        else:
+            name = self.normalizeName(name)
         name = super(NameChooser, self).chooseName(name, obj)
         return name
 
-    def generateName(self, obj):
+    def generateNameFromTitle(self, obj):
         title = obj.title
-        result = []
         if len(title) > 15:
             words = title.split()
             if len(words) > 1:
                 title = '_'.join((words[0], words[-1]))
-        for c in title:
+        return self.normalizeName(title)
+
+    def normalizeName(self, baseName):
+        result = []
+        for c in baseName:
             try:
                 c = c.encode('ISO8859-15')
             except UnicodeEncodeError:
+                # skip all characters not representable in ISO encoding
+                continue
+            if c in '._':
+                # separator and special characters to keep
+                result.append(c)
                 continue
             if c in self.specialCharacters:
+                # transform umlauts and other special characters
                 result.append(self.specialCharacters[c].lower())
                 continue
             if ord(c) > 127:
+                # map to ASCII characters
                 c = chr(ord(c) & 127)
-            if c in ('_., '):
+            if c in ':,/\\ ':
+                # replace separator characters with _
                 result.append('_')
+                # skip all other characters
             elif not c.isalpha() and not c.isdigit():
                 continue
             else:

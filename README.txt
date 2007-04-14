@@ -688,7 +688,7 @@ and possibly critcal cases:
 
   >>> nc = NameChooser(resources)
   >>> nc.chooseName(u'', Resource(u'abc: (cde)'))
-  u'abc_cde'
+  u'abc__cde'
   >>> nc.chooseName(u'', Resource(u'\xdcml\xe4ut'))
   u'uemlaeut'
   >>> nc.chooseName(u'', Resource(u'A very very loooooong title'))

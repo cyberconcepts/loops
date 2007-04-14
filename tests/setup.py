@@ -18,6 +18,7 @@ from cybertools.typology.interfaces import IType
 
 from loops import Loops
 from loops import util
+from loops.common import NameChooser
 from loops.interfaces import IIndexAttributes
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
@@ -44,14 +45,13 @@ class TestSite(object):
         component.provideAdapter(ConceptType)
         component.provideAdapter(ResourceType)
         component.provideAdapter(TypeConcept)
+        component.provideAdapter(NameChooser)
 
         catalog = self.catalog = Catalog()
         component.provideUtility(catalog, ICatalog)
-
         catalog['loops_title'] = TextIndex('title', IIndexAttributes, True)
         catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
         catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
-
         component.provideAdapter(ConceptIndexAttributes)
         component.provideAdapter(ResourceIndexAttributes)
 
