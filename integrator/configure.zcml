@@ -19,4 +19,15 @@
   <zope:utility
       factory="loops.integrator.collection.DirectoryCollectionProvider" />
 
+  <!-- view(s) -->
+
+  <zope:adapter
+      name="collection.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.integrator.browser.ExternalCollectionView"
+      permission="zope.View"
+      />
+
 </configure>

@@ -305,6 +305,9 @@ class ExternalFileAdapter(FileAdapter):
 
     implements(IExternalFile)
 
+    _adapterAttributes = (FileAdapter._adapterAttributes
+                       + ('storageParams', 'externalAddress'))
+
     def getStorageParams(self):
         params = getattr(self.context, '_storageParams', None)
         if params is not None:

@@ -98,9 +98,11 @@ Working with the External Collection
   >>> res = coll01.getResources()
   >>> len(res)
   2
-  >>> sorted((r.__name__, r.title) for r in res)
-  [(u'programming_beautifulprogram.pdf', u'BeautifulProgram'),
-   (u'programming_zope_zope3.txt', u'zope3')]
+  >>> sorted((r.__name__, r.title, r._storageName) for r in res)
+  [(u'programming_beautifulprogram.pdf', u'BeautifulProgram', 'fullpath'),
+   (u'programming_zope_zope3.txt', u'zope3', 'fullpath')]
+
+To do: Check storage parameters.
 
 
 Fin de partie

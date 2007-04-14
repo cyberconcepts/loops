@@ -8,9 +8,9 @@ import os
 from zope import component
 
 from loops import util
-from loops.interfaces import IExternalFile
+from loops.interfaces import IFile, IExternalFile
 from loops.concept import Concept
-from loops.resource import Resource
+from loops.resource import Resource, FileAdapter, ExternalFileAdapter
 from loops.integrator.interfaces import IExternalCollection
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addAndConfigureObject
@@ -27,6 +27,9 @@ class TestSite(BaseTestSite):
     def setup(self):
         component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         concepts, resources, views = self.baseSetup()
+
+        component.provideAdapter(FileAdapter, provides=IFile)
+        component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)
 
         tType = concepts.getTypeConcept()
         tExtFile = addAndConfigureObject(concepts, Concept, 'extfile',

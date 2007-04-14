@@ -44,6 +44,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IConcept
+from loops.interfaces import ITypeConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import EditForm, BaseView, LoopsTerms
 from loops import util
@@ -133,20 +134,25 @@ class ConceptView(BaseView):
 
     @Lazy
     def view(self):
+        context = self.context
         viewName = self.request.get('loops.viewName') or getattr(self, '_viewName', None)
         if not viewName:
-            ti = IType(self.context).typeInterface
+            ti = IType(context).typeInterface
             # TODO: check the interface (maybe for a base interface IViewProvider)
             #       instead of the viewName attribute:
-            if ti and 'viewName' in ti:
+            if ti and ti != ITypeConcept and 'viewName' in ti:
                 typeAdapter = ti(self.context)
                 viewName = typeAdapter.viewName
+        if not viewName:
+            tp = IType(context).typeProvider
+            if tp:
+               viewName = ITypeConcept(tp).viewName
         if viewName:
             # ??? Would it make sense to use a somehow restricted interface
             #     that should be provided by the view like IQuery?
             #viewInterface = getattr(typeAdapter, 'viewInterface', None) or IQuery
-            adapter = component.queryMultiAdapter((self.context, self.request),
-                                        interface.Interface, name=viewName)
+            adapter = component.queryMultiAdapter((context, self.request),
+                                                  name=viewName)
             if adapter is not None:
                 return adapter
         #elif type provides view: use this

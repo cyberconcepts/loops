@@ -19,13 +19,13 @@ from cybertools.typology.interfaces import IType
 from loops import Loops
 from loops import util
 from loops.common import NameChooser
-from loops.interfaces import IIndexAttributes
+from loops.interfaces import IIndexAttributes, IDocument
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.resource import Resource
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.setup import SetupManager, addObject
-from loops.type import ConceptType, ResourceType, TypeConcept
+from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 
 
 class TestSite(object):
@@ -42,8 +42,9 @@ class TestSite(object):
         component.provideUtility(relations, IRelationRegistry)
         component.provideAdapter(IndexableRelationAdapter)
 
+        component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)
-        component.provideAdapter(ResourceType)
+        component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
         component.provideAdapter(NameChooser)
 

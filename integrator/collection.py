@@ -70,6 +70,7 @@ class ExternalCollectionAdapter(AdapterBase):
         for addr, mdate in provider.collect(self):
             if addr in old:
                 if mdate > self.lastUpdated:
+                    # force reindexing
                     notify(ObjectModifiedEvent(old[addr]))
             else:
                 new.append(addr)
@@ -113,7 +114,7 @@ class DirectoryCollectionProvider(object):
                             title=title,
                             resourceType=extFileType,
                             externalAddress=addr,
-                            storage='fullpath',
+                            storageName='fullpath',
                             storageParams=dict(subdirectory=directory))
             yield obj
 

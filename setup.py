@@ -114,9 +114,12 @@ def addAndConfigureObject(container, class_, name, **kw):
     basicKw = dict([(k, kw[k]) for k in kw if k in basicAttributes])
     obj = addObject(container, class_, name, **basicKw)
     ti = IType(obj).typeInterface
-    adapted = ti is not None and ti(obj) or obj
+    if ti is not None:
+        adapted = ti(obj)
+    else:
+        adapted = obj
     adapterAttributes = [k for k in kw if k not in basicAttributes]
     for attr in adapterAttributes:
-        setattr(obj, attr, kw[attr])
+        setattr(adapted, attr, kw[attr])
     notify(ObjectModifiedEvent(obj))
     return obj
