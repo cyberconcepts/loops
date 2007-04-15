@@ -132,3 +132,8 @@ In addition it is possible to explicitly retrieve a certain version:
   >>> IVersionable(getVersion(d001v1_2, TestRequest(form=dict(version='1.1')))).versionId
   '1.1'
 
+
+Fin de partie
+=============
+
+  >>> placefulTearDown()

@@ -26,19 +26,20 @@ $Id$
 from datetime import datetime
 import os, re, stat
 
-from zope import component
-from zope.lifecycleevent import ObjectModifiedEvent
-from zope.event import notify
 from zope.app.container.interfaces import INameChooser
-from zope.component import adapts
-from zope.interface import implements, Attribute
 from zope.cachedescriptors.property import Lazy
+from zope import component
+from zope.component import adapts
+from zope.contenttype import guess_content_type
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.interface import implements, Attribute
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType
-from loops.common import AdapterBase
+from loops.common import AdapterBase, adapted
 from loops.interfaces import IResource, IConcept
 from loops.integrator.interfaces import IExternalCollection
 from loops.integrator.interfaces import IExternalCollectionProvider
@@ -63,12 +64,16 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def update(self):
         existing = self.context.getResources()
-        old = dict((obj.externalAddress, obj) for obj in existing)
+        old = dict((adapted(obj).externalAddress, obj) for obj in existing)
         new = []
+        oldFound = []
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
         for addr, mdate in provider.collect(self):
             if addr in old:
+                # may be it would be better to return a file's hash
+                # for checking for changes...
+                oldFound.append(addr)
                 if mdate > self.lastUpdated:
                     # force reindexing
                     notify(ObjectModifiedEvent(old[addr]))
@@ -78,7 +83,22 @@ class ExternalCollectionAdapter(AdapterBase):
             newResources = provider.createExtFileObjects(self, new)
             for r in newResources:
                 self.context.assignResource(r)
+        for addr in old:
+            if addr not in oldFound:
+                # not part of the collection any more
+                self.remove(old[addr])
         self.lastUpdated = datetime.today()
+
+    def clear(self):
+        for obj in self.context.getResources():
+            self.remove(obj)
+
+    def remove(self, obj):
+        del self.resourceManager[getName(obj)]
+
+    @Lazy
+    def resourceManager(self):
+        return self.context.getLoopsRoot().getResourceManager()
 
 
 class DirectoryCollectionProvider(object):
@@ -95,8 +115,6 @@ class DirectoryCollectionProvider(object):
                 del dirs[dirs.index('.svn')]
             for f in files:
                 if pattern.match(f):
-                    # may be it would be better to return a file's hash
-                    # for checking for changes...
                     mtime = os.stat(os.path.join(path, f))[stat.ST_MTIME]
                     yield (os.path.join(path[len(directory)+1:], f),
                            datetime.fromtimestamp(mtime))
@@ -115,7 +133,10 @@ class DirectoryCollectionProvider(object):
                             resourceType=extFileType,
                             externalAddress=addr,
                             storageName='fullpath',
-                            storageParams=dict(subdirectory=directory))
+                            storageParams=dict(subdirectory=directory),
+                            contentType = guess_content_type(addr,
+                                    default='application/octet-stream')[0]
+                            )
             yield obj
 
     def getDirectory(self, client):

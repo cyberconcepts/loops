@@ -86,9 +86,17 @@ Let's now create the corresponding resource objects.
   u'programming_beautifulprogram.pdf'
   >>> xf1.title
   u'BeautifulProgram'
+  >>> xf1.contentType
+  'application/pdf'
 
-  >>> for r in res:
-  ...     del resources[r.__name__]
+  >>> from loops.common import adapted
+  >>> aXf1 = adapted(xf1)
+  >>> aXf1.storageName
+  'fullpath'
+  >>> aXf1.storageParams
+  {'subdirectory': '...topics'}
+
+  >>> for r in res: del resources[r.__name__]
 
 Working with the External Collection
 ------------------------------------
@@ -102,7 +110,20 @@ Working with the External Collection
   [(u'programming_beautifulprogram.pdf', u'BeautifulProgram', 'fullpath'),
    (u'programming_zope_zope3.txt', u'zope3', 'fullpath')]
 
-To do: Check storage parameters.
+If one of the referenced objects is not found any more it will be deleted.
+So if we change one of the collection parameters probably all old resources
+will be removed and newly created.
+
+  >>> import os
+  >>> aColl01.address = os.path.join('topics', 'programming')
+  >>> aColl01.update()
+  >>> res = sorted(coll01.getResources(), key=lambda x: getName(x))
+  >>> len(res)
+  2
+  >>> xf1 = res[0]
+  >>> aXf1 = adapted(xf1)
+  >>> aXf1.storageParams
+  {'subdirectory': '...programming'}
 
 
 Fin de partie

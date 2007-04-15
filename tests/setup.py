@@ -9,20 +9,23 @@ from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.catalog.text import TextIndex
+from zope.app.container.interfaces import IObjectRemovedEvent
 
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
-from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.relation.interfaces import IRelation, IRelationRegistry
+from cybertools.relation.interfaces import IRelationInvalidatedEvent
 from cybertools.relation.registry import IndexableRelationAdapter
+from cybertools.relation.registry import invalidateRelations, removeRelation
 from cybertools.typology.interfaces import IType
 
 from loops import Loops
 from loops import util
 from loops.common import NameChooser
-from loops.interfaces import IIndexAttributes, IDocument
+from loops.interfaces import ILoopsObject, IIndexAttributes, IDocument, IFile
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
-from loops.resource import Resource
+from loops.resource import Resource, FileAdapter
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
@@ -46,7 +49,13 @@ class TestSite(object):
         component.provideAdapter(ConceptType)
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
+        component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(NameChooser)
+
+        component.getSiteManager().registerHandler(invalidateRelations,
+                            (ILoopsObject, IObjectRemovedEvent))
+        component.getSiteManager().registerHandler(removeRelation,
+                            (IRelation, IRelationInvalidatedEvent))
 
         catalog = self.catalog = Catalog()
         component.provideUtility(catalog, ICatalog)

@@ -31,8 +31,20 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.storage.interfaces import IStorageInfo
+from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
 from loops.interfaces import IResourceAdapter
+
+
+def adapted(obj):
+    t = IType(obj, None)
+    if t is not None:
+        ti = t.typeInterface
+        if ti is not None:
+            adapted = ti(obj, None)
+            if adapted is not None:
+                return adapted
+    return obj
 
 
 # type interface adapters
