@@ -381,6 +381,10 @@ class NoteAdapter(DocumentAdapter):
     implements(INote)
     _contextAttributes = list(INote) + list(IBaseResource)
 
+    @property
+    def description(self):
+        return self.data.replace('\n', ' ')
+
 
 # other adapters
 

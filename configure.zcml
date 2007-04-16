@@ -363,6 +363,15 @@
              set_schema="loops.interfaces.IFile" />
   </class>
 
+  <adapter factory="loops.resource.TextDocumentAdapter" trusted="True"
+           provides="loops.interfaces.ITextDocument" />
+  <class class="loops.resource.TextDocumentAdapter">
+    <require permission="zope.View"
+             interface="loops.interfaces.ITextDocument" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.ITextDocument" />
+  </class>
+
   <adapter factory="loops.resource.NoteAdapter"
            provides="loops.interfaces.INote"
            trusted="True" />

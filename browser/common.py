@@ -48,6 +48,7 @@ from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
+from loops.common import adapted
 from loops.interfaces import IView
 from loops.resource import Resource
 from loops.type import ITypeConcept
@@ -152,7 +153,7 @@ class BaseView(GenericView):
 
     @Lazy
     def description(self):
-        return self.context.description
+        return adapted(self.context).description
 
     @Lazy
     def dcTitle(self):
