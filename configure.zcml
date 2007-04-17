@@ -322,7 +322,8 @@
 
   <adapter factory="loops.common.NameChooser" />
 
-  <adapter factory="loops.type.LoopsType" />
+  <adapter factory="loops.type.LoopsType"
+           for="loops.interfaces.IResource" />
   <adapter factory="loops.type.ConceptType" />
   <adapter factory="loops.type.ResourceType"
            for="loops.interfaces.IDocument" />
