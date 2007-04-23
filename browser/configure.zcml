@@ -480,14 +480,14 @@
       menu="zmi_views" title="Configure"
       />
 
-  <page
+  <!--<page
       name="node.html"
       for="loops.interfaces.INode"
       template="node.pt"
       class=".node.NodeView"
       permission="zope.View"
       menu="zmi_views" title="View"
-      />
+      />-->
 
   <defaultView
       for="loops.interfaces.INode"
