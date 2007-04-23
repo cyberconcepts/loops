@@ -7,7 +7,7 @@
         <div metal:use-macro="views/node_macros/editicons" />
       </tal:edit>
       <h1 tal:content="item/title">Title</h1>
-      <p tal:define="description item/description"
+      <p tal:define="description description|item/description"
          tal:condition="description">
         <i tal:content="description">Description</i></p>
       <div class="content-1" id="1.body"
@@ -21,7 +21,9 @@
 
 
 <metal:block define-macro="render_note">
-  <metal:render use-macro="item/template/macros/render" />
+  <metal:block tal:define="description nothing">
+    <metal:render use-macro="item/template/macros/render" />
+  </metal:block>
   <div class="content-1" id="1.link"
        tal:define="linkUrl item/linkUrl">
     <a href="."
