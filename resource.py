@@ -227,7 +227,9 @@ class Resource(Image, Contained):
         oldAdapted = newAdapted = context
         oldTi = removeSecurityProxy(oldType.typeInterface)
         if oldTi is not None:
-            oldAdapted = oldTi(context)
+            oldAdapted = oldTi(context, None)
+        if oldAdapted is None: # nothing to migrate
+            return
         newTi = removeSecurityProxy(newType.typeInterface)
         newOptions = {}
         if newTi is not None:
