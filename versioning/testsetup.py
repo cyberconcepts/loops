@@ -9,6 +9,7 @@ from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.catalog.text import TextIndex
+from zope.app.container.interfaces import IObjectRemovedEvent
 
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
@@ -18,7 +19,7 @@ from cybertools.typology.interfaces import IType
 
 from loops import Loops
 from loops import util
-from loops.interfaces import IIndexAttributes
+from loops.interfaces import IResource, IIndexAttributes
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.resource import Resource
@@ -26,6 +27,7 @@ from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addObject
 from loops.type import ConceptType, ResourceType, TypeConcept
+from loops.versioning.versionable import cleanupVersions
 
 
 class TestSite(object):
@@ -52,6 +54,9 @@ class TestSite(object):
         catalog['loops_title'] = TextIndex('title', IIndexAttributes, True)
         catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
         catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
+
+        component.getSiteManager().registerHandler(cleanupVersions,
+                            (IResource, IObjectRemovedEvent))
 
         loopsRoot = site['loops'] = Loops()
 

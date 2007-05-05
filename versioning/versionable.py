@@ -163,3 +163,23 @@ class VersionableResource(object):
             name = name[:-4]
         return name + '_' + versionId + ext
 
+
+def cleanupVersions(context, event):
+    """ Called upon deletion of a resource.
+    """
+    #print 'cleaning up'
+    vContext = IVersionable(context, None)
+    if vContext is None:
+        return
+    rm = context.getLoopsRoot().getResourceManager()
+    if context == vContext.master:
+        toBeDeleted = []
+        for v in vContext.versions.values():
+            if v != context:
+                toBeDeleted.append(getName(v))
+        for name in toBeDeleted:
+            del rm[name]
+    else:
+        vId = vContext.versionId
+        vMaster = IVersionable(vContext.master)
+        del vMaster.versions[vId]

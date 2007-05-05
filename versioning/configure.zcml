@@ -16,6 +16,12 @@
              set_schema="loops.versioning.interfaces.IVersionable" />
   </zope:class>
 
+  <zope:subscriber
+        for="loops.interfaces.IResource
+             zope.app.container.interfaces.IObjectRemovedEvent"
+        handler="loops.versioning.versionable.cleanupVersions"
+        />
+
   <!-- user interface -->
 
   <browser:page

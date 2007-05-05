@@ -133,6 +133,24 @@ In addition it is possible to explicitly retrieve a certain version:
   '1.1'
 
 
+Deleting Versioned Resources
+============================
+
+When a version object is deleted the reference to it on the corresponding
+master object is removed.
+
+  >>> del resources['d001_1.2.txt']
+  >>> sorted(IVersionable(d001).versions)
+  ['1.1', '2.1', '2.2']
+
+When the master object of a versioned resource is deleted all version objects
+derived from it are deleted as well.
+
+  >>> del resources['d001.txt']
+  >>> sorted(resources)
+  [u'd002.txt', u'd003.txt']
+
+
 Fin de partie
 =============
 
