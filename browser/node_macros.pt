@@ -209,15 +209,23 @@
 <metal:actions define-macro="actions">
     <tal:actions define="dummy view/registerDojo;
                          url view/virtualTargetUrl">
+      <div tal:define="cmUrl view/conceptMapEditorUrl"
+           tal:condition="url">
+        <a href="#" target="_blank" i18n:translate="" i18n:attributes="title"
+           title="Open concept map editor in new window"
+           tal:attributes="href cmUrl">
+          Edit Concept Map
+        </a>
+      </div>
       <div>
-          <a href="#"
+          <a href="#" i18n:translate=""
              onclick="objectDialog('create', 'create_object.html'); return false;"
              tal:attributes="onclick string:objectDialog('create', '$url/create_object.html');; return false;;">
             Create Resource...
           </a>
       </div>
       <div tal:condition="view/hasEditableTarget">
-          <a href="#"
+          <a href="#" i18n:translate=""
              onclick="objectDialog('edit', 'edit_object.html'); return false;"
              tal:define="version request/version|nothing;
                          versionPar python: version and '?version=' + version or ''"

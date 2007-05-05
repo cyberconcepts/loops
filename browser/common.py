@@ -140,6 +140,10 @@ class BaseView(GenericView):
         return absoluteURL(self.context, self.request)
 
     @Lazy
+    def rootUrl(self):
+        return absoluteURL(self.loopsRoot, self.request)
+
+    @Lazy
     def view(self):
         return self
 
@@ -330,6 +334,12 @@ class BaseView(GenericView):
     def inlineEditingActive(self):
         # this may depend on system and user settings...
         return True
+
+    @Lazy
+    def conceptMapEditorUrl(self):
+        return (checkPermission('loops.xmlrpc.ManageConcepts', self.context)
+                    and self.rootUrl + '/swf.html'
+                    or None)
 
     inlineEditable = False
 
