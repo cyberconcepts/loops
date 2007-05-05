@@ -2,20 +2,23 @@
 <html metal:use-macro="context/@@standard_macros/view"
       i18n:domain="loops">
   <body>
-    
+
     <div metal:fill-slot="body">
 
       <h1 tal:content="context/title">Concept Title</h1><br />
-      
+
       <div   tal:define="items view/parents;
                          action string:remove;
                          qualifier string:parents;
                          summary string:Currently assigned objects;
                          legend string:Parent Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Parents;">
+                         buttonText string:Remove Parents;"
+             style="float:left; padding-right:20px">
           <metal:parents use-macro="views/relation_macros/listing" />
       </div>
+      <div metal:use-macro="views/relation_macros/clients" />
+
       <div   tal:define="items view/children;
                          action string:remove;
                          qualifier string:children;
@@ -30,7 +33,7 @@
                          buttonText string:Create Concept">
         <metal:create use-macro="views/relation_macros/create" />
       </div>
-      
+
       <div   tal:define="items view/search;
                          action string:assign;
                          qualifier nothing;
@@ -60,7 +63,7 @@
           </metal:special>
         </metal:assign>
       </div>
-      
+
     </div>
   </body>
 </html>

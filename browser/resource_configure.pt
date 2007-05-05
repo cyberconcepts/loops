@@ -2,7 +2,7 @@
 <html metal:use-macro="context/@@standard_macros/view"
       i18n:domain="loops">
   <body>
-    
+
     <div metal:fill-slot="body">
 
       <h1>
@@ -11,7 +11,7 @@
             <metal:xedit use-macro="views/xedit_macros/editLink" />
         </tal:xedit>
       </h1><br />
-      
+
       <div   tal:define="items view/concepts;
                          action string:remove;
                          qualifier string:concepts;
@@ -22,34 +22,11 @@
              style="float:left; padding-right:20px">
           <metal:parents use-macro="views/relation_macros/listing" />
       </div>
-
-      <div tal:define="items view/clients"
-           style="padding-right:20px">
-        <fieldset>
-          <legend i18n:translate="">Clients</legend>
-          <table class="listing" summary="Clients" i18n:attributes="summary">
-            <thead>
-              <tr>
-                <th i18n:translate="label_title">Title</th>
-                <th i18n:translate="label_type">Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr tal:repeat="item items">
-                <td><a tal:content="item/title" href="#"
-                       tal:attributes="href
-                            string:${item/url}/@@configure.html">
-                    Title</a></td>
-                <td tal:content="item/nodeType">Type</td>
-              </tr>
-            </tbody>
-          </table>
-        </fieldset>
-      </div>
+      <div metal:use-macro="views/relation_macros/clients" />
 
       <div   tal:define="legend string:Create Concept;
                          buttonText string:Create Concept"
-             style="padding-right:20px; clear:left">
+             style="clear:left">
         <metal:create use-macro="views/relation_macros/create">
           <metal:control fill-slot="control">
             <input class="context" type="submit" name="form.button.submit"
@@ -62,15 +39,14 @@
           </metal:control>
         </metal:create>
       </div>
-      
+
       <div   tal:define="items view/search;
                          action string:assign;
                          qualifier nothing;
                          summary string:Assignment candidates;
                          legend string:Search;
                          showPredicate nothing;
-                         buttonText string:Assign;"
-             style="padding-right:20px">
+                         buttonText string:Assign;">
         <metal:assign use-macro="views/relation_macros/listing">
           <metal:search fill-slot="topActions">
             <metal:block use-macro="views/relation_macros/search" />
@@ -88,7 +64,7 @@
           </metal:special>
         </metal:assign>
       </div>
-      
+
     </div>
   </body>
 </html>

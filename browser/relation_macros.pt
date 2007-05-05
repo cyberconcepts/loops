@@ -158,4 +158,31 @@
 </metal:search>
 
 
+<metal:clients define-macro="clients">
+      <div tal:define="items view/clients">
+        <fieldset>
+          <legend i18n:translate=""
+                  style="padding: 0 4px 0 4px">Clients</legend>
+          <table class="listing" summary="Clients" i18n:attributes="summary">
+            <thead>
+              <tr>
+                <th i18n:translate="label_title">Title</th>
+                <th i18n:translate="label_type">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr tal:repeat="item items">
+                <td><a tal:content="item/title" href="#"
+                       tal:attributes="href
+                            string:${item/url}/@@configure.html">
+                    Title</a></td>
+                <td tal:content="item/nodeType">Type</td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </div>
+</metal:clients>
+
+
 </html>

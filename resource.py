@@ -159,15 +159,15 @@ class Resource(Image, Contained):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
+    # concept relations
+    # note: we always use the master version for relations, see getMaster()
+
     def getClients(self, relationships=None):
         if relationships is None:
             relationships = [TargetRelation]
         obj = getMaster(self)  # use the master version for relations
         rels = getRelations(second=obj, relationships=relationships)
         return [r.first for r in rels]
-
-    # concept relations
-    # note: we always use the master version for relations, see getMaster()
 
     def getConceptRelations (self, predicates=None, concept=None):
         predicates = predicates is None and ['*'] or predicates

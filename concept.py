@@ -40,10 +40,11 @@ from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from cybertools.typology.interfaces import IType, ITypeManager
 
-from interfaces import IConcept, IConceptRelation, IConceptView
-from interfaces import IConceptManager, IConceptManagerContained
-from interfaces import ILoopsContained
-from interfaces import IIndexAttributes
+from loops.interfaces import IConcept, IConceptRelation, IConceptView
+from loops.interfaces import IConceptManager, IConceptManagerContained
+from loops.interfaces import ILoopsContained
+from loops.interfaces import IIndexAttributes
+from loops.view import TargetRelation
 
 
 # relation classes
@@ -132,6 +133,12 @@ class Concept(Contained, Persistent):
         return self.getLoopsRoot().getConceptManager()
 
     # concept relations
+
+    def getClients(self, relationships=None):
+        if relationships is None:
+            relationships = [TargetRelation]
+        rels = getRelations(second=self, relationships=relationships)
+        return [r.first for r in rels]
 
     def getChildRelations(self, predicates=None, child=None):
         predicates = predicates is None and ['*'] or predicates

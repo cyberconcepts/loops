@@ -158,6 +158,11 @@ class ConceptView(BaseView):
         #elif type provides view: use this
         return self
 
+    def clients(self):
+        from loops.browser.node import NodeView  # avoid circular import
+        for node in self.context.getClients():
+            yield NodeView(node, self.request)
+
 
 class ConceptConfigureView(ConceptView):
 
