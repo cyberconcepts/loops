@@ -76,7 +76,7 @@ class AdapterBase(object):
 
     def checkAttr(self, attr):
         if attr not in self._contextAttributes:
-            raise AttributeError(attr)
+            raise AttributeError('%s: %s' % (self, attr))
 
     def __eq__(self, other):
         if other is None:

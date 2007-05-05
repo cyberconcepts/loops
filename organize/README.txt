@@ -71,7 +71,7 @@ The classes used in this package are just adapters to IConcept.
   >>> john.someOtherAttribute
   Traceback (most recent call last):
   ...
-  AttributeError: someOtherAttribute
+  AttributeError: ... someOtherAttribute
 
 We can use the age calculations from the base Person class:
 

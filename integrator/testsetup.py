@@ -7,6 +7,8 @@ $Id$
 import os
 from zope import component
 
+from cybertools.storage.interfaces import IExternalStorage
+from cybertools.storage.filesystem import fullPathStorage
 from loops import util
 from loops.interfaces import IFile, IExternalFile
 from loops.concept import Concept
@@ -30,6 +32,8 @@ class TestSite(BaseTestSite):
 
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)
+
+        component.provideUtility(fullPathStorage(), IExternalStorage, name='fullpath')
 
         tType = concepts.getTypeConcept()
         tExtFile = addAndConfigureObject(concepts, Concept, 'extfile',

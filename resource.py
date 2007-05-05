@@ -283,6 +283,8 @@ class FileAdapter(ResourceAdapterBase):
     _contextAttributes = list(IFile) + list(IBaseResource)
     _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
+    externalAddress = None
+
     def setData(self, data):
         #if self.storageName is None:
         #    self.storageName = 'zopefile'
@@ -308,7 +310,7 @@ class ExternalFileAdapter(FileAdapter):
     implements(IExternalFile)
 
     _adapterAttributes = (FileAdapter._adapterAttributes
-                       + ('storageParams', 'externalAddress'))
+                       + ('storageParams', 'externalAddress', 'uniqueAddress'))
 
     def getStorageParams(self):
         params = getattr(self.context, '_storageParams', None)
@@ -328,13 +330,12 @@ class ExternalFileAdapter(FileAdapter):
         self.context._externalAddress = addr
     externalAddress = property(getExternalAddress, setExternalAddress)
 
-    #@Lazy
-    #def externalAddress(self):
-        # or is this an editable attribute?
-        # or some sort of subpath set during import?
-        # anyway: an attribute of the context object.
-        # TODO: use intId and store in special attribute for later reuse
-        #return self.context.__name__
+    @property
+    def uniqueAddress(self):
+        storageParams = self.storageParams
+        storageName = self.storageName
+        storage = component.getUtility(IExternalStorage, name=storageName)
+        return storage.getUniqueAddress(self.externalAddress, storageParams)
 
     def setData(self, data):
         storageParams = self.storageParams

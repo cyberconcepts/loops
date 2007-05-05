@@ -64,7 +64,9 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def update(self):
         existing = self.context.getResources()
-        old = dict((adapted(obj).externalAddress, obj) for obj in existing)
+        # TODO: use full address for checking for existing resources
+        old = dict((adapted(obj).uniqueAddress, obj) for obj in existing)
+        #old = dict((adapted(obj).externalAddress, obj) for obj in existing)
         new = []
         oldFound = []
         provider = component.getUtility(IExternalCollectionProvider,
@@ -86,6 +88,7 @@ class ExternalCollectionAdapter(AdapterBase):
         for addr in old:
             if addr not in oldFound:
                 # not part of the collection any more
+                # TODO: only remove from collection but keep object?
                 self.remove(old[addr])
         self.lastUpdated = datetime.today()
 

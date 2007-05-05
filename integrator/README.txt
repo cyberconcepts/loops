@@ -110,9 +110,9 @@ Working with the External Collection
   [(u'programming_beautifulprogram.pdf', u'BeautifulProgram', 'fullpath'),
    (u'programming_zope_zope3.txt', u'zope3', 'fullpath')]
 
-If one of the referenced objects is not found any more it will be deleted.
-So if we change one of the collection parameters probably all old resources
-will be removed and newly created.
+We may update the collection after having changed the storage params.
+This should also the settings for existing objects if they still
+can be found.
 
   >>> import os
   >>> aColl01.address = os.path.join('topics', 'programming')
@@ -120,10 +120,20 @@ will be removed and newly created.
   >>> res = sorted(coll01.getResources(), key=lambda x: getName(x))
   >>> len(res)
   2
-  >>> xf1 = res[0]
-  >>> aXf1 = adapted(xf1)
-  >>> aXf1.storageParams
-  {'subdirectory': '...programming'}
+  >>> aXf1 = adapted(res[0])
+  >>> aXf1.storageName, aXf1.storageParams, aXf1.externalAddress
+  ('fullpath', {'subdirectory': '...programming'}, 'BeautifulProgram.pdf')
+
+But if one of the referenced objects is not found any more it will be deleted.
+
+  >>> aColl01.address = os.path.join('topics', 'programming', 'zope')
+  >>> aColl01.update()
+  >>> res = sorted(coll01.getResources(), key=lambda x: getName(x))
+  >>> len(res)
+  1
+  >>> aXf1 = adapted(res[0])
+  >>> aXf1.storageName, aXf1.storageParams, aXf1.externalAddress
+  ('fullpath', {'subdirectory': '...zope'}, 'zope3.txt')
 
 
 Fin de partie
