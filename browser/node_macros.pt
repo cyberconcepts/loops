@@ -211,7 +211,7 @@
                          url view/virtualTargetUrl">
       <div tal:define="cmUrl view/conceptMapEditorUrl"
            tal:condition="url">
-        <a href="#" target="_blank" i18n:translate="" i18n:attributes="title"
+        <a href="#" target="loops_cme" i18n:translate="" i18n:attributes="title"
            title="Open concept map editor in new window"
            tal:attributes="href cmUrl">
           Edit Concept Map
