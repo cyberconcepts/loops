@@ -5,7 +5,7 @@
                   ">
 
 <head>
-  <title>loops</title>
+  <title>loops Concept Map Editor</title>
   <link rel="icon" type="image/png"
         tal:attributes="href context/++resource++favicon.png" />
 </head>

@@ -187,7 +187,8 @@
                     + ' menu-%i' % level">
             <a href="#" class=""
                tal:content="item/context/title"
-               tal:attributes="href item/url">Menu Text</a>
+               tal:attributes="href item/url;
+                               title item/description">Menu Text</a>
           </div>
           <tal:sub define="level python:level+1"
                    condition="python: level &lt; 4 or view.active(item)">
