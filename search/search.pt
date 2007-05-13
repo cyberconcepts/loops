@@ -5,7 +5,8 @@
                    formId string:$idPrefix.form;
                    resultsId string:$idPrefix.results">
     <h3 tal:attributes="class string:content-$level;
-                        ondblclick item/openEditWindow">
+                        ondblclick item/openEditWindow"
+      tal:content="item/title">
       Search
     </h3>
 
