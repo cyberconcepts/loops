@@ -42,9 +42,8 @@ h1 {
     font-weight: bold;
 }
 
-.content-4 h1, .content-3 h2, .content-2 h3, h4 {
-    font-size: 110%;
-    border: none;
+.content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4 {
+    font-size: 120%;
 }
 
 .content-5 h1, .content-4 h2, .content-3 h3, content-2 h4 {

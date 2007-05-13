@@ -114,17 +114,16 @@ class ResourceView(BaseView):
         super(ResourceView, self).__init__(context, request)
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             cont = self.controller
-            if cont is not None:
+            if cont is not None and list(self.relatedConcepts()):
                 cont.macros.register('portlet_right', 'related', title='Related Items',
                              subMacro=self.template.macros['related'],
                              position=0, info=self)
-                if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
-                    versionable = IVersionable(self.context, None)
-                    if versionable is not None and len(versionable.versions) > 1:
-                            cont.macros.register('portlet_right', 'versions',
-                                    title='Version ' + versionable.versionId,
-                                    subMacro=version_macros.macros['portlet_versions'],
-                                    position=1, info=self)
+                versionable = IVersionable(self.context, None)
+                if versionable is not None and len(versionable.versions) > 1:
+                        cont.macros.register('portlet_right', 'versions',
+                                title='Version ' + versionable.versionId,
+                                subMacro=version_macros.macros['portlet_versions'],
+                                position=1, info=self)
 
     @Lazy
     def view(self):
