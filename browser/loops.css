@@ -27,26 +27,27 @@ pre {
     margin-left: 5px;
 }
 
-.content-1 h1 {
+/*.content-1 h1 { */
+h1 {
     font-size: 160%;
     font-weight: bold;
 }
 
-.content-2 h1, .content-1 h2, .content-1 h3 {
+.content-2 h1, h2 {
+    font-size: 140%;
+}
+
+.content-3 h1, .content-2 h2, h3 {
     font-size: 130%;
     font-weight: bold;
 }
 
-.content-3 h1, .content-2 h2, .content-2 h3 {
-    font-size: 120%;
-}
-
-.content-4 h1, .content-3 h2, .content-3 h3 {
+.content-4 h1, .content-3 h2, .content-2 h3, h4 {
     font-size: 110%;
     border: none;
 }
 
-.content-5 h1, .content-4 h2, .content-4 h3 {
+.content-5 h1, .content-4 h2, .content-3 h3, content-2 h4 {
     font-size: 100%;
     border: none;
 }
