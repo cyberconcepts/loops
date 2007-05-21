@@ -25,7 +25,8 @@
                          summary string:Currently assigned objects;
                          legend string:Child Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Children;">
+                         buttonText string:Remove Children;"
+             style="clear:left">
           <metal:children use-macro="views/relation_macros/listing" />
       </div>
 

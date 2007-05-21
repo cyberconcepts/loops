@@ -79,7 +79,7 @@ class AdapterBase(object):
             raise AttributeError('%s: %s' % (self, attr))
 
     def __eq__(self, other):
-        if other is None:
+        if not isinstance(other, AdapterBase):
             return False
         return self.context == other.context
 
