@@ -3,15 +3,15 @@
                            ondblclick python: item.openEditWindow('resources.html')"
            tal:define="versions python: list(item.versions())"
            tal:condition="versions">
-        <h1 tal:content="item/title">Title</h1>
-        <h2>Versions</h2><br />
+        <h1 i18n:translate="" tal:content="item/title">Title</h1>
+        <h2 i18n:translate="">Versions</h2><br />
         <table class="listing">
           <tr>
-            <th i18n:translate="label_title">Title</th>
-            <th i18n:translate="label_type">Type</th>
-            <th i18n:translate="label_version">V</th>
-            <th i18n:translate="label_size">Size</th>
-            <th i18n:translate="label_modifdate">Modification Date</th>
+            <th i18n:translate="">Title</th>
+            <th i18n:translate="">Type</th>
+            <th i18n:translate="">V</th>
+            <th i18n:translate="">Size</th>
+            <th i18n:translate="">Modification Date</th>
           </tr>
           <tal:items repeat="related versions">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';

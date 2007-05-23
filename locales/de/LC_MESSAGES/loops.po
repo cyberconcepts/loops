@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: $Id$\n"
+"POT-Creation-Date: 2007-05-22 12:00 CET\n"
+"PO-Revision-Date: 2007-05-23 12:00 CET\n"
+"Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
+"Language-Team: loops developers <helmutm@cy55.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: kwrite\n"
+
+msgid "Concept"
+msgstr "Begriff"
+
+msgid "Resource"
+msgstr "Ressource"
+
+msgid "Edit Concept Map"
+msgstr "Concept Map bearbeiten"
+
+msgid "Create Resource..."
+msgstr "Ressource anlegen..."
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Modification Date"
+msgstr "Änderungsdatum"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Author(s)"
+msgstr "Autor(en)"
+
+msgid "Parents"
+msgstr "Oberbegriffe"
+
+msgid "Children"
+msgstr "Unterbegriffe"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Related Items"
+msgstr "Verwandte Begriffe"
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Task"
+msgstr "Aufgabe"
+
+msgid "Domain"
+msgstr "Bereich"
+
+msgid "Note"
+msgstr "Notiz"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "Data"
+msgstr "Inhalt"
+
+msgid "Create Resource, Type = "
+msgstr "Ressource anlegen, Typ = "
+
+msgid "Edit Resource..."
+msgstr "Ressource bearbeiten..."
+
+msgid "Content Type"
+msgstr "Format"
+
+msgid "Link URL"
+msgstr "URL"
+
+msgid "Assign Concept(s)"
+msgstr "Begriff(e) zuordnen"
+
+msgid "State"
+msgstr "Status"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Select"
+msgstr "Übernehmen"
+
+msgid "Select concept"
+msgstr "Begriff auswählen"
+
+msgid "Select/search text"
+msgstr "Begriff suchen/auswählen"
+
+msgid "not selected"
+msgstr "nicht ausgewählt"
+
+msgid "Type(s) to search for"
+msgstr "Suche nach Objekten vom Typ"
+
+msgid "Search via related concepts"
+msgstr "Über Begriffe suchen"
+
+msgid "Search"
+msgstr "Suchen"
+
+msgid "Any Resource"
+msgstr "Beliebige Ressource"
+
+msgid "Any Concept"
+msgstr "Beliebiger Begriff"
+
+msgid "Any"
+msgstr "Beliebig"
+
+msgid "Concept for Search"
+msgstr "Suchbegriff"
+
+msgid "Select if you want to create a new version"
+msgstr "Bitte markieren, wenn Sie eine neue Version anlegen möchten"
+
+msgid "Search text"
+msgstr "Suchtext"
+
+msgid "Text-based search"
+msgstr "Textbasierte Suche"
+
+msgid "Full text"
+msgstr "Volltext"
+
+msgid "Unknown Type"
+msgstr "Unbekannter Typ"
+
+msgid "Query"
+msgstr "Abfrage"
+
+msgid "Open concept map editor in new window"
+msgstr "Concept-Map-Editor in neuem Fenster öffnen"
+
+msgid "Versions"
+msgstr "Versionen"
+
+msgid "All versions"
+msgstr "Alle Versionen"
+
+msgid "Search results"
+msgstr "Suchergebnisse"
+

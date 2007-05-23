@@ -46,6 +46,7 @@ from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocumen
 from loops.interfaces import ITypeConcept
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
+from loops.util import _
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -115,7 +116,7 @@ class ResourceView(BaseView):
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             cont = self.controller
             if cont is not None and list(self.relatedConcepts()):
-                cont.macros.register('portlet_right', 'related', title='Related Items',
+                cont.macros.register('portlet_right', 'related', title=_(u'Related Items'),
                              subMacro=self.template.macros['related'],
                              position=0, info=self)
                 versionable = IVersionable(self.context, None)

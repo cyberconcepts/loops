@@ -90,8 +90,8 @@
           <div tal:repeat="concept macro/info/relatedConcepts">
             <a href="#"
                tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
-              <span tal:replace="concept/title">Concept</span>
-              (<i tal:content="concept/typeTitle">Type</i>)
+              <span i18n:translate="" tal:content="concept/title">Concept</span>
+              (<i i18n:translate="" tal:content="concept/typeTitle">Type</i>)
             </a>
           </div>
 </metal:actions>

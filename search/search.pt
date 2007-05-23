@@ -31,6 +31,7 @@
               <td></td>
               <td colspan="3">
                 <input type="submit" name="button.search" value="Search" class="submit"
+                       i18n:attributes="value"
                        tal:attributes="onclick python:
                                 item.submitReplacing(resultsId, formId, view)" />
               </td>
@@ -41,21 +42,22 @@
     </div>
 
     <div metal:define-macro="search_results" id="1.search.results"
-         tal:attributes="id resultsId | request/search.resultsId">
+         tal:attributes="id resultsId | request/search.resultsId"
+         i18n:domain="loops">
       <fieldset class="box"
                 tal:condition="request/search.submitted | nothing">
-        <legend>Search results</legend>
+        <legend i18n:translate="">Search results</legend>
         <table class="listing" summary="Search results"
                i18n:attributes="summary">
           <thead>
             <tr>
-              <th i18n:translate="label_title">Title</th>
-              <th i18n:translate="label_type">Type</th>
-              <th i18n:translate="label_version"
+              <th i18n:translate="">Title</th>
+              <th i18n:translate="">Type</th>
+              <th i18n:translate=""
                   tal:condition="view/useVersioning">V</th>
-              <th i18n:translate="label_size">Size</th>
-              <th i18n:translate="label_modifdate">Modification Date</th>
-              <th i18n:translate="label_authors">Author(s)</th>
+              <th i18n:translate="">Size</th>
+              <th i18n:translate="">Modification Date</th>
+              <th i18n:translate="">Author(s)</th>
             </tr>
           </thead>
           <tbody>
@@ -68,7 +70,8 @@
                                        title description"
                        tal:content="row/title" />
                   </td>
-                  <td tal:content="row/longTypeTitle|row/typeTitle">Type</td>
+                  <td i18n:translate=""
+                      tal:content="row/longTypeTitle|row/typeTitle">Type</td>
                   <tal:version condition="view/useVersioning">
                     <td style="text-align: center"
                         tal:define="versionId row/versionId|string:">
@@ -110,13 +113,14 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3>Type(s) to search for</h3>
+      <h3 i18n:translate="">Type(s) to search for</h3>
     </td>
   <tr>
     <td></td>
     <td>
       <label for="text"
-             tal:attributes="for string:$idPrefix.text">Type:</label>
+             tal:attributes="for string:$idPrefix.text">
+        <span i18n:translate="">Type</span>:</label>
       <select name="text"
               tal:attributes="name string:$namePrefix.text;
                             id string:$idPrefix.text;">
@@ -140,7 +144,7 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3>Search text</h3>
+      <h3 i18n:translate="">Text-based search</h3>
     </td>
   <tr>
     <td></td>
@@ -150,17 +154,20 @@
              tal:attributes="name string:$namePrefix.title;
                              id string:$idPrefix.title;" />
       <label for="title"
+             i18n:translate=""
              tal:attributes="for string:$idPrefix.title">Title</label>
       <input type="checkbox"
              name="full" id="full" value="yes"
              tal:attributes="name string:$namePrefix.full;
                              id string:$idPrefix.full;" />
       <label for="full"
+             i18n:translate=""
              tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
     </td>
     <td>
       <label for="text"
-             tal:attributes="for string:$idPrefix.text">Search text:</label>
+             tal:attributes="for string:$idPrefix.text">
+        <span i18n:translate="">Search text</span>:</label>
     </td>
     <td>
       <input type="text" name="text"
@@ -186,15 +193,16 @@
                         namePrefix string:search.$rowNum;">
       <td></td>
       <td>
-        <span i18n:translate="">Type: </span>
-        <b tal:content="type/title" />
+        <span i18n:translate="">Type</span>:
+        <b tal:content="type/title" i18n:translate="" />
         <input type="hidden" name="type" value=""
                tal:attributes="name string:$namePrefix.type;
                                value type/token" />
       </td>
       <td>
         <label for="text"
-               tal:attributes="for string:$idPrefix.text">Select value:</label>
+               tal:attributes="for string:$idPrefix.text">
+          <span i18n:translate="">Concept for Search</span>:</label>
       </td>
       <td>
         <select name="text_selected"
@@ -202,6 +210,7 @@
                                 id string:$idPrefix.text;">
           <tal:concepts repeat="concept python: item.conceptsForType(type['token'])">
             <option tal:attributes="value concept/token"
+                    i18n:translate=""
                     tal:content="concept/title">Zope Corp</option>
           </tal:concepts>
         </select>
@@ -212,7 +221,8 @@
     <td></td>
     <td>
       <label for="type"
-             tal:attributes="for string:$idPrefix.type">Type:</label>
+             tal:attributes="for string:$idPrefix.type">
+        <span i18n:translate="">Type</span>:</label>
       <select name="type"
               tal:attributes="name string:$namePrefix.type;
                               id string:$idPrefix.type;
@@ -227,7 +237,8 @@
     </td>
     <td>
       <label for="text"
-             tal:attributes="for string:$idPrefix.text">Search text:</label>
+             tal:attributes="for string:$idPrefix.text">
+        <span i18n:translate="">Concept for Search</span>:</label>
       <input type="text" name="text"
              tal:condition="nothing"
              tal:attributes="name string:$namePrefix.text;

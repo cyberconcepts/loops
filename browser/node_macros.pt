@@ -212,7 +212,8 @@
                          url view/virtualTargetUrl">
       <div tal:define="cmUrl view/conceptMapEditorUrl"
            tal:condition="url">
-        <a href="#" target="loops_cme" i18n:translate="" i18n:attributes="title"
+        <a href="#" target="loops_cme" i18n:translate=""
+           i18n:attributes="title"
            title="Open concept map editor in new window"
            tal:attributes="href cmUrl">
           Edit Concept Map
@@ -259,6 +260,7 @@
              tal:define="url action/url">
     <a href="#" title="Edit with External Editor"
        tal:attributes="href string:$url/external_edit"
+       i18n:attributes="title"
        ><img src="edit.gif" alt="External Editor"
              tal:attributes="src context/++resource++edit.gif" /></a>
 </metal:xedit>

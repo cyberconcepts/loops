@@ -26,6 +26,7 @@ from zope.app import zapi
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.security.interfaces import IAuthentication
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -55,6 +56,9 @@ from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
 from loops.versioning.interfaces import IVersionable
+
+
+conceptMacrosTemplate = ViewPageTemplateFile('concept_macros.pt')
 
 
 class NameField(schema.ASCIILine):

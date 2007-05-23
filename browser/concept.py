@@ -48,6 +48,7 @@ from loops.interfaces import ITypeConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import EditForm, BaseView, LoopsTerms
 from loops import util
+from loops.util import _
 from loops.versioning.util import getVersion
 
 
@@ -85,7 +86,7 @@ class ConceptView(BaseView):
         cont = self.controller
         if (cont is not None and not IUnauthenticatedPrincipal.providedBy(
                                                     self.request.principal)):
-            cont.macros.register('portlet_right', 'parents', title='Parents',
+            cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
                          subMacro=self.template.macros['parents'],
                          position=0, info=self)
 

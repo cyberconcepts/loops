@@ -29,8 +29,8 @@ from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
 #from view import TargetRelation
 
-#_ = MessageFactory('loops')
-_ = MessageFactory('zope')  # it's easier not use a special i18n domain...
+_ = MessageFactory('loops')
+#_ = MessageFactory('zope')  # it's easier not use a special i18n domain?
 
 
 class KeywordVocabulary(vocabulary.SimpleVocabulary):

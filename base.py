@@ -39,8 +39,8 @@ class Loops(Folder):
 
     implements(ILoops)
 
-    def getSiteManager(self):
-        return self.__parent__.getSiteManager()
+    #def getSiteManager(self):
+    #    return self.__parent__.getSiteManager()
 
     @property
     def _SampleContainer__data(self):

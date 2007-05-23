@@ -84,7 +84,7 @@ class NodeView(BaseView):
             # from sub- (other) packages?
             # see controller / configurator: use multiple configurators;
             # register additional configurators (adapters) from within package.
-            cm.register('portlet_right', 'actions', title='Actions',
+            cm.register('portlet_right', 'actions', title=_(u'Actions'),
                         subMacro=node_macros.macros['actions'])
 
     @Lazy
