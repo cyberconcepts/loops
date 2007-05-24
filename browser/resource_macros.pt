@@ -49,16 +49,20 @@
     <p><i tal:content="item/description">Description</i></p>
     <p>
       <a href="#"
-         tal:condition="nothing"
+         i18n:translate=""
          tal:attributes="href string:${view/url}/.target${view/targetId}/download.html">
         Download
       </a>
-      <a href="#"
-         tal:attributes="href string:${view/url}/.target${view/targetId}/view">
-        Download
-      </a>
+      <tal:view condition="item/viewable | nothing"> |
+        <a href="#"
+           i18n:translate=""
+           tal:attributes="href string:${view/url}/.target${view/targetId}/view">
+          View
+        </a>
+      </tal:view>
       <tal:xedit condition="item/xeditable"> |
         <a href="#" title="Edit with External Editor"
+           i18n:translate=""
            tal:define="url string:${view/url}/.target${view/targetId}"
            tal:attributes="href string:$url/external_edit?version=this">
          Open for editing

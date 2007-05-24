@@ -157,7 +157,8 @@ class ResourceView(BaseView):
         response.setHeader('Content-Type', context.contentType)
         response.setHeader('Content-Length', len(data))
         ct = context.contentType
-        if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
+        #if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
+        if useAttachment:
             response.setHeader('Content-Disposition',
                             'attachment; filename=%s' % zapi.getName(self.context))
         return data
@@ -165,6 +166,12 @@ class ResourceView(BaseView):
     def download(self):
         """ Force download, e.g. of a PDF file """
         return self.show(True)
+
+    @property
+    def viewable(self):
+        return True
+        ct = self.context.contentType
+        return ct.startswith('image/') or ct == 'application/pdf'
 
     def getActions(self, category='object'):
         renderer = node_macros.macros['external_edit']
