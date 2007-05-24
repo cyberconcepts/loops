@@ -25,10 +25,13 @@
     <metal:render use-macro="item/template/macros/render" />
   </metal:block>
   <div class="content-1" id="1.link"
-       tal:define="linkUrl item/linkUrl">
-    <a href="."
-       tal:attributes="href linkUrl"
-       tal:condition="python: linkUrl and linkUrl != 'http://'">more...</a>
+       tal:define="linkUrl item/linkUrl"
+       tal:condition="python: linkUrl and linkUrl != 'http://'">
+    <b>
+      <a href="."
+         i18n:translate=""
+         tal:attributes="href linkUrl">more...</a>
+    </b>
   </div>
 </metal:block>
 
@@ -48,26 +51,30 @@
     <h3 tal:content="item/title">Title</h3>
     <p><i tal:content="item/description">Description</i></p>
     <p>
-      <a href="#"
-         i18n:translate=""
-         tal:attributes="href string:${view/url}/.target${view/targetId}/download.html">
-        Download
-      </a>
-      <tal:view condition="item/viewable | nothing"> |
+      <span class="button">
+        <a href="#"
+           i18n:translate=""
+           tal:attributes="href string:${view/url}/.target${view/targetId}/download.html">
+          Download
+        </a>
+      </span>
+      <span class="button"
+            tal:condition="item/viewable | nothing">
         <a href="#"
            i18n:translate=""
            tal:attributes="href string:${view/url}/.target${view/targetId}/view">
           View
         </a>
-      </tal:view>
-      <tal:xedit condition="item/xeditable"> |
+      </span>
+      <span class="button"
+            tal:condition="item/xeditable">
         <a href="#" title="Edit with External Editor"
            i18n:translate=""
            tal:define="url string:${view/url}/.target${view/targetId}"
            tal:attributes="href string:$url/external_edit?version=this">
          Open for editing
         </a>
-       </tal:xedit>
+       </span>
      </p>
   </div>
 </metal:block>

@@ -25,6 +25,7 @@ $Id$
 from zope.app import zapi
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
+from zope.app.i18n.interfaces import ITranslationDomain
 from zope.app.security.interfaces import IAuthentication
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -300,12 +301,17 @@ class BaseView(GenericView):
         if versionable is None:
             return ''
         versionId = versionable.versionId
-        current = (versionable.currentVersion == context) and 'current' or ''
-        released = (versionable.releasedVersion == context) and 'released' or ''
+        td = component.getUtility(ITranslationDomain, _._domain)
+        current = ((versionable.currentVersion == context)
+                   and td.translate(_(u'current'), context=self.request)
+                   or u'')
+        released = ((versionable.releasedVersion == context)
+                    and td.translate(_(u'released'), context=self.request)
+                    or u'')
         if not current and not released:
             return versionId
-        addInfo = ', '.join(e for e in (current, released) if e)
-        return '%s (%s)' % (versionId, addInfo)
+        addInfo = u', '.join(e for e in (current, released) if e)
+        return u'%s (%s)' % (versionId, addInfo)
 
     # controlling editing
 

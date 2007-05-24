@@ -178,11 +178,11 @@
                   tal:define="versionInfo view/versionInfo"
                   tal:condition="versionInfo">
       <tr>
-        <td colspan="5" class="headline">Versioning</td>
+        <td colspan="5" i18n:translate="" class="headline">Versioning</td>
       </tr>
       <tr>
         <td colspan="2">
-          Version:
+          <span i18n:translate="">Version</span>:
           <span tal:content="versionInfo">1.1 (current, released)</span>
         </td>
         <td title="Select if you want to create a new version"
@@ -190,12 +190,12 @@
           <input type="checkbox"
                  name="version.create" id="version.create"
                  value="create" />
-          <label for="version.create">New version:</label>
+          <label for="version.create"><span i18n:translate="">New version</span>:</label>
         </td>
         <td colspan="2">
           <select name="version.level">
-              <option value="1">minor</option>
-              <option value="0">major</option>
+              <option value="1" i18n:translate="">minor</option>
+              <option value="0" i18n:translate="">major</option>
           </select>
         </td>
       </tr>

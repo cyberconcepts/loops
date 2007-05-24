@@ -173,4 +173,25 @@ msgstr "Ansehen"
 msgid "Concept Assignments"
 msgstr "Zugeordnete Begriffe"
 
+msgid "more..."
+msgstr "Mehr..."
+
+msgid "Versioning"
+msgstr "Versionierung"
+
+msgid "current"
+msgstr "aktuell"
+
+msgid "released"
+msgstr "freigegeben"
+
+msgid "New version"
+msgstr "Neue Version"
+
+msgid "major"
+msgstr "major"
+
+msgid "minor"
+msgstr "minor"
+
 
