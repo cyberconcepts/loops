@@ -664,4 +664,6 @@
       provides="cybertools.browser.configurator.IViewConfigurator"
       />
 
+  <include package=".skin" />
+
 </configure>

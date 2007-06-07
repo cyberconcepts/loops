@@ -1,0 +1,26 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <layer name="loopz" />
+
+  <skin name="Loopz"
+        layers="loopz
+                cybertools.browser.liquid.liquid
+                rotterdam default" />
+
+  <page for="*"
+        name="body.html"
+        class="loops.browser.skin.browser.View"
+        permission="zope.View"
+        layer="loopz" />
+
+  <resource name="custom.css" file="custom.css" layer="loopz" />
+  <resource name="favicon.png" file="loops_favicon.png" layer="loopz" />
+  <resource name="logo.png" file="loops_logo.png" layer="loopz" />
+
+</configure>

@@ -1,0 +1,20 @@
+<tal:block i18n:domain="loops">
+<div metal:use-macro="views/cybertools.body_macros/body">
+
+
+    <a href="#" name="top" metal:fill-slot="logo"
+       tal:attributes="href view/topMenu/url"><img
+            src="logo.png" border="0"
+            alt="loops Site"
+            tal:attributes="src string:${resourceBase}logo.png" /></a>
+
+
+    <metal:footer fill-slot="footer">
+      Powered by <b><a href="http://www.python.org">Python</a></b> &middot;
+      <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
+      <b><a href="http://loops.cy55.de">loops</a></b>.
+    </metal:footer>
+
+
+</div>
+</tal:block>
