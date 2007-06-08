@@ -1,10 +1,11 @@
 from twisted.application import internet, service
 from nevow import appserver
 
-from loops.agent.agent import startAgent
+from loops.agent.core import startAgent
 from loops.agent.ui.web import AgentHome
+from loops.agent.config import conf
 
-port = 10095
+port = conf.ui.web.port or 10095
 
 application = service.Application('LoopsAgent')
 

@@ -26,9 +26,25 @@ from zope.interface import implements
 from loops.agent.interfaces import IConfigurator
 
 
-class Configurator(object)
+class Configurator(object):
 
     implements(IConfigurator)
 
     def loadConfiguration(self):
         pass
+
+    def addConfigOption(self, key, value):
+        setattr(self, key, value)
+
+    def getConfigOption(self, key, value):
+        return getattr(self, key, None)
+
+
+conf = Configurator()
+
+# this is just for convenience during the development phase,
+# thus we can retrieve the port easily via ``conf.ui.web.port``
+conf.addConfigOption('ui', Configurator())
+conf.ui.addConfigOption('web', Configurator())
+conf.ui.web.addConfigOption('port', 10095)
+

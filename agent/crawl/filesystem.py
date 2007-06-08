@@ -22,5 +22,5 @@ Filesystem crawler.
 $Id$
 """
 
-from loops.agent.interfaces import ICrawler
+from loops.agent.interfaces import ICrawlingJob
 

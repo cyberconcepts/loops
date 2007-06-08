@@ -60,6 +60,8 @@ class IScheduledJob(Interface):
     startTime = Attribute('Date/time at which the job should be executed.')
     params = Attribute('Mapping with key/value pairs to be passed to the '
                        'execute method call as keyword parameters.')
+    successors = Attribute('Jobs to execute immediately after this '
+                           'one has been finished.')
 
     def execute(**kw):
         """ Execute the job.
@@ -83,34 +85,56 @@ class ILogRecord(Interface):
     """
 
 
-class ICrawler(Interface):
+class ICrawlingJob(IScheduledJob):
     """ Collects resources.
     """
 
+    predefinedMetadata = Attribute('A mapping with metadata to be used '
+                                   'for all resources found.')
+
     def collect(**criteria):
-        """ Return a collection of resources that should be transferred
-            the the server using the selection criteria given.
+        """ Return a collection of resource/metadata pairs that should be transferred
+            to the server using the selection criteria given.
+        """
+
+
+class IMetadataSet(Interface):
+    """ Metadata associated with a resource.
+    """
+
+    def asXML():
+        """ Return an XML string representing the metadata set.
+
+            If this metadata set contains other metadata sets
+            (nested metadata) this will be converted to XML as well.
+        """
+
+    def setData(key, value):
+        """ Set a metadata element.
+
+            The value may be a string or another metadata set
+            (nested metadata).
         """
 
 
 class ITransporter(Interface):
-    """ Transfers collected resources to the server. A resource need
-        not be transferred immediately, resources may be be collected
-        first and transferred later together, e.g. as a compressed file.
+    """ Transfers collected resources to the server.
     """
 
     serverURL = Attribute('URL of the server the resources will be '
                           'transferred to. The URL also determines the '
                           'transfer protocol, e.g. HTTP or FTP.')
     method = Attribute('Transport method, e.g. PUT.')
+    machineName = Attribute('Name under which the local machine is '
+                            'known to the server.')
+    userName = Attribute('User name for logging in to the server.')
+    password = Attribute('Password for logging in to the server.')
 
-    def transfer(resource, resourceType=file):
+    def transfer(resource, metadata=None, resourceType=file):
         """ Transfer the resource (typically just a file that may
             be read) to the server.
-        """
 
-    def commit():
-        """ Transfer all resources not yet transferred.
+            The resource may be associated with a metadata set.
         """
 
 
@@ -122,7 +146,52 @@ class IConfigurator(Interface):
         """ Find the configuration settings and load them.
         """
 
+    def setConfigOption(key, value):
+        """ Directly set a certain configuration option.
+        """
+
     def getConfigOption(key):
         """ Return the value for the configuration option identified
             by the key given.
+
+            In addition config options must be directly accessible
+            via attribute notation.
         """
+
+
+class IPackageManager(Interface):
+    """ Allows to install, update, or remove software packages (plugins,
+        typically as Python eggs) from a server.
+    """
+
+    sources = Attribute('A list of URLs that provide software packages. ')
+
+    def getInstalledPackages():
+        """ Return a list of dictionaries, format:
+            [{'name': name, 'version': version,
+              'date': date_time_of_installation,}, ...]
+        """
+
+    def getUpdateCandidates():
+        """ Return a list of dictionaries with information about updateable
+            packages.
+        """
+
+    def installPackage(name, version=None, source=None):
+        """ Install a package.
+            If version is not given try to get the most recent one.
+            If source is not given search the sources attribute for the
+            first fit.
+        """
+
+    def updatePackage(name, version=None, source=None):
+        """ Update a package.
+            If version is not given try to get the most recent one.
+            If source is not given search the sources attribute for the
+            first fit.
+        """
+
+    def removePackage(name):
+        """ Remove a package from this agent.
+        """
+
