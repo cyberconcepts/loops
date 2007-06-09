@@ -20,6 +20,9 @@ This means that all calls to services (like crawler, transporter, ...)
 return a deferred that must be supplied with a callback method (and in
 most cases also an errback method).
 
+  >>> from loops.agent.core import Agent
+  >>> agent = Agent()
+
 
 Browser-based User Interface
 ============================
@@ -45,6 +48,24 @@ Configuration (per job)
 
 - schedule, repeating pattern, conditions
 - following job(s), e.g. to start a transfer immediately after a crawl
+
+  >>> scheduler = agent.scheduler
+
+  >>> from time import time
+  >>> from loops.agent.schedule import Job
+
+  >>> class TestJob(Job):
+  ...     def execute(self, **kw):
+  ...         d = super(TestJob, self).execute(**kw)
+  ...         print 'executing'
+  ...         return d
+
+  >>> scheduler.schedule(TestJob(), int(time())+1)
+
+  >>> from twisted.internet import reactor
+  >>> ignore = reactor.callLater(2, reactor.stop)
+  >>> reactor.run()
+  executing
 
 
 Crawling

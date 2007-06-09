@@ -1,22 +1,37 @@
 # $Id$
 
 import unittest, doctest
-from zope.testing.doctestunit import DocFileSuite
-from zope.interface.verify import verifyClass
-from loops.expert import query
+import time
+from twisted.internet import reactor
+
+from loops.agent.core import Agent
+from loops.agent.schedule import Job
+
+
+class TestJob(Job):
+
+    def execute(self, **kw):
+        d = super(TestJob, self).execute(**kw)
+        print 'executing'
+        return d
+
 
 class Test(unittest.TestCase):
     "Basic tests for the loops.agent package."
 
-    def testSomething(self):
-        pass
+    def setUp(self):
+        self.agent = Agent()
+
+    def testScheduling(self):
+        d = self.agent.scheduler.schedule(TestJob(), int(time.time())+1)
+        time.sleep(1)
 
 
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
-                DocFileSuite('README.txt', optionflags=flags),
+                doctest.DocFileSuite('README.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

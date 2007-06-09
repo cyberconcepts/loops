@@ -25,6 +25,7 @@ $Id$
 from zope.interface import implements
 from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
+from loops.agent.schedule import Scheduler
 
 
 class Agent(object):
@@ -34,8 +35,5 @@ class Agent(object):
     def __init__(self):
         configurator = self.configurator = Configurator()
         configurator.loadConfiguration()
-
-
-def startAgent():
-    return Agent()
+        self.scheduler = Scheduler()
 

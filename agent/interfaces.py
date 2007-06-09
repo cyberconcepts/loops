@@ -30,6 +30,8 @@ class IAgent(Interface):
         and transfers these to its server.
     """
 
+    scheduler = Attribute('IScheduler instance')
+
 
 class IScheduler(Interface):
     """ Manages jobs and cares that they are started at the appropriate

@@ -22,5 +22,63 @@ Job scheduling.
 $Id$
 """
 
+from time import time
+from twisted.internet import reactor
+from twisted.internet.defer import Deferred
+from zope.interface import implements
+
 from loops.agent.interfaces import IScheduler, IScheduledJob
+
+
+class Scheduler(object):
+
+    implements(IScheduler)
+
+    def __init__(self):
+        self.queue = {}
+        self.Logger = None
+
+    def schedule(self, job, startTime):
+        job.startTime = startTime
+        job.scheduler = self
+        self.queue[startTime] = job
+        reactor.callLater(startTime-int(time()), job.run, **job.params)
+
+    def getJobsToExecute(startTime=None):
+        return [j for j in self.queue.values() if (startTime or 0) <= j.startTime]
+
+
+class Job(object):
+
+    implements(IScheduledJob)
+
+    def __init__(self):
+        self.startTime = 0
+        self.scheduler = None
+        self.params = {}
+        self.successors = []
+
+    def execute(self, **kw):
+        d = Deferred()
+        return d
+
+    def reschedule(self, startTime):
+        self.scheduler.schedule(self.copy(), startTime)
+
+    def run(self, **kw):
+        d = self.execute(**kw)
+        d.addCallback(self.finishRun)
+        # TODO: logging
+
+    def finishRun(self, result):
+        for job in self.successors:
+            job.run(job, **job.params)
+        # TODO: remove from queue
+        # TODO: logging
+        # TODO: reschedule if told by configuration
+
+    def copy(self):
+        newJob = Job()
+        newJob.params = self.params
+        newJob.successors = [s.copy() for s in self.successors]
 
