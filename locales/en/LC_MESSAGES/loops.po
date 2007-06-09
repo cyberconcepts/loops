@@ -1,9 +1,13 @@
+# English translation
+# This file contains no message ids because Zope's default language
+# is English
+#
 msgid ""
 msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2007-05-22 12:00 CET\n"
+"PO-Revision-Date: 2007-05-23 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -12,5 +16,5 @@ msgstr ""
 "Generated-By: kwrite\n"
 
 msgid "Edit Concept Map"
-msgstr ""
+msgstr "Edit Concept Map"
 
