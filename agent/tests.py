@@ -1,8 +1,11 @@
 # $Id$
 
-import unittest, doctest
+import unittest as standard_unittest
+import doctest
 import time
 from twisted.internet import reactor
+from twisted.internet.defer import Deferred
+from twisted.trial import unittest
 
 from loops.agent.core import Agent
 from loops.agent.schedule import Job
@@ -10,9 +13,10 @@ from loops.agent.schedule import Job
 
 class TestJob(Job):
 
-    def execute(self, **kw):
+    def execute(self, deferred, **kw):
         d = super(TestJob, self).execute(**kw)
-        print 'executing'
+        #print 'executing'
+        deferred.callback('Done')
         return d
 
 
@@ -22,15 +26,21 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.agent = Agent()
 
+    def tearDown(self):
+        pass
+
     def testScheduling(self):
-        d = self.agent.scheduler.schedule(TestJob(), int(time.time())+1)
-        time.sleep(1)
+        d = Deferred()
+        job = TestJob()
+        job.params['deferred'] = d
+        w = self.agent.scheduler.schedule(job, int(time.time())+1)
+        return d
 
 
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
-    return unittest.TestSuite((
-                unittest.makeSuite(Test),
+    return standard_unittest.TestSuite((
+                standard_unittest.makeSuite(Test),
                 doctest.DocFileSuite('README.txt', optionflags=flags),
             ))
 
