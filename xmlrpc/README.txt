@@ -82,13 +82,15 @@ There are a few standard objects we can retrieve directly:
   >>> typeConcept['id'], typeConcept['name']
   ('0', u'type')
 
-In addition we can get a list of all types and all predicates available:
+In addition we can get a list of all types and all predicates available;
+note that the 'hasType' predicate is not shown as it should not be
+applied in a direct assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
   [u'domain', u'file', u'note', u'person', u'predicate', u'query',
    u'textdocument', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
-  [u'hasType', u'standard']
+  [u'standard']
 
 We can also retrieve a certain object by its id or its name:
 

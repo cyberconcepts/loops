@@ -48,6 +48,10 @@ class LoopsMethods(MethodPublisher):
     def concepts(self):
         return self.context.getConceptManager()
 
+    @Lazy
+    def typePredicate(self):
+        return self.concepts.getTypePredicate()
+
     def getStartObject(self):
         so = self.concepts.get('domain', self.concepts.getTypeConcept())
         return self.getObjectWithChildren(so)
@@ -62,21 +66,21 @@ class LoopsMethods(MethodPublisher):
         return self.getObjectWithChildren(self.concepts.getDefaultPredicate())
 
     def getTypePredicate(self):
-        return self.getObjectWithChildren(self.concepts.getTypePredicate())
+        return self.getObjectWithChildren(self.typePredicate)
 
     def getTypeConcept(self):
         return self.getObjectWithChildren(self.concepts.getTypeConcept())
 
     def getConceptTypes(self):
         tc = self.concepts.getTypeConcept()
-        types = tc.getChildren((self.concepts.getTypePredicate(),))
+        types = tc.getChildren((self.typePredicate,))
         #types = [t for t in types if ITypeConcept(t).typeInterface ... ]
         return [objectAsDict(t) for t in types]
 
     def getPredicates(self):
         pt = self.concepts.getDefaultPredicate().conceptType
         preds = pt.getChildren((self.concepts.getTypePredicate(),))
-        return [objectAsDict(p) for p in preds]
+        return [objectAsDict(p) for p in preds if p is not self.typePredicate]
 
     def getChildren(self, id, predicates=[], child=''):
         obj = getObjectForUid(id)
