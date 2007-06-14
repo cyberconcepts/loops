@@ -22,10 +22,12 @@ View class for resource objects.
 $Id$
 """
 
+import urllib
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
+from zope.app.container.interfaces import INameChooser
 from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.textwidgets import FileWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -36,12 +38,14 @@ from zope.proxy import removeAllProxies
 from zope.schema.interfaces import IBytes
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName, getParent
 
 from cybertools.typology.interfaces import IType
 from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.browser.util import html_quote
+from loops.common import adapted
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.interfaces import ITypeConcept
 from loops.versioning.browser import version_macros
@@ -159,8 +163,11 @@ class ResourceView(BaseView):
         ct = context.contentType
         #if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
         if useAttachment:
+            filename = adapted(self.context).localFilename or getName(self.context)
+            #filename = urllib.quote(filename)
+            filename = INameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
-                            'attachment; filename=%s' % zapi.getName(self.context))
+                               'attachment; filename=%s' % filename)
         return data
 
     def download(self):

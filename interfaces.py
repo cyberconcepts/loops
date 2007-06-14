@@ -614,6 +614,7 @@ class IFile(IResourceAdapter, IResourceSchema):
                 default='',
                 missing_value='',
                 required=False)
+    localFilename = Attribute('Filename provided during upload.')
 
 
 class IExternalFile(IFile):

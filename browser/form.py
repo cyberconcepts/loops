@@ -294,6 +294,7 @@ class EditObject(FormController):
                                 ct = contentType[0]
                                 self.request.form['form.contentType'] = ct
                                 adapted.contentType = ct
+                            adapted.localFilename = filename
                     setattr(adapted, fn, value)
         if self.old or self.selected:
             self.assignConcepts(obj)

@@ -27,7 +27,7 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
-from zope.app.file.interfaces import IFile
+#from zope.app.file.interfaces import IFile
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
