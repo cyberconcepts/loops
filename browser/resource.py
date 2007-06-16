@@ -45,7 +45,7 @@ from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.browser.util import html_quote
-from loops.common import adapted
+from loops.common import adapted, NameChooser
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.interfaces import ITypeConcept
 from loops.versioning.browser import version_macros
@@ -165,7 +165,7 @@ class ResourceView(BaseView):
         if useAttachment:
             filename = adapted(self.context).localFilename or getName(self.context)
             #filename = urllib.quote(filename)
-            filename = INameChooser(getParent(self.context)).normalizeName(filename)
+            filename = NameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         return data

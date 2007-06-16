@@ -22,6 +22,7 @@ XML-RPC views.
 $Id$
 """
 
+from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
@@ -128,7 +129,9 @@ class LoopsMethods(MethodPublisher):
     def createConcept(self, typeId, name, title):
         type = getObjectForUid(typeId)
         title = toUnicode(title)
-        c = self.concepts[name] = Concept(title)
+        c = Concept(title)
+        name = INameChooser(self.concepts).chooseName(name, c)
+        self.concepts[name] = c
         c.conceptType = type
         notify(ObjectCreatedEvent(c))
         notify(ObjectModifiedEvent(c))

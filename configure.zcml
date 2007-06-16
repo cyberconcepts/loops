@@ -460,13 +460,14 @@
            name="loops.PredicateSource" />
 
 
+  <include package=".browser" />
+  <include package=".classifier" />
+  <include package=".integrator" />
   <include package=".knowledge" />
   <include package=".organize" />
-  <include package=".integrator" />
   <include package=".process" />
-  <include package=".versioning" />
   <include package=".search" />
-  <include package=".browser" />
+  <include package=".versioning" />
   <include package=".xmlrpc" />
   <include package=".rest" />
 

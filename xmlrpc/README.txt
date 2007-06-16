@@ -28,6 +28,8 @@ ZCML setup):
   >>> component.provideAdapter(LoopsType)
   >>> component.provideAdapter(ConceptType)
   >>> component.provideAdapter(TypeConcept)
+  >>> from loops.common import NameChooser
+  >>> component.provideAdapter(NameChooser)
 
   >>> from loops import Loops
   >>> loopsRoot = site['loops'] = Loops()
@@ -184,6 +186,13 @@ Updating the concept map
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
   {'description': u'', 'title': u'Zope 2', 'type': '10', 'id': '16',
    'name': u'zope2'}
+
+The name of the concept is checked by a name chooser; if the corresponding
+parameter is empty, the name will be generated from the title.
+
+  >>> xrf.createConcept(topicId, u'', u'Python')
+  {'description': u'', 'title': u'Python', 'type': '10', 'id': '17',
+   'name': u'python'}
 
 Changing the attributes of a concept
 ------------------------------------
