@@ -1,0 +1,19 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <zope:adapter factory="loops.classifier.base.Classifier"
+                trusted="True" />
+
+  <zope:class class="loops.classifier.base.Classifier">
+    <require permission="zope.View"
+             interface="loops.classifier.interfaces.IClassifier" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.classifier.interfaces.IClassifier" />
+  </zope:class>
+
+</configure>
