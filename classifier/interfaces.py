@@ -29,13 +29,72 @@ from loops.util import _
 
 
 class IClassifier(Interface):
-    """
+    """ An object that is able to analyze a resource and identify the
+        concepts to assign.
     """
 
-    providerName = schema.TextLine(
-            title=_(u'Provider name'),
-            description=_(u'The name of a utility that provides the '
-                           'external objects; default is a directory '
-                           'collection provider'),
-            required=False)
+    analyzer = schema.TextLine(
+        title=_(u'Analyzer'),
+        description=_(u'Name of a utility that is able to analyze '
+                'the resources assigned to this classifier.'),
+        default=u'',
+        required=False)
+
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings...'),
+        value_type=schema.TextLine(),
+        default=[],
+        required=False)
+
+    def process(resource):
+        """ Do all that is needed to classify the resource given.
+        """
+
+    def assignConcept(statement):
+        """ Assign a concept representing the object of the statement
+            given to the statement's subject, using the statement's
+            predicate.
+        """
+
+
+class IExtractor(Interface):
+    """ Adapter for extracting an information set from a resource.
+    """
+
+    def extractInformationSet():
+        """ Return an information set based on the resource given.
+        """
+
+
+class IAnalyzer(Interface):
+    """ Utility that is able to analyze an information set and
+        provide a collection of statements about it.
+    """
+
+    def extractStatements(informationSet):
+        """ Return a collection of statements derived from the
+            information set given.
+        """
+
+
+class IInformationSet(Interface):
+    """ A mapping or collection of key/value pairs; the keys are usually the
+        names of information elements, the values may be simple strings,
+        structured resources (e.g. XML documents), files providing such strings
+        or documents, or another kind of objects. The analyzer that is
+        fed with this information set must know what to do with it.
+    """
+
+
+class IStatement(Interface):
+    """ Represents a subject-predicate-object triple. These attributes
+        may be strings denoting the real
+    """
+
+    subject = Attribute('Subject of the Statement')
+    predicate = Attribute('Predicate of the Statement')
+    object = Attribute('Object of the Statement')
+    relevance = Attribute('A number denoting the relevance or correctness '
+                    'of the statement')
 

@@ -29,7 +29,8 @@ from zope.event import notify
 from zope.interface import implements
 from zope.traversing.api import getName, getParent
 
-from loops.classifier.interfaces import IClassifier
+from loops.classifier.interfaces import IClassifier, IExtractor, IAnalyzer
+from loops.classifier.interfaces import IInformationSet, IStatement
 from loops.common import AdapterBase, adapted
 from loops.interfaces import IResource, IConcept
 from loops.resource import Resource
@@ -47,6 +48,45 @@ class Classifier(AdapterBase):
     implements(IClassifier)
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__',)
     _contextAttributes = list(IClassifier) + list(IConcept)
 
+    def process(self, resource):
+        pass
+
+    def assignConcept(self, statement):
+        pass
+
+
+class Extractor(object):
+
+    implements(IExtractor)
+    adapts(IResource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def extractInformationSet(self):
+        return InformationSet()
+
+
+class Analyzer(object):
+
+    implements(IAnalyzer)
+
+    def extractStatements(self,informationSet):
+        return []
+
+
+class InformationSet(dict):
+
+    implements(IInformationSet)
+
+
+class Statement(object):
+
+    implements(IStatement)
+
+    subject = None
+    predicate = None
+    object = None
+    relevance = 100

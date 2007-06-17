@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  16
+  18
 
 
 Fin de partie

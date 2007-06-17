@@ -16,4 +16,16 @@
              set_schema="loops.classifier.interfaces.IClassifier" />
   </zope:class>
 
+  <zope:adapter factory="loops.classifier.base.Extractor"
+                trusted="True" />
+
+  <zope:class class="loops.classifier.base.Extractor">
+    <require permission="zope.View"
+             interface="loops.classifier.interfaces.IExtractor" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.classifier.interfaces.IExtractor" />
+  </zope:class>
+
+  <zope:utility factory="loops.classifier.base.Analyzer" />
+
 </configure>

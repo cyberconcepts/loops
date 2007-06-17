@@ -56,7 +56,7 @@ class AdapterBase(object):
 
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__', )
+    _adapterAttributes = ('context', '__parent__',)
     _contextAttributes = list(IConcept)
 
     def __init__(self, context):
