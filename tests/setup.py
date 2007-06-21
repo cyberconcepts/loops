@@ -5,11 +5,16 @@ $Id$
 """
 
 from zope import component
+from zope.annotation.attribute import AttributeAnnotations
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.catalog.text import TextIndex
 from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.security.principalregistry import principalRegistry
+from zope.app.security.interfaces import IAuthentication
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IZopeDublinCore
 
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
@@ -44,6 +49,10 @@ class TestSite(object):
         relations.setupIndexes()
         component.provideUtility(relations, IRelationRegistry)
         component.provideAdapter(IndexableRelationAdapter)
+
+        component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
+        component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
+        component.provideUtility(principalRegistry, IAuthentication)
 
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)

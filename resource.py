@@ -27,10 +27,11 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
-#from zope.app.file.interfaces import IFile
+from zope.app.security.interfaces import IAuthentication
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from zope.size.interfaces import ISized
@@ -458,8 +459,19 @@ class IndexAttributes(object):
 
     def title(self):
         context = self.context
-        return ' '.join((getName(context),
-                         context.title, context.description)).strip()
+        return ' '.join([getName(context),
+                         context.title, context.description] +
+                        self.creators()).strip()
+
+    def creators(self):
+        cr = IZopeDublinCore(self.context).creators or []
+        pau = component.getUtility(IAuthentication)
+        creators = []
+        for c in cr:
+            principal = pau.getPrincipal(c)
+            if principal is not None:
+                creators.append(principal.title)
+        return creators
 
 
 class ResourceTypeSourceList(object):

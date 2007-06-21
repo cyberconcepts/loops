@@ -28,7 +28,6 @@ from zope import component
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.interfaces import INameChooser
-from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.textwidgets import FileWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
