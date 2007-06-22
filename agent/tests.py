@@ -1,3 +1,8 @@
+#
+#  Run with ``trial2.4 tests.py`` to execute the twisted unit tests.
+#  Run with ``python tests.py`` to execute the doctests.
+#
+
 # $Id$
 
 import unittest as standard_unittest
@@ -9,6 +14,16 @@ from twisted.trial import unittest
 
 from loops.agent.core import Agent
 from loops.agent.schedule import Job
+
+
+class Tester(object):
+
+    def iterate(self, n=10, delays={}):
+        for i in range(n):
+            delay = delays.get(i, 0)
+            reactor.iterate(delay)
+
+tester = Tester()
 
 
 class TestJob(Job):
@@ -40,9 +55,9 @@ class Test(unittest.TestCase):
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return standard_unittest.TestSuite((
-                standard_unittest.makeSuite(Test),
+                #standard_unittest.makeSuite(Test),
                 doctest.DocFileSuite('README.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    standard_unittest.main(defaultTest='test_suite')

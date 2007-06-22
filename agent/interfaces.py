@@ -43,7 +43,7 @@ class IScheduler(Interface):
 
     def schedule(job, startTime):
         """ Register the job given for execution at the intended start
-            date/time.
+            date/time and return the job.
         """
 
     def getJobsToExecute(startTime=None):
@@ -95,8 +95,12 @@ class ICrawlingJob(IScheduledJob):
                                    'for all resources found.')
 
     def collect(**criteria):
-        """ Return a collection of resource/metadata pairs that should be transferred
-            to the server using the selection criteria given.
+        """ Return a deferred that upon callback will provide a
+            collection of resource/metadata pairs that should be transferred
+            to the server.
+
+            Use the selection criteria given to filter the resources that
+            should be collected.
         """
 
 
@@ -138,6 +142,13 @@ class ITransporter(Interface):
 
             The resource may be associated with a metadata set.
         """
+
+
+class ITransportJob(IScheduledJob):
+    """ A job managing the the transfer of a resource to the server.
+    """
+
+    transporter = Attribute('The transporter object to user for transer.')
 
 
 class IConfigurator(Interface):

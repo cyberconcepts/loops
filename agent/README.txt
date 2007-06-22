@@ -10,6 +10,12 @@ collecting informations and transferring them to the loops server.
 This package does not depend on zope or the other loops packages
 but represents a standalone application.
 
+But we need a reactor for working with Twisted; in order not to block
+testing when running the reactor we use reactor.iterate() calls
+wrapped in a ``tester`` object.
+
+  >>> from loops.agent.tests import tester
+
 
 Basic Implementation, Agent Core
 ================================
@@ -22,23 +28,6 @@ most cases also an errback method).
 
   >>> from loops.agent.core import Agent
   >>> agent = Agent()
-
-
-Browser-based User Interface
-============================
-
-The user interface is provided via a browser-based application
-based on Twisted and Nevow.
-
-
-Configuration Management
-========================
-
-Functionality
-
-- Storage of configuration parameters
-- Interface to the browser-based user interface that allows the
-  editing of configuration parameters
 
 
 Scheduling
@@ -60,11 +49,9 @@ Configuration (per job)
   ...         print 'executing'
   ...         return d
 
-  >>> scheduler.schedule(TestJob(), int(time())+1)
+  >>> scheduler.schedule(TestJob(), int(time()))
 
-  >>> from twisted.internet import reactor
-  >>> ignore = reactor.callLater(2, reactor.stop)
-  >>> reactor.run()
+  >>> tester.iterate()
   executing
 
 
@@ -84,6 +71,21 @@ Functionality
 Configuration (per crawl job)
 
 - predefined metadata
+
+The Dummy Crawler
+-----------------
+
+  >>> from testing.crawl import CrawlingJob
+  >>> from testing.transport import Transporter, TransportJob
+
+  >>> crawl = CrawlingJob()
+  >>> transporter = Transporter()
+  >>> transport = TransportJob(transporter)
+  >>> crawl.successors.append(transport)
+  >>> scheduler.schedule(crawl, int(time()))
+
+  >>> tester.iterate()
+  Transferring: Dummy resource data for testing purposes.
 
 Local File System
 -----------------
@@ -180,4 +182,21 @@ Configuration (per install/update job)
 
 - command: install, update, remove
 - package names
+
+
+Configuration Management
+========================
+
+Functionality
+
+- Storage of configuration parameters
+- Interface to the browser-based user interface that allows the
+  editing of configuration parameters
+
+
+Browser-based User Interface
+============================
+
+The user interface is provided via a browser-based application
+based on Twisted and Nevow.
 
