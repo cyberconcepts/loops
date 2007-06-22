@@ -54,6 +54,21 @@ Configuration (per job)
   >>> tester.iterate()
   executing
 
+We can set up a more realistic example using the dummy crawler and transporter
+classes from testing.
+
+  >>> from testing.crawl import CrawlingJob
+  >>> from testing.transport import Transporter, TransportJob
+
+  >>> crawl = CrawlingJob()
+  >>> transporter = Transporter()
+  >>> transport = TransportJob(transporter)
+  >>> crawl.successors.append(transport)
+  >>> scheduler.schedule(crawl, int(time()))
+
+  >>> tester.iterate()
+  Transferring: Dummy resource data for testing purposes.
+
 
 Crawling
 ========
@@ -71,21 +86,6 @@ Functionality
 Configuration (per crawl job)
 
 - predefined metadata
-
-The Dummy Crawler
------------------
-
-  >>> from testing.crawl import CrawlingJob
-  >>> from testing.transport import Transporter, TransportJob
-
-  >>> crawl = CrawlingJob()
-  >>> transporter = Transporter()
-  >>> transport = TransportJob(transporter)
-  >>> crawl.successors.append(transport)
-  >>> scheduler.schedule(crawl, int(time()))
-
-  >>> tester.iterate()
-  Transferring: Dummy resource data for testing purposes.
 
 Local File System
 -----------------

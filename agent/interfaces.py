@@ -148,7 +148,7 @@ class ITransportJob(IScheduledJob):
     """ A job managing the the transfer of a resource to the server.
     """
 
-    transporter = Attribute('The transporter object to user for transer.')
+    transporter = Attribute('The transporter object to use for transer.')
 
 
 class IConfigurator(Interface):
