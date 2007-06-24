@@ -38,27 +38,28 @@ Configuration (per job)
 - schedule, repeating pattern, conditions
 - following job(s), e.g. to start a transfer immediately after a crawl
 
-  >>> scheduler = agent.scheduler
+How does this work?
+-------------------
 
-  >>> from time import time
   >>> from loops.agent.schedule import Job
-
   >>> class TestJob(Job):
   ...     def execute(self, **kw):
   ...         d = super(TestJob, self).execute(**kw)
   ...         print 'executing'
   ...         return d
 
+  >>> from time import time
+  >>> scheduler = agent.scheduler
   >>> scheduler.schedule(TestJob(), int(time()))
 
   >>> tester.iterate()
   executing
 
 We can set up a more realistic example using the dummy crawler and transporter
-classes from testing.
+classes from the testing package.
 
-  >>> from testing.crawl import CrawlingJob
-  >>> from testing.transport import Transporter, TransportJob
+  >>> from loops.agent.testing.crawl import CrawlingJob
+  >>> from loops.agent.testing.transport import Transporter, TransportJob
 
   >>> crawl = CrawlingJob()
   >>> transporter = Transporter()

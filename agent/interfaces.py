@@ -104,6 +104,15 @@ class ICrawlingJob(IScheduledJob):
         """
 
 
+class IResource(Interface):
+    """ Represents a data object that is collected by a crawler and
+        will be transferred to the server.
+    """
+
+    data = Attribute("A string, file, or similar representation of the "
+                     "resource's content")
+
+
 class IMetadataSet(Interface):
     """ Metadata associated with a resource.
     """

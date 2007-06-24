@@ -17,39 +17,25 @@
 #
 
 """
-A dummy crawler for testing purposes.
+Filesystem crawler.
 
 $Id$
 """
 
-from twisted.internet import reactor
-from twisted.internet.defer import Deferred
 from zope.interface import implements
 
-from loops.agent.interfaces import ICrawlingJob, IResource, IMetadataSet
+from loops.agent.interfaces import ICrawlingJob
 from loops.agent.schedule import Job
-from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
 
 
-class CrawlingJob(BaseCrawlingJob):
+class CrawlingJob(Job):
 
-    def collect(self, **criteria):
-        deferred = self.deferred = Deferred()
-        # replace this with the real stuff:
-        reactor.callLater(0, self.dataAvailable)
-        return deferred
+    implements(ICrawlingJob)
 
-    def dataAvailable(self):
-        self.deferred.callback([(DummyResource(), Metadata())])
+    def __init__(self):
+        self.predefinedMetadata = {}
+        super(CrawlingJob, self).__init__()
 
+    def execute(self, **kw):
+        return self.collect(**kw)
 
-class Metadata(object):
-
-    implements(IMetadataSet)
-
-
-class DummyResource(object):
-
-    implements(IResource)
-
-    data = 'Dummy resource data for testing purposes.'
