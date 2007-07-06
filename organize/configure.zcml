@@ -84,13 +84,12 @@
         permission="zope.Public"
         />
 
-  <zope:view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="loops.organize.interfaces.Password"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory="loops.organize.browser.PasswordWidget"
-      permission="zope.Public"
-      />
+  <browser:page
+        for="loops.interfaces.INode"
+        name="change_password.html"
+        class="loops.organize.browser.PasswordChange"
+        permission="zope.Public"
+        />
 
   <!-- other adapters -->
 

@@ -22,7 +22,6 @@ Utilities for the loops.organize package.
 $Id$
 """
 
-from zope.app import zapi
 from zope import interface, component, schema
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
@@ -32,16 +31,37 @@ authPluginId = 'loops'
 
 
 def getPrincipalFolder(context=None):
-        pau = zapi.getUtility(IAuthentication, context=context)
-        if not IPluggableAuthentication.providedBy(pau):
-            raise ValueError(u'There is no pluggable authentication '
-                              'utility available.')
-        if not authPluginId in pau.authenticatorPlugins:
-            raise ValueError(u'There is no loops authenticator '
-                              'plugin available.')
-        #return component.queryUtility(IAuthenticatorPlugin, authPluginId,
-        #                                 context=pau)
-        for name, plugin in pau.getAuthenticatorPlugins():
-            if name == authPluginId:
-                return plugin
+    pau = component.getUtility(IAuthentication, context=context)
+    if not IPluggableAuthentication.providedBy(pau):
+        raise ValueError(u'There is no pluggable authentication '
+                          'utility available.')
+    if not authPluginId in pau.authenticatorPlugins:
+        raise ValueError(u'There is no loops authenticator '
+                          'plugin available.')
+    for name, plugin in pau.getAuthenticatorPlugins():
+        if name == authPluginId:
+            return plugin
 
+
+def getInternalPrincipal(id, context=None):
+    pau = component.getUtility(IAuthentication, context=context)
+    if not IPluggableAuthentication.providedBy(pau):
+        raise ValueError(u'There is no pluggable authentication '
+                          'utility available.')
+    if not id.startswith(pau.prefix):
+        next = queryNextUtility(pau, IAuthentication)
+        if next is None:
+            raise PrincipalLookupError(id)
+        return next.getPrincipal(id)
+    id = id[len(pau.prefix):]
+    for name, authplugin in pau.getAuthenticatorPlugins():
+        if not id.startswith(authplugin.prefix):
+            continue
+        principal = authplugin.get(id[len(authplugin.prefix):])
+        if principal is None:
+            continue
+        return principal
+    next = queryNextUtility(pau, IAuthentication)
+    if next is not None:
+        return next.getPrincipal(pau.prefix + id)
+    raise PrincipalLookupError(id)

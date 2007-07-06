@@ -224,6 +224,26 @@ Now we can also retrieve it from the authentication utility:
   u'Tom Sawyer'
 
 
+Change Password
+---------------
+
+  >>> data = {'oldPassword': u'tiger',
+  ...         'password': u'lion',
+  ...         'passwordConfirm': u'lion'}
+
+  >>> request = TestRequest()
+
+We need a principal for testing the login stuff:
+
+  >>> from zope.app.authentication.principalfolder import InternalPrincipal
+  >>> principal = InternalPrincipal('scott', 'tiger', 'Scotty')
+  >>> request.setPrincipal(principal)
+
+  >>> from loops.organize.browser import PasswordChange
+  >>> pwcView = PasswordChange(menu, request, testing=True)
+  >>> pwcView.changePassword(data)
+
+
 Fin de partie
 =============
 

@@ -25,6 +25,7 @@ $Id$
 
 from zope import interface, component
 from zope.app import zapi
+from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.form.browser.textwidgets import PasswordWidget as BasePasswordWidget
 from zope.app.form.interfaces import WidgetInputError
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -39,8 +40,9 @@ from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
-from loops.organize.interfaces import IMemberRegistration
+from loops.organize.interfaces import IMemberRegistration, IPasswordChange
 from loops.organize.party import getPersonForUser
+from loops.organize.util import getInternalPrincipal
 import loops.browser.util
 
 _ = MessageFactory('zope')
@@ -73,9 +75,26 @@ class PasswordWidget(BasePasswordWidget):
         return value
 
 
+class OldPasswordWidget(BasePasswordWidget):
+
+    def getInputValue(self):
+        value = super(OldPasswordWidget, self).getInputValue()
+        if value:
+            principal = self.request.principal
+            if not isinstance(principal, InternalPrincipal):
+                principal = getInternalPrincipal(principal.id)
+            if not principal.checkPassword(value):
+                v = _(u'Your old password was not entered correctly.')
+                self._error = WidgetInputError(
+                    self.context.__name__, self.label, v)
+                raise self._error
+        return value
+
+
 class MemberRegistration(NodeView, Form):
 
     form_fields = FormFields(IMemberRegistration).omit('age')
+    form_fields['password'].custom_widget = PasswordWidget
     template = loops.browser.util.dataform
     label = _(u'Member Registration')
 
@@ -92,10 +111,11 @@ class MemberRegistration(NodeView, Form):
     def item(self):
         return self
 
-    def xupdate(self):
+    def update(self):
         # see cybertools.browser.view.GenericView.update()
         NodeView.update(self)
         Form.update(self)
+        return True
 
     @action(_(u'Register'))
     def handle_register_action(self, action, data):
@@ -116,4 +136,54 @@ class MemberRegistration(NodeView, Form):
         self.request.response.redirect('%s/login.html?login=%s&message=%s'
                             % (self.url, login, message))
         return person
+
+
+class PasswordChange(NodeView, Form):
+
+    form_fields = FormFields(IPasswordChange).select(
+                    'oldPassword', 'password', 'passwordConfirm')
+    form_fields['oldPassword'].custom_widget = OldPasswordWidget
+    form_fields['password'].custom_widget = PasswordWidget
+    template = loops.browser.util.dataform
+    label = _(u'Change Password')
+
+    def __init__(self, context, request, testing=False):
+        super(PasswordChange, self).__init__(context, request)
+        if not testing:
+            self.setUpWidgets()
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['content']
+
+    @Lazy
+    def item(self):
+        return self
+
+    def update(self):
+        # see cybertools.browser.view.GenericView.update()
+        NodeView.update(self)
+        Form.update(self)
+        return True
+
+    @action(_(u'Change Password'))
+    def handle_change_password_action(self, action, data):
+        self.changePassword(data)
+
+    def changePassword(self, data=None):
+        form = data or self.request.form
+        oldPw = form.get('oldPassword')
+        pw = form.get('password')
+        if form.get('passwordConfirm') != pw:
+            raise ValueError(u'Password and password confirmation do not match.')
+        regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
+        principal = self.request.principal
+        result = regMan.changePassword(principal, oldPw, pw)
+        if not result:
+            raise ValueError(u'Your old password was not entered correctly.')
+        message = _(u'Your password has been changed')
+        self.request.response.redirect('%s?message=%s'
+                        % (self.url, message))
+        #self.request.response.redirect('%s/logout.html?message=%s'
+        #                % (self.url, message))
 

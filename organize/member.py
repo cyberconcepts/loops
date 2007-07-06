@@ -22,15 +22,15 @@ Member registration adapter(s).
 $Id$
 """
 
-from zope.app import zapi
 from zope import interface, component, schema
+from zope.app.component import queryNextUtility
 from zope.component import adapts
 from zope.interface import implements
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.event import notify
 from zope.i18nmessageid import MessageFactory
 from zope.cachedescriptors.property import Lazy
@@ -39,9 +39,8 @@ from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops
 from loops.concept import Concept
 from loops.organize.interfaces import IMemberRegistrationManager
-from loops.organize.util import getPrincipalFolder, authPluginId
-
-_ = MessageFactory('zope')
+from loops.organize.util import getPrincipalFolder, authPluginId, getInternalPrincipal
+from loops.util import _
 
 
 class MemberRegistrationManager(object):
@@ -56,7 +55,6 @@ class MemberRegistrationManager(object):
         # step 1: create an internal principal in the loops principal folder:
         pFolder = getPrincipalFolder(self.context)
         title = firstName and ' '.join((firstName, lastName)) or lastName
-        # TODO: care for password encryption:
         principal = InternalPrincipal(userId, password, title)
         pFolder[userId] = principal
         # step 2: create a corresponding person concept:
@@ -80,6 +78,11 @@ class MemberRegistrationManager(object):
         notify(ObjectModifiedEvent(person))
         return personAdapter
 
-    def changePassword(self, oldPw, newPw):
-        pass
+    def changePassword(self, principal, oldPw, newPw):
+        if not isinstance(principal, InternalPrincipal):
+            principal = getInternalPrincipal(principal.id)
+        if not principal.checkPassword(oldPw):
+            return False
+        principal.setPassword(newPw)
+        return True
 
