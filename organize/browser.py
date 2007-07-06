@@ -44,8 +44,7 @@ from loops.organize.interfaces import IMemberRegistration, IPasswordChange
 from loops.organize.party import getPersonForUser
 from loops.organize.util import getInternalPrincipal
 import loops.browser.util
-
-_ = MessageFactory('zope')
+from loops.util import _
 
 
 class MyStuff(ConceptView):
@@ -181,7 +180,7 @@ class PasswordChange(NodeView, Form):
         result = regMan.changePassword(principal, oldPw, pw)
         if not result:
             raise ValueError(u'Your old password was not entered correctly.')
-        message = _(u'Your password has been changed')
+        message = _(u'Your password has been changed.')
         self.request.response.redirect('%s?message=%s'
                         % (self.url, message))
         #self.request.response.redirect('%s/logout.html?message=%s'

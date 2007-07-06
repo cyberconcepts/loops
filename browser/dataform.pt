@@ -58,7 +58,7 @@ function toggleFormFieldHelp(ob,state) {
 
 <div id="viewspace" metal:define-slot="viewspace">
 
-  <h1 tal:content="view/label">Edit ...</h1>
+  <h1 i18n:translate="" tal:content="view/label">Edit ...</h1>
 
   <metal:block define-macro="header">
 

@@ -194,4 +194,25 @@ msgstr "major"
 msgid "minor"
 msgstr "minor"
 
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+msgid "Old password"
+msgstr "Altes Passwort"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Confirm password"
+msgstr "Passwort wiederholen"
+
+msgid "Your old password was not entered correctly."
+msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
+
+msgid "Password and password confirmation do not match."
+msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort überein."
+
+msgid "Your password has been changed."
+msgstr "Ihr Passwort wurde geändert."
+
 
