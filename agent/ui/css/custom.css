@@ -1,0 +1,24 @@
+/*
+ $Id: custom.css 1302 2006-08-17 15:21:10Z helmutm $
+
+ cyberconcepts specialties
+ 
+*/
+
+body {
+    color: #242424;
+}
+
+a {
+    text-decoration: none;
+    color: #344080;
+    background-color: transparent;
+}
+
+.top {
+    border-bottom: 1px solid #d0d0d0;
+    margin-bottom: 2px;
+    /*background-image: url('bg_cyberview.gif')
+    height: 75px;*/
+}
+

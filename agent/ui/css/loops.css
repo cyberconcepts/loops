@@ -1,0 +1,138 @@
+/*
+ $Id: loops.css 1729 2007-05-13 08:56:47Z helmutm $
+
+ settings specific for view / node objects
+
+*/
+
+a[href]:hover {
+    text-decoration: none;
+    color: #803000;
+}
+
+pre {
+    overflow: scroll;
+    max-height: 35em;
+}
+
+.box div.body div.even {
+    background-color: #f4f4f4;
+}
+
+.box {
+    margin: 12px;
+}
+
+#body {
+    margin-left: 5px;
+}
+
+/*.content-1 h1 { */
+h1 {
+    font-size: 160%;
+    font-weight: bold;
+}
+
+.content-2 h1, h2 {
+    font-size: 140%;
+}
+
+.content-3 h1, .content-2 h2, h3 {
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4 {
+    font-size: 120%;
+}
+
+.content-5 h1, .content-4 h2, .content-3 h3, content-2 h4 {
+    font-size: 100%;
+    border: none;
+}
+
+.subcolumn {
+    display: inline;
+    float: left;
+}
+
+.box {
+    margin: 5px;
+    padding: 6px;
+    padding-top: 0;
+}
+
+.box h1, .box h2, .box h3 {
+    border-bottom: None;
+}
+
+div.menu-1, div.menu-2 {
+    border-top: 1px solid #eeeeee;
+    font-weight: bold;
+}
+
+.box div.body div.menu-3 {
+    border-top: none;
+    padding-left: 1.5em;
+}
+
+.box div.body div.menu-4 {
+    padding-left: 3em;
+    font-size: 90%
+}
+
+.flow-left {
+    float: left;
+}
+
+.flow-right {
+    float: right;
+}
+
+div.image {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+
+/* search stuff */
+
+.searchForm input.button, input.submit {
+    padding: 2px;
+}
+
+.searchForm input.submit {
+    font-weight: bold;
+}
+
+/* dojo stuff */
+
+/*.dojoComboBox {
+    width: 200px;
+}*/
+
+.dojoDialog {
+    background: #eee;
+    border: 1px solid #999;
+    -moz-border-radius: 5px;
+    padding: 4px;
+}
+
+.dojoDialog th {
+    font-size: 120%;
+    padding: 0 5px 8px 5px;
+}
+
+.dojoDialog .headline {
+    font-weight: bold;
+}
+
+.dojoDialog input.text {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.dojoDialog input.submit {
+    font-weight: bold;
+}
+

@@ -1,0 +1,4 @@
+FileSysCont_1234;C:\Documents;*.doc;daily;transfer(http:loops.sampleserver.de)
+MailCrawl_2121;Outlook(Account_Root);daily;transfer(http:loops.sampleserver.de)
+MailCrawl_4040;Outlook(Subj:Update);20s;transfer(http:loops.sampleserver.de)
+FileSysCont_8797;C:\Tmp;size<100kByte;transfer(http:loops.sampleserver.de)

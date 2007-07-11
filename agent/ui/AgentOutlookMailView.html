@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> //-->
+<html xmlns:nevow="http://nevow.com/ns/nevow/0.1">
+
+<!-- Outlook Mails Page for loops.agent UI    Version: 0.1 //-->
+
+  <head>
+    <title>loops</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <style type="text/css" media="all">@import url("/css/zope3_tablelayout.css");</style>
+
+    <style type="text/css" media="screen">@import url("/css/base.css");</style>
+
+    <style type="text/css" media="print">@import url("/css/print.css");</style>
+
+    <style type="text/css" media="all">@import url("/css/loops.css");</style>
+
+    <style type="text/css" media="all">@import url("/css/custom.css");</style>
+
+
+    <script type="text/javascript"
+            src="loops.js">
+    </script>
+
+    <link rel="icon" type="image/png"
+          href="favicon.png" />
+
+    <base href="AgentStart.html"/>
+  </head>
+
+  <body>
+    <div class="body">
+        <div id="global">
+          <div class="top">
+            <h4><b><font size="20px">loops agent.GUI</font></b></h4>
+          </div>
+        </div>
+
+    <div id="menu">
+
+        <div class="box">
+          <h4>Navigation</h4>
+          <div class="body">
+
+              <div class="content even menu-1">
+                <a href="http://localhost:8080" class="">Startpage</a>
+              </div>
+
+              <h4>Agent configuration</h4>
+
+              <div class="content even menu-3">
+                <a href="http://localhost:8080/joboverview"
+                   class="">job overview</a>
+              </div>
+
+              <div class="content even menu-3">
+                <a href="http://localhost:8080/collectOutlookMails"
+                   class="">collect Outlook Mails</a>
+              </div>
+
+              <div class="content odd menu-3">
+                <a href="http://localhost:8080/addjob"
+                   class="">add job</a>
+              </div>
+
+
+              <div class="content odd menu-3">
+                <a href="http://localhost:8080/loggingoptions" class=""
+                   title="">logging options</a>
+              </div>
+
+          </div>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="box">
+          <h4>User Mode</h4>
+          <div class="body">
+          <b>Current Mode: </b><p nevow:render="getActiveUserMode"/>
+
+          </div>
+        </div>
+
+    </div>
+
+    <div id="content">
+    <div></div>
+    <div></div>
+
+    <div class="content-1" id="2.body" ondblclick="">
+        <div class="line-block">
+            <div class="line"><br /></div>
+            </div>
+            <div class="section">
+            <h3><a id="agent-ui-startpage" name="agent-ui-startpage">Agent: collected Outlook Mails</a></h3>
+
+            <ul class="simple">
+            <li>All currently available Outlook Mails collected by the loops agent</li>
+            </ul>
+            </div>
+            <div class="section">
+                <h3><a id="form-overview" name="form-overview">Overview</a></h3>
+                <ul class="simple">
+                <li><b>Mail Collection</b><div nevow:render="data" nevow:data="displayViewForm"/></li>
+                </ul>
+                <div align="center">
+                <table border="0" cellpadding="10">
+                    <p nevow:render="displayOutlookMails">
+                        <tr nevow:pattern="OutlookMails" nevow:render="data"/>
+                    </p>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sub-section" define-macro="sub-section">
+    </div>
+
+    <div id="footer" class="footer" define-macro="footer">
+
+      &copy; Copyright 2007, cyberconcepts IT-Consulting Dr. Helmut Merz
+      (<a href="http://loops.cy55.de/impressum">Impressum</a>)<br />
+      Powered by <b><a href="http://www.python.org">Python</a></b> &middot;
+      <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
+      <b><a href="http://loops.cy55.de/projekte/loops">loops</a></b>.
+
+    </div>
+
+    </div>
+
+    </body>
+
+</html>
