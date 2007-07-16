@@ -1,0 +1,99 @@
+/*
+ $Id$
+
+ based on http://www.tjkdesign.com/articles/liquid/4.asp
+
+*/
+
+body {
+    min-width:640px;
+    margin: 0;
+    padding: 0;
+    font: 9pt Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    background-color: white;
+    color: #000040;
+}
+
+#global,#menu,#sub-section,#footer {
+    overflow: hidden;
+    display: inline-block;
+}
+
+#content {
+    display: inline-block;
+}
+
+#global,#footer {width:100%}
+#menu,#content,#sub-section {float:left}
+#menu {width:20%}
+#content {width:62%}
+#sub-section {width:17%}
+#footer {clear:left}
+
+/* more general stuff */
+
+.top image {
+    margin-top: -1px;
+}
+
+div.box {
+    margin: 12px 12px 8px 10px;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+
+div.box h4 {
+    font: 110% Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    color: #000040;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 4px;
+    padding-top: 1px;
+    padding-bottom: 3px;
+    background-color: #ddd;
+    height: auto;
+}
+
+table.listing {
+    margin: 1px;
+    margin-top: 6px;
+
+}
+
+table.listing th {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    color: #000040;
+}
+
+.footer {
+    text-align: center;
+    border-top: 1px solid #ccc;
+    border-bottom: none;
+    margin-top: 12px;
+    padding-top: 6px;
+}
+
+.itemViews {
+    border-bottom-width: 2px;
+}
+
+.button {
+    margin: 1em 0 1em 0;
+}
+
+.button a {
+    padding: 2px 4px 2px 4px;
+    background-color: #e8e8e8;
+    text-decoration: None;
+    color: Black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #f4f4f4 #989898 #989898 #f4f4f4;
+}
+
+pre {
+    background-color: #f4f4f4;
+}
+
+#footer { border-bottom: none; }
+

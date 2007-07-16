@@ -12,6 +12,7 @@
 # whole ini File into the self.IniDict if it is not already filled and for each setting just chnaging the
 # self.IniDict
 
+import os
 from nevow import loaders, rend, static, url, inevow
 from nevow.inevow import IRequest
 from twisted.internet import defer
@@ -28,6 +29,11 @@ INIFILE = "usermode.ini"
 JOBFILE = "joblist.txt"
 #----------------------------------------------------------
 
+resourcesDirectory = 'resources'
+templatesDirectory = 'templates'
+
+def template(fn):
+    return loaders.xmlfile(os.path.join(templatesDirectory, fn))
 
 #/////////////////////////////////////////////////////////////////////////////////////////////
 #----------------------------    AgentHome    --------------------------------------------------
@@ -37,20 +43,19 @@ JOBFILE = "joblist.txt"
 
 class AgentHome(rend.Page):
 
-    child_css = static.File('css')
-    child_images = static.File('images')
-    docFactory = loaders.xmlfile('AgentStart.html')
+    child_resources = static.File(resourcesDirectory)
+    docFactory = template('agent.html')
 
 
     def __init__(self,IniDict={}):
-        
+
         #TODO: implement automatic reading of default ini file, or one passed via constructor
         #-------- ini settings ------------------------
         # THIS SECTION IS USED FOR PROJECT INTERNAL DEBUG ONLY
         self.iniFile = INIFILE
         self.IniDict = IniDict
         #-----------------------------------------------
-        
+
         #-------- get ini settings from file --------
         # stores IniFile settings in self.IniDict
 
@@ -58,11 +63,11 @@ class AgentHome(rend.Page):
 
             fPointer = open(self.iniFile,"r")
             IniSettings = fPointer.readlines()
- 
+
             for iniLine in IniSettings:
                 elem = iniLine.split(":")
                 self.IniDict[elem[0]] = elem[1]
-                
+
             fPointer.close()
 
         print "[AgentHome] self.UserMode: ", self.IniDict["UserMode"]
@@ -98,7 +103,7 @@ class AgentHome(rend.Page):
 
         print "[child_ChangeUserMode] UserMode: ", self.IniDict["UserMode"]
         print "[child_ChangeUserMode] ----retrieving form values----"
-        
+
         form = IRequest(context).args
 
         if form != {}:
@@ -117,7 +122,7 @@ class AgentHome(rend.Page):
             Write changed setting back to the iniFile ?
             filePointer = open(self.iniFile,"rw")
             """
-            
+
         return AgentHome(self.IniDict)
 
 
@@ -150,15 +155,15 @@ class AgentHome(rend.Page):
         """handles errors that ocurred in the MailCrawler"""
 
         return AgentHome(self.IniDict)
-        
+
 
     #---- page "job overview" methods (class JobOverView)----
 
     def child_ViewJobDetails(self,context):
-        
+
         form = IRequest(context).args
         selectedJob = form['jobList'][0]
-        
+
         return JobOverViewDetails(self.IniDict, selectedJob)
 
 
@@ -166,7 +171,7 @@ class AgentHome(rend.Page):
     #-------------AgentHome: RENDER SECTION------------------------
     # this code section contains the Nevow Rendering Methods
     # for building the page element tree
-        
+
     def render_getActiveUserMode(self,context,data):
         return self.IniDict["UserMode"]
 
@@ -175,15 +180,15 @@ class AgentHome(rend.Page):
         return "0.1 alpha"
 
 
-    
+
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #-----------------    PAGES SECTION    -------------------------------------------------------------------------
 # all classes in this section are pages called via the navigation menue of AgentHome
 
 class JobOverView(rend.Page):
-    
-    docFactory = loaders.xmlfile('AgentJobView.html')
+
+    docFactory = template('job.html')
 
     def __init__(self, IniDict):
 
@@ -211,7 +216,7 @@ class JobOverView(rend.Page):
 
         for elem in lines:
             patternList.append(gen_pattern(data=elem))
- 
+
         return patternList
 
 
@@ -219,7 +224,7 @@ class JobOverView(rend.Page):
 
 class JobOverViewDetails(rend.Page):
 
-    docFactory = loaders.xmlfile('AgentJobViewDetail.html')
+    docFactory = template('jobdetail.html')
 
     def __init__(self, IniDict={}, selectedJob=""):
 
@@ -249,13 +254,13 @@ class JobOverViewDetails(rend.Page):
 
         for elem in self.jobdetails:
             patternList.append(gen_pattern(data=elem))
- 
+
         return patternList
 
 
 class AgentOutlookMailView(rend.Page):
 
-    docFactory = loaders.xmlfile('AgentOutlookMailView.html')
+    docFactory = template('mail.html')
 
     def __init__(self, IniDict={}, MailCollection=[]):
 
@@ -279,5 +284,5 @@ class AgentOutlookMailView(rend.Page):
 
         for elem in self.MailCollection:
             patternList.append(gen_pattern(data=elem))
- 
+
         return patternList
