@@ -529,6 +529,18 @@
       permission="zope.ManageContent">
   </page>
 
+  <pages for="loops.interfaces.IResource"
+         class="loops.browser.resource.ExternalEditorView"
+         permission="zope.ManageContent">
+
+    <page name="external_edit" attribute="load" />
+    <!--
+    <page name="save" attribute="save" />
+    <page name="lock" attribute="lock" />
+    <page name="unlock" attribute="unlock" />-->
+
+  </pages>
+
   <!-- forms (end-user view) -->
 
   <page

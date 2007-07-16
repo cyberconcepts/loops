@@ -40,6 +40,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
 
 from cybertools.typology.interfaces import IType
+from cybertools.xedit.browser import ExternalEditorView, fromUnicode
 from loops.browser.common import EditForm, BaseView, Action
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
@@ -141,7 +142,8 @@ class ResourceView(BaseView):
         ct = context.contentType
         #if ct.startswith('text/') and ct != 'text/rtf':
         ti = IType(context).typeInterface
-        if not ti or issubclass(ti, ITextDocument):
+        if (not ti or issubclass(ti, ITextDocument)
+            or (ct.startswith('text/') and ct != 'text/rtf')):
             return DocumentView(context, self.request)
         return self
 
@@ -272,8 +274,11 @@ class DocumentView(ResourceView):
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
-        text = self.context.data
-        contentType = self.context.contentType
+        #text = self.context.data
+        ctx = adapted(self.context)
+        text = ctx.data
+        #contentType = self.context.contentType
+        contentType = ctx.contentType
         typeKey = renderingFactories.get(contentType, None)
         if typeKey is None:
             if contentType == u'text/html':
@@ -288,6 +293,31 @@ class DocumentView(ResourceView):
         return (self.inlineEditingActive
                 and self.context.contentType == 'text/html'
                 and canWrite(self.context, 'data'))
+
+
+class ExternalEditorView(ExternalEditorView):
+
+    def load(self, url=None):
+        context = removeSecurityProxy(self.context)
+        data = adapted(context).data
+        r = []
+        r.append('url:' + (url or zapi.absoluteURL(context, self.request)))
+        r.append('content_type:' + str(context.contentType))
+        r.append('meta_type:' + '.'.join((context.__module__, context.__class__.__name__)))
+        auth = self.request.get('_auth')
+        if auth:
+            print 'ExternalEditorView: auth = ', auth
+            if auth.endswith('\n'):
+                auth = auth[:-1]
+            r.append('auth:' + auth)
+        cookie = self.request.get('HTTP_COOKIE','')
+        if cookie:
+            r.append('cookie:' + cookie)
+        r.append('')
+        r.append(data)
+        result = '\n'.join(r)
+        self.setHeaders(len(result))
+        return fromUnicode(result)
 
 
 class NoteView(DocumentView):
