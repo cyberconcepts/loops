@@ -188,7 +188,7 @@ class AgentHome(rend.Page):
 
 class JobOverView(rend.Page):
 
-    docFactory = template('job.html')
+    docFactory = template('joblisting.html')
 
     def __init__(self, IniDict):
 
