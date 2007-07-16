@@ -32,6 +32,7 @@ from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.filerepresentation.interfaces import IFileFactory
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements
 from zope.size.interfaces import ISized
@@ -58,7 +59,7 @@ from loops.interfaces import ITypeConcept
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
 from loops.concept import ResourceRelation
-from loops.common import ResourceAdapterBase
+from loops.common import ResourceAdapterBase, adapted
 from loops.versioning.util import getMaster
 from loops.view import TargetRelation
 
@@ -401,15 +402,15 @@ class DocumentWriteFileAdapter(object):
         self.context = context
 
     def write(self, data):
-        # TODO: use typeInterface...
-        ti = IType(self.context).typeInterface
-        context = ti is None and self.context or ti(self.context)
+        #ti = IType(self.context).typeInterface
+        #context = ti is None and self.context or ti(self.context)
+        context = adapted(self.context)
         if ITextDocument.providedBy(context) or IDocument.providedBy(context):
             context.data = unicode(data.replace('\r', ''), 'UTF-8')
         else:
+            # don't decode files or external files even if contentType == 'text/...'
             # TODO: make use of tmpfile when using external files
             context.data = data
-        #ITextDocument(self.context).data = unicode(data.replace('\r', ''), 'UTF-8')
         notify(ObjectModifiedEvent(self.context, Attributes(IResource, 'data')))
 
 
@@ -421,11 +422,40 @@ class DocumentReadFileAdapter(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def data(self):
+        return adapted(self.context).data
+
     def read(self):
-        return self.context.data.encode('UTF-8')
+        data = self.data
+        if type(data) is unicode:
+            return self.data.encode('UTF-8')
+        else:
+            return data
 
     def size(self):
-        return len(self.context.data)
+        return len(self.data)
+
+
+class ExternalFileFactory(object):
+
+    implements(IFileFactory)
+    adapts(IResourceManager)
+
+    def __init__(self, context):
+        self.context = removeSecurityProxy(context)
+
+    def __call__(self, name, contentType, data):
+        res = Resource()
+        self.context[name] = res  # to be able to set resourceType
+        cm = self.context.getLoopsRoot().getConceptManager()
+        res.resourceType = cm['extfile']
+        obj = adapted(res)
+        obj.contentType = contentType
+        obj.data = data
+        notify(ObjectModifiedEvent(res))
+        del self.context[name]  # will be set again by put
+        return res
 
 
 class IndexAttributes(object):
@@ -491,5 +521,4 @@ class ResourceTypeSourceList(object):
 
     def __len__(self):
         return len(self.resourceTypes)
-
 

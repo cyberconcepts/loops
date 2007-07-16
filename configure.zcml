@@ -385,6 +385,12 @@
              set_schema="loops.interfaces.INote" />
   </class>
 
+  <adapter factory="loops.resource.ExternalFileFactory" />
+  <class class="loops.resource.ExternalFileFactory">
+    <require permission="zope.ManageContent"
+             interface="zope.filerepresentation.interfaces.IFileFactory" />
+  </class>
+
 
   <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />
