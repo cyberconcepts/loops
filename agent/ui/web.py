@@ -5,15 +5,8 @@
 # version: 0.1
 #------------------------------------------------------
 
-# one possibility is to always stay in the same class by calling its object instance as
-# a return value when returning from a methodCall'. But this would require to change the current
-# __init__ procedure so that the changes concerning the ini file are always directly written
-# to the file or there is a routine which starts one time to initialize (maybe for example reading the
-# whole ini File into the self.IniDict if it is not already filled and for each setting just chnaging the
-# self.IniDict
-
 import os
-from nevow import loaders, rend, static, url, inevow
+from nevow import loaders, rend, static, url, inevow, tags
 from nevow.inevow import IRequest
 from twisted.internet import defer
 
@@ -21,7 +14,6 @@ from twisted.internet import defer
 Import could look like this:
 from loops.agent.crawl.MailCrawler import MailCrawler
 """
-
 
 # ---- global definitions ---------------------------------
 # THIS SECTION IS USED FOR PROJECT INTERNAL DEBUG ONLY
@@ -35,254 +27,308 @@ templatesDirectory = 'templates'
 def template(fn):
     return loaders.xmlfile(os.path.join(templatesDirectory, fn))
 
-#/////////////////////////////////////////////////////////////////////////////////////////////
-#----------------------------    AgentHome    --------------------------------------------------
+# AgentHome 
 # root page of the Agent UI
-# every method called on the agent ui has it s child
-# method inside here
 
 class AgentHome(rend.Page):
-
+    
     child_resources = static.File(resourcesDirectory)
     docFactory = template('agent.html')
-
-
-    def __init__(self,IniDict={}):
+    
+    def __init__(self,ini_dict={}):
 
         #TODO: implement automatic reading of default ini file, or one passed via constructor
         #-------- ini settings ------------------------
         # THIS SECTION IS USED FOR PROJECT INTERNAL DEBUG ONLY
-        self.iniFile = INIFILE
-        self.IniDict = IniDict
+        self.ini_file = INIFILE
+        self.ini_dict = ini_dict
         #-----------------------------------------------
-
         #-------- get ini settings from file --------
-        # stores IniFile settings in self.IniDict
+        if self.ini_dict == {}:
 
-        if self.IniDict == {}:
-
-            fPointer = open(self.iniFile,"r")
-            IniSettings = fPointer.readlines()
-
-            for iniLine in IniSettings:
-                elem = iniLine.split(":")
-                self.IniDict[elem[0]] = elem[1]
-
-            fPointer.close()
-
-        print "[AgentHome] self.UserMode: ", self.IniDict["UserMode"]
-
+            file_pointer = open(self.ini_file,"r")
+            ini_settings = file_pointer.readlines()
+            for ini_line in ini_settings:
+                elem = ini_line.split(":")
+                self.ini_dict[elem[0]] = elem[1]
+            file_pointer.close()
+        print "[AgentHome] self.UserMode: ", self.ini_dict["UserMode"]
 
     """
     def locateChild(self, ctx, segments):
         return self, ()
-        """
-    # see nevow.url.py ?
-
-    #///////////////////////////////////////////////////////////////////
-    #----------AgentHome: CHILD PAGES SECTION--------------------------------------
-    # this code section contains all child methods that load
-    # a new (html-) page
-
+    """
+    
+    # child pages
+    
     def child_joboverview(self,context):
+        """ User requested page from menue: 'job overview' """
+        return JobOverView(self.ini_dict)
 
-        """ User requested page from menue: "job overview" """
-        return JobOverView(self.IniDict)
-
-    #//////////////////////////////////////////////////////////////////
-    #--------AgentHome: CHILD METHODS SECTION-------------------------------------
-    # this code section contains all form methods invoked in AgentHome
-    # including their callback methods
-
-    #---- page "Startpage" methods (class AgentHome) ----
+    # "Startpage" methods (class AgentHome)
 
     def child_ChangeUserMode(self,context):
-
-        """User has klicked the Change User Mode button
+        """User has klicked the Change User Mode button, so
            change UserMode from Simple <-> Professional"""
 
-        print "[child_ChangeUserMode] UserMode: ", self.IniDict["UserMode"]
+        print "[child_ChangeUserMode] UserMode: ", self.ini_dict["UserMode"]
         print "[child_ChangeUserMode] ----retrieving form values----"
-
         form = IRequest(context).args
-
         if form != {}:
-
             for elem in form:
                 print "[child_ChangeUserMode] ", form[elem]
-
-        if self.IniDict["UserMode"] == "Simple":
-            self.IniDict["UserMode"] = "Advanced"
-
+        if self.ini_dict["UserMode"] == "Simple":
+            self.ini_dict["UserMode"] = "Advanced"
         else:
-            self.IniDict["UserMode"] = "Simple"
-            print "[child_ChangeUserMode] : ", self.IniDict["UserMode"]
-
-            """
-            Write changed setting back to the iniFile ?
-            filePointer = open(self.iniFile,"rw")
-            """
-
-        return AgentHome(self.IniDict)
-
+            self.ini_dict["UserMode"] = "Simple"
+            print "[child_ChangeUserMode] : ", self.ini_dict["UserMode"]
+        return AgentHome(self.ini_dict)
 
     def child_collectOutlookMails(self,context):
-
         """User requested page from menue: "Collect Outlook Mails" """
 
         """
         deferred = MailCrawler.getOutlookMails()
         deferred.addCallback(self.defMailCrawl,context)
         deferred.addErrback(self.defMailCrawlError,context)
-
         return deferred
         """
+        return AgentOutlookMailView(self.ini_dict)
 
-        return AgentOutlookMailView(self.IniDict)
-
-
-
-    def defMailCrawl(self,MailCollection,context):
-
+    def defMailCrawl(self,mail_collection,context):
         """here the returned collection is forwared to the page
-        that is displaying it"""
-
-        return AgentOutlookMailView(self.IniDict,MailCollection)
-
+        that is displaying it"""     
+        return AgentOutlookMailView(self.ini_dict,mail_collection)
 
     def defMailCrawlError(self,ErrorMessage,context):
-
         """handles errors that ocurred in the MailCrawler"""
+        return AgentHome(self.ini_dict)
 
-        return AgentHome(self.IniDict)
-
-
-    #---- page "job overview" methods (class JobOverView)----
+    # "job overview" methods (class JobOverView)
 
     def child_ViewJobDetails(self,context):
 
-        form = IRequest(context).args
-        selectedJob = form['jobList'][0]
+        selected_job = ((IRequest(context).uri).split("?"))[1]
+        file_pointer = open(JOBFILE,"r")
+        job_details = ""
+        job_list = file_pointer.readlines()
+        for line in job_list:
+            if line.startswith(selected_job):
+                job_details = line
+                break
+        file_pointer.close()
+        job_details = job_details.split(";")
+        return JobOverViewDetails(self.ini_dict, job_details)
 
-        return JobOverViewDetails(self.IniDict, selectedJob)
-
-
-    #////////////////////////////////////////////////////////////
-    #-------------AgentHome: RENDER SECTION------------------------
-    # this code section contains the Nevow Rendering Methods
-    # for building the page element tree
+    # rendering methods of Startpage
 
     def render_getActiveUserMode(self,context,data):
-        return self.IniDict["UserMode"]
-
+        return self.ini_dict["UserMode"]
 
     def render_getAgentVersion(self,context,data):
         return "0.1 alpha"
 
+    def render_footer_fragment(self,context,data):
+        return context.tag[FooterFragment(data)]
+
+    def render_navigation_fragment(self,context,data):
+        return context.tag[NavigationFragment(data)]
+
+    def render_top_fragment(self,context,data):
+        return context.tag[TopFragment(data)]
+
+    def render_header_fragment(self,context,data):
+        return context.tag[HeaderFragment(data)]
+
+    
+class FooterFragment(rend.Fragment):
+    docFactory = template('footer.html')
 
 
+class NavigationFragment(rend.Fragment):
+    docFactory = template('navigation.html')
 
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#-----------------    PAGES SECTION    -------------------------------------------------------------------------
-# all classes in this section are pages called via the navigation menue of AgentHome
+
+class TopFragment(rend.Fragment):
+    docFactory = template('top.html')
+
+
+class HeaderFragment(rend.Fragment):
+    docFactory = template('header.html')
+
+   
+# subpages of AgentHome
 
 class JobOverView(rend.Page):
 
     docFactory = template('joblisting.html')
 
-    def __init__(self, IniDict):
+    def __init__(self, ini_dict):
 
-        self.IniSettings = IniDict
+        self.ini_settings = ini_dict
 
-    #-------------RENDER SECTION---------------------------------
-    # this code section contains the Nevow Rendering Methods
-    # for building the page element tree
-
+    # rendering methods of job overview
+    
     def data_displayViewForm(self,context,data):
         return "Overview of all running Crawling jobs"
 
     def render_getActiveUserMode(self,context,data):
-        return self.IniSettings["UserMode"]
+        return self.ini_settings["UserMode"]
 
-    def render_fillJobList(self,ctx,data):
+    def render_fillJobTable(self,ctx,data):
 
         #---- get the registered jobs from the jobfile ----
-        #
-        fpJobFile = open(JOBFILE,"r")
-        lines = fpJobFile.readlines()
-        fpJobFile.close()
-        patternList = []
-        gen_pattern = inevow.IQ(ctx).patternGenerator('optionsJobList')
-
+        # might later be implemented by reading in a xml file or
+        # requesting registered jobs from database
+        file_jobfile = open(JOBFILE,"r")
+        lines = file_jobfile.readlines()
+        file_jobfile.close()
+        joblist = []
         for elem in lines:
-            patternList.append(gen_pattern(data=elem))
+            joblist.append(elem.split(";"))         
+        job_table = [tags.tr
+                        [
+                          tags.td
+                             [
+                               tags.a(href="ViewJobDetails?%s" %(job_details[0],))
+                                  [
+                                    tags.b
+                                        [
+                                            "[" + job_details[0] +"]"
+                                        ]
+                                  ]
+                             ],
+                          tags.td[job_details[1]],
+                          tags.td[job_details[2]],
+                          tags.td[job_details[3]],
+                          tags.td[job_details[4]]
+                        ]
+                     for job_details in joblist
+                     ]
+        return job_table
 
-        return patternList
+    def render_footer_fragment(self,context,data):
+        return context.tag[FooterFragment(data)]
 
+    def render_navigation_fragment(self,context,data):
+        return context.tag[NavigationFragment(data)]
 
+    def render_top_fragment(self,context,data):
+        return context.tag[TopFragment(data)]
+
+    def render_header_fragment(self,context,data):
+        return context.tag[HeaderFragment(data)]
 
 
 class JobOverViewDetails(rend.Page):
 
     docFactory = template('jobdetail.html')
 
-    def __init__(self, IniDict={}, selectedJob=""):
+    def __init__(self, ini_dict={}, selectedJob=[]):
 
-        self.IniSettings = IniDict
+        self.ini_settings = ini_dict
         self.jobdetails = selectedJob
 
-
-    #-------------RENDER SECTION---------------------------------
-    # this code section contains the Nevow Rendering Methods
-    # for building the page element tree
+    # rendering methods of job view details
 
     def data_displayViewForm(self,context,data):
         return "Detailed view of crawling job."
 
     def render_getActiveUserMode(self,context,data):
-        return self.IniSettings["UserMode"]
+        return self.ini_settings["UserMode"]
 
     def render_displayJobDetails(self,ctx,data):
 
         print "*******************************************************"
         print "[render_displayJobDetails] received form: ", str(self.jobdetails)
-        print "[render_displayJobDetails] received IniForm: ", str(self.IniSettings)
+        print "[render_displayJobDetails] received IniForm: ", str(self.ini_settings)
         print "*******************************************************"
+        job_detail = []
+        job_detail = [tags.tr
+                          [
+                              tags.td["PID"],
+                              tags.td[self.jobdetails[0]]
+                          ],
+                       tags.tr
+                          [
+                              tags.td["State"],
+                              tags.td[self.jobdetails[1]]
+                          ],
+                      tags.tr
+                         [
+                              tags.td["Interval"],
+                              tags.td[self.jobdetails[2]]
+                         ],
+                      tags.tr
+                          [
+                              tags.td["Search Criteria"],
+                              tags.td[self.jobdetails[3]]
+                          ],
+                      tags.tr
+                          [
+                              tags.td["Job Scope"],
+                              tags.td[self.jobdetails[4]]
+                            ],
+                      tags.tr
+                          [
+                              tags.td["Filter"],
+                              tags.td[self.jobdetails[5]]
+                            ],
+                      tags.tr
+                          [
+                              tags.td["Follow Up Tasks"],
+                              tags.td[self.jobdetails[6]]
+                            ]
+                      ]
+        return job_detail
 
-        patternList = []
-        gen_pattern = inevow.IQ(ctx).patternGenerator('jobDetails')
+    def render_footer_fragment(self,context,data):
+        return context.tag[FooterFragment(data)]
 
-        for elem in self.jobdetails:
-            patternList.append(gen_pattern(data=elem))
+    def render_navigation_fragment(self,context,data):
+        return context.tag[NavigationFragment(data)]
 
-        return patternList
+    def render_top_fragment(self,context,data):
+        return context.tag[TopFragment(data)]
+
+    def render_header_fragment(self,context,data):
+        return context.tag[HeaderFragment(data)]
 
 
 class AgentOutlookMailView(rend.Page):
 
     docFactory = template('mail.html')
 
-    def __init__(self, IniDict={}, MailCollection=[]):
+    def __init__(self, ini_dict={}, mail_collection=[]):
 
-        self.IniDict = IniDict
-        self.MailCollection = MailCollection
+        self.ini_dict = ini_dict
+        self.mail_collection = mail_collection
 
-    #-------------RENDER SECTION---------------------------------
-    # this code section contains the Nevow Rendering Methods
-    # for building the page element tree
+    # rendering methods of Collect Outlook Mails
 
     def data_displayViewForm(self,context,data):
         return "Detailed view of all collected Outlook Mails. [DEMO]"
 
     def render_getActiveUserMode(self,context,data):
-        return self.IniDict["UserMode"]
+        return self.ini_dict["UserMode"]
 
     def render_displayOutlookMails(self,ctx,data):
 
-        patternList = []
+        pattern_list = []
         gen_pattern = inevow.IQ(ctx).patternGenerator('OutlookMails')
+        for elem in self.mail_collection:
+            pattern_list.append(gen_pattern(data=elem))
+        return pattern_list
 
-        for elem in self.MailCollection:
-            patternList.append(gen_pattern(data=elem))
+    def render_footer_fragment(self,context,data):
+        return context.tag[FooterFragment(data)]
 
-        return patternList
+    def render_navigation_fragment(self,context,data):
+        return context.tag[NavigationFragment(data)]
+
+    def render_top_fragment(self,context,data):
+        return context.tag[TopFragment(data)]
+
+    def render_header_fragment(self,context,data):
+        return context.tag[HeaderFragment(data)]
+    

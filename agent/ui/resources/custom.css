@@ -22,3 +22,7 @@ a {
     height: 75px;*/
 }
 
+table.listing tr:hover {
+    background-color: #FEFE82;
+}
+
