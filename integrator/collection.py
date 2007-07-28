@@ -64,7 +64,8 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def update(self):
         existing = self.context.getResources()
-        old = dict((adapted(obj).uniqueAddress, obj) for obj in existing)
+        #old = dict((adapted(obj).uniqueAddress, obj) for obj in existing)
+        old = dict((adapted(obj).externalAddress, obj) for obj in existing)
         new = []
         oldFound = []
         provider = component.getUtility(IExternalCollectionProvider,
