@@ -27,7 +27,6 @@ from twisted.internet.defer import Deferred
 from zope.interface import implements
 
 from loops.agent.interfaces import ICrawlingJob, IResource, IMetadataSet
-from loops.agent.schedule import Job
 from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
 
 

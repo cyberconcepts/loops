@@ -36,7 +36,7 @@ class Scheduler(object):
 
     def __init__(self):
         self.queue = {}
-        self.Logger = None
+        self.logger = None
 
     def schedule(self, job, startTime):
         job.startTime = startTime
