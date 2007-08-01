@@ -72,11 +72,14 @@ class Job(object):
         # TODO: logging
 
     def finishRun(self, result):
+        # run successors
         for job in self.successors:
             job.params['result'] = result
             job.run(**job.params)
-        # TODO: remove from queue
+        # remove from queue
+        del self.scheduler.queue[self.startTime]
         # TODO: logging
+        # reschedule if necessary
         if self.repeat:
             self.reschedule(int(time() + self.repeat))
 

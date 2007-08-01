@@ -72,4 +72,7 @@ class Agent(object):
                     job.successors.append(transporter.jobFactory(transporter))
                 job.repeat = info.repeat or 0
                 self.scheduler.schedule(job, info.starttime or int(time()))
+                # TODO: remove job from config
+                # TODO: put repeating info in config
+                # TODO: remember last run for repeating job
 
