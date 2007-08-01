@@ -164,20 +164,23 @@ class IConfigurator(Interface):
     """ Manages (stores and receives) configuration information.
     """
 
-    def loadConfiguration():
-        """ Find the configuration settings and load them.
+    filename = Attribute('The path to a file with configuration parameters.')
+
+    def load(p=None, filename=None):
+        """ Load configuration directly from a string or an open file
+            (if ``p`` is set) or using the ``filename`` parameter (a path).
+
+            If no string and no filename is given the configuration
+            file is searched in the user's home folder.
+
+            If the configuration is loaded from a file using the
+            ``filename`` parameter or from the default location the
+            path is stored in the ``filename`` attribute.
         """
 
-    def setConfigOption(key, value):
-        """ Directly set a certain configuration option.
-        """
-
-    def getConfigOption(key):
-        """ Return the value for the configuration option identified
-            by the key given.
-
-            In addition config options must be directly accessible
-            via attribute notation.
+    def save(filename=None)
+        """ Save configuration settings to the file given, or to the
+            file from which it was loaded, or to the default location.
         """
 
 
