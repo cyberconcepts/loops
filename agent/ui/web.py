@@ -31,12 +31,34 @@ def template(fn):
 # root page of the Agent UI
 
 class AgentHome(rend.Page):
+
+    """Main class that builds the root ressource for the loops agent ui.
+
+    Instance variables:
+    ini_dict -- stores the initialization parameters
+    ini_file -- path to the initialization file
+
+    Class methods:
+    At the moment all methods of this class except the __init__ although public,
+    are intended to be called directly or stand-alone.
+
+    __init__ -- Load the initial start-up settings from an ini file.
+
+    """
     
     child_resources = static.File(resourcesDirectory)
     docFactory = template('agent.html')
     
     def __init__(self,ini_dict={}):
+        """ Initialize the AgentHome object.
 
+        If an empty dictionary is passed into the __init__ method it will
+        load the settings from the path with points to the ini-file.
+
+        Keyword arguments:
+        ini_dict -- the dictionary containing the ini-settings. Defaults to {}
+
+        """  
         #TODO: implement automatic reading of default ini file, or one passed via constructor
         #-------- ini settings ------------------------
         # THIS SECTION IS USED FOR PROJECT INTERNAL DEBUG ONLY
@@ -67,26 +89,32 @@ class AgentHome(rend.Page):
 
     # "Startpage" methods (class AgentHome)
 
-    def child_ChangeUserMode(self,context):
-        """User has klicked the Change User Mode button, so
-           change UserMode from Simple <-> Professional"""
+    def child_changeUserMode(self,context):
+        """Change user mode.
 
-        print "[child_ChangeUserMode] UserMode: ", self.ini_dict["UserMode"]
-        print "[child_ChangeUserMode] ----retrieving form values----"
+        User has klicked the Change User Mode button, so
+        change UserMode from Simple <-> Professional
+
+        """
+        print "[child_changeUserMode] UserMode: ", self.ini_dict["UserMode"]
+        print "[child_changeUserMode] ----retrieving form values----"
         form = IRequest(context).args
         if form != {}:
             for elem in form:
-                print "[child_ChangeUserMode] ", form[elem]
+                print "[child_changeUserMode] ", form[elem]
         if self.ini_dict["UserMode"] == "Simple":
             self.ini_dict["UserMode"] = "Advanced"
         else:
             self.ini_dict["UserMode"] = "Simple"
-            print "[child_ChangeUserMode] : ", self.ini_dict["UserMode"]
+            print "[child_changeUserMode] : ", self.ini_dict["UserMode"]
         return AgentHome(self.ini_dict)
 
     def child_collectOutlookMails(self,context):
-        """User requested page from menue: "Collect Outlook Mails" """
+        """Display page for starting Outlook Crawler
 
+        Returns a page object that offers possibility to start async crawling job.
+
+        """
         """
         deferred = MailCrawler.getOutlookMails()
         deferred.addCallback(self.defMailCrawl,context)
@@ -96,18 +124,22 @@ class AgentHome(rend.Page):
         return AgentOutlookMailView(self.ini_dict)
 
     def defMailCrawl(self,mail_collection,context):
-        """here the returned collection is forwared to the page
-        that is displaying it"""     
+        """Forward the mail collection to a page view."""
         return AgentOutlookMailView(self.ini_dict,mail_collection)
 
     def defMailCrawlError(self,ErrorMessage,context):
-        """handles errors that ocurred in the MailCrawler"""
+        """Handles errors that ocurred in the MailCrawler."""
         return AgentHome(self.ini_dict)
 
     # "job overview" methods (class JobOverView)
 
     def child_ViewJobDetails(self,context):
+        """Get details for the selected job.
 
+        Reads all information about the selected job from file/ database.
+        Returns page object which displays the available information.
+
+        """
         selected_job = ((IRequest(context).uri).split("?"))[1]
         file_pointer = open(JOBFILE,"r")
         job_details = ""
@@ -161,10 +193,22 @@ class HeaderFragment(rend.Fragment):
 
 class JobOverView(rend.Page):
 
+    """Builds page that lists all currently registered jobs.
+
+    Instance variables:
+    ini_settings -- stores the initialization parameters
+
+    Class methods:
+    At the moment all methods of this class except the __init__ although public,
+    are intended to be called directly or stand-alone.
+
+    __init__ -- Store the initial settings retrieved from AgentHome.
+
+    """
+    
     docFactory = template('joblisting.html')
 
-    def __init__(self, ini_dict):
-
+    def __init__(self, ini_dict={}):
         self.ini_settings = ini_dict
 
     # rendering methods of job overview
@@ -176,6 +220,7 @@ class JobOverView(rend.Page):
         return self.ini_settings["UserMode"]
 
     def render_fillJobTable(self,ctx,data):
+        """Build table which displays all registered jobs."""
 
         #---- get the registered jobs from the jobfile ----
         # might later be implemented by reading in a xml file or
@@ -221,11 +266,24 @@ class JobOverView(rend.Page):
 
 
 class JobOverViewDetails(rend.Page):
+    
+    """Builds page that displays detailed information about a selected job.
+
+    Instance variables:
+    ini_settings -- stores the initialization parameters
+    jobdetails -- list that contains all available job information
+
+    Class methods:
+    At the moment all methods of this class except the __init__ although public,
+    are intended to be called directly or stand-alone.
+
+    __init__ -- Store inital settings and the selected job.
+
+    """
 
     docFactory = template('jobdetail.html')
 
     def __init__(self, ini_dict={}, selectedJob=[]):
-
         self.ini_settings = ini_dict
         self.jobdetails = selectedJob
 
@@ -238,6 +296,7 @@ class JobOverViewDetails(rend.Page):
         return self.ini_settings["UserMode"]
 
     def render_displayJobDetails(self,ctx,data):
+        """Build the table containing information about the selected job."""
 
         print "*******************************************************"
         print "[render_displayJobDetails] received form: ", str(self.jobdetails)
@@ -296,11 +355,24 @@ class JobOverViewDetails(rend.Page):
 
 
 class AgentOutlookMailView(rend.Page):
+    
+    """Builds page that displays an overview of all collected mails.
+
+    Instance variables:
+    ini_dict -- stores the initialization parameters
+    mail_collection -- collection containing all currently collected mails.
+
+    Class methods:
+    At the moment all methods of this class except the __init__ although public,
+    are intended to be called directly or stand-alone.
+
+    __init__ -- Store initial settings and the mail collection object.
+
+    """
 
     docFactory = template('mail.html')
 
     def __init__(self, ini_dict={}, mail_collection=[]):
-
         self.ini_dict = ini_dict
         self.mail_collection = mail_collection
 
@@ -313,6 +385,7 @@ class AgentOutlookMailView(rend.Page):
         return self.ini_dict["UserMode"]
 
     def render_displayOutlookMails(self,ctx,data):
+        """Builds table containing all currently collected mails."""
 
         pattern_list = []
         gen_pattern = inevow.IQ(ctx).patternGenerator('OutlookMails')
