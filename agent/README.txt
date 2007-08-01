@@ -26,8 +26,92 @@ This means that all calls to services (like crawler, transporter, ...)
 return a deferred that must be supplied with a callback method (and in
 most cases also an errback method).
 
-  >>> from loops.agent.core import Agent
-  >>> agent = Agent()
+  >>> from loops.agent import core
+  >>> agent = core.Agent()
+
+
+Configuration Management
+========================
+
+Functionality
+
+- Storage of configuration parameters
+- Interface to the browser-based user interface that allows the
+  editing of configuration parameters
+
+All configuration parameters are always accessible via the ``config``
+attribute of the agent object.
+
+  >>> config = agent.config
+
+This already provides all needed sections (transport, crawl, ui), so
+we can directly put information into these sections by loading a
+string with the corresponding assignment.
+
+  >>> config.load('transport.url = "http://loops.cy55.de"')
+  >>> config.transport.url
+  'http://loops.cy55.de'
+
+This setting may also contain indexed access; thus we can model
+configuration parameters with multiple instances (like crawling
+jobs).
+
+  >>> config.load('''
+  ... crawl[0].type = "filesystem"
+  ... crawl[0].directory = "documents/projects"
+  ... ''')
+  >>> config.crawl[0].type
+  'filesystem'
+  >>> config.crawl[0].directory
+  'documents/projects'
+
+Subsections are created automatically when they are first accessed.
+
+  >>> config.load('ui.web.port = 8081')
+  >>> config.ui.web.port
+  8081
+
+The ``setdefault()`` method allows to retrieve a value and set
+it with a default if not found, in one statement.
+
+  >>> config.ui.web.setdefault('port', 8080)
+  8081
+  >>> config.transport.setdefault('user', 'loops')
+  'loops'
+
+We can output a configuration in a form that is ready for loading
+just by converting it to a string representation.
+
+  >>> print config
+  crawl[0].directory = 'documents/projects'
+  crawl[0].type = 'filesystem'
+  transport.url = 'http://loops.cy55.de'
+  transport.user = 'loops'
+  ui.web.port = 8081
+
+The configuration may also be saved to a file -
+for testing purposes let's use the loops.agent package directory
+for storage; normally it would be stored in the users home directory.
+
+  >>> import os
+  >>> os.environ['HOME'] = os.path.dirname(core.__file__)
+
+  >>> config.save()
+
+  >>> fn = config.getDefaultConfigFile()
+  >>> fn
+  '....loops.agent.cfg'
+
+  >>> print open(fn).read()
+  crawl[0].directory = 'documents/projects'
+  crawl[0].type = 'filesystem'
+  transport.url = 'http://loops.cy55.de'
+  transport.user = 'loops'
+  ui.web.port = 8081
+
+Cleaning up up...
+
+  >>> os.unlink(fn)
 
 
 Scheduling
@@ -183,16 +267,6 @@ Configuration (per install/update job)
 
 - command: install, update, remove
 - package names
-
-
-Configuration Management
-========================
-
-Functionality
-
-- Storage of configuration parameters
-- Interface to the browser-based user interface that allows the
-  editing of configuration parameters
 
 
 Browser-based User Interface

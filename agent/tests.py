@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 #
 #  Run with ``trial2.4 tests.py`` to execute the twisted unit tests.
 #  Run with ``python tests.py`` to execute the doctests.

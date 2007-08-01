@@ -33,7 +33,7 @@ class Agent(object):
     implements(IAgent)
 
     def __init__(self):
-        configurator = self.configurator = Configurator()
-        configurator.loadConfiguration()
+        config = self.config = Configurator('ui', 'crawl', 'transport')
+        config.load()
         self.scheduler = Scheduler()
 
