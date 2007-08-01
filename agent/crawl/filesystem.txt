@@ -1,0 +1,17 @@
+=====================================================
+loops.agent.crawl.filesystem - The Filesystem Crawler
+=====================================================
+
+  ($Id$)
+
+  >>> from loops.agent.tests import tester
+  >>> from loops.agent.core import Agent
+
+  >>> agent = Agent()
+  >>> from loops.agent.crawl.filesystem import CrawlingJob
+
+  >>> from time import time
+  >>> scheduler = agent.scheduler
+  >>> scheduler.schedule(CrawlingJob(), int(time()))
+
+  >>> tester.iterate()

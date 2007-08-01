@@ -94,6 +94,11 @@ class ConfigSection(list):
             return value
         return getattr(self, attr)
 
+    def items(self):
+        for name, value in self.__dict__.items():
+            if isinstance(value, (str, int)):
+                yield name, value
+
     def collect(self, ident, result):
         for idx, element in enumerate(self):
             element.collect('%s[%i]' % (ident, idx), result)

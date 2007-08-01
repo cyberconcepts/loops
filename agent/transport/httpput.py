@@ -22,5 +22,55 @@ Transferring of data/files to the server.
 $Id$
 """
 
-from loops.agent.interfaces import ITransporter
+from twisted.internet import reactor
+from twisted.internet.defer import Deferred
+from zope.interface import implements
+
+from loops.agent.interfaces import ITransporter, ITransportJob
+from loops.agent.schedule import Job
+
+
+class TransportJob(Job):
+
+    implements(ITransportJob)
+
+    def __init__(self, transporter):
+        super(TransportJob, self).__init__()
+        self.transporter = transporter
+
+    def execute(self, **kw):
+        result = kw.get('result')
+        if result is None:
+            print 'No data available.'
+        else:
+            for r in result:
+                d = self.transporter.transfer(r[0].data, r[1], str)
+        return Deferred()
+
+
+class Transporter(object):
+
+    implements(ITransporter)
+
+    jobFactory = TransportJob
+
+    serverURL = None
+    method = None
+    machineName = None
+    userName = None
+    password = None
+
+    def __init__(self, agent):
+        self.agent = agent
+        config = agent.config
+
+    def transfer(self, resource, metadata=None, resourceType=file):
+        if resourceType is file:
+            data = resource.read()
+            resource.close()
+        elif resourceType is str:
+            data = resource
+        print 'Transferring:', data
+        return Deferred()
+
 

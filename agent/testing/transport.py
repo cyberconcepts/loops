@@ -30,9 +30,29 @@ from loops.agent.interfaces import ITransportJob, ITransporter
 from loops.agent.schedule import Job
 
 
+class TransportJob(Job):
+
+    implements(ITransportJob)
+
+    def __init__(self, transporter):
+        super(TransportJob, self).__init__()
+        self.transporter = transporter
+
+    def execute(self, **kw):
+        result = kw.get('result')
+        if result is None:
+            print 'No data available.'
+        else:
+            for r in result:
+                d = self.transporter.transfer(r[0].data, r[1], str)
+        return Deferred()
+
+
 class Transporter(object):
 
     implements(ITransporter)
+
+    jobFactory = TransportJob
 
     serverURL = None
     method = None
@@ -50,19 +70,3 @@ class Transporter(object):
         return Deferred()
 
 
-class TransportJob(Job):
-
-    implements(ITransportJob)
-
-    def __init__(self, transporter):
-        super(TransportJob, self).__init__()
-        self.transporter = transporter
-
-    def execute(self, **kw):
-        result = kw.get('result')
-        if result is None:
-            print 'No data available.'
-        else:
-            for r in result:
-                d = self.transporter.transfer(r[0].data, r[1], str)
-        return Deferred()

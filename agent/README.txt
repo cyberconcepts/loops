@@ -79,6 +79,9 @@ it with a default if not found, in one statement.
   >>> config.transport.setdefault('user', 'loops')
   'loops'
 
+  >>> sorted(config.transport.items())
+  [('url', 'http://loops.cy55.de'), ('user', 'loops')]
+
 We can output a configuration in a form that is ready for loading
 just by converting it to a string representation.
 
@@ -142,14 +145,43 @@ How does this work?
 We can set up a more realistic example using the dummy crawler and transporter
 classes from the testing package.
 
-  >>> from loops.agent.testing.crawl import CrawlingJob
-  >>> from loops.agent.testing.transport import Transporter, TransportJob
+  >>> from loops.agent.testing import crawl
+  >>> from loops.agent.testing import transport
 
-  >>> crawl = CrawlingJob()
-  >>> transporter = Transporter()
-  >>> transport = TransportJob(transporter)
-  >>> crawl.successors.append(transport)
-  >>> scheduler.schedule(crawl, int(time()))
+  >>> crawlJob = crawl.CrawlingJob()
+  >>> transporter = transport.Transporter()
+  >>> transportJob = transporter.jobFactory(transporter)
+  >>> crawlJob.successors.append(transportJob)
+  >>> scheduler.schedule(crawlJob, int(time()))
+
+  >>> tester.iterate()
+  Transferring: Dummy resource data for testing purposes.
+
+Using configuration with scheduling
+-----------------------------------
+
+Let's start with a fresh agent, directly supplying the configuration
+(just for testing).
+
+  >>> config = '''
+  ... crawl[0].type = 'dummy'
+  ... crawl[0].directory = '~/documents'
+  ... crawl[0].pattern = '.*\.doc'
+  ... crawl[0].starttime = %s
+  ... crawl[0].transport = 'dummy'
+  ... crawl[0].repeat = 0
+  ... transport.url = 'http://loops.cy55.de'
+  ... ''' % int(time())
+
+  >>> agent = core.Agent(config)
+
+We also register our dummy crawling job and transporter classes as
+we can not perform real crawling and transfers when testing.
+
+  >>> agent.crawlTypes = dict(dummy=crawl.CrawlingJob)
+  >>> agent.transportTypes = dict(dummy=transport.Transporter)
+
+  >>> agent.scheduleJobsFromConfig()
 
   >>> tester.iterate()
   Transferring: Dummy resource data for testing purposes.

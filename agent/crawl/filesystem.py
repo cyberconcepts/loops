@@ -22,5 +22,45 @@ Filesystem crawler.
 $Id$
 """
 
-from loops.agent.interfaces import ICrawlingJob
+import os
+import re
+import stat
+from twisted.internet.defer import Deferred
+from zope.interface import implements
 
+from loops.agent.interfaces import ICrawlingJob, IResource, IMetadataSet
+from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
+
+
+class CrawlingJob(BaseCrawlingJob):
+
+    def collect(self, **criteria):
+        deferred = reactor.deferToThread(self.crawlFilesystem, dataAvailable)
+        return deferred
+
+    def dataAvailable(self):
+        self.deferred.callback([(FileResource(), Metadata())])
+
+    def crawlFilesystem(self, **criteria):
+        directory = criteria.get('directory')
+        pattern = re.compile(criteria.get('pattern') or '.*')
+        for path, dirs, files in os.walk(directory):
+            if '.svn' in dirs:
+                del dirs[dirs.index('.svn')]
+            for f in files:
+                if pattern.match(f):
+                    mtime = os.stat(os.path.join(path, f))[stat.ST_MTIME]
+                    yield (os.path.join(path[len(directory)+1:], f),
+                           datetime.fromtimestamp(mtime))
+
+
+class Metadata(object):
+
+    implements(IMetadataSet)
+
+
+class FileResource(object):
+
+    implements(IResource)
+
+    data = 'Dummy resource data for testing purposes.'

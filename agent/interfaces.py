@@ -178,7 +178,7 @@ class IConfigurator(Interface):
             path is stored in the ``filename`` attribute.
         """
 
-    def save(filename=None)
+    def save(filename=None):
         """ Save configuration settings to the file given, or to the
             file from which it was loaded, or to the default location.
         """

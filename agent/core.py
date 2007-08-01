@@ -22,18 +22,54 @@ The real agent stuff.
 $Id$
 """
 
+from time import time
 from zope.interface import implements
 from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
+from loops.agent.crawl import filesystem
 from loops.agent.schedule import Scheduler
+from loops.agent.transport import httpput
+
+
+crawlTypes = dict(
+        filesystem=filesystem.CrawlingJob,
+)
+
+transportTypes = dict(
+        httpput=httpput.Transporter,
+)
 
 
 class Agent(object):
 
     implements(IAgent)
 
-    def __init__(self):
+    crawlTypes = crawlTypes
+    transportTypes = transportTypes
+
+    def __init__(self, conf=None):
         config = self.config = Configurator('ui', 'crawl', 'transport')
-        config.load()
-        self.scheduler = Scheduler()
+        config.load(conf)
+        self.scheduler = Scheduler(self)
+
+    def scheduleJobsFromConfig(self):
+        config = self.config
+        scheduler = self.scheduler
+        for info in config.crawl:
+            crawlType = info.type
+            factory = self.crawlTypes.get(crawlType)
+            if factory is not None:
+                job = factory()
+                job.params = dict((name, value)
+                                    for name, value in info.items()
+                                    if name not in ('starttime',))
+                transportType = info.transport or 'httpput'
+                factory = self.transportTypes.get(transportType)
+                if factory is not None:
+                    transporter = factory()
+                    # TODO: configure transporter or - better -
+                    #       set up transporter(s) just once
+                    job.successors.append(transporter.jobFactory(transporter))
+                job.repeat = info.repeat or 0
+                self.scheduler.schedule(job, info.starttime or int(time()))
 

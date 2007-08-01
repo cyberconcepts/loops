@@ -34,7 +34,8 @@ class Scheduler(object):
 
     implements(IScheduler)
 
-    def __init__(self):
+    def __init__(self, agent):
+        self.agent = agent
         self.queue = {}
         self.logger = None
 
@@ -54,9 +55,9 @@ class Job(object):
 
     def __init__(self):
         self.startTime = 0
-        self.scheduler = None
         self.params = {}
         self.successors = []
+        self.repeat = 0
 
     def execute(self, **kw):
         d = Deferred()
@@ -76,7 +77,8 @@ class Job(object):
             job.run(**job.params)
         # TODO: remove from queue
         # TODO: logging
-        # TODO: reschedule if told by configuration
+        if self.repeat:
+            self.reschedule(int(time() + self.repeat))
 
     def copy(self):
         newJob = Job()
