@@ -47,14 +47,35 @@
             <div class="section">
                 <h3><a id="form-overview" name="form-overview">Overview</a></h3>
                 <ul class="simple">
-                <li><b>Mail Collection</b><div nevow:render="data" nevow:data="displayViewForm"/></li>
+                    <li><b>Mail Collection</b><div nevow:render="data" nevow:data="displayViewForm"/></li>
                 </ul>
+                <div nevow:render="systemMessage"/>
                 <div align="center">
-                <table border="0" cellpadding="10">
-                    <p nevow:render="displayOutlookMails">
-                        <tr nevow:pattern="OutlookMails" nevow:render="data"/>
-                    </p>
-                </table>
+                    <table class="listing">
+                        <thead>
+                            <tr>
+                                <th>
+                                    From
+                                </th>
+                                <th>
+                                    CC
+                                </th>
+                                <th>
+                                    Subject
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Source Folder
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <p nevow:render="displayOutlookMails">
+                            </p>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

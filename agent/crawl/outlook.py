@@ -12,7 +12,7 @@ import win32com.client
 from email.mime.multipart import MIMEMultipart
 
 # DEBUG FLAGS
-DEBUG = 1
+DEBUG = 0
 DEBUG_WRITELINE = 1
 
 # some constants
@@ -77,7 +77,7 @@ class MSOutlook:
                 msg['Subject'] = record['Subject'].encode('utf-8')
                 
                 # sender 
-                sender = str(record['SenderEmailAddress'].encode('utf-8'))
+                sender = str(record['SenderName'].encode('utf-8')) #SenderEmailAddress
                 msg['From'] = sender
                 
                 #recipients
@@ -135,7 +135,7 @@ class MSOutlook:
                         msg['Subject'] = record['Subject'].encode('utf-8')
                         
                         # sender
-                        sender == record['SenderEmailAddress'].encode('utf-8')
+                        sender == record['SenderName'].encode('utf-8') #SenderEmailAddress
                         msg['From'] = sender
                        
                         # recipients
@@ -157,7 +157,7 @@ class MSOutlook:
             # get Count-Attribute of _Folders class
             iInboxSubfoldersCount = getattr(lInboxSubfolders, 'Count')
             # the Item-Method of the _Folders class returns a MAPIFolder object
-            oFolder = lInboxSubfolders.Item(1)
+            oFolder = lInboxSubfolders.Item(0) #1
             
             print 'Count of Inbox-SubFolders:', iInboxSubfoldersCount
             print 'Inbox sub folders (Folder/Mails):'
@@ -183,15 +183,16 @@ if __name__ == '__main__':
         sys.exit(1)
 
     fieldsMail = ['Body',
-                    'BodyFormat',
                      'HTMLBody',
                      'CC',
-                     'SenderEmailAddress',
+                     'SenderName',
                      'Recipients',
                      'To',
                      'Attachments',
                      'Subject'
                      ]
+    #                    'BodyFormat',  removed BodyFormat temporarily because it is not available in Outlook.9 (Office2000)
+    #                     'SenderEmailAddress', replaced by SenderName
 
     if DEBUG:
         import time
@@ -199,6 +200,9 @@ if __name__ == '__main__':
         startTime = time.time()
    
     mails = oOutlook.loadInbox(fieldsMail)
+
+    for elem in mails:
+        print str(elem)
     
     if DEBUG_WRITELINE:
         print '***Back in main() with some emails in a list....***'
