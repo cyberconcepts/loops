@@ -35,6 +35,8 @@ We are now ready to schedule the job and let the reactor execute it.
   >>> scheduler.schedule(crawlJob, int(time()))
 
   >>> tester.iterate()
+  Metadata: {'path': '...data...file1.txt'}
   Transferring: Data from file1.txt
+  Metadata: {'path': '...data...subdir...file2.txt'}
   Transferring: Data from file2.txt
 

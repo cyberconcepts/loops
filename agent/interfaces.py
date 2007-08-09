@@ -124,7 +124,7 @@ class IMetadataSet(Interface):
             (nested metadata) this will be converted to XML as well.
         """
 
-    def setData(key, value):
+    def set(key, value):
         """ Set a metadata element.
 
             The value may be a string or another metadata set

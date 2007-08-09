@@ -49,4 +49,10 @@ class Metadata(object):
     def __init__(self, data=dict()):
         self.data = data
 
+    def asXml(self):
+        # TODO...
+        return ''
+
+    def set(self, key, value):
+        self.data['key'] = value
 

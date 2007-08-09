@@ -55,6 +55,8 @@ class Transporter(BaseTransporter):
             data.close()
         else:
             text = data
+        if metadata is not None:
+            print 'Metadata:', metadata.data
         print 'Transferring:', text
         return Deferred()
 

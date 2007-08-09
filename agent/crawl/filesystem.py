@@ -36,15 +36,14 @@ from loops.agent.crawl.base import Metadata
 class CrawlingJob(BaseCrawlingJob):
 
     def collect(self):
-        self.data = []
-        #deferred = reactor.deferToThread(self.crawlFilesystem, dataAvailable)
-        deferred = self.deferred = Deferred()
-        self.internalDeferred = coiterate(self.crawlFilesystem())
-        self.internalDeferred.addCallback(self.finished)
-        return deferred
+        self.collected = []
+        coiterate(self.crawlFilesystem()).addCallback(self.finished)
+        # TODO: addErrback()
+        self.deferred = Deferred()
+        return self.deferred
 
     def finished(self, result):
-        self.deferred.callback(self.data)
+        self.deferred.callback(self.collected)
 
     def crawlFilesystem(self):
         criteria = self.params
@@ -59,8 +58,11 @@ class CrawlingJob(BaseCrawlingJob):
                     mtime = datetime.fromtimestamp(
                                 os.stat(filename)[stat.ST_MTIME])
                     # TODO: check modification time
-                    self.data.append((FileResource(filename),
-                                      Metadata(dict())))
+                    meta = dict(
+                        path=filename,
+                    )
+                    self.collected.append((FileResource(filename),
+                                           Metadata(meta)))
                     yield None
 
 

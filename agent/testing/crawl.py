@@ -26,7 +26,7 @@ from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from zope.interface import implements
 
-from loops.agent.interfaces import ICrawlingJob, IResource, IMetadataSet
+from loops.agent.interfaces import ICrawlingJob, IResource
 from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
 
 
@@ -39,12 +39,7 @@ class CrawlingJob(BaseCrawlingJob):
         return deferred
 
     def dataAvailable(self):
-        self.deferred.callback([(DummyResource(), Metadata())])
-
-
-class Metadata(object):
-
-    implements(IMetadataSet)
+        self.deferred.callback([(DummyResource(), None)])
 
 
 class DummyResource(object):
