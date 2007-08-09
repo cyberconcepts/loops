@@ -23,4 +23,4 @@
 $Id$
 """
 
-from loops.base import Loops
+#from loops.base import Loops

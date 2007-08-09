@@ -35,7 +35,7 @@ ZCML setup):
   >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
   ...                           name='organize')
 
-  >>> from loops import Loops
+  >>> from loops.base import Loops
   >>> loopsRoot = site['loops'] = Loops()
   >>> loopsId = relations.getUniqueIdForObject(loopsRoot)
 

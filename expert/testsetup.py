@@ -16,7 +16,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.relation.registry import IndexableRelationAdapter
 from cybertools.typology.interfaces import IType
 
-from loops import Loops
+from loops.base import Loops
 from loops import util
 from loops.interfaces import IIndexAttributes
 from loops.concept import Concept

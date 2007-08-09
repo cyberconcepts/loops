@@ -10,14 +10,14 @@ Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-  
+
   >>> from zope import component, interface
   >>> from zope.app import zapi
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
-  
+
   >>> from cybertools.relation.interfaces import IRelationRegistry
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> relations = DummyRelationRegistry()
@@ -34,14 +34,14 @@ ZCML setup):
   >>> from loops.knowledge.setup import SetupManager
   >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
   ...                           name='knowledge')
-  
-  >>> from loops import Loops
+
+  >>> from loops.base import Loops
   >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.setup import SetupManager
   >>> setup = SetupManager(loopsRoot)
   >>> concepts, resources, views = setup.setup()
-  
+
 We need some type concepts for controlling the meaning of the concepts objects,
 these have already been created during setup:
 
@@ -77,7 +77,7 @@ the variables:
   >>> pySpecialsC = concepts['pySpecials'] = Concept(u'Python Specials')
 
   >>> topicConcepts = (progLangC, ooProgC, pythonC, pyBasicsC, pyOoC, pySpecialsC)
-  
+
   >>> for c in topicConcepts: c.conceptType = topic
 
   >>> progLang, ooProg, python, pyBasics, pyOo, pySpecials = (IKnowledgeElement(c)
@@ -160,7 +160,7 @@ For testing, we first have to provide the needed utilities and settings
   >>> from zope.app.security.principalregistry import PrincipalRegistry
   >>> auth = PrincipalRegistry()
   >>> component.provideUtility(auth, IAuthentication)
-      
+
   >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
   >>> from zope.app.principalannotation import PrincipalAnnotationUtility
   >>> principalAnnotations = PrincipalAnnotationUtility()

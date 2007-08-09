@@ -34,7 +34,7 @@ and care for some type adapter machinery:
 Now we can setup a simple loops site with its manager objects, using a
 loops setup manager:
 
-  >>> from loops import Loops
+  >>> from loops.base import Loops
   >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.setup import SetupManager

@@ -26,7 +26,7 @@ from zope.app import zapi
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
 from zope.formlib.form import FormFields
-from loops import Loops
+from loops.base import Loops
 from loops.interfaces import ILoops
 from loops.browser.common import AddForm, EditForm, BaseView
 from loops.setup import ISetupManager

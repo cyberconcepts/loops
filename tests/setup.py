@@ -24,7 +24,7 @@ from cybertools.relation.registry import IndexableRelationAdapter
 from cybertools.relation.registry import invalidateRelations, removeRelation
 from cybertools.typology.interfaces import IType
 
-from loops import Loops
+from loops.base import Loops
 from loops import util
 from loops.common import NameChooser
 from loops.interfaces import ILoopsObject, IIndexAttributes, IDocument, IFile

@@ -31,7 +31,7 @@ ZCML setup):
   >>> from loops.common import NameChooser
   >>> component.provideAdapter(NameChooser)
 
-  >>> from loops import Loops
+  >>> from loops.base import Loops
   >>> loopsRoot = site['loops'] = Loops()
 
   >>> from loops.setup import SetupManager

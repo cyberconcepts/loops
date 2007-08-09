@@ -2,14 +2,13 @@
 
 import unittest, doctest
 from zope.testing.doctestunit import DocFileSuite
-from zope.app.testing import ztapi
 from zope.interface.verify import verifyClass
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.intid.interfaces import IIntIds
 
 from loops.interfaces import ILoops
-from loops import Loops
+from loops.base import Loops
 from loops.interfaces import IConcept, IConceptManager
 from loops.interfaces import IDocument, IMediaAsset, IResourceManager
 from loops.interfaces import INode, IViewManager

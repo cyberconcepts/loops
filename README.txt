@@ -30,7 +30,7 @@ Concepts and Relations
 Let's start with creating a few example concepts, putting them in a
 top-level loops container and a concept manager:
 
-  >>> from loops import Loops
+  >>> from loops.base import Loops
   >>> from loops.tests.setup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
