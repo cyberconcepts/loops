@@ -52,7 +52,7 @@
   <interface interface=".interfaces.ILoops"
              type="zope.app.content.interfaces.IContentType" />
 
-  <class class="loops.Loops">
+  <class class="loops.base.Loops">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
