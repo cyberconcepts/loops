@@ -42,17 +42,18 @@ class CrawlingJob(Job):
         return self.collect()
 
 
-class Metadata(object):
+class Metadata(dict):
 
     implements(IMetadataSet)
 
     def __init__(self, data=dict()):
-        self.data = data
+        for k in data:
+            self[k] = data[k]
 
     def asXml(self):
         # TODO...
         return ''
 
     def set(self, key, value):
-        self.data['key'] = value
+        self['key'] = value
 

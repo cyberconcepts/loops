@@ -62,6 +62,7 @@ def test_suite():
                 #standard_unittest.makeSuite(Test),
                 doctest.DocFileSuite('README.txt', optionflags=flags),
                 doctest.DocFileSuite('crawl/filesystem.txt', optionflags=flags),
+                doctest.DocFileSuite('transport/httpput.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

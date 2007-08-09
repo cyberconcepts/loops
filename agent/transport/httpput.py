@@ -23,7 +23,7 @@ $Id$
 """
 
 from twisted.internet import reactor
-from twisted.internet.defer import Deferred
+from twisted.web.client import getPage
 from zope.interface import implements
 
 from loops.agent.interfaces import ITransporter, ITransportJob
@@ -38,13 +38,13 @@ class TransportJob(Job):
         super(TransportJob, self).__init__()
         self.transporter = transporter
 
-    def execute(self, **kw):
+    def execute(self):
         result = kw.get('result')
         if result is None:
             print 'No data available.'
         else:
-            for r in result:
-                d = self.transporter.transfer(r[0].data, r[1], str)
+            for resource, metadata in result:
+                d = self.transporter.transfer(resource.data, metadata)
         return Deferred()
 
 
@@ -62,15 +62,18 @@ class Transporter(object):
 
     def __init__(self, agent):
         self.agent = agent
-        config = agent.config
+        conf = agent.config
+        # TODO: get settings from conf
 
-    def transfer(self, resource, metadata=None, resourceType=file):
-        if resourceType is file:
-            data = resource.read()
+    def transfer(self, resource):
+        data = resource.data
+        if type(data) is file:
+            text = resource.read()
             resource.close()
-        elif resourceType is str:
-            data = resource
-        print 'Transferring:', data
-        return Deferred()
-
+        else:
+            text = data
+        metadata = resource.metadata
+        url = self.serverURL + self.makePath(metadata)
+        d = getPage(url, method='PUT', postData=text)
+        return d
 

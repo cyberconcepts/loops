@@ -40,8 +40,8 @@ class TransportJob(BaseJob):
         if result is None:
             print 'No data available.'
         else:
-            for res, meta in result:
-                d = self.transporter.transfer(res.data, meta)
+            for resource in result:
+                d = self.transporter.transfer(resource)
         return Deferred()
 
 
@@ -49,14 +49,16 @@ class Transporter(BaseTransporter):
 
     jobFactory = TransportJob
 
-    def transfer(self, data, metadata=None):
+    def transfer(self, resource):
+        data = resource.data
         if type(data) is file:
             text = data.read()
             data.close()
         else:
             text = data
+        metadata = resource.metadata
         if metadata is not None:
-            print 'Metadata:', metadata.data
+            print 'Metadata:', metadata
         print 'Transferring:', text
         return Deferred()
 

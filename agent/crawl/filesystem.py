@@ -22,7 +22,8 @@ Filesystem crawler.
 $Id$
 """
 
-import os, re, stat
+import os
+from fnmatch import filter
 from datetime import datetime
 from twisted.internet.defer import Deferred
 from twisted.internet.task import coiterate
@@ -46,32 +47,31 @@ class CrawlingJob(BaseCrawlingJob):
         self.deferred.callback(self.collected)
 
     def crawlFilesystem(self):
-        criteria = self.params
-        directory = criteria.get('directory')
-        pattern = re.compile(criteria.get('pattern') or '.*')
+        directory = self.params.get('directory')
+        pattern = self.params.get('pattern') or '*'
+        lastRun = self.params.get('lastrun') or datetime(1980, 1, 1)
         for path, dirs, files in os.walk(directory):
             if '.svn' in dirs:
                 del dirs[dirs.index('.svn')]
-            for f in files:
-                if pattern.match(f):
-                    filename = os.path.join(path, f)
-                    mtime = datetime.fromtimestamp(
-                                os.stat(filename)[stat.ST_MTIME])
-                    # TODO: check modification time
-                    meta = dict(
-                        path=filename,
-                    )
-                    self.collected.append((FileResource(filename),
-                                           Metadata(meta)))
-                    yield None
+            for f in filter(files, pattern):
+                filename = os.path.join(path, f)
+                mtime = datetime.fromtimestamp(os.path.getmtime(filename))
+                if mtime <= lastRun:  # file not changed
+                    continue
+                meta = dict(
+                    path=filename,
+                )
+                self.collected.append(FileResource(filename, Metadata(meta)))
+                yield None
 
 
 class FileResource(object):
 
     implements(IResource)
 
-    def __init__(self, path):
+    def __init__(self, path, metadata=None):
         self.path = path
+        self.metadata = metadata
 
     @property
     def data(self):

@@ -112,9 +112,12 @@ class IResource(Interface):
     data = Attribute("A string, file, or similar representation of the "
                      "resource's content")
 
+    metadata = Attribute('Information describing this resource; '
+                         'should be an IMetadataSet object.')
+
 
 class IMetadataSet(Interface):
-    """ Metadata associated with a resource.
+    """ Metadata associated with a resource; sort of a mapping.
     """
 
     def asXML():
@@ -145,11 +148,9 @@ class ITransporter(Interface):
     userName = Attribute('User name for logging in to the server.')
     password = Attribute('Password for logging in to the server.')
 
-    def transfer(resource, metadata=None):
-        """ Transfer the resource (typically just a file that may
-            be read) to the server.
-
-            The resource may be associated with a metadata set.
+    def transfer(resource):
+        """ Transfer the resource (an object providing IResource)
+            to the server.
         """
 
 

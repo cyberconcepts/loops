@@ -39,7 +39,7 @@ class CrawlingJob(BaseCrawlingJob):
         return deferred
 
     def dataAvailable(self):
-        self.deferred.callback([(DummyResource(), None)])
+        self.deferred.callback([DummyResource()])
 
 
 class DummyResource(object):
@@ -47,3 +47,4 @@ class DummyResource(object):
     implements(IResource)
 
     data = 'Dummy resource data for testing purposes.'
+    metadata = None

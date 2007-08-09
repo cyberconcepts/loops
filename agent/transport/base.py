@@ -48,9 +48,10 @@ class Transporter(object):
     def __init__(self, agent):
         self.agent = agent
 
-    def transfer(self, data, metadata=None):
+    def transfer(self, resource):
+        data = resource.data
         if type(data) is file:
-            data = text.read()
+            text = data.read()
             data.close()
         else:
             text = data

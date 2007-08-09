@@ -1,0 +1,15 @@
+======================================================
+loops.agent.transport.httpput - The HTTP PUT Transport
+======================================================
+
+  ($Id$)
+
+  >>> from time import time
+
+  >>> from loops.agent.core import Agent
+  >>> from loops.agent.transport.httpput import Transporter, TransportJob
+
+  >>> agent = Agent()
+  >>> transporter = Transporter(agent)
+  >>> job = TransportJob(transporter)
+
