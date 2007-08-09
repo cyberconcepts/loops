@@ -60,12 +60,12 @@ class IScheduledJob(Interface):
     """
 
     startTime = Attribute('Date/time at which the job should be executed.')
-    params = Attribute('Mapping with key/value pairs to be passed to the '
-                       'execute method call as keyword parameters.')
+    params = Attribute('Mapping with key/value pairs to be used by '
+                       'the ``execute()`` method.')
     successors = Attribute('Jobs to execute immediately after this '
                            'one has been finished.')
 
-    def execute(**kw):
+    def execute():
         """ Execute the job.
 
             Store log information about job execution in a log record.
@@ -94,7 +94,7 @@ class ICrawlingJob(IScheduledJob):
     predefinedMetadata = Attribute('A mapping with metadata to be used '
                                    'for all resources found.')
 
-    def collect(**criteria):
+    def collect():
         """ Return a deferred that upon callback will provide a
             collection of resource/metadata pairs that should be transferred
             to the server.
@@ -145,7 +145,7 @@ class ITransporter(Interface):
     userName = Attribute('User name for logging in to the server.')
     password = Attribute('Password for logging in to the server.')
 
-    def transfer(resource, metadata=None, resourceType=file):
+    def transfer(resource, metadata=None):
         """ Transfer the resource (typically just a file that may
             be read) to the server.
 

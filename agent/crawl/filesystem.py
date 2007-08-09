@@ -22,26 +22,32 @@ Filesystem crawler.
 $Id$
 """
 
-import os
-import re
-import stat
+import os, re, stat
+from datetime import datetime
 from twisted.internet.defer import Deferred
+from twisted.internet.task import coiterate
 from zope.interface import implements
 
-from loops.agent.interfaces import ICrawlingJob, IResource, IMetadataSet
+from loops.agent.interfaces import IResource
 from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
+from loops.agent.crawl.base import Metadata
 
 
 class CrawlingJob(BaseCrawlingJob):
 
-    def collect(self, **criteria):
-        deferred = reactor.deferToThread(self.crawlFilesystem, dataAvailable)
+    def collect(self):
+        self.data = []
+        #deferred = reactor.deferToThread(self.crawlFilesystem, dataAvailable)
+        deferred = self.deferred = Deferred()
+        self.internalDeferred = coiterate(self.crawlFilesystem())
+        self.internalDeferred.addCallback(self.finished)
         return deferred
 
-    def dataAvailable(self):
-        self.deferred.callback([(FileResource(), Metadata())])
+    def finished(self, result):
+        self.deferred.callback(self.data)
 
-    def crawlFilesystem(self, **criteria):
+    def crawlFilesystem(self):
+        criteria = self.params
         directory = criteria.get('directory')
         pattern = re.compile(criteria.get('pattern') or '.*')
         for path, dirs, files in os.walk(directory):
@@ -49,18 +55,23 @@ class CrawlingJob(BaseCrawlingJob):
                 del dirs[dirs.index('.svn')]
             for f in files:
                 if pattern.match(f):
-                    mtime = os.stat(os.path.join(path, f))[stat.ST_MTIME]
-                    yield (os.path.join(path[len(directory)+1:], f),
-                           datetime.fromtimestamp(mtime))
-
-
-class Metadata(object):
-
-    implements(IMetadataSet)
+                    filename = os.path.join(path, f)
+                    mtime = datetime.fromtimestamp(
+                                os.stat(filename)[stat.ST_MTIME])
+                    # TODO: check modification time
+                    self.data.append((FileResource(filename),
+                                      Metadata(dict())))
+                    yield None
 
 
 class FileResource(object):
 
     implements(IResource)
 
-    data = 'Dummy resource data for testing purposes.'
+    def __init__(self, path):
+        self.path = path
+
+    @property
+    def data(self):
+        return open(self.path, 'r')
+

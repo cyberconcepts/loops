@@ -28,45 +28,33 @@ from zope.interface import implements
 
 from loops.agent.interfaces import ITransportJob, ITransporter
 from loops.agent.schedule import Job
+from loops.agent.transport.base import TransportJob as BaseJob
+from loops.agent.transport.base import Transporter as BaseTransporter
 
 
-class TransportJob(Job):
+class TransportJob(BaseJob):
 
-    implements(ITransportJob)
-
-    def __init__(self, transporter):
-        super(TransportJob, self).__init__()
-        self.transporter = transporter
-
-    def execute(self, **kw):
+    def execute(self):
+        kw = self.params
         result = kw.get('result')
         if result is None:
             print 'No data available.'
         else:
-            for r in result:
-                d = self.transporter.transfer(r[0].data, r[1], str)
+            for res, meta in result:
+                d = self.transporter.transfer(res.data, meta)
         return Deferred()
 
 
-class Transporter(object):
-
-    implements(ITransporter)
+class Transporter(BaseTransporter):
 
     jobFactory = TransportJob
 
-    serverURL = None
-    method = None
-    machineName = None
-    userName = None
-    password = None
-
-    def transfer(self, resource, metadata=None, resourceType=file):
-        if resourceType is file:
-            data = resource.read()
-            resource.close()
-        elif resourceType is str:
-            data = resource
-        print 'Transferring:', data
+    def transfer(self, data, metadata=None):
+        if type(data) is file:
+            text = data.read()
+            data.close()
+        else:
+            text = data
+        print 'Transferring:', text
         return Deferred()
-
 

@@ -24,7 +24,7 @@ $Id$
 
 from zope.interface import implements
 
-from loops.agent.interfaces import ICrawlingJob
+from loops.agent.interfaces import ICrawlingJob, IMetadataSet
 from loops.agent.schedule import Job
 
 
@@ -32,10 +32,21 @@ class CrawlingJob(Job):
 
     implements(ICrawlingJob)
 
-    def __init__(self):
-        self.predefinedMetadata = {}
-        super(CrawlingJob, self).__init__()
+    baseProperties = ('starttime', 'type', 'repeat', 'transportType',)
 
-    def execute(self, **kw):
-        return self.collect(**kw)
+    def __init__(self, **params):
+        self.predefinedMetadata = {}
+        super(CrawlingJob, self).__init__(**params)
+
+    def execute(self):
+        return self.collect()
+
+
+class Metadata(object):
+
+    implements(IMetadataSet)
+
+    def __init__(self, data=dict()):
+        self.data = data
+
 

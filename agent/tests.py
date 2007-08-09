@@ -8,13 +8,16 @@
 
 import unittest as standard_unittest
 import doctest
-import time
+import os, time
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.trial import unittest
 
 from loops.agent.core import Agent
 from loops.agent.schedule import Job
+
+
+baseDir = os.path.dirname(__file__)
 
 
 class Tester(object):
@@ -58,6 +61,7 @@ def test_suite():
     return standard_unittest.TestSuite((
                 #standard_unittest.makeSuite(Test),
                 doctest.DocFileSuite('README.txt', optionflags=flags),
+                doctest.DocFileSuite('crawl/filesystem.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

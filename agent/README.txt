@@ -130,8 +130,8 @@ How does this work?
 
   >>> from loops.agent.schedule import Job
   >>> class TestJob(Job):
-  ...     def execute(self, **kw):
-  ...         d = super(TestJob, self).execute(**kw)
+  ...     def execute(self):
+  ...         d = super(TestJob, self).execute()
   ...         print 'executing'
   ...         return d
 
@@ -149,7 +149,7 @@ classes from the testing package.
   >>> from loops.agent.testing import transport
 
   >>> crawlJob = crawl.CrawlingJob()
-  >>> transporter = transport.Transporter()
+  >>> transporter = transport.Transporter(agent)
   >>> transportJob = transporter.jobFactory(transporter)
   >>> crawlJob.successors.append(transportJob)
   >>> scheduler.schedule(crawlJob, int(time()))
@@ -243,11 +243,12 @@ Transport
 
 Configuration
 
-- URL of the target loops site, e.g. http://z3.loops.cy55.de/bwp/d5
-- username, password for logging in to loops
-- machine name: name under which the client computer is know to the
-  loops server
-- Transfer method, e.g. PUT
+- ``transport.url``: URL of the target loops site, e.g.
+  "http://z3.loops.cy55.de/bwp/d5"
+- ``transport.user``, ``transport.password`` for logging in to loops
+- ``transport.machine: name under which the client computer is
+  known to the loops server
+- ``transport.method``, e.g. "put"
 
 The following information is intended for the default transfer
 protocol/method HTTP PUT but probably also pertains to other protocols
@@ -257,9 +258,9 @@ Format/Information structure
 ----------------------------
 
 - Metadata URL (for storing or accessing metadata sets - optional, see below):
-  ``$loopsSiteURL/resource_meta/$machine_name/$service/$path.xml``
+  ``$loopsSiteURL/resource_meta/$machine_name/$user/$service/$path.xml``
 - Resource URL (for storing or accessing the real resources):
-  ``$loopsSiteURL/resource_data/$machine_name/$service/$path``
+  ``$loopsSiteURL/resource_data/$machine_name//$user/$service/$path``
 - ``$service`` names the crawler service, e.g. "filesystem" or "outlook"
 - ``$path`` represents the full path, possibly with drive specification in front
   (for filesystem resources on Windows), with special characters URL-escaped

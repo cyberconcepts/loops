@@ -43,7 +43,7 @@ class Scheduler(object):
         job.startTime = startTime
         job.scheduler = self
         self.queue[startTime] = job
-        reactor.callLater(startTime-int(time()), job.run, **job.params)
+        reactor.callLater(startTime-int(time()), job.run)
 
     def getJobsToExecute(startTime=None):
         return [j for j in self.queue.values() if (startTime or 0) <= j.startTime]
@@ -53,21 +53,21 @@ class Job(object):
 
     implements(IScheduledJob)
 
-    def __init__(self):
+    def __init__(self, **params):
         self.startTime = 0
-        self.params = {}
+        self.params = params
         self.successors = []
         self.repeat = 0
 
-    def execute(self, **kw):
+    def execute(self):
         d = Deferred()
         return d
 
     def reschedule(self, startTime):
         self.scheduler.schedule(self.copy(), startTime)
 
-    def run(self, **kw):
-        d = self.execute(**kw)
+    def run(self):
+        d = self.execute()
         d.addCallback(self.finishRun)
         # TODO: logging
 
@@ -75,7 +75,7 @@ class Job(object):
         # run successors
         for job in self.successors:
             job.params['result'] = result
-            job.run(**job.params)
+            job.run()
         # remove from queue
         del self.scheduler.queue[self.startTime]
         # TODO: logging

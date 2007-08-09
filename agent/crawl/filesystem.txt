@@ -4,14 +4,37 @@ loops.agent.crawl.filesystem - The Filesystem Crawler
 
   ($Id$)
 
-  >>> from loops.agent.tests import tester
-  >>> from loops.agent.core import Agent
+  >>> import os
+  >>> from time import time
 
-  >>> agent = Agent()
+  >>> from loops.agent.tests import tester, baseDir
+  >>> from loops.agent.core import Agent
   >>> from loops.agent.crawl.filesystem import CrawlingJob
 
-  >>> from time import time
+  >>> agent = Agent()
   >>> scheduler = agent.scheduler
-  >>> scheduler.schedule(CrawlingJob(), int(time()))
+
+We create a crawling job that should scan the data subdirectory
+of the testing directory in the loops.agent package.
+
+  >>> dirname = os.path.join(baseDir, 'testing', 'data')
+  >>> crawlJob = CrawlingJob(directory=dirname)
+
+The result of the crawling process should be transferred using
+the dummy transporter from the testing package; this just prints
+an informative message with the contents of the files to be
+transferred.
+
+  >>> from loops.agent.testing import transport
+  >>> transporter = transport.Transporter(agent)
+  >>> transportJob = transporter.jobFactory(transporter)
+  >>> crawlJob.successors.append(transportJob)
+
+We are now ready to schedule the job and let the reactor execute it.
+
+  >>> scheduler.schedule(crawlJob, int(time()))
 
   >>> tester.iterate()
+  Transferring: Data from file1.txt
+  Transferring: Data from file2.txt
+
