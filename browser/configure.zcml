@@ -102,7 +102,7 @@
       />
 
   <addMenuItem
-      class="loops.Loops"
+      class="loops.base.Loops"
       title="loops Container"
       description="A top-level loops container"
       permission="zope.ManageContent"
