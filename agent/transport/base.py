@@ -24,6 +24,7 @@ $Id$
 
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred, DeferredList, fail
+from twisted.web.client import getPage
 from zope.interface import implements
 
 from loops.agent.interfaces import ITransporter, ITransportJob
@@ -61,11 +62,11 @@ class Transporter(object):
 
     jobFactory = TransportJob
 
-    serverURL = None
-    method = None
-    machineName = None
-    userName = None
-    password = None
+    serverURL = 'http://localhost:8080'
+    method = 'PUT'
+    machineName = 'unknown'
+    userName = 'nobody'
+    password = 'secret'
 
     def __init__(self, agent):
         self.agent = agent
@@ -76,10 +77,12 @@ class Transporter(object):
     def transfer(self, resource):
         data = resource.data
         if type(data) is file:
-            text = resource.read()
-            resource.close()
+            text = data.read()
+            data.close()
         else:
             text = data
+        # TODO: encode text
+        # TODO: set headers, esp Content-Type
         path = resource.path
         app = resource.application
         deferreds = []
@@ -87,13 +90,16 @@ class Transporter(object):
         if metadata is not None:
             url = self.makePath('meta', app, path, 'xml')
             deferreds.append(
-                    getPage(url, method=self.method, postData=metadata.asXML()))
+                    getPage(url, method=self.method, postdata=metadata.asXML()))
         url = self.makePath('data', app, path)
-        deferreds.append(getPage(url, method=self.method, postData=text))
+        deferreds.append(getPage(url, method=self.method, postdata=text))
         return DeferredList(deferreds)
 
     def makePath(self, infoType, app, path, extension=None):
-        fullPath = '/'.join((self.serverURL, infoType, app, path))
+        if path.startswith('/'):
+            path = path[1:]
+        fullPath = '/'.join((self.serverURL, infoType,
+                             self.machineName, self.userName, app, path))
         if extension:
             fullPath += '.' + extension
         return fullPath

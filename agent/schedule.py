@@ -96,3 +96,10 @@ class Job(object):
         newJob.params = self.params
         newJob.successors = [s.copy() for s in self.successors]
 
+
+class Stopper(Job):
+
+    def execute(self):
+        reactor.stop()
+        return succeed('Agent stopped.')
+

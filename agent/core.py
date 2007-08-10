@@ -27,7 +27,7 @@ from zope.interface import implements
 from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
 from loops.agent.crawl import filesystem
-from loops.agent.schedule import Scheduler
+from loops.agent.schedule import Scheduler, Stopper
 from loops.agent.transport import httpput
 
 
@@ -51,6 +51,8 @@ class Agent(object):
         config = self.config = Configurator('ui', 'crawl', 'transport')
         config.load(conf)
         self.scheduler = Scheduler(self)
+        self.stopper = Stopper()
+        self.stopper.scheduler = self.scheduler
 
     def scheduleJobsFromConfig(self):
         config = self.config

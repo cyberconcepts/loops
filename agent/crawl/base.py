@@ -50,7 +50,7 @@ class Metadata(dict):
         for k in data:
             self[k] = data[k]
 
-    def asXml(self):
+    def asXML(self):
         # TODO...
         return ''
 
