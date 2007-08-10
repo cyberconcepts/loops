@@ -32,7 +32,7 @@ transferred.
 
 We are now ready to schedule the job and let the reactor execute it.
 
-  >>> scheduler.schedule(crawlJob, int(time()))
+  >>> scheduler.schedule(crawlJob)
 
   >>> tester.iterate()
   Metadata: {'path': '...data...file1.txt'}

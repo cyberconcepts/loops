@@ -39,9 +39,12 @@ class Scheduler(object):
         self.queue = {}
         self.logger = None
 
-    def schedule(self, job, startTime):
+    def schedule(self, job, startTime=None):
+        if startTime is None:
+            startTime = int(time())
         job.startTime = startTime
         job.scheduler = self
+        # TODO: find a better key to identify jobs
         self.queue[startTime] = job
         reactor.callLater(startTime-int(time()), job.run)
 
@@ -53,6 +56,8 @@ class Job(object):
 
     implements(IScheduledJob)
 
+    scheduler = None
+
     def __init__(self, **params):
         self.startTime = 0
         self.params = params
@@ -60,6 +65,8 @@ class Job(object):
         self.repeat = 0
 
     def execute(self):
+        """ Must be overridden by subclass.
+        """
         d = Deferred()
         return d
 
@@ -72,12 +79,13 @@ class Job(object):
         # TODO: logging
 
     def finishRun(self, result):
+        # remove from queue
+        del self.scheduler.queue[self.startTime]
         # run successors
         for job in self.successors:
             job.params['result'] = result
-            job.run()
-        # remove from queue
-        del self.scheduler.queue[self.startTime]
+            #job.run()
+            self.scheduler.schedule(job)
         # TODO: logging
         # reschedule if necessary
         if self.repeat:

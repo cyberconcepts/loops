@@ -23,7 +23,7 @@ $Id$
 """
 
 from twisted.internet import reactor
-from twisted.internet.defer import Deferred
+from twisted.internet.defer import succeed
 from zope.interface import implements
 
 from loops.agent.interfaces import ITransportJob, ITransporter
@@ -43,5 +43,5 @@ class Transporter(BaseTransporter):
         if metadata is not None:
             print 'Metadata:', metadata
         print 'Transferring:', text
-        return Deferred()
+        return succeed('OK')
 
