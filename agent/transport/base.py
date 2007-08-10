@@ -85,13 +85,16 @@ class Transporter(object):
         deferreds = []
         metadata = resource.metadata
         if metadata is not None:
-            url = self.makePath('meta', app, path)
+            url = self.makePath('meta', app, path, 'xml')
             deferreds.append(
                     getPage(url, method=self.method, postData=metadata.asXML()))
         url = self.makePath('data', app, path)
         deferreds.append(getPage(url, method=self.method, postData=text))
         return DeferredList(deferreds)
 
-    def makePath(self, infoType, app, path):
-        return '/'.join((self.serverURL, infoType, app, path))
+    def makePath(self, infoType, app, path, extension=None):
+        fullPath = '/'.join((self.serverURL, infoType, app, path))
+        if extension:
+            fullPath += '.' + extension
+        return fullPath
 

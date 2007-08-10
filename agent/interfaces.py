@@ -117,7 +117,7 @@ class IResource(Interface):
                      'uniquely identifying the resource on the client '
                      'machine for the current user.')
     application = Attribute('The name of the application that provided '
-                            'the resource.')
+                            'the resource, e.g. "filesystem" or "mail".')
     metadata = Attribute('Information describing this resource; '
                          'should be an IMetadataSet object.')
 

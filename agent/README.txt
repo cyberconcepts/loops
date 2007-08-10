@@ -258,10 +258,11 @@ Format/Information structure
 ----------------------------
 
 - Metadata URL (for storing or accessing metadata sets - optional, see below):
-  ``$loopsSiteURL/resource_meta/$machine_name/$user/$service/$path.xml``
+  ``$loopsSiteURL/resource_meta/$machine_name/$user/$app/$path.xml``
 - Resource URL (for storing or accessing the real resources):
-  ``$loopsSiteURL/resource_data/$machine_name//$user/$service/$path``
-- ``$service`` names the crawler service, e.g. "filesystem" or "outlook"
+  ``$loopsSiteURL/resource_data/$machine_name//$user/$app/$path``
+- ``$app`` names the type of application providing the resource, e.g.
+  "filesystem" or "mail"
 - ``$path`` represents the full path, possibly with drive specification in front
   (for filesystem resources on Windows), with special characters URL-escaped
 
