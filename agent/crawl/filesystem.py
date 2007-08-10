@@ -73,6 +73,8 @@ class FileResource(object):
         self.path = path
         self.metadata = metadata
 
+    application = 'filesystem'
+
     @property
     def data(self):
         return open(self.path, 'r')

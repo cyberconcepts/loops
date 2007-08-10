@@ -27,7 +27,7 @@ transferred.
 
   >>> from loops.agent.testing import transport
   >>> transporter = transport.Transporter(agent)
-  >>> transportJob = transporter.jobFactory(transporter)
+  >>> transportJob = transporter.createJob()
   >>> crawlJob.successors.append(transportJob)
 
 We are now ready to schedule the job and let the reactor execute it.

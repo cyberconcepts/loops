@@ -30,7 +30,9 @@ class IAgent(Interface):
         and transfers these to its server.
     """
 
-    scheduler = Attribute('IScheduler instance')
+    scheduler = Attribute('IScheduler instance.')
+    transporter = Attribute('The transporter to be used for transferring '
+                            'objects.')
 
 
 class IScheduler(Interface):
@@ -111,13 +113,17 @@ class IResource(Interface):
 
     data = Attribute("A string, file, or similar representation of the "
                      "resource's content")
-
+    path = Attribute('A filesystem path or some other information '
+                     'uniquely identifying the resource on the client '
+                     'machine for the current user.')
+    application = Attribute('The name of the application that provided '
+                            'the resource.')
     metadata = Attribute('Information describing this resource; '
                          'should be an IMetadataSet object.')
 
 
 class IMetadataSet(Interface):
-    """ Metadata associated with a resource; sort of a mapping.
+    """ Metadata associated with a resource; a mapping.
     """
 
     def asXML():
@@ -148,9 +154,13 @@ class ITransporter(Interface):
     userName = Attribute('User name for logging in to the server.')
     password = Attribute('Password for logging in to the server.')
 
+    def createJob():
+        """ Return a transport job for this transporter.
+        """
+
     def transfer(resource):
         """ Transfer the resource (an object providing IResource)
-            to the server.
+            to the server and return a Deferred.
         """
 
 
@@ -184,6 +194,8 @@ class IConfigurator(Interface):
             file from which it was loaded, or to the default location.
         """
 
+
+# future extensions
 
 class IPackageManager(Interface):
     """ Allows to install, update, or remove software packages (plugins,

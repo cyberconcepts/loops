@@ -26,7 +26,7 @@ from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from zope.interface import implements
 
-from loops.agent.interfaces import ICrawlingJob, IResource
+from loops.agent.interfaces import IResource
 from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
 
 
@@ -47,4 +47,6 @@ class DummyResource(object):
     implements(IResource)
 
     data = 'Dummy resource data for testing purposes.'
+    path = '/dummy/data'
+    application = 'dummy'
     metadata = None

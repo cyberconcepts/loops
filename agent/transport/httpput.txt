@@ -7,9 +7,9 @@ loops.agent.transport.httpput - The HTTP PUT Transport
   >>> from time import time
 
   >>> from loops.agent.core import Agent
-  >>> from loops.agent.transport.httpput import Transporter, TransportJob
+  >>> from loops.agent.transport.base import Transporter
 
   >>> agent = Agent()
   >>> transporter = Transporter(agent)
-  >>> job = TransportJob(transporter)
+  >>> job = transporter.createJob()
 

@@ -23,7 +23,7 @@ $Id$
 """
 
 from twisted.internet import reactor
-from twisted.internet.defer import Deferred
+from twisted.internet.defer import Deferred, DeferredList, fail
 from zope.interface import implements
 
 from loops.agent.interfaces import ITransporter, ITransportJob
@@ -38,6 +38,22 @@ class TransportJob(Job):
         super(TransportJob, self).__init__()
         self.transporter = transporter
 
+    def execute(self):
+        result = self.params.get('result')
+        if result is None:
+            return fail('No data available.')
+        transfers = []
+        for resource in result:
+            d = self.transporter.transfer(resource)
+            transfers.append(d)
+            d.addCallback(self.logTransfer)
+        return DeferredList(transfers)
+
+    def logTransfer(self, result):
+        # TODO: logging
+        # self.transporter.agent.logger.log(...)
+        pass
+
 
 class Transporter(object):
 
@@ -45,21 +61,37 @@ class Transporter(object):
 
     jobFactory = TransportJob
 
+    serverURL = None
+    method = None
+    machineName = None
+    userName = None
+    password = None
+
     def __init__(self, agent):
         self.agent = agent
 
+    def createJob(self):
+        return self.jobFactory(self)
+
     def transfer(self, resource):
-        """ Should be overridden by subclass - this is just an example
-            how it may look like.
-        """
         data = resource.data
         if type(data) is file:
-            text = data.read()
-            data.close()
+            text = resource.read()
+            resource.close()
         else:
             text = data
+        path = resource.path
+        app = resource.application
+        deferreds = []
         metadata = resource.metadata
-        d = Deferred()  # or call something that returns a deferred
-        return d
+        if metadata is not None:
+            url = self.makePath('meta', app, path)
+            deferreds.append(
+                    getPage(url, method=self.method, postData=metadata.asXML()))
+        url = self.makePath('data', app, path)
+        deferreds.append(getPage(url, method=self.method, postData=text))
+        return DeferredList(deferreds)
 
+    def makePath(self, infoType, app, path):
+        return '/'.join((self.serverURL, infoType, app, path))
 

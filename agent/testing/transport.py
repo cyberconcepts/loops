@@ -27,27 +27,10 @@ from twisted.internet.defer import Deferred
 from zope.interface import implements
 
 from loops.agent.interfaces import ITransportJob, ITransporter
-from loops.agent.schedule import Job
-from loops.agent.transport.base import TransportJob as BaseJob
 from loops.agent.transport.base import Transporter as BaseTransporter
 
 
-class TransportJob(BaseJob):
-
-    def execute(self):
-        kw = self.params
-        result = kw.get('result')
-        if result is None:
-            print 'No data available.'
-        else:
-            for resource in result:
-                d = self.transporter.transfer(resource)
-        return Deferred()
-
-
 class Transporter(BaseTransporter):
-
-    jobFactory = TransportJob
 
     def transfer(self, resource):
         data = resource.data
