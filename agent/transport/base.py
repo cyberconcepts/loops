@@ -49,12 +49,17 @@ class Transporter(object):
         self.agent = agent
 
     def transfer(self, resource):
+        """ Should be overridden by subclass - this is just an example
+            how it may look like.
+        """
         data = resource.data
         if type(data) is file:
             text = data.read()
             data.close()
         else:
             text = data
-        return Deferred()
+        metadata = resource.metadata
+        d = Deferred()  # or call something that returns a deferred
+        return d
 
 
