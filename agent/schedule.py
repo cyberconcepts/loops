@@ -24,7 +24,7 @@ $Id$
 
 from time import time
 from twisted.internet import reactor
-from twisted.internet.defer import Deferred
+from twisted.internet.defer import Deferred, succeed
 from zope.interface import implements
 
 from loops.agent.interfaces import IScheduler, IScheduledJob
@@ -44,7 +44,8 @@ class Scheduler(object):
             startTime = int(time())
         job.startTime = startTime
         job.scheduler = self
-        # TODO: find a better key to identify jobs
+        while startTime in self.queue:
+            startTime += 1
         self.queue[startTime] = job
         reactor.callLater(startTime-int(time()), job.run)
 
@@ -67,8 +68,7 @@ class Job(object):
     def execute(self):
         """ Must be overridden by subclass.
         """
-        d = Deferred()
-        return d
+        return succeed('OK')
 
     def reschedule(self, startTime):
         self.scheduler.schedule(self.copy(), startTime)

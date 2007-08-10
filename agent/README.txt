@@ -137,7 +137,7 @@ How does this work?
 
   >>> from time import time
   >>> scheduler = agent.scheduler
-  >>> scheduler.schedule(TestJob(), int(time()))
+  >>> scheduler.schedule(TestJob())
 
   >>> tester.iterate()
   executing
@@ -150,9 +150,9 @@ classes from the testing package.
 
   >>> crawlJob = crawl.CrawlingJob()
   >>> transporter = transport.Transporter(agent)
-  >>> transportJob = transporter.jobFactory(transporter)
+  >>> transportJob = transporter.createJob()
   >>> crawlJob.successors.append(transportJob)
-  >>> scheduler.schedule(crawlJob, int(time()))
+  >>> scheduler.schedule(crawlJob)
 
   >>> tester.iterate()
   Transferring: Dummy resource data for testing purposes.
@@ -166,7 +166,7 @@ Let's start with a fresh agent, directly supplying the configuration
   >>> config = '''
   ... crawl[0].type = 'dummy'
   ... crawl[0].directory = '~/documents'
-  ... crawl[0].pattern = '.*\.doc'
+  ... crawl[0].pattern = '*.doc'
   ... crawl[0].starttime = %s
   ... crawl[0].transport = 'dummy'
   ... crawl[0].repeat = 0
