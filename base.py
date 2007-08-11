@@ -74,3 +74,10 @@ class Loops(Folder):
         prefix = loopsPrefix + '/'
         if uri.startswith(prefix):
             return traverse(self, uri[len(prefix):])
+
+
+# backward compatibility for old loops sites that got their Loops object
+# directly from loops/__init__.py
+import loops
+loops.Loops = Loops
+
