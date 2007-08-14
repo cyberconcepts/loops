@@ -135,7 +135,6 @@ How does this work?
   ...         print 'executing'
   ...         return d
 
-  >>> from time import time
   >>> scheduler = agent.scheduler
   >>> startTime = scheduler.schedule(TestJob())
 
