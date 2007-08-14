@@ -59,6 +59,9 @@ class Job(object):
 
     scheduler = None
 
+    whenStarted = lambda self: None
+    whenFinished = lambda self, result: None
+
     def __init__(self, **params):
         self.startTime = 0
         self.params = params
@@ -76,6 +79,7 @@ class Job(object):
     def run(self):
         d = self.execute()
         d.addCallback(self.finishRun)
+        self.whenStarted()
         # TODO: logging
 
     def finishRun(self, result):
@@ -86,6 +90,7 @@ class Job(object):
             job.params['result'] = result
             #job.run()
             self.scheduler.schedule(job)
+        self.whenFinished(result)
         # TODO: logging
         # reschedule if necessary
         if self.repeat:

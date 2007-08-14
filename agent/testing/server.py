@@ -33,8 +33,7 @@ from twisted.web import http
 class RequestHandler(http.Request):
 
     def process(self):
-        print '***', self.uri
-        print '***', self.content.read()
+        print '***', repr(self.content.read())
         if self.method in ('GET', 'POST'):
             self.write('<h1>Hello World</h1>')
             self.write('<p>dir(self): %s</p>' % dir(self))

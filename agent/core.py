@@ -28,7 +28,7 @@ from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
 from loops.agent.crawl import filesystem
 from loops.agent.schedule import Scheduler, Stopper
-from loops.agent.transport import httpput
+from loops.agent.transport import base
 
 
 crawlTypes = dict(
@@ -36,7 +36,7 @@ crawlTypes = dict(
 )
 
 transportTypes = dict(
-        httpput=httpput.Transporter,
+        httpput=base.Transporter,
 )
 
 

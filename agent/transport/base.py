@@ -81,8 +81,8 @@ class Transporter(object):
             data.close()
         else:
             text = data
-        # TODO: encode text
-        # TODO: set headers, esp Content-Type
+        # TODO: encode text (?)
+        # TODO: set headers: Content-Type, Authorization, User-Agent
         path = resource.path
         app = resource.application
         deferreds = []

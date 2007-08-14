@@ -64,8 +64,15 @@ class IScheduledJob(Interface):
     startTime = Attribute('Date/time at which the job should be executed.')
     params = Attribute('Mapping with key/value pairs to be used by '
                        'the ``execute()`` method.')
+    repeat = Attribute('Number of seconds after which the job should be '
+                       'rescheduled. Do not repeat if 0.')
     successors = Attribute('Jobs to execute immediately after this '
-                           'one has been finished.')
+                       'one has been finished.')
+    whenStarted = Attribute('A callable with no arguments that will '
+                       'be called when the job has started.')
+    whenfinished = Attribute('A callable with one argument, the '
+                       'result of running the job, that will be called when '
+                       'the job has finished.')
 
     def execute():
         """ Execute the job.
