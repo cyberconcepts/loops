@@ -22,6 +22,40 @@ Log information management.
 $Id$
 """
 
+import time
 from zope.interface import implements
+
 from loops.agent.interfaces import ILogger, ILogRecord
+
+
+class LogRecord(object):
+
+    implements(ILogRecord)
+
+    format = None
+    timeFormat = '%Y-%m-%dT%H:%S'
+
+    def __init__(self, data):
+        self.data = data
+        self.timeStamp = time.time()
+
+    def __str__(self):
+        msg = [str(time.strftime(self.timeFormat, time.localtime(self.timeStamp)))]
+        for k in sorted(self.data):
+            msg.append('%s:%s' % (str(k), str(self.data[k])))
+        return ' '.join(msg)
+
+
+class Logger(list):
+
+    implements(ILogger)
+
+    recordFactory = LogRecord
+
+    def __init__(self, agent, externalLoggers=[]):
+        self.agent = agent
+        self.externalLoggers = externalLoggers
+
+    def log(self, data):
+        self.append(self.recordFactory(data))
 

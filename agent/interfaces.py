@@ -92,13 +92,29 @@ class IScheduledJob(Interface):
 
 
 class ILogger(Interface):
-    """ Collection of log records.
+    """ Ordered collection (list) of log records.
     """
+
+    externalLoggers = Attribute('A collection of logger objects '
+                    'to which the logging records should be written.')
+
+    def log(data):
+        """ Record the information given by the ``data`` argument
+            (a mapping).
+        """
 
 
 class ILogRecord(Interface):
     """
     """
+
+    format = Attribute('An optional format string for rendering the '
+                    'recorded information.')
+
+    def __str__():
+        """ Return a string representation suitable for writing on a
+            log file.
+        """
 
 
 class ICrawlingJob(IScheduledJob):

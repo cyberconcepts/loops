@@ -307,6 +307,11 @@ Configuration
 - log format(s)
 - log file(s) (or other forms of persistence)
 
+  >>> logger = agent.logger
+  >>> logger.log(dict(object='job', event='start'))
+  >>> print logger[-1]
+  20... event:start object:job
+
 
 Software Loader
 ===============

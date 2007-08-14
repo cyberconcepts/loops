@@ -27,6 +27,7 @@ from zope.interface import implements
 from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
 from loops.agent.crawl import filesystem
+from loops.agent.log import Logger
 from loops.agent.schedule import Scheduler, Stopper
 from loops.agent.transport import base
 
@@ -48,11 +49,12 @@ class Agent(object):
     transportTypes = transportTypes
 
     def __init__(self, conf=None):
-        config = self.config = Configurator('ui', 'crawl', 'transport')
+        config = self.config = Configurator('ui', 'crawl', 'transport', 'logger')
         config.load(conf)
         self.scheduler = Scheduler(self)
         self.stopper = Stopper()
         self.stopper.scheduler = self.scheduler
+        self.logger = Logger(self)
 
     def scheduleJobsFromConfig(self):
         config = self.config
@@ -71,7 +73,7 @@ class Agent(object):
                     transporter = factory(self)
                     # TODO: configure transporter or - better -
                     #       set up transporter(s) just once
-                    job.successors.append(transporter.jobFactory(transporter))
+                    job.successors.append(transporter.createJob())
                 job.repeat = info.repeat or 0
                 self.scheduler.schedule(job, info.starttime or int(time()))
                 # TODO: remove job from config

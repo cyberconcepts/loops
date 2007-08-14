@@ -50,8 +50,8 @@ class Scheduler(object):
         reactor.callLater(startTime-int(time()), job.run)
         return startTime
 
-    def getJobsToExecute(startTime=None):
-        return [j for j in self.queue.values() if (startTime or 0) <= j.startTime]
+    def getJobsToExecute(startTime=0):
+        return [j for j in self.queue.values() if startTime <= j.startTime]
 
 
 class Job(object):
