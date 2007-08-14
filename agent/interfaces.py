@@ -43,9 +43,14 @@ class IScheduler(Interface):
     logger = Attribute('Logger instance to be used for recording '
                        'job execution and execution results.')
 
-    def schedule(job, startTime):
+    def schedule(job, startTime=None):
         """ Register the job given for execution at the intended start
-            date/time and return the job.
+            date/time (an integer timestamp) and return the job.
+
+            If the start time is not given schedulethe job for immediate
+            start. Return the start time with which the job has been
+            scheduled - this may be different from the start time
+            supplied.
         """
 
     def getJobsToExecute(startTime=None):

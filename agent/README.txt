@@ -129,6 +129,7 @@ How does this work?
 -------------------
 
   >>> from time import time
+
   >>> from loops.agent.schedule import Job
   >>> class TestJob(Job):
   ...     def execute(self):
@@ -137,6 +138,10 @@ How does this work?
   ...         return d
 
   >>> scheduler = agent.scheduler
+
+The ``schedule()`` method accepts the start time as a second argument,
+if not present use the current time, i.e. start the job immediately.
+
   >>> startTime = scheduler.schedule(TestJob())
 
   >>> tester.iterate()
