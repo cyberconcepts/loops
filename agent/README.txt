@@ -128,6 +128,7 @@ Configuration (per job)
 How does this work?
 -------------------
 
+  >>> from time import time
   >>> from loops.agent.schedule import Job
   >>> class TestJob(Job):
   ...     def execute(self):
