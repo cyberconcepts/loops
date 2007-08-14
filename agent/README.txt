@@ -137,7 +137,7 @@ How does this work?
 
   >>> from time import time
   >>> scheduler = agent.scheduler
-  >>> scheduler.schedule(TestJob())
+  >>> startTime = scheduler.schedule(TestJob())
 
   >>> tester.iterate()
   executing
@@ -152,9 +152,19 @@ classes from the testing package.
   >>> transporter = transport.Transporter(agent)
   >>> transportJob = transporter.createJob()
   >>> crawlJob.successors.append(transportJob)
-  >>> scheduler.schedule(crawlJob)
+  >>> startTime = scheduler.schedule(crawlJob)
+
+The Job class offers two callback hooks: ``whenStarted`` and ``whenFinished``.
+Use this for getting notified about the starting and finishing of a job.
+
+  >>> def finishedCB(job, result):
+  ...     print 'Crawling finished, result:', result
+  >>> crawlJob.whenFinished = finishedCB
+
+Now let the reactor run...
 
   >>> tester.iterate()
+  Crawling finished, result: [<loops.agent.testing.crawl.DummyResource ...>]
   Transferring: Dummy resource data for testing purposes.
 
 Using configuration with scheduling
@@ -215,6 +225,9 @@ Configuration (per crawl job)
 Metadata sources
 
 - path, filename
+
+Implementation and documentation: see loops/agent/crawl/filesystem.py
+and .../filesystem.txt.
 
 E-Mail-Clients
 --------------

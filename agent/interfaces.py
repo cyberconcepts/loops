@@ -68,9 +68,9 @@ class IScheduledJob(Interface):
                        'rescheduled. Do not repeat if 0.')
     successors = Attribute('Jobs to execute immediately after this '
                        'one has been finished.')
-    whenStarted = Attribute('A callable with no arguments that will '
+    whenStarted = Attribute('A callable with one argument (the job) that will '
                        'be called when the job has started.')
-    whenfinished = Attribute('A callable with one argument, the '
+    whenfinished = Attribute('A callable with two arguments, the job and the '
                        'result of running the job, that will be called when '
                        'the job has finished.')
 

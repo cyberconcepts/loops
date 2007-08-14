@@ -12,7 +12,7 @@ loops.agent.crawl.filesystem - The Filesystem Crawler
   >>> from loops.agent.crawl.filesystem import CrawlingJob
 
   >>> agent = Agent()
-  >>> scheduler = agent.scheduler
+  >>> startTime = scheduler = agent.scheduler
 
 We create a crawling job that should scan the data subdirectory
 of the testing directory in the loops.agent package.
@@ -32,7 +32,7 @@ transferred.
 
 We are now ready to schedule the job and let the reactor execute it.
 
-  >>> scheduler.schedule(crawlJob)
+  >>> startTime = scheduler.schedule(crawlJob)
 
   >>> tester.iterate()
   Metadata: {'path': '...data...file1.txt'}
