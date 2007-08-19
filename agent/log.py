@@ -22,6 +22,8 @@ Log information management.
 $Id$
 """
 
+import logging
+import sys
 import time
 from zope.interface import implements
 
@@ -32,15 +34,15 @@ class LogRecord(object):
 
     implements(ILogRecord)
 
-    format = None
-    timeFormat = '%Y-%m-%dT%H:%S'
+    datefmt = '%Y-%m-%dT%H:%S'
 
-    def __init__(self, data):
+    def __init__(self, logger, data):
+        self.logger = logger
         self.data = data
         self.timeStamp = time.time()
 
     def __str__(self):
-        msg = [str(time.strftime(self.timeFormat, time.localtime(self.timeStamp)))]
+        msg = [str(time.strftime(self.datefmt, time.localtime(self.timeStamp)))]
         for k in sorted(self.data):
             msg.append('%s:%s' % (str(k), str(self.data[k])))
         return ' '.join(msg)
@@ -52,10 +54,23 @@ class Logger(list):
 
     recordFactory = LogRecord
 
-    def __init__(self, agent, externalLoggers=[]):
+
+    def __init__(self, agent):
         self.agent = agent
-        self.externalLoggers = externalLoggers
+        self.setup()
+
+    def setup(self):
+        self.externalLoggers = []
+        conf = self.agent.config.logging
+        if conf.standard:
+            logger = logging.getLogger()
+            logger.level = conf.standard
+            logger.addHandler(logging.StreamHandler(sys.stdout))
+            self.externalLoggers.append(logger)
 
     def log(self, data):
-        self.append(self.recordFactory(data))
+        record = self.recordFactory(self, data)
+        self.append(record)
+        for logger in self.externalLoggers:
+            logger.info(str(record))
 

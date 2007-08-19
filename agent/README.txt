@@ -307,8 +307,26 @@ Configuration
 - log format(s)
 - log file(s) (or other forms of persistence)
 
+Example
+-------
+
+We set the logging configuration to log level 20 (INFO) using the
+standard log handler that prints to ``sys.stdout``.
+
+  >>> agent.config.logging.standard = 20
   >>> logger = agent.logger
+  >>> logger.setup()
+
+The we can log an event providing a dictionary with the data to be logged.
+
   >>> logger.log(dict(object='job', event='start'))
+  20... event:start object:job
+
+We can also look at the logging records collected in the logger.
+
+  >>> len(logger)
+  1
+
   >>> print logger[-1]
   20... event:start object:job
 

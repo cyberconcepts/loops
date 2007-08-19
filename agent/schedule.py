@@ -37,7 +37,10 @@ class Scheduler(object):
     def __init__(self, agent):
         self.agent = agent
         self.queue = {}
-        self.logger = None
+
+    @property
+    def logger(self):
+        return self.agent.logger()
 
     def schedule(self, job, startTime=None):
         if startTime is None:

@@ -49,7 +49,7 @@ class Agent(object):
     transportTypes = transportTypes
 
     def __init__(self, conf=None):
-        config = self.config = Configurator('ui', 'crawl', 'transport', 'logger')
+        config = self.config = Configurator('ui', 'crawl', 'transport', 'logging')
         config.load(conf)
         self.scheduler = Scheduler(self)
         self.stopper = Stopper()

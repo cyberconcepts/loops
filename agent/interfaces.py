@@ -98,6 +98,10 @@ class ILogger(Interface):
     externalLoggers = Attribute('A collection of logger objects '
                     'to which the logging records should be written.')
 
+    def setup():
+        """ Initialize the logger with the current configuration settings.
+        """
+
     def log(data):
         """ Record the information given by the ``data`` argument
             (a mapping).
@@ -107,9 +111,6 @@ class ILogger(Interface):
 class ILogRecord(Interface):
     """
     """
-
-    format = Attribute('An optional format string for rendering the '
-                    'recorded information.')
 
     def __str__():
         """ Return a string representation suitable for writing on a
@@ -126,7 +127,7 @@ class ICrawlingJob(IScheduledJob):
 
     def collect():
         """ Return a deferred that upon callback will provide a
-            collection of resource/metadata pairs that should be transferred
+            collection of resource objects that should be transferred
             to the server.
 
             Use the selection criteria given to filter the resources that
