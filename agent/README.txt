@@ -48,8 +48,8 @@ This already provides all needed sections (transport, crawl, ui), so
 we can directly put information into these sections by loading a
 string with the corresponding assignment.
 
-  >>> config.load('transport.url = "http://loops.cy55.de"')
-  >>> config.transport.url
+  >>> config.load('transport.serverURL = "http://loops.cy55.de"')
+  >>> config.transport.serverURL
   'http://loops.cy55.de'
 
 This setting may also contain indexed access; thus we can model
@@ -76,11 +76,11 @@ it with a default if not found, in one statement.
 
   >>> config.ui.web.setdefault('port', 8080)
   8081
-  >>> config.transport.setdefault('user', 'loops')
+  >>> config.transport.setdefault('userName', 'loops')
   'loops'
 
   >>> sorted(config.transport.items())
-  [('url', 'http://loops.cy55.de'), ('user', 'loops')]
+  [('serverURL', 'http://loops.cy55.de'), ('userName', 'loops')]
 
 We can output a configuration in a form that is ready for loading
 just by converting it to a string representation.
@@ -88,8 +88,8 @@ just by converting it to a string representation.
   >>> print config
   crawl[0].directory = 'documents/projects'
   crawl[0].type = 'filesystem'
-  transport.url = 'http://loops.cy55.de'
-  transport.user = 'loops'
+  transport.serverURL = 'http://loops.cy55.de'
+  transport.userName = 'loops'
   ui.web.port = 8081
 
 The configuration may also be saved to a file -
@@ -108,8 +108,8 @@ for storage; normally it would be stored in the users home directory.
   >>> print open(fn).read()
   crawl[0].directory = 'documents/projects'
   crawl[0].type = 'filesystem'
-  transport.url = 'http://loops.cy55.de'
-  transport.user = 'loops'
+  transport.serverURL = 'http://loops.cy55.de'
+  transport.userName = 'loops'
   ui.web.port = 8081
 
 Cleaning up up...
@@ -185,7 +185,7 @@ Let's start with a fresh agent, directly supplying the configuration
   ... crawl[0].starttime = %s
   ... crawl[0].transport = 'dummy'
   ... crawl[0].repeat = 0
-  ... transport.url = 'http://loops.cy55.de'
+  ... transport.serverURL = 'http://loops.cy55.de'
   ... ''' % int(time())
 
   >>> agent = core.Agent(config)
@@ -261,12 +261,12 @@ Transport
 
 Configuration
 
-- ``transport.url``: URL of the target loops site, e.g.
+- ``transport.serverURL``: URL of the target loops site, e.g.
   "http://z3.loops.cy55.de/bwp/d5"
-- ``transport.user``, ``transport.password`` for logging in to loops
-- ``transport.machine: name under which the client computer is
+- ``transport.userName``, ``transport.password`` for logging in to loops
+- ``transport.machineName: name under which the client computer is
   known to the loops server
-- ``transport.method``, e.g. "put"
+- ``transport.method``, e.g. "PUT"
 
 The following information is intended for the default transfer
 protocol/method HTTP PUT but probably also pertains to other protocols

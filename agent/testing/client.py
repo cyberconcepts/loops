@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 #
 #  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
@@ -27,6 +28,7 @@ $Id$
 """
 
 import os
+import sys
 from time import time
 from twisted.internet import reactor
 
@@ -35,19 +37,14 @@ from loops.agent.crawl.filesystem import CrawlingJob
 from loops.agent.transport.base import Transporter
 from loops.agent.tests import baseDir
 
-agent = Agent()
-scheduler = agent.scheduler
+if len(sys.argv) > 1:
+    cfgName = sys.argv[1]
+else:
+    cfgName = os.path.join(baseDir, 'testing', 'testing.cfg')
+cfg = open(cfgName)
 
-dirname = os.path.join(baseDir, 'testing', 'data')
-crawlJob = CrawlingJob(directory=dirname)
-
-transporter = Transporter(agent)
-transporter.serverURL = 'http://localhost:8123/loops'
-transportJob = transporter.createJob()
-crawlJob.successors.append(transportJob)
-transportJob.successors.append(agent.stopper)
-
-scheduler.schedule(crawlJob)
+agent = Agent(cfg.read())
+agent.scheduleJobsFromConfig(stop=True)
 
 print 'Starting reactor.'
 

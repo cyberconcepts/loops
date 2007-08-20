@@ -16,18 +16,28 @@
              set_schema="loops.integrator.interfaces.IExternalCollection" />
   </zope:class>
 
+  <zope:class class="loops.integrator.put.DummyWriteFile">
+    <allow attributes="write" />
+  </zope:class>
+
   <zope:utility
       factory="loops.integrator.collection.DirectoryCollectionProvider" />
 
   <!-- view(s) -->
 
   <zope:adapter
-      name="collection.html"
-      for="loops.interfaces.IConcept
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.integrator.browser.ExternalCollectionView"
-      permission="zope.View"
-      />
+        name="collection.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.integrator.browser.ExternalCollectionView"
+        permission="zope.View" />
+
+  <zope:adapter
+        for="loops.interfaces.IResourceManager
+             zope.publisher.interfaces.http.IHTTPRequest"
+        factory="loops.integrator.put.ResourceManagerTraverser"
+        provides="zope.publisher.interfaces.IPublishTraverse"
+        permission="zope.Public" />
 
 </configure>

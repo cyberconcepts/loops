@@ -48,12 +48,16 @@ class TransportJob(Job):
             d = self.transporter.transfer(resource)
             transfers.append(d)
             d.addCallback(self.logTransfer)
+            d.addErrback(self.logError)
         return DeferredList(transfers)
 
-    def logTransfer(self, result):
+    def logTransfer(self, result, err=None):
         # TODO: logging
         # self.transporter.agent.logger.log(...)
         pass
+
+    def logError(self, error):
+        print '*** error on transfer', self.transporter.serverURL, error
 
 
 class Transporter(object):
@@ -68,8 +72,10 @@ class Transporter(object):
     userName = 'nobody'
     password = 'secret'
 
-    def __init__(self, agent):
+    def __init__(self, agent, **params):
         self.agent = agent
+        for k, v in params.items():
+            setattr(self, k ,v)
 
     def createJob(self):
         return self.jobFactory(self)
@@ -88,17 +94,20 @@ class Transporter(object):
         deferreds = []
         metadata = resource.metadata
         if metadata is not None:
-            url = self.makePath('meta', app, path, 'xml')
+            url = self.makePath('.meta', app, path, 'xml')
             deferreds.append(
                     getPage(url, method=self.method, postdata=metadata.asXML()))
-        url = self.makePath('data', app, path)
+        url = self.makePath('.data', app, path)
         deferreds.append(getPage(url, method=self.method, postdata=text))
-        return DeferredList(deferreds)
+        return DeferredList(deferreds, fireOnOneErrback=True)
 
     def makePath(self, infoType, app, path, extension=None):
         if path.startswith('/'):
             path = path[1:]
-        fullPath = '/'.join((self.serverURL, infoType,
+        url = self.serverURL
+        if url.endswith('/'):
+            url = url[:-1]
+        fullPath = '/'.join((url, infoType,
                              self.machineName, self.userName, app, path))
         if extension:
             fullPath += '.' + extension

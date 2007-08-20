@@ -56,21 +56,23 @@ class Agent(object):
         self.stopper.scheduler = self.scheduler
         self.logger = Logger(self)
 
-    def scheduleJobsFromConfig(self):
+    def scheduleJobsFromConfig(self, stop=False):
         config = self.config
         scheduler = self.scheduler
+        lastJob = None
         for idx, info in enumerate(config.crawl):
             crawlType = info.type
             factory = self.crawlTypes.get(crawlType)
             if factory is not None:
-                job = factory()
+                job = lastJob = factory()
                 job.params = dict((name, value)
                                 for name, value in info.items()
                                 if name not in job.baseProperties)
                 transportType = info.transport or 'httpput'
                 factory = self.transportTypes.get(transportType)
                 if factory is not None:
-                    transporter = factory(self)
+                    params = dict(config.transport.items())
+                    transporter = factory(self, **params)
                     # TODO: configure transporter or - better -
                     #       set up transporter(s) just once
                     job.successors.append(transporter.createJob())
@@ -79,4 +81,10 @@ class Agent(object):
                 # TODO: remove job from config
                 # TODO: put repeating info in config
                 # TODO: remember last run for repeating job
+        if stop:
+            if lastJob is not None:
+                lastTrJob = lastJob.successors[-1]
+                lastTrJob.successors.append(self.stopper)
+            else:
+                self.scheduler.schedule(self.stopper)
 

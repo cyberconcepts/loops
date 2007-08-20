@@ -136,6 +136,28 @@ But if one of the referenced objects is not found any more it will be deleted.
   ('fullpath', {'subdirectory': '...zope'}, 'zope3.txt')
 
 
+Uploading Resources with HTTP PUT Requests
+==========================================
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> from loops.integrator.put import ResourceManagerTraverser
+
+  >>> rrinfo = 'local/user/filesystem'
+  >>> rrpath = 'testing/data/file1.txt'
+  >>> rrid = '/'.join((rrinfo, rrpath))
+
+  >>> baseUrl = 'http://127.0.0.1/loops/resources'
+  >>> url = '/'.join((baseUrl, '.data', rrid))
+
+  >>> request = TestRequest(url)
+  >>> request.method = 'PUT'
+  >>> request._traversal_stack = list(reversed(rrid.split('/')))
+
+  >>> traverser = ResourceManagerTraverser(resources, request)
+  >>> traverser.publishTraverse(request, '.data')
+  *** resources.PUT .data testing,data,file1.txt local user filesystem
+  <...DummyWriteFile object ...>
+
 Fin de partie
 =============
 

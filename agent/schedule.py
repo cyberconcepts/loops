@@ -83,6 +83,7 @@ class Job(object):
     def run(self):
         d = self.execute()
         d.addCallback(self.finishRun)
+        d.addErrback(self.logError)
         self.whenStarted(self)
         # TODO: logging
 
@@ -99,6 +100,9 @@ class Job(object):
         # reschedule if necessary
         if self.repeat:
             self.reschedule(int(time() + self.repeat))
+
+    def logError(self, error):
+        print '*** error on running job:', error
 
     def copy(self):
         newJob = Job()
