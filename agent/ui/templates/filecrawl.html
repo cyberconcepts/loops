@@ -38,56 +38,57 @@
             <div class="line"><br /></div>
             </div>
             <div class="section">
-            <h3><a id="agent-ui-startpage" name="agent-ui-startpage">Agent: Create Mail Crawl Job</a></h3>
+            <h3><a id="agent-ui-startpage" name="agent-ui-startpage">Agent: Create Filesystem Crawler Job</a></h3>
 
             <ul class="simple">
-            <li>Configuration page for Outlook Mail Crawler jobs.</li>
+            <li>Configuration page for Filesystem Crawler Jobs</li>
             </ul>
             </div>
             <div class="section">
                 <h3><a id="form-overview" name="form-overview">Overview</a></h3>
                 <ul class="simple">
-                <li><b>Mail Collection</b><div nevow:render="data" nevow:data="displayViewForm"/></li>
+                <li><b>File Collection</b><div nevow:render="data" nevow:data="displayViewForm"/></li>
                 </ul>
                 <div align="center">
                 <table border="0" cellpadding="10">
-                    <p nevow:render="displayOutlookMails">
-                        <tr nevow:pattern="OutlookMails" nevow:render="data"/>
+                    <p nevow:render="displayFiles">
+                        <tr nevow:pattern="CollectedFiles" nevow:render="data"/>
                     </p>
                 </table>
-                <form name="OutlookCrawlForm" action="submitOutlookCrawlJob" method="POST">
+                <form name="FileCrawlForm" action="submitFilesystemCrawlJob" method="POST">
                     <fieldset>
                         <legend>
-                            Mail Crawl Settings
+                            Filesystem Crawl Settings
                         </legend>
                         <fieldset>
-                            <legend>Folders to crawl</legend>
+                            <legend>Directories to crawl</legend>
                             <table align="center">
                                 <tr>
                                     <td>
-                                        <label for="lblCrawlInbox">Crawl inbox</label>
+                                        <label for="lblRecursiveDirs">Directories to crawl <b>recursively</b></label>
+                                        <p>
+                                            <i>please use ';' as delimiters</i>
+                                        </p>
+                                        <p>
+                                            <i>you can also use patterns like regular expressions </i>
+                                        </p>
                                     </td>
                                     <td>
-                                        <input id="lblCrawlInbox" name="inbox" type="checkbox"
-                                         value="inbox"/><!-- outlook job param //-->
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="lblCrawlSubfolders">Crawl subfolders</label>
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" id="lblCrawlSubfolders" name="subfolders"
-                                         value = "subfolders"/><!-- outlook job param //-->
+                                        <textarea name="rec_directories" id="lblRecursiveDirs" rows="10" cols="40"></textarea>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label for="lblSubFolderPattern">Pattern for subfolders to include</label>
+                                        <label for="lblDirs">Directories to crawl non-recursively</label>
+                                        <p>
+                                            <i>please use ';' as delimiters</i>
+                                        </p>
+                                        <p>
+                                            <i>you can also use patterns like regular expressions </i>
+                                        </p>
                                     </td>
                                     <td>
-                                    <input type="text" maxlength="20" size="16" id="lblSubFolderPattern"
-                                     name="pattern"/><!-- outlook job param //-->
+                                        <textarea name="rec_directories" id="lblDirs" rows="10" cols="40"></textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -99,55 +100,85 @@
                             <table align="center">
                                 <tr>
                                     <td>
-                                        <label for="lblselectFilterCriteria">Filter criteria: </label>
+                                        <label for="lblApplyFileSize">Apply size criteria : </label>
                                     </td>
                                     <td>
-                                        <select id="lblselectFilterCriteria" name="selectFilterCriteria">
-                                            <option>sender</option>
-                                            <option>receiver</option>
-                                            <option>subject</option>
+                                        <input id="lblApplyFileSize" name="applyFileSize" type="checkbox"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="lblFileSizeLimit">Collect files that are : </label>
+                                    </td>
+                                    <td>
+                                        <select id="lblFileSizeLimit" name="selectFileSizeLimit">
+                                            <option>greater</option>
+                                            <option>less</option>
+                                            <option>equal</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label for="lblfilterPattern">Pattern: </label>
+                                        <label for="lblFileSize">than (kByte): </label>
                                     </td>
                                     <td>
-                                        <input id="lblfilterPattern" name="filterPattern"
+                                        <input id="lblFileSize" name="fileSize"
                                          type="text" size="12" maxlength="20" />
                                     </td>
                                 </tr>
-                            </table>
-                        </fieldset>
-                        <fieldset>
-                            <legend>
-                                Message parts to be stored
-                            </legend>
-                            <table align="center">
                                 <tr>
                                     <td>
-                                        <label for="lblselectContentFormat">Transfer HTML or Plain Text: </label>
+                                        <label for="lblMaximumSize">Maximum file size: </label>
+                                        <p>
+                                            <i>no size means that transferred files might be very large!</i>
+                                        </p>
                                     </td>
                                     <td>
-                                        <select id="lblselectContentFormat" name="selectContentFormat">
-                                            <option>text</option>
-                                            <option>html</option>
-                                            <option>both</option>
+                                        <input id="lblMaximumSize" name="maximumSize"
+                                         type="text" size="12" maxlength="20" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="lblApplyDateCriteria">Apply date criteria: </label>
+                                    </td>
+                                    <td>
+                                        <input id="lblApplyDateCriteria" name="applyDateCriteria" type="checkbox"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="lblDateCriteria">Collect files that are: </label>
+                                    </td>
+                                    <td>
+                                        <select id="lblDateCriteria" name="selectDateCriteria">
+                                            <option>created</option>
+                                            <option>modified</option>
+                                            <option>accessed</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label for="lblselectAttachements">Include attachements: </label>
+                                        <label for="lblTimestampCompare"></label>
                                     </td>
                                     <td>
-                                        <select id="lblselectAttachements" name="selectAttachements">
-                                            <option>Yes</option>
-                                            <option>No</option>
+                                        <select id="lblTimestampCompare" name="selectTimeStampCompare">
+                                            <option>before</option>
+                                            <option>after</option>
+                                            <option>exactly on</option>
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <label for="lblTimeStamp">Collect files that are : </label>
+                                    </td>
+                                    <td>
+                                        <input id="lblTimeStamp" name="selectDateCriteria" type="text" size="20"/>
+                                    </td>
+                               </tr>
                             </table>
                         </fieldset>
                         <fieldset>

@@ -9,146 +9,107 @@ Tobias Schmid   26.07.2007
 """
 
 import win32com.client
+import re
 from email.mime.multipart import MIMEMultipart
 
+from twisted.internet.defer import Deferred
+from twisted.internet.task import coiterate
+from zope.interface import implements
+
+from loops.agent.interfaces import IResource
+from loops.agent.crawl.base import CrawlingJob as BaseCrawlingJob
+from loops.agent.crawl.base import Metadata
+
+
 # DEBUG FLAGS
-DEBUG = 0
+DEBUG = 1
 DEBUG_WRITELINE = 1
 
 # some constants
 COMMASPACE = ', '
 
 
-class MSOutlook:
-    def __init__(self):
-        self.outlookFound = 0
+class CrawlingJob(BaseCrawlingJob):
+
+    keys = ""
+    inbox = ""
+    subfolders = ""
+    pattern = ""
+
+    def collect(self):
+        self.collected = []
+        coiterate(self.crawlOutlook()).addCallback(self.finished)
+        # TODO: addErrback()
+        self.deferred = Deferred()
+        return self.deferred
+
+    def finished(self, result):
+        self.deferred.callback(self.collected)
+
+    def crawlOutlook(self):
+        outlookFound = 0
         try:
-            self.oOutlookApp = \
+            oOutlookApp = \
                 win32com.client.gencache.EnsureDispatch("Outlook.Application")
-            self.outlookFound = 1
+            outlookFound = 1
         except:
             print "MSOutlook: unable to load Outlook"
         
-        self.records = []
-        self.mailList = []
-              
-                         
-    def loadInbox(self, keys=None, subfolders=False):
-        if not self.outlookFound:
+        records = []
+        
+        if not outlookFound:
             return
+        
+        # fetch the params
+        criteria = self.params
+        self.keys = criteria.get('keys') 
+        self.inbox = criteria.get('inbox') #boolean 
+        self.subfolders = criteria.get('subfolders') #boolean
+        self.pattern = criteria.get('pattern')
+        if self.pattern != '':
+            self.pattern = re.compile(criteria.get('pattern') or '.*')
+        else:
+            self.pattern = None
+        
         
         if DEBUG_WRITELINE:
             print 'MSOutlook.loadInbox() ===> starting'
 
-        # this should use more try/except blocks or nested blocks
-        onMAPI = self.oOutlookApp.GetNamespace("MAPI")
+        # catch Inbox folder
+        onMAPI = oOutlookApp.GetNamespace("MAPI")
         ofInbox = \
             onMAPI.GetDefaultFolder(win32com.client.constants.olFolderInbox)
 
         # fetch the mails of the inbox folder
         if DEBUG_WRITELINE:
             print 'MSOutlook.loadInbox() ===> fetch mails of inbox folder'
-            
-        for om in range(len(ofInbox.Items)):
-            mail = ofInbox.Items.Item(om + 1)
-            if mail.Class == win32com.client.constants.olMail:
-                if keys is None:
-                    # if we were't give a set of keys to use
-                    # then build up a list of keys that we will be
-                    # able to process
-                    # I didn't include fields of type time, though
-                    # those could probably be interpreted
-                    keys = []
-                    for key in mail._prop_map_get_:
-                        if isinstance(getattr(mail, key), (int, str, unicode)):
-                            keys.append(key)
-                    if DEBUG:
-                        keys.sort()
-                        print 'Fields\n======================================'
-                        for key in keys:
-                            print key
-                record = {}
-                for key in keys:
-                    record[key] = getattr(mail, key)
-                    
-                # Create the container (outer) email message.
-                msg = MIMEMultipart()
-                # subject
-                msg['Subject'] = record['Subject'].encode('utf-8')
-                
-                # sender 
-                sender = str(record['SenderName'].encode('utf-8')) #SenderEmailAddress
-                msg['From'] = sender
-                
-                #recipients
-                recipients = []
-                for rec in range(record['Recipients'].__len__()):
-                    recipients.append(getattr(record['Recipients'].Item(rec+1), 'Address'))
-                msg['To'] = COMMASPACE.join(recipients)
-                
-                # message
-                msg.preamble = record['Body'].encode('utf-8')
-                
-                # add the email message to the list
-                self.mailList.append(msg)
-                self.records.append(record)
- 
-                    
-        """
-        * Fetch the mails of the inbox subfolders
-        """
-        if subfolders:
+        
+        # fetch mails from inbox  
+        if self.inbox:
+            self.loadEmail(ofInbox)                 
+                        
+        # fetch mails of inbox subfolders 
+        if self.subfolders and self.pattern is None:
             
             if DEBUG_WRITELINE:
                 print 'MSOutlook.loadInbox() ===> fetch emails of subfolders'
             
             lInboxSubfolders = getattr(ofInbox, 'Folders') 
             for of in range(lInboxSubfolders.__len__()):
-                # get a MAPI-folder object
-                oFolder = lInboxSubfolders.Item(of + 1)
-                # get items of the folder
-                folderItems = getattr(oFolder, 'Items')
-                for item in range(len(folderItems)):
-                    mail = folderItems.Item(item+1)
-                    if mail.Class == win32com.client.constants.olMail:
-                        if keys is None:
-                            keys = []
-                            for key in mail._prop_map_get_:
-                                if isinstance(getattr(mail, key), (int, str, unicode)):
-                                    keys.append(key)
-                            
-                            if DEBUG:
-                                keys.sort()
-                                print 'Fiels\n======================================='
-                                for key in keys:
-                                    print key
-                                    
-                        record = {}
-                        for key in keys:
-                            record[key] = getattr(mail, key)
-                        if DEBUG:
-                            print of
-                    
-                        # Create the container (outer) email message.
-                        msg = MIMEMultipart()
-                        # subject
-                        msg['Subject'] = record['Subject'].encode('utf-8')
-                        
-                        # sender
-                        sender == record['SenderName'].encode('utf-8') #SenderEmailAddress
-                        msg['From'] = sender
-                       
-                        # recipients
-                        for rec in range(record['Recipients'].__len__()):
-                            recipients.append(getattr(record['Recipients'].Item(rec+1), 'Address'))
-                        msg['To'] = COMMASPACE.join(recipients)
-                        
-                        # message
-                        msg.preamble = record['Body'].encode('utf-8')
-                        
-                        # add the email message to the list
-                        self.mailList.append(msg)
-                        self.records.append(record)
+                # get a MAPI-folder object and load its emails
+                self.loadEmail(lInboxSubfolders.Item(of + 1))
+        
+        # pattern, just read the specified subfolder             
+        elif self.subfolders and self.pattern:
+             
+            if DEBUG_WRITELINE:
+                print 'MSOutlook.loadInbox() ===> fetch emails of specified subfolder'            
+            lInboxSubfolders = getattr(ofInbox, 'Folders') 
+            for of in range(lInboxSubfolders.__len__()):
+                # get a MAPI-folder object and load its emails
+                if self.pattern.match(getattr(lInboxSubfolders.Item(of + 1), 'Name')):
+                    self.loadEmail(lInboxSubfolders.Item(of + 1)) #oFolder
+                
                 
         if DEBUG:
             print 'number of mails in Inbox:', len(ofInbox.Items)
@@ -157,7 +118,7 @@ class MSOutlook:
             # get Count-Attribute of _Folders class
             iInboxSubfoldersCount = getattr(lInboxSubfolders, 'Count')
             # the Item-Method of the _Folders class returns a MAPIFolder object
-            oFolder = lInboxSubfolders.Item(0) #1
+            oFolder = lInboxSubfolders.Item(1)
             
             print 'Count of Inbox-SubFolders:', iInboxSubfoldersCount
             print 'Inbox sub folders (Folder/Mails):'
@@ -168,45 +129,78 @@ class MSOutlook:
             
         if DEBUG_WRITELINE:
             print 'MSOutlook.loadInbox() ===> ending'
+        yield '1'
+    
+    
+    def loadEmail(self, oFolder):
+        # get items of the folder
+        folderItems = getattr(oFolder, 'Items')
+        for item in range(len(folderItems)):
+            mail = folderItems.Item(item+1)
+            if mail.Class == win32com.client.constants.olMail:
+                if self.keys is None:
+                    self.keys = []
+                    for key in mail._prop_map_get_:
+                        if isinstance(getattr(mail, key), (int, str, unicode)):
+                            self.keys.append(key)
+                    
+                    if DEBUG:
+                        self.keys.sort()
+                        print 'Fiels\n======================================='
+                        for key in self.keys:
+                            print key
+                            
+                record = {}
+                for key in self.keys:
+                    record[key] = getattr(mail, key)
+                if DEBUG:
+                    print str(item)
             
-        return self.mailList
- 
-       
+                # Create the mime email object
+                msg = self.createEmailMime(record)
+                
+                # list with mime objects
+                self.collected.append((OutlookResource(msg)))
+     
+     
+    def createEmailMime(self, emails):
+        # Create the container (outer) email message.
+        msg = MIMEMultipart()
+        # subject
+        msg['Subject'] = emails['Subject'].encode('utf-8')
+                
+        # sender
+        if emails.has_key('SenderEmailAddress'):
+            sender = str(emails['SenderEmailAddress'].encode('utf-8'))
+        else:
+            sender = str(emails['SenderName'].encode('utf-8'))            
+        msg['From'] = sender
+                
+        #recipients
+        recipients = []
 
-if __name__ == '__main__':
-    if DEBUG:
-        print 'attempting to load Outlook'
-    oOutlook = MSOutlook()
-    # delayed check for Outlook on win32 box
-    if not oOutlook.outlookFound:
-        print 'Outlook not found'
-        sys.exit(1)
+        if emails.has_key('Recipients'):
+            for rec in range(emails['Recipients'].__len__()):
+                recipients.append(getattr(emails['Recipients'].Item(rec+1), 'Address'))
+                msg['To'] = COMMASPACE.join(recipients)
+        else:
+            recipients.append(emails['To'])
+            msg['To'] = COMMASPACE.join(recipients)           
+               
+        # message
+        msg.preamble = emails['Body'].encode('utf-8')
+        
+        return msg
+                     
+        
+class OutlookResource(object):
 
-    fieldsMail = ['Body',
-                     'HTMLBody',
-                     'CC',
-                     'SenderName',
-                     'Recipients',
-                     'To',
-                     'Attachments',
-                     'Subject'
-                     ]
-    #                    'BodyFormat',  removed BodyFormat temporarily because it is not available in Outlook.9 (Office2000)
-    #                     'SenderEmailAddress', replaced by SenderName
+    implements(IResource)
 
-    if DEBUG:
-        import time
-        print 'loading records...'
-        startTime = time.time()
-   
-    mails = oOutlook.loadInbox(fieldsMail)
+    def __init__(self, oEmail):
+        self.oEmail = oEmail
 
-    for elem in mails:
-        print str(elem)
+    @property
+    def data(self):
+        return self.oEmail   
     
-    if DEBUG_WRITELINE:
-        print '***Back in main() with some emails in a list....***'
-        print 'Mails fetched from MSOutlook inbox folder:', mails.__len__()
-    
-    if DEBUG:
-        print 'loading took %f seconds' % (time.time() - startTime)

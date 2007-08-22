@@ -23,6 +23,7 @@ $Id$
 """
 
 from time import time
+import tempfile
 from zope.interface import implements
 from loops.agent.interfaces import IAgent
 from loops.agent.config import Configurator
@@ -55,6 +56,7 @@ class Agent(object):
         self.stopper = Stopper()
         self.stopper.scheduler = self.scheduler
         self.logger = Logger(self)
+        self.tempdir = tempfile.mkdtemp(prefix='loops_')
 
     def scheduleJobsFromConfig(self, stop=False):
         config = self.config
