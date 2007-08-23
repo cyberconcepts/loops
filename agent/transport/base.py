@@ -22,6 +22,7 @@ Transporter base classes.
 $Id$
 """
 
+from base64 import b64encode
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred, DeferredList, fail
 from twisted.web.client import getPage
@@ -93,12 +94,15 @@ class Transporter(object):
         app = resource.application
         deferreds = []
         metadata = resource.metadata
+        auth = b64encode(':'.join((self.userName, self.password)))
+        headers = {'Authorization': 'Basic ' + auth}
         if metadata is not None:
             url = self.makePath('.meta', app, path, 'xml')
-            deferreds.append(
-                    getPage(url, method=self.method, postdata=metadata.asXML()))
+            deferreds.append(getPage(url, method=self.method, headers=headers,
+                                     postdata=metadata.asXML()))
         url = self.makePath('.data', app, path)
-        deferreds.append(getPage(url, method=self.method, postdata=text))
+        deferreds.append(getPage(url, method=self.method, headers=headers,
+                                 postdata=text))
         return DeferredList(deferreds, fireOnOneErrback=True)
 
     def makePath(self, infoType, app, path, extension=None):

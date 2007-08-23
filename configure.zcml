@@ -150,7 +150,8 @@
 
     <require
         permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer"
+        attributes="getLoopsRoot" />
 
     <require
         permission="zope.ManageContent"
