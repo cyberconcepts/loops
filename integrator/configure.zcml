@@ -16,7 +16,21 @@
              set_schema="loops.integrator.interfaces.IExternalCollection" />
   </zope:class>
 
-  <zope:class class="loops.integrator.put.DummyWriteFile">
+  <zope:adapter factory="loops.integrator.source.ExternalSourceInfo"
+                trusted="True" />
+
+  <zope:class class="loops.integrator.source.ExternalSourceInfo">
+    <require permission="zope.View"
+             interface="loops.integrator.interfaces.IExternalSourceInfo" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.integrator.interfaces.IExternalSourceInfo" />
+  </zope:class>
+
+  <zope:class class="loops.integrator.put.MetadataProxy">
+    <allow attributes="write" />
+  </zope:class>
+
+  <zope:class class="loops.integrator.put.DummyResource">
     <allow attributes="write" />
   </zope:class>
 

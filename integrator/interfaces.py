@@ -28,8 +28,22 @@ from zope import interface, component, schema
 from loops.util import _
 
 
+class IExternalSourceInfo(Interface):
+    """ Provide additional information about the external source
+        of an object.
+    """
+
+    externalIdentifier = Attribute('A string that allows to uniquely '
+                'identify a resource or concept that is provided by an '
+                'external system, e.g. a client-base loops agent. ')
+
+
+# external collections
+
 class IExternalCollection(Interface):
-    """ A collection of resources, to be used for a concept adapter.
+    """ A concept representing a collection of resources that may be
+        actively retrieved from an external system using the parameters
+        given.
     """
 
     providerName = schema.TextLine(
@@ -84,6 +98,7 @@ class IExternalCollectionProvider(Interface):
             provided. Return the list of objects created.
         """
 
+# classification stuff
 
 class IAutoClassifier(Interface):
     """ An adapter that more or less automagically assigns concepts to a

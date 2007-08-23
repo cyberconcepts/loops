@@ -140,7 +140,10 @@ Uploading Resources with HTTP PUT Requests
 ==========================================
 
   >>> from zope.publisher.browser import TestRequest
+  >>> from zope.traversing.api import getName
   >>> from loops.integrator.put import ResourceManagerTraverser
+  >>> from loops.integrator.source import ExternalSourceInfo
+  >>> component.provideAdapter(ExternalSourceInfo)
 
   >>> rrinfo = 'local/user/filesystem'
   >>> rrpath = 'testing/data/file1.txt'
@@ -154,9 +157,14 @@ Uploading Resources with HTTP PUT Requests
   >>> request._traversal_stack = list(reversed(rrid.split('/')))
 
   >>> traverser = ResourceManagerTraverser(resources, request)
-  >>> traverser.publishTraverse(request, '.data')
-  *** resources.PUT .data testing,data,file1.txt local user filesystem
-  <...DummyWriteFile object ...>
+  >>> resource = traverser.publishTraverse(request, '.data')
+  *** resources.PUT .data local/user/filesystem/testing/data/file1.txt
+
+  >>> getName(resource)
+  u'local_user_filesystem_testing_data_file1.txt'
+  >>> resource.title
+  u'file1'
+
 
 Fin de partie
 =============

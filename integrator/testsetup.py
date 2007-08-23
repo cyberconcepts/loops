@@ -6,6 +6,8 @@ $Id$
 
 import os
 from zope import component
+from zope.app.catalog.interfaces import ICatalog
+from zope.app.catalog.field import FieldIndex
 
 from cybertools.storage.interfaces import IExternalStorage
 from cybertools.storage.filesystem import fullPathStorage
@@ -13,7 +15,7 @@ from loops import util
 from loops.interfaces import IFile, IExternalFile
 from loops.concept import Concept
 from loops.resource import Resource, FileAdapter, ExternalFileAdapter
-from loops.integrator.interfaces import IExternalCollection
+from loops.integrator.interfaces import IExternalSourceInfo, IExternalCollection
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
@@ -34,6 +36,10 @@ class TestSite(BaseTestSite):
         component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)
 
         component.provideUtility(fullPathStorage(), IExternalStorage, name='fullpath')
+
+        catalog = component.getUtility(ICatalog)
+        catalog['loops_externalidentifier'] = FieldIndex('externalIdentifier',
+                                IExternalSourceInfo, False)
 
         tType = concepts.getTypeConcept()
         tExtFile = addAndConfigureObject(concepts, Concept, 'extfile',
