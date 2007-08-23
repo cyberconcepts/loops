@@ -99,9 +99,9 @@ class ResourceManagerTraverser(ItemTraverser):
         obj.contentType = contentType
         obj.title = title
         #obj.data = data
-        notify(ObjectModifiedEvent(resource))
         # TODO: provide basic concept assignments (collections)
-        IExternalSourceInfo(resource).externalIdentifier == identifier
+        IExternalSourceInfo(resource).externalIdentifier = identifier
+        notify(ObjectCreatedEvent(resource))
         return resource
 
     def generateName(self, name):

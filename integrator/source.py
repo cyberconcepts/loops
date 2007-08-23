@@ -48,6 +48,9 @@ class ExternalSourceInfo(object):
     def getExternalIdentifier(self):
         return self.getSourceInfo().get('externalIdentifier')
     def setExternalIdentifier(self, value):
-        self.getSourceInfo()['externalIdentifier'] = value
+        info = self.getSourceInfo()
+        if not info:
+            setattr(self.context, sourceInfoAttrName, info)
+        info['externalIdentifier'] = value
     externalIdentifier = property(getExternalIdentifier, setExternalIdentifier)
 
