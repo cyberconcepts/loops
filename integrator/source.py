@@ -40,7 +40,7 @@ class ExternalSourceInfo(object):
     adapts(ILoopsObject)
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
 
     def getSourceInfo(self):
         return getattr(self.context, sourceInfoAttrName, PersistentMapping())
