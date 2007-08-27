@@ -220,18 +220,22 @@
         </a>
       </div>
       <div>
-          <a href="#" i18n:translate=""
+          <a href="create_object.html" i18n:translate=""
              onclick="objectDialog('create', 'create_object.html'); return false;"
-             tal:attributes="onclick string:objectDialog('create', '$url/create_object.html');; return false;;">
+             tal:attributes="onClick
+                    string:objectDialog('create', '$url/create_object.html');;
+                           return false;;">
             Create Resource...
           </a>
       </div>
       <div tal:condition="view/hasEditableTarget">
-          <a href="#" i18n:translate=""
+          <a href="edit_object.html" i18n:translate=""
              onclick="objectDialog('edit', 'edit_object.html'); return false;"
              tal:define="version request/version|nothing;
                          versionPar python: version and '?version=' + version or ''"
-             tal:attributes="onclick string:objectDialog('edit', '$url/edit_object.html$versionPar');; return false;;">
+             tal:attributes="onClick
+                    string:objectDialog('edit', '$url/edit_object.html$versionPar');;
+                           return false;;">
             Edit Resource...
           </a>
       </div>

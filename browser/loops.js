@@ -28,6 +28,28 @@ function submitReplacing(targetId, formId, actionUrl) {
     return false;
 }
 
+function submitReplacingOrReloading(targetId, formId, actionUrl) {
+    node = dojo.byId(targetId);
+    var args = {
+        url: actionUrl,
+        formNode: dojo.byId(formId),
+        method: 'post',
+        mimetype: "text/html"
+    };
+    args.load = function (t, d, e) {
+        if (d.length < 10) {
+            document.location.reload(false);
+        } else {
+            while (node.firstChild) {
+                dojo.dom.destroyNode(node.firstChild);
+            }
+            node.innerHTML = d;
+        }
+    };
+    dojo.io.bind(args);
+    return false;
+}
+
 function inlineEdit(id, saveUrl) {
     var iconNode = dojo.byId('inlineedit_icon');
     iconNode.style.visibility = 'hidden';

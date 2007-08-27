@@ -43,7 +43,7 @@ from cybertools.browser.form import FormController
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.concept import ResourceRelation
 from loops.interfaces import IConcept, IResourceManager, IDocument
-from loops.interfaces import IFile, IExternalFile, INote
+from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.query import ConceptQuery
@@ -80,10 +80,14 @@ class ObjectForm(NodeView):
 
     template = ViewPageTemplateFile('form_macros.pt')
 
+    _isSetUp = False
+
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
 
     def setUp(self):
+        if self._isSetUp:
+            return
         self.setUpWidgets()
         desc = self.widgets.get('description')
         if desc:
@@ -91,6 +95,7 @@ class ObjectForm(NodeView):
         if self.typeInterface in widgetControllers:
             wc = widgetControllers[self.typeInterface](self.context, self.request)
             wc.modifyWidgetSetup(self.widgets)
+        self._isSetUp = True
 
     def __call__(self):
         response = self.request.response
@@ -175,6 +180,7 @@ class EditObjectForm(ObjectForm, EditForm):
 
     def __init__(self, context, request):
         super(EditObjectForm, self).__init__(context, request)
+        self.url = self.url # keep virtual target URL
         self.context = self.virtualTargetObject
 
     @Lazy
@@ -213,7 +219,8 @@ class CreateObjectForm(ObjectForm, Form):
             t = self.loopsRoot.loopsTraverse(typeToken)
             ifc = removeSecurityProxy(ITypeConcept(t).typeInterface)
         else:
-            ifc = INote
+            #ifc = INote
+            ifc = ITextDocument
         self.typeInterface = ifc
         ff = FormFields(ifc)
         #ff['data'].custom_widget = UploadWidget
@@ -256,16 +263,21 @@ class EditObject(FormController):
             # make sure new version is used by the view
             self.view.virtualTargetObject = obj
             self.request.annotations['loops.view']['target'] = obj
-        self.updateFields(obj)
+        errors = self.updateFields(obj)
+        if errors:
+            self.view.setUp()
+            for fieldName, message in errors.items():
+                self.view.widgets[fieldName].error = message
+            return True
         self.request.response.redirect(self.view.virtualTargetUrl + '?version=this')
         return False
-        #return True
 
     @Lazy
     def loopsRoot(self):
         return self.view.loopsRoot
 
     def updateFields(self, obj):
+        errors = {}
         form = self.request.form
         ti = IType(obj).typeInterface
         if ti is not None:
@@ -273,6 +285,7 @@ class EditObject(FormController):
         else:
             adapted = obj
         for k in form.keys():
+            # TODO: use self.view.form_fields
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
                 if fn in ('action', 'type', 'data.used') or fn.endswith('-empty-marker'):
@@ -295,10 +308,16 @@ class EditObject(FormController):
                                 self.request.form['form.contentType'] = ct
                                 adapted.contentType = ct
                             adapted.localFilename = filename
-                    setattr(adapted, fn, value)
+                    if fn == 'title' and not value:
+                        # TODO: provide general validation mechanism
+                        errors[fn] = 'Field %s must not be empty' % fn
+                    else:
+                        # TODO: provide unmarshalling depending on field type
+                        setattr(adapted, fn, value)
         if self.old or self.selected:
             self.assignConcepts(obj)
         notify(ObjectModifiedEvent(obj))
+        return errors
 
     def collectConcepts(self, fieldName, value):
         if self.old is None: self.old = []
@@ -361,5 +380,4 @@ class CreateObject(EditObject):
         self.updateFields(obj)
         self.request.response.redirect(self.view.virtualTargetUrl)
         return False
-        #return True
 

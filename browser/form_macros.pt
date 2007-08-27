@@ -2,7 +2,7 @@
      $Id$ -->
 
 <metal:block define-macro="edit" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="dialog_form">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="version"
@@ -55,7 +55,7 @@
                         tal:attributes="value type/token;
                                         selected python:
                                type.token == (request.get('form.type')
-                                    or '.loops/concepts/note')">
+                                    or '.loops/concepts/textdocument')">
                   Note
                 </option>
               </select>
@@ -81,8 +81,11 @@
 </metal:block>
 
 
-<metal:fields define-macro="fields">
-    <tal:block tal:define="dummy view/setUp">
+<metal:fields define-macro="fields"
+     tal:define="show view/update">
+  <tal:show condition="show">
+    <div id="form_fields"
+         tal:define="dummy view/setUp">
       <table width="100%">
           <tr tal:repeat="widget view/widgets">
             <td class="label" width="10%"
@@ -104,7 +107,8 @@
             </td>
           </tr>
       </table>
-    </tal:block>
+    </div>
+  </tal:show>
 </metal:fields>
 
 
@@ -205,8 +209,12 @@
 <tr metal:define-macro="buttons" i18n:domain="">
             <td colspan="5"
                 tal:define="dlgName view/dialog_name">
-              <input type="submit" value="Save" onClick="dlg.hide()" class="submit"
+              <input value="Save" type="submit"
                      i18n:attributes="value"
+                     xtal:attributes="onClick
+                       string:return submitReplacingOrReloading(
+                                    'form_fields', 'dialog_form',
+                                    '${view/virtualTargetUrl}/@@inner_form.html')"
                      tal:attributes="onClick string:dialogs['$dlgName'].hide()">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
