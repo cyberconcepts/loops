@@ -709,12 +709,12 @@ that in turns calls formlibs ``setUpWidgets()``.
 The new technique uses the ``fields`` and ``data`` attributes...
 
   >>> for f in view.fields:
-  ...     print f.name, f.fieldType, f.required, f.voc
-  title text True
-  description textarea False
-  data textarea False
-  contentType dropdown True
-  linkUrl text False
+  ...     print f.name, f.fieldType, f.required, f.vocabulary
+  title text True None
+  description textarea False None
+  data textarea False None
+  contentType dropdown True <...SimpleVocabulary object...>
+  linkUrl text False None
 
 The object is changed via a FormController adapter created for
 a NodeView.
