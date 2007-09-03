@@ -40,6 +40,7 @@ from zope.security.proxy import isinstance, removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
+from cybertools.composer.schema.util import getSchemaFromInterface
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.concept import ResourceRelation
 from loops.interfaces import IConcept, IResourceManager, IDocument
@@ -77,6 +78,8 @@ class UploadWidget(FileWidget):
 # forms
 
 class ObjectForm(NodeView):
+    """ Abstract base class for forms.
+    """
 
     template = ViewPageTemplateFile('form_macros.pt')
 
@@ -84,6 +87,44 @@ class ObjectForm(NodeView):
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
+
+    # cybertools.composer.schema support
+
+    #template = ViewPageTemplateFile('templates/form_macros.pt')
+
+    @Lazy
+    def schema(self):
+        return getSchemaFromInterface(self.typeInterface, manager=self)
+
+    @Lazy
+    def fields(self):
+        return self.schema.fields
+
+    @Lazy
+    def data(self):
+        instance = self.instance
+        instance.template = self.schema
+        data = instance.applyTemplate(mode='edit')
+        for k, v in data.items():
+            #overwrite data with values from request.form
+            if k in form:
+                data[k] = form[k]
+        return data
+
+    @Lazy
+    def instance(self):
+        return IInstance(self.context)
+
+    # zope.formlib support
+
+    @property
+    def form_fields(self):
+        ifc = self.typeInterface
+        ff = FormFields(ifc)
+        if self.typeInterface in widgetControllers:
+            wc = widgetControllers[ifc](self.context, self.request)
+            ff = wc.modifyFormFields(ff)
+        return ff
 
     def setUp(self):
         if self._isSetUp:
@@ -97,11 +138,17 @@ class ObjectForm(NodeView):
             wc.modifyWidgetSetup(self.widgets)
         self._isSetUp = True
 
+    # general methods
+
     def __call__(self):
         response = self.request.response
         response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
         response.setHeader('Pragma', 'no-cache')
         return innerHtml(self)
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.context).typeInterface or ITextDocument
 
     @Lazy
     def defaultPredicate(self):
@@ -172,7 +219,8 @@ widgetControllers = {
 class EditObjectForm(ObjectForm, EditForm):
 
     @property
-    def macro(self): return self.template.macros['edit']
+    def macro(self):
+        return self.template.macros['edit']
 
     title = _(u'Edit Resource')
     form_action = 'edit_resource'
@@ -180,20 +228,8 @@ class EditObjectForm(ObjectForm, EditForm):
 
     def __init__(self, context, request):
         super(EditObjectForm, self).__init__(context, request)
-        self.url = self.url # keep virtual target URL
+        self.url = self.url # keep virtual target URL (???)
         self.context = self.virtualTargetObject
-
-    @Lazy
-    def typeInterface(self):
-        return IType(self.context).typeInterface or IDocument
-
-    @property
-    def form_fields(self):
-        ff = FormFields(self.typeInterface)
-        if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface](self.context, self.request)
-            ff = wc.modifyFormFields(ff)
-        return ff
 
     @property
     def assignments(self):
@@ -212,28 +248,30 @@ class CreateObjectForm(ObjectForm, Form):
     form_action = 'create_resource'
     dialog_name = 'create'
 
-    @property
-    def form_fields(self):
+    # cybertools.composer.schema support
+
+    @Lazy
+    def instance(self):
+        return IInstance(Concept())
+
+    # general methods
+
+    @Lazy
+    def typeInterface(self):
         typeToken = self.request.get('form.type')
         if typeToken:
             t = self.loopsRoot.loopsTraverse(typeToken)
-            ifc = removeSecurityProxy(ITypeConcept(t).typeInterface)
+            return removeSecurityProxy(ITypeConcept(t).typeInterface)
         else:
-            #ifc = INote
-            ifc = ITextDocument
-        self.typeInterface = ifc
-        ff = FormFields(ifc)
-        #ff['data'].custom_widget = UploadWidget
-        if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface](self.context, self.request)
-            ff = wc.modifyFormFields(ff)
-        return ff
+            #return INote
+            return ITextDocument
 
     @property
     def assignments(self):
         target = self.virtualTargetObject
         if (IConcept.providedBy(target) and
-            target.conceptType != self.loopsRoot.getConceptManager().getTypeConcept()):
+                target.conceptType !=
+                    self.loopsRoot.getConceptManager().getTypeConcept()):
             rv = ConceptRelationView(ResourceRelation(target, None), self.request)
             return (rv,)
         return ()

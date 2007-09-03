@@ -699,7 +699,25 @@ Editing an Object
 
   >>> from loops.browser.form import EditObjectForm, EditObject
   >>> m112.target = resources['test_note']
-  >>> form = EditObjectForm(m112, TestRequest())
+  >>> view = EditObjectForm(m112, TestRequest())
+
+For rendering the form there are two techniques available: The
+zope.formlib way and the new cybertools.composer.schema way. The
+first one (possibly obsolete in the future) uses the ``setUp()`` call
+that in turns calls formlibs ``setUpWidgets()``.
+
+The new technique uses the ``fields`` and ``data`` attributes...
+
+  >>> for f in view.fields:
+  ...     print f.name, f.fieldType, f.required
+  title text True
+  description textarea False
+  data textarea False
+  contentType dropdown True
+  linkUrl text False
+
+The object is changed via a FormController adapter created for
+a NodeView.
 
   >>> request = TestRequest(form={'form.title': u'Test Note - changed'})
   >>> view = NodeView(m112, request)
