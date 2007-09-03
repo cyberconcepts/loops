@@ -710,11 +710,15 @@ The new technique uses the ``fields`` and ``data`` attributes...
 
   >>> for f in view.fields:
   ...     print f.name, f.fieldType, f.required, f.vocabulary
-  title text True None
+  title textline True None
   description textarea False None
   data textarea False None
   contentType dropdown True <...SimpleVocabulary object...>
-  linkUrl text False None
+  linkUrl textline False None
+
+  >>> view.data
+  {'linkUrl': None, 'contentType': u'', 'data': '', 'description': '',
+   'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
 a NodeView.

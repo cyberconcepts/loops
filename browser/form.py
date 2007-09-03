@@ -40,8 +40,10 @@ from zope.security.proxy import isinstance, removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
+from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.util import getSchemaFromInterface
 from cybertools.typology.interfaces import IType, ITypeManager
+from loops.common import adapted
 from loops.concept import ResourceRelation
 from loops.interfaces import IConcept, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
@@ -107,13 +109,13 @@ class ObjectForm(NodeView):
         data = instance.applyTemplate(mode='edit')
         for k, v in data.items():
             #overwrite data with values from request.form
-            if k in form:
+            if k in self.request.form:
                 data[k] = form[k]
         return data
 
     @Lazy
     def instance(self):
-        return IInstance(self.context)
+        return IInstance(adapted(self.context))
 
     # zope.formlib support
 

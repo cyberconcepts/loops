@@ -16,6 +16,8 @@ from zope.app.security.interfaces import IAuthentication
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
 
+from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
+from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
 from cybertools.relation.interfaces import IRelation, IRelationRegistry
@@ -60,6 +62,10 @@ class TestSite(object):
         component.provideAdapter(TypeConcept)
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(NameChooser)
+        component.provideAdapter(Instance)
+        component.provideAdapter(Editor, name='editor')
+        component.provideAdapter(FieldInstance)
+        component.provideAdapter(NumberFieldInstance, name='number')
 
         component.getSiteManager().registerHandler(invalidateRelations,
                             (ILoopsObject, IObjectRemovedEvent))
