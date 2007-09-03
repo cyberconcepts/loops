@@ -709,7 +709,7 @@ that in turns calls formlibs ``setUpWidgets()``.
 The new technique uses the ``fields`` and ``data`` attributes...
 
   >>> for f in view.fields:
-  ...     print f.name, f.fieldType, f.required
+  ...     print f.name, f.fieldType, f.required, f.voc
   title text True
   description textarea False
   data textarea False
