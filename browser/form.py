@@ -41,6 +41,7 @@ from zope.security.proxy import isinstance, removeSecurityProxy
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
 from cybertools.composer.schema.util import getSchemaFromInterface
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
@@ -92,7 +93,13 @@ class ObjectForm(NodeView):
 
     # cybertools.composer.schema support
 
-    #template = ViewPageTemplateFile('templates/form_macros.pt')
+    @property
+    def schemaMacros(self):
+        return schema_macros.macros
+
+    @property
+    def schemaEditMacros(self):
+        return schema_edit_macros.macros
 
     @Lazy
     def schema(self):
@@ -325,7 +332,7 @@ class EditObject(FormController):
         else:
             adapted = obj
         for k in form.keys():
-            # TODO: use self.view.form_fields
+            # TODO: use self.view.form_fields or better: IInstance(adapted)
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
                 if fn in ('action', 'type', 'data.used') or fn.endswith('-empty-marker'):

@@ -393,6 +393,14 @@
   </class>
 
 
+  <adapter factory="cybertools.composer.schema.instance.Instance" />
+  <adapter factory="cybertools.composer.schema.instance.Editor"
+           name="editor" />
+  <adapter factory="cybertools.composer.schema.field.FieldInstance" />
+  <adapter factory="cybertools.composer.schema.field.NumberFieldInstance"
+           name="number" />
+
+
   <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
