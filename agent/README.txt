@@ -119,7 +119,11 @@ The simplified syntax
   ... ui(
   ...   web(
   ...     port=11080,
-  ... ))''')
+  ... ))
+  ... crawl[1](
+  ...   type='outlook',
+  ...   folder='inbox',
+  ...''')
   >>> print config.ui.web.port
   11080
 
