@@ -13,9 +13,13 @@ from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.trial import unittest
 
-from loops.agent.core import Agent
 from loops.agent.schedule import Job
-
+try:
+    from loops.agent.core import Agent # needs twisted.internet.task.coiterate
+    ignore = False
+except ImportError: # wrong environment, skip all loops.agent tests
+    print 'Skipping loops.agent'
+    ignore = True
 
 baseDir = os.path.dirname(__file__)
 
@@ -57,6 +61,8 @@ class Test(unittest.TestCase):
 
 
 def test_suite():
+    if ignore:
+        return standard_unittest.TestSuite()  # do nothing
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return standard_unittest.TestSuite((
                 #standard_unittest.makeSuite(Test),

@@ -80,7 +80,7 @@ it with a default if not found, in one statement.
   'loops'
 
   >>> sorted(config.transport.items())
-  [('serverURL', 'http://loops.cy55.de'), ('userName', 'loops')]
+  [('__name__', 'transport'), ('serverURL', 'http://loops.cy55.de'), ('userName', 'loops')]
 
 We can output a configuration in a form that is ready for loading
 just by converting it to a string representation.
@@ -112,10 +112,21 @@ for storage; normally it would be stored in the users home directory.
   transport.userName = 'loops'
   ui.web.port = 8081
 
-Cleaning up up...
+The simplified syntax
+---------------------
+
+  >>> config.load('''
+  ... ui(
+  ...   web(
+  ...     port=11080,
+  ... ))''')
+  >>> print config.ui.web.port
+  11080
+
+Cleaning up
+-----------
 
   >>> os.unlink(fn)
-
 
 Scheduling
 ==========

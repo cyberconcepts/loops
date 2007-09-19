@@ -27,14 +27,20 @@ from zope.interface import implements
 from loops.agent.interfaces import IConfigurator
 
 
-class Configurator(object):
+_not_found = object()
+
+
+class Configurator(dict):
 
     implements(IConfigurator)
 
     def __init__(self, *sections, **kw):
         for s in sections:
-            setattr(self, s, ConfigSection())
+            setattr(self, s, ConfigSection(s))
         self.filename = kw.get('filename')
+
+    def __getitem__(self, key):
+        return getattr(self, key, ConfigSection(key))
 
     def load(self, p=None, filename=None):
         if p is None:
@@ -45,7 +51,7 @@ class Configurator(object):
                 f.close()
         if p is None:
             return
-        exec p in self.__dict__
+        exec p in self
 
     def save(self, filename=None):
         fn = self.getConfigFile(filename)
@@ -78,8 +84,14 @@ class Configurator(object):
 
 class ConfigSection(list):
 
+    __name__ = '???'
+
+    def __init__(self, name=None):
+        if name is not None:
+            self.__name__ = name
+
     def __getattr__(self, attr):
-        value = ConfigSection()
+        value = ConfigSection(attr)
         setattr(self, attr, value)
         return value
 
@@ -99,12 +111,28 @@ class ConfigSection(list):
             if isinstance(value, (str, int)):
                 yield name, value
 
+    def __call__(self, *args, **kw):
+        for s in args:
+            if isinstance(s, ConfigSection):
+                # should we update an existing entry?
+                #old = getattr(self, s.__name__, None)
+                #if old is not None:  # this would have to be done recursively
+                #    old.__dict__.update(s.__dict__)
+                #    for elem in s:
+                #        old.append(elem)
+                #else:
+                # or just keep the new one?
+                setattr(self, s.__name__, s)
+        for k, v in kw.items():
+            setattr(self, k, v)
+        return self
+
     def collect(self, ident, result):
         for idx, element in enumerate(self):
             element.collect('%s[%i]' % (ident, idx), result)
         for name, value in self.__dict__.items():
             if isinstance(value, ConfigSection):
                 value.collect('%s.%s' % (ident, name), result)
-            elif isinstance(value, (str, int)):
+            elif name != '__name__' and isinstance(value, (str, int)):
                 result.append('%s.%s = %s' % (ident, name, repr(value)))
 
