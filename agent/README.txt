@@ -123,7 +123,8 @@ The simplified syntax
   ... crawl[1](
   ...   type='outlook',
   ...   folder='inbox',
-  ...''')
+  ... )
+  ... ''')
   >>> print config.ui.web.port
   11080
 
