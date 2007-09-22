@@ -651,7 +651,7 @@ on data provided in this form:
   >>> note_tc = concepts['note']
 
   >>> component.provideAdapter(NameChooser)
-  >>> request = TestRequest(form={'form.title': u'Test Note',
+  >>> request = TestRequest(form={'title': u'Test Note',
   ...                             'form.type': u'.loops/concepts/note'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
@@ -668,7 +668,7 @@ created object:
   >>> from loops import util
   >>> topicUid = util.getUidForObject(topic)
   >>> predicateUid = util.getUidForObject(concepts.getDefaultPredicate())
-  >>> request = TestRequest(form={'form.title': u'Test Note',
+  >>> request = TestRequest(form={'title': u'Test Note',
   ...                             'form.type': u'.loops/concepts/note',
   ...                             'form.assignments.selected':
   ...                                   [':'.join((topicUid, predicateUid))]})
@@ -711,19 +711,21 @@ The new technique uses the ``fields`` and ``data`` attributes...
   >>> for f in view.fields:
   ...     print f.name, f.fieldType, f.required, f.vocabulary
   title textline True None
-  description textarea False None
   data textarea False None
   contentType dropdown True <...SimpleVocabulary object...>
   linkUrl textline False None
 
   >>> view.data
-  {'linkUrl': None, 'contentType': u'', 'data': '', 'description': '',
+  {'linkUrl': None, 'contentType': u'', 'data': '',
    'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
 a NodeView.
 
-  >>> request = TestRequest(form={'form.title': u'Test Note - changed'})
+  >>> form = dict(
+  ...     title=u'Test Note - changed',
+  ...     contentType=u'text/plain',)
+  >>> request = TestRequest(form=form)
   >>> view = NodeView(m112, request)
   >>> cont = EditObject(view, request)
   >>> cont.update()

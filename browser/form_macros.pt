@@ -14,10 +14,10 @@
               </span>
         </th></tr></tbody>
 
-        <tbody><tr><td colspan="5">
+        <tbody><tr><td colspan="5" style="padding-right: 15px">
               <div id="form.fields">
-                <metal:fields use-macro="view/template/macros/fields" />
-                <!--<metal:fields use-macro="view/schemaMacros/fields" />-->
+                <!--<metal:fields use-macro="view/template/macros/fields" />-->
+                <metal:fields use-macro="view/schemaMacros/fields" />
               </div>
         </td></tr></tbody>
 
@@ -64,7 +64,8 @@
 
         <tbody><tr><td colspan="5">
               <div id="form.fields">
-                <metal:fields use-macro="view/template/macros/fields" />
+                <!--<metal:fields use-macro="view/template/macros/fields" />-->
+                <metal:fields use-macro="view/schemaMacros/fields" />
               </div>
         </td></tr></tbody>
 

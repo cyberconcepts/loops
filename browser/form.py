@@ -45,7 +45,7 @@ from cybertools.composer.schema.browser.common import schema_macros, schema_edit
 from cybertools.composer.schema.util import getSchemaFromInterface
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
-from loops.concept import ResourceRelation
+from loops.concept import Concept, ResourceRelation
 from loops.interfaces import IConcept, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
@@ -107,7 +107,13 @@ class ObjectForm(NodeView):
 
     @Lazy
     def fields(self):
-        return self.schema.fields
+        fields = self.schema.fields
+        fields.data.height = 10
+        ifc = self.typeInterface
+        if ifc in widgetControllers:
+            wc = widgetControllers[ifc](self.context, self.request)
+            wc.modifySchemaFields(fields)
+        return fields
 
     @Lazy
     def data(self):
@@ -130,7 +136,7 @@ class ObjectForm(NodeView):
     def form_fields(self):
         ifc = self.typeInterface
         ff = FormFields(ifc)
-        if self.typeInterface in widgetControllers:
+        if ifc in widgetControllers:
             wc = widgetControllers[ifc](self.context, self.request)
             ff = wc.modifyFormFields(ff)
         return ff
@@ -194,6 +200,9 @@ class WidgetController(object):
         self.context = context
         self.request = request
 
+    def modifySchemaFields(self, fields):
+        pass
+
     def modifyFormFields(self, formFields):
         return formFields
 
@@ -203,6 +212,10 @@ class WidgetController(object):
 
 class NoteWidgetController(WidgetController):
 
+    def modifySchemaFields(self, fields):
+        del fields['description']
+        fields.data.height = 5
+
     def modifyFormFields(self, formFields):
         return formFields.omit('description')
 
@@ -211,6 +224,11 @@ class NoteWidgetController(WidgetController):
 
 
 class FileWidgetController(WidgetController):
+
+    def modifySchemaFields(self, fields):
+        if self.request.principal.id != 'rootadmin':
+            del fields['contentType']
+
 
     def modifyFormFields(self, formFields):
         if self.request.principal.id == 'rootadmin':
@@ -289,7 +307,8 @@ class CreateObjectForm(ObjectForm, Form):
 class InnerForm(CreateObjectForm):
 
     @property
-    def macro(self): return self.template.macros['fields']
+    #def macro(self): return self.template.macros['fields']
+    def macro(self): return self.schemaMacros['fields']
 
 
 # processing form input
@@ -302,6 +321,27 @@ class EditObject(FormController):
     old = None
     selected = None
 
+    @Lazy
+    def schema(self):
+        return getSchemaFromInterface(self.typeInterface, manager=self)
+
+    @Lazy
+    def fields(self):
+        return self.schema.fields
+
+    @Lazy
+    def instance(self):
+        return component.getAdapter(adapted(self.object), IInstance, name='editor')
+        #return IInstance(adapted(self.object), name='editor')
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.object).typeInterface or ITextDocument
+
+    @Lazy
+    def loopsRoot(self):
+        return self.view.loopsRoot
+
     def update(self):
         # create new version if necessary
         target = self.view.virtualTargetObject
@@ -310,20 +350,56 @@ class EditObject(FormController):
             # make sure new version is used by the view
             self.view.virtualTargetObject = obj
             self.request.annotations['loops.view']['target'] = obj
-        errors = self.updateFields(obj)
-        if errors:
-            self.view.setUp()
-            for fieldName, message in errors.items():
-                self.view.widgets[fieldName].error = message
-            return True
+        self.object = obj
+        formState = self.updateFields()
+        # TODO: error handling
+        #errors = self.updateFields()
+        #if errors:
+        #    self.view.setUp()
+        #    for fieldName, message in errors.items():
+        #        self.view.widgets[fieldName].error = message
+        #    return True
         self.request.response.redirect(self.view.virtualTargetUrl + '?version=this')
         return False
 
-    @Lazy
-    def loopsRoot(self):
-        return self.view.loopsRoot
+    def updateFields(self):
+        obj = self.object
+        form = self.request.form
+        instance = self.instance
+        instance.template = self.schema
+        formState = instance.applyTemplate(data=form, fieldHandlers=self.fieldHandlers)
+        for k in form.keys():
+            if k.startswith(self.prefix):
+                fn = k[len(self.prefix):]
+                value = form[k]
+                if fn.startswith(self.conceptPrefix) and value:
+                    self.collectConcepts(fn[len(self.conceptPrefix):], value)
+        if self.old or self.selected:
+            self.assignConcepts(obj)
+        notify(ObjectModifiedEvent(obj))
+        return formState
 
-    def updateFields(self, obj):
+    def handleFileUpload(self, context, value, fieldInstance, formState):
+        """ Special handler for fileupload fields;
+            value is a FileUpload instance.
+        """
+        filename = getattr(value, 'filename', '')
+        if filename:    # ignore if no filename present - no file uploaded
+            value = value.read()
+            contentType = guess_content_type(filename, value[:100])
+            if contentType:
+                ct = contentType[0]
+                self.request.form['form.contentType'] = ct
+                context.contentType = ct
+            setattr(context, fieldInstance.name, value)
+            context.localFilename = filename
+
+    @property
+    def fieldHandlers(self):
+        return dict(fileupload=self.handleFileUpload)
+
+    def xupdateFields(self):  # obsolete
+        obj = self.object
         errors = {}
         form = self.request.form
         ti = IType(obj).typeInterface
@@ -407,11 +483,11 @@ class CreateObject(EditObject):
     def update(self):
         form = self.request.form
         container = self.loopsRoot.getResourceManager()
-        title = form.get('form.title')
+        title = form.get('title')
         if not title:
             raise BadRequest('Title field is empty')
         obj = Resource(title)
-        data = form.get('form.data')
+        data = form.get('data')
         if data and isinstance(data, FileUpload):
             name = getattr(data, 'filename', None)
             # strip path from IE uploads:
@@ -424,7 +500,8 @@ class CreateObject(EditObject):
         tc = form.get('form.type') or '.loops/concepts/note'
         obj.resourceType = self.loopsRoot.loopsTraverse(tc)
         notify(ObjectCreatedEvent(obj))
-        self.updateFields(obj)
+        self.object = obj
+        self.updateFields()
         self.request.response.redirect(self.view.virtualTargetUrl)
         return False
 
