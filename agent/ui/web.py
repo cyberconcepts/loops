@@ -12,6 +12,7 @@ import cPickle
 import traceback
 import time
 import email
+import _winreg as winreg 
 
 from nevow import loaders, rend, static, url, inevow, tags
 from nevow.inevow import IRequest
@@ -29,16 +30,79 @@ PICKLE_MAILS = 0
 DEBUG = 1
 resourcesDirectory = 'resources'
 templatesDirectory = 'templates'
+ 
+# some constatnts
+_REG_KEY_CONST_ = "SOFTWARE\\Classes\\mailto\\shell\\open\\command"
+_OUTLOOK_2007_ = "Office12"
+_OUTLOOK_2003_ = "Office11"
+_OUTLOOK_2000_ = "Office10"
+_OUTLOOK_EXPRESS_ = "Office10"
 #----------------------------------------------------------
 
 
 def template(fn):
     return loaders.xmlfile(os.path.join(templatesDirectory, fn))
 
+
 def getConfigIndex(agentobj, index_name, default_value, fn=None):
     """get the number of jobs currently in config file"""
     index = len(agentobj.config.crawl)
     return index
+
+
+def getOutlookVersion():
+    """
+    checks what outlook version we have to handle
+
+    Returns the standard email application on this machine.
+    
+    Therefor we have to read out the registry key
+         "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\mailto\shell\open\command"
+
+    --ATTENTION--:
+        This was tested with Outlook 2007 only.
+        Therefor it is possible that there are problems
+        with some constants defined on the beginning.
+
+        TODO: -> check this function with some other
+                 Outlook versions installed and modify,
+                 if needed the defined constants and return
+                 values of the getOutlookVersion function
+         
+    """
+    # open registry key
+    try: 
+        key = winreg.OpenKey( 
+                    winreg.HKEY_LOCAL_MACHINE, 
+                    _REG_KEY_CONST_ ) 
+        
+    except WindowsError: 
+        return None
+     
+    try: 
+        try: 
+            # read out current standard outlook version 
+            version = winreg.QueryValueEx(key, "")[0]
+            # check what outlook we have 
+            if version:
+                if _OUTLOOK_2007_ in version:
+                    version = _OUTLOOK_2007_
+                
+                elif _OUTLOOK_2003_ in version:
+                    version = _OUTLOOK_2003_
+                
+                elif _OUTLOOK_EXPRESS_ in version:
+                    version = _OUTLOOK_EXPRESS_  
+                
+        except WindowsError: 
+            version = "" 
+    finally: 
+        # close key 
+        winreg.CloseKey(key) 
+
+    #print '--> getOutlookVersion(): Outlook version found, version is: ', version
+    # return key value 
+    return version 
 
 
 # AgentHome 
@@ -178,8 +242,10 @@ class AgentHome(rend.Page):
             conf.crawl[index].interval = '%s'%(form["mailCrawlInterval"][0])
             conf.save()
             if form["mailCrawlInterval"][0] == 'oneTime':
-                if OUTLOOK2000 == 1:
-                    #Outlook2000 (= Outlook 9) has different attributes
+                # get version of standard mail client
+                outlookVersion = getOutlookVersion()
+                # set properties depend on version
+                if outlookVersion == _OUTLOOK_2000_:
                     fieldsMail = ['Body',
                                   'HTMLBody',
                                   'CC',
@@ -189,7 +255,7 @@ class AgentHome(rend.Page):
                                   'Attachments',
                                   'Subject'
                                  ]
-                else:
+                elif outlookVersion == _OUTLOOK_2007_:
                     fieldsMail = ['Body',
                                   'BodyFormat',
                                   'HTMLBody',
@@ -198,8 +264,10 @@ class AgentHome(rend.Page):
                                   'Recipients',
                                   'To',
                                   'Attachments',
-                                  'Subject'
+                                  'Subject',
+                                  'ReceivedTime'
                                  ]
+
                 # all form fileds in the html template are named according to
                 # the dictionary name if expected to be in params,
                 # this way it is not necessary to alter the code if another
@@ -676,7 +744,7 @@ class RessourceView(rend.Page):
                                        tags.td[
                                            tags.a(href="javascript:document.getElementsByName('ressourceEntry%i')[0].submit()"%(index))[
                                                tags.b[
-                                                   "[" + str(ressourceObject.data.get('SenderName')) +"]"
+                                                   "[" + str(ressourceObject.data.get('From')) +"]" #SenderName
                                                    ]
                                                ]
                                            ],
