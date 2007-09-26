@@ -33,6 +33,12 @@ class IClassifier(Interface):
         concepts to assign.
     """
 
+    extractors = schema.TextLine(
+        title=_(u'Extractors'),
+        description=_(u'Space-separated list of names of extractor adapters.'),
+        default=u'',
+        required=False)
+
     analyzer = schema.TextLine(
         title=_(u'Analyzer'),
         description=_(u'Name of a utility that is able to analyze '
@@ -72,9 +78,13 @@ class IAnalyzer(Interface):
         provide a collection of statements about it.
     """
 
-    def extractStatements(informationSet):
+    def extractStatements(informationSet, classifier=None):
         """ Return a collection of statements derived from the
             information set given.
+
+            The ``classifier`` argument may be given in order to
+            check the environment of the classifier, e.g. available
+            concepts that may be used as attributes for statements.
         """
 
 

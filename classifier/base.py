@@ -51,7 +51,14 @@ class Classifier(AdapterBase):
     _contextAttributes = list(IClassifier) + list(IConcept)
 
     def process(self, resource):
-        pass
+        infoSet = InformationSet()
+        for name in self.extractors.split():
+            extractor = component.getAdapter(adapted(resource), IExtractor, name=name)
+            infoSet.update(extractor.extractInformationSet())
+        analyzer = component.getUtility(IAnalyzer, name=self.analyzer)
+        statements = analyzer.extractStatements(infoSet, self)
+        for statement in statements:
+            self.assignConcept(statement)
 
     def assignConcept(self, statement):
         pass
@@ -73,7 +80,7 @@ class Analyzer(object):
 
     implements(IAnalyzer)
 
-    def extractStatements(self,informationSet):
+    def extractStatements(self, informationSet, classifier=None):
         return []
 
 
@@ -86,7 +93,9 @@ class Statement(object):
 
     implements(IStatement)
 
-    subject = None
-    predicate = None
-    object = None
-    relevance = 100
+    def __init__(self, subject=None, predicate=None, object=None, relevance=100):
+        self.subject = subject
+        self.predicate = predicate
+        self.object = object
+        self.relevance = relevance
+

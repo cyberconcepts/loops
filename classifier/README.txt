@@ -26,8 +26,85 @@ configuration):
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
 
-  >>> len(concepts) + len(resources)
-  18
+  >>> len(concepts), len(resources)
+  (20, 0)
+
+Let's now add an external collection that reads in a set of resources
+from external files so we have something to work with.
+
+  >>> from loops.concept import Concept
+  >>> from loops.setup import addObject
+  >>> from loops.common import adapted
+  >>> from loops.classifier.testsetup import dataDir
+
+  >>> tExternalCollection = concepts['extcollection']
+  >>> coll01 = addObject(concepts, Concept, 'coll01',
+  ...                    title=u'Collection One', conceptType=tExternalCollection)
+  >>> aColl01 = adapted(coll01)
+  >>> aColl01.baseAddress = dataDir
+  >>> aColl01.address = ''
+
+  >>> aColl01.update()
+  >>> len(resources)
+  7
+  >>> rnames = list(sorted(resources.keys()))
+  >>> rnames[0]
+  u'cust_im_contract_webbg_20071015.txt'
+
+
+Filename-based Classification
+=============================
+
+Let's first look at the external address (i.e. the file name) of the
+resource we want to classify.
+
+  >>> r1 = resources[rnames[0]]
+  >>> adapted(r1)
+  <loops.resource.ExternalFileAdapter object ...>
+  >>> adapted(r1).externalAddress
+  'cust_im_contract_webbg_20071015.txt'
+
+OK, that's what we need. So we get the preconfigured classifier
+(see testsetup.py) and let it classify the resource.
+
+  >>> classifier = adapted(concepts['fileclassifier'])
+
+Before just processing the resource we'll have a look at the details
+and follow the classifier step by step.
+
+  >>> from loops.classifier.base import InformationSet
+  >>> from loops.classifier.interfaces import IExtractor, IAnalyzer
+  >>> infoSet = InformationSet()
+  >>> for name in classifier.extractors.split():
+  ...     print 'extractor:', name
+  ...     extractor = component.getAdapter(adapted(r1), IExtractor, name=name)
+  ...     infoSet.update(extractor.extractInformationSet())
+  extractor: filename
+
+  >>> infoSet
+  {'filename': 'cust_im_contract_webbg_20071015.txt'}
+
+  >>> analyzer = component.getUtility(IAnalyzer, name=classifier.analyzer)
+  >>> statements = analyzer.extractStatements(infoSet, classifier)
+  >>> statements
+  []
+
+So there seems to be something missing - we have to create concepts
+that may be identified as being candidates for classification.
+
+  >>> tInstitution = addObject(concepts, Concept, 'institution',
+  ...                     title=u'Institution', conceptType=concepts['type'])
+  >>> cust_im = addObject(concepts, Concept, 'im_editors',
+  ...                     title=u'im Editors', conceptType=tInstitution)
+  >>> t.indexAll(concepts, resources)
+
+  >>> statements = analyzer.extractStatements(infoSet, classifier)
+  >>> len(statements)
+  1
+
+So we are now ready to have the whole stuff run in one call.
+
+  >>> classifier.process(r1)
 
 
 Fin de partie

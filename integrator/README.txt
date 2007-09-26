@@ -111,7 +111,7 @@ Working with the External Collection
    (u'programming_zope_zope3.txt', u'zope3', 'fullpath')]
 
 We may update the collection after having changed the storage params.
-This should also the settings for existing objects if they still
+This should also change the settings for existing objects if they still
 can be found.
 
   >>> import os
