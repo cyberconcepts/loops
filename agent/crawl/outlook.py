@@ -9,19 +9,17 @@ Tobias Schmid   26.07.2007
 """
 
 import win32com.client
+import ctypes 
+import win32api, win32process, win32con
 import re
 from email.mime.multipart import MIMEMultipart
 
-from threading import Thread
-
-# imports for handling the outlook dialog
-import ctypes 
-import win32api, win32process, win32con
 from watsup.winGuiAuto import findTopWindow, findControl, findControls, clickButton, \
                               getComboboxItems, selectComboboxItem, setCheckBox
 
 from twisted.internet.defer import Deferred
 from twisted.internet.task import coiterate
+from twisted.internet import threads
 from zope.interface import implements
 
 from loops.agent.interfaces import IResource
@@ -51,8 +49,10 @@ class CrawlingJob(BaseCrawlingJob):
         self.deferred = Deferred()
         return self.deferred
 
+
     def finished(self, result):
         self.deferred.callback(self.collected)
+
 
     def crawlOutlook(self):
         outlookFound = 0
@@ -84,8 +84,8 @@ class CrawlingJob(BaseCrawlingJob):
             print 'MSOutlook.loadInbox() ===> starting'
             
         # try to handle the Outlook dialog
-        handle = HandleOutlookDialog()
-        handle.start()
+        #d = threads.deferToThread(self.handleOutlookDialog)
+        #d.addCallback(self.printResult)
 
         # catch Inbox folder
         onMAPI = oOutlookApp.GetNamespace("MAPI")
@@ -260,54 +260,10 @@ class CrawlingJob(BaseCrawlingJob):
                     print '-> dialog found and handled'
                     break
 
+    def printResult(self):
+        print '--> Outlook dialog handled'
 
-class HandleOutlookDialog(Thread):
 
-    def __init_(self):
-        Thread.__init__(self)
-        
-    def run(self):
-        hwnd = None
-        while True: 
-            hwnd = ctypes.windll.user32.FindWindowExA(None, hwnd, None, None)
-            #print 'searching....'
-            if hwnd == None: 
-                    break 
-            else: 
-                val = u"\0" * 1024 
-                ctypes.windll.user32.GetWindowTextW(hwnd, val, len(val)) 
-                val = val.replace(u"\000", u"") 
-                
-                if val and repr(val) == "u'Microsoft Office Outlook'":
-                    print repr(val)
-                    print '===> MSOutlook dialog box found'
-                    
-                    # get the Main Control
-                    form = findTopWindow(wantedText='Microsoft Office Outlook')
-                    #print 'Control', form
-                    controls = findControls(form)
-                    #print 'Controls', str(controls)
-                    
-                    # get the check box
-                    checkBox = findControl(form, wantedText='Zugriff')
-                    #print 'CheckBox', checkBox
-                    setCheckBox(checkBox, 1)
-                    
-                    # get the combo box
-                    comboBox = findControl(form, wantedClass='ComboBox')
-                    #print 'ComboBox', comboBox
-                    items = getComboboxItems(comboBox)
-                    #print 'ComboBox-Items', str(items)
-                    selectComboboxItem(comboBox, items[1])#'10 Minuten'                   
-                
-                    # finally get the button and click it
-                    button = findControl(form, wantedText = 'Erteilen')
-                    print 'Erteilen Button', button
-                    clickButton(button)
-                    print '-> dialog found and handled'
-                    break
-                
-        
 class OutlookResource(object):
 
     implements(IResource)
