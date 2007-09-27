@@ -19,11 +19,13 @@ from loops.classifier.interfaces import IClassifier, IAnalyzer
 from loops.common import adapted
 from loops.concept import Concept
 from loops.resource import Resource, ExternalFileAdapter
-from loops.interfaces import IIndexAttributes, IExternalFile
+from loops.interfaces import IConcept, IIndexAttributes, IExternalFile
 from loops.integrator.collection import DirectoryCollectionProvider
 from loops.integrator.collection import ExternalCollectionAdapter
 from loops.integrator.interfaces import IExternalCollection, IExternalCollectionProvider
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+from loops.knowledge.knowledge import Person
+from loops.knowledge.interfaces import IPerson
 from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
 
@@ -67,6 +69,8 @@ class TestSite(BaseTestSite):
         tExtCollection = addAndConfigureObject(concepts, Concept, 'extcollection',
                                 title=u'External Collection', conceptType=tType,
                                 typeInterface=IExternalCollection)
+
+        component.provideAdapter(Person, (IConcept,), IPerson)
 
         self.indexAll(concepts, resources)
         return concepts, resources, views

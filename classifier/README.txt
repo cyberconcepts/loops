@@ -96,11 +96,35 @@ that may be identified as being candidates for classification.
   ...                     title=u'Institution', conceptType=concepts['type'])
   >>> cust_im = addObject(concepts, Concept, 'im_editors',
   ...                     title=u'im Editors', conceptType=tInstitution)
+  >>> cust_mc = addObject(concepts, Concept, 'mc_consulting',
+  ...                     title=u'MC Management Consulting', conceptType=tInstitution)
+
+  >>> tDoctype = addObject(concepts, Concept, 'doctype',
+  ...                     title=u'Document Type', conceptType=concepts['type'])
+  >>> dt_note = addObject(concepts, Concept, 'dt_note',
+  ...                     title=u'Note', conceptType=tDoctype)
+  >>> dt_contract = addObject(concepts, Concept, 'dt_contract',
+  ...                     title=u'Contract', conceptType=tDoctype)
+
+  >>> tPerson = concepts['person']
+  >>> webbg = addObject(concepts, Concept, 'webbg',
+  ...                     title=u'Gerald Webb', conceptType=tPerson)
+  >>> smitha = addObject(concepts, Concept, 'smitha',
+  ...                     title=u'Angelina Smith', conceptType=tPerson)
+  >>> watersj = addObject(concepts, Concept, 'watersj',
+  ...                     title=u'Jerry Waters', conceptType=tPerson)
+  >>> millerj = addObject(concepts, Concept, 'millerj',
+  ...                     title=u'Jeannie Miller', conceptType=tPerson)
+
   >>> t.indexAll(concepts, resources)
+
+  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> cat = component.getUtility(ICatalog)
+  >>> #list(cat.searchResults(loops_text='webbg'))
 
   >>> statements = analyzer.extractStatements(infoSet, classifier)
   >>> len(statements)
-  1
+  2
 
 So we are now ready to have the whole stuff run in one call.
 

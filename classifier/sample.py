@@ -30,6 +30,7 @@ from cybertools.organize.interfaces import IPerson
 from cybertools.typology.interfaces import IType
 from loops.classifier.base import Analyzer
 from loops.classifier.base import Statement
+from loops.common import adapted
 
 
 class SampleAnalyzer(Analyzer):
@@ -58,12 +59,21 @@ class SampleAnalyzer(Analyzer):
 
     def handleEmployee(self, name, classifier):
         result = []
-        #print 'employee', name
+        candidates = self.findConcepts(name)
+        cm = self.getConceptManager(classifier)
+        for c in candidates:
+            ctype = IType(c)
+            if ctype.typeInterface == IPerson:
+                result.append(Statement(c))
         return result
 
     def handleOwner(self, name, classifier):
         result = []
-        #print 'owner', name
+        candidates = self.findConcepts(name)
+        cm = self.getConceptManager(classifier)
+        for c in candidates:
+            if IPerson.providedBy(adapted(c)):
+                result.append(Statement(c))
         return result
 
     def handleDoctype(self, name, classifier):
