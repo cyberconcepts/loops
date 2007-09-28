@@ -58,6 +58,8 @@ class Classifier(AdapterBase):
         analyzer = component.getAdapter(self, name=self.analyzer)
         statements = analyzer.extractStatements(infoSet)
         for statement in statements:
+            if statement.subject is None:
+                statement.subject = resource
             self.assignConcept(statement)
 
     def assignConcept(self, statement):
