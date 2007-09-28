@@ -43,22 +43,22 @@ ZCML setup):
 Let's look what setup has provided us with:
 
   >>> sorted(concepts)
-  [u'domain', u'file', u'hasType', u'note', u'person', u'predicate', u'query',
-   u'standard', u'textdocument', u'type']
+  [u'domain', u'file', u'hasType', u'note', u'ownedby', u'person',
+   u'predicate', u'query', u'standard', u'textdocument', u'type']
 
 Now let's add a few more concepts:
 
   >>> topic = concepts[u'topic'] = Concept(u'Topic')
   >>> intIds.register(topic)
-  10
+  11
   >>> zope = concepts[u'zope'] = Concept(u'Zope')
   >>> zope.conceptType = topic
   >>> intIds.register(zope)
-  11
+  12
   >>> zope3 = concepts[u'zope3'] = Concept(u'Zope 3')
   >>> zope3.conceptType = topic
   >>> intIds.register(zope3)
-  12
+  13
 
 Navigation typically starts at a start object, which by default ist the
 domain concept (if present, otherwise the top-level type concept):
@@ -86,13 +86,13 @@ There are a few standard objects we can retrieve directly:
 
 In addition we can get a list of all types and all predicates available;
 note that the 'hasType' predicate is not shown as it should not be
-applied in a direct assignment.
+applied in an explicit assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
   [u'domain', u'file', u'note', u'person', u'predicate', u'query',
    u'textdocument', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
-  [u'standard']
+  [u'ownedby', u'standard']
 
 We can also retrieve a certain object by its id or its name:
 
@@ -184,14 +184,14 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '10', 'id': '16',
+  {'description': u'', 'title': u'Zope 2', 'type': '11', 'id': '17',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '10', 'id': '17',
+  {'description': u'', 'title': u'Python', 'type': '11', 'id': '18',
    'name': u'python'}
 
 Changing the attributes of a concept

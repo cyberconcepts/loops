@@ -36,9 +36,13 @@ class SetupManager(BaseSetupManager):
     def setup(self):
         concepts = self.context.getConceptManager()
         type = concepts.getTypeConcept()
+        predicate = concepts['predicate']
+
         person = self.addObject(concepts, Concept, 'person', title=u'Person',
                                 conceptType=type)
-        personTypeAdapter = ITypeConcept(person)
-        if not personTypeAdapter.typeInterface: # only set if not set yet
-            personTypeAdapter.typeInterface = IPerson
-  
+        aPerson = ITypeConcept(person)
+        if not aPerson.typeInterface: # allow overriding by other packages
+            aPerson.typeInterface = IPerson
+
+        owner = self.addObject(concepts, Concept, 'ownedby', title=u'owned by',
+                        conceptType=predicate)

@@ -240,26 +240,6 @@ class ConceptManager(BTreeContainer):
 
 # adapters and similar components
 
-class xxxConceptSourceList(object):
-
-    # seems to be obsolete
-
-    implements(schema.interfaces.IIterableSource)
-
-    def __init__(self, context):
-        self.context = context
-        #self.context = removeSecurityProxy(context)
-        root = self.context.getLoopsRoot()
-        self.concepts = root.getConceptManager()
-
-    def __iter__(self):
-        for obj in self.concepts.values():
-            yield obj
-
-    def __len__(self):
-        return len(self.concepts)
-
-
 class ConceptTypeSourceList(object):
 
     implements(schema.interfaces.IIterableSource)

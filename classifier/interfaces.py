@@ -41,8 +41,8 @@ class IClassifier(Interface):
 
     analyzer = schema.TextLine(
         title=_(u'Analyzer'),
-        description=_(u'Name of a utility that is able to analyze '
-                'the resources assigned to this classifier.'),
+        description=_(u'Name of an adapter (or a utility?) that is able to '
+                'analyze the resources assigned to this classifier.'),
         default=u'',
         required=False)
 
@@ -74,17 +74,13 @@ class IExtractor(Interface):
 
 
 class IAnalyzer(Interface):
-    """ Utility that is able to analyze an information set and
+    """ Adapter (or utility?) that is able to analyze an information set and
         provide a collection of statements about it.
     """
 
-    def extractStatements(informationSet, classifier=None):
+    def extractStatements(informationSet):
         """ Return a collection of statements derived from the
             information set given.
-
-            The ``classifier`` argument may be given in order to
-            check the environment of the classifier, e.g. available
-            concepts that may be used as attributes for statements.
         """
 
 

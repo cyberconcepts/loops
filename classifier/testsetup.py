@@ -23,6 +23,7 @@ from loops.interfaces import IConcept, IIndexAttributes, IExternalFile
 from loops.integrator.collection import DirectoryCollectionProvider
 from loops.integrator.collection import ExternalCollectionAdapter
 from loops.integrator.interfaces import IExternalCollection, IExternalCollectionProvider
+from loops.organize.setup import SetupManager as OrganizeSetupManager
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.knowledge.knowledge import Person
 from loops.knowledge.interfaces import IPerson
@@ -39,6 +40,7 @@ class TestSite(BaseTestSite):
 
     def setup(self):
         component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        component.provideAdapter(OrganizeSetupManager, name='organize')
         concepts, resources, views = self.baseSetup()
 
         #catalog = component.getUtility(ICatalog)
@@ -56,7 +58,7 @@ class TestSite(BaseTestSite):
         sampleClassifier.extractors = 'filename'
         sampleClassifier.analyzer = 'sample'
         component.provideAdapter(FilenameExtractor, name='filename')
-        component.provideUtility(SampleAnalyzer(), IAnalyzer, name='sample')
+        component.provideAdapter(SampleAnalyzer, name='sample')
 
         # external file stuff for providing test files
         component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)

@@ -24,6 +24,7 @@ $Id$
 
 from zope import component
 from zope.app.catalog.interfaces import ICatalog
+from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 
 from cybertools.organize.interfaces import IPerson
@@ -45,48 +46,34 @@ class SampleAnalyzer(Analyzer):
         resource.
     """
 
-    def handleCustomer(self, name, classifier):
-        result = []
-        candidates = self.findConcepts(name)
-        cm = self.getConceptManager(classifier)
-        custTypes = [c for c in (cm.get('institution'), cm.get('customer'),)
-                       if c is not None]
-        for c in candidates:
-            ctype = IType(c)
-            if ctype.typeProvider in custTypes:
-                result.append(Statement(c))
-        return result
+    def handleCustomer(self, name):
+        custTypes = self.getTypes(('institution', 'customer',))
+        for c in self.findConcepts(name):
+            if IType(c).typeProvider in custTypes:
+                yield Statement(c)
 
-    def handleEmployee(self, name, classifier):
-        result = []
-        candidates = self.findConcepts(name)
-        cm = self.getConceptManager(classifier)
-        for c in candidates:
-            ctype = IType(c)
-            if ctype.typeInterface == IPerson:
-                result.append(Statement(c))
-        return result
-
-    def handleOwner(self, name, classifier):
-        result = []
-        candidates = self.findConcepts(name)
-        cm = self.getConceptManager(classifier)
-        for c in candidates:
+    def handleEmployee(self, name):
+        for c in self.findConcepts(name):
             if IPerson.providedBy(adapted(c)):
-                result.append(Statement(c))
-        return result
+                yield Statement(c)
 
-    def handleDoctype(self, name, classifier):
-        result = []
-        #print 'doctype', name
-        return result
+    def handleOwner(self, name):
+        cm = self.conceptManager
+        ownedby = cm.get('ownedby')
+        for c in self.findConcepts(name):
+            if IPerson.providedBy(adapted(c)):
+                yield Statement(c, ownedby)
+
+    def handleDoctype(self, name):
+        docTypes = self.getTypes(('doctype',))
+        for c in self.findConcepts(name):
+            if IType(c).typeProvider in docTypes:
+                yield Statement(c)
 
     handlers = dict(cust=handleCustomer, emp=handleEmployee)
 
-    def extractStatements(self, informationSet, classifier=None):
+    def extractStatements(self, informationSet):
         result = []
-        if classifier is None:
-            return result  # classifier is needed for getting access to concepts
         fn = informationSet.get('filename')
         if fn is None:
             return result
@@ -95,17 +82,21 @@ class SampleAnalyzer(Analyzer):
             ctype = parts.pop(0)
             if ctype in self.handlers:
                 name = parts.pop(0)
-                result.extend(self.handlers[ctype](self, name, classifier))
+                result.extend(self.handlers[ctype](self, name))
         if len(parts) > 1:
-            result.extend(self.handleDoctype(parts.pop(0), classifier))
+            result.extend(self.handleDoctype(parts.pop(0)))
         if len(parts) > 1:
-            result.extend(self.handleOwner(parts.pop(0), classifier))
+            result.extend(self.handleOwner(parts.pop(0)))
         return result
 
     def findConcepts(self, name):
         cat = component.getUtility(ICatalog)
         return cat.searchResults(loops_text=name)
 
-    def getConceptManager(self, obj):
-        return obj.context.getLoopsRoot().getConceptManager()
+    @Lazy
+    def conceptManager(self):
+        return self.context.context.getConceptManager()
 
+    def getTypes(self, typeNames):
+        cm = self.conceptManager
+        return [c for c in [cm.get(name) for name in typeNames] if c is not None]

@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts), len(resources)
-  (20, 0)
+  (21, 0)
 
 Let's now add an external collection that reads in a set of resources
 from external files so we have something to work with.
@@ -84,8 +84,8 @@ and follow the classifier step by step.
   >>> infoSet
   {'filename': 'cust_im_contract_webbg_20071015.txt'}
 
-  >>> analyzer = component.getUtility(IAnalyzer, name=classifier.analyzer)
-  >>> statements = analyzer.extractStatements(infoSet, classifier)
+  >>> analyzer = component.getAdapter(classifier, name=classifier.analyzer)
+  >>> statements = analyzer.extractStatements(infoSet)
   >>> statements
   []
 
@@ -120,11 +120,10 @@ that may be identified as being candidates for classification.
 
   >>> from zope.app.catalog.interfaces import ICatalog
   >>> cat = component.getUtility(ICatalog)
-  >>> #list(cat.searchResults(loops_text='webbg'))
 
-  >>> statements = analyzer.extractStatements(infoSet, classifier)
+  >>> statements = analyzer.extractStatements(infoSet)
   >>> len(statements)
-  2
+  3
 
 So we are now ready to have the whole stuff run in one call.
 

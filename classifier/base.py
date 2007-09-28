@@ -55,8 +55,8 @@ class Classifier(AdapterBase):
         for name in self.extractors.split():
             extractor = component.getAdapter(adapted(resource), IExtractor, name=name)
             infoSet.update(extractor.extractInformationSet())
-        analyzer = component.getUtility(IAnalyzer, name=self.analyzer)
-        statements = analyzer.extractStatements(infoSet, self)
+        analyzer = component.getAdapter(self, name=self.analyzer)
+        statements = analyzer.extractStatements(infoSet)
         for statement in statements:
             self.assignConcept(statement)
 
@@ -79,8 +79,12 @@ class Extractor(object):
 class Analyzer(object):
 
     implements(IAnalyzer)
+    adapts(IClassifier)
 
-    def extractStatements(self, informationSet, classifier=None):
+    def __init__(self, context):
+        self.context = context
+
+    def extractStatements(self, informationSet):
         return []
 
 
@@ -93,7 +97,7 @@ class Statement(object):
 
     implements(IStatement)
 
-    def __init__(self, subject=None, predicate=None, object=None, relevance=100):
+    def __init__(self, object=None, predicate=None, subject=None, relevance=100):
         self.subject = subject
         self.predicate = predicate
         self.object = object
