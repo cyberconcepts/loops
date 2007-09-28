@@ -6,26 +6,39 @@
    i18n_domain="zope"
    >
 
-  <zope:adapter factory="loops.classifier.base.Classifier"
-                trusted="True" />
+  <zope:adapter
+        factory="loops.classifier.base.Classifier"
+        trusted="True" />
 
   <zope:class class="loops.classifier.base.Classifier">
     <require permission="zope.View"
-             interface="loops.classifier.interfaces.IClassifier" />
+        interface="loops.classifier.interfaces.IClassifier" />
     <require permission="zope.ManageContent"
-             set_schema="loops.classifier.interfaces.IClassifier" />
+        set_schema="loops.classifier.interfaces.IClassifier" />
   </zope:class>
 
-  <zope:adapter factory="loops.classifier.base.Extractor"
-                trusted="True" />
+  <zope:adapter
+        factory="loops.classifier.standard.FilenameExtractor"
+        name="filename"
+        trusted="True" />
 
-  <zope:class class="loops.classifier.base.Extractor">
+  <zope:class class="loops.classifier.standard.FilenameExtractor">
     <require permission="zope.View"
-             interface="loops.classifier.interfaces.IExtractor" />
+        interface="loops.classifier.interfaces.IExtractor" />
     <require permission="zope.ManageContent"
-             set_schema="loops.classifier.interfaces.IExtractor" />
+        set_schema="loops.classifier.interfaces.IExtractor" />
   </zope:class>
 
-  <zope:utility factory="loops.classifier.base.Analyzer" />
+  <zope:adapter
+        factory="loops.classifier.sample.Analyzer"
+        name="sample"
+        trusted="True" />
+
+  <zope:class class="loops.classifier.sample.Analyzer">
+    <require permission="zope.View"
+        interface="loops.classifier.interfaces.IAnalyzer" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.classifier.interfaces.IAnalyzer" />
+  </zope:class>
 
 </configure>

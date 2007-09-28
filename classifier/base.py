@@ -50,6 +50,12 @@ class Classifier(AdapterBase):
 
     _contextAttributes = list(IClassifier) + list(IConcept)
 
+    def getOptions(self):
+        return getattr(self.context, '_options', [])
+    def setOptions(self, value):
+        self.context._options = value
+    options = property(getOptions, setOptions)
+
     def process(self, resource):
         infoSet = InformationSet()
         for name in self.extractors.split():
