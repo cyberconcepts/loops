@@ -128,6 +128,15 @@ that may be identified as being candidates for classification.
 So we are now ready to have the whole stuff run in one call.
 
   >>> classifier.process(r1)
+  >>> list(sorted([c.title for c in r1.getConcepts()]))
+  [u'Collection One', u'Contract', u'External File', u'Gerald Webb', u'im Editors']
+
+  >>> for name in rnames[1:]:
+  ...     classifier.process(resources[name])
+  >>> len(webbg.getResources())
+  4
+  >>> len(webbg.getResources((concepts['ownedby'],)))
+  3
 
 
 Fin de partie

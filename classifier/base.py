@@ -57,13 +57,16 @@ class Classifier(AdapterBase):
             infoSet.update(extractor.extractInformationSet())
         analyzer = component.getAdapter(self, name=self.analyzer)
         statements = analyzer.extractStatements(infoSet)
+        defaultPredicate = self.context.getConceptManager().getDefaultPredicate()
         for statement in statements:
             if statement.subject is None:
                 statement.subject = resource
+            if statement.predicate is None:
+                statement.predicate = defaultPredicate
             self.assignConcept(statement)
 
     def assignConcept(self, statement):
-        pass
+        statement.object.assignResource(statement.subject, statement.predicate)
 
 
 class Extractor(object):
