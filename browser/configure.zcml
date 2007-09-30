@@ -580,14 +580,6 @@
       permission="zope.ManageContent"
       />
 
-  <zope:view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="loops.interfaces.IFile"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory="loops.browser.form.UploadWidget"
-      permission="zope.Public"
-      />
-
   <!-- inner HTML views -->
 
   <page

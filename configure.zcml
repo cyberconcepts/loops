@@ -392,7 +392,6 @@
              interface="zope.filerepresentation.interfaces.IFileFactory" />
   </class>
 
-
   <adapter factory="cybertools.composer.schema.instance.Instance" />
   <adapter factory="cybertools.composer.schema.instance.Editor"
            name="editor" />
@@ -402,6 +401,11 @@
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
 
+  <adapter factory="loops.schema.ResourceSchemaFactory" />
+  <adapter factory="loops.schema.ResourceSchemaFactory"
+           for="loops.interfaces.IResource" />
+  <adapter factory="loops.schema.FileSchemaFactory" />
+  <adapter factory="loops.schema.NoteSchemaFactory" />
 
   <adapter factory="loops.setup.SetupManager" />
   <adapter factory="loops.external.NodesLoader" />

@@ -41,8 +41,8 @@ from zope.security.proxy import isinstance, removeSecurityProxy
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
-from cybertools.composer.schema.util import getSchemaFromInterface
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.concept import Concept, ResourceRelation
@@ -58,26 +58,6 @@ from loops.util import _
 from loops.versioning.interfaces import IVersionable
 
 
-# special widgets
-
-class UploadWidget(FileWidget):
-
-    def _toFieldValue(self, input):
-        # not used at the moment as the context object is updated
-        # via EditObject.updateFields()
-        fn = getattr(input, 'filename', '') # zope.publisher.browser.FileUpload
-        self.request.form['filename'] = fn
-        if input:
-            self.request.form['_tempfilename'] = input.headers.get('_tempfilename')
-        # f = self.context
-        # f.extfiledata = tempfilename  # provide for rename
-        if fn:
-            contentType = guess_content_type(fn)
-            if contentType:
-                request.form['form.contentType'] = contentType
-        return super(UploadWidget, self)._toFieldValue(input)
-
-
 # forms
 
 class ObjectForm(NodeView):
@@ -91,7 +71,13 @@ class ObjectForm(NodeView):
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
 
-    # cybertools.composer.schema support
+    @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.context).typeInterface or ITextDocument
 
     @property
     def schemaMacros(self):
@@ -103,10 +89,13 @@ class ObjectForm(NodeView):
 
     @Lazy
     def schema(self):
-        return getSchemaFromInterface(self.typeInterface, manager=self)
+        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        return schemaFactory(self.typeInterface, manager=self,
+                             request=self.request)
 
     @Lazy
     def fields(self):
+        return self.schema.fields
         fields = self.schema.fields
         fields.data.height = 10
         ifc = self.typeInterface
@@ -130,40 +119,11 @@ class ObjectForm(NodeView):
     def instance(self):
         return IInstance(adapted(self.context))
 
-    # zope.formlib support
-
-    @property
-    def form_fields(self):
-        ifc = self.typeInterface
-        ff = FormFields(ifc)
-        if ifc in widgetControllers:
-            wc = widgetControllers[ifc](self.context, self.request)
-            ff = wc.modifyFormFields(ff)
-        return ff
-
-    def setUp(self):
-        if self._isSetUp:
-            return
-        self.setUpWidgets()
-        desc = self.widgets.get('description')
-        if desc:
-            desc.height = 2
-        if self.typeInterface in widgetControllers:
-            wc = widgetControllers[self.typeInterface](self.context, self.request)
-            wc.modifyWidgetSetup(self.widgets)
-        self._isSetUp = True
-
-    # general methods
-
     def __call__(self):
         response = self.request.response
         response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
         response.setHeader('Pragma', 'no-cache')
         return innerHtml(self)
-
-    @Lazy
-    def typeInterface(self):
-        return IType(self.context).typeInterface or ITextDocument
 
     @Lazy
     def defaultPredicate(self):
@@ -192,55 +152,6 @@ class ObjectForm(NodeView):
                 [dict(title=o.title,
                       token='%s:%s' % (util.getUidForObject(o), predicateUid))
                  for o in result])
-
-
-class WidgetController(object):
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    def modifySchemaFields(self, fields):
-        pass
-
-    def modifyFormFields(self, formFields):
-        return formFields
-
-    def modifyWidgetSetup(self, widgets):
-        pass
-
-
-class NoteWidgetController(WidgetController):
-
-    def modifySchemaFields(self, fields):
-        del fields['description']
-        fields.data.height = 5
-
-    def modifyFormFields(self, formFields):
-        return formFields.omit('description')
-
-    def modifyWidgetSetup(self, widgets):
-        widgets['data'].height = 5
-
-
-class FileWidgetController(WidgetController):
-
-    def modifySchemaFields(self, fields):
-        if self.request.principal.id != 'rootadmin':
-            del fields['contentType']
-
-
-    def modifyFormFields(self, formFields):
-        if self.request.principal.id == 'rootadmin':
-            return formFields
-        return formFields.omit('contentType')
-
-
-widgetControllers = {
-    INote: NoteWidgetController,
-    IFile: FileWidgetController,
-    IExternalFile: FileWidgetController,
-}
 
 
 class EditObjectForm(ObjectForm, EditForm):
@@ -275,13 +186,13 @@ class CreateObjectForm(ObjectForm, Form):
     form_action = 'create_resource'
     dialog_name = 'create'
 
-    # cybertools.composer.schema support
+    @Lazy
+    def adapted(self):
+        return self.typeInterface(Resource())
 
     @Lazy
     def instance(self):
-        return IInstance(Concept())
-
-    # general methods
+        return IInstance(Resource())
 
     @Lazy
     def typeInterface(self):
@@ -307,13 +218,16 @@ class CreateObjectForm(ObjectForm, Form):
 class InnerForm(CreateObjectForm):
 
     @property
-    #def macro(self): return self.template.macros['fields']
     def macro(self): return self.schemaMacros['fields']
 
 
 # processing form input
 
 class EditObject(FormController):
+    """ Note that ``self.context`` of this adapter may be different from
+        ``self.object``, the object it acts upon, e.g. when this object
+        is created during the update processing.
+    """
 
     prefix = 'form.'
     conceptPrefix = 'assignments.'
@@ -322,8 +236,17 @@ class EditObject(FormController):
     selected = None
 
     @Lazy
+    def adapted(self):
+        return adapted(self.object)
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.object).typeInterface or ITextDocument
+
+    @Lazy
     def schema(self):
-        return getSchemaFromInterface(self.typeInterface, manager=self)
+        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        return schemaFactory(self.typeInterface)
 
     @Lazy
     def fields(self):
@@ -331,12 +254,7 @@ class EditObject(FormController):
 
     @Lazy
     def instance(self):
-        return component.getAdapter(adapted(self.object), IInstance, name='editor')
-        #return IInstance(adapted(self.object), name='editor')
-
-    @Lazy
-    def typeInterface(self):
-        return IType(self.object).typeInterface or ITextDocument
+        return component.getAdapter(self.adapted, IInstance, name='editor')
 
     @Lazy
     def loopsRoot(self):
@@ -397,50 +315,6 @@ class EditObject(FormController):
     @property
     def fieldHandlers(self):
         return dict(fileupload=self.handleFileUpload)
-
-    def xupdateFields(self):  # obsolete
-        obj = self.object
-        errors = {}
-        form = self.request.form
-        ti = IType(obj).typeInterface
-        if ti is not None:
-            adapted = ti(obj)
-        else:
-            adapted = obj
-        for k in form.keys():
-            # TODO: use self.view.form_fields or better: IInstance(adapted)
-            if k.startswith(self.prefix):
-                fn = k[len(self.prefix):]
-                if fn in ('action', 'type', 'data.used') or fn.endswith('-empty-marker'):
-                    continue
-                value = form[k]
-                if fn.startswith(self.conceptPrefix) and value:
-                    self.collectConcepts(fn[len(self.conceptPrefix):], value)
-                else:
-                    if not value and fn == 'data' and IFile.providedBy(adapted):
-                        # empty file data - don't change
-                        continue
-                    if isinstance(value, FileUpload):
-                        filename = getattr(value, 'filename', '')
-                        value = value.read()
-                        if filename:
-                            #self.request.form['filename'] = filename
-                            contentType = guess_content_type(filename, value[:100])
-                            if contentType:
-                                ct = contentType[0]
-                                self.request.form['form.contentType'] = ct
-                                adapted.contentType = ct
-                            adapted.localFilename = filename
-                    if fn == 'title' and not value:
-                        # TODO: provide general validation mechanism
-                        errors[fn] = 'Field %s must not be empty' % fn
-                    else:
-                        # TODO: provide unmarshalling depending on field type
-                        setattr(adapted, fn, value)
-        if self.old or self.selected:
-            self.assignConcepts(obj)
-        notify(ObjectModifiedEvent(obj))
-        return errors
 
     def collectConcepts(self, fieldName, value):
         if self.old is None: self.old = []

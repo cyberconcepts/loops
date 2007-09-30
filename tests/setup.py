@@ -16,6 +16,7 @@ from zope.app.security.interfaces import IAuthentication
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
 
+from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
@@ -34,6 +35,7 @@ from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.resource import Resource, FileAdapter
 from loops.resource import IndexAttributes as ResourceIndexAttributes
+from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFactory
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 
@@ -66,6 +68,11 @@ class TestSite(object):
         component.provideAdapter(Editor, name='editor')
         component.provideAdapter(FieldInstance)
         component.provideAdapter(NumberFieldInstance, name='number')
+
+        component.provideAdapter(SchemaFactory)
+        component.provideAdapter(ResourceSchemaFactory)
+        component.provideAdapter(FileSchemaFactory)
+        component.provideAdapter(NoteSchemaFactory)
 
         component.getSiteManager().registerHandler(invalidateRelations,
                             (ILoopsObject, IObjectRemovedEvent))

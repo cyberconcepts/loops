@@ -375,8 +375,8 @@ class TextDocumentAdapter(DocumentAdapter):
     """ A type adapter for providing text document functionality for resources.
     """
 
-    implements(IDocument)
-    _contextAttributes = list(IDocument) + list(IBaseResource)
+    implements(ITextDocument)
+    _contextAttributes = list(ITextDocument) + list(IBaseResource)
 
 
 class NoteAdapter(DocumentAdapter):
