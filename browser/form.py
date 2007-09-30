@@ -96,13 +96,6 @@ class ObjectForm(NodeView):
     @Lazy
     def fields(self):
         return self.schema.fields
-        fields = self.schema.fields
-        fields.data.height = 10
-        ifc = self.typeInterface
-        if ifc in widgetControllers:
-            wc = widgetControllers[ifc](self.context, self.request)
-            wc.modifySchemaFields(fields)
-        return fields
 
     @Lazy
     def data(self):
