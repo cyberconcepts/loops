@@ -44,7 +44,8 @@ class FileSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(FileSchemaFactory, self).__call__(interface, **kw)
-        if 'request' in kw and kw['request'].principal.id != 'rootadmin':
+        if ('request' in kw and kw['request'].principal.id != 'rootadmin'
+                            and 'contentType' in schema.fields.keys()):
             del schema.fields['contentType']
         return schema
 
