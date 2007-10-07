@@ -145,7 +145,6 @@ class PasswordChange(NodeView, Form):
     @Lazy
     def data(self):
         data = dict(oldPassword=u'', password=u'', passwordConfirm=u'')
-        data = {}
         return data
 
     def update(self):
