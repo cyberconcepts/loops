@@ -401,6 +401,7 @@
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
 
+  <adapter factory="cybertools.composer.schema.factory.SchemaFactory" />
   <adapter factory="loops.schema.ResourceSchemaFactory" />
   <adapter factory="loops.schema.ResourceSchemaFactory"
            for="loops.interfaces.IResource" />

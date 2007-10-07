@@ -229,9 +229,10 @@ Change Password
 
   >>> data = {'oldPassword': u'tiger',
   ...         'password': u'lion',
-  ...         'passwordConfirm': u'lion'}
+  ...         'passwordConfirm': u'lion',
+  ...         'action': 'update'}
 
-  >>> request = TestRequest()
+  >>> request = TestRequest(form=data)
 
 We need a principal for testing the login stuff:
 
@@ -239,10 +240,15 @@ We need a principal for testing the login stuff:
   >>> principal = InternalPrincipal('scott', 'tiger', 'Scotty')
   >>> request.setPrincipal(principal)
 
-  >>> from loops.organize.browser import PasswordChange
-  >>> pwcView = PasswordChange(menu, request, testing=True)
-  >>> pwcView.changePassword(data)
+  >>> from cybertools.composer.schema.factory import SchemaFactory
+  >>> from cybertools.composer.schema.field import FieldInstance
+  >>> component.provideAdapter(SchemaFactory)
+  >>> component.provideAdapter(FieldInstance)
 
+  >>> from loops.organize.browser import PasswordChange
+  >>> pwcView = PasswordChange(menu, request)
+  >>> pwcView.update()
+  False
 
 Fin de partie
 =============

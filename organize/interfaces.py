@@ -77,12 +77,6 @@ class LoginName(schema.TextLine):
                   mapping=dict(userId=userId)))
 
 
-class Password(schema.Password):
-
-    def _validate(self, pw):
-        super(Password, self)._validate(pw)
-
-
 class IPerson(IBasePerson):
     """ Resembles a human being with a name (first and last name),
         a birth date, and a set of addresses. This interface only
@@ -99,7 +93,7 @@ class IPerson(IBasePerson):
 
 class IPasswordEntry(Interface):
 
-    password = Password(title=_(u'Password'),
+    password = schema.Password(title=_(u'Password'),
                     description=_(u'Enter password.'),
                     required=True,)
     passwordConfirm = schema.Password(title=_(u'Confirm password'),

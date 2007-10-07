@@ -43,6 +43,7 @@ from cybertools.browser.form import FormController
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
+from cybertools.composer.schema.schema import FormState
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.concept import Concept, ResourceRelation
@@ -61,12 +62,11 @@ from loops.versioning.interfaces import IVersionable
 # forms
 
 class ObjectForm(NodeView):
-    """ Abstract base class for forms.
+    """ Abstract base class for resource or concept forms using Dojo dialog.
     """
 
     template = ViewPageTemplateFile('form_macros.pt')
-
-    _isSetUp = False
+    formState = FormState()     # dummy, don't update!
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
@@ -79,12 +79,12 @@ class ObjectForm(NodeView):
     def typeInterface(self):
         return IType(self.context).typeInterface or ITextDocument
 
-    @property
-    def schemaMacros(self):
+    @Lazy
+    def fieldRenderers(self):
         return schema_macros.macros
 
-    @property
-    def schemaEditMacros(self):
+    @Lazy
+    def fieldEditRenderers(self):
         return schema_edit_macros.macros
 
     @Lazy
@@ -211,7 +211,7 @@ class CreateObjectForm(ObjectForm, Form):
 class InnerForm(CreateObjectForm):
 
     @property
-    def macro(self): return self.schemaMacros['fields']
+    def macro(self): return self.fieldRenderers['fields']
 
 
 # processing form input

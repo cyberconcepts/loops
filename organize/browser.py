@@ -24,17 +24,18 @@ $Id$
 """
 
 from zope import interface, component
-from zope.app import zapi
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.form.browser.textwidgets import PasswordWidget as BasePasswordWidget
 from zope.app.form.interfaces import WidgetInputError
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
 from zope.cachedescriptors.property import Lazy
-from zope.formlib.form import Form, FormFields, action
+from zope.formlib.form import Form as FormlibForm, FormFields, action
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
+from cybertools.composer.schema.browser.common import schema_macros
+from cybertools.composer.schema.browser.form import Form
+from cybertools.composer.schema.schema import FormState, FormError
 from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
@@ -74,23 +75,7 @@ class PasswordWidget(BasePasswordWidget):
         return value
 
 
-class OldPasswordWidget(BasePasswordWidget):
-
-    def getInputValue(self):
-        value = super(OldPasswordWidget, self).getInputValue()
-        if value:
-            principal = self.request.principal
-            if not isinstance(principal, InternalPrincipal):
-                principal = getInternalPrincipal(principal.id)
-            if not principal.checkPassword(value):
-                v = _(u'Your old password was not entered correctly.')
-                self._error = WidgetInputError(
-                    self.context.__name__, self.label, v)
-                raise self._error
-        return value
-
-
-class MemberRegistration(NodeView, Form):
+class MemberRegistration(NodeView, FormlibForm):
 
     form_fields = FormFields(IMemberRegistration).omit('age')
     form_fields['password'].custom_widget = PasswordWidget
@@ -139,50 +124,64 @@ class MemberRegistration(NodeView, Form):
 
 class PasswordChange(NodeView, Form):
 
-    form_fields = FormFields(IPasswordChange).select(
-                    'oldPassword', 'password', 'passwordConfirm')
-    form_fields['oldPassword'].custom_widget = OldPasswordWidget
-    form_fields['password'].custom_widget = PasswordWidget
-    template = loops.browser.util.dataform
-    label = _(u'Change Password')
+    interface = IPasswordChange
+    message = u'Your password has been changed.'
 
-    def __init__(self, context, request, testing=False):
-        super(PasswordChange, self).__init__(context, request)
-        if not testing:
-            self.setUpWidgets()
+    formErrors = dict(
+        confirm_nomatch=FormError(u'Password and password confirmation do not match.'),
+        wrong_oldpw=FormError(u'Your old password was not entered correctly.'),
+    )
+
+    label = label_submit = u'Change Password'
 
     @Lazy
     def macro(self):
-        return self.template.macros['content']
+        return schema_macros.macros['form']
 
     @Lazy
     def item(self):
         return self
 
+    @Lazy
+    def data(self):
+        data = dict(oldPassword=u'', password=u'', passwordConfirm=u'')
+        data = {}
+        return data
+
     def update(self):
-        # see cybertools.browser.view.GenericView.update()
-        NodeView.update(self)
-        Form.update(self)
-        return True
-
-    @action(_(u'Change Password'))
-    def handle_change_password_action(self, action, data):
-        self.changePassword(data)
-
-    def changePassword(self, data=None):
-        form = data or self.request.form
-        oldPw = form.get('oldPassword')
+        form = self.request.form
+        if not form.get('action'):
+            return True
+        formState = self.formState = self.validate(form)
+        if formState.severity > 0:
+            return True
         pw = form.get('password')
-        if form.get('passwordConfirm') != pw:
-            raise ValueError(u'Password and password confirmation do not match.')
+        pwConfirm = form.get('passwordConfirm')
+        if pw != pwConfirm:
+            fi = formState.fieldInstances['password']
+            fi.setError('confirm_nomatch', self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
+            return True
+        oldPw = form.get('oldPassword')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
         principal = self.request.principal
         result = regMan.changePassword(principal, oldPw, pw)
         if not result:
-            raise ValueError(u'Your old password was not entered correctly.')
-        message = _(u'Your password has been changed.')
-        self.request.response.redirect('%s?message=%s'
-                        % (self.url, message))
-        #self.request.response.redirect('%s/logout.html?message=%s'
-        #                % (self.url, message))
+            fi = formState.fieldInstances['oldPassword']
+            fi.setError('wrong_oldpw', self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
+            return True
+        url = '%s?messsage=%s' % (self.url, self.message)
+        self.request.response.redirect(url)
+        return False
+
+    def validate(self, data):
+        formState = FormState()
+        for f in self.schema.fields:
+            fi = f.getFieldInstance()
+            value = data.get(f.name)
+            fi.validate(value, data)
+            formState.fieldInstances.append(fi)
+            formState.severity = max(formState.severity, fi.severity)
+        return formState
 
