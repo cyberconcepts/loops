@@ -33,16 +33,18 @@ from zope.formlib.form import Form as FormlibForm, FormFields, action
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
+from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.browser.common import schema_macros
-from cybertools.composer.schema.browser.form import Form
+from cybertools.composer.schema.browser.form import Form, CreateForm
 from cybertools.composer.schema.schema import FormState, FormError
 from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
+from loops.concept import Concept
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
 from loops.organize.interfaces import IMemberRegistration, IPasswordChange
-from loops.organize.party import getPersonForUser
+from loops.organize.party import getPersonForUser, Person
 from loops.organize.util import getInternalPrincipal
 import loops.browser.util
 from loops.util import _
@@ -75,64 +77,75 @@ class PasswordWidget(BasePasswordWidget):
         return value
 
 
-class MemberRegistration(NodeView, FormlibForm):
+class MemberRegistration(NodeView, CreateForm):
 
-    form_fields = FormFields(IMemberRegistration).omit('age')
-    form_fields['password'].custom_widget = PasswordWidget
-    template = loops.browser.util.dataform
+    interface = IMemberRegistration
+    message = _(u'You have been registered.')
+
+    formErrors = dict(
+        confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
+    )
+
     label = _(u'Member Registration')
-
-    def __init__(self, context, request, testing=False):
-        super(MemberRegistration, self).__init__(context, request)
-        if not testing:
-            self.setUpWidgets()
+    label_submit = _(u'Register')
 
     @Lazy
     def macro(self):
-        return self.template.macros['content']
+        return schema_macros.macros['form']
 
     @Lazy
     def item(self):
         return self
 
+    @Lazy
+    def schema(self):
+        schema = super(MemberRegistration, self).schema
+        if 'birthDate' in schema.fields:
+            del schema.fields['birthDate']
+        return schema
+
+    @Lazy
+    def object(self):
+        return Person(Concept())
+
     def update(self):
-        # see cybertools.browser.view.GenericView.update()
-        NodeView.update(self)
-        Form.update(self)
-        return True
-
-    @action(_(u'Register'))
-    def handle_register_action(self, action, data):
-        print 'register'
-        self.register(data)
-
-    def register(self, data=None):
-        form = data or self.request.form
+        form = self.request.form
+        if not form.get('action'):
+            return True
+        instance = component.getAdapter(self.object, IInstance, name='editor')
+        instance.template = self.schema
+        self.formState = formState = instance.applyTemplate(data=form,
+                                            fieldHandlers=self.fieldHandlers)
+        if formState.severity > 0:
+            # show form again
+            return True
         pw = form.get('password')
         if form.get('passwordConfirm') != pw:
-            raise ValueError(u'Password and password confirmation do not match.')
+            fi = formState.fieldInstances['password']
+            fi.setError('confirm_nomatch', self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
+            return True
         login = form.get('loginName')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
-        person = regMan.register(login, pw,
-                                 form.get('lastName'),
-                                 form.get('firstName'))
-        message = _(u'You have been registered and can now login.')
+        self.object = regMan.register(login, pw,
+                                      form.get('lastName'), form.get('firstName'))
+        msg = self.message
         self.request.response.redirect('%s/login.html?login=%s&message=%s'
-                            % (self.url, login, message))
-        return person
+                            % (self.url, login, msg))
+        return False
 
 
 class PasswordChange(NodeView, Form):
 
     interface = IPasswordChange
-    message = u'Your password has been changed.'
+    message = _(u'Your password has been changed.')
 
     formErrors = dict(
-        confirm_nomatch=FormError(u'Password and password confirmation do not match.'),
-        wrong_oldpw=FormError(u'Your old password was not entered correctly.'),
+        confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
+        wrong_oldpw=FormError(_(u'Your old password was not entered correctly.')),
     )
 
-    label = label_submit = u'Change Password'
+    label = label_submit = _(u'Change Password')
 
     @Lazy
     def macro(self):

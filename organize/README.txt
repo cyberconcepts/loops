@@ -6,42 +6,25 @@ loops - Linked Objects for Organization and Processing Services
 
 Note: This packages depends on cybertools.organize.
 
-Let's do some basic set up
+Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-
   >>> from zope import component, interface
-  >>> from zope.app import zapi
 
-and setup a simple loops site with a concept manager and some concepts
+and set up a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from cybertools.relation.interfaces import IRelationRegistry
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> relations = DummyRelationRegistry()
-  >>> component.provideUtility(relations)
-
-  >>> from cybertools.typology.interfaces import IType
-  >>> from loops.interfaces import IConcept, ITypeConcept
-  >>> from loops.type import ConceptType, TypeConcept
-  >>> component.provideAdapter(ConceptType, (IConcept,), IType)
-  >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
-
-  >>> from loops.interfaces import ILoops
-  >>> from loops.setup import ISetupManager
   >>> from loops.organize.setup import SetupManager
-  >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
-  ...                           name='organize')
+  >>> component.provideAdapter(SetupManager, name='organize')
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
 
-  >>> from loops.base import Loops
-  >>> loopsRoot = site['loops'] = Loops()
-  >>> loopsId = relations.getUniqueIdForObject(loopsRoot)
-
-  >>> from loops.setup import SetupManager
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
+  >>> from loops import util
+  >>> loopsRoot = site['loops']
+  >>> loopsId = util.getUidForObject(loopsRoot)
 
   >>> type = concepts['type']
   >>> person = concepts['person']
@@ -56,6 +39,7 @@ Organizations: Persons (and Users), Institutions, Addresses...
 
 The classes used in this package are just adapters to IConcept.
 
+  >>> from loops.interfaces import IConcept
   >>> from loops.organize.interfaces import IPerson
   >>> from loops.organize.party import Person
   >>> component.provideAdapter(Person, (IConcept,), IPerson)
@@ -192,7 +176,6 @@ and register an IMemberRegistrationManager adapter for the loops root object:
   >>> menu.nodeType = 'menu'
 
   >>> from loops.organize.member import MemberRegistrationManager
-  >>> from loops.organize.interfaces import IMemberRegistrationManager
   >>> component.provideAdapter(MemberRegistrationManager)
 
 Now we can enter the registration info for a new member (after having made
@@ -205,18 +188,24 @@ sure that a principal object can be served by a corresponding factory):
   ...         'password': u'quack',
   ...         'passwordConfirm': u'quack',
   ...         'lastName': u'Sawyer',
-  ...         'firstName': u'Tom'}
+  ...         'firstName': u'Tom',
+  ...         'email': u'tommy@sawyer.com',
+  ...         'action': 'update',}
 
-and register it
+and register it.
 
   >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+  >>> request = TestRequest(form=data)
   >>> from loops.organize.browser import MemberRegistration
-  >>> regView = MemberRegistration(menu, request, testing=True)
-  >>> personAdapter = regView.register(data)
+  >>> regView = MemberRegistration(menu, request)
+  >>> regView.update()
+  False
 
-  >>> personAdapter.context.__name__, personAdapter.lastName, personAdapter.userId
-  (u'person.newuser', u'Sawyer', u'loops.newuser')
+  >>> from loops.common import adapted
+  >>> person = concepts['person.newuser']
+  >>> pa = adapted(person)
+  >>> pa.lastName, pa.userId
+  (u'Sawyer', u'loops.newuser')
 
 Now we can also retrieve it from the authentication utility:
 

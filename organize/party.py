@@ -43,6 +43,7 @@ from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
+from loops import util
 
 
 # register type interfaces - (TODO: use a function for this)
@@ -62,8 +63,7 @@ def getPersonForUser(context, request=None, principal=None):
             return  pa
         else:
             return None
-    return pa.get(component.getUtility(
-                    IRelationRegistry, context=context).getUniqueIdForObject(loops))
+    return pa.get(util.getUidForObject(loops))
 
 
 class Person(AdapterBase, BasePerson):
@@ -88,8 +88,8 @@ class Person(AdapterBase, BasePerson):
                     % (zapi.getName(person), userId))
             pa = annotations(principal)
             #pa[ANNOTATION_KEY] = self.context
-            intIds = component.getUtility(IRelationRegistry, context=self.context)
-            loopsId = intIds.getUniqueIdForObject(self.context.getLoopsRoot())
+            #intIds = component.getUtility(IRelationRegistry, context=self.context)
+            loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)
             if ann is None:
                 ann = pa[ANNOTATION_KEY] = PersistentMapping()
@@ -109,8 +109,7 @@ class Person(AdapterBase, BasePerson):
                 pa[ANNOTATION_KEY] = None
             else:
                 if ann is not None:
-                    intIds = component.getUtility(IRelationRegistry, context=self.context)
-                    loopsId = intIds.getUniqueIdForObject(self.context.getLoopsRoot())
+                    loopsId = util.getUidForObject(self.context.getLoopsRoot())
                     ann[loopsId] = None
 
     def getPhoneNumbers(self):

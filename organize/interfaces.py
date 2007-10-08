@@ -99,12 +99,8 @@ class IPasswordEntry(Interface):
     passwordConfirm = schema.Password(title=_(u'Confirm password'),
                     description=_(u'Please repeat the password.'),
                     required=True,)
-
-    #@interface.invariant
-    #def passwordMatchConfirm(data):
-    #    if data.password != data.passwordConfirm:
-    #        raise interface.Invalid(_(u'Password and password confirmation '
-    #                                   'do not match.'))
+    password.nostore = True
+    passwordConfirm.nostore = True
 
 
 class IPasswordChange(IPasswordEntry):
@@ -118,10 +114,11 @@ class IMemberRegistration(IBasePerson, IPasswordEntry):
     """ Schema for registering a new member (user + person).
     """
 
-    loginName = LoginName(
+    loginName = schema.TextLine(
                     title=_(u'User ID'),
                     description=_(u'Enter a user id.'),
                     required=True,)
+    loginName.nostore = True
 
 
 class IMemberRegistrationManager(Interface):
