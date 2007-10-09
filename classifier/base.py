@@ -61,7 +61,7 @@ class Classifier(AdapterBase):
         for name in self.extractors.split():
             extractor = component.getAdapter(adapted(resource), IExtractor, name=name)
             infoSet.update(extractor.extractInformationSet())
-        analyzer = component.getAdapter(self, name=self.analyzer)
+        analyzer = component.getAdapter(self, IAnalyzer, name=self.analyzer)
         statements = analyzer.extractStatements(infoSet)
         defaultPredicate = self.context.getConceptManager().getDefaultPredicate()
         for statement in statements:

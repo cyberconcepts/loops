@@ -156,4 +156,6 @@ class DirectoryCollectionProvider(object):
             base, ext = title.rsplit('.', 1)
             if ext.lower() in mimetypes.extensions.values():
                 title = base
-        return title.decode('UTF-8')
+        if not isinstance(title, unicode):
+            title = title.decode('UTF-8')
+        return title

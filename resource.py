@@ -49,7 +49,11 @@ from cybertools.relation.interfaces import IRelatable
 from cybertools.storage.interfaces import IExternalStorage
 from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.jeep import Jeep
 
+from loops.base import ParentInfo
+from loops.common import ResourceAdapterBase, adapted
+from loops.concept import ResourceRelation
 from loops.interfaces import IBaseResource, IResource
 from loops.interfaces import IFile, IExternalFile, INote
 from loops.interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
@@ -58,8 +62,7 @@ from loops.interfaces import IResourceManager, IResourceManagerContained
 from loops.interfaces import ITypeConcept
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
-from loops.concept import ResourceRelation
-from loops.common import ResourceAdapterBase, adapted
+from loops import util
 from loops.versioning.util import getMaster
 from loops.view import TargetRelation
 
@@ -75,6 +78,9 @@ class ResourceManager(BTreeContainer):
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
+
+    def getAllParents(self, collectGrants=False):
+        return Jeep()
 
 
 class Resource(Image, Contained):
@@ -160,6 +166,17 @@ class Resource(Image, Contained):
 
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
+
+    def getAllParents(self, collectGrants=False):
+        result = Jeep()
+        for rel in self.getConceptRelations():
+            obj = rel.first
+            uid = util.getUidForObject(obj)
+            pi = result.setdefault(uid, ParentInfo(obj))
+            if rel not in pi.relations:
+                pi.relations.append(rel)
+            obj.getAllParents(collectGrants, result)
+        return result
 
     # concept relations
     # note: we always use the master version for relations, see getMaster()

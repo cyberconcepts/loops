@@ -30,15 +30,25 @@
   </zope:class>
 
   <zope:adapter
-        factory="loops.classifier.sample.Analyzer"
+        factory="loops.classifier.sample.SampleAnalyzer"
         name="sample"
         trusted="True" />
 
-  <zope:class class="loops.classifier.sample.Analyzer">
+  <zope:class class="loops.classifier.sample.SampleAnalyzer">
     <require permission="zope.View"
         interface="loops.classifier.interfaces.IAnalyzer" />
     <require permission="zope.ManageContent"
         set_schema="loops.classifier.interfaces.IAnalyzer" />
   </zope:class>
+
+  <!-- view -->
+
+  <zope:adapter
+        name="classifier.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.classifier.browser.ClassifierView"
+        permission="zope.View" />
 
 </configure>

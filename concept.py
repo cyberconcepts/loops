@@ -39,11 +39,14 @@ from cybertools.relation.registry import getRelations
 from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.jeep import Jeep
 
+from loops.base import ParentInfo
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
+from loops import util
 from loops.view import TargetRelation
 
 
@@ -132,6 +135,20 @@ class Concept(Contained, Persistent):
     def getConceptManager(self):
         return self.getLoopsRoot().getConceptManager()
 
+    def getAllParents(self, collectGrants=False, result=None):
+        if result is None:
+            result = Jeep()
+        for rel in self.getParentRelations():
+            obj = rel.first
+            uid = util.getUidForObject(obj)
+            pi = result.get(uid)
+            if pi is None:
+                result[uid] = ParentInfo(obj, [rel])
+                obj.getAllParents(collectGrants, result)
+            elif rel not in pi.relations:
+                pi.relations.append(rel)
+        return result
+
     # concept relations
 
     def getClients(self, relationships=None):
@@ -214,6 +231,9 @@ class ConceptManager(BTreeContainer):
 
     def getLoopsRoot(self):
         return zapi.getParent(self)
+
+    def getAllParents(self, collectGrants=False):
+        return Jeep()
 
     def getTypePredicate(self):
         return self.get('hasType')

@@ -43,8 +43,6 @@ class TestSite(BaseTestSite):
         component.provideAdapter(OrganizeSetupManager, name='organize')
         concepts, resources, views = self.baseSetup()
 
-        #catalog = component.getUtility(ICatalog)
-        #catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
         # classifier and Co
         tType = concepts.getTypeConcept()
         tClassifier = addAndConfigureObject(concepts, Concept, 'classifier',

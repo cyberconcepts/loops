@@ -28,6 +28,7 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView
+from loops.common import adapted
 
 
 class ExternalCollectionView(ConceptView):
@@ -40,9 +41,8 @@ class ExternalCollectionView(ConceptView):
 
     def update(self):
         if 'update' in self.request.form:
-            ti = IType(self.context).typeInterface
-            if ti is not None:
-                adapted = ti(self.context)
-                adapted.update()
+            cta = adapted(self.context)
+            if cta is not None:
+                cta.update()
         return True
 

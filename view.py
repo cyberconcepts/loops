@@ -39,13 +39,16 @@ from persistent import Persistent
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
+from cybertools.util.jeep import Jeep
 
+from loops.base import ParentInfo
 from loops.interfaces import IView, INode
 from loops.interfaces import IViewManager, INodeContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import ITargetRelation
 from loops.interfaces import IConcept
 from loops.versioning.util import getVersion
+from loops import util
 
 
 class View(object):
@@ -103,6 +106,9 @@ class View(object):
     def getLoopsRoot(self):
         return zapi.getParent(self).getLoopsRoot()
 
+    def getAllParents(self, collectGrants=False):
+        return Jeep()
+
 
 class Node(View, OrderedContainer):
 
@@ -127,6 +133,14 @@ class Node(View, OrderedContainer):
                 return parent
             parent = zapi.getParent(parent)
         return None
+
+    def getAllParents(self, collectGrants=False):
+        result = Jeep()
+        parent = self.getParentNode()
+        while parent is not None:
+            result[util.getUidForObject(parent)] = ParentInfo(parent)
+            parent = parent.getParentNode()
+        return result
 
     def getChildNodes(self, nodeTypes=None):
         for item in self.values():
@@ -169,6 +183,9 @@ class ViewManager(OrderedContainer):
 
     def getViewManager(self):
         return self
+
+    def getAllParents(self, collectGrants=False):
+        return Jeep()
 
 
 class TargetRelation(DyadicRelation):

@@ -28,3 +28,36 @@ from zope.cachedescriptors.property import Lazy
 
 from loops.browser.concept import ConceptView
 from loops.common import adapted
+
+
+class ClassifierView(ConceptView):
+
+    macro_template = ViewPageTemplateFile('classifier_macros.pt')
+
+    @property
+    def macro(self):
+        return self.macro_template.macros['render_classifier']
+
+    def update(self):
+        if 'update' in self.request.form:
+            cta = adapted(self.context)
+            if cta is not None:
+                for r in collectResources(self.context):
+                    print '***', r.title
+                    cta.process(r)
+        return True
+
+
+def collectResources(concept, checkedConcepts=None, result=None):
+    if result is None:
+        result = []
+    if checkedConcepts is None:
+        checkedConcepts = []
+    for r in concept.getResources():
+        if r not in result:
+            result.append(r)
+    for c in concept.getChildren():
+        if c not in checkedConcepts:
+            checkedConcepts.append(c)
+            collectResources(c, checkedConcepts, result)
+    return result

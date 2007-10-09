@@ -42,12 +42,20 @@ class ILoopsObject(Interface):
     """ Common top-level interface.
     """
 
+    title = Attribute(u'A short line of information about an object to be '
+                       'used e.g. for menu items or listing entries.')
+
     def getLoopsRoot():
         """ Return the loops root object.
         """
 
-    title = Attribute(u'A short line of information about an object to be '
-                       'used e.g. for menu items or listing entries.')
+    def getAllParents(collectGrants=False):
+        """ Return a sequence (or an ordered mapping / Jeep object)
+            with informations about all parents of the object.
+
+            If ``collectGrants`` is set also collect grant information
+            (assigned/effective roles) together with the parents.
+        """
 
 
 class IPotentialTarget(Interface):

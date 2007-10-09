@@ -29,6 +29,7 @@ from zope.app.folder.interfaces import IFolder
 from zope.traversing.api import getPath, traverse
 from zope.interface import implements
 
+from cybertools.util.jeep import Jeep
 from loops.interfaces import ILoops
 
 loopsPrefix = '.loops'
@@ -58,6 +59,9 @@ class Loops(Folder):
     def getLoopsRoot(self):
         return self
 
+    def getAllParents(self, collectGrants=False):
+        return Jeep()
+
     def getConceptManager(self):
         return self['concepts']
 
@@ -74,6 +78,14 @@ class Loops(Folder):
         prefix = loopsPrefix + '/'
         if uri.startswith(prefix):
             return traverse(self, uri[len(prefix):])
+
+
+class ParentInfo(object):
+
+    def __init__(self, obj, relations=None, grants=None):
+        self.object = obj
+        self.relations = relations or []
+        self.grants = grants or []
 
 
 # backward compatibility for old loops sites that got their Loops object

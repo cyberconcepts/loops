@@ -768,6 +768,25 @@ target object's view here:
   'http://127.0.0.1/loops/views/m1/m11/m111/.target23'
 
 
+Collecting Information about Parents
+====================================
+
+Sometimes, e.g. when checking permissions, it is important to collect
+informations about all parents of an object.
+
+  >>> parents = m113.getAllParents()
+  >>> for p in parents:
+  ...     print p.object.title
+  Zope
+  Menu
+
+  >>> parents = resources['test_note'].getAllParents()
+  >>> for p in parents:
+  ...     print p.object.title, len(p.relations)
+  Note 1
+  Type 2
+
+
 Import/Export
 =============
 
