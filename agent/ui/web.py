@@ -5,6 +5,11 @@
 # version: 0.1
 #------------------------------------------------------
 
+"""
+
+$Id$
+"""
+
 import sys
 import os
 import tempfile
@@ -12,15 +17,20 @@ import cPickle
 import traceback
 import time
 import email
-import _winreg as winreg 
+try:
+    import _winreg as winreg
+    USE_WINDOWS = True
+except ImportError:
+    USE_WINDOWS = False
 
 from nevow import loaders, rend, static, url, inevow, tags
 from nevow.inevow import IRequest
 from twisted.internet import defer
 
-from loops.agent.crawl import outlook
 from loops.agent import core
-from loops.agent.crawl.outlook import OutlookResource
+if USE_WINDOWS:
+    from loops.agent.crawl import outlook
+    from loops.agent.crawl.outlook import OutlookResource
 from loops.agent.crawl.filesystem import FileResource
 
 # ---- global definitions and settings ---------------------------------
@@ -30,7 +40,7 @@ PICKLE_MAILS = 0
 DEBUG = 1
 resourcesDirectory = 'resources'
 templatesDirectory = 'templates'
- 
+
 # some constatnts
 _REG_KEY_CONST_ = "SOFTWARE\\Classes\\mailto\\shell\\open\\command"
 _OUTLOOK_2007_ = "Office12"
@@ -41,7 +51,8 @@ _OUTLOOK_EXPRESS_ = "Office10"
 
 
 def template(fn):
-    return loaders.xmlfile(os.path.join(templatesDirectory, fn))
+    return loaders.xmlfile(os.path.join(
+                os.path.dirname(__file__), templatesDirectory, fn))
 
 
 def getConfigIndex(agentobj, index_name, default_value, fn=None):
@@ -55,7 +66,7 @@ def getOutlookVersion():
     checks what outlook version we have to handle
 
     Returns the standard email application on this machine.
-    
+
     Therefor we have to read out the registry key
          "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\mailto\shell\open\command"
 
@@ -68,44 +79,44 @@ def getOutlookVersion():
                  Outlook versions installed and modify,
                  if needed the defined constants and return
                  values of the getOutlookVersion function
-         
+
     """
     # open registry key
-    try: 
-        key = winreg.OpenKey( 
-                    winreg.HKEY_LOCAL_MACHINE, 
-                    _REG_KEY_CONST_ ) 
-        
-    except WindowsError: 
+    try:
+        key = winreg.OpenKey(
+                    winreg.HKEY_LOCAL_MACHINE,
+                    _REG_KEY_CONST_ )
+
+    except WindowsError:
         return None
-     
-    try: 
-        try: 
-            # read out current standard outlook version 
+
+    try:
+        try:
+            # read out current standard outlook version
             version = winreg.QueryValueEx(key, "")[0]
-            # check what outlook we have 
+            # check what outlook we have
             if version:
                 if _OUTLOOK_2007_ in version:
                     version = _OUTLOOK_2007_
-                
+
                 elif _OUTLOOK_2003_ in version:
                     version = _OUTLOOK_2003_
-                
+
                 elif _OUTLOOK_EXPRESS_ in version:
-                    version = _OUTLOOK_EXPRESS_  
-                
-        except WindowsError: 
-            version = "" 
-    finally: 
-        # close key 
-        winreg.CloseKey(key) 
+                    version = _OUTLOOK_EXPRESS_
+
+        except WindowsError:
+            version = ""
+    finally:
+        # close key
+        winreg.CloseKey(key)
 
     #print '--> getOutlookVersion(): Outlook version found, version is: ', version
-    # return key value 
-    return version 
+    # return key value
+    return version
 
 
-# AgentHome 
+# AgentHome
 # root page of the Agent UI
 
 class AgentHome(rend.Page):
@@ -123,10 +134,11 @@ class AgentHome(rend.Page):
     __init__ -- Load the initial start-up settings from config
 
     """
-    
-    child_resources = static.File(resourcesDirectory)
+
+    child_resources = static.File(os.path.join(
+                        os.path.dirname(__file__),resourcesDirectory))
     docFactory = template('agent.html')
-    
+
     def __init__(self, agent=None, first_start=1):
         """ Initialize the AgentHome object.
 
@@ -145,14 +157,14 @@ class AgentHome(rend.Page):
             print "[AgentHome] setting self.usermode: ", self.agent.config.ui.web.usermode
         else:
             self.agent = agent
-        
+
     """
     def locateChild(self, ctx, segments):
         return self, ()
     """
-    
+
     # calls to child pages
-    
+
     def child_joboverview(self, context):
         """ User requested page from menue: 'job overview' """
         return JobOverView(self.agent)
@@ -204,7 +216,7 @@ class AgentHome(rend.Page):
         """
         selected_job = ((IRequest(context).uri).split("?"))[1]
         crawl_index = selected_job.split(".")[1]
-        
+
         return JobOverViewDetails(self.agent, crawl_index)
 
     # "add outlook crawl job" methods (class AgentOutlookMailCrawl)
@@ -216,12 +228,12 @@ class AgentHome(rend.Page):
         crawlSubfolder = False
         form = IRequest(context).args
         if form != {}:
-            index = getConfigIndex(self.agent, 'type', 'unused')     
+            index = getConfigIndex(self.agent, 'type', 'unused')
             #save job configuration
             if form['mailCrawlInterval'][0] == "oneTime":
                 conf.crawl[index].state = 'completed'
             else:
-                conf.crawl[index].state = 'active'   
+                conf.crawl[index].state = 'active'
             conf.crawl[index].jobid = 'outlook.%i' %(index)
             conf.crawl[index].type = 'OutlookMail'
             if form.has_key('inbox'):
@@ -283,17 +295,17 @@ class AgentHome(rend.Page):
                 return deferred
             else:
                 #TODO implement forwarding to next form (scheduler)
-                return AgentOutlookMailCrawl(self.agent, "Scheduled Mail Crawling not implemented yet.") 
-                
+                return AgentOutlookMailCrawl(self.agent, "Scheduled Mail Crawling not implemented yet.")
+
         else:
-            return AgentOutlookMailCrawl(self.agent, "An error occurred: form data has been empty.")                  
+            return AgentOutlookMailCrawl(self.agent, "An error occurred: form data has been empty.")
         return AgentOutlookMailCrawl(self.agent, "Crawl Job settings have been saved.")
-        
+
     def defMailCrawl(self, mail_collection, index, params, context):
         """Save and Forward the mail collection to a page view."""
         if DEBUG:
             print "====> seting and saving mails to disk"
-            print "====> agent base dir: ",self.agent.tempdir      
+            print "====> agent base dir: ",self.agent.tempdir
         tmpdir =  tempfile.mkdtemp(prefix='mailJob_%i_'%(index), dir=self.agent.tempdir)
         if DEBUG:
             print "====> outlook job dir: ", tmpdir
@@ -312,7 +324,7 @@ class AgentHome(rend.Page):
                 # Idea could be a object that stores all current paths and
                 # their crawlIDs
                 os.write(tmpfile[0], cPickle.dumps(elem))
-            os.close(tmpfile[0])  
+            os.close(tmpfile[0])
             filenum = filenum + 1
         return RessourceView(self.agent, mail_collection, "The collected mails have been saved in %s"%(tmpdir), tmpdir)
 
@@ -331,7 +343,7 @@ class AgentHome(rend.Page):
         Returns page object which displays the available information.
 
         """
-        selected_item = ((IRequest(context).uri).split("?"))[1]   
+        selected_item = ((IRequest(context).uri).split("?"))[1]
         form = IRequest(context).args
         if form != {}:
             requested_file=""
@@ -346,7 +358,7 @@ class AgentHome(rend.Page):
                 if elem.startswith(("%i_mail_"%(int(selected_item))), 0):
                     requested_file = elem
             requested_file = os.path.join(form['ressourceObjData'][0], requested_file)
-            if requested_file.find("mail") > 0:        
+            if requested_file.find("mail") > 0:
                 fp = open(requested_file, "rb")
                 mail_parser = email.Parser.Parser()
                 mailobj = OutlookResource(mail_parser.parse(fp))
@@ -359,7 +371,7 @@ class AgentHome(rend.Page):
                     mail.append(elem)
                 if hasattr(mailobj.data, 'preamble'):
                     if DEBUG:
-                        print "====> copying preamble contents"                    
+                        print "====> copying preamble contents"
                     mail.append(['Preamble', mailobj.data.preamble])
                 else:
                     mail.append(['Preamble',''])
@@ -372,7 +384,7 @@ class AgentHome(rend.Page):
                 return OutlookMailDetail(agent=self.agent, pagemessage="", mail=mail, filename=requested_file)
             elif requested_file.find("file") > 0:
                 #TODO implement file analyzing
-                return FileObjectDetail(agent=self.agent, pagemessage="", fileobj=fileobj, filename=requested_file)            
+                return FileObjectDetail(agent=self.agent, pagemessage="", fileobj=fileobj, filename=requested_file)
         if os.path.isdir(selected_item):
             # selected item is a folder -> change to that folder
             if DEBUG:
@@ -421,7 +433,7 @@ class AgentHome(rend.Page):
     def render_header_fragment(self, context, data):
         return context.tag[HeaderFragment(data)]
 
-    
+
 class FooterFragment(rend.Fragment):
     docFactory = template('footer.html')
 
@@ -437,7 +449,7 @@ class TopFragment(rend.Fragment):
 class HeaderFragment(rend.Fragment):
     docFactory = template('header.html')
 
-   
+
 # subpages of AgentHome
 
 class JobOverView(rend.Page):
@@ -445,7 +457,7 @@ class JobOverView(rend.Page):
     """Builds page that lists all currently registered jobs.
 
     Instance variables:
-    agent -- agent object where config and tempdir attributes can be accessed 
+    agent -- agent object where config and tempdir attributes can be accessed
 
     Class methods:
     At the moment all methods of this class except the __init__
@@ -454,7 +466,7 @@ class JobOverView(rend.Page):
     __init__ -- Store the initial settings retrieved from AgentHome.
 
     """
-    
+
     docFactory = template('joblisting.html')
 
     def __init__(self, agent=None):
@@ -462,7 +474,7 @@ class JobOverView(rend.Page):
         self.agent = agent
 
     # rendering methods of job overview
-    
+
     def data_displayViewForm(self, context, data):
         return "Overview of all running Crawling jobs"
 
@@ -536,7 +548,7 @@ class JobOverView(rend.Page):
 
 
 class JobOverViewDetails(rend.Page):
-    
+
     """Builds page that displays detailed information about a selected job.
 
     Instance variables:
@@ -574,7 +586,7 @@ class JobOverViewDetails(rend.Page):
         print "[render_displayJobDetails] usermode: ", self.agent.config.ui.web.usermode
         print "*******************************************************"
 
-        if self.selected_index != None:        
+        if self.selected_index != None:
             job_detailtable = [tags.tr
                                    [
                                      tags.td[tags.b[parameter[0]]],
@@ -598,7 +610,7 @@ class JobOverViewDetails(rend.Page):
 
 
 class RessourceView(rend.Page):
-    
+
     """Builds page that displays an overview of all collected mails.
 
     Instance variables:
@@ -701,7 +713,7 @@ class RessourceView(rend.Page):
                                 tags.th["Date modified"],
                                 tags.th["Filetype"]
                               ]
-                            ] 
+                            ]
         elif isinstance(self.ressource_collection[0], FileResource):
             if DEBUG:
                 print "====> instance is a FileResource"
@@ -713,7 +725,7 @@ class RessourceView(rend.Page):
                        tags.th["Date modified"],
                        tags.th["Filetype"]
                      ]
-                  ] 
+                  ]
         elif isinstance(self.ressource_collection[0], OutlookResource):
             if DEBUG:
                 print "====> instance is a OutlookResource"
@@ -725,7 +737,7 @@ class RessourceView(rend.Page):
                        tags.th["Recipient"],
                        tags.th["Date"]
                      ]
-                  ]              
+                  ]
         # raise exception here?
         return "could not find a matching object type"
 
@@ -736,7 +748,7 @@ class RessourceView(rend.Page):
                 print "====> building ressource with ressource_collection"
             index = 0
             ressource_table = []
-            if isinstance(self.ressource_collection[0],OutlookResource):       
+            if isinstance(self.ressource_collection[0],OutlookResource):
                 for ressourceObject in self.ressource_collection:
                     ressource_table.append(tags.form(name="ressourceEntry%i"%(index), action="viewRessourceDetails?%i"%(index), method="POST")[
                                        tags.input(name="ressourceObjData", type="hidden", value="%s"%(self.temp_dir)),
@@ -765,7 +777,7 @@ class RessourceView(rend.Page):
             if isinstance(self.ressource_collection[0],FileResource):
                 #TODO: implement building the table for file objects
                 return ressource_table
-        
+
         else:
             if DEBUG:
                 print "====> building ressource by analyzing submitted dir"
@@ -797,7 +809,7 @@ class RessourceView(rend.Page):
                                                   tags.td[files_in_subdir]
                                                  ]
                                            )
-                        
+
                 elif os.path.isfile(element):
                     if elem.find("file") > 0:
                         if DEBUG:
@@ -866,7 +878,7 @@ class RessourceView(rend.Page):
 
 
 class AgentOutlookMailCrawl(rend.Page):
-    
+
     """Builds page where an Outlook Mail Crawler can be configured and run.
 
     Instance variables:
@@ -924,7 +936,7 @@ class AgentOutlookMailCrawl(rend.Page):
 
 
 class AgentFilesystemCrawl(rend.Page):
-    
+
     """Builds page where an Filesystem Crawler can be configured and run.
 
     Instance variables:
@@ -981,7 +993,7 @@ class AgentFilesystemCrawl(rend.Page):
 
 
 class OutlookMailDetail(rend.Page):
-    
+
     """Builds page that displays the selected mail in detail.
 
     Instance variables:
@@ -997,7 +1009,7 @@ class OutlookMailDetail(rend.Page):
     __init__ -- Store the mail collection object and the pagemessage
 
     """
-                            
+
     docFactory = template('mail_detailed.html')
 
     def __init__(self, agent=None, pagemessage="", mail=[], filename=""):
@@ -1032,7 +1044,7 @@ class OutlookMailDetail(rend.Page):
                                  ]
                                 )
             return mail_view
-        
+
     def render_footer_fragment(self, context, data):
         return context.tag[FooterFragment(data)]
 
@@ -1044,4 +1056,4 @@ class OutlookMailDetail(rend.Page):
 
     def render_header_fragment(self, context, data):
         return context.tag[HeaderFragment(data)]
-    
+
