@@ -17,29 +17,15 @@ and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from cybertools.relation.interfaces import IRelationRegistry
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> relations = DummyRelationRegistry()
-  >>> component.provideUtility(relations, IRelationRegistry)
-
-  >>> from cybertools.typology.interfaces import IType
-  >>> from loops.interfaces import IConcept, ITypeConcept
-  >>> from loops.type import ConceptType, TypeConcept
-  >>> component.provideAdapter(ConceptType, (IConcept,), IType)
-  >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
-
-  >>> from loops.interfaces import ILoops
+  >>> from loops.interfaces import ILoops, IConcept
   >>> from loops.setup import ISetupManager
   >>> from loops.knowledge.setup import SetupManager
   >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
   ...                           name='knowledge')
 
-  >>> from loops.base import Loops
-  >>> loopsRoot = site['loops'] = Loops()
-
-  >>> from loops.setup import SetupManager
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
 
 We need some type concepts for controlling the meaning of the concepts objects,
 these have already been created during setup:
