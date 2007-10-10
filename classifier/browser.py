@@ -43,7 +43,6 @@ class ClassifierView(ConceptView):
             cta = adapted(self.context)
             if cta is not None:
                 for r in collectResources(self.context):
-                    print '***', r.title
                     cta.process(r)
         return True
 

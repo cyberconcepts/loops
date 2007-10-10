@@ -32,6 +32,7 @@ from cybertools.typology.interfaces import IType
 from loops.classifier.base import Analyzer
 from loops.classifier.base import Statement
 from loops.common import adapted
+from loops.query import ConceptQuery
 
 
 class SampleAnalyzer(Analyzer):
@@ -45,6 +46,10 @@ class SampleAnalyzer(Analyzer):
         being the short name of the user that is responsible for the
         resource.
     """
+
+    @Lazy
+    def query(self):
+        return ConceptQuery(self.context)
 
     def handleCustomer(self, name):
         custTypes = self.getTypes(('institution', 'customer',))
@@ -90,8 +95,7 @@ class SampleAnalyzer(Analyzer):
         return result
 
     def findConcepts(self, name):
-        cat = component.getUtility(ICatalog)
-        return cat.searchResults(loops_text=name)
+        return self.query.query(name, 'loops:concept:*')
 
     @Lazy
     def conceptManager(self):

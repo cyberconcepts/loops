@@ -84,6 +84,9 @@ and follow the classifier step by step.
   >>> infoSet
   {'filename': 'cust_im_contract_webbg_20071015.txt'}
 
+Let's now use the sample analyzer - an example that interprets very carefully
+the underscore-separated parts of the filename.
+
   >>> analyzer = component.getAdapter(classifier, name=classifier.analyzer)
   >>> statements = analyzer.extractStatements(infoSet)
   >>> statements
@@ -137,6 +140,13 @@ So we are now ready to have the whole stuff run in one call.
   4
   >>> len(webbg.getResources((concepts['ownedby'],)))
   3
+
+We can repeat the process without getting additional assignments.
+
+  >>> for name in rnames[1:]:
+  ...     classifier.process(resources[name])
+  >>> len(webbg.getResources())
+  4
 
 
 Fin de partie

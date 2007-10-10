@@ -69,10 +69,13 @@ class Classifier(AdapterBase):
                 statement.subject = resource
             if statement.predicate is None:
                 statement.predicate = defaultPredicate
-            self.assignConcept(statement)
+            self.assignConcept(statement.subject, statement.object,
+                               statement.predicate)
 
-    def assignConcept(self, statement):
-        statement.object.assignResource(statement.subject, statement.predicate)
+    def assignConcept(self, resource, concept, predicate):
+        resources = concept.getResources([predicate])
+        if resource not in resources:
+            concept.assignResource(resource, predicate)
 
 
 class Extractor(object):

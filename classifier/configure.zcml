@@ -3,13 +3,11 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="zope">
 
   <zope:adapter
         factory="loops.classifier.base.Classifier"
         trusted="True" />
-
   <zope:class class="loops.classifier.base.Classifier">
     <require permission="zope.View"
         interface="loops.classifier.interfaces.IClassifier" />
@@ -19,9 +17,7 @@
 
   <zope:adapter
         factory="loops.classifier.standard.FilenameExtractor"
-        name="filename"
-        trusted="True" />
-
+        name="filename" trusted="True" />
   <zope:class class="loops.classifier.standard.FilenameExtractor">
     <require permission="zope.View"
         interface="loops.classifier.interfaces.IExtractor" />
@@ -30,10 +26,28 @@
   </zope:class>
 
   <zope:adapter
-        factory="loops.classifier.sample.SampleAnalyzer"
-        name="sample"
-        trusted="True" />
+        factory="loops.classifier.standard.PathExtractor"
+        name="path" trusted="True" />
+  <zope:class class="loops.classifier.standard.PathExtractor">
+    <require permission="zope.View"
+        interface="loops.classifier.interfaces.IExtractor" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.classifier.interfaces.IExtractor" />
+  </zope:class>
 
+  <zope:adapter
+        factory="loops.classifier.standard.WordBasedAnalyzer"
+        name="word-based" trusted="True" />
+  <zope:class class="loops.classifier.standard.WordBasedAnalyzer">
+    <require permission="zope.View"
+        interface="loops.classifier.interfaces.IAnalyzer" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.classifier.interfaces.IAnalyzer" />
+  </zope:class>
+
+  <zope:adapter
+        factory="loops.classifier.sample.SampleAnalyzer"
+        name="sample" trusted="True" />
   <zope:class class="loops.classifier.sample.SampleAnalyzer">
     <require permission="zope.View"
         interface="loops.classifier.interfaces.IAnalyzer" />
