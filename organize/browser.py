@@ -64,17 +64,17 @@ class MyStuff(ConceptView):
         return self
 
 
-class PasswordWidget(BasePasswordWidget):
-
-    def getInputValue(self):
-        value = super(PasswordWidget, self).getInputValue()
-        confirm = self.request.get('form.passwordConfirm')
-        if confirm != value:
-            v = _(u'Password and password confirmation do not match.')
-            self._error = WidgetInputError(
-                self.context.__name__, self.label, v)
-            raise self._error
-        return value
+#class PasswordWidget(BasePasswordWidget):
+#
+#    def getInputValue(self):
+#        value = super(PasswordWidget, self).getInputValue()
+#        confirm = self.request.get('form.passwordConfirm')
+#        if confirm != value:
+#            v = _(u'Password and password confirmation do not match.')
+#            self._error = WidgetInputError(
+#                self.context.__name__, self.label, v)
+#            raise self._error
+#        return value
 
 
 class MemberRegistration(NodeView, CreateForm):
@@ -100,8 +100,8 @@ class MemberRegistration(NodeView, CreateForm):
     @Lazy
     def schema(self):
         schema = super(MemberRegistration, self).schema
-        if 'birthDate' in schema.fields:
-            del schema.fields['birthDate']
+        schema.fields.remove('birthDate')
+        schema.fields.reorder(-2, 'loginName')
         return schema
 
     @Lazy

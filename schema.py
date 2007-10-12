@@ -44,9 +44,8 @@ class FileSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(FileSchemaFactory, self).__call__(interface, **kw)
-        if ('request' in kw and kw['request'].principal.id != 'rootadmin'
-                            and 'contentType' in schema.fields.keys()):
-            del schema.fields['contentType']
+        if 'request' in kw and kw['request'].principal.id != 'rootadmin':
+            schema.fields.remove('contentType')
         return schema
 
 
@@ -56,8 +55,7 @@ class NoteSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(NoteSchemaFactory, self).__call__(interface, **kw)
-        del schema.fields['description']
+        schema.fields.remove('description')
         schema.fields.data.height = 5
         return schema
-
 
