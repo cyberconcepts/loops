@@ -47,6 +47,9 @@ def raiseValidationError(info):
 
 
 class UserId(schema.TextLine):
+    """ Obsolete, as member registration does not use zope.formlib any more.
+        TODO: transfer validation to loops.organize.browser.
+    """
 
     def _validate(self, userId):
         from loops.organize.party import getPersonForUser
@@ -68,6 +71,9 @@ class UserId(schema.TextLine):
 
 
 class LoginName(schema.TextLine):
+    """ Obsolete, as member registration does not use zope.formlib any more.
+        TODO: transfer validation to loops.organize.browser.
+    """
 
     def _validate(self, userId):
         super(LoginName, self)._validate(userId)

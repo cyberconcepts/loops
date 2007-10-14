@@ -64,19 +64,6 @@ class MyStuff(ConceptView):
         return self
 
 
-#class PasswordWidget(BasePasswordWidget):
-#
-#    def getInputValue(self):
-#        value = super(PasswordWidget, self).getInputValue()
-#        confirm = self.request.get('form.passwordConfirm')
-#        if confirm != value:
-#            v = _(u'Password and password confirmation do not match.')
-#            self._error = WidgetInputError(
-#                self.context.__name__, self.label, v)
-#            raise self._error
-#        return value
-
-
 class MemberRegistration(NodeView, CreateForm):
 
     interface = IMemberRegistration

@@ -33,7 +33,7 @@ from zope.app.form.browser.textwidgets import FileWidget, TextAreaWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.contenttype import guess_content_type
-from zope.formlib.form import Form, EditForm, FormFields
+#from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
 from zope.security.proxy import isinstance, removeSecurityProxy
@@ -67,17 +67,26 @@ class ObjectForm(NodeView):
 
     template = ViewPageTemplateFile('form_macros.pt')
     formState = FormState()     # dummy, don't update!
+    isInnerHtml = True
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
+        # target is the object the view acts upon - this is not necessarily
+        # the same object as the context (the object the view was created for)
+        self.target = context
+
+    @Lazy
+    def item(self):
+        # show this view on the page instead of the node's view
+        return self
 
     @Lazy
     def adapted(self):
-        return adapted(self.context)
+        return adapted(self.target)
 
     @Lazy
     def typeInterface(self):
-        return IType(self.context).typeInterface or ITextDocument
+        return IType(self.target).typeInterface or ITextDocument
 
     @Lazy
     def fieldRenderers(self):
@@ -110,13 +119,16 @@ class ObjectForm(NodeView):
 
     @Lazy
     def instance(self):
-        return IInstance(adapted(self.context))
+        return IInstance(self.adapted)
 
     def __call__(self):
-        response = self.request.response
-        response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
-        response.setHeader('Pragma', 'no-cache')
-        return innerHtml(self)
+        if self.isInnerHtml:
+            response = self.request.response
+            response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
+            response.setHeader('Pragma', 'no-cache')
+            return innerHtml(self)
+        else:
+            return super(ObjectForm, self).__call__()
 
     @Lazy
     def defaultPredicate(self):
@@ -128,7 +140,7 @@ class ObjectForm(NodeView):
 
     @Lazy
     def typeManager(self):
-        return ITypeManager(self.context)
+        return ITypeManager(self.target)
 
     @Lazy
     def presetTypesForAssignment(self):
@@ -147,9 +159,9 @@ class ObjectForm(NodeView):
                  for o in result])
 
 
-class EditObjectForm(ObjectForm, EditForm):
+class EditObjectForm(ObjectForm):
 
-    @property
+    @Lazy
     def macro(self):
         return self.template.macros['edit']
 
@@ -159,18 +171,36 @@ class EditObjectForm(ObjectForm, EditForm):
 
     def __init__(self, context, request):
         super(EditObjectForm, self).__init__(context, request)
-        self.url = self.url # keep virtual target URL (???)
-        self.context = self.virtualTargetObject
+        #self.url = self.url # keep virtual target URL (???)
+        self.target = self.virtualTargetObject
 
     @property
     def assignments(self):
-        for c in self.context.getConceptRelations():
+        for c in self.target.getConceptRelations():
             r = ConceptRelationView(c, self.request)
             if r.isProtected: continue
             yield r
 
 
-class CreateObjectForm(ObjectForm, Form):
+class EditConceptForm(EditObjectForm):
+
+    title = _(u'Edit Concept')
+    form_action = 'edit_concept'
+    isInnerHtml = False
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.target).typeInterface or IConcept
+
+    @property
+    def assignments(self):
+        for c in self.target.getParentRelations():
+            r = ConceptRelationView(c, self.request)
+            if not r.isProtected:
+                yield r
+
+
+class CreateObjectForm(ObjectForm):
 
     @property
     def macro(self): return self.template.macros['create']
@@ -200,6 +230,7 @@ class CreateObjectForm(ObjectForm, Form):
     @property
     def assignments(self):
         target = self.virtualTargetObject
+        #target = self.target
         if (IConcept.providedBy(target) and
                 target.conceptType !=
                     self.loopsRoot.getConceptManager().getTypeConcept()):

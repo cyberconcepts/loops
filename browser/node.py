@@ -403,7 +403,7 @@ class InlineEdit(NodeView):
         return 'OK'
 
 
-class CreateObject(NodeView, Form):
+class xxxCreateObject(NodeView, Form):
 
     template = ViewPageTemplateFile('form_macros.pt')
 
