@@ -65,14 +65,14 @@ object, the external collection itself.
   >>> dcp = DirectoryCollectionProvider()
 
   >>> sorted(dcp.collect(aColl01))
-  [('programming/BeautifulProgram.pdf', datetime.datetime(2005, 4, 7, 12, 36, 56)),
-   ('programming/zope/zope3.txt', datetime.datetime(2007, 4, 12, 15, 16, 13))]
+  [('programming/BeautifulProgram.pdf', datetime.datetime(...)),
+   ('programming/zope/zope3.txt', datetime.datetime(...))]
 
 If we provide a more selective pattern we get only part of the files:
 
   >>> aColl01.pattern = r'.*\.txt'
   >>> sorted(dcp.collect(aColl01))
-  [('programming/zope/zope3.txt', datetime.datetime(2007, 4, 12, 15, 16, 13))]
+  [('programming/zope/zope3.txt', datetime.datetime(...))]
 
 Let's now create the corresponding resource objects.
 
