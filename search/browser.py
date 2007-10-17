@@ -123,10 +123,14 @@ class SearchResults(BaseView):
         form = self.request.form
         type = form.get('search.1.text', 'loops:*')
         text = form.get('search.2.text')
+        if text is not None:
+            text = util.toUnicode(text, encoding='ISO8859-15') # IE hack!!!
         useTitle = form.get('search.2.title')
         useFull = form.get('search.2.full')
         conceptType = form.get('search.3.type', 'loops:concept:*')
         conceptTitle = form.get('search.3.text')
+        if conceptTitle is not None:
+            conceptTitle = util.toUnicode(conceptTitle, encoding='ISO8859-15')
         conceptUid = form.get('search.3.text_selected')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=useTitle, useFull=useFull,

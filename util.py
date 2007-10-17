@@ -64,9 +64,9 @@ def nl2br(text):
     else: # gracefully handle Mac line endings
         return '<br />\n'.join(text.split('\r'))
 
-def toUnicode(text):
+def toUnicode(text, encoding='UTF-8'):
     if type(text) is not unicode:
-        return text.decode('UTF-8')
+        return text.decode(encoding)
     else:
         return text
 
