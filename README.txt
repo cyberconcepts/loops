@@ -716,7 +716,7 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkUrl textline False None
 
   >>> view.data
-  {'linkUrl': None, 'contentType': u'', 'data': '',
+  {'linkUrl': u'', 'contentType': u'', 'data': u'',
    'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
