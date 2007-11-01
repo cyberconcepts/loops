@@ -175,16 +175,20 @@ class Concept(Contained, Persistent):
     def getParents(self, predicates=None):
         return [r.first for r in self.getParentRelations(predicates)]
 
-    def assignChild(self, concept, predicate=None):
+    def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
         registry = zapi.getUtility(IRelationRegistry)
         rel = ConceptRelation(self, concept, predicate)
-        registry.register(rel)
+        if order != 0:
+            rel.order = order
+        if relevance != 1.0:
+            rel.relevance = relevance
         # TODO (?): avoid duplicates
+        registry.register(rel)
 
-    def assignParent(self, concept, predicate=None):
-        concept.assignChild(self, predicate)
+    def assignParent(self, concept, predicate=None, order=0, relevance=1.0):
+        concept.assignChild(self, predicate, order, relevance)
 
     def deassignChild(self, child, predicates=None):
         registry = zapi.getUtility(IRelationRegistry)
@@ -205,12 +209,17 @@ class Concept(Contained, Persistent):
     def getResources(self, predicates=None):
         return [r.second for r in self.getResourceRelations(predicates)]
 
-    def assignResource(self, resource, predicate=None):
+    def assignResource(self, resource, predicate=None, order=0, relevance=1.0):
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
         registry = zapi.getUtility(IRelationRegistry)
-        registry.register(ResourceRelation(self, resource, predicate))
+        rel = ResourceRelation(self, resource, predicate)
+        if order != 0:
+            rel.order = order
+        if relevance != 1.0:
+            rel.relevance = relevance
         # TODO (?): avoid duplicates
+        registry.register(rel)
 
     def deassignResource(self, resource, predicates=None):
         registry = zapi.getUtility(IRelationRegistry)

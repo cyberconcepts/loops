@@ -199,9 +199,9 @@ class Resource(Image, Contained):
         obj = getMaster(self)
         return [r.first for r in obj.getConceptRelations(predicates)]
 
-    def assignConcept(self, concept, predicate=None):
+    def assignConcept(self, concept, predicate=None, order=0, relevance=1.0):
         obj = getMaster(self)
-        concept.assignResource(obj, predicate)
+        concept.assignResource(obj, predicate, order, relevance)
 
     def deassignConcept(self, concept, predicates=None):
         obj = getMaster(self)

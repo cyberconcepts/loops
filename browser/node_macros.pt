@@ -23,7 +23,7 @@
                tal:content="structure body">
             The body
           </div>
-          <div tal:define="target nocall:item/target"
+          <div tal:define="target nocall:item/targetObjectView"
                tal:condition="nocall:target">
             <tal:ignore condition="nothing">
                 <div metal:define-macro="editicons"
@@ -70,7 +70,7 @@
                          ondblclick python: item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
-    <tal:concepts define="item nocall:item/target;
+    <tal:concepts define="item nocall:item/targetObjectView;
                           macro item/macro">
       <div metal:use-macro="macro" />
     </tal:concepts>
@@ -131,7 +131,7 @@
 
 
 <metal:resources define-macro="listresources"
-                 tal:define="target nocall:item/target">
+                 tal:define="target nocall:item/targetObjectView">
   <div class="content-1"
        tal:content="structure item/body"
        tal:attributes="ondblclick python: item.openEditWindow();
@@ -139,7 +139,7 @@
     Listing
   </div><br />
   <div tal:attributes="ondblclick python: target.openEditWindow('resources.html')"
-       tal:define="item nocall:item/target"
+       tal:define="item nocall:item/targetObjectView"
        tal:condition="nocall:target">
     <div tal:repeat="related item/resources">
           <a href="#"
@@ -152,7 +152,7 @@
 
 
 <metal:children define-macro="listchildren"
-                 tal:define="target nocall:item/target">
+                 tal:define="target nocall:item/targetObjectView">
   <div class="content-1"
        tal:content="structure item/body"
        tal:attributes="ondblclick python:
@@ -162,7 +162,7 @@
     Listing
   </div><br />
   <div tal:attributes="ondblclick python: target.openEditWindow('configure.html')"
-       tal:define="item nocall:item/target"
+       tal:define="item nocall:item/targetObjectView"
        tal:condition="nocall:target">
     <div tal:repeat="related item/children">
           <a href="#"

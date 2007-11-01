@@ -109,6 +109,11 @@ class BaseView(GenericView):
         except ForbiddenAttribute:  # ignore when testing
             pass
 
+    @Lazy
+    def target(self):
+        # allow for having a separate object the view acts upon
+        return self.context
+
     def setSkin(self, skinName):
         skin = None
         if skinName and IView.providedBy(self.context):
@@ -279,33 +284,38 @@ class BaseView(GenericView):
 
     @Lazy
     def versionId(self):
-        versionable = IVersionable(self.context, None)
+        #versionable = IVersionable(self.context, None)
+        versionable = IVersionable(self.target, None)
         return versionable and versionable.versionId or ''
 
     @Lazy
     def currentVersionId(self):
-        versionable = IVersionable(self.context, None)
+        #versionable = IVersionable(self.context, None)
+        versionable = IVersionable(self.target, None)
         return versionable and versionable.currentVersion.versionId or ''
 
     @Lazy
     def hasVersions(self):
-        versionable = IVersionable(self.context, None)
+        #versionable = IVersionable(self.context, None)
+        versionable = IVersionable(self.target, None)
         return versionable and len(versionable.versions) > 1 or False
 
     @Lazy
     def versionInfo(self):
         if not self.useVersioning:
             return None
-        context = self.context
-        versionable = IVersionable(context, None)
+        #context = self.context
+        #versionable = IVersionable(context, None)
+        target = self.target
+        versionable = IVersionable(target, None)
         if versionable is None:
             return ''
         versionId = versionable.versionId
         td = component.getUtility(ITranslationDomain, _._domain)
-        current = ((versionable.currentVersion == context)
+        current = ((versionable.currentVersion == target)
                    and td.translate(_(u'current'), context=self.request)
                    or u'')
-        released = ((versionable.releasedVersion == context)
+        released = ((versionable.releasedVersion == target)
                     and td.translate(_(u'released'), context=self.request)
                     or u'')
         if not current and not released:

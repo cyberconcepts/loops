@@ -53,6 +53,7 @@ from loops import util
 from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.versioning.util import getVersion
 
 
 node_macros = ViewPageTemplateFile('node_macros.pt')
@@ -148,25 +149,33 @@ class NodeView(BaseView):
     def targetObject(self):
         # xxx: use virtualTargetObject
         #return self.virtualTargetObject
-        return self.context.target
+        target = self.context.target
+        if target is not None:
+            target = getVersion(target, self.request)
+        return target
 
     @Lazy
-    def target(self):
+    def targetObjectView(self):
         obj = self.targetObject
         if obj is not None:
             basicView = zapi.getMultiAdapter((obj, self.request))
             basicView._viewName = self.context.viewName
             return basicView.view
 
+    #@Lazy
+    #def target(self):
+    #    # obsolete and confusing - TODO: remove...
+    #    return self.targetObjectView
+
     @Lazy
     def targetUrl(self):
-        t = self.target
+        t = self.targetObjectView
         if t is not None:
             return '%s/.target%s' % (self.url, t.uniqueId)
         return ''
 
     def renderTarget(self):
-        target = self.target
+        target = self.targetObjectView
         return target is not None and target.render() or u''
 
     @Lazy
@@ -256,6 +265,15 @@ class NodeView(BaseView):
 
     # virtual target support
 
+    @Lazy
+    def virtualTargetObject(self):
+        target = self.request.annotations.get('loops.view', {}).get('target')
+        if target is None:
+            target = self.context.target
+            if target is not None:
+                target = getVersion(target, self.request)
+        return target
+
     def targetView(self, name='index.html', methodName='show'):
         target = self.virtualTargetObject
         if target is not None:
@@ -285,13 +303,6 @@ class NodeView(BaseView):
 
     def targetDownload(self):
         return self.targetView('download.html', 'download')
-
-    @Lazy
-    def virtualTargetObject(self):
-        target = self.request.annotations.get('loops.view', {}).get('target')
-        if target is None:
-            target = self.context.target
-        return target
 
     @Lazy
     def virtualTarget(self):
