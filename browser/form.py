@@ -291,7 +291,8 @@ class EditObject(FormController):
         if obj != target:
             # make sure new version is used by the view
             self.view.virtualTargetObject = obj
-            self.request.annotations['loops.view']['target'] = obj
+            viewAnnotations = self.request.annotations.setdefault('loops.view', {})
+            viewAnnotations['target'] = obj
         self.object = obj
         formState = self.updateFields()
         # TODO: error handling
