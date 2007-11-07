@@ -3,7 +3,12 @@
 import unittest, doctest
 from zope.testing.doctestunit import DocFileSuite
 from zope.interface.verify import verifyClass
-from loops.expert import query
+try:
+    from loops.expert import query
+    ignore = False
+except ImportError:
+    print 'Skipping loops.expert'
+    ignore = True
 
 class Test(unittest.TestCase):
     "Basic tests for the expert sub-package."
@@ -13,6 +18,8 @@ class Test(unittest.TestCase):
 
 
 def test_suite():
+    if ignore:
+        return unittest.TestSuite()  # do nothing
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
                 unittest.makeSuite(Test),

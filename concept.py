@@ -72,6 +72,7 @@ class BaseRelation(DyadicRelation):
     #@property
     #def __parent__(self):
     #    return self.first
+    # So we patched zope.location.location, line 109...
 
 
 class ConceptRelation(BaseRelation):
