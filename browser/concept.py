@@ -109,7 +109,7 @@ class ConceptView(BaseView):
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
         rels = sorted(self.context.getChildRelations(),
-                      key=(lambda x: x.second.title))
+                      key=(lambda x: x.second.title.lower()))
         for r in rels:
             if r.predicate == hasType:
                 # only show top-level entries for type instances:
@@ -123,13 +123,13 @@ class ConceptView(BaseView):
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
-                      key=(lambda x: x.first.title))
+                      key=(lambda x: x.first.title.lower()))
         for r in rels:
             yield ConceptRelationView(r, self.request)
 
     def resources(self):
         rels = sorted(self.context.getResourceRelations(),
-                      key=(lambda x: x.second.title))
+                      key=(lambda x: x.second.title.lower()))
         for r in rels:
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
