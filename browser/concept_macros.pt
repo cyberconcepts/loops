@@ -12,6 +12,9 @@
     <h1 tal:attributes="ondblclick item/openEditWindow">
       <span tal:content="item/title">Title</span>
     </h1>
+      <p tal:define="description description|item/description"
+         tal:condition="description">
+        <i tal:content="description">Description</i></p>
 </metal:title>
 
 

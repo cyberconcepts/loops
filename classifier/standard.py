@@ -22,16 +22,16 @@ Standard implementations of classifier components.
 $Id$
 """
 
+import os
 import re
-
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.traversing.api import getName
 
 from loops.classifier.base import Analyzer, Extractor
 from loops.classifier.base import InformationSet
 from loops.classifier.base import Statement
 from loops.interfaces import IExternalFile
-from loops.query import ConceptQuery
 
 
 class FilenameExtractor(Extractor):
@@ -42,7 +42,7 @@ class FilenameExtractor(Extractor):
         self.context = context
 
     def extractInformationSet(self):
-        filename = self.context.externalAddress
+        filename, ext = os.path.splitext(self.context.externalAddress)
         return InformationSet(filename=filename)
 
 
@@ -63,21 +63,22 @@ class PathExtractor(Extractor):
 
 class WordBasedAnalyzer(Analyzer):
 
-    @Lazy
-    def query(self):
-        return ConceptQuery(self.context)
+    stopWords = [u'and', u'und']
 
     def extractStatements(self, informationSet):
         result = []
         for key, value in informationSet.items():
             words = self.split(value)
             for w in words:
-                result.extend([Statement(c) for c in self.findConcepts(w)])
+                if w in self.stopWords:
+                    continue
+                if len(w) > 1:
+                    result.extend([Statement(c) for c in self.findConcepts(w)])
         return result
 
-    def split(self, text):
-        return re.split('\W+', text)
+    wordPattern = '\\'.join(list(' .,+*%&-!?/:_[](){}'))
 
-    def findConcepts(self, word):
-        return self.query.query(word, 'loops:concept:*')
+    def split(self, text):
+        return re.split('[%s]+' % self.wordPattern, text)
+        #return re.split(r'[\W_]+', text)
 

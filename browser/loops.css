@@ -15,6 +15,10 @@ pre {
     max-height: 35em;
 }
 
+table.listing td {
+    white-space: normal;
+}
+
 .box div.body div.even {
     background-color: #f4f4f4;
 }
