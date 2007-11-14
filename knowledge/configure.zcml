@@ -80,4 +80,8 @@
   <zope:adapter factory="loops.knowledge.setup.SetupManager"
                 name="knowledge" />
 
+  <!-- sub-packages -->
+
+  <include package=".glossary" />
+
 </configure>

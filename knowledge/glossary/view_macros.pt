@@ -1,0 +1,17 @@
+<!-- ZPT macros for demo view -->
+
+<metal:block define-macro="glossaryitem">
+
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+
+  <div>siehe:
+    <span tal:repeat="related item/children">
+      <a href="#"
+         tal:content="related/title"
+         tal:attributes="href string:${view/url}/.target${related/uniqueId}">
+        Topic
+      </a><tal:comma condition="not:repeat/related/end">,</tal:comma>
+    </span>
+  </div>
+
+</metal:block>

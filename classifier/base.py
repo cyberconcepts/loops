@@ -53,7 +53,7 @@ class Classifier(AdapterBase):
 
     _contextAttributes = list(IClassifier) + list(IConcept)
 
-    logLevel = 5
+    logLevel = 99  # 99 don't log; 5 minimal logging; 0 full logging
 
     @Lazy
     def conceptManager(self):

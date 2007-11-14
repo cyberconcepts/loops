@@ -1,0 +1,14 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <page for="*"
+        name="glossaryitem.html"
+        class=".browser.GlossaryItemView"
+        permission="zope.View" />
+
+</configure>

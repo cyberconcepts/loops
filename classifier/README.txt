@@ -82,7 +82,7 @@ and follow the classifier step by step.
   extractor: filename
 
   >>> infoSet
-  {'filename': 'cust_im_contract_webbg_20071015.txt'}
+  {'filename': 'cust_im_contract_webbg_20071015'}
 
 Let's now use the sample analyzer - an example that interprets very carefully
 the underscore-separated parts of the filename.
