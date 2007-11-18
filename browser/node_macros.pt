@@ -208,17 +208,11 @@
 
 
 <metal:actions define-macro="actions">
+    <tal:actions repeat="action python:view.getActions('portlet')">
+      <metal:action use-macro="action/macro" />
+    </tal:actions>
     <tal:actions define="dummy view/registerDojo;
                          url view/virtualTargetUrl">
-      <div tal:define="cmUrl view/conceptMapEditorUrl"
-           tal:condition="url">
-        <a href="#" target="loops_cme" i18n:translate=""
-           i18n:attributes="title"
-           title="Open concept map editor in new window"
-           tal:attributes="href cmUrl">
-          Edit Concept Map
-        </a>
-      </div>
       <div>
           <a href="create_object.html" i18n:translate=""
              onclick="objectDialog('create', 'create_object.html'); return false;"

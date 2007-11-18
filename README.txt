@@ -561,6 +561,48 @@ cybertools.relation package.)
   >>> IMediaAssetView.providedBy(m111)
   False
 
+Target views
+------------
+
+We can directly retrieve a target's view by using the NodeView's
+``targetObjectView`` property. If the target is a concept we get a ConceptView
+that provides methods e.g. for retrieving the concept's relations.
+These are again wrapped as views, i.e. as instances of the
+ConceptRelationView class.
+
+  >>> from loops.interfaces import IConcept
+  >>> component.provideAdapter(ConceptView, (IConcept, IBrowserRequest), Interface)
+
+  >>> m112.target = cc1
+  >>> view = NodeView(m112, TestRequest())
+  >>> childRels = list(view.targetObjectView.children())
+  >>> childRels[0]
+  <loops.browser.concept.ConceptRelationView object ...>
+
+A fairly useful method for providing links to target objects of a node
+is ``NodeView.getUrlForTarget()`` that expects a ConceptView, ResourceView,
+or ConceptRelationView as its argument.
+
+  >>> view.getUrlForTarget(childRels[0])
+  'http://127.0.0.1/loops/views/m1/m11/m112/.target39'
+
+Actions
+-------
+
+  >>> from cybertools.browser.liquid.controller import Controller
+  >>> request = TestRequest()
+  >>> view = NodeView(m112, request)
+  >>> view.controller = Controller(view, request)
+  >>> view.setupController()
+
+  >>> actions = view.getActions('portlet')
+  >>> len(actions)
+  1
+
+Clean-up:
+
+  >>> m112.target = None
+
 Ordering Nodes
 --------------
 
@@ -761,11 +803,10 @@ In order to provide suitable links for viewing or editing a target you may
 ask a view which view and edit actions it supports. We directly use the
 target object's view here:
 
-  >>> view.virtualTarget.getActions()
-  [<loops.browser.common.Action object ...>]
-  >>> action = view.virtualTarget.getActions()[0]
-  >>> action.url
-  'http://127.0.0.1/loops/views/m1/m11/m111/.target23'
+  >>> actions = view.virtualTarget.getActions('object', page=view)
+  >>> #actions[0].url
+
+'http://127.0.0.1/loops/views/m1/m11/m111/.target23'
 
 
 Collecting Information about Parents

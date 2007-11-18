@@ -97,6 +97,8 @@ class EditForm(form.EditForm):
 
 class BaseView(GenericView):
 
+    actions = {}  # default only, don't update
+
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
         # TODO: get rid of removeSecurityProxy() call
@@ -329,11 +331,14 @@ class BaseView(GenericView):
     def editable(self):
         return canWrite(self.context, 'title')
 
-    def getActions(self, category):
+    def getActions(self, category='object', page=None):
         """ Return a list of actions that provide the view and edit actions
             available for the context object.
         """
-        return []
+        actions = []
+        if category in self.actions:
+            actions.extend(self.actions[category](self, page=page))
+        return actions
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:

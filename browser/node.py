@@ -51,6 +51,7 @@ from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
 from loops import util
 from loops.util import _
+from loops.browser.action import Action, TargetAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.versioning.util import getVersion
@@ -161,11 +162,6 @@ class NodeView(BaseView):
             basicView = zapi.getMultiAdapter((obj, self.request))
             basicView._viewName = self.context.viewName
             return basicView.view
-
-    #@Lazy
-    #def target(self):
-    #    # obsolete and confusing - TODO: remove...
-    #    return self.targetObjectView
 
     @Lazy
     def targetUrl(self):
@@ -334,11 +330,31 @@ class NodeView(BaseView):
 
     # target viewing and editing support
 
+    def getUrlForTarget(self, target):
+        """ Return URL of given target view given as .targetXXX URL.
+        """
+        return '%s/.target%s' % (self.url, target.uniqueId)
+
     def getActions(self, category='object'):
-        #target = self.virtualTarget
-        #if target is not None:
-        #    return target.getActions(category)
-        return []  # TODO: what about editing the node itself?
+        actions = []
+        self.registerDojo()
+        if category in self.actions:
+            actions.extend(self.actions[category](self))
+        target = self.virtualTarget
+        if target is not None:
+            actions.extend(target.getActions(category, page=self))
+        return actions
+
+    def getPortletActions(self):
+        actions = []
+        actions.append(Action(self,
+                              targetWindow='loops_cme',
+                              title='Edit Concept Map',
+                              description='Open concept map editor in new window',
+                              url=self.conceptMapEditorUrl))
+        return actions
+
+    actions = dict(portlet=getPortletActions)
 
     @Lazy
     def hasEditableTarget(self):

@@ -46,7 +46,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from loops.interfaces import IConcept
 from loops.interfaces import ITypeConcept
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
-from loops.browser.common import EditForm, BaseView, LoopsTerms
+from loops.browser.common import EditForm, BaseView, LoopsTerms, conceptMacrosTemplate
 from loops import util
 from loops.util import _
 from loops.versioning.util import getVersion
@@ -75,11 +75,15 @@ class ConceptEditForm(EditForm):
 
 class ConceptView(BaseView):
 
-    template = NamedTemplate('loops.concept_macros')
+    template = ViewPageTemplateFile('concept_macros.pt')
 
     @Lazy
     def macro(self):
         return self.template.macros['conceptdata']
+
+    @Lazy
+    def conceptMacros(self):
+        return conceptMacrosTemplate.macros
 
     def __init__(self, context, request):
         super(ConceptView, self).__init__(context, request)

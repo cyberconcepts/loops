@@ -41,7 +41,8 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
-from loops.browser.common import EditForm, BaseView, Action
+from loops.browser.action import Action, TargetAction
+from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.browser.util import html_quote
@@ -181,15 +182,15 @@ class ResourceView(BaseView):
         ct = self.context.contentType
         return ct.startswith('image/') or ct == 'application/pdf'
 
-    def getActions(self, category='object'):
-        renderer = node_macros.macros['external_edit']
-        node = self.request.annotations.get('loops.view', {}).get('node')
-        if node is not None:
-            nodeView = NodeView(node, self.request)
-            url = nodeView.virtualTargetUrl
+    def getObjectActions(self, page=None):
+        actions = []
+        if page is None:
+            factory, view = Action, self
         else:
-            url = self.url
-        return [Action(renderer, url)]
+            factory, view = TargetAction, page
+        #if self.xeditable:
+        #    actions.append(factory(self, page=view,))
+        return actions
 
     def concepts(self):
         for r in self.context.getConceptRelations():

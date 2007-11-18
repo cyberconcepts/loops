@@ -394,13 +394,15 @@ class CreateObject(EditObject):
                 name = name.rsplit('\\', 1)[-1]
         else:
             name = None
+        # TODO: validate fields
         name = INameChooser(container).chooseName(name, obj)
         container[name] = obj
         tc = form.get('form.type') or '.loops/concepts/note'
         obj.resourceType = self.loopsRoot.loopsTraverse(tc)
         notify(ObjectCreatedEvent(obj))
         self.object = obj
-        self.updateFields()
-        self.request.response.redirect(self.view.virtualTargetUrl)
+        self.updateFields() # TODO: suppress validation
+        #self.request.response.redirect(self.view.virtualTargetUrl)
+        self.request.response.redirect(self.view.request.URL)
         return False
 
