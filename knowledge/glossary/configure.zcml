@@ -6,9 +6,22 @@
    i18n_domain="zope"
    >
 
-  <page for="*"
-        name="glossaryitem.html"
-        class=".browser.GlossaryItemView"
-        permission="zope.View" />
+  <zope:adapter
+      name="glossary.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.knowledge.glossary.browser.GlossaryView"
+      permission="zope.View"
+      />
+
+  <zope:adapter
+      name="glossaryitem.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.knowledge.glossary.browser.GlossaryItemView"
+      permission="zope.View"
+      />
 
 </configure>

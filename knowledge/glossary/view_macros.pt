@@ -1,17 +1,29 @@
-<!-- ZPT macros for demo view -->
+<!-- ZPT macros for loops.knowledge.glossary views -->
 
-<metal:block define-macro="glossaryitem">
-
+<metal:block define-macro="glossary">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
-
-  <div>siehe:
-    <span tal:repeat="related item/children">
+  <div>&nbsp;</div>
+  <div tal:repeat="related item/children">
       <a href="#"
          tal:content="related/title"
-         tal:attributes="href string:${view/url}/.target${related/uniqueId}">
+         tal:attributes="href python: view.getUrlForTarget(related)">
+        Topic
+      </a>
+  </div>
+</metal:block>
+
+
+<metal:block define-macro="glossaryitem">
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <p>
+    <span tal:repeat="related item/children">
+      <tal:start condition="repeat/related/start">
+        <span i18n:translate="">siehe</span>:</tal:start>
+      <a href="#"
+         tal:content="related/title"
+         tal:attributes="href python: view.getUrlForTarget(related)">
         Topic
       </a><tal:comma condition="not:repeat/related/end">,</tal:comma>
     </span>
-  </div>
-
+  </p>
 </metal:block>
