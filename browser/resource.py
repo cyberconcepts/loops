@@ -182,6 +182,18 @@ class ResourceView(BaseView):
         ct = self.context.contentType
         return ct.startswith('image/') or ct == 'application/pdf'
 
+    # actions
+
+    def getPortletActions(self, page=None):
+        actions = []
+        actions.append(Action(self, title='Edit Resource...',
+                  description='Modify resource object.',
+                  url='edit_object.html',
+                  onClick="objectDialog('edit', '%s/edit_object.html'); "
+                          "return false;" % page.virtualTargetUrl,
+                  innerHtmlId='dialog.edit'))
+        return actions
+
     def getObjectActions(self, page=None):
         actions = []
         if page is None:
@@ -191,6 +203,10 @@ class ResourceView(BaseView):
         #if self.xeditable:
         #    actions.append(factory(self, page=view,))
         return actions
+
+    actions = dict(portlet=getPortletActions, object=getObjectActions)
+
+    # relations
 
     def concepts(self):
         for r in self.context.getConceptRelations():

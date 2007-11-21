@@ -14,8 +14,7 @@
                                alt action/description" /><span
                i18n:translate=""
                tal:condition="action/title"
-               tal:content="action/title">Action Title</span>
-        </a>
+               tal:content="action/title">Action Title</span></a>
     </div>
     <span id="inner.Id"
           tal:condition="action/innerHtmlId"

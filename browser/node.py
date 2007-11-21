@@ -347,11 +347,16 @@ class NodeView(BaseView):
 
     def getPortletActions(self):
         actions = []
-        actions.append(Action(self,
-                              targetWindow='loops_cme',
-                              title='Edit Concept Map',
-                              description='Open concept map editor in new window',
-                              url=self.conceptMapEditorUrl))
+        actions.append(Action(self, title='Edit Concept Map',
+                  targetWindow='loops_cme',
+                  description='Open concept map editor in new window',
+                  url=self.conceptMapEditorUrl))
+        actions.append(Action(self, title='Create Resource...',
+                  description='Create a new resource object.',
+                  url='create_object.html',
+                  onClick="objectDialog('create', '%s/create_object.html'); "
+                          "return false;" % self.virtualTargetUrl,
+                  innerHtmlId='dialog.create'))
         return actions
 
     actions = dict(portlet=getPortletActions)

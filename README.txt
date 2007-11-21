@@ -597,7 +597,7 @@ Actions
 
   >>> actions = view.getActions('portlet')
   >>> len(actions)
-  1
+  2
 
 Clean-up:
 

@@ -26,6 +26,7 @@ $Id$
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
 
+from loops.browser.action import Action
 from loops.browser.concept import ConceptView
 from loops.common import adapted
 from loops import util
@@ -40,10 +41,32 @@ class GlossaryView(ConceptView):
     def macro(self):
         return template.macros['glossary']
 
+    def getActions(self, category='object', page=None):
+        actions = []
+        if category == 'portlet':
+            actions.append(Action(self, title='Create Glossary Item...',
+                  description='Create a new glossary item.',
+                  url='create_glossaryitem.html',
+                  onClick="objectDialog('create', '%s/create_object.html'); "
+                          "return false;" % self.virtualTargetUrl,
+                  innerHtmlId='dialog.create'))
+        return actions
+
 
 class GlossaryItemView(ConceptView):
 
     @Lazy
     def macro(self):
         return template.macros['glossaryitem']
+
+    def getActions(self, category='object', page=None):
+        actions = []
+        if category == 'portlet':
+            actions.append(Action(self, title='Create Glossary Item...',
+                  description='Create a new glossary item.',
+                  url='create_glossaryitem.html'))
+            actions.append(Action(self, title='Edit Glossary Item...',
+                  description='Modify glossary item.',
+                  url='edit_glossaryitem.html'))
+        return actions
 

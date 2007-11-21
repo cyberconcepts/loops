@@ -377,16 +377,14 @@ class BaseView(GenericView):
         cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
 
 
-# actions
+# actions - obsolete, see loops.browser.action
 
-class Action(object):
+#class Action(object):
 
-    def __init__(self, renderer, url, **kw):
-        self.renderer = renderer
-        self.url = url
-        self.__dict__.update(kw)
-        #for k in kw:
-        #    setattr(self, k, kw[k])
+#    def __init__(self, renderer, url, **kw):
+#        self.renderer = renderer
+#        self.url = url
+#        self.__dict__.update(kw)
 
 
 # vocabulary stuff
