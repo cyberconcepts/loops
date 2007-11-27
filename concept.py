@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 """
 
 from zope import component, schema
-from zope.app import zapi
+#from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.cachedescriptors.property import Lazy
@@ -31,7 +31,7 @@ from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
@@ -64,8 +64,8 @@ class BaseRelation(DyadicRelation):
 
     def getPredicateName(self):
         baseName = super(BaseRelation, self).getPredicateName()
-        id = zapi.getUtility(IRelationRegistry).getUniqueIdForObject(self.predicate)
-        return '.'.join((baseName, str(id)))
+        id = util.getUidForObject(self.predicate)
+        return '.'.join((baseName, id))
 
     # Problem with reindex catalog, needs __parent__ - but this does not help:
     #__parent__ = None
@@ -121,7 +121,7 @@ class Concept(Contained, Persistent):
             typePred = self.getConceptManager().getTypePredicate()
             if typePred is None:
                 raise ValueError('No type predicate found for '
-                                + zapi.getName(self))
+                                + getName(self))
             if current is not None:
                 self.deassignParent(current, [typePred])
             self.assignParent(concept, typePred)
@@ -131,7 +131,7 @@ class Concept(Contained, Persistent):
         return self.conceptType
 
     def getLoopsRoot(self):
-        return zapi.getParent(self).getLoopsRoot()
+        return getParent(self).getLoopsRoot()
 
     def getConceptManager(self):
         return self.getLoopsRoot().getConceptManager()
@@ -158,14 +158,16 @@ class Concept(Contained, Persistent):
         rels = getRelations(second=self, relationships=relationships)
         return [r.first for r in rels]
 
-    def getChildRelations(self, predicates=None, child=None):
+    def getChildRelations(self, predicates=None, child=None, sort='default'):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(self, None, p) for p in predicates]
-        # TODO: sort...
-        return getRelations(first=self, second=child, relationships=relationships)
+        if sort == 'default':
+            sort = lambda x: (x.order, x.second.title.lower())
+        return sorted(getRelations(first=self, second=child, relationships=relationships),
+                      key=sort)
 
-    def getChildren(self, predicates=None):
-        return [r.second for r in self.getChildRelations(predicates)]
+    def getChildren(self, predicates=None, sort='default'):
+        return [r.second for r in self.getChildRelations(predicates, sort=sort)]
 
     def getParentRelations (self, predicates=None, parent=None):
         predicates = predicates is None and ['*'] or predicates
@@ -179,7 +181,7 @@ class Concept(Contained, Persistent):
     def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
-        registry = zapi.getUtility(IRelationRegistry)
+        registry = component.getUtility(IRelationRegistry)
         rel = ConceptRelation(self, concept, predicate)
         if order != 0:
             rel.order = order
@@ -192,7 +194,7 @@ class Concept(Contained, Persistent):
         concept.assignChild(self, predicate, order, relevance)
 
     def deassignChild(self, child, predicates=None):
-        registry = zapi.getUtility(IRelationRegistry)
+        registry = component.getUtility(IRelationRegistry)
         for rel in self.getChildRelations(predicates, child):
             registry.unregister(rel)
 
@@ -213,7 +215,7 @@ class Concept(Contained, Persistent):
     def assignResource(self, resource, predicate=None, order=0, relevance=1.0):
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
-        registry = zapi.getUtility(IRelationRegistry)
+        registry = component.getUtility(IRelationRegistry)
         rel = ResourceRelation(self, resource, predicate)
         if order != 0:
             rel.order = order
@@ -223,7 +225,7 @@ class Concept(Contained, Persistent):
         registry.register(rel)
 
     def deassignResource(self, resource, predicates=None):
-        registry = zapi.getUtility(IRelationRegistry)
+        registry = component.getUtility(IRelationRegistry)
         for rel in self.getResourceRelations(predicates, resource):
             registry.unregister(rel)
 
@@ -240,7 +242,7 @@ class ConceptManager(BTreeContainer):
     predicateType = None
 
     def getLoopsRoot(self):
-        return zapi.getParent(self)
+        return getParent(self)
 
     def getAllParents(self, collectGrants=False):
         return Jeep()
@@ -250,7 +252,8 @@ class ConceptManager(BTreeContainer):
 
     def getTypeConcept(self):
         if self.typeConcept is None:
-            self.typeConcept = self['type']
+            #self.typeConcept = self['type']
+            self.typeConcept = self.get('type')
         return self.typeConcept
 
     def getDefaultPredicate(self):

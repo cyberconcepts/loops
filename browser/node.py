@@ -333,7 +333,11 @@ class NodeView(BaseView):
     def getUrlForTarget(self, target):
         """ Return URL of given target view given as .targetXXX URL.
         """
-        return '%s/.target%s' % (self.url, target.uniqueId)
+        if isinstance(target, BaseView):
+            return '%s/.target%s' % (self.url, target.uniqueId)
+        else:
+            return ('%s/.target%s' %
+                (self.url, util.getUidForObject(target)))
 
     def getActions(self, category='object'):
         actions = []

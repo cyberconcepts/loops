@@ -14,13 +14,13 @@ Let's first do some basic imports
   >>> site = placefulSetUp(True)
 
   >>> from zope import interface, component
-  >>> from zope.app import zapi
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
 
 and provide a relation registry:
 
-  >>> from cybertools.relation.interfaces import IRelationRegistry
+  >>> from cybertools.relation.tests import IntIdsStub
+  >>> component.provideUtility(IntIdsStub())
   >>> from cybertools.relation.registry import DummyRelationRegistry
   >>> component.provideUtility(DummyRelationRegistry())
 
@@ -62,7 +62,7 @@ resources,
   >>> file1 = resources['file1'] = Resource(u'A file')
   >>> file1.resourceType = concepts['file']
 
-(the use of Document may get deprecated soon:)
+(note: the use of Document is deprecated)
 
   >>> from loops.resource import Document
   >>> doc1 = Document(u'Zope Info')
@@ -176,7 +176,7 @@ Now let's have a look at resources.
   >>> file1_type.factory
   <class 'loops.resource.Resource'>
 
-(The use of Document will be deprecated soon...)
+(The use of Document is deprecated!)
 
   >>> from loops.interfaces import IResource, IDocument
   >>> from loops.type import ResourceType

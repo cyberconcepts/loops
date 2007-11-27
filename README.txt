@@ -19,9 +19,9 @@ with lower-level aspects like type or state management.
   >>> site = placefulSetUp(True)
 
   >>> from zope import component
-  >>> from zope.app import zapi
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
+  >>> from zope.traversing.api import getName
 
 
 Concepts and Relations
@@ -70,11 +70,11 @@ ConceptRelation):
 
 We can now ask our concepts for their related child and parent concepts:
 
-  >>> [zapi.getName(c) for c in cc1.getChildren()]
+  >>> [getName(c) for c in cc1.getChildren()]
   [u'cc2']
   >>> len(cc1.getParents())
   0
-  >>> [zapi.getName(p) for p in cc2.getParents()]
+  >>> [getName(p) for p in cc2.getParents()]
   [u'cc1']
 
   >>> len(cc2.getChildren())
@@ -283,7 +283,7 @@ from concepts to resources:
   >>> form = dict(action='remove', qualifier='resources',
   ...               tokens=['.loops/resources/doc1:.loops/concepts/standard'])
   >>> view = ConceptConfigureView(cc1, TestRequest(form=form))
-  >>> [zapi.getName(r.context) for r in view.resources()]
+  >>> [getName(r.context) for r in view.resources()]
   [u'doc1']
   >>> view.update()
   True
@@ -358,7 +358,7 @@ There are a few convienence methods for accessing parent and child nodes:
   True
   >>> m11.getParentNode() is m1
   True
-  >>> [zapi.getName(child) for child in m11.getChildNodes()]
+  >>> [getName(child) for child in m11.getChildNodes()]
   [u'm111', u'm112']
 
 What is returned by these may be controlled by the nodeType attribute:

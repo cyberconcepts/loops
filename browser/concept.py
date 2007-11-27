@@ -112,8 +112,9 @@ class ConceptView(BaseView):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
-        rels = sorted(self.context.getChildRelations(),
-                      key=(lambda x: x.second.title.lower()))
+        #rels = sorted(self.context.getChildRelations(),
+        #              key=(lambda x: x.second.title.lower()))
+        rels = self.context.getChildRelations()
         for r in rels:
             if r.predicate == hasType:
                 # only show top-level entries for type instances:
