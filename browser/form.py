@@ -190,6 +190,10 @@ class EditConceptForm(EditObjectForm):
     form_action = 'edit_concept'
 
     @Lazy
+    def dialog_name(self):
+        return self.request.get('dialog', 'editConcept')
+
+    @Lazy
     def typeInterface(self):
         return IType(self.target).typeInterface or IConceptSchema
 
