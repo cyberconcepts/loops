@@ -26,7 +26,7 @@ $Id$
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
 
-from loops.browser.action import Action
+from loops.browser.action import Action, DialogAction
 from loops.browser.concept import ConceptView
 from loops.common import adapted
 from loops import util
@@ -44,16 +44,15 @@ class GlossaryView(ConceptView):
     def getActions(self, category='object', page=None):
         actions = []
         if category == 'portlet':
-            actions.append(Action(self, title='Create Glossary Item...',
+            actions.append(DialogAction(self, title='Create Glossary Item...',
                   description='Create a new glossary item.',
-                  url='create_concept.html',
-                  onClick="objectDialog('createGlossaryItem', "
-                          "             '%s/create_concept.html?qualifier=concept"
-                          "&form.type=.loops/concepts/topic"
-                          "&inner_form=inner_concept_form.html"
-                          "&dialog=createGlossaryItem'); "
-                          "return false;" % page.virtualTargetUrl,
-                  innerHtmlId='dialog.createGlossaryItem'))
+                  viewName='create_concept.html',
+                  dialogName='createGlossaryItem',
+                  #qualifier='concept',
+                  typeToken='.loops/concepts/glossaryitem',
+                  fixedType=True,
+                  innerForm='inner_concept_form.html',
+                  page=page))
         return actions
 
 
@@ -66,13 +65,10 @@ class GlossaryItemView(ConceptView):
     def getActions(self, category='object', page=None):
         actions = []
         if category == 'portlet':
-            actions.append(Action(self, title='Edit Glossary Item...',
+            actions.append(DialogAction(self, title='Edit Glossary Item...',
                   description='Modify glossary item.',
-                  url='edit_concept.html',
-                  onClick="objectDialog('editGlossaryItem', "
-                          "             '%s/edit_concept.html"
-                          "?dialog=editGlossaryItem'); "
-                          "return false;" % page.virtualTargetUrl,
-                  innerHtmlId='dialog.editGlossaryItem'))
+                  viewName='edit_concept.html',
+                  dialogName='editGlossaryItem',
+                  page=page))
         return actions
 

@@ -63,8 +63,9 @@ class ConceptEditForm(EditForm):
         typeInterface = self.typeInterface
         if typeInterface is None:
             fields = FormFields(IConcept)
-        elif 'title' in typeInterface:  # new "complete" type interface
-            fields = FormFields(typeInterface)
+        elif 'title' in typeInterface:  # new type interface based on ConceptSchema
+            f1 = FormFields(IConcept).omit('title', 'description')
+            fields = FormFields(typeInterface, f1)
         else:
             fields = FormFields(IConcept, typeInterface)
         return fields

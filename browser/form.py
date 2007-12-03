@@ -206,9 +206,22 @@ class CreateObjectForm(ObjectForm):
     @property
     def macro(self): return self.template.macros['create']
 
-    title = _(u'Create Resource, Type = ')
+    defaultTitle = u'Create Resource, Type = '
     form_action = 'create_resource'
     dialog_name = 'create'
+
+    @Lazy
+    def title(self):
+        if self.request.form.get('fixed_type'):
+            return _(u'Create %s' % self.typeConcept.title)
+        else:
+            return _(self.defaultTitle)
+
+    @Lazy
+    def typeConcept(self):
+        typeToken = self.request.get('form.type')
+        if typeToken:
+            return self.loopsRoot.loopsTraverse(typeToken)
 
     @Lazy
     def adapted(self):
@@ -220,10 +233,9 @@ class CreateObjectForm(ObjectForm):
 
     @Lazy
     def typeInterface(self):
-        typeToken = self.request.get('form.type')
-        if typeToken:
-            t = self.loopsRoot.loopsTraverse(typeToken)
-            return removeSecurityProxy(ITypeConcept(t).typeInterface)
+        tc = self.typeConcept
+        if tc:
+            return removeSecurityProxy(ITypeConcept(tc).typeInterface)
         else:
             return ITextDocument
 
@@ -240,7 +252,7 @@ class CreateObjectForm(ObjectForm):
 
 class CreateConceptForm(CreateObjectForm):
 
-    title = _(u'Create Concept, Type = ')
+    defaultTitle = u'Create Concept, Type = '
     form_action = 'create_concept'
 
     @Lazy
@@ -260,12 +272,8 @@ class CreateConceptForm(CreateObjectForm):
 
     @Lazy
     def typeInterface(self):
-        typeToken = self.request.get('form.type')
-        if typeToken:
-            t = self.loopsRoot.loopsTraverse(typeToken)
-            return removeSecurityProxy(ITypeConcept(t).typeInterface)
-        else:
-            return None
+        if self.typeConcept:
+            return removeSecurityProxy(ITypeConcept(self.typeConcept).typeInterface)
 
     @property
     def assignments(self):

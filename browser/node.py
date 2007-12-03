@@ -51,7 +51,7 @@ from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
 from loops import util
 from loops.util import _
-from loops.browser.action import Action, TargetAction
+from loops.browser.action import Action, DialogAction, TargetAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.versioning.util import getVersion
@@ -351,16 +351,15 @@ class NodeView(BaseView):
 
     def getPortletActions(self):
         actions = []
-        actions.append(Action(self, title='Edit Concept Map',
-                  targetWindow='loops_cme',
-                  description='Open concept map editor in new window',
-                  url=self.conceptMapEditorUrl))
-        actions.append(Action(self, title='Create Resource...',
+        cmeUrl = self.conceptMapEditorUrl
+        if cmeUrl:
+            actions.append(Action(self, title='Edit Concept Map',
+                      targetWindow='loops_cme',
+                      description='Open concept map editor in new window',
+                      url=cmeUrl))
+        actions.append(DialogAction(self, title='Create Resource...',
                   description='Create a new resource object.',
-                  url='create_object.html',
-                  onClick="objectDialog('create', '%s/create_object.html'); "
-                          "return false;" % self.virtualTargetUrl,
-                  innerHtmlId='dialog.create'))
+                  page=self))
         return actions
 
     actions = dict(portlet=getPortletActions)

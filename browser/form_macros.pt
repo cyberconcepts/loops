@@ -38,7 +38,10 @@
 <metal:block define-macro="create" i18n:domain="loops">
     <form method="post" enctype="multipart/form-data"
           tal:define="qualifier request/qualifier | string:resource;
-                      innerForm request/inner_form | string:inner_form.html">
+                      innerForm request/inner_form | string:inner_form.html;
+                      typeToken python: request.get('form.type')
+                                    or '.loops/concepts/textdocument';
+                      fixedType request/fixed_type | nothing">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
@@ -46,23 +49,25 @@
               <span tal:replace="view/title"
                     i18n:translate="">Create Information Object</span>
               <select name="form.type" id="form.type"
+                      tal:condition="not:fixedType"
                       tal:attributes="onChange
                             string:return replaceFieldsNode(
                                     'form.fields', 'form.type',
                                     '${view/url}/$innerForm')">
                 <option value=".loops/concepts/note"
                         i18n:translate=""
-                        xtal:repeat="type view/resourceTypes"
                         tal:repeat="type python:
                             view.getTypesVocabulary((qualifier,))"
                         tal:content="type/title"
                         tal:attributes="value type/token;
                                         selected python:
-                               type.token == (request.get('form.type')
-                                    or '.loops/concepts/textdocument')">
+                               type.token == typeToken">
                   Note
                 </option>
               </select>
+              <input type="hidden" name="form.type"
+                     tal:condition="fixedType"
+                     tal:attributes="value typeToken" />
         </th></tr></tbody>
 
         <tbody><tr><td colspan="5">

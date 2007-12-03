@@ -22,6 +22,7 @@ Base classes (sort of views) for action portlet items.
 $Id$
 """
 
+from urllib import urlencode
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -58,9 +59,42 @@ class Action(object):
         return self.view.url
 
 
-class TargetAction(object):
+class TargetAction(Action):
 
     @Lazy
     def url(self):
         return self.view.virtualTargetUrl
+
+
+class DialogAction(Action):
+
+    jsOnClick = "objectDialog('%s', '%s/%s?%s'); return false;"
+
+    page = None
+    viewName = 'create_object.html'
+    dialogName = 'create'
+    qualifier = typeToken = innerForm = None
+    fixedType = False
+
+    @Lazy
+    def url(self):
+        return self.viewName
+
+    @Lazy
+    def onClick(self):
+        urlParams = dict(dialog=self.dialogName)
+        if self.qualifier:
+            urlParams['qualifier'] = self.qualifier
+        if self.typeToken:
+            urlParams['form.type'] = self.typeToken
+        if self.innerForm:
+            urlParams['inner_form'] = self.innerForm
+        if self.fixedType:
+            urlParams['fixed_type'] = 'yes'
+        return self.jsOnClick % (self.dialogName, self.page.virtualTargetUrl,
+                                 self.viewName, urlencode(urlParams))
+
+    @Lazy
+    def innerHtmlId(self):
+        return 'dialog.' + self.dialogName
 

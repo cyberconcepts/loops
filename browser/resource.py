@@ -41,7 +41,7 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
-from loops.browser.action import Action, TargetAction
+from loops.browser.action import Action, DialogAction, TargetAction
 from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
@@ -186,12 +186,10 @@ class ResourceView(BaseView):
 
     def getPortletActions(self, page=None):
         actions = []
-        actions.append(Action(self, title='Edit Resource...',
+        actions.append(DialogAction(self, title='Edit Resource...',
                   description='Modify resource object.',
-                  url='edit_object.html',
-                  onClick="objectDialog('edit', '%s/edit_object.html'); "
-                          "return false;" % page.virtualTargetUrl,
-                  innerHtmlId='dialog.edit'))
+                  viewName='edit_object.html', dialogName='edit',
+                  page=page))
         return actions
 
     def getObjectActions(self, page=None):
