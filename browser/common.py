@@ -239,9 +239,12 @@ class BaseView(GenericView):
     def listTypes(self, include=None, exclude=None, sortOn='title'):
         types = [dict(token=t.token, title=t.title)
                     for t in ITypeManager(self.context).listTypes(include, exclude)]
-        if sortOn:
-            types.sort(key=lambda x: x[sortOn])
+        #if sortOn:
+        #    types.sort(key=lambda x: x[sortOn])
         return types
+
+    def getTypesVocabulary(self, include=None):
+        return util.KeywordVocabulary(self.listTypes(include, ('hidden',)))
 
     def resourceTypes(self):
         return util.KeywordVocabulary(self.listTypes(('resource',), ('hidden',)))
@@ -375,16 +378,6 @@ class BaseView(GenericView):
     def registerDojo(self):
         cm = self.controller.macros
         cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
-
-
-# actions - obsolete, see loops.browser.action
-
-#class Action(object):
-
-#    def __init__(self, renderer, url, **kw):
-#        self.renderer = renderer
-#        self.url = url
-#        self.__dict__.update(kw)
 
 
 # vocabulary stuff

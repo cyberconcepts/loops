@@ -27,12 +27,12 @@
   </zope:class>
 
   <zope:adapter factory="loops.knowledge.knowledge.Topic"
-                provides="cybertools.knowledge.interfaces.IKnowledgeElement"
+                provides="loops.knowledge.interfaces.ITopic"
                 trusted="True" />
 
   <zope:class class="loops.knowledge.knowledge.Topic">
     <require permission="zope.View"
-             interface="cybertools.knowledge.interfaces.IKnowledgeElement" />
+             interface="loops.knowledge.interfaces.ITopic" />
   </zope:class>
 
   <zope:adapter factory="loops.knowledge.knowledge.Task"

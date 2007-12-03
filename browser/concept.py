@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -60,10 +60,13 @@ class ConceptEditForm(EditForm):
 
     @property
     def form_fields(self):
-        fields = FormFields(IConcept)
         typeInterface = self.typeInterface
-        if typeInterface is not None:
-            fields = FormFields(fields, typeInterface)
+        if typeInterface is None:
+            fields = FormFields(IConcept)
+        elif 'title' in typeInterface:  # new "complete" type interface
+            fields = FormFields(typeInterface)
+        else:
+            fields = FormFields(IConcept, typeInterface)
         return fields
 
     def setUpWidgets(self, ignore_request=False):
@@ -96,9 +99,12 @@ class ConceptView(BaseView):
 
     def fieldData(self):
         ti = IType(self.context).typeInterface
-        if not ti: return
+        if not ti:
+            return
         adapter = ti(self.context)
         for n, f in schema.getFieldsInOrder(ti):
+            if n in ('title', 'description',):  # already shown in header
+                continue
             value = getattr(adapter, n, '')
             if not value:
                 continue

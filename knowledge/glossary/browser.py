@@ -46,10 +46,14 @@ class GlossaryView(ConceptView):
         if category == 'portlet':
             actions.append(Action(self, title='Create Glossary Item...',
                   description='Create a new glossary item.',
-                  url='create_glossaryitem.html',
-                  onClick="objectDialog('create', '%s/create_object.html'); "
-                          "return false;" % self.virtualTargetUrl,
-                  innerHtmlId='dialog.create'))
+                  url='create_concept.html',
+                  onClick="objectDialog('createGlossaryItem', "
+                          "             '%s/create_concept.html?qualifier=concept"
+                          "&form.type=.loops/concepts/topic"
+                          "&inner_form=inner_concept_form.html"
+                          "&dialog=createGlossaryItem'); "
+                          "return false;" % page.virtualTargetUrl,
+                  innerHtmlId='dialog.createGlossaryItem'))
         return actions
 
 
@@ -62,11 +66,13 @@ class GlossaryItemView(ConceptView):
     def getActions(self, category='object', page=None):
         actions = []
         if category == 'portlet':
-            actions.append(Action(self, title='Create Glossary Item...',
-                  description='Create a new glossary item.',
-                  url='create_glossaryitem.html'))
             actions.append(Action(self, title='Edit Glossary Item...',
                   description='Modify glossary item.',
-                  url='edit_glossaryitem.html'))
+                  url='edit_concept.html',
+                  onClick="objectDialog('editGlossaryItem', "
+                          "             '%s/edit_concept.html"
+                          "?dialog=editGlossaryItem'); "
+                          "return false;" % page.virtualTargetUrl,
+                  innerHtmlId='dialog.editGlossaryItem'))
         return actions
 

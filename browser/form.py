@@ -25,6 +25,7 @@ $Id$
 from zope import component, interface, schema
 from zope.component import adapts
 from zope.event import notify
+from zope.interface import Interface
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
@@ -46,8 +47,8 @@ from cybertools.composer.schema.browser.common import schema_macros, schema_edit
 from cybertools.composer.schema.schema import FormState
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
-from loops.concept import Concept, ResourceRelation
-from loops.interfaces import IConcept, IResourceManager, IDocument
+from loops.concept import Concept, ConceptRelation, ResourceRelation
+from loops.interfaces import IConcept, IConceptSchema, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
@@ -98,9 +99,10 @@ class ObjectForm(NodeView):
 
     @Lazy
     def schema(self):
+        #ti = self.typeInterface or Interface #IConcept
+        ti = self.typeInterface or IConceptSchema
         schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
-        return schemaFactory(self.typeInterface, manager=self,
-                             request=self.request)
+        return schemaFactory(ti, manager=self, request=self.request)
 
     @Lazy
     def fields(self):
@@ -186,11 +188,10 @@ class EditConceptForm(EditObjectForm):
 
     title = _(u'Edit Concept')
     form_action = 'edit_concept'
-    isInnerHtml = False
 
     @Lazy
     def typeInterface(self):
-        return IType(self.target).typeInterface or IConcept
+        return IType(self.target).typeInterface or IConceptSchema
 
     @property
     def assignments(self):
@@ -224,13 +225,11 @@ class CreateObjectForm(ObjectForm):
             t = self.loopsRoot.loopsTraverse(typeToken)
             return removeSecurityProxy(ITypeConcept(t).typeInterface)
         else:
-            #return INote
             return ITextDocument
 
     @property
     def assignments(self):
         target = self.virtualTargetObject
-        #target = self.target
         if (IConcept.providedBy(target) and
                 target.conceptType !=
                     self.loopsRoot.getConceptManager().getTypeConcept()):
@@ -239,10 +238,58 @@ class CreateObjectForm(ObjectForm):
         return ()
 
 
+class CreateConceptForm(CreateObjectForm):
+
+    title = _(u'Create Concept, Type = ')
+    form_action = 'create_concept'
+
+    @Lazy
+    def dialog_name(self):
+        return self.request.get('dialog', 'createConcept')
+
+    @Lazy
+    def adapted(self):
+        ti = self.typeInterface
+        if ti is None:
+            return Concept()
+        return ti(Concept())
+
+    @Lazy
+    def instance(self):
+        return IInstance(Concept())
+
+    @Lazy
+    def typeInterface(self):
+        typeToken = self.request.get('form.type')
+        if typeToken:
+            t = self.loopsRoot.loopsTraverse(typeToken)
+            return removeSecurityProxy(ITypeConcept(t).typeInterface)
+        else:
+            return None
+
+    @property
+    def assignments(self):
+        target = self.virtualTargetObject
+        if (IConcept.providedBy(target) and
+                target.conceptType !=
+                    self.loopsRoot.getConceptManager().getTypeConcept()):
+            rv = ConceptRelationView(ConceptRelation(target, None), self.request)
+            return (rv,)
+        return ()
+
+
 class InnerForm(CreateObjectForm):
 
     @property
-    def macro(self): return self.fieldRenderers['fields']
+    def macro(self):
+        return self.fieldRenderers['fields']
+
+
+class InnerConceptForm(CreateConceptForm):
+
+    @property
+    def macro(self):
+        return self.fieldRenderers['fields']
 
 
 # processing form input
@@ -296,12 +343,6 @@ class EditObject(FormController):
         self.object = obj
         formState = self.updateFields()
         # TODO: error handling
-        #errors = self.updateFields()
-        #if errors:
-        #    self.view.setUp()
-        #    for fieldName, message in errors.items():
-        #        self.view.widgets[fieldName].error = message
-        #    return True
         self.request.response.redirect(self.view.virtualTargetUrl + '?version=this')
         return False
 
@@ -342,8 +383,10 @@ class EditObject(FormController):
         return dict(fileupload=self.handleFileUpload)
 
     def collectConcepts(self, fieldName, value):
-        if self.old is None: self.old = []
-        if self.selected is None: self.selected = []
+        if self.old is None:
+            self.old = []
+        if self.selected is None:
+            self.selected = []
         for v in value:
             if fieldName == 'old':
                 self.old.append(v)
@@ -356,15 +399,24 @@ class EditObject(FormController):
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)
-                obj.deassignConcept(concept, [predicate])
+                self.deassignConcept(obj, concept, [predicate])
         for v in self.selected:
             if v != 'none' and v not in self.old:
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)
-                exists = obj.getConceptRelations(predicates=[p], concept=concept)
+                exists = self.getConceptRelations(obj, [p], concept)
                 if not exists:
-                    obj.assignConcept(concept, predicate)
+                    self.assignConcept(obj, concept, predicate)
+
+    def getConceptRelations(self, obj, predicates, concept):
+        return obj.getConceptRelations(predicates=predicates, concept=concept)
+
+    def assignConcept(self, obj, concept, predicate):
+        obj.assignConcept(concept, predicate)
+
+    def deassignConcept(self, obj, concept, predicates):
+        obj.deassignConcept(concept, predicates)
 
     def checkCreateVersion(self, obj):
         form = self.request.form
@@ -379,14 +431,15 @@ class EditObject(FormController):
 
 class CreateObject(EditObject):
 
-    def update(self):
-        form = self.request.form
-        container = self.loopsRoot.getResourceManager()
-        title = form.get('title')
-        if not title:
-            raise BadRequest('Title field is empty')
-        obj = Resource(title)
-        data = form.get('data')
+    factory = Resource
+    defaultTypeToken = '.loops/concepts/textdocument'
+
+    @Lazy
+    def container(self):
+        return self.loopsRoot.getResourceManager()
+
+    def getNameFromData(self):
+        data = self.request.form.get('data')
         if data and isinstance(data, FileUpload):
             name = getattr(data, 'filename', None)
             # strip path from IE uploads:
@@ -394,15 +447,60 @@ class CreateObject(EditObject):
                 name = name.rsplit('\\', 1)[-1]
         else:
             name = None
+        return name
+
+    def update(self):
+        form = self.request.form
+        container = self.container
+        title = form.get('title')
+        if not title:
+            raise BadRequest('Title field is empty')
+        obj = self.factory(title)
+        name = self.getNameFromData()
         # TODO: validate fields
         name = INameChooser(container).chooseName(name, obj)
         container[name] = obj
-        tc = form.get('form.type') or '.loops/concepts/note'
-        obj.resourceType = self.loopsRoot.loopsTraverse(tc)
+        tc = form.get('form.type') or self.defaultTypeToken
+        obj.setType(self.loopsRoot.loopsTraverse(tc))
         notify(ObjectCreatedEvent(obj))
         self.object = obj
         self.updateFields() # TODO: suppress validation
         #self.request.response.redirect(self.view.virtualTargetUrl)
         self.request.response.redirect(self.view.request.URL)
         return False
+
+
+class EditConcept(EditObject):
+
+    def getConceptRelations(self, obj, predicates, concept):
+        return obj.getParentRelations(predicates=predicates, parent=concept)
+
+    def assignConcept(self, obj, concept, predicate):
+        obj.assignParent(concept, predicate)
+
+    def deassignConcept(self, obj, concept, predicates):
+        obj.deassignParent(concept, predicates)
+
+    def update(self):
+        self.object = self.view.virtualTargetObject
+        formState = self.updateFields()
+        # TODO: error handling
+        self.request.response.redirect(self.view.virtualTargetUrl)
+        return False
+
+
+class CreateConcept(EditConcept, CreateObject):
+
+    factory = Concept
+    defaultTypeToken = '.loops/concepts/topic'
+
+    @Lazy
+    def container(self):
+        return self.loopsRoot.getConceptManager()
+
+    def getNameFromData(self):
+        return None
+
+    def update(self):
+        return CreateObject.update(self)
 

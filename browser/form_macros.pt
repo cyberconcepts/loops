@@ -36,7 +36,9 @@
 
 
 <metal:block define-macro="create" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data"
+          tal:define="qualifier request/qualifier | string:resource;
+                      innerForm request/inner_form | string:inner_form.html">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
@@ -47,10 +49,12 @@
                       tal:attributes="onChange
                             string:return replaceFieldsNode(
                                     'form.fields', 'form.type',
-                                    '${view/url}/inner_form.html')">
+                                    '${view/url}/$innerForm')">
                 <option value=".loops/concepts/note"
                         i18n:translate=""
-                        tal:repeat="type view/resourceTypes"
+                        xtal:repeat="type view/resourceTypes"
+                        tal:repeat="type python:
+                            view.getTypesVocabulary((qualifier,))"
                         tal:content="type/title"
                         tal:attributes="value type/token;
                                         selected python:

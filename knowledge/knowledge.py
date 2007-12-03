@@ -33,7 +33,7 @@ from cybertools.typology.interfaces import IType
 from cybertools.knowledge.interfaces import IKnowledgeElement, IKnowledgeProvider
 from cybertools.knowledge.knowing import Knowing
 from loops.interfaces import IConcept, IResource
-from loops.knowledge.interfaces import IPerson, ITask
+from loops.knowledge.interfaces import IPerson, ITask, ITopic
 from loops.organize.party import Person as BasePerson
 from loops.organize.task import Task as BaseTask
 from loops.common import AdapterBase
@@ -42,7 +42,7 @@ from loops.type import TypeInterfaceSourceList
 
 # register type interfaces - (TODO: use a function for this)
 
-TypeInterfaceSourceList.typeInterfaces += (IPerson, IKnowledgeElement,
+TypeInterfaceSourceList.typeInterfaces += (IPerson, ITopic, IKnowledgeElement,
                                            ITask, IKnowledgeProvider)
 
 
@@ -99,7 +99,7 @@ class Topic(AdapterBase, KnowledgeAdapterMixin):
         may act as a knowledge element.
     """
 
-    implements(IKnowledgeElement)
+    implements(ITopic)
     _adapterAttributes = ('context', '__parent__', 'parent')
 
     def getParent(self):

@@ -69,11 +69,8 @@ class IPotentialTarget(Interface):
 
 # concept interfaces
 
-class IConcept(ILoopsObject, IPotentialTarget):
-    """ The concept is the central element of the loops framework.
-
-        A concept is related to other concepts, may have resources
-        associated with it and may be referenced by views.
+class IConceptSchema(Interface):
+    """ The primary fields of a concept object.
     """
 
     title = schema.TextLine(
@@ -89,6 +86,14 @@ class IConcept(ILoopsObject, IPotentialTarget):
         default=u'',
         missing_value=u'',
         required=False)
+
+
+class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
+    """ The concept is the central element of the loops framework.
+
+        A concept is related to other concepts, may have resources
+        associated with it and may be referenced by views.
+    """
 
     conceptType = schema.Choice(
         title=_(u'Concept Type'),
@@ -575,7 +580,8 @@ class IIndexAttributes(Interface):
 
 # types stuff
 
-class ITypeConcept(Interface):
+#class ITypeConcept(Interface):
+class ITypeConcept(IConceptSchema):
     """ Concepts of type 'type' should be adaptable to this interface.
     """
 

@@ -26,4 +26,5 @@
       </a><tal:comma condition="not:repeat/related/end">,</tal:comma>
     </span>
   </p>
+  <metal:resources use-macro="item/conceptMacros/conceptresources" />
 </metal:block>

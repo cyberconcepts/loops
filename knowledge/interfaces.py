@@ -29,8 +29,10 @@ from zope.i18nmessageid import MessageFactory
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.knowledge.interfaces import IKnowing, IRequirementProfile
-from loops.organize.interfaces import IPerson as IBasePerson
+from cybertools.knowledge.interfaces import IKnowledgeElement
 from cybertools.organize.interfaces import ITask as IBaseTask
+from loops.interfaces import IConceptSchema
+from loops.organize.interfaces import IPerson as IBasePerson
 
 _ = MessageFactory('zope')
 
@@ -45,3 +47,9 @@ class IPerson(IBasePerson, IKnowing):
 class ITask(IBaseTask, IRequirementProfile):
     """ A task, also acting as a knowledge requirement profile.
     """
+
+
+class ITopic(IConceptSchema, IKnowledgeElement):
+    """ Just a topic, some general classification concept.
+    """
+

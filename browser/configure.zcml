@@ -558,6 +558,13 @@
       />
 
   <page
+      name="create_concept.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.CreateConceptForm"
+      permission="zope.ManageContent"
+      />
+
+  <page
       name="edit_concept.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditConceptForm"
@@ -568,6 +575,13 @@
       name="inner_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerForm"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      name="inner_concept_form.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.InnerConceptForm"
       permission="zope.ManageContent"
       />
 
@@ -584,6 +598,22 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.EditObject"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="create_concept"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.browser.form.CreateConcept"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="edit_concept"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.browser.form.EditConcept"
       permission="zope.ManageContent"
       />
 

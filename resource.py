@@ -140,6 +140,9 @@ class Resource(Image, Contained):
     def getType(self):
         return self.resourceType
 
+    def setType(self, value):
+        self.resourceType = value
+
     def _setData(self, data):
         #if not data:
         #    return

@@ -23,7 +23,6 @@ $Id$
 """
 
 from zope import component, schema
-#from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.cachedescriptors.property import Lazy
@@ -129,6 +128,9 @@ class Concept(Contained, Persistent):
 
     def getType(self):
         return self.conceptType
+
+    def setType(self, value):
+        self.conceptType = value
 
     def getLoopsRoot(self):
         return getParent(self).getLoopsRoot()
@@ -252,7 +254,6 @@ class ConceptManager(BTreeContainer):
 
     def getTypeConcept(self):
         if self.typeConcept is None:
-            #self.typeConcept = self['type']
             self.typeConcept = self.get('type')
         return self.typeConcept
 
@@ -311,7 +312,6 @@ class PredicateSourceList(object):
         typePred = cm.getTypePredicate()
         if defPred is not None and typePred is not None:
             result.append(defPred)
-            #result.append(typePred)
             predType = defPred.conceptType
             if predType is not None and predType != cm.getTypeConcept():
                 result.extend(p for p in predType.getChildren([typePred])
