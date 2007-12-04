@@ -27,7 +27,7 @@ from zope import interface, component
 from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from zope.formlib.namedtemplate import NamedTemplate
+#from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
 from cybertools.typology.interfaces import IType
@@ -40,7 +40,8 @@ _ = MessageFactory('zope')
 
 class MyKnowledge(BaseView):
 
-    template = NamedTemplate('loops.knowledge_macros')
+    #template = NamedTemplate('loops.knowledge_macros')
+    template = ViewPageTemplateFile('knowledge_macros.pt')
 
     @Lazy
     def macro(self):

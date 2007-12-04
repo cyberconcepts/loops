@@ -26,11 +26,9 @@ $Id$
 from zope import interface, component
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.form.browser.textwidgets import PasswordWidget as BasePasswordWidget
-from zope.app.form.interfaces import WidgetInputError
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
 from zope.cachedescriptors.property import Lazy
-from zope.formlib.form import Form as FormlibForm, FormFields, action
-from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
 from cybertools.composer.interfaces import IInstance
@@ -38,9 +36,9 @@ from cybertools.composer.schema.browser.common import schema_macros
 from cybertools.composer.schema.browser.form import Form, CreateForm
 from cybertools.composer.schema.schema import FormState, FormError
 from cybertools.typology.interfaces import IType
-from loops.browser.concept import ConceptView
+from loops.browser.common import concept_macros
+from loops.browser.concept import ConceptView, ConceptRelationView
 from loops.browser.node import NodeView
-from loops.browser.concept import ConceptRelationView
 from loops.concept import Concept
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
 from loops.organize.interfaces import IMemberRegistration, IPasswordChange
@@ -48,6 +46,9 @@ from loops.organize.party import getPersonForUser, Person
 from loops.organize.util import getInternalPrincipal
 import loops.browser.util
 from loops.util import _
+
+
+organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 
 class MyStuff(ConceptView):
@@ -58,6 +59,14 @@ class MyStuff(ConceptView):
         self.person = getPersonForUser(context, request)
         if self.person is not None:
             self.context = self.person
+
+    @Lazy
+    def macro(self):
+        return organize_macros.macros['conceptdata']
+
+    @Lazy
+    def concept_macros(self):
+        return concept_macros
 
     @Lazy
     def view(self):

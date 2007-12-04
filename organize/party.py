@@ -78,7 +78,6 @@ class Person(AdapterBase, BasePerson):
     def getUserId(self):
         return getattr(self.context, '_userId', None)
     def setUserId(self, userId):
-        #auth = self.authentication
         if userId:
             principal = self.getPrincipalForUserId(userId)
             person = getPersonForUser(self.context, principal=principal)
@@ -87,8 +86,6 @@ class Person(AdapterBase, BasePerson):
                     'There is alread a person (%s) assigned to user %s.'
                     % (zapi.getName(person), userId))
             pa = annotations(principal)
-            #pa[ANNOTATION_KEY] = self.context
-            #intIds = component.getUtility(IRelationRegistry, context=self.context)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)
             if ann is None:

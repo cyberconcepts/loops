@@ -1,0 +1,9 @@
+<metal:data define-macro="conceptdata">
+  <tal:person condition="item/person">
+    <metal:block use-macro="item/concept_macros/macros/conceptdata" />
+  </tal:person>
+  <tal:person condition="not:item/person">
+    <metal:block use-macro="item/concept_macros/macros/concepttitle" /><br />
+    <div i18n:translate="">No Person object associated with your user account.</div>
+  </tal:person>
+</metal:data>

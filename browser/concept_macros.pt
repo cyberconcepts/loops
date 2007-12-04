@@ -1,6 +1,6 @@
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-          <metal:fields use-macro="item/template/macros/concepttitle" />
+          <metal:fields use-macro="item/template/macros/concepttitle" /><br />
           <metal:fields use-macro="item/template/macros/conceptfields" /><br />
           <metal:fields use-macro="item/template/macros/conceptchildren" /><br />
           <metal:fields use-macro="item/template/macros/conceptresources" />
