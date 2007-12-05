@@ -67,6 +67,7 @@ class ObjectForm(NodeView):
     """
 
     template = ViewPageTemplateFile('form_macros.pt')
+    customMacro = None
     formState = FormState()     # dummy, don't update!
     isInnerHtml = True
 

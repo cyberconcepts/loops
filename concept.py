@@ -205,11 +205,14 @@ class Concept(Contained, Persistent):
 
     # resource relations
 
-    def getResourceRelations(self, predicates=None, resource=None):
+    def getResourceRelations(self, predicates=None, resource=None, sort='default'):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
-        # TODO: sort...
-        return getRelations(first=self, second=resource, relationships=relationships)
+        if sort == 'default':
+            sort = lambda x: (x.order, x.second.title.lower())
+        return sorted(getRelations(
+                        first=self, second=resource, relationships=relationships),
+                      key=sort)
 
     def getResources(self, predicates=None):
         return [r.second for r in self.getResourceRelations(predicates)]

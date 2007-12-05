@@ -2,11 +2,11 @@
 <html metal:use-macro="context/@@standard_macros/view"
       i18n:domain="loops">
   <body>
-    
+
     <div metal:fill-slot="body">
 
       <h1 tal:content="context/title">Concept Title</h1><br />
-      
+
       <div   tal:define="items view/resources;
                          action string:remove;
                          qualifier string:resources;
@@ -41,7 +41,7 @@
           </metal:control>
         </metal:create>
       </div>
-      
+
       <div   tal:define="items view/search;
                          action string:assign;
                          qualifier nothing;
@@ -75,10 +75,14 @@
                     tal:content="pred/title">Predicate</option>
               </tal:types>
             </select>
+            <span i18n:translate="">Order</span>
+            <input name="order" size="2" value="0" />&nbsp;
+            <span i18n:translate="">Relevance</span>
+            <input name="relevance" size="3" value="1.0" />&nbsp;
           </metal:special>
         </metal:assign>
       </div>
-      
+
     </div>
   </body>
 </html>

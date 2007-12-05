@@ -28,3 +28,11 @@
   </p>
   <metal:resources use-macro="item/conceptMacros/conceptresources" />
 </metal:block>
+
+
+<metal:block define-macro="children">
+  <tr>
+    <td colspan="5" class="headline"
+        i18n:translate="">Assign Child Concepts</td>
+  </tr>
+</metal:block>

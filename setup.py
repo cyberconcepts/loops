@@ -85,6 +85,7 @@ class SetupManager(object):
         note = self.addObject(conceptManager, Concept, 'note', title=u'Note')
         for c in (typeConcept, domain, query, note, file, textdocument, predicate):
             c.conceptType = typeConcept
+            notify(ObjectModifiedEvent(c))
         ITypeConcept(typeConcept).typeInterface = ITypeConcept
         ITypeConcept(query).typeInterface = IQueryConcept
         ITypeConcept(file).typeInterface = IFile

@@ -61,6 +61,10 @@
                     tal:content="pred/title">Predicate</option>
               </tal:types>
             </select>
+            <span i18n:translate="">Order</span>
+            <input name="order" size="2" value="0" />&nbsp;
+            <span i18n:translate="">Relevance</span>
+            <input name="relevance" size="3" value="1.0" />&nbsp;
           </metal:special>
         </metal:assign>
       </div>

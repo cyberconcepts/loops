@@ -24,8 +24,11 @@
             <th>&nbsp;</th>
             <th i18n:translate="label_title">Title</th>
             <th i18n:translate="label_type">Type</th>
-            <th i18n:translate="label_predicate"
-                tal:condition="showPredicate">Predicate</th>
+            <tal:relation condition="showPredicate">
+              <th i18n:translate="label_predicate">Predicate</th>
+              <th i18n:translate="label_order">Ord</th>
+              <th i18n:translate="label_relevance">RF</th>
+            </tal:relation>
           </tr>
         </thead>
         <tbody>
@@ -51,13 +54,17 @@
                 Type
               </a>
             </td>
-            <td tal:condition="showPredicate">
-              <a tal:content="item/predicateTitle" href="#"
-                 tal:attributes="href
-                    string:${item/predicateUrl}/@@SelectedManagementView.html">
-                Predicate
-              </a>
-            </td>
+            <tal:relation condition="showPredicate">
+              <td>
+                <a tal:content="item/predicateTitle" href="#"
+                   tal:attributes="href
+                      string:${item/predicateUrl}/@@SelectedManagementView.html">
+                  Predicate
+                </a>
+              </td>
+              <td tal:content="item/order" style="text-align: center">0</td>
+              <td tal:content="item/relevance" style="text-align: center">1.0</td>
+            </tal:relation>
           </tr>
         </tbody>
       </table>
@@ -119,6 +126,10 @@
             </tal:types>
           </select>
         </metal:control>
+        <span i18n:translate="">Order</span>
+        <input name="create.order" size="2" value="0" />&nbsp;
+        <span i18n:translate="">Relevance</span>
+        <input name="create.relevance" size="3" value="1.0" />&nbsp;
       </div>
     </form>
   </fieldset>

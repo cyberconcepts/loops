@@ -119,8 +119,6 @@ class ConceptView(BaseView):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
-        #rels = sorted(self.context.getChildRelations(),
-        #              key=(lambda x: x.second.title.lower()))
         rels = self.context.getChildRelations()
         for r in rels:
             if r.predicate == hasType:
@@ -140,8 +138,7 @@ class ConceptView(BaseView):
             yield ConceptRelationView(r, self.request)
 
     def resources(self):
-        rels = sorted(self.context.getResourceRelations(),
-                      key=(lambda x: x.second.title.lower()))
+        rels = self.context.getResourceRelations()
         for r in rels:
             yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
@@ -197,15 +194,20 @@ class ConceptConfigureView(ConceptView):
             if action == 'assign':
                 assignAs = request.get('assignAs', 'child')
                 predicate = request.get('predicate') or None
+                order = int(request.get('order') or 0)
+                relevance = float(request.get('relevance') or 1.0)
                 if predicate:
                     predicate = removeSecurityProxy(
                                     self.loopsRoot.loopsTraverse(predicate))
                 if assignAs == 'child':
-                    self.context.assignChild(removeSecurityProxy(concept), predicate)
+                    self.context.assignChild(removeSecurityProxy(concept), predicate,
+                                             order, relevance)
                 elif assignAs == 'parent':
-                    self.context.assignParent(removeSecurityProxy(concept), predicate)
+                    self.context.assignParent(removeSecurityProxy(concept), predicate,
+                                             order, relevance)
                 elif assignAs == 'resource':
-                    self.context.assignResource(removeSecurityProxy(concept), predicate)
+                    self.context.assignResource(removeSecurityProxy(concept), predicate,
+                                             order, relevance)
                 else:
                     raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
             elif action == 'remove':
@@ -246,14 +248,16 @@ class ConceptConfigureView(ConceptView):
         if predicate:
             predicate = removeSecurityProxy(
                             self.loopsRoot.loopsTraverse(predicate))
+        order = int(request.get('create.order') or 0)
+        relevance = float(request.get('create.relevance') or 1.0)
         if assignAs == 'child':
-            self.context.assignChild(concept, predicate)
+            self.context.assignChild(concept, predicate, order, relevance)
         elif assignAs == 'parent':
-            self.context.assignParent(concept, predicate)
+            self.context.assignParent(concept, predicate, order, relevance)
         elif assignAs == 'resource':
-            self.context.assignResource(concept, predicate)
+            self.context.assignResource(concept, predicate, order, relevance)
         elif assignAs == 'concept':
-            self.context.assignConcept(concept, predicate)
+            self.context.assignConcept(concept, predicate, order, relevance)
         else:
             raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
 
@@ -303,6 +307,7 @@ class ConceptRelationView(BaseView):
             self.other = relation.second
         self.context = getVersion(self.context, request)
         self.predicate = relation.predicate
+        self.relation = relation
         self.request = request
 
     @Lazy
@@ -326,4 +331,12 @@ class ConceptRelationView(BaseView):
     @Lazy
     def predicateUrl(self):
         return zapi.absoluteURL(self.predicate, self.request)
+
+    @Lazy
+    def relevance(self):
+        return self.relation.relevance
+
+    @Lazy
+    def order(self):
+        return self.relation.order
 

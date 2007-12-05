@@ -239,10 +239,13 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
             concept = self.loopsRoot.loopsTraverse(token)
             if action == 'assign':
                 predicate = request.get('predicate') or None
+                order = int(request.get('order') or 0)
+                relevance = float(request.get('relevance') or 1.0)
                 if predicate:
                     predicate = removeSecurityProxy(
                                     self.loopsRoot.loopsTraverse(predicate))
-                self.context.assignConcept(removeSecurityProxy(concept), predicate)
+                self.context.assignConcept(removeSecurityProxy(concept), predicate,
+                                           order, relevance)
             elif action == 'remove':
                 predicate = self.loopsRoot.loopsTraverse(relToken)
                 self.context.deassignConcept(concept, [predicate])

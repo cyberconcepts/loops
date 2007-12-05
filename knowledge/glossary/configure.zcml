@@ -24,4 +24,18 @@
       permission="zope.View"
       />
 
+  <page
+      name="create_glossaryitem.html"
+      for="loops.interfaces.INode"
+      class="loops.knowledge.glossary.browser.CreateGlossaryItemForm"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      name="edit_glossaryitem.html"
+      for="loops.interfaces.INode"
+      class="loops.knowledge.glossary.browser.EditGlossaryItemForm"
+      permission="zope.ManageContent"
+      />
+
 </configure>

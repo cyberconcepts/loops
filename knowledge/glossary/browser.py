@@ -28,6 +28,8 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 
 from loops.browser.action import Action, DialogAction
 from loops.browser.concept import ConceptView
+from loops.browser.form import CreateConceptForm, EditConceptForm
+from loops.browser.form import CreateConcept, EditConcept
 from loops.common import adapted
 from loops import util
 
@@ -46,7 +48,7 @@ class GlossaryView(ConceptView):
         if category == 'portlet':
             actions.append(DialogAction(self, title='Create Glossary Item...',
                   description='Create a new glossary item.',
-                  viewName='create_concept.html',
+                  viewName='create_glossaryitem.html',
                   dialogName='createGlossaryItem',
                   #qualifier='concept',
                   typeToken='.loops/concepts/glossaryitem',
@@ -67,8 +69,20 @@ class GlossaryItemView(ConceptView):
         if category == 'portlet':
             actions.append(DialogAction(self, title='Edit Glossary Item...',
                   description='Modify glossary item.',
-                  viewName='edit_concept.html',
+                  viewName='edit_glossaryitem.html',
                   dialogName='editGlossaryItem',
                   page=page))
         return actions
+
+
+class CreateGlossaryItemForm(CreateConceptForm):
+
+    @Lazy
+    def customMacro(self):
+        return template.macros['children']
+
+
+class EditGlossaryItemForm(CreateGlossaryItemForm, EditConceptForm):
+
+    pass
 

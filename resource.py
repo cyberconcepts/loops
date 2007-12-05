@@ -191,12 +191,14 @@ class Resource(Image, Contained):
         rels = getRelations(second=obj, relationships=relationships)
         return [r.first for r in rels]
 
-    def getConceptRelations (self, predicates=None, concept=None):
+    def getConceptRelations (self, predicates=None, concept=None, sort='default'):
         predicates = predicates is None and ['*'] or predicates
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
-        # TODO: sort...
-        return getRelations(first=concept, second=obj, relationships=relationships)
+        if sort == 'default':
+            sort = lambda x: (x.order, x.first.title.lower())
+        return sorted(getRelations(first=concept, second=obj, relationships=relationships),
+                            key=sort)
 
     def getConcepts(self, predicates=None):
         obj = getMaster(self)

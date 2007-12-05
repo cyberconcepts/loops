@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.typology.interfaces import IType
 from loops.concept import Concept
 from loops.util import getUidForObject, getObjectForUid, toUnicode
+
 
 class LoopsMethods(MethodPublisher):
     """ XML-RPC methods for the loops root object.
@@ -143,6 +144,7 @@ class LoopsMethods(MethodPublisher):
         if ti is not None:
             obj = ti(obj)
         # TODO: provide conversion if necessary
+        value = value.strip()   # remove spaces appended by Flash
         setattr(obj, attr, toUnicode(value))
         notify(ObjectModifiedEvent(obj))
         return 'OK'
