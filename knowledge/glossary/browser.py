@@ -34,14 +34,14 @@ from loops.common import adapted
 from loops import util
 
 
-template = ViewPageTemplateFile('view_macros.pt')
+view_macros = ViewPageTemplateFile('view_macros.pt')
 
 
 class GlossaryView(ConceptView):
 
     @Lazy
     def macro(self):
-        return template.macros['glossary']
+        return view_macros.macros['glossary']
 
     def getActions(self, category='object', page=None):
         actions = []
@@ -62,7 +62,7 @@ class GlossaryItemView(ConceptView):
 
     @Lazy
     def macro(self):
-        return template.macros['glossaryitem']
+        return view_macros.macros['glossaryitem']
 
     def getActions(self, category='object', page=None):
         actions = []
@@ -79,10 +79,14 @@ class CreateGlossaryItemForm(CreateConceptForm):
 
     @Lazy
     def customMacro(self):
-        return template.macros['children']
+        return view_macros.macros['children']
 
 
 class EditGlossaryItemForm(CreateGlossaryItemForm, EditConceptForm):
 
-    pass
+    title = _(u'Edit Glossary Item')
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['edit']
 
