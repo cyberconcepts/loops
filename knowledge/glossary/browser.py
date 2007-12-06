@@ -32,6 +32,7 @@ from loops.browser.form import CreateConceptForm, EditConceptForm
 from loops.browser.form import CreateConcept, EditConcept
 from loops.common import adapted
 from loops import util
+from loops.util import _
 
 
 view_macros = ViewPageTemplateFile('view_macros.pt')
