@@ -379,6 +379,7 @@ class BaseView(GenericView):
     def registerDojo(self):
         cm = self.controller.macros
         cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
+        #cm.register('js', 'dojo.js', resourceName='ajax.dojo1/dojo/dojo.js')
 
 
 # vocabulary stuff

@@ -76,6 +76,7 @@ class NodeView(BaseView):
         cm.register('css', identifier='loops.css', resourceName='loops.css',
                     media='all', position=3)
         cm.register('js', 'loops.js', resourceName='loops.js')
+        #cm.register('js', 'loops.js', resourceName='loops1.js')
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
         #if not IUnauthenticatedPrincipal.providedBy(self.request.principal):

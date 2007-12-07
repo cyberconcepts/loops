@@ -162,6 +162,15 @@ For testing, we first have to provide the needed utilities and settings
   >>> view = MyKnowledge(task01C, request)
   >>> prov = view.myKnowledgeProvidersForTask()
 
+Glossaries
+==========
+
+Glossary items are topic-like concepts that may be edited by end users.
+
+  >>> from loops.knowledge.glossary.browser import CreateGlossaryItemForm
+  >>> from loops.knowledge.glossary.browser import EditGlossaryItemForm
+  >>> from loops.knowledge.glossary.browser import CreateGlossaryItem
+  >>> from loops.knowledge.glossary.browser import EditGlossaryItem
 
 
 Fin de partie

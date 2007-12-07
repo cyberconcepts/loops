@@ -155,11 +155,20 @@
              name="concept.search.text" id="concept.search.text"
              tal:attributes="dataUrl
                 string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
+      <tal:dojo1 condition="nothing">
+        <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+             tal:attributes="url
+                  string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=" >
+         </div>
+        <input dojoType="dijit.form.ComboBox" store="conceptSearch"
+               autoComplete="False"
+               name="concept.search.text" id="concept.search.text" />
+      </tal:dojo1>
     </td>
     <td>
       <input type="button" value="Select"
              i18n:attributes="value"
-             onClick="addConceptAssignment()" />
+             onClick="addConceptAssignment('concept', 'assignments')" />
     </td>
 </tr>
 

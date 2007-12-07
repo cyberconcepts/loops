@@ -76,18 +76,92 @@ class GlossaryItemView(ConceptView):
         return actions
 
 
-class CreateGlossaryItemForm(CreateConceptForm):
+class EditGlossaryItemForm(EditConceptForm, ConceptView):
+
+    title = _(u'Edit Glossary Item')
+    form_action = 'edit_glossaryitem'
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['edit']
 
     @Lazy
     def customMacro(self):
         return view_macros.macros['children']
 
-
-class EditGlossaryItemForm(CreateGlossaryItemForm, EditConceptForm):
-
-    title = _(u'Edit Glossary Item')
+    def children(self):
+        return ConceptView.children(self.virtualTarget)
 
     @Lazy
-    def macro(self):
-        return self.template.macros['edit']
+    def relatedPredicate(self):
+        return self.loopsRoot.getConceptManager().get('related')
+
+    @Lazy
+    def relatedPredicateUid(self):
+        pred = self.relatedPredicate
+        return pred and util.getUidForObject(pred) or self.defaultPredicateUid
+
+
+class CreateGlossaryItemForm(CreateConceptForm, EditGlossaryItemForm):
+
+    form_action = 'create_glossaryitem'
+
+    def children(self):
+        return []
+
+
+class EditGlossaryItem(EditConcept):
+
+    childPrefix = 'children.'
+
+    oldChildren = None
+    selectedChildren = None
+
+    def updateFields(self):
+        obj = self.object
+        form = self.request.form
+        formState = EditConcept.updateFields(self)
+        for k in form.keys():
+            if k.startswith(self.prefix):
+                fn = k[len(self.prefix):]
+                value = form[k]
+                if fn.startswith(self.childPrefix) and value:
+                    self.collectChildren(fn[len(self.childPrefix):], value)
+        if self.oldChildren or self.selectedChildren:
+            self.assignChildren(obj)
+        return formState
+
+    def collectChildren(self, fieldName, value):
+        if self.oldChildren is None:
+            self.oldChildren = []
+        if self.selectedChildren is None:
+            self.selectedChildren = []
+        for v in value:
+            if fieldName == 'old':
+                self.oldChildren.append(v)
+            elif fieldName == 'selected' and v not in self.selectedChildren:
+                self.selectedChildren.append(v)
+
+    def assignChildren(self, obj):
+        for v in self.oldChildren:
+            if v not in self.selectedChildren:
+                c, p = v.split(':')
+                concept = util.getObjectForUid(c)
+                predicate = util.getObjectForUid(p)
+                obj.deassignChild(concept, [predicate])
+        for v in self.selectedChildren:
+            if v != 'none' and v not in self.oldChildren:
+                c, p = v.split(':')
+                concept = util.getObjectForUid(c)
+                predicate = util.getObjectForUid(p)
+                exists = obj.getChildRelations([p], concept)
+                if not exists:
+                    obj.assignChild(concept, predicate)
+
+
+class CreateGlossaryItem(EditGlossaryItem, CreateConcept):
+
+    def update(self):
+        result = CreateConcept.update(self)
+        return result
 

@@ -38,4 +38,20 @@
       permission="zope.ManageContent"
       />
 
+  <zope:adapter
+      name="create_glossaryitem"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.knowledge.glossary.browser.CreateGlossaryItem"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="edit_glossaryitem"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.knowledge.glossary.browser.EditGlossaryItem"
+      permission="zope.ManageContent"
+      />
+
 </configure>

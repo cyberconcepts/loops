@@ -1,4 +1,4 @@
-/* $Id$ */
+/* $Id: loops.js 1965 2007-08-27 17:33:07Z helmutm $ */
 
 function openEditWindow(url) {
     zmi = window.open(url, 'zmi');
@@ -94,23 +94,23 @@ function inlineEdit(id, saveUrl) {
 
 function setConceptTypeForComboBox(typeId, cbId) {
     var t = dojo.byId(typeId).value;
-    var cb = dojo.widget.manager.getWidgetById(cbId)
-    var dp = cb.dataProvider;
-    var baseUrl = dp.searchUrl.split('&')[0];
+    var cb = dijit.byId(cbId)
+    var dp = cb.store;
+    var baseUrl = dp.url.split('&')[0];
     var newUrl = baseUrl + '&searchType=' + t;
-    dp.searchUrl = newUrl;
+    dp.url = newUrl;
     cb.setValue('');
 }
-
+x
 var dialogs = {}
 
 function objectDialog(dlgName, url) {
-    dojo.require('dojo.widget.Dialog');
-    dojo.require('dojo.widget.ComboBox');
+    dojo.require('dijit.Dialog');
+    dojo.require('dijit.form.ComboBox');
+    dojo.require('dojox.data.QueryReadStore');
     dlg = dialogs[dlgName];
     if (!dlg) {
-        //dlg = dojo.widget.fromScript('Dialog',
-        dlg = dojo.widget.createWidget('Dialog',
+        dlg = new dijit.Dialog(
             {bgColor: 'white', bgOpacity: 0.5, toggle: 'fade', toggleDuration: 250,
              executeScripts: true,
              href: url
@@ -120,15 +120,15 @@ function objectDialog(dlgName, url) {
     dlg.show();
 }
 
-function addConceptAssignment(prefix, suffix) {
+function addConceptAssignment() {
     dojo.require('dojo.html')
-    node = dojo.byId('form.' + suffix);
+    node = dojo.byId('form.assignments');
     els = document.forms[0].elements;
     for (var i=0; i<els.length; i++) { //getElementsByName does not work here in IE
         el = els[i];
-        if (el.name == prefix + '.search.text_selected') {
+        if (el.name == 'concept.search.text_selected') {
             cToken = el.value;
-        } else if (el.name == prefix + '.search.text') {
+        } else if (el.name == 'concept.search.text') {
             title = el.value;
         }
     }
@@ -136,11 +136,11 @@ function addConceptAssignment(prefix, suffix) {
         alert('Please select a concept!');
         return false;
     }
-    pToken = dojo.byId(prefix + '.search.predicate').value;
+    pToken = dojo.byId('concept.search.predicate').value;
     token = cToken + ':' + pToken;
     var td = document.createElement('td');
     td.colSpan = 5;
-    td.innerHTML = '<input type="checkbox" name="form.' + suffix + '.selected:list" value="' + token + '" checked><span>' + title + '</span>';
+    td.innerHTML = '<input type="checkbox" name="form.assignments.selected:list" value="' + token + '" checked><span>' + title + '</span>';
     var tr = document.createElement('tr');
     tr.appendChild(td);
     node.appendChild(tr);

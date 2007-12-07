@@ -35,4 +35,38 @@
     <td colspan="5" class="headline"
         i18n:translate="">Assign Child Concepts</td>
   </tr>
+  <tbody id="form.children">
+      <tr tal:repeat="relation view/children">
+        <td colspan="5">
+          <input type="hidden" name="form.children.old:list"
+                 tal:attributes="value relation/uidToken"
+                 tal:condition="relation/other" />
+          <input type="checkbox" checked name="form.children.selected:list"
+                 tal:attributes="value relation/uidToken;" />
+          <span tal:content="relation/title">Something</span>
+          (<span i18n:translate="" tal:content="relation/typeTitle">Something</span>)
+        </td>
+      </tr>
+  </tbody>
+  <tr>
+    <td><span i18n:translate="">Type</span>:</td>
+    <td><b i18n:translate="">Glossary Item</b></td>
+    <td>
+      <label for="child.search.text">
+        <span i18n:translate="">Concept</span>:</label></td>
+    <td>
+      <input type="hidden"
+             id="child.search.predicate"
+             tal:attributes="value view/relatedPredicateUid" />
+      <input dojoType="comboBox" mode="remote" autoComplete="False"
+             name="child.search.text" id="child.search.text"
+             tal:attributes="dataUrl
+                string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=loops:concept:glossaryitem" />
+    </td>
+    <td>
+      <input type="button" value="Select"
+             i18n:attributes="value"
+             onClick="addConceptAssignment('child', 'children')" />
+    </td>
+</tr>
 </metal:block>
