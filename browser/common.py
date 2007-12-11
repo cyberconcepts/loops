@@ -51,6 +51,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
+from loops.i18n.browser import I18NView
 from loops.interfaces import IView
 from loops.resource import Resource
 from loops.type import ITypeConcept
@@ -96,7 +97,7 @@ class EditForm(form.EditForm):
         return parentUrl + '/contents.html'
 
 
-class BaseView(GenericView):
+class BaseView(GenericView, I18NView):
 
     actions = {}  # default only, don't update
 

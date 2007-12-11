@@ -6,21 +6,23 @@
    i18n_domain="zope"
    >
 
-  <layer name="loopz" />
-
-  <skin name="Loopz"
-        layers="loopz
-                cybertools.browser.liquid.liquid
-                rotterdam default" />
+  <zope:interface
+      interface="loops.browser.skin.Loopz"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Loopz"
+      />
 
   <page for="*"
         name="body.html"
         class="loops.browser.skin.browser.View"
         permission="zope.View"
-        layer="loopz" />
+        layer="loops.browser.skin.Loopz" />
 
-  <resource name="custom.css" file="custom.css" layer="loopz" />
-  <resource name="favicon.png" file="loops_favicon.png" layer="loopz" />
-  <resource name="logo.png" file="loops_logo.png" layer="loopz" />
+  <resource name="custom.css" file="custom.css"
+            layer="loops.browser.skin.Loopz" />
+  <resource name="favicon.png" file="loops_favicon.png"
+            layer="loops.browser.skin.Loopz" />
+  <resource name="logo.png" file="loops_logo.png"
+            layer="loops.browser.skin.Loopz" />
 
 </configure>

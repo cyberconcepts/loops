@@ -34,25 +34,27 @@ from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.event import notify
-from zope.formlib.form import EditForm, FormFields
+from zope.formlib.form import EditForm, FormFields, setUpEditWidgets
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import implements
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.typology.interfaces import IType, ITypeManager
-from loops.interfaces import IConcept
-from loops.interfaces import ITypeConcept
-from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.browser.common import EditForm, BaseView, LoopsTerms, conceptMacrosTemplate
+from loops.common import adapted
+from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
+from loops.i18n.browser import I18NView
+from loops.interfaces import IConcept, IConceptSchema, ITypeConcept
 from loops import util
 from loops.util import _
 from loops.versioning.util import getVersion
 
 
-class ConceptEditForm(EditForm):
+class ConceptEditForm(EditForm, I18NView):
 
     @Lazy
     def typeInterface(self):
@@ -71,11 +73,15 @@ class ConceptEditForm(EditForm):
         return fields
 
     def setUpWidgets(self, ignore_request=False):
-        super(ConceptEditForm, self).setUpWidgets(ignore_request)
+        adapter = adapted(self.context, self.languageInfo)
+        self.adapters = {self.typeInterface: adapter,
+                         IConceptSchema: adapter}
+        self.widgets = setUpEditWidgets(
+            self.form_fields, self.prefix, self.context, self.request,
+            adapters=self.adapters, ignore_request=ignore_request)
         desc = self.widgets.get('description')
         if desc:
             desc.height = 2
-
 
 class ConceptView(BaseView):
 
@@ -98,11 +104,24 @@ class ConceptView(BaseView):
                          subMacro=self.template.macros['parents'],
                          position=0, info=self)
 
+    @Lazy
+    def adapted(self):
+        return adapted(self.context, self.languageInfo)
+
+    @Lazy
+    def title(self):
+        return self.adapted.title or getName(self.context)
+
+    @Lazy
+    def description(self):
+        return self.adapted.description
+
     def fieldData(self):
+        # TODO: use cybertools.composer.schema.instance, see loops.browser.form
         ti = IType(self.context).typeInterface
         if not ti:
             return
-        adapter = ti(self.context)
+        adapter = self.adapted
         for n, f in schema.getFieldsInOrder(ti):
             if n in ('title', 'description',):  # already shown in header
                 continue
@@ -119,17 +138,21 @@ class ConceptView(BaseView):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
-        rels = self.context.getChildRelations()
+        #rels = self.context.getChildRelations()
+        rels = (ConceptRelationView(r, self.request, contextIsSecond=True)
+                for r in self.context.getChildRelations(sort=None))
+        rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
         for r in rels:
             if r.predicate == hasType:
                 # only show top-level entries for type instances:
                 skip = False
-                for parent in r.second.getParents((standard,)):
+                for parent in r.context.getParents((standard,)):
                     if parent.conceptType == self.context:
                         skip = True
                         break
                 if skip: continue
-            yield ConceptRelationView(r, self.request, contextIsSecond=True)
+            yield r
+            #yield ConceptRelationView(r, self.request, contextIsSecond=True)
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
@@ -309,6 +332,18 @@ class ConceptRelationView(BaseView):
         self.predicate = relation.predicate
         self.relation = relation
         self.request = request
+
+    @Lazy
+    def adapted(self):
+        return adapted(self.context, self.languageInfo)
+
+    @Lazy
+    def title(self):
+        return self.adapted.title or getName(self.context)
+
+    @Lazy
+    def description(self):
+        return self.adapted.description
 
     @Lazy
     def token(self):

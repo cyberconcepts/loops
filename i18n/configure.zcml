@@ -1,0 +1,14 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <page for="loops.interfaces.INode"
+        name="language_switch"
+        class="loops.browser.node.NodeView"
+        attribute="switchLanguage"
+        permission="zope.Public" />
+
+</configure>

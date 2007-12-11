@@ -52,6 +52,7 @@ from loops.interfaces import IConcept, IConceptSchema, IResourceManager, IDocume
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
+from loops.i18n.browser import I18NView
 from loops.query import ConceptQuery
 from loops.resource import Resource
 from loops.type import ITypeConcept
@@ -84,7 +85,7 @@ class ObjectForm(NodeView):
 
     @Lazy
     def adapted(self):
-        return adapted(self.target)
+        return adapted(self.target, self.languageInfo)
 
     @Lazy
     def typeInterface(self):
@@ -305,9 +306,16 @@ class InnerConceptForm(CreateConceptForm):
         return self.fieldRenderers['fields']
 
 
+class InnerConceptEditForm(EditConceptForm):
+
+    @property
+    def macro(self):
+        return self.fieldRenderers['fields']
+
+
 # processing form input
 
-class EditObject(FormController):
+class EditObject(FormController, I18NView):
     """ Note that ``self.context`` of this adapter may be different from
         ``self.object``, the object it acts upon, e.g. when this object
         is created during the update processing.
@@ -321,7 +329,7 @@ class EditObject(FormController):
 
     @Lazy
     def adapted(self):
-        return adapted(self.object)
+        return adapted(self.object, self.languageInfo)
 
     @Lazy
     def typeInterface(self):

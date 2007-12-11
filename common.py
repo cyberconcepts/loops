@@ -22,13 +22,15 @@ Common stuff.
 $Id$
 """
 
+from zope import component
 from zope.app.container.contained import NameChooser as BaseNameChooser
+from zope.cachedescriptors.property import Lazy
+from zope.component import adapts
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.zopedublincore import ScalarProperty
-from zope.component import adapts
 from zope.interface import implements
-from zope.cachedescriptors.property import Lazy
+from zope.security.proxy import isinstance
 
 from cybertools.storage.interfaces import IStorageInfo
 from cybertools.typology.interfaces import IType
@@ -36,12 +38,15 @@ from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
 from loops.interfaces import IResourceAdapter
 
 
-def adapted(obj):
+def adapted(obj, langInfo=None):
     t = IType(obj, None)
     if t is not None:
         ti = t.typeInterface
         if ti is not None:
-            adapted = ti(obj, None)
+            adapted = component.queryAdapter(obj, ti)
+            from loops.i18n.common import I18NAdapterBase
+            if isinstance(adapted, I18NAdapterBase):
+                adapted.languageInfo = langInfo
             if adapted is not None:
                 return adapted
     return obj

@@ -28,7 +28,7 @@ from zope.interface import implements, Interface
 from cybertools.knowledge.interfaces import IKnowledgeElement
 from loops.concept import Concept
 from loops.interfaces import ITypeConcept
-from loops.knowledge.interfaces import IPerson, ITask
+from loops.knowledge.interfaces import IPerson, ITask, ITopic
 from loops.setup import SetupManager as BaseSetupManager
 
 
@@ -44,7 +44,7 @@ class SetupManager(BaseSetupManager):
         ITypeConcept(person).typeInterface = IPerson # this may override other packages!
         topic = self.addObject(concepts, Concept, 'topic', title=u'Topic',
                         conceptType=type)
-        ITypeConcept(topic).typeInterface = IKnowledgeElement
+        ITypeConcept(topic).typeInterface = ITopic
         task = self.addObject(concepts, Concept, 'task', title=u'Task',
                         conceptType=type)
         ITypeConcept(task).typeInterface = ITask
@@ -57,5 +57,5 @@ class SetupManager(BaseSetupManager):
                         conceptType=predicate)
         provides = self.addObject(concepts, Concept, 'provides', title=u'provides',
                         conceptType=predicate)
-        
-  
+
+

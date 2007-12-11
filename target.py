@@ -31,7 +31,7 @@ from zope.interface import implements
 from zope import schema
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.event.objectevent import ObjectModifiedEvent, Attributes
+from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 from zope.event import notify
 
 from loops.interfaces import ILoopsObject, IResource, IDocument, IMediaAsset

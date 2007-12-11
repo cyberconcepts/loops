@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ from cybertools.typology.interfaces import IType
 from cybertools.knowledge.interfaces import IKnowledgeElement, IKnowledgeProvider
 from cybertools.knowledge.knowing import Knowing
 from loops.interfaces import IConcept, IResource
+from loops.i18n.common import I18NAdapterBase
 from loops.knowledge.interfaces import IPerson, ITask, ITopic
 from loops.organize.party import Person as BasePerson
 from loops.organize.task import Task as BaseTask
@@ -94,13 +95,13 @@ class Person(BasePerson, Knowing, KnowledgeAdapterMixin):
         self.context.deassignParent(obj.context, (self.knowsPred,))
 
 
-class Topic(AdapterBase, KnowledgeAdapterMixin):
+class Topic(I18NAdapterBase, KnowledgeAdapterMixin):
     """ A typeInterface adapter for concepts of type 'topic' that
         may act as a knowledge element.
     """
 
     implements(ITopic)
-    _adapterAttributes = ('context', '__parent__', 'parent')
+    _adapterAttributes = I18NAdapterBase._adapterAttributes + ('parent',)
 
     def getParent(self):
         parents = self.context.getParents((self.standardPred,))

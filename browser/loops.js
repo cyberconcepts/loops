@@ -19,6 +19,12 @@ function replaceFieldsNode(targetId, typeId, url) {
     dojo.io.updateNode(targetId, uri);
 }
 
+function replaceFieldsNodeForLanguage(targetId, langId, url) {
+    lang = dojo.byId(langId).value;
+    uri = url + '?loops.language=' + lang;
+    dojo.io.updateNode(targetId, uri);
+}
+
 function submitReplacing(targetId, formId, actionUrl) {
     dojo.io.updateNode(targetId, {
             url: actionUrl,

@@ -586,6 +586,13 @@
       permission="zope.ManageContent"
       />
 
+  <page
+      name="inner_concept_edit_form.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.InnerConceptEditForm"
+      permission="zope.ManageContent"
+      />
+
   <zope:adapter
       name="create_resource"
       for="loops.browser.node.NodeView

@@ -55,7 +55,7 @@
   <class class="loops.base.Loops">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory id="loops.Loops"
              description="loops top-level container" />
@@ -122,7 +122,7 @@
   <class class=".concept.Concept">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="loops.Concept"
@@ -166,7 +166,7 @@
   <class class=".resource.Resource">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="loops.Resource"
@@ -175,7 +175,7 @@
     <require
         permission="zope.View"
         interface=".interfaces.IBaseResource
-                   zope.app.size.interfaces.ISized" />
+                   zope.size.interfaces.ISized" />
 
     <require
         permission="zope.ManageContent"
@@ -190,7 +190,7 @@
   <class class=".resource.Document">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="loops.Document"
@@ -199,7 +199,7 @@
     <require
         permission="zope.View"
         interface=".interfaces.IDocument
-                   zope.app.size.interfaces.ISized" />
+                   zope.size.interfaces.ISized" />
 
     <require
         permission="zope.ManageContent"
@@ -214,7 +214,7 @@
   <class class=".resource.MediaAsset">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="loops.MediaAsset"
@@ -223,7 +223,7 @@
     <require
         permission="zope.View"
         interface=".interfaces.IBaseResource
-                   zope.app.size.interfaces.ISized" />
+                   zope.size.interfaces.ISized" />
 
 
     <require
@@ -234,7 +234,7 @@
 
   <!--<adapter
       factory="zope.app.file.image.ImageSized"
-      provides="zope.app.size.interfaces.ISized"
+      provides="zope.size.interfaces.ISized"
       for=".interfaces.IMediaAsset"
       />-->
 
@@ -269,7 +269,7 @@
        interface="loops.interfaces.ILoopsObject" />-->
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="loops.Node"
@@ -293,21 +293,21 @@
 
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.INode"
-           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           provides="zope.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
 
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.IConcept"
-           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           provides="zope.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
 
   <adapter factory="loops.common.LoopsDCAdapter"
            for="loops.interfaces.IResource"
-           provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+           provides="zope.dublincore.interfaces.IZopeDublinCore"
            trusted="True" />
 
   <class class="loops.common.LoopsDCAdapter">
-    <require like_class="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter" />
+    <require like_class="zope.dublincore.annotatableadapter.ZDCAnnotatableAdapter" />
   </class>
 
   <adapter factory="loops.concept.IndexAttributes" trusted="True" />
@@ -457,7 +457,22 @@
       factory="cybertools.storage.filesystem.fullPathStorage"
       name="fullpath" />
 
-  <vocabulary
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.concept.ConceptTypeSourceList"
+      name="loops.conceptTypeSource" />
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.resource.ResourceTypeSourceList"
+      name="loops.resourceTypeSource" />
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.type.TypeInterfaceSourceList"
+      name="loops.TypeInterfaceSource" />
+
+  <!--<vocabulary
       factory="loops.concept.ConceptTypeSourceList"
       name="loops.conceptTypeSource"
       />
@@ -465,16 +480,11 @@
   <vocabulary
       factory="loops.resource.ResourceTypeSourceList"
       name="loops.resourceTypeSource"
-      />
-
-  <vocabulary
-      factory="loops.type.TypeInterfaceSourceList"
-      name="loops.TypeInterfaceSource"
-      />
+      />-->
 
   <!--<vocabulary
-      factory="loops.concept.PredicateSourceList"
-      name="loops.PredicateSource"
+      factory="loops.type.TypeInterfaceSourceList"
+      name="loops.TypeInterfaceSource"
       />-->
 
   <utility component="loops.concept.PredicateSourceList"
@@ -484,6 +494,7 @@
 
   <include package=".browser" />
   <include package=".classifier" />
+  <include package=".i18n" />
   <include package=".integrator" />
   <include package=".knowledge" />
   <include package=".organize" />

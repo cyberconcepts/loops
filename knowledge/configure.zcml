@@ -32,7 +32,10 @@
 
   <zope:class class="loops.knowledge.knowledge.Topic">
     <require permission="zope.View"
-             interface="loops.knowledge.interfaces.ITopic" />
+             interface="loops.knowledge.interfaces.ITopic"
+             set_attributes="languageInfo"  />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.interfaces.ITopic" />
   </zope:class>
 
   <zope:adapter factory="loops.knowledge.knowledge.Task"

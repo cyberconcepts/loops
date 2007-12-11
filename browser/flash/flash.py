@@ -22,7 +22,7 @@ View class(es) for Flash user interface.
 $Id$
 """
 
-from zope.app.traversing.browser.absoluteurl import absoluteURL
+from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.cachedescriptors.property import Lazy
 
 
