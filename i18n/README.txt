@@ -108,14 +108,41 @@ languages on the type object.
 
 Now we are ready to enter a language-specific title.
 
-  >>> from loops.browser.concept import ConceptEditForm
+  >>> from loops.browser.concept import ConceptEditForm, ConceptView
   >>> input = {'form.title': 'loops per Zope 3', 'loops.language': 'it',
   ...          'form.actions.apply': 'Change'}
   >>> form = ConceptEditForm(topic01, TestRequest(form=input))
   >>> form.update()
 
   >>> topic01.title
-  {'it': u'loops per Zope 3'}
+  {'en': u'loops for Zope 3', 'it': u'loops per Zope 3'}
+
+If we access an i18n attribute via a view that is i18n-aware we get the
+value corresponding to the language preferences that appear in the request.
+
+  >>> input = {'loops.language': 'it'}
+  >>> view = ConceptView(topic01, TestRequest(form=input))
+  >>> view.title
+  u'loops per Zope 3'
+
+If there is no entry for the language given we get back the entry for
+the default language.
+
+  >>> input = {'loops.language': 'de'}
+  >>> view = ConceptView(topic01, TestRequest(form=input))
+  >>> view.title
+  u'loops for Zope 3'
+
+There are also fallbacks - mainly for being able to access the title
+attribute in not i18n-aware contexts - that retrieve the value corresponding
+to the default language at the time of the attribute creation.
+
+  >>> topic01.title.getDefault()
+  u'loops for Zope 3'
+  >>> str(topic01.title)
+  'loops for Zope 3'
+  >>> topic01.title.lower()
+  u'loops for zope 3'
 
 
 Fin de partie

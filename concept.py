@@ -171,14 +171,16 @@ class Concept(Contained, Persistent):
     def getChildren(self, predicates=None, sort='default'):
         return [r.second for r in self.getChildRelations(predicates, sort=sort)]
 
-    def getParentRelations (self, predicates=None, parent=None):
+    def getParentRelations (self, predicates=None, parent=None, sort='default'):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(None, self, p) for p in predicates]
-        # TODO: sort...
-        return getRelations(first=parent, second=self, relationships=relationships)
+        if sort == 'default':
+            sort = lambda x: (x.order, x.first.title.lower())
+        return sorted(getRelations(first=parent, second=self, relationships=relationships),
+                      key=sort)
 
-    def getParents(self, predicates=None):
-        return [r.first for r in self.getParentRelations(predicates)]
+    def getParents(self, predicates=None, sort='default'):
+        return [r.first for r in self.getParentRelations(predicates, sort=sort)]
 
     def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
         if predicate is None:

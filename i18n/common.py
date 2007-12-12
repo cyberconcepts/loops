@@ -33,40 +33,65 @@ from cybertools.typology.interfaces import IType
 from loops.common import adapted, AdapterBase
 
 
+_not_found = object()
+
 # support for i18n content
 
 class I18NValue(PersistentMapping):
     """ A dictionary to be used for storing values for different languages.
     """
 
+    default = None
+
     def lower(self):
-        return str(self).lower()
+        # this should only be used as a fallback for the title attribute
+        return self.getDefault().lower()
+
+    def getDefault(self):
+        if self.default is None:
+            return self.values()[0]
+        return self.default
 
     def __str__(self):
-        return self.values()[0]
+        return str(self.getDefault())
 
 
 def getI18nValue(obj, attr, langInfo=None):
     obj = removeSecurityProxy(obj)
     value = getattr(obj, attr, None)
-    lang = None
     if isinstance(value, I18NValue):
-        lang = langInfo and langInfo.language or value.keys()[0]
-        value = value.get(lang)
-    #print '*** getI18nValue', attr, langInfo, lang, getattr(obj, attr, None), value
+        if langInfo:
+            result = value.get(langInfo.language, _not_found)
+            if result is _not_found:
+                result = value.get(langInfo.defaultLanguage, _not_found)
+                if result is _not_found:
+                    result = value.getDefault()
+            return result
+        else:
+            return value.getDefault()
     return value
 
 def setI18nValue(obj, attr, value, langInfo=None):
     obj = removeSecurityProxy(obj)
     old = getattr(obj, attr, None)
     if langInfo is None:
-        setattr(obj, attr, value)
-        return
+        if isinstance(old, I18NValue):
+            raise ValueError('Attribute %s on object %s is an I18NValue (%s) '
+                             'and no langInfo given.' % (attr, obj, value))
+        else:
+            setattr(obj, attr, value)
+            return
     lang = langInfo.language
     if isinstance(old, I18NValue):
         old[lang] = value
     else:
-        setattr(obj, attr, I18NValue(((lang, value),)))
+        i18nValue = I18NValue(((lang, value),))
+        defaultLang = langInfo.defaultLanguage
+        if lang != defaultLang:
+            # keep existing value
+            i18nValue[defaultLang] = old
+        i18nValue.default = i18nValue[defaultLang]
+        setattr(obj, attr, i18nValue)
     #print '*** setI18nValue', attr, langInfo, lang, value, getattr(obj, attr, None)
 
 

@@ -34,11 +34,13 @@ from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
+from loops.common import adapted
 from loops.concept import Concept
+from loops.i18n.browser import I18NView
 from loops.util import getUidForObject, getObjectForUid, toUnicode
 
 
-class LoopsMethods(MethodPublisher):
+class LoopsMethods(MethodPublisher, I18NView):
     """ XML-RPC methods for the loops root object.
     """
 
@@ -77,40 +79,44 @@ class LoopsMethods(MethodPublisher):
         tc = self.concepts.getTypeConcept()
         types = tc.getChildren((self.typePredicate,))
         #types = [t for t in types if ITypeConcept(t).typeInterface ... ]
-        return [objectAsDict(t) for t in types]
+        return [objectAsDict(t, self.languageInfo) for t in types]
 
     def getPredicates(self):
         pt = self.concepts.getDefaultPredicate().conceptType
         preds = pt.getChildren((self.concepts.getTypePredicate(),))
-        return [objectAsDict(p) for p in preds if p is not self.typePredicate]
+        return [objectAsDict(p, self.languageInfo)
+                for p in preds if p is not self.typePredicate]
 
     def getChildren(self, id, predicates=[], child=''):
         obj = getObjectForUid(id)
         preds = [getObjectForUid(p) for p in predicates]
         child = child and getObjectForUid(child) or None
         rels = obj.getChildRelations(preds or None, child)
-        return formatRelations(rels)
+        return formatRelations(rels, langInfo=self.languageInfo)
 
     def getParents(self, id, predicates=[], parent=''):
         obj = getObjectForUid(id)
         preds = [getObjectForUid(p) for p in predicates]
         parent = parent and getObjectForUid(parent) or None
         rels = obj.getParentRelations(preds or None, parent)
-        return formatRelations(rels, useSecond=False)
+        return formatRelations(rels, useSecond=False, langInfo=self.languageInfo)
 
     def getResources(self, id, predicates=[], resource=''):
         obj = getObjectForUid(id)
         preds = [getObjectForUid(p) for p in predicates]
         resource = resource and getObjectForUid(child) or None
         rels = obj.getResourceRelations(preds or None, resource)
-        return formatRelations(rels)
+        return formatRelations(rels, langInfo=self.languageInfo)
 
     def getObjectWithChildren(self, obj):
-        mapping = objectAsDict(obj)
-        mapping['children'] = formatRelations(obj.getChildRelations())
-        mapping['parents'] = formatRelations(
-                                obj.getParentRelations(), useSecond=False)
-        mapping['resources'] = formatRelations(obj.getResourceRelations())
+        mapping = objectAsDict(obj, self.languageInfo)
+        mapping['children'] = formatRelations(obj.getChildRelations(sort=None),
+                                        langInfo=self.languageInfo)
+        mapping['parents'] = formatRelations(obj.getParentRelations(sort=None),
+                                        useSecond=False,
+                                        langInfo=self.languageInfo)
+        mapping['resources'] = formatRelations(obj.getResourceRelations(sort=None),
+                                        langInfo=self.languageInfo)
         return mapping
 
     def assignChild(self, objId, predicateId, childId):
@@ -134,36 +140,36 @@ class LoopsMethods(MethodPublisher):
         name = INameChooser(self.concepts).chooseName(name, c)
         self.concepts[name] = c
         c.conceptType = type
+        adapted(c, self.languageInfo).title = title
         notify(ObjectCreatedEvent(c))
         notify(ObjectModifiedEvent(c))
-        return objectAsDict(c)
+        return objectAsDict(c, self.languageInfo)
 
     def editConcept(self, objId, attr, value):
         obj = getObjectForUid(objId)
-        ti = IType(obj).typeInterface
-        if ti is not None:
-            obj = ti(obj)
-        # TODO: provide conversion if necessary
+        adapter = adapted(obj, self.languageInfo)
+        # TODO: provide conversion if necessary - use cybertools.composer.schema
         value = value.strip()   # remove spaces appended by Flash
-        setattr(obj, attr, toUnicode(value))
+        setattr(adapter, attr, toUnicode(value))
         notify(ObjectModifiedEvent(obj))
         return 'OK'
 
 
-def objectAsDict(obj):
+def objectAsDict(obj, langInfo=None):
     objType = IType(obj)
+    adapter = adapted(obj, langInfo)
     mapping = {'id': getUidForObject(obj), 'name': getName(obj),
-               'title': obj.title, 'description': obj.description,
+               'title': adapter.title, 'description': adapter.description,
                'type': getUidForObject(objType.typeProvider)}
     ti = objType.typeInterface
     if ti is not None:
-        adapter = ti(obj)
         #for attr in (list(adapter._adapterAttributes) + list(ti)):
         for attr in list(ti):
             if attr not in ('__parent__', 'context', 'id', 'name',
                             'title', 'description', 'type', 'data'):
                 value = getattr(adapter, attr)
-                # TODO: provide conversion and schema information
+                # TODO: provide conversion and schema information -
+                #       use cybertools.composer.schema
                 #if value is None or type(value) in (str, unicode):
                 if ITextLine.providedBy(ti[attr]):
                     mapping[attr] = value or u''
@@ -171,7 +177,7 @@ def objectAsDict(obj):
                 #    mapping[attr] = ' | '.join(value)
     return mapping
 
-def formatRelations(rels, useSecond=True):
+def formatRelations(rels, useSecond=True, langInfo=None):
     predIds = {}
     result = []
     for rel in rels:
@@ -185,6 +191,6 @@ def formatRelations(rels, useSecond=True):
             other = rel.second
         else:
             other = rel.first
-        result[predIds[predId]]['objects'].append(objectAsDict(other))
-    return result
+        result[predIds[predId]]['objects'].append(objectAsDict(other, langInfo))
+    return sorted(result, key=lambda x: x['title'])
 
