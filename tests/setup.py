@@ -30,10 +30,11 @@ from cybertools.typology.interfaces import IType
 from loops.base import Loops
 from loops import util
 from loops.common import NameChooser
-from loops.interfaces import ILoopsObject, IIndexAttributes, IDocument, IFile
+from loops.interfaces import ILoopsObject, IIndexAttributes
+from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
-from loops.resource import Resource, FileAdapter
+from loops.resource import Resource, FileAdapter, TextDocumentAdapter
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFactory
 from loops.setup import SetupManager, addObject
@@ -63,6 +64,7 @@ class TestSite(object):
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
         component.provideAdapter(FileAdapter, provides=IFile)
+        component.provideAdapter(TextDocumentAdapter, provides=ITextDocument)
         component.provideAdapter(NameChooser)
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')
