@@ -29,7 +29,7 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IConcept
+from loops.interfaces import IConcept, IConceptSchema
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
 from loops.versioning.util import getVersion
@@ -155,7 +155,7 @@ class ConceptQuery(BaseQuery):
 
 # QueryConcept: concept objects that allow querying the database.
 
-class IQueryConcept(Interface):
+class IQueryConcept(IConceptSchema):
     """ The schema for the query type.
     """
 

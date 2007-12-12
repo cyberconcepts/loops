@@ -73,7 +73,8 @@ class ConceptEditForm(EditForm, I18NView):
         return fields
 
     def setUpWidgets(self, ignore_request=False):
-        adapter = adapted(self.context, self.languageInfo)
+        # TODO: get rid of removeSecurityProxy(): use ConceptSchema in interfaces
+        adapter = removeSecurityProxy(adapted(self.context, self.languageInfo))
         self.adapters = {self.typeInterface: adapter,
                          IConceptSchema: adapter}
         self.widgets = setUpEditWidgets(
