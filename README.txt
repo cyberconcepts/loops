@@ -4,7 +4,7 @@ loops - Linked Objects for Organization and Processing Services
 
   ($Id$)
 
-The loops platform is built up of three parts:
+The loops platform consists up of three basic types of objects:
 
 (1) concepts: simple interconnected objects usually representing
     meta-information

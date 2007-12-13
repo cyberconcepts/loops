@@ -1,0 +1,14 @@
+<!-- $Id$ -->
+
+<metal:actions define-macro="language_switch"
+               tal:define="langInfo view/languageInfo">
+    <tal:lang repeat="lang langInfo/availableLanguages">
+      <a href="#"
+         tal:attributes="href string:switch_language?loops.language=$lang&keep=yes;
+                         title lang"><img src="us.gif"
+             tal:attributes="src string:${resourceBase}i18n.flags/$lang.gif;
+                             title lang; alt lang;
+                             class python: langInfo.language == lang
+                                    and 'selected' or 'notselected'" /></a>
+    </tal:lang>
+</metal:actions>

@@ -46,6 +46,7 @@ from cybertools.browser import configurator
 from cybertools.browser.view import GenericView
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
+from loops.i18n.browser import i18n_macros
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
@@ -77,6 +78,8 @@ class NodeView(BaseView):
                     media='all', position=3)
         cm.register('js', 'loops.js', resourceName='loops.js')
         #cm.register('js', 'loops.js', resourceName='loops1.js')
+        cm.register('top_actions', 'top_actions', name='multi_actions',
+                    subMacros=[i18n_macros.macros['language_switch']])
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
         #if not IUnauthenticatedPrincipal.providedBy(self.request.principal):

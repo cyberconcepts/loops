@@ -10,38 +10,21 @@ package.
 
 Let's first do some basic imports
 
-  >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
-  >>> site = placefulSetUp(True)
-
   >>> from zope import interface, component
   >>> from zope.interface import Interface
   >>> from zope.publisher.browser import TestRequest
 
-and provide a relation registry:
+  >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
+  >>> site = placefulSetUp(True)
 
-  >>> from cybertools.relation.tests import IntIdsStub
-  >>> component.provideUtility(IntIdsStub())
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> component.provideUtility(DummyRelationRegistry())
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
 
-and care for some type adapter machinery:
-
-  >>> from loops.interfaces import IConcept
-  >>> from loops.interfaces import ITypeConcept
-  >>> from loops.type import TypeConcept
-  >>> component.provideAdapter(TypeConcept, (IConcept,), ITypeConcept)
-
-Now we can setup a simple loops site with its manager objects, using a
-loops setup manager:
-
-  >>> from loops.base import Loops
-  >>> loopsRoot = site['loops'] = Loops()
-
-  >>> from loops.setup import SetupManager
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
   >>> concepts['hasType'].title
   u'has Type'
+
+  >>> loopsRoot = site['loops']
 
 We also add some example concepts,
 
@@ -217,6 +200,8 @@ for controlling e.g. storage for external files.
   >>> ef1_type = IType(ef1)
   >>> IType(ef1).options
   []
+
+  >>> from loops.type import TypeConcept
   >>> extfile_ad = TypeConcept(extfile)
   >>> extfile_ad.options = ['dummy', 'storage:varsubdir',
   ...           'storage_parameters:extfiles']
@@ -239,11 +224,9 @@ get a type manager from all loops objects, always with the same context:
   True
 
   >>> types = typeManager.types
-  >>> sorted(t.token for t in types)
-  ['.loops/concepts/domain', '.loops/concepts/file', '.loops/concepts/note',
-   '.loops/concepts/predicate', '.loops/concepts/query',
-   '.loops/concepts/textdocument', '.loops/concepts/topic',
-   '.loops/concepts/type']
+  >>> typeTokens = sorted(t.token for t in types)
+  >>> len(typeTokens)
+  9
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True
@@ -252,14 +235,13 @@ The listTypes() method allows us to select types that fulfill a certain
 condition:
 
   >>> types = typeManager.listTypes(include=('concept',))
-  >>> sorted(t.token for t in types)
-  ['.loops/concepts/domain', '.loops/concepts/predicate',
-   '.loops/concepts/query', '.loops/concepts/topic', '.loops/concepts/type']
+  >>> typeTokens = sorted(t.token for t in types)
+  >>> len(typeTokens)
+  6
   >>> types = typeManager.listTypes(exclude=('concept',))
-  >>> sorted(t.token for t in types)
-  ['.loops/concepts/file',  '.loops/concepts/note',
-   '.loops/concepts/textdocument']
-
+  >>> typeTokens = sorted(t.token for t in types)
+  >>> len(typeTokens)
+  3
 
 Type-based interfaces and adapters
 ----------------------------------
@@ -273,6 +255,7 @@ will be adaptable to. The default for this is None:
 For concept objects that provide types (type providers) the value of
 the typeInterface attribute is the ITypeConcept interface:
 
+  >>> from loops.interfaces import ITypeConcept
   >>> topic_type.typeInterface is ITypeConcept
   True
 
@@ -286,6 +269,7 @@ i.e. the 'topic' concept, via an adapter:
   >>> class Topic(object):
   ...     implements(ITopic)
   ...     def __init__(self, context): pass
+  >>> from loops.interfaces import IConcept
   >>> component.provideAdapter(Topic, (IConcept,), ITopic)
 
   >>> ITypeConcept(topic).typeInterface = ITopic
@@ -306,7 +290,7 @@ browser views; among others also some important informations about the
 context object's type:
 
   >>> from loops.browser.common import BaseView
-  >>> view = BaseView(cc1, TestRequest)
+  >>> view = BaseView(cc1, TestRequest())
   >>> view.typeTitle
   u'Topic'
   >>> view.typeInterface

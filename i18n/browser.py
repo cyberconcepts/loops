@@ -24,11 +24,17 @@ $Id$
 
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.session.interfaces import ISession
 from zope.cachedescriptors.property import Lazy
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.negotiator import negotiator
 
 from loops.common import adapted
+
+
+packageId = 'loops.i18n.browser'
+
+i18n_macros = ViewPageTemplateFile('i18n_macros.pt')
 
 
 class LanguageInfo(object):
@@ -80,8 +86,10 @@ class I18NView(object):
         return adapted(self.context, self.languageInfo)
 
     def checkLanguage(self):
-        # get language from session
-        self.setPreferredLanguage()
+        session = ISession(self.request)[packageId]
+        lang = session.get('language')
+        if lang:
+            self.setLanguage(lang)
 
     def setLanguage(self, lang=None):
         lang = lang or self.request.form.get('lang')
@@ -89,10 +97,12 @@ class I18NView(object):
             upl = IUserPreferredLanguages(self.request)
             upl.setPreferredLanguages([lang])
 
-    def switchLanguage(self, lang=None, keep=False):
+    def switchLanguage(self):
+        lang = self.request.form.get('loops.language')
         keep = self.request.form.get('keep')
         if keep:
-            pass # set in session
-        self.setPreferredLanguage(lang)
+            session = ISession(self.request)[packageId]
+            session['language'] = lang
+        self.setLanguage(lang)
         return self()
 

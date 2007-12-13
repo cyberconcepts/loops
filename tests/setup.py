@@ -13,8 +13,11 @@ from zope.app.catalog.text import TextIndex
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IAuthentication
+from zope.app.session.interfaces import IClientIdManager, ISessionDataContainer
+from zope.app.session import session
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.interface import implements
 
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
@@ -40,6 +43,12 @@ from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFac
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 
+class ClientIdManager(object):
+    """ dummy, for testing only """
+    implements(IClientIdManager)
+    def getClientId(self, request):
+        return 'dummy'
+
 
 class TestSite(object):
 
@@ -58,6 +67,10 @@ class TestSite(object):
         component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
         component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
         component.provideUtility(principalRegistry, IAuthentication)
+        component.provideAdapter(session.ClientId)
+        component.provideAdapter(session.Session)
+        component.provideUtility(session.RAMSessionDataContainer(), ISessionDataContainer)
+        component.provideUtility(ClientIdManager())
 
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)

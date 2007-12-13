@@ -17,29 +17,17 @@ and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> from cybertools.relation.tests import IntIdsStub
-  >>> relations = DummyRelationRegistry()
-  >>> component.provideUtility(relations)
-  >>> component.provideUtility(IntIdsStub())
-
+  >>> from loops.concept import Concept
   >>> from loops.type import ConceptType, TypeConcept
   >>> from loops.interfaces import ITypeConcept
-  >>> component.provideAdapter(ConceptType)
-  >>> component.provideAdapter(TypeConcept)
-
   >>> from loops.base import Loops
-  >>> loopsRoot = site['loops'] = Loops()
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
 
-  >>> from loops.setup import SetupManager
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
-  >>> typeConcept = concepts['type']
-
-  >>> from loops.concept import Concept
-  >>> topic = concepts['topic'] = Concept(u'Topic')
-  >>> for c in (topic,): c.conceptType = typeConcept
+  >>> loopsRoot = site['loops']
   >>> query = concepts['query']
+  >>> topic = concepts['topic'] = Concept(u'Topic')
 
 In addition we create a concept that holds the search page and a node
 (page) that links to this concept:
@@ -103,7 +91,7 @@ a controller attribute for the search view.
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'return submitReplacing("1.results", "1.search.form",
-       "http://127.0.0.1/loops/views/page/.target10/@@searchresults.html")'
+       "http://127.0.0.1/loops/views/page/.target29/@@searchresults.html")'
 
 Basic (text/title) search
 -------------------------
@@ -202,7 +190,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  "[['Zope (Topic)', '12']]"
+  "[['Zope (Topic)', '33']]"
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -213,8 +201,7 @@ a certain qualifier, via the option attribute of the type interface.
 
 Let's start with a new type, the customer type.
 
-  >>> customer = concepts['customer'] = Concept('Customer')
-  >>> customer.conceptType = typeConcept
+  >>> customer = concepts['customer']
   >>> custType = ITypeConcept(customer)
   >>> custType.options
   []
@@ -239,16 +226,16 @@ and thus include the customer type in the preset search types.
   ('concept', 'search')
   >>> searchView = Search(search, TestRequest())
   >>> list(searchView.presetSearchTypes)
-  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
+  [{'token': 'loops:concept:customer', 'title': u'Customer'}]
 
   >>> searchView.conceptsForType('loops:concept:customer')
   [{'token': 'none', 'title': u'not selected'},
-   {'token': '18', 'title': u'Zope Corporation'},
-   {'token': '19', 'title': u'cyberconcepts'}]
+   {'token': '47', 'title': u'Zope Corporation'},
+   {'token': '49', 'title': u'cyberconcepts'}]
 
 Let's use this new search option for querying:
 
-  >>> form = {'search.4.text_selected': u'18'}
+  >>> form = {'search.4.text_selected': u'47'}
   >>> resultsView = SearchResults(page, TestRequest(form=form))
   >>> results = list(resultsView.results)
   >>> results[0].title

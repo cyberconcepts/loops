@@ -200,7 +200,12 @@
 </metal:menu>
 
 
-<!-- portlets -->
+<!-- portlets and actions -->
+
+<metal:actions define-macro="top_actions">
+    blubb
+</metal:actions>
+
 
 <metal:actions define-macro="clipboard">
       <div class="menu-2">loops Development</div>

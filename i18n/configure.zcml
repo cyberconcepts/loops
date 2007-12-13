@@ -5,8 +5,10 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <resourceDirectory name="i18n.flags" directory="flags" />
+
   <page for="loops.interfaces.INode"
-        name="language_switch"
+        name="switch_language"
         class="loops.browser.node.NodeView"
         attribute="switchLanguage"
         permission="zope.Public" />

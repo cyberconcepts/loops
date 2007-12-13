@@ -31,6 +31,12 @@ table.listing td {
     margin-left: 5px;
 }
 
+.top-actions{
+    position: absolute;
+    right: 2em;
+    top: 1em;
+}
+
 /*.content-1 h1 { */
 h1 {
     font-size: 160%;
@@ -96,6 +102,14 @@ div.menu-1, div.menu-2 {
 div.image {
     margin-top: 10px;
     margin-right: 5px;
+}
+
+img.selected {
+    border: 2px solid #d6dcf6;
+}
+
+img.notselected {
+    border: 2px solid #eff8ff;
 }
 
 

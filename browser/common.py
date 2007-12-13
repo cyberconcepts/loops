@@ -106,6 +106,7 @@ class BaseView(GenericView, I18NView):
         # TODO: get rid of removeSecurityProxy() call
         self.context = removeSecurityProxy(context)
         self.setSkin(self.loopsRoot.skinName)
+        self.checkLanguage()
         try:
             if not canAccess(context, 'title'):
                 raise Unauthorized
