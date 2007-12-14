@@ -419,14 +419,7 @@ class IBaseNode(IOrderedContainer):
         """
 
 
-class INode(IView, IBaseNode):
-    """ A node is a view that may contain other views, thus building a
-        menu or folder hierarchy.
-
-        A node may be a content object on its own; for this reason it
-        has a body attribute that may be shown e.g. on web pages.
-    """
-    contains(IView)
+class INodeSchema(IView):
 
     nodeType = schema.Choice(
         title=_(u'Node Type'),
@@ -448,6 +441,16 @@ class INode(IView, IBaseNode):
         required=False)
 
     contentType = Attribute(_(u'Content type (format) of the body'))
+
+
+class INode(INodeSchema, IBaseNode):
+    """ A node is a view that may contain other views, thus building a
+        menu or folder hierarchy.
+
+        A node may be a content object on its own; for this reason it
+        has a body attribute that may be shown e.g. on web pages.
+    """
+    contains(IView)
 
     def getParentNode(nodeTypes=None):
         """ Return the next node up the node hierarchy. If the nodeTypes
@@ -486,6 +489,12 @@ class INode(IView, IBaseNode):
     def getTextItems():
         """ Return the text items belonging to this object.
         """
+
+
+class INodeAdapter(Interface):
+    """ Base interface for adapters that provide nodes with additional
+        capabilities.
+    """
 
 
 class IViewManager(ILoopsObject, IBaseNode):

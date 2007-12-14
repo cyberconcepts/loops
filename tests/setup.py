@@ -42,6 +42,8 @@ from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFactory
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
+from loops.view import NodeAdapter
+
 
 class ClientIdManager(object):
     """ dummy, for testing only """
@@ -78,6 +80,7 @@ class TestSite(object):
         component.provideAdapter(TypeConcept)
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(TextDocumentAdapter, provides=ITextDocument)
+        component.provideAdapter(NodeAdapter)
         component.provideAdapter(NameChooser)
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')

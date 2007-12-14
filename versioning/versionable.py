@@ -112,24 +112,17 @@ class VersionableResource(object):
         m = self.versionableMaster
         return self.versionableMaster.getVersioningAttribute('releasedVersion', None)
 
-    def createVersion(self, level=1, comment=u''):
-        context = self.context
+    def createVersionObject(self, versionNumbers, variantIds, comment=u''):
         versionableMaster = self.versionableMaster
-        # get the new version numbers
-        vn = list(IVersionable(self.currentVersion).versionNumbers)
-        while len(vn) <= level:
-            vn.append(1)
-        vn[level] += 1
-        for l in range(level+1, len(vn)):
-            # reset lower levels
-            vn[l] = 1
-        # create new object
+        versionableMaster.initVersions()
+        context = self.context
+        # create object
         cls = context.__class__
         obj = cls()
         # set versioning attributes of new object
         versionableObj = IVersionable(obj)
-        versionableObj.setVersioningAttribute('versionNumbers', tuple(vn))
-        versionableObj.setVersioningAttribute('variantIds', self.variantIds)
+        versionableObj.setVersioningAttribute('versionNumbers', tuple(versionNumbers))
+        versionableObj.setVersioningAttribute('variantIds', variantIds)
         versionableObj.setVersioningAttribute('master', self.master)
         versionableObj.setVersioningAttribute('parent', context)
         versionableObj.setVersioningAttribute('comment', comment)
@@ -139,6 +132,8 @@ class VersionableResource(object):
                                  extensions.get(context.contentType, ''),
                                  versionId)
         getParent(context)[name] = obj
+        # record version on master
+        self.versions[versionableObj.versionId] = obj
         # set resource attributes
         ti = IType(context).typeInterface
         attrs = set((ti and list(ti) or [])
@@ -147,10 +142,21 @@ class VersionableResource(object):
         adaptedObj = ti and ti(obj) or obj
         for attr in attrs:
             setattr(adaptedObj, attr, getattr(adaptedContext, attr))
+        return obj
+
+    def createVersion(self, level=1, comment=u''):
+        # get the new version numbers
+        vn = list(IVersionable(self.currentVersion).versionNumbers)
+        while len(vn) <= level:
+            vn.append(1)
+        vn[level] += 1
+        for l in range(level+1, len(vn)):
+            # reset lower levels
+            vn[l] = 1
+        # create new object
+        obj = self.createVersionObject(vn, self.variantIds, comment)
         # set attributes of the master version
-        versionableMaster.setVersioningAttribute('currentVersion', obj)
-        versionableMaster.initVersions()
-        self.versions[versionId] = obj
+        self.versionableMaster.setVersioningAttribute('currentVersion', obj)
         return obj
 
     def generateName(self, name, ext, versionId):

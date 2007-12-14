@@ -42,7 +42,8 @@ from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from cybertools.util.jeep import Jeep
 
 from loops.base import ParentInfo
-from loops.interfaces import IView, INode
+from loops.common import AdapterBase
+from loops.interfaces import IView, INode, INodeSchema, INodeAdapter
 from loops.interfaces import IViewManager, INodeContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import ITargetRelation
@@ -195,6 +196,20 @@ class TargetRelation(DyadicRelation):
 
 
 # adapters
+
+class NodeAdapter(AdapterBase):
+    """ Allows nodes to be adapted like concepts and resources, e.g.
+        for i18n (needs derivation from I18NAdapterBase),
+        specific capabilities or dynamic attributes.
+    """
+
+    implements(INodeAdapter)
+    adapts(INode)
+
+    _contextAttributes = ('title', 'description', 'body',)
+
+
+# traveral adapter
 
 class NodeTraverser(ItemTraverser):
 
