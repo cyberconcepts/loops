@@ -6,7 +6,7 @@
           tal:define="langInfo view/languageInfo;
                       languages langInfo/availableLanguages;
                       language langInfo/language;
-                      useI18N view/useI18N;
+                      useI18N view/useI18NForEditing;
                       innerForm request/inner_form | string:inner_concept_edit_form.html;">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />

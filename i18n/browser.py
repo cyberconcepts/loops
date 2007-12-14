@@ -77,7 +77,7 @@ class I18NView(object):
         return LanguageInfo(self.context, self.request)
 
     @Lazy
-    def useI18N(self):
+    def useI18NForEditing(self):
         return (self.languageInfo.availableLanguages
             and getattr(self.adapted, 'i18nAttributes', None))
 
@@ -93,7 +93,7 @@ class I18NView(object):
 
     def setLanguage(self, lang=None):
         lang = lang or self.request.form.get('lang')
-        if lang:
+        if lang and lang in self.languageInfo.availableLanguages:
             upl = IUserPreferredLanguages(self.request)
             upl.setPreferredLanguages([lang])
 

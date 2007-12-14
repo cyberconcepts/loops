@@ -108,12 +108,15 @@ class LoopsDCAdapter(ZDCAnnotatableAdapter):
     implements(IZopeDublinCore)
     adapts(ILoopsObject)
 
+    languageInfo = None
+
     def __init__(self, context):
         self.context = context
         super(LoopsDCAdapter, self).__init__(context)
 
     def Title(self):
-        return super(LoopsDCAdapter, self).title or self.context.title
+        return (super(LoopsDCAdapter, self).title
+                    or adapted(self.context, self.languageInfo).title)
     def setTitle(self, value):
         ScalarProperty(u'Title').__set__(self, value)
     title = property(Title, setTitle)

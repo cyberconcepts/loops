@@ -45,7 +45,7 @@ function toggleFormFieldHelp(ob,state) {
       i18n:translate="heading_editform"
       metal:define-slot="heading">Edit
     <span i18n:name="title"
-          tal:content="context/title|context/zope:name">Concept</span>
+          tal:content="view/title|context/zope:name">Concept</span>
   </h1>
 
   <h1 tal:condition="view/label"

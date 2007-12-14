@@ -34,6 +34,7 @@ from cybertools.ajax import innerHtml
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
+from loops.common import adapted
 from loops.query import ConceptQuery, FullQuery
 from loops import util
 from loops.util import _
@@ -75,7 +76,8 @@ class Search(BaseView):
     def conceptsForType(self, token):
         noSelection = dict(token='none', title=u'not selected')
         result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
-        return [noSelection] + [dict(title=o.title, token=util.getUidForObject(o))
+        return [noSelection] + [dict(title=adapted(o, self.languageInfo).title,
+                                     token=util.getUidForObject(o))
                                     for o in result]
 
     def initDojo(self):
@@ -94,7 +96,8 @@ class Search(BaseView):
         result = ConceptQuery(self).query(title=title, type=type, exclude=('system',))
         #registry = component.getUtility(IRelationRegistry)
         # simple way to provide JSON format:
-        return str(sorted([[`o.title`[2:-1] + ' (%s)' % `o.conceptType.title`[2:-1],
+        return str(sorted([[`adapted(o, self.languageInfo).title`[2:-1]
+                                + ' (%s)' % `o.conceptType.title`[2:-1],
                             `int(util.getUidForObject(o))`]
                         for o in result
                         if o.getLoopsRoot() == self.loopsRoot])).replace('\\\\x', '\\x')

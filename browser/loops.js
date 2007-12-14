@@ -100,7 +100,7 @@ function inlineEdit(id, saveUrl) {
 
 function setConceptTypeForComboBox(typeId, cbId) {
     var t = dojo.byId(typeId).value;
-    var cb = dojo.widget.manager.getWidgetById(cbId)
+    var cb = dojo.widget.manager.getWidgetById(cbId);
     var dp = cb.dataProvider;
     var baseUrl = dp.searchUrl.split('&')[0];
     var newUrl = baseUrl + '&searchType=' + t;
@@ -117,7 +117,8 @@ function objectDialog(dlgName, url) {
     if (!dlg) {
         //dlg = dojo.widget.fromScript('Dialog',
         dlg = dojo.widget.createWidget('Dialog',
-            {bgColor: 'white', bgOpacity: 0.5, toggle: 'fade', toggleDuration: 250,
+            {bgColor: 'white', bgOpacity: 0.5, toggle: 'fade',
+             toggleDuration: 250,
              executeScripts: true,
              href: url
             }, dojo.byId('dialog.' + dlgName));

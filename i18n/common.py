@@ -55,6 +55,12 @@ class I18NValue(PersistentMapping):
     def __str__(self):
         return str(self.getDefault())
 
+    #def __unicode__(self):
+    #    return unicode(self.getDefault())
+
+    #def __repr__(self):
+    #    return repr(self.getDefault())
+
 
 def getI18nValue(obj, attr, langInfo=None):
     obj = removeSecurityProxy(obj)

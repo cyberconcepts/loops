@@ -60,6 +60,10 @@ class ConceptEditForm(EditForm, I18NView):
     def typeInterface(self):
         return IType(self.context).typeInterface
 
+    @Lazy
+    def title(self):
+        return adapted(self.context, self.languageInfo).title
+
     @property
     def form_fields(self):
         typeInterface = self.typeInterface

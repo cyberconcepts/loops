@@ -167,16 +167,22 @@ class BaseView(GenericView, I18NView):
         return self.loopsRoot.getLoopsUri(self.context)
 
     @Lazy
+    def adapted(self):
+        return adapted(self.context, self.languageInfo)
+
+    @Lazy
     def title(self):
-        return self.context.title or getName(self.context)
+        return self.adapted.title or getName(self.context)
 
     @Lazy
     def description(self):
-        return adapted(self.context).description
+        return self.adapted.description
 
     @Lazy
     def dcTitle(self):
-        return IZopeDublinCore(self.context).title or self.title
+        zdc = IZopeDublinCore(self.context)
+        zdc.languageInfo = self.languageInfo
+        return zdc.title or self.title
 
     @Lazy
     def headTitle(self):
