@@ -6,7 +6,8 @@
   <div tal:repeat="related item/children">
       <a href="#"
          tal:content="related/title"
-         tal:attributes="href python: view.getUrlForTarget(related)">
+         tal:attributes="href python: view.getUrlForTarget(related);
+                         title related/description">
         Topic
       </a>
   </div>
