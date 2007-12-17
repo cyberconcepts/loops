@@ -16,7 +16,8 @@
   <div>&nbsp;</div>
   <div tal:repeat="letter data/letters">
     <div class="subtitle"><a name="A" href="#top"
-           tal:attributes="name letter"
+           tal:attributes="name letter;
+                           href string:${request/URL/-1}#top"
            tal:content="letter">A</a>
     </div>
     <div tal:repeat="related data/relations/?letter|python:[]">
