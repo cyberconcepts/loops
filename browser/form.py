@@ -364,7 +364,8 @@ class EditObject(FormController, I18NView):
         self.object = obj
         formState = self.updateFields()
         # TODO: error handling
-        self.request.response.redirect(self.view.virtualTargetUrl + '?version=this')
+        url = self.view.virtualTargetUrl + '?version=this'
+        self.request.response.redirect(url)
         return False
 
     def updateFields(self):

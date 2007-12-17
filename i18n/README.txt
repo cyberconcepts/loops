@@ -144,6 +144,12 @@ to the default language at the time of the attribute creation.
   >>> topic01.title.lower()
   u'loops for zope 3'
 
+Viewing translations
+--------------------
+
+  >>> view.adapted.translations()
+  {'en': u'loops for Zope 3', 'it': u'loops per Zope 3'}
+
 
 Fin de partie
 =============

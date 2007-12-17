@@ -68,10 +68,13 @@ class GlossaryItemView(ConceptView):
     def getActions(self, category='object', page=None):
         actions = []
         if category == 'portlet':
+            lang = self.request.get('loops.language')
+            langParam = lang and {'loops.language': lang} or {}
             actions.append(DialogAction(self, title='Edit Glossary Item...',
                   description='Modify glossary item.',
                   viewName='edit_glossaryitem.html',
                   dialogName='editGlossaryItem',
+                  addParams=langParam,
                   page=page))
         return actions
 

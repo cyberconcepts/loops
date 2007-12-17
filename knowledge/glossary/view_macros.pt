@@ -27,6 +27,16 @@
                          title related/description">
         Topic
       </a>
+      <span tal:define="translations related/adapted/translations"
+            tal:condition="translations">
+        (<tal:trans repeat="trans translations"><a href="#"
+             tal:attributes="href python: '%s?loops.language=%s' %
+                                    (view.getUrlForTarget(related), trans);
+                             title translations/?trans"><i
+                                tal:content="trans">en</i></a><tal:comma
+                    condition="not:repeat/trans/end"
+                    >, </tal:comma></tal:trans>)
+      </span>
     </div>
   </div>
 </metal:block>
@@ -34,10 +44,21 @@
 
 <metal:block define-macro="glossaryitem">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <p tal:define="translations item/adapted/translations"
+        tal:condition="translations">
+    <span i18n:translate="">Translations</span>:
+    <tal:trans repeat="trans translations"><a href="#"
+         tal:attributes="href python: '%s?loops.language=%s' %
+                                (view.getUrlForTarget(item), trans);
+                         title translations/?trans"><i
+                            tal:content="trans">en</i></a><tal:comma
+                condition="not:repeat/trans/end"
+                >, </tal:comma></tal:trans>
+  </p>
   <p>
     <span tal:repeat="related item/children">
       <tal:start condition="repeat/related/start">
-        <span i18n:translate="">siehe</span>:</tal:start>
+        <span i18n:translate="">See also</span>:</tal:start>
       <a href="#"
          tal:content="related/title"
          tal:attributes="href python: view.getUrlForTarget(related)">

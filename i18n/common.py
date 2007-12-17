@@ -128,3 +128,15 @@ class I18NAdapterBase(AdapterBase):
             self.checkAttr(attr)
             setI18nValue(self.context, '_' + attr, value, langInfo)
 
+    def translations(self, attr='title', omitCurrent=True):
+        langInfo = self.languageInfo
+        if langInfo:
+            langs = langInfo.availableLanguages
+            if len(langs) > 1:
+                value = getattr(removeSecurityProxy(self.context), '_' + attr, None)
+                if isinstance(value, I18NValue):
+                    result = dict((k, v) for k, v in value.items() if v)
+                    if omitCurrent and langInfo.language in result:
+                        del result[langInfo.language]
+                    return result
+        return {}

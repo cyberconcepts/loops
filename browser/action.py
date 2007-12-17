@@ -75,6 +75,7 @@ class DialogAction(Action):
     dialogName = 'create'
     qualifier = typeToken = innerForm = None
     fixedType = False
+    addParams = {}
 
     @Lazy
     def url(self):
@@ -91,6 +92,7 @@ class DialogAction(Action):
             urlParams['inner_form'] = self.innerForm
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
+        urlParams.update(self.addParams)
         return self.jsOnClick % (self.dialogName, self.page.virtualTargetUrl,
                                  self.viewName, urlencode(urlParams))
 
