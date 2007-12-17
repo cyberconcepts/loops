@@ -9,7 +9,7 @@
           class="navlink">
       <a href="#"
          tal:omit-tag="python: letter not in data['letters']"
-         tal:attributes="href string:#$letter"
+         tal:attributes="href string:${request/URL/-1}#$letter"
          tal:content="letter">A</a>
     </span>
   </div>
