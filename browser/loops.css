@@ -112,6 +112,22 @@ img.notselected {
     border: 2px solid #eff8ff;
 }
 
+.navlink {
+    font-size: 130%;
+    margin-bottom: 1em;
+}
+
+.navlink a {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.subtitle {
+    font-size: 140%;
+    font-weight: bold;
+    margin: 1em 0 0.5em 0;
+}
+
 
 /* search stuff */
 

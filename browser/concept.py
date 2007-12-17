@@ -22,6 +22,7 @@ Definition of the concept view classes.
 $Id$
 """
 
+from itertools import groupby
 from zope import interface, component, schema
 from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
@@ -139,16 +140,17 @@ class ConceptView(BaseView):
             widget.setRenderedValue(value)
             yield dict(title=f.title, value=value, id=n, widget=widget)
 
-    def children(self):
+    def children(self, topLevelOnly=True, sort=True):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
         #rels = self.context.getChildRelations()
         rels = (ConceptRelationView(r, self.request, contextIsSecond=True)
                 for r in self.context.getChildRelations(sort=None))
-        rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
+        if sort:
+            rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
         for r in rels:
-            if r.predicate == hasType:
+            if topLevelOnly and r.predicate == hasType:
                 # only show top-level entries for type instances:
                 skip = False
                 for parent in r.context.getParents((standard,)):
@@ -157,7 +159,17 @@ class ConceptView(BaseView):
                         break
                 if skip: continue
             yield r
-            #yield ConceptRelationView(r, self.request, contextIsSecond=True)
+
+    def childrenAlphaGroups(self):
+        letters = []
+        relations = {}
+        rels = self.children(topLevelOnly=False, sort=False)
+        rels = sorted(rels, key=lambda r: r.title.lower())
+        for letter, group in groupby(rels, lambda r: r.title.lower()[0]):
+            letter = letter.upper()
+            letters.append(letter)
+            relations[letter] = list(group)
+        return dict(letters=letters, relations=relations)
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
