@@ -39,9 +39,10 @@ i18n_macros = ViewPageTemplateFile('i18n_macros.pt')
 
 class LanguageInfo(object):
 
-    def __init__(self, context, request):
+    def __init__(self, context, request, allowDefault=True):
         self.context = context
         self.request = request
+        self.allowDefault = allowDefault
 
     @Lazy
     def loopsRoot(self):
@@ -75,6 +76,10 @@ class I18NView(object):
     @Lazy
     def languageInfo(self):
         return LanguageInfo(self.context, self.request)
+
+    @Lazy
+    def languageInfoForUpdate(self):
+        return LanguageInfo(self.context, self.request, False)
 
     @Lazy
     def useI18NForEditing(self):

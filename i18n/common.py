@@ -68,20 +68,24 @@ def getI18nValue(obj, attr, langInfo=None):
     if isinstance(value, I18NValue):
         if langInfo:
             result = value.get(langInfo.language, _not_found)
-            if result is _not_found:
+            if result is _not_found and langInfo.allowDefault:
                 result = value.get(langInfo.defaultLanguage, _not_found)
                 if result is _not_found:
                     result = value.getDefault()
             return result
         else:
             return value.getDefault()
-    return value
+    if langInfo is None or langInfo.allowDefault:
+        return value
+    return None
 
 def setI18nValue(obj, attr, value, langInfo=None):
     obj = removeSecurityProxy(obj)
     old = getattr(obj, attr, None)
     if langInfo is None:
         if isinstance(old, I18NValue):
+            # TODO (?): Just replace the value corresponding to
+            #           that of the default language
             raise ValueError('Attribute %s on object %s is an I18NValue (%s) '
                              'and no langInfo given.' % (attr, obj, value))
         else:

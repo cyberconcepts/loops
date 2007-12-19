@@ -309,7 +309,8 @@ class NodeView(BaseView):
         obj = self.virtualTargetObject
         if obj is not None:
             basicView = zapi.getMultiAdapter((obj, self.request))
-            basicView._viewName = self.context.viewName
+            if obj == self.targetObject:
+                basicView._viewName = self.context.viewName
             return basicView.view
 
     @Lazy

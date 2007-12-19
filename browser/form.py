@@ -329,7 +329,7 @@ class EditObject(FormController, I18NView):
 
     @Lazy
     def adapted(self):
-        return adapted(self.object, self.languageInfo)
+        return adapted(self.object, self.languageInfoForUpdate)
 
     @Lazy
     def typeInterface(self):
