@@ -197,10 +197,11 @@ class Concept(Contained, Persistent):
     def assignParent(self, concept, predicate=None, order=0, relevance=1.0):
         concept.assignChild(self, predicate, order, relevance)
 
-    def deassignChild(self, child, predicates=None):
+    def deassignChild(self, child, predicates=None, order=None):
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getChildRelations(predicates, child):
-            registry.unregister(rel)
+            if order is None or rel.order == order:
+                registry.unregister(rel)
 
     def deassignParent(self, parent, predicates=None):
         parent.deassignChild(self, predicates)
