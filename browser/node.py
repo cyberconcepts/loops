@@ -370,6 +370,16 @@ class NodeView(BaseView):
     actions = dict(portlet=getPortletActions)
 
     @Lazy
+    def popupCreateObjectForm(self):
+        return ("javascript:function%%20openDialog(url){"
+                    "window.open('%s/create_object_popup.html"
+                            "?title='+document.title+'"
+                            "&form.type=.loops/concepts/note&linkUrl='+url,"
+                        "'loops_dialog','width=650,height=450,left=300,top=200');;"
+                        "}"
+                    "openDialog(window.location.href);" % self.topMenu.url)
+
+    @Lazy
     def hasEditableTarget(self):
         return IResource.providedBy(self.virtualTargetObject)
 
