@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -87,6 +87,9 @@ class AdapterBase(object):
         if not isinstance(other, AdapterBase):
             return False
         return self.context == other.context
+
+    def getLoopsRoot(self):
+        return self.context.getLoopsRoot()
 
 
 class ResourceAdapterBase(AdapterBase):

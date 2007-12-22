@@ -469,39 +469,26 @@
 
   <utility
       provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.concept.PredicateSourceList"
+      name="loops.predicateSource" />
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
       component="loops.type.TypeInterfaceSourceList"
       name="loops.TypeInterfaceSource" />
-
-  <!--<vocabulary
-      factory="loops.concept.ConceptTypeSourceList"
-      name="loops.conceptTypeSource"
-      />
-
-  <vocabulary
-      factory="loops.resource.ResourceTypeSourceList"
-      name="loops.resourceTypeSource"
-      />-->
-
-  <!--<vocabulary
-      factory="loops.type.TypeInterfaceSourceList"
-      name="loops.TypeInterfaceSource"
-      />-->
-
-  <utility component="loops.concept.PredicateSourceList"
-           provides="zope.schema.interfaces.IVocabularyFactory"
-           name="loops.PredicateSource" />
 
 
   <include package=".browser" />
   <include package=".classifier" />
+  <include package=".constraint" />
   <include package=".i18n" />
   <include package=".integrator" />
   <include package=".knowledge" />
   <include package=".organize" />
   <include package=".process" />
+  <include package=".rest" />
   <include package=".search" />
   <include package=".versioning" />
   <include package=".xmlrpc" />
-  <include package=".rest" />
 
 </configure>

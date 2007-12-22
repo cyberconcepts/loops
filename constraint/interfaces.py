@@ -29,6 +29,8 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from loops.concept import Concept
+from loops.interfaces import IConceptSchema
 from loops.util import _
 
 
@@ -38,10 +40,10 @@ class IConstraint(Interface):
         client object.
 
         When the client object is a concept the constraint checks
-        for child relations, if it is a resource it checks for concept
-        relations. In order to check for allowed parent relations (on
-        a concept only) you may specify ``relationType=parent``
-        on the method calls.
+        parent relations, if it is a resource it checks concept
+        relations. In order to check for allowed child relations
+        on a concept only you may specify a relation type of ``child``
+        as an additional argument for the method calls.
     """
 
     client = Attribute('Object that will be checked for allowed relations.')
@@ -68,7 +70,7 @@ class IConstraint(Interface):
         """
 
 
-class IStaticConstraint(IConstraint):
+class IStaticConstraint(IConceptSchema, IConstraint):
     """ Provides a statically assigned contstraint setting.
 
         Typically used as a concept adapter for a persistent constraint
@@ -76,11 +78,40 @@ class IStaticConstraint(IConstraint):
         of allowed relationships.
     """
 
-    relationType = schema.TextLine()
+    relationType = schema.Choice(
+            title=_(u'Relation type'),
+            description=_(u'Select the type of the relation for '
+                    'which this constraint should be checked, '
+                    '"default" meaning parent relations for concepts '
+                    'and resource/concept relations for resources.'),
+            values=('default', 'child'),
+            default='default',
+            required=True,)
 
-    predicates = schema.List()
+    predicates = schema.List(
+            title=_(u'Predicates'),
+            description=_(u'Select the predicates that this '
+                    'constraint should allow.'),
+            value_type=schema.Choice(
+                        title=_(u'Predicate'),
+                        source='loops.predicateSource'),
+            required=False,)
 
-    types = schema.List()
+    types = schema.List(
+            title=_(u'Target types'),
+            description=_(u'Select the types of the objects '
+                    'that this constraints should allow.'),
+            value_type=schema.Choice(
+                        title=_(u'Type'),
+                        source='loops.conceptTypeSource'),
+            required=False,)
 
-    cardinality = schema.List()
+    cardinality = schema.Choice(
+            title=_(u'Cardinality'),
+            description=_(u'Select an entry that represents the '
+                    'allowed number of assigned items as specified '
+                    'by this constraint.'),
+            values=('0,*', '0,1', '1,*', '1,1'),
+            default='0,*',
+            required=True,)
 

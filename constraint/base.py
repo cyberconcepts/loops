@@ -23,3 +23,33 @@ for assignment as children or as concepts to resources.
 $Id$
 """
 
+from zope.cachedescriptors.property import Lazy
+from zope.interface import implements
+from zope.traversing.api import getName
+
+from loops.common import AdapterBase
+from loops.constraint.interfaces import IStaticConstraint
+from loops.type import TypeInterfaceSourceList
+
+
+TypeInterfaceSourceList.typeInterfaces += (IStaticConstraint,)
+
+
+class StaticConstraint(AdapterBase):
+
+    _contextAttributes = AdapterBase._contextAttributes + ['relationType', 'cardinality']
+    _adapterAttributes = AdapterBase._adapterAttributes + ('predicates', 'types',)
+
+    implements(IStaticConstraint)
+
+    def getPredicates(self):
+        return getattr(self.context, '_predicates', [])
+    def setPredicates(self, value):
+        self.context._predicates = value
+    predicates = property(getPredicates, setPredicates)
+
+    def getTypes(self):
+        return getattr(self.context, '_types', [])
+    def setTypes(self, value):
+        self.context._types = value
+    types = property(getTypes, setTypes)

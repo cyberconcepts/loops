@@ -1,0 +1,18 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter
+        factory="loops.constraint.base.StaticConstraint"
+        trusted="True" />
+  <zope:class class="loops.constraint.base.StaticConstraint">
+    <require permission="zope.View"
+        interface="loops.constraint.interfaces.IStaticConstraint" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.constraint.interfaces.IStaticConstraint" />
+  </zope:class>
+
+</configure>

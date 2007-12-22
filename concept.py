@@ -29,7 +29,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
-from zope.security.proxy import removeSecurityProxy
+from zope.security.proxy import removeSecurityProxy, isinstance
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
 
@@ -41,6 +41,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 
 from loops.base import ParentInfo
+from loops.common import AdapterBase
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
@@ -286,6 +287,9 @@ class ConceptTypeSourceList(object):
 
     def __init__(self, context):
         self.context = context
+        if isinstance(context, AdapterBase):
+            self.context = self.context.context
+
 
     def __iter__(self):
         return iter(self.conceptTypes)
@@ -326,7 +330,7 @@ class PredicateSourceList(object):
         return result
 
     def __len__(self):
-        return len(self.conceptTypes)
+        return len(self.predicates)
 
 
 class IndexAttributes(object):
