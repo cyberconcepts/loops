@@ -1,0 +1,30 @@
+<tal:block i18n:domain="loops">
+<div class="body"
+     metal:define-macro="body"
+     tal:define="controller nocall:view/controller;
+                 resourceBase controller/resourceBase;">
+
+    <div id="content" metal:define-macro="content" style="padding-left: 2em">
+      <div metal:define-slot="actions"></div>
+      <div metal:define-slot="message"></div>
+      <metal:content define-slot="content">
+        <tal:content define="item nocall:view/item;
+                             level level|python: 1;
+                             macro item/macro;"
+                     condition="macro">
+          <metal:block use-macro="macro" />
+        </tal:content>
+      </metal:content>
+    </div>
+
+    <div id="footer" class="footer" define-macro="footer">
+      <metal:footer define-slot="footer">
+      Powered by <b><a href="http://www.python.org">Python</a></b> &middot;
+      <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
+      <b><a href="http://loops.cy55.de">
+        loops</a></b>.
+      </metal:footer>
+    </div>
+
+</div>
+</tal:block>

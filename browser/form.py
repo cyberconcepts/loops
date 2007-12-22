@@ -61,6 +61,8 @@ from loops.util import _
 from loops.versioning.interfaces import IVersionable
 
 
+popupTemplate = ViewPageTemplateFile('popup.pt')
+
 # forms
 
 class ObjectForm(NodeView):
@@ -77,6 +79,11 @@ class ObjectForm(NodeView):
         # target is the object the view acts upon - this is not necessarily
         # the same object as the context (the object the view was created for)
         self.target = context
+
+    @Lazy
+    def closeAction(self):
+        return (self.isInnerHtml and 'dialogs["%s"].hide()' % self.dialog_name
+                or 'window.close()')
 
     @Lazy
     def item(self):
@@ -115,6 +122,7 @@ class ObjectForm(NodeView):
         instance = self.instance
         instance.template = self.schema
         data = instance.applyTemplate(mode='edit')
+        form = self.request.form
         for k, v in data.items():
             #overwrite data with values from request.form
             if k in self.request.form:
@@ -254,6 +262,23 @@ class CreateObjectForm(ObjectForm):
             rv = ConceptRelationView(ResourceRelation(target, None), self.request)
             return (rv,)
         return ()
+
+
+class CreateObjectPopup(CreateObjectForm):
+
+    isInnerHtml = False
+
+    def update(self):
+        super(ObjectForm, self).update()
+        self.registerDojo()
+        cm = self.controller.macros
+        jsCall = ('dojo.require("dojo.widget.Dialog");'
+                  'dojo.require("dojo.widget.ComboBox");')
+        cm.register('js-execute', jsCall, jsCall=jsCall)
+        return True
+
+    def pageBody(self):
+        return popupTemplate(self)
 
 
 class CreateConceptForm(CreateObjectForm):

@@ -552,6 +552,13 @@
       />
 
   <page
+      name="create_object_popup.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.CreateObjectPopup"
+      permission="zope.ManageContent"
+      />
+
+  <page
       name="edit_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditObjectForm"

@@ -223,17 +223,12 @@
 
 
 <tr metal:define-macro="buttons" i18n:domain="">
-            <td colspan="5"
-                tal:define="dlgName view/dialog_name">
+            <td colspan="5">
               <input value="Save" type="submit"
                      i18n:attributes="value"
-                     xtal:attributes="onClick
-                       string:return submitReplacingOrReloading(
-                                    'form_fields', 'dialog_form',
-                                    '${view/virtualTargetUrl}/@@inner_form.html')"
-                     tal:attributes="onClick string:dialogs['$dlgName'].hide()">
+                     tal:attributes="onClick view/closeAction">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
-                     tal:attributes="onClick string:dialogs['$dlgName'].hide()">
+                     tal:attributes="onClick view/closeAction">
             </td>
 </tr>
