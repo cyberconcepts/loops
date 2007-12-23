@@ -34,6 +34,18 @@ function submitReplacing(targetId, formId, actionUrl) {
     return false;
 }
 
+function xhrSubmitPopup(formId, actionUrl) {
+    dojo.io.bind({
+        url: actionUrl,
+        formNode: dojo.byId(formId),
+        method: 'post',
+        mimetype: "text/html",
+        load: function(t, d, e) {
+            window.close();
+        }
+    });
+}
+
 function submitReplacingOrReloading(targetId, formId, actionUrl) {
     node = dojo.byId(targetId);
     var args = {

@@ -61,7 +61,7 @@
 
 
 <metal:block define-macro="create" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data"
+    <form method="post" enctype="multipart/form-data" id="dialog_form"
           tal:define="qualifier request/qualifier | string:resource;
                       innerForm request/inner_form | string:inner_form.html;
                       typeToken python: request.get('form.type')
@@ -226,7 +226,7 @@
             <td colspan="5">
               <input value="Save" type="submit"
                      i18n:attributes="value"
-                     tal:attributes="onClick view/closeAction">
+                     tal:attributes="onClick python: view.closeAction(True)">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
                      tal:attributes="onClick view/closeAction">

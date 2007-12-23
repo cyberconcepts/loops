@@ -41,6 +41,7 @@ from zope.security.proxy import isinstance, removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
+from cybertools.browser.view import popupTemplate
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
@@ -61,8 +62,6 @@ from loops.util import _
 from loops.versioning.interfaces import IVersionable
 
 
-popupTemplate = ViewPageTemplateFile('popup.pt')
-
 # forms
 
 class ObjectForm(NodeView):
@@ -80,10 +79,12 @@ class ObjectForm(NodeView):
         # the same object as the context (the object the view was created for)
         self.target = context
 
-    @Lazy
-    def closeAction(self):
-        return (self.isInnerHtml and 'dialogs["%s"].hide()' % self.dialog_name
-                or 'window.close()')
+    def closeAction(self, submit=False):
+        if self.isInnerHtml:
+            return 'dialogs["%s"].hide()' % self.dialog_name
+        if submit:
+            return "xhrSubmitPopup('dialog_form', '%s'); return false" % (self.request.URL)
+        return 'window.close()'
 
     @Lazy
     def item(self):
@@ -267,11 +268,16 @@ class CreateObjectForm(ObjectForm):
 class CreateObjectPopup(CreateObjectForm):
 
     isInnerHtml = False
+    nextUrl = ''    # no redirect upon submit
 
     def update(self):
-        super(ObjectForm, self).update()
+        show = super(ObjectForm, self).update()
+        if not show:
+            return False
         self.registerDojo()
         cm = self.controller.macros
+        cm.register('css', identifier='popup.css', resourceName='popup.css',
+                    media='all', position=4)
         jsCall = ('dojo.require("dojo.widget.Dialog");'
                   'dojo.require("dojo.widget.ComboBox");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
@@ -389,8 +395,11 @@ class EditObject(FormController, I18NView):
         self.object = obj
         formState = self.updateFields()
         # TODO: error handling
-        url = self.view.virtualTargetUrl + '?version=this'
-        self.request.response.redirect(url)
+        url = self.view.nextUrl
+        if url is None:
+            url = self.view.virtualTargetUrl + '?version=this'
+        if url:
+            self.request.response.redirect(url)
         return False
 
     def updateFields(self):
@@ -512,8 +521,12 @@ class CreateObject(EditObject):
         notify(ObjectCreatedEvent(obj))
         self.object = obj
         self.updateFields() # TODO: suppress validation
-        #self.request.response.redirect(self.view.virtualTargetUrl)
-        self.request.response.redirect(self.view.request.URL)
+        # TODO: error handling
+        url = self.view.nextUrl
+        if url is None:
+            self.request.response.redirect(self.view.request.URL)
+        if url:
+            self.request.response.redirect(url)
         return False
 
 
