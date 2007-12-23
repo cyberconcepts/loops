@@ -153,6 +153,14 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
             optionally restricting them to the predicates given.
         """
 
+    def setChildren(predicate, concepts):
+        """ A convenience method for adding and removing a set of child
+            relations in one call. The relations with the predicate given
+            that already point to one of the concepts given as the second
+            argument are kept unchanged, new ones are assigned, and existing
+            ones not present in the concepts list are removed.
+        """
+
     def getResources(predicates=None):
         """ Return a sequence of resources assigned to self,
             optionally restricted to the predicates given.

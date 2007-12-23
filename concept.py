@@ -195,6 +195,15 @@ class Concept(Contained, Persistent):
         # TODO (?): avoid duplicates
         registry.register(rel)
 
+    def setChildren(self, predicate, concepts):
+        existing = self.getChildren([predicate])
+        for c in existing:
+            if c not in concepts:
+                self.deassignChild(c, [predicate])
+        for c in concepts:
+            if c not in existing:
+                self.assignChild(c, predicate)
+
     def assignParent(self, concept, predicate=None, order=0, relevance=1.0):
         concept.assignChild(self, predicate, order, relevance)
 

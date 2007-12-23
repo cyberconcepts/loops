@@ -99,6 +99,9 @@ class SetupManager(object):
     def addObject(self, container, class_, name, **kw):
         return addObject(container, class_, name, **kw)
 
+    def addAndConfigureObject(self, container, class_, name, **kw):
+        return addAndConfigureObject(container, class_, name, **kw)
+
 
 def addObject(container, class_, name, **kw):
     if name in container:

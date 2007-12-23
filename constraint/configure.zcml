@@ -15,4 +15,7 @@
         set_schema="loops.constraint.interfaces.IStaticConstraint" />
   </zope:class>
 
+  <!--<zope:adapter factory="loops.constraint.setup.SetupManager"
+                name="constraint" />-->
+
 </configure>

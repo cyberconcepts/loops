@@ -34,6 +34,11 @@ from loops.type import TypeInterfaceSourceList
 
 TypeInterfaceSourceList.typeInterfaces += (IStaticConstraint,)
 
+isPredicate = 'ispredicateforconstraint'
+isType = 'istypeforconstraint'
+hasConstraint = 'hasconstraint'
+hasChildConstraint = 'haschildconstraint'
+
 
 class StaticConstraint(AdapterBase):
 
@@ -43,13 +48,13 @@ class StaticConstraint(AdapterBase):
     implements(IStaticConstraint)
 
     def getPredicates(self):
-        return getattr(self.context, '_predicates', [])
+        return self.context.getChildren([isPredicate])
     def setPredicates(self, value):
-        self.context._predicates = value
+        self.context.setChildren(isPredicate, value)
     predicates = property(getPredicates, setPredicates)
 
     def getTypes(self):
-        return getattr(self.context, '_types', [])
+        return self.context.getChildren([isType])
     def setTypes(self, value):
-        self.context._types = value
+        self.context.setChildren(isType, value)
     types = property(getTypes, setTypes)
