@@ -37,6 +37,7 @@ class Action(object):
     condition = True
     permission = None
     url = '.'
+    viewName = ''
     targetWindow = ''
     title = ''
     description = ''
@@ -56,14 +57,24 @@ class Action(object):
 
     @Lazy
     def url(self):
-        return self.view.url
+        return self.getActionUrl(self.view.url)
+
+    def getActionUrl(self, baseUrl):
+        if self.viewName:
+            return '/'.join((baseUrl, self.viewName))
+        else:
+            return baseUrl
 
 
 class TargetAction(Action):
 
     @Lazy
     def url(self):
-        return self.view.virtualTargetUrl
+        if self.page is None:
+            baseUrl = self.view.virtualTargetUrl
+        else:
+            baseUrl = self.page.virtualTargetUrl
+        return self.getActionUrl(baseUrl)
 
 
 class DialogAction(Action):
