@@ -92,6 +92,8 @@ class NodeView(BaseView):
             # register additional configurators (adapters) from within package.
             cm.register('portlet_right', 'actions', title=_(u'Actions'),
                         subMacro=node_macros.macros['actions'])
+        # force early portlet registrations by target by setting up target view
+        self.virtualTarget
 
     @Lazy
     def view(self):
