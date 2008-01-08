@@ -33,7 +33,7 @@ from loops.interfaces import ILoops, ITypeConcept
 from loops.interfaces import IFile, IImage, ITextDocument, INote
 from loops.concept import ConceptManager, Concept
 from loops.query import IQueryConcept
-from loops.resource import ResourceManager
+from loops.resource import ResourceManager, Resource
 from loops.view import ViewManager, Node
 
 
@@ -114,14 +114,15 @@ def addObject(container, class_, name, **kw):
     return obj
 
 def addAndConfigureObject(container, class_, name, **kw):
-    basicAttributes = ('title', 'description', 'conceptType', 'resourceType')
+    basicAttributes = ('title', 'description', 'conceptType', 'resourceType',
+                       'nodeType', 'body')
     basicKw = dict([(k, kw[k]) for k in kw if k in basicAttributes])
     obj = addObject(container, class_, name, **basicKw)
-    ti = IType(obj).typeInterface
-    if ti is not None:
-        adapted = ti(obj)
-    else:
-        adapted = obj
+    adapted = obj
+    if class_ in (Concept, Resource):
+        ti = IType(obj).typeInterface
+        if ti is not None:
+            adapted = ti(obj)
     adapterAttributes = [k for k in kw if k not in basicAttributes]
     for attr in adapterAttributes:
         setattr(adapted, attr, kw[attr])
