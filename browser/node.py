@@ -29,6 +29,7 @@ from zope.annotation.interfaces import IAnnotations
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
 from zope.app.container.browser.adding import Adding
+from zope.app.container.traversal import ItemTraverser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.dottedname.resolve import resolve
@@ -65,8 +66,12 @@ class NodeView(BaseView):
 
     _itemNum = 0
 
-    #template = NamedTemplate('loops.node_macros')
     template = node_macros
+
+    def __init__(self, context, request):
+        super(NodeView, self).__init__(context, request)
+        viewConfig = getViewConfiguration(context, request)
+        self.setSkin(viewConfig.get('skinName'))
 
     @Lazy
     def macro(self):
@@ -677,3 +682,66 @@ class NodeViewConfigurator(configurator.ViewConfigurator):
         return result
 
 
+# traveral adapter
+
+class NodeTraverser(ItemTraverser):
+
+    component.adapts(INode)
+
+    def publishTraverse(self, request, name):
+        if self.context.nodeType == 'menu':
+            setViewConfiguration(self.context, request)
+        if name == '.loops':
+            return self.context.getLoopsRoot()
+        if name.startswith('.target'):
+            traversalStack = request._traversal_stack
+            while traversalStack and traversalStack[0].startswith('.target'):
+                # skip obsolete target references in the url
+                name = traversalStack.pop(0)
+            traversedNames = request._traversed_names
+            if traversedNames:
+                lastTraversed = traversedNames[-1]
+                if lastTraversed.startswith('.target') and lastTraversed != name:
+                    # let <base .../> tag show the current object
+                    traversedNames[-1] = name
+            if len(name) > len('.target'):
+                uid = int(name[len('.target'):])
+                target = util.getObjectForUid(uid)
+                #target = component.getUtility(IIntIds).getObject(uid)
+            else:
+                target = self.context.target
+            if target is not None:
+                # remember self.context in request
+                viewAnnotations = request.annotations.setdefault('loops.view', {})
+                viewAnnotations['node'] = self.context
+                if request.method == 'PUT':
+                    # we have to use the target object directly
+                    return target
+                else:
+                    # switch to correct version if appropriate
+                    target = getVersion(target, request)
+                    # we'll use the target object in the node's context
+                    viewAnnotations['target'] = target
+                    return self.context
+        obj = super(NodeTraverser, self).publishTraverse(request, name)
+        return obj
+
+
+def setViewConfiguration(context, request):
+    viewAnnotations = request.annotations.setdefault('loops.view', {})
+    config = IViewConfiguratorSchema(context)
+    skinName = config.skinName
+    if not skinName:
+        skinName = context.getLoopsRoot().skinName
+    if skinName:
+        viewAnnotations['skinName'] = skinName
+    if config.options:
+        viewAnnotations['options'] = config.options
+    return dict(skinName=skinName, options=config.options)
+
+def getViewConfiguration(context, request):
+    if INode.providedBy(context) and context.nodeType == 'menu':
+        setViewConfiguration(context, request)
+    viewAnnotations = request.annotations.get('loops.view', {})
+    return dict(skinName=viewAnnotations.get('skinName'),
+                options=viewAnnotations.get('options'))

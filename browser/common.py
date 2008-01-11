@@ -36,7 +36,6 @@ from zope.formlib.form import FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
 from zope.publisher.browser import applySkin
-#from zope.publisher.interfaces.browser import ISkin
 from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
@@ -105,7 +104,7 @@ class BaseView(GenericView, I18NView):
         super(BaseView, self).__init__(context, request)
         # TODO: get rid of removeSecurityProxy() call
         self.context = removeSecurityProxy(context)
-        self.setSkin(self.loopsRoot.skinName)
+        #self.setSkin(self.loopsRoot.skinName)
         self.checkLanguage()
         try:
             if not canAccess(context, 'title'):

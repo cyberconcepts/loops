@@ -32,6 +32,7 @@ from cybertools.typology.interfaces import IType
 
 from loops.base import Loops
 from loops import util
+from loops.browser.node import ViewPropertiesConfigurator
 from loops.common import NameChooser
 from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
@@ -83,6 +84,7 @@ class TestSite(object):
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(TextDocumentAdapter, provides=ITextDocument)
         component.provideAdapter(NodeAdapter)
+        component.provideAdapter(ViewPropertiesConfigurator)
         component.provideAdapter(NameChooser)
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')

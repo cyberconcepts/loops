@@ -685,7 +685,7 @@
            for="loops.resource.ResourceTypeSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
-  <zope:view factory="loops.view.NodeTraverser"
+  <zope:view factory="loops.browser.node.NodeTraverser"
         for="loops.interfaces.INode"
         type="zope.publisher.interfaces.http.IHTTPRequest"
         provides="zope.publisher.interfaces.browser.IBrowserPublisher"

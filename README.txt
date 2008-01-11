@@ -783,7 +783,7 @@ be accessed as a `virtual target`. This is done by putting ".targetNNN"
 at the end of the URL, with NNN being the unique id of the concept
 or resource.
 
-  >>> from loops.view import NodeTraverser
+  >>> from loops.browser.node import NodeTraverser
 
   >>> magic = '.target' + util.getUidForObject(resources['d001.txt'])
   >>> url = 'http://127.0.0.1/loops/views/m1/m11/m111/' + magic + '/@@node.html'
