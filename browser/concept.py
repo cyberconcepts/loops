@@ -49,7 +49,7 @@ from loops.browser.common import EditForm, BaseView, LoopsTerms, conceptMacrosTe
 from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.i18n.browser import I18NView
-from loops.interfaces import IConcept, IConceptSchema, ITypeConcept
+from loops.interfaces import IConcept, IConceptSchema, ITypeConcept, IResource
 from loops import util
 from loops.util import _
 from loops.versioning.util import getVersion
@@ -281,6 +281,8 @@ class ConceptConfigureView(ConceptView):
         container[name] = concept
         if IConcept.providedBy(concept):
             concept.conceptType = type.typeProvider
+        elif IResource.providedBy(concept):
+            concept.resourceType = type.typeProvider
         notify(ObjectCreatedEvent(concept))
         notify(ObjectModifiedEvent(concept))
         assignAs = self.request.get('assignAs', 'child')
