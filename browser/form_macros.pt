@@ -2,7 +2,8 @@
      $Id$ -->
 
 <metal:block define-macro="edit" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data" id="dialog_form"
+    <form method="post" enctype="multipart/form-data"
+          id="dialog_form" class="dialog"
           tal:define="langInfo view/languageInfo;
                       languages langInfo/availableLanguages;
                       language langInfo/language;
@@ -15,8 +16,8 @@
       <table cellpadding="3" class="form">
         <tbody>
           <tr>
-            <th colspan="5"
-                tal:attributes="colspan python: useI18N and 4 or 5"><br />
+            <th colspan="5" class="headline"
+                tal:attributes="colspan python: useI18N and 4 or 5">
               <span tal:replace="view/title"
                     i18n:translate="">Edit Information Object</span>
             </th>
@@ -44,7 +45,7 @@
         <tbody>
           <tr>
             <td colspan="5" class="headline"
-                i18n:translate="">Concept Assignments</td>
+                i18n:translate="">Assign Parent Concepts</td>
           </tr>
           <tr metal:use-macro="view/template/macros/assignments" />
           <tr metal:use-macro="view/template/macros/search_concepts" />
@@ -61,7 +62,8 @@
 
 
 <metal:block define-macro="create" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data" id="dialog_form"
+    <form method="post" enctype="multipart/form-data"
+          id="dialog_form" class="dialog"
           tal:define="qualifier request/qualifier | string:resource;
                       innerForm request/inner_form | string:inner_form.html;
                       typeToken python: request.get('form.type')
@@ -70,8 +72,8 @@
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <table cellpadding="3" class="form">
-        <tbody><tr><th colspan="5"><br />
-              <span tal:replace="view/title"
+        <tbody><tr><th colspan="5" class="headline">
+              <span tal:content="view/title"
                     i18n:translate="">Create Information Object</span>
               <select name="form.type" id="form.type"
                       tal:condition="not:fixedType"
@@ -154,9 +156,7 @@
     <td><label for="concept.search.type"><span i18n:translate="">Type</span>:</label></td>
     <td>
       <select id="concept.search.type"
-              tal:attributes="onChange
-                string:setConceptTypeForComboBox(
-                    'concept.search.type', 'concept.search.text')">
+              onChange="setConceptTypeForComboBox('concept.search.type', 'concept.search.text')">
         <tal:types repeat="type view/conceptTypesForSearch">
           <option value="loops:*"
                   i18n:translate=""
@@ -172,19 +172,12 @@
       <input type="hidden"
              id="concept.search.predicate"
              tal:attributes="value view/defaultPredicateUid" />
-      <input dojoType="comboBox" mode="remote" autoComplete="False"
-             name="concept.search.text" id="concept.search.text"
-             tal:attributes="dataUrl
-                string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
-      <tal:dojo1 condition="nothing">
-        <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
-             tal:attributes="url
-                  string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=" >
-         </div>
-        <input dojoType="dijit.form.ComboBox" store="conceptSearch"
-               autoComplete="False"
-               name="concept.search.text" id="concept.search.text" />
-      </tal:dojo1>
+      <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+           url="listConceptsForComboBox.js?searchType=" >
+      </div>
+      <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
+             autoComplete="False" labelAttr="label"
+             name="concept.search.text" id="concept.search.text" />
     </td>
     <td>
       <input type="button" value="Select"
@@ -222,7 +215,7 @@
 </metal:versioning>
 
 
-<tr metal:define-macro="buttons" i18n:domain="">
+<tr metal:define-macro="buttons" i18n:domain="" class="buttons">
             <td colspan="5">
               <input value="Save" type="submit"
                      i18n:attributes="value"
@@ -232,3 +225,19 @@
                      tal:attributes="onClick view/closeAction">
             </td>
 </tr>
+
+
+<!-- overridden field renderers -->
+
+<metal:html define-macro="input_html">
+    <textarea name="field" rows="3" style="width: 450px"
+           dojoType="dijit.Editor"
+           tal:define="width field/width|nothing;
+                       height field/height|python:3"
+           tal:attributes="name name; id name;
+                           rows python: height or 3;
+                           style python:
+                                'width: %s' % (width and str(width)+'px' or '450px');"
+           tal:content="data/?name|string:">
+    </textarea>
+</metal:html>

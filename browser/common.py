@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ Common base class for loops browser view classes.
 $Id$
 """
 
-from zope.app import zapi
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
@@ -35,24 +34,27 @@ from zope.formlib import form
 from zope.formlib.form import FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
+from zope.proxy import removeAllProxies
 from zope.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
-from zope.security import canAccess, canWrite, checkPermission
+from zope.security import canAccess, checkPermission
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 
+from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.i18n.browser import I18NView
-from loops.interfaces import IView
+from loops.interfaces import IView, INode
 from loops.resource import Resource
+from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
@@ -90,28 +92,34 @@ class EditForm(form.EditForm):
     template = NamedTemplate('loops.pageform')
 
     def deleteObjectAction(self):
-        return None  # better not to show the edit button at the moment
-        parent = zapi.getParent(self.context)
+        return None  # better not to show the delete button at the moment
+        parent = getParent(self.context)
         parentUrl = absoluteURL(parent, self.request)
         return parentUrl + '/contents.html'
 
 
 class BaseView(GenericView, I18NView):
 
-    actions = {}  # default only, don't update
+    actions = {}
 
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
-        # TODO: get rid of removeSecurityProxy() call
+        # TODO: get rid of removeSecurityProxy() call - not yet...
         self.context = removeSecurityProxy(context)
+        #self.context = context
         #self.setSkin(self.loopsRoot.skinName)
-        self.checkLanguage()
+        #self.checkLanguage()
         try:
-            if not canAccess(context, 'title'):
+            if not canAccessObject(context):
                 raise Unauthorized
                 #request.response.redirect('login.html')
         except ForbiddenAttribute:  # ignore when testing
             pass
+
+    def update(self):
+        result = super(BaseView, self).update()
+        self.checkLanguage()
+        return result
 
     @Lazy
     def target(self):
@@ -242,6 +250,16 @@ class BaseView(GenericView, I18NView):
         for o in objs:
             yield BaseView(o, request)
 
+    def renderText(self, text, contentType):
+        typeKey = util.renderingFactories.get(contentType, None)
+        if typeKey is None:
+            if contentType == u'text/html':
+                return text
+            return u'<pre>%s</pre>' % util.html_quote(text)
+        source = component.createObject(typeKey, text)
+        view = component.getMultiAdapter((removeAllProxies(source), self.request))
+        return view.render()
+
     # type listings
 
     def listTypes(self, include=None, exclude=None, sortOn='title'):
@@ -340,7 +358,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def editable(self):
-        return canWrite(self.context, 'title')
+        return canWriteObject(self.context)
 
     def getActions(self, category='object', page=None):
         """ Return a list of actions that provide the view and edit actions
@@ -364,7 +382,7 @@ class BaseView(GenericView, I18NView):
             return False
         if ct.startswith('text/') and ct != 'text/rtf':
             return checkPermission('loops.ManageSite', self.context)
-        return canWrite(self.context, 'title')
+        return canWriteObject(self.context)
 
     @Lazy
     def inlineEditingActive(self):
@@ -385,8 +403,27 @@ class BaseView(GenericView, I18NView):
 
     def registerDojo(self):
         cm = self.controller.macros
-        cm.register('js', 'dojo.js', resourceName='ajax.dojo/dojo.js')
-        #cm.register('js', 'dojo.js', resourceName='ajax.dojo1/dojo/dojo.js')
+        cm.register('js', 'dojo.js', template=dojoMacroTemplate, name='main',
+                    position=0,
+                    #djConfig='isDebug: true, parseOnLoad: true, usePlainJson: true, '
+                    djConfig='parseOnLoad: true, usePlainJson: true, '
+                             'locale: "%s"' % self.languageInfo.language)
+        jsCall = 'dojo.require("dojo.parser");'
+        cm.register('js-execute', jsCall, jsCall=jsCall)
+        cm.register('css', identifier='tundra.css', position=0,
+                    resourceName='ajax.dojo/dijit/themes/tundra/tundra.css', media='all')
+        cm.register('css', identifier='dojo.css', position=1,
+                    resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
+
+    def registerDojoDateWidget(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dijit.form.DateTextBox");'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
+    def registerDojoTextWidget(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dijit.form.ValidationTextBox");'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
 
 # vocabulary stuff
@@ -411,7 +448,7 @@ class LoopsTerms(object):
     def getTerm(self, value):
         #if value is None:
         #    return SimpleTerm(None, '', u'not assigned')
-        title = value.title or zapi.getName(value)
+        title = value.title or getName(value)
         token = self.loopsRoot.getLoopsUri(value)
         return SimpleTerm(value, token, title)
 

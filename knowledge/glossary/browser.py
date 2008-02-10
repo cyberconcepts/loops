@@ -26,7 +26,7 @@ $Id$
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
 
-from loops.browser.action import Action, DialogAction
+from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.browser.form import CreateConceptForm, EditConceptForm
 from loops.browser.form import CreateConcept, EditConcept
@@ -107,6 +107,7 @@ class EditGlossaryItemForm(EditConceptForm, ConceptView):
 
 class CreateGlossaryItemForm(CreateConceptForm, EditGlossaryItemForm):
 
+    title = _(u'Create Glossary Item')
     form_action = 'create_glossaryitem'
 
     def children(self):

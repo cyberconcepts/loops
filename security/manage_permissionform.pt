@@ -1,0 +1,115 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<head>
+  <style metal:fill-slot="headers" type="text/css">
+    <!--
+    .row-normal {
+      background-color: #ffffff;
+      border: none;
+    }
+    .row-hilite {
+      background-color: #efefef;
+      border: none;
+    }
+    -->
+  </style>
+</head>
+
+<body>
+<div metal:fill-slot="body">
+  <p tal:define="status view/update"
+     tal:condition="status"
+     tal:content="status" />
+
+  <div tal:define="permId view/permissionId;
+                   perm view/permission;">
+    <form>
+      <select name="permission_to_manage">
+        <option tal:repeat="pId view/getPermissions"
+                tal:attributes="value pId;
+                                selected python: pId == permId"
+                tal:content="pId" />
+      </select>
+      <input type="submit" name="select_permission"
+             i18n:attributes="value"
+             value="Select Permission" />
+    </form>
+    <p class="form-text" i18n:translate="">
+      Roles assigned to the permission
+      <strong tal:content="perm/title"
+          i18n:name="perm_title" i18n:translate="">Change DTML Methods</strong>
+      (id: <strong tal:content="permId"
+          i18n:name="perm_id">Zope.Some.Permission</strong>)
+    </p>
+
+    <form method="post">
+      <input type="hidden" name="permission_to_manage" value="Permission Name"
+             tal:attributes="value permId" />
+      <input type="hidden" name="permission_id" value="Permission Name"
+             tal:attributes="value permId" />
+      <div class="form-element">
+
+          <table width="100%" cellspacing="0" cellpadding="2" border="0"
+              nowrap="nowrap">
+
+            <tr class="list-header">
+              <td><strong i18n:translate="">Role</strong></td>
+              <td><strong i18n:translate="">Users/Groups</strong></td>
+              <td><strong i18n:translate="">Acquired Setting</strong></td>
+              <td><strong i18n:translate="">Setting</strong></td>
+            </tr>
+
+            <tr class="row-normal"
+                tal:repeat="setting perm/roleSettings"
+                tal:attributes="class python:
+                    path('repeat/setting/even') and 'row-normal' or 'row-hilite'">
+              <tal:role define="ir repeat/setting/index;
+                                roleId python:path('view/roles')[ir].id">
+              <td align="left" valign="top"
+                  tal:content="roleId">
+                Manager
+              </td>
+              <td>
+                <span tal:define="users python: view.listUsersForRole(roleId)"
+                      tal:replace="structure users">
+                  User xy
+                </span>
+              </td>
+              <td>
+                <span tal:replace="python:
+                        view.getAcquiredPermissionSetting(roleId, permId)" />
+              </td>
+              <td>
+                <select name="settings:list">
+                    <option value="Unset"
+                       tal:repeat="option view/availableSettings"
+                       tal:attributes="value option/id;
+                                       selected python:setting == option['id']"
+                       tal:content="option/shorttitle"
+                       i18n:translate="">+</option>
+                </select>
+              </td>
+              </tal:role>
+            </tr>
+            <tr tal:define="principals view/getPrincipalPermissions"
+                tal:condition="principals">
+              <td>
+                <strong i18n:translate="">Direct Settings</strong>
+              </td>
+              <td colspan="3" tal:content="structure principals">+xyz</td>
+            </tr>
+          </table>
+
+      </div>
+
+      <br />
+      <div class="form-element">
+        <input class="form-element" type="submit" name="SUBMIT_PERMS"
+            value="Save Changes" i18n:attributes="value save-changes-button"/>
+      </div>
+    </form>
+
+  </div>
+</div>
+</body>
+</html>

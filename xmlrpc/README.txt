@@ -8,57 +8,39 @@ Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-
   >>> from zope import component, interface
   >>> from zope.publisher.browser import TestRequest
   >>> from loops.concept import Concept
   >>> from loops.resource import Resource
+  >>>
 
-and setup a simple loops site with a concept manager and some concepts
+and set up a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from cybertools.relation.registry import DummyRelationRegistry
-  >>> component.provideUtility(DummyRelationRegistry())
-  >>> from cybertools.relation.tests import IntIdsStub
-  >>> intIds = IntIdsStub()
-  >>> component.provideUtility(intIds)
-
-  >>> from loops.type import LoopsType, ConceptType, TypeConcept
-  >>> component.provideAdapter(LoopsType)
-  >>> component.provideAdapter(ConceptType)
-  >>> component.provideAdapter(TypeConcept)
-  >>> from loops.common import NameChooser
-  >>> component.provideAdapter(NameChooser)
-
-  >>> from loops.base import Loops
-  >>> loopsRoot = site['loops'] = Loops()
-
-  >>> from loops.setup import SetupManager
+  >>> from loops.setup import addObject
   >>> from loops.organize.setup import SetupManager as OrganizeSetupManager
   >>> component.provideAdapter(OrganizeSetupManager, name='organize')
-  >>> setup = SetupManager(loopsRoot)
-  >>> concepts, resources, views = setup.setup()
+  >>> from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+  >>> component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+  >>> from loops.tests.setup import TestSite
+  >>> t = TestSite(site)
+  >>> concepts, resources, views = t.setup()
+
+  >>> from loops import util
+  >>> loopsRoot = site['loops']
+  >>> loopsId = util.getUidForObject(loopsRoot)
 
 Let's look what setup has provided us with:
 
-  >>> sorted(concepts)
-  [u'domain', u'file', u'hasType', u'note', u'ownedby', u'person',
-   u'predicate', u'query', u'standard', u'textdocument', u'type']
+  >>> len(concepts)
+  19
 
 Now let's add a few more concepts:
 
-  >>> topic = concepts[u'topic'] = Concept(u'Topic')
-  >>> intIds.register(topic)
-  11
-  >>> zope = concepts[u'zope'] = Concept(u'Zope')
-  >>> zope.conceptType = topic
-  >>> intIds.register(zope)
-  12
-  >>> zope3 = concepts[u'zope3'] = Concept(u'Zope 3')
-  >>> zope3.conceptType = topic
-  >>> intIds.register(zope3)
-  13
+  >>> topic = concepts[u'topic']
+  >>> zope = addObject(concepts, Concept, 'zope', title=u'Zope', conceptType=topic)
+  >>> zope3 = addObject(concepts, Concept, 'zope3', title=u'Zope 3', conceptType=topic)
 
 Navigation typically starts at a start object, which by default ist the
 domain concept (if present, otherwise the top-level type concept):
@@ -70,16 +52,16 @@ domain concept (if present, otherwise the top-level type concept):
   ['children', 'description', 'id', 'name', 'parents', 'resources',
    'title', 'type', 'viewName']
   >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
-  ('1', u'domain', u'Domain', '0')
+  ('3', u'domain', u'Domain', '0')
 
 There are a few standard objects we can retrieve directly:
 
   >>> defaultPred = xrf.getDefaultPredicate()
   >>> defaultPred['id'], defaultPred['name']
-  ('8', u'standard')
+  ('16', u'standard')
   >>> typePred = xrf.getTypePredicate()
   >>> typePred['id'], typePred['name']
-  ('7', u'hasType')
+  ('1', u'hasType')
   >>> typeConcept = xrf.getTypeConcept()
   >>> typeConcept['id'], typeConcept['name']
   ('0', u'type')
@@ -89,19 +71,19 @@ note that the 'hasType' predicate is not shown as it should not be
 applied in an explicit assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
-  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
-   u'textdocument', u'type']
+  [u'customer', u'domain', u'file', u'note', u'person', u'predicate', u'query',
+   u'task', u'textdocument', u'topic', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
-  [u'ownedby', u'standard']
+  [u'depends', u'knows', u'ownedby', u'provides', u'requires', u'standard']
 
 We can also retrieve a certain object by its id or its name:
 
-  >>> obj2 = xrf.getObjectById('2')
+  >>> obj2 = xrf.getObjectById('5')
   >>> obj2['id'], obj2['name']
-  ('2', u'query')
+  ('5', u'query')
   >>> textdoc = xrf.getObjectByName(u'textdocument')
   >>> textdoc['id'], textdoc['name']
-  ('5', u'textdocument')
+  ('11', u'textdocument')
 
 All methods that retrieve one object also returns its children and parents:
 
@@ -111,8 +93,8 @@ All methods that retrieve one object also returns its children and parents:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
-   u'textdocument', u'type']
+  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
+   u'query', u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -130,8 +112,8 @@ We can also retrieve children and parents explicitely:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'domain', u'file', u'note', u'person', u'predicate', u'query',
-   u'textdocument', u'type']
+  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
+   u'query', u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = xrf.getParents('7')
   >>> len(pa)
@@ -139,7 +121,7 @@ We can also retrieve children and parents explicitely:
   >>> pa[0]['name']
   u'hasType'
   >>> sorted(p['name'] for p in pa[0]['objects'])
-  [u'predicate']
+  [u'type']
 
 Resources
 ---------
@@ -184,18 +166,22 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '11', 'id': '17',
+  {'description': u'', 'title': u'Zope 2', 'type': '22', 'id': '56',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '11', 'id': '18',
+  {'description': u'', 'title': u'Python', 'type': '22', 'id': '58',
    'name': u'python'}
 
 Changing the attributes of a concept
 ------------------------------------
+
+  >>> from loops.knowledge.knowledge import Person
+  >>> from loops.knowledge.interfaces import IPerson
+  >>> component.provideAdapter(Person, provides=IPerson)
 
   >>> xrf.editConcept(john['id'], 'firstName', u'John')
   'OK'

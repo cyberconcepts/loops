@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2007-12-17 12:00 CET\n"
+"PO-Revision-Date: 2008-01-23 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,53 @@ msgstr "Begriff"
 msgid "Resource"
 msgstr "Ressource"
 
+msgid "Log out"
+msgstr "Abmelden"
+
+msgid "Create"
+msgstr "Anlegen"
+
 msgid "Edit Concept Map"
 msgstr "Concept Map bearbeiten"
 
 msgid "Create Resource..."
 msgstr "Ressource anlegen..."
+
+msgid "Create a new resource object."
+msgstr "Eine neue Ressource erzeugen"
+
+msgid "Edit Blog Post..."
+msgstr "Eintrag bearbeiten..."
+
+msgid "Edit Blog Post"
+msgstr "Tagebucheintrag bearbeiten"
+
+msgid "Modify blog post."
+msgstr "Tagebucheintrag ändern."
+
+msgid "Create Blog Post..."
+msgstr "Tagebucheintrag anlegen..."
+
+msgid "Create a new blog post."
+msgstr "Einen neuen Tagebucheintrag erzeugen"
+
+msgid "Create Blog Post"
+msgstr "Tagebucheintrag anlegen"
+
+msgid "Glossary Item"
+msgstr "Glossareintrag"
+
+msgid "Edit Glossary Item..."
+msgstr "Glossareintrag bearbeiten..."
+
+msgid "Edit Glossary Item"
+msgstr "Glossareintrag bearbeiten"
+
+msgid "Create Glossary Item..."
+msgstr "Glossareintrag anlegen..."
+
+msgid "Create Glossary Item"
+msgstr "Glossareintrag anlegen"
 
 msgid "Actions"
 msgstr "Aktionen"
@@ -47,8 +89,14 @@ msgstr "Unterbegriffe"
 msgid "Title"
 msgstr "Titel"
 
+msgid "Title of the concept"
+msgstr "Überschrift, sprechende Bezeichnung des Begriffs"
+
 msgid "Description"
 msgstr "Beschreibung"
+
+msgid "A medium-length description describing the content and the purpose of the object"
+msgstr "Eine ausführlichere Beschreibung des Inhalts und Zwecks des Objekts"
 
 msgid "Related Items"
 msgstr "Verwandte Begriffe"
@@ -224,4 +272,30 @@ msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort üb
 msgid "Your password has been changed."
 msgstr "Ihr Passwort wurde geändert."
 
+msgid "Date/Time"
+msgstr "Datum/Uhrzeit"
+
+msgid "The date and time the information was posted."
+msgstr "Datum und Uhrzeit der Bereitstellung der Information"
+
+msgid "Private"
+msgstr "privat"
+
+msgid "Check this field if the blog post should be accessible only for a limited audience."
+msgstr "Markieren Sie dieses Feld, wenn der Tagebucheintrag nicht für alle Benutzer sichtbar sein soll"
+
+msgid "The text of your blog entry"
+msgstr "Der eigentliche Text des Tagebucheintrags"
+
+msgid "Private Comment"
+msgstr "Privater Kommentar"
+
+msgid "A text that is not visible for other users."
+msgstr "Ein Text, der für andere Benutzer nicht sichtbar sein soll"
+
+msgid "For quick creation of notes/links bookmark this link"
+msgstr "Für Notizen diesen Link zu Favoriten/Lesezeichen hinzufügen"
+
+msgid "Create loops Note"
+msgstr "loops-Notiz anlegen"
 

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,13 +27,12 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
-from zope.app.container.traversal import ContainerTraverser, ItemTraverser
-from zope.app.container.traversal import ContainerTraversable
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy, readproperty
 from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
+from zope.publisher.browser import applySkin
 from zope.security.proxy import removeSecurityProxy
 from persistent import Persistent
 from cybertools.relation import DyadicRelation

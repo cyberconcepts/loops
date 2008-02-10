@@ -29,8 +29,9 @@ from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
+from zope.component.interfaces import IObjectEvent
 from zope.size.interfaces import ISized
-from cybertools.relation.interfaces import IRelation
+from cybertools.relation.interfaces import IDyadicRelation
 
 import util
 from util import _
@@ -563,15 +564,18 @@ class ILoopsContained(Interface):
 
 # relation interfaces
 
-class ITargetRelation(IRelation):
+class ITargetRelation(IDyadicRelation):
     """ (Marker) interfaces for relations pointing to a target
         of a view or node.
     """
 
 
-class IConceptRelation(IRelation):
+class IConceptRelation(IDyadicRelation):
     """ (Marker) interfaces for relations originating from a concept.
     """
+
+    predicate = Attribute("A concept of type 'predicate' that defines the "
+                    "type of the relation-")
 
 
 # interfaces for catalog indexes
@@ -683,6 +687,22 @@ class INote(ITextDocument):
         description=_(u'An (optional) link associated with this note'),
         default=u'http://',
         required=False)
+
+
+# events
+
+class IAssignmentEvent(IObjectEvent):
+    """ A child or resource has been assigned to a concept.
+    """
+
+    relation = Attribute('The relation that has been assigned to the concept.')
+
+
+class IDeassignmentEvent(IObjectEvent):
+    """ A child or resource will be deassigned from a concept.
+    """
+
+    relation = Attribute('The relation that will be removed from the concept.')
 
 
 # view configurator stuff

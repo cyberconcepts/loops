@@ -1,0 +1,37 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter factory="loops.security.setter.BaseSecuritySetter" />
+
+  <zope:adapter
+        for="loops.interfaces.IConcept"
+        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        trusted="true" />
+  <zope:adapter
+        for="loops.interfaces.IResource"
+        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        trusted="true" />
+  <zope:adapter
+        for="loops.interfaces.IView"
+        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        trusted="true" />
+
+  <zope:subscriber handler="loops.security.common.setDefaultSecurity" />
+  <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
+  <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
+
+  <browser:page name="permissions.html" for="*"
+        class=".perm.PermissionView"
+        template="manage_permissionform.pt"
+        permission="zope.Security" />
+
+  <browser:menuItem for="*" action="@@permissions.html"
+        menu="zmi_actions" title="Edit Permissions"
+        filter="python: context.__name__ not in ('views', 'concepts', 'resources')"
+        permission="zope.Security" />
+
+</configure>

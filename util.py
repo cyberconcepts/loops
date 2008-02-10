@@ -27,10 +27,20 @@ from zope.app.intid.interfaces import IIntIds
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
-#from view import TargetRelation
+
+from loops.browser.util import html_quote
 
 _ = MessageFactory('loops')
 #_ = MessageFactory('zope')  # it's easier not use a special i18n domain?
+
+
+renderingFactories = {
+    'text/plain': 'zope.source.plaintext',
+    'text/stx': 'zope.source.stx',
+    'text/structured': 'zope.source.stx',
+    'text/rest': 'zope.source.rest',
+    'text/restructured': 'zope.source.rest',
+}
 
 
 class KeywordVocabulary(vocabulary.SimpleVocabulary):

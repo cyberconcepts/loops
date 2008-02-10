@@ -30,7 +30,8 @@ from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.interfaces import IPerson as IBasePerson
-from loops.organize.util import getPrincipalFolder, authPluginId
+from loops.interfaces import IConceptSchema
+from loops.organize.util import getPrincipalFolder
 from loops.util import _
 
 ANNOTATION_KEY = 'loops.organize.person'
@@ -83,7 +84,7 @@ class LoginName(schema.TextLine):
                   mapping=dict(userId=userId)))
 
 
-class IPerson(IBasePerson):
+class IPerson(IConceptSchema, IBasePerson):
     """ Resembles a human being with a name (first and last name),
         a birth date, and a set of addresses. This interface only
         lists fields used in addition to those provided by the

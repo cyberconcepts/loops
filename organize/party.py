@@ -38,10 +38,11 @@ from cybertools.organize.interfaces import IAddress
 from cybertools.organize.party import Person as BasePerson
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
+from loops.common import AdapterBase
 from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
-from loops.common import AdapterBase
+from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
 from loops.type import TypeInterfaceSourceList
 from loops import util
 
@@ -54,6 +55,8 @@ TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
 def getPersonForUser(context, request=None, principal=None):
     if principal is None:
         principal = request.principal
+    if principal is None:
+        return None
     loops = context.getLoopsRoot()
     pa = annotations(principal).get(ANNOTATION_KEY, None)
     if pa is None:
@@ -88,13 +91,16 @@ class Person(AdapterBase, BasePerson):
             pa = annotations(principal)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)
-            if ann is None:
+            if ann is None: # or not isinstance(ann, PersistentMapping):
                 ann = pa[ANNOTATION_KEY] = PersistentMapping()
             ann[loopsId] = self.context
+            assignOwner(self.context, userId)
         oldUserId = self.userId
         if oldUserId and oldUserId != userId:
             self.removeReferenceFromPrincipal(oldUserId)
+            removeOwner(self.context, oldUserId)
         self.context._userId = userId
+        allowEditingForOwner(self.context, revert=not userId)
     userId = property(getUserId, setUserId)
 
     def removeReferenceFromPrincipal(self, userId):

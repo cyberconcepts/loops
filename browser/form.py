@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,11 +30,9 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import NameChooser
-from zope.app.form.browser.textwidgets import FileWidget, TextAreaWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.contenttype import guess_content_type
-#from zope.formlib.form import Form, EditForm, FormFields
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
 from zope.security.proxy import isinstance, removeSecurityProxy
@@ -81,7 +79,8 @@ class ObjectForm(NodeView):
 
     def closeAction(self, submit=False):
         if self.isInnerHtml:
-            return 'dialogs["%s"].hide()' % self.dialog_name
+            return ("closeDataWidget(%s); dialog.hide();" %
+                        (submit and 'true' or 'false'))
         if submit:
             return "xhrSubmitPopup('dialog_form', '%s'); return false" % (self.request.URL)
         return 'window.close()'
@@ -101,7 +100,10 @@ class ObjectForm(NodeView):
 
     @Lazy
     def fieldRenderers(self):
-        return schema_macros.macros
+        renderers = dict(schema_macros.macros)
+        # replace HTML edit widget with Dojo Editor
+        renderers['input_html'] = self.template.macros['input_html']
+        return renderers
 
     @Lazy
     def fieldEditRenderers(self):
@@ -109,19 +111,17 @@ class ObjectForm(NodeView):
 
     @Lazy
     def schema(self):
-        #ti = self.typeInterface or Interface #IConcept
         ti = self.typeInterface or IConceptSchema
         schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
         return schemaFactory(ti, manager=self, request=self.request)
 
     @Lazy
     def fields(self):
-        return self.schema.fields
+        return [f for f in self.schema.fields if not f.readonly]
 
     @Lazy
     def data(self):
         instance = self.instance
-        instance.template = self.schema
         data = instance.applyTemplate(mode='edit')
         form = self.request.form
         for k, v in data.items():
@@ -132,11 +132,15 @@ class ObjectForm(NodeView):
 
     @Lazy
     def instance(self):
-        return IInstance(self.adapted)
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
 
     def __call__(self):
         if self.isInnerHtml:
             response = self.request.response
+            #response.setHeader('Content-Type', 'text/html; charset=UTF-8')
             response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
             response.setHeader('Pragma', 'no-cache')
             return innerHtml(self)
@@ -240,11 +244,16 @@ class CreateObjectForm(ObjectForm):
 
     @Lazy
     def adapted(self):
-        return self.typeInterface(Resource())
+        ad = self.typeInterface(Resource())
+        ad.storageName = 'unknown'  # hack for file objects: don't try to retrieve data
+        return (ad)
 
     @Lazy
     def instance(self):
-        return IInstance(Resource())
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
 
     @Lazy
     def typeInterface(self):
@@ -278,8 +287,9 @@ class CreateObjectPopup(CreateObjectForm):
         cm = self.controller.macros
         cm.register('css', identifier='popup.css', resourceName='popup.css',
                     media='all', position=4)
-        jsCall = ('dojo.require("dojo.widget.Dialog");'
-                  'dojo.require("dojo.widget.ComboBox");')
+        jsCall = ('dojo.require("dojo.parser");'
+                  'dojo.require("dijit.form.FilteringSelect");'
+                  'dojo.require("dojox.data.QueryReadStore");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
         return True
 
@@ -298,14 +308,19 @@ class CreateConceptForm(CreateObjectForm):
 
     @Lazy
     def adapted(self):
+        c = Concept()
         ti = self.typeInterface
         if ti is None:
-            return Concept()
-        return ti(Concept())
+            return c
+        ad = ti(c)
+        return ad
 
     @Lazy
     def instance(self):
-        return IInstance(Concept())
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
 
     @Lazy
     def typeInterface(self):
@@ -355,9 +370,6 @@ class EditObject(FormController, I18NView):
     prefix = 'form.'
     conceptPrefix = 'assignments.'
 
-    old = None
-    selected = None
-
     @Lazy
     def adapted(self):
         return adapted(self.object, self.languageInfoForUpdate)
@@ -377,7 +389,10 @@ class EditObject(FormController, I18NView):
 
     @Lazy
     def instance(self):
-        return component.getAdapter(self.adapted, IInstance, name='editor')
+        instance = component.getAdapter(self.adapted, IInstance, name='editor')
+        instance.template = self.schema
+        instance.view = self.view
+        return instance
 
     @Lazy
     def loopsRoot(self):
@@ -406,14 +421,17 @@ class EditObject(FormController, I18NView):
         obj = self.object
         form = self.request.form
         instance = self.instance
-        instance.template = self.schema
+        #instance.template = self.schema
         formState = instance.applyTemplate(data=form, fieldHandlers=self.fieldHandlers)
+        self.selected = []
+        self.old = []
         for k in form.keys():
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
                 value = form[k]
                 if fn.startswith(self.conceptPrefix) and value:
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
+        self.collectAutoConcepts()
         if self.old or self.selected:
             self.assignConcepts(obj)
         notify(ObjectModifiedEvent(obj))
@@ -441,13 +459,14 @@ class EditObject(FormController, I18NView):
     def collectConcepts(self, fieldName, value):
         if self.old is None:
             self.old = []
-        if self.selected is None:
-            self.selected = []
         for v in value:
             if fieldName == 'old':
                 self.old.append(v)
             elif fieldName == 'selected' and v not in self.selected:
                 self.selected.append(v)
+
+    def collectAutoConcepts(self):
+        pass
 
     def assignConcepts(self, obj):
         for v in self.old:
@@ -531,6 +550,10 @@ class CreateObject(EditObject):
 
 
 class EditConcept(EditObject):
+
+    @Lazy
+    def typeInterface(self):
+        return IType(self.object).typeInterface or IConceptSchema
 
     def getConceptRelations(self, obj, predicates, concept):
         return obj.getParentRelations(predicates=predicates, parent=concept)

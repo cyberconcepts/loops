@@ -25,7 +25,6 @@ $Id$
 import urllib
 from zope.cachedescriptors.property import Lazy
 from zope import component
-from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.interfaces import INameChooser
 from zope.app.form.browser.textwidgets import FileWidget
@@ -38,28 +37,20 @@ from zope.schema.interfaces import IBytes
 from zope.security import canAccess, canWrite
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
+from zope.traversing.browser import absoluteURL
 
 from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
-from loops.browser.action import Action, DialogAction, TargetAction
+from loops.browser.action import DialogAction, TargetAction
 from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
-from loops.browser.util import html_quote
 from loops.common import adapted, NameChooser
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.interfaces import ITypeConcept
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
 from loops.util import _
-
-renderingFactories = {
-    'text/plain': 'zope.source.plaintext',
-    'text/stx': 'zope.source.stx',
-    'text/structured': 'zope.source.stx',
-    'text/rest': 'zope.source.rest',
-    'text/restructured': 'zope.source.rest',
-}
 
 
 class CustomFileWidget(FileWidget):
@@ -120,16 +111,18 @@ class ResourceView(BaseView):
         super(ResourceView, self).__init__(context, request)
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             cont = self.controller
-            if cont is not None and list(self.relatedConcepts()):
-                cont.macros.register('portlet_right', 'related', title=_(u'Related Items'),
-                             subMacro=self.template.macros['related'],
-                             position=0, info=self)
+            if cont is not None:
+                if list(self.relatedConcepts()):
+                    cont.macros.register('portlet_right', 'related',
+                                title=_(u'Related Items'),
+                                subMacro=self.template.macros['related'],
+                                priority=20, info=self)
                 versionable = IVersionable(self.context, None)
                 if versionable is not None and len(versionable.versions) > 1:
                         cont.macros.register('portlet_right', 'versions',
                                 title='Version ' + versionable.versionId,
                                 subMacro=version_macros.macros['portlet_versions'],
-                                position=1, info=self)
+                                priority=25, info=self)
 
     @Lazy
     def view(self):
@@ -150,10 +143,6 @@ class ResourceView(BaseView):
 
     def show(self, useAttachment=False):
         """ show means: "download"..."""
-        #data = self.openForView()
-        #response.setHeader('Content-Disposition',
-        #                   'attachment; filename=%s' % zapi.getName(self.context))
-        #return data
         context = self.context
         ti = IType(context).typeInterface
         if ti is not None:
@@ -222,6 +211,10 @@ class ResourceView(BaseView):
 
 class ResourceConfigureView(ResourceView, ConceptConfigureView):
 
+    #def __init__(self, context, request):
+    #    # avoid calling ConceptView.__init__()
+    #    ResourceView.__init__(self, context, request)
+
     def update(self):
         request = self.request
         action = request.get('action')
@@ -269,7 +262,7 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
                 else:
                     start = end = searchType
                 criteria['loops_type'] = (start, end)
-            cat = zapi.getUtility(ICatalog)
+            cat = component.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
             # TODO: can this be done in a faster way?
             result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
@@ -292,19 +285,10 @@ class DocumentView(ResourceView):
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
-        #text = self.context.data
         ctx = adapted(self.context)
         text = ctx.data
-        #contentType = self.context.contentType
         contentType = ctx.contentType
-        typeKey = renderingFactories.get(contentType, None)
-        if typeKey is None:
-            if contentType == u'text/html':
-                return text
-            return u'<pre>%s</pre>' % html_quote(text)
-        source = zapi.createObject(typeKey, text)
-        view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
-        return view.render()
+        return self.renderText(ctx.data, ctx.contentType)
 
     @Lazy
     def inlineEditable(self):
@@ -316,10 +300,12 @@ class DocumentView(ResourceView):
 class ExternalEditorView(ExternalEditorView):
 
     def load(self, url=None):
-        context = removeSecurityProxy(self.context)
+        #context = removeSecurityProxy(self.context)
+        context = self.context
         data = adapted(context).data
         r = []
-        r.append('url:' + (url or zapi.absoluteURL(context, self.request)))
+        context = removeSecurityProxy(context)
+        r.append('url:' + (url or absoluteURL(context, self.request)))
         r.append('content_type:' + str(context.contentType))
         r.append('meta_type:' + '.'.join((context.__module__, context.__class__.__name__)))
         auth = self.request.get('_auth')

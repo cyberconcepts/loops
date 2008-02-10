@@ -8,26 +8,26 @@
     <span tal:repeat="letter python: [chr(c) for c in range(ord('A'), ord('Z')+1)]"
           class="navlink">
       <a href="#"
-         tal:omit-tag="python: letter not in data['letters']"
+         tal:omit-tag="python: letter not in data.keys()"
          tal:attributes="href string:${request/URL/-1}#$letter"
          tal:content="letter">A</a>
     </span>
   </div>
   <div>&nbsp;</div>
-  <div tal:repeat="letter data/letters">
+  <div tal:repeat="letter data/keys">
     <div class="subtitle"><a name="A" href="#top"
            tal:attributes="name letter;
                            href string:${request/URL/-1}#top"
            tal:content="letter">A</a>
     </div>
-    <div tal:repeat="related data/relations/?letter|python:[]">
+    <div tal:repeat="related data/?letter|python:[]">
       <a href="#"
          tal:content="related/title"
          tal:attributes="href python: view.getUrlForTarget(related);
                          title related/description">
         Topic
       </a>
-      <span tal:define="translations related/adapted/translations"
+      <span tal:define="translations related/adapted/translations|python:[]"
             tal:condition="translations">
         (<tal:trans repeat="trans translations"><a href="#"
              tal:attributes="href python: '%s?loops.language=%s' %
@@ -44,7 +44,7 @@
 
 <metal:block define-macro="glossaryitem">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
-  <p tal:define="translations item/adapted/translations"
+  <p tal:define="translations item/adapted/translations|python:[]"
         tal:condition="translations">
     <span i18n:translate="">Translations</span>:
     <tal:trans repeat="trans translations"><a href="#"
@@ -98,10 +98,12 @@
       <input type="hidden"
              id="child.search.predicate"
              tal:attributes="value view/relatedPredicateUid" />
-      <input dojoType="comboBox" mode="remote" autoComplete="False"
-             name="child.search.text" id="child.search.text"
-             tal:attributes="dataUrl
-                string:listConceptsForComboBox.js?searchString=%{searchString}&searchType=loops:concept:glossaryitem" />
+      <div dojoType="dojox.data.QueryReadStore" jsId="childSearch"
+           url="listConceptsForComboBox.js?searchType=loops:concept:glossaryitem" >
+      </div>
+      <input dojoType="dijit.form.FilteringSelect" store="childSearch"
+             autoComplete="False" labelAttr="label"
+             name="child.search.text" id="child.search.text" />
     </td>
     <td>
       <input type="button" value="Select"

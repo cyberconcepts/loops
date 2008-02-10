@@ -1,0 +1,49 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   i18n_domain="loops">
+
+  <!-- permissions -->
+
+  <permission
+      id="loops.xmlrpc.ManageConcepts"
+      title="[loops-xmlrpc-manage-concepts-permission] loops: Manage Concepts (XML-RPC)" />
+
+  <permission
+      id="loops.ManageSite"
+      title="[loops-manage-site-permission] loops: Manage Site" />
+
+  <permission
+      id="loops.ViewRestricted"
+      title="[loops-view-restricted-permission] loops: View Restricted Information" />
+
+  <!-- roles and default permissions for roles -->
+
+  <role id="loops.SiteManager"
+        title="[loops-manage-site-role] loops: Site Manager" />
+  <grant role="loops.SiteManager" permission="loops.ManageSite" />
+  <grant role="loops.SiteManager" permission="loops.xmlrpc.ManageConcepts" />
+  <grant role="loops.SiteManager" permission="zope.ManageContent" />
+  <grant role="loops.SiteManager" permission="zope.View" />
+
+  <role id="loops.Staff"
+        title="[loops-staff-role] loops: Staff" />
+  <grant role="loops.Staff" permission="zope.ManageContent" />
+  <grant role="loops.Staff" permission="zope.View" />
+
+  <role id="loops.Master"
+        title="[loops-master-role] loops: Master" />
+
+  <role id="loops.xmlrpc.ConceptManager"
+        title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
+  <grant role="loops.xmlrpc.ConceptManager" permission="loops.xmlrpc.ManageConcepts" />
+
+  <role id="loops.Owner"
+        title="[loops-owner-role] Owner" />
+  <grant role="loops.Owner" permission="zope.ManageContent" />
+  <grant role="loops.Owner" permission="loops.ViewRestricted" />
+  <grant role="loops.Owner" permission="zope.View" />
+
+</configure>

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -83,30 +83,56 @@ class Search(BaseView):
     def initDojo(self):
         self.registerDojo()
         cm = self.controller.macros
-        jsCall = 'dojo.require("dojo.widget.ComboBox")'
+        jsCall = ('dojo.require("dojo.parser");'
+                  'dojo.require("dijit.form.FilteringSelect");'
+                  'dojo.require("dojox.data.QueryReadStore");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
 
     def listConcepts(self):
-        """ Used for dojo.widget.ComboBox.
+        """ Used for dijit.FilteringSelect.
         """
         request = self.request
         request.response.setHeader('Content-Type', 'text/plain; charset=UTF-8')
-        title = request.get('searchString', '').replace('(', ' ').replace(')', ' ')
-        type = request.get('searchType') or 'loops:concept:*'
-        result = ConceptQuery(self).query(title=title, type=type, exclude=('system',))
-        #registry = component.getUtility(IRelationRegistry)
-        # simple way to provide JSON format:
-        return str(sorted([[`adapted(o, self.languageInfo).title`[2:-1]
-                                + ' (%s)' % `o.conceptType.title`[2:-1],
-                            `int(util.getUidForObject(o))`]
-                        for o in result
-                        if o.getLoopsRoot() == self.loopsRoot])).replace('\\\\x', '\\x')
-        #return str(sorted([[`o.title`[2:-1], `traversing.api.getName(o)`[2:-1]]
-        #                for o in result])).replace('\\\\x', '\\x')
+        title = request.get('name')
+        if title == '*':
+            title = None
+        type = request.get('searchType')
+        data = []
+        if title or type:
+            if title is not None:
+                title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
+                #title = title.split(' ', 1)[0]
+            if not type:
+                type = 'loops:concept:*'
+            result = ConceptQuery(self).query(title=title or None, type=type,
+                                              exclude=('system',))
+            for o in result:
+                if o.getLoopsRoot() == self.loopsRoot:
+                    name = adapted(o, self.languageInfo).title
+                    if title and title.endswith('*'):
+                        title = title[:-1]
+                    sort = ((title and name.startswith(title) and '0' or '1')
+                            + name.lower())
+                    if o.conceptType is None:
+                        raise ValueError('Concept Type missing for %r.' % name)
+                    data.append({'label': '%s (%s)' % (name, o.conceptType.title),
+                                 'name': name,
+                                 'id': util.getUidForObject(o),
+                                 'sort': sort})
+        data.sort(key=lambda x: x['sort'])
+        if not title:
+            data.insert(0, {'label': '', 'name': '', 'id': ''})
+        json = []
+        for item in data:
+            json.append("{label: '%s', name: '%s', id: '%s'}" %
+                          (item['label'], item['name'], item['id']))
+        json = "{identifier: 'id', items: [%s]}" % ', '.join(json)
+        #print '***', json
+        return json
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
-        return 'return submitReplacing("%s", "%s", "%s")' % (
+        return 'submitReplacing("%s", "%s", "%s"); return false;' % (
                     targetId, formId,
                     '%s/.target%s/@@searchresults.html' % (view.url, self.uniqueId))
 
@@ -131,13 +157,14 @@ class SearchResults(BaseView):
         useTitle = form.get('search.2.title')
         useFull = form.get('search.2.full')
         conceptType = form.get('search.3.type', 'loops:concept:*')
-        conceptTitle = form.get('search.3.text')
-        if conceptTitle is not None:
-            conceptTitle = util.toUnicode(conceptTitle, encoding='ISO8859-15')
-        conceptUid = form.get('search.3.text_selected')
+        #conceptTitle = form.get('search.3.text')
+        #if conceptTitle is not None:
+        #    conceptTitle = util.toUnicode(conceptTitle, encoding='ISO8859-15')
+        conceptUid = form.get('search.3.text')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=useTitle, useFull=useFull,
-                           conceptTitle=conceptTitle, conceptUid=conceptUid,
+                           #conceptTitle=conceptTitle,
+                           conceptUid=conceptUid,
                            conceptType=conceptType)
         rowNum = 4
         while rowNum < 10:

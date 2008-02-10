@@ -65,7 +65,8 @@ class LanguageInfo(object):
         lang = self.request.get('loops.language')
         if lang is not None and lang in self.availableLanguages:
             return lang
-        return (negotiator.getLanguage(self.availableLanguages, self.request)
+        available = self.availableLanguages or ('en', 'de',)
+        return (negotiator.getLanguage(available, self.request)
                 or self.defaultLanguage)
 
 

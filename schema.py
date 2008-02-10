@@ -35,6 +35,8 @@ class ResourceSchemaFactory(SchemaFactory):
     def __call__(self, interface, **kw):
         schema = super(ResourceSchemaFactory, self).__call__(interface, **kw)
         schema.fields.data.height = 10
+        if self.context.contentType == 'text/html':
+            schema.fields.data.fieldType = 'html'
         return schema
 
 

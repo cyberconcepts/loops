@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.component.interfaces import ObjectEvent
+from zope.event import notify
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.security.proxy import removeSecurityProxy, isinstance
@@ -35,7 +37,6 @@ from persistent import Persistent
 
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
-from cybertools.relation.registry import getRelationSingle, setRelationSingle
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
@@ -46,6 +47,8 @@ from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
+from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
+from loops.security.common import canListObject
 from loops import util
 from loops.view import TargetRelation
 
@@ -159,29 +162,35 @@ class Concept(Contained, Persistent):
         if relationships is None:
             relationships = [TargetRelation]
         rels = getRelations(second=self, relationships=relationships)
-        return [r.first for r in rels]
+        return [r.first for r in rels if canListObject(r.first)]
 
-    def getChildRelations(self, predicates=None, child=None, sort='default'):
+    def getChildRelations(self, predicates=None, child=None, sort='default',
+                          noSecurityCheck=False):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.second.title.lower())
-        return sorted(getRelations(first=self, second=child, relationships=relationships),
-                      key=sort)
+        rels = (r for r in getRelations(self, child, relationships=relationships)
+                  if canListObject(r.second, noSecurityCheck))
+        return sorted(rels, key=sort)
 
-    def getChildren(self, predicates=None, sort='default'):
-        return [r.second for r in self.getChildRelations(predicates, sort=sort)]
+    def getChildren(self, predicates=None, sort='default', noSecurityCheck=False):
+        return [r.second for r in self.getChildRelations(predicates, sort=sort,
+                                                noSecurityCheck=noSecurityCheck)]
 
-    def getParentRelations (self, predicates=None, parent=None, sort='default'):
+    def getParentRelations (self, predicates=None, parent=None, sort='default',
+                            noSecurityCheck=False):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(None, self, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.first.title.lower())
-        return sorted(getRelations(first=parent, second=self, relationships=relationships),
-                      key=sort)
+        rels = (r for r in getRelations(parent, self, relationships=relationships)
+                  if canListObject(r.first, noSecurityCheck))
+        return sorted(rels, key=sort)
 
-    def getParents(self, predicates=None, sort='default'):
-        return [r.first for r in self.getParentRelations(predicates, sort=sort)]
+    def getParents(self, predicates=None, sort='default', noSecurityCheck=False):
+        return [r.first for r in self.getParentRelations(predicates, sort=sort,
+                                                noSecurityCheck=noSecurityCheck)]
 
     def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
         if predicate is None:
@@ -194,6 +203,7 @@ class Concept(Contained, Persistent):
             rel.relevance = relevance
         # TODO (?): avoid duplicates
         registry.register(rel)
+        notify(AssignmentEvent(self, rel))
 
     def setChildren(self, predicate, concepts):
         existing = self.getChildren([predicate])
@@ -211,6 +221,7 @@ class Concept(Contained, Persistent):
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getChildRelations(predicates, child):
             if order is None or rel.order == order:
+                notify(DeassignmentEvent(self, rel))
                 registry.unregister(rel)
 
     def deassignParent(self, parent, predicates=None):
@@ -218,17 +229,19 @@ class Concept(Contained, Persistent):
 
     # resource relations
 
-    def getResourceRelations(self, predicates=None, resource=None, sort='default'):
+    def getResourceRelations(self, predicates=None, resource=None, sort='default',
+                             noSecurityCheck=False):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.second.title.lower())
-        return sorted(getRelations(
-                        first=self, second=resource, relationships=relationships),
-                      key=sort)
+        rels = (r for r in getRelations(self, resource, relationships=relationships)
+                  if canListObject(r.second, noSecurityCheck))
+        return sorted(rels, key=sort)
 
-    def getResources(self, predicates=None):
-        return [r.second for r in self.getResourceRelations(predicates)]
+    def getResources(self, predicates=None, sort='default', noSecurityCheck=False):
+        return [r.second for r in self.getResourceRelations(predicates, sort=sort,
+                                                noSecurityCheck=noSecurityCheck)]
 
     def assignResource(self, resource, predicate=None, order=0, relevance=1.0):
         if predicate is None:
@@ -241,12 +254,27 @@ class Concept(Contained, Persistent):
             rel.relevance = relevance
         # TODO (?): avoid duplicates
         registry.register(rel)
+        notify(AssignmentEvent(self, rel))
 
-    def deassignResource(self, resource, predicates=None):
+    def deassignResource(self, resource, predicates=None, order=None):
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getResourceRelations(predicates, resource):
-            registry.unregister(rel)
+            if order is None or rel.order == order:
+                notify(DeassignmentEvent(self, rel))
+                registry.unregister(rel)
 
+    # combined children+resources query
+
+    def getChildAndResourceRelations(self, predicates=None, sort='default'):
+        if predicates is None:
+            predicates = [self.getConceptManager().getDefaultPredicate()]
+        relationships = ([ResourceRelation(self, None, p) for p in predicates]
+                       + [ConceptRelation(None, self, p) for p in predicates])
+        if sort == 'default':
+            sort = lambda x: (x.order, x.second.title.lower())
+        rels = (r for r in getRelations(self, child, relationships=relationships)
+                  if canListObject(r.second))
+        return sorted(rels, key=sort)
 
 # concept manager
 
@@ -360,3 +388,22 @@ class IndexAttributes(object):
         return ' '.join((getName(context),
                          context.title, context.description)).strip()
 
+
+# events
+
+class AssignmentEvent(ObjectEvent):
+
+    implements(IAssignmentEvent)
+
+    def __init__(self, obj, relation):
+        super(AssignmentEvent, self).__init__(obj)
+        self.relation = relation
+
+
+class DeassignmentEvent(ObjectEvent):
+
+    implements(IDeassignmentEvent)
+
+    def __init__(self, obj, relation):
+        super(DeassignmentEvent, self).__init__(obj)
+        self.relation = relation

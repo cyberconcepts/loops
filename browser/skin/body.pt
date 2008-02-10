@@ -10,6 +10,11 @@
 
 
     <metal:footer fill-slot="footer">
+      <div tal:condition="view/editable">
+        <span i18n:translate="">For quick creation of notes/links bookmark this link</span>:
+        <a href="#"
+           tal:attributes="href view/popupCreateObjectForm">Create loops Note</a>
+      </div>
       Powered by <b><a href="http://www.python.org">Python</a></b> &middot;
       <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
       <b><a href="http://loops.cy55.de">loops</a></b>.

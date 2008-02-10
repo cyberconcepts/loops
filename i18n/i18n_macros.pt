@@ -1,8 +1,10 @@
 <!-- $Id$ -->
 
 <metal:actions define-macro="language_switch"
-               tal:define="langInfo view/languageInfo">
-    <tal:lang repeat="lang langInfo/availableLanguages">
+               tal:define="langInfo view/languageInfo;
+                           available langInfo/availableLanguages"
+               tal:condition="python: len(available) > 1">
+    <tal:lang repeat="lang available">
       <a href="#"
          tal:attributes="href string:switch_language?loops.language=$lang&keep=yes;
                          title lang"><img src="us.gif"

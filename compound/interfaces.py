@@ -28,13 +28,14 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from loops.interfaces import IConceptSchema
 from loops.util import _
 
 
 compoundPredicateName = 'ispartof'
 
 
-class ICompound(Interface):
+class ICompound(IConceptSchema):
     """ A compound is a concept that is built up of other objects, its
         parts or components.
 

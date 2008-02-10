@@ -4,11 +4,11 @@
                    idPrefix string:${view/itemNum}.search;
                    formId string:$idPrefix.form;
                    resultsId string:$idPrefix.results">
-    <h3 tal:attributes="class string:content-$level;
+    <h1 tal:attributes="class string:content-$level;
                         ondblclick item/openEditWindow"
       tal:content="item/title">
       Search
-    </h3>
+    </h1>
 
     <div metal:define-macro="search_form" class="searchForm">
       <fieldset class="box">
@@ -46,7 +46,7 @@
          i18n:domain="loops">
       <fieldset class="box"
                 tal:condition="request/search.submitted | nothing">
-        <legend i18n:translate="">Search results</legend>
+        <h2 i18n:translate="">Search results</h2>
         <table class="listing" summary="Search results"
                i18n:attributes="summary">
           <thead>
@@ -113,7 +113,7 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3 i18n:translate="">Type(s) to search for</h3>
+      <h2 i18n:translate="">Type(s) to search for</h2>
     </td>
   <tr>
     <td></td>
@@ -144,7 +144,7 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3 i18n:translate="">Text-based search</h3>
+      <h2 i18n:translate="">Text-based search</h2>
     </td>
   <tr>
     <td></td>
@@ -185,7 +185,7 @@
   <tr>
     <td metal:use-macro="macros/minus"/>
     <td colspan="3">
-      <h3 i18n:translate="">Search via related concepts</h3>
+      <h2 i18n:translate="">Search via related concepts</h2>
     </td>
   <tr tal:repeat="type item/presetSearchTypes">
     <tal:preset define="rowNum item/rowNum;
@@ -249,10 +249,14 @@
     </td>
     <td>
       <tal:combo tal:define="dummy item/initDojo">
-        <input dojoType="comboBox" mode="remote" autoComplete="False"
+        <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+             url="listConceptsForComboBox.js?searchType=" >
+        </div>
+        <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
+               autoComplete="False" labelAttr="label"
+               name="concept.search.text" id="concept.search.text"
                tal:attributes="name string:$namePrefix.text;
-                               id string:$idPrefix.text;
-                               dataUrl string:${context/@@absolute_url}/listConceptsForComboBox.js?searchString=%{searchString}&searchType=" />
+                               id string:$idPrefix.text" />
       </tal:combo>
     </td>
   </tr>

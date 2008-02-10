@@ -44,16 +44,17 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
+from cybertools.browser.action import Action
 from cybertools.browser.view import GenericView
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
+from loops.browser.action import DialogAction
 from loops.i18n.browser import i18n_macros
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
 from loops import util
 from loops.util import _
-from loops.browser.action import Action, DialogAction, TargetAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.versioning.util import getVersion
@@ -65,8 +66,8 @@ node_macros = ViewPageTemplateFile('node_macros.pt')
 class NodeView(BaseView):
 
     _itemNum = 0
-
     template = node_macros
+    nextUrl = None
 
     def __init__(self, context, request):
         super(NodeView, self).__init__(context, request)
@@ -80,23 +81,31 @@ class NodeView(BaseView):
     def setupController(self):
         cm = self.controller.macros
         cm.register('css', identifier='loops.css', resourceName='loops.css',
-                    media='all', position=3)
-        cm.register('js', 'loops.js', resourceName='loops.js')
-        #cm.register('js', 'loops.js', resourceName='loops1.js')
+                    media='all', priority=60)
+        cm.register('js', 'loops.js', resourceName='loops.js', priority=60)
         cm.register('top_actions', 'top_actions', name='multi_actions',
                     subMacros=[i18n_macros.macros['language_switch']])
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
-        #if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
         if canWrite(self.context, 'title'):
             #cm.register('portlet_right', 'clipboard', title='Clipboard',
             #            subMacro=self.template.macros['clipboard'])
-            # this belongs to loops.organize; how to register portlets
-            # from sub- (other) packages?
-            # see controller / configurator: use multiple configurators;
-            # register additional configurators (adapters) from within package.
+            # this belongs to loops.organize
             cm.register('portlet_right', 'actions', title=_(u'Actions'),
-                        subMacro=node_macros.macros['actions'])
+                        subMacro=node_macros.macros['actions'],
+                        priority=100)
+        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            mi = self.controller.memberInfo
+            title = mi.title.value or _(u'Personal Informations')
+            obj = mi.get('object')
+            url = obj is not None and self.getUrlForTarget(obj.value) or None
+            cm.register('portlet_right', 'personal', title=title,
+                        subMacro=node_macros.macros['personal'],
+                        icon='cybertools.icons/user.png',
+                        url=url,
+                        priority=10)
+        # force early portlet registrations by target by setting up target view
+        self.virtualTarget
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
 
@@ -117,7 +126,7 @@ class NodeView(BaseView):
         #target = self.virtualTargetObject  # ignores page even for direktly assignd target
         target = self.request.annotations.get('loops.view', {}).get('target')
         if target is not None:
-            basicView = zapi.getMultiAdapter((target, self.request), name=viewName)
+            basicView = component.getMultiAdapter((target, self.request), name=viewName)
             # xxx: obsolete when self.targetObject is virtual target:
             return basicView.view
         return self.page
@@ -154,7 +163,7 @@ class NodeView(BaseView):
         if text.startswith('<'):  # seems to be HTML
             return text
         source = zapi.createObject(self.context.contentType, text)
-        view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
+        view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
     @Lazy
@@ -170,7 +179,7 @@ class NodeView(BaseView):
     def targetObjectView(self):
         obj = self.targetObject
         if obj is not None:
-            basicView = zapi.getMultiAdapter((obj, self.request))
+            basicView = component.getMultiAdapter((obj, self.request))
             basicView._viewName = self.context.viewName
             return basicView.view
 
@@ -315,7 +324,7 @@ class NodeView(BaseView):
     def virtualTarget(self):
         obj = self.virtualTargetObject
         if obj is not None:
-            basicView = zapi.getMultiAdapter((obj, self.request))
+            basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
                 basicView._viewName = self.context.viewName
             return basicView.view
@@ -376,8 +385,6 @@ class NodeView(BaseView):
 
     actions = dict(portlet=getPortletActions)
 
-    nextUrl = None
-
     @Lazy
     def popupCreateObjectForm(self):
         return ("javascript:function%%20openDialog(url){"
@@ -401,10 +408,18 @@ class NodeView(BaseView):
     def inlineEdit(self, id):
         self.registerDojo()
         cm = self.controller.macros
-        jsCall = 'dojo.require("dojo.widget.Editor")'
+        jsCall = 'dojo.require("dijit.Editor")'
         cm.register('js-execute', jsCall, jsCall=jsCall)
         return ('return inlineEdit("%s", "%s/inline_save")'
                                         % (id, self.virtualTargetUrl))
+
+    def checkRTE(self):
+        target = self.virtualTarget
+        if target and target.inlineEditable:
+            self.registerDojo()
+            cm = self.controller.macros
+            jsCall = 'dojo.require("dijit.Editor")'
+            cm.register('js-execute', jsCall, jsCall=jsCall)
 
     def externalEdit(self):
         target = self.virtualTargetObject
@@ -423,7 +438,7 @@ class NodeView(BaseView):
     def registerDojoDialog(self):
         self.registerDojo()
         cm = self.controller.macros
-        jsCall = 'dojo.require("dojo.widget.Dialog")'
+        jsCall = 'dojo.require("dijit.Dialog")'
         cm.register('js-execute', jsCall, jsCall=jsCall)
 
 
@@ -527,7 +542,7 @@ class ConfigureView(NodeView):
     def target(self):
         obj = self.targetObject
         if obj is not None:
-            return zapi.getMultiAdapter((obj, self.request))
+            return component.getMultiAdapter((obj, self.request))
 
     def update(self):
         request = self.request
@@ -604,7 +619,7 @@ class ConfigureView(NodeView):
                 else:
                     start = end = searchType
                 criteria['loops_type'] = (start, end)
-            cat = zapi.getUtility(ICatalog)
+            cat = component.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
             # TODO: can this be done in a faster way?
             result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
@@ -664,7 +679,7 @@ class ViewPropertiesConfigurator(object):
     options = property(getOptions, setOptions)
 
 
-class NodeViewConfigurator(configurator.ViewConfigurator):
+class NodeViewConfigurator(configurator.AnnotationViewConfigurator):
     """ Take properties from next menu item...
     """
 

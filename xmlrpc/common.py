@@ -162,7 +162,7 @@ def objectAsDict(obj, langInfo=None):
                'title': adapter.title, 'description': adapter.description,
                'type': getUidForObject(objType.typeProvider)}
     ti = objType.typeInterface
-    if ti is not None:
+    if ti is not None and adapter != obj:
         #for attr in (list(adapter._adapterAttributes) + list(ti)):
         for attr in list(ti):
             if attr not in ('__parent__', 'context', 'id', 'name',

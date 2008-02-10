@@ -88,7 +88,6 @@ class LoopsType(BaseType):
         addQualifiers = self.optionsDict.get('qualifier')
         if addQualifiers:
             qu.extend(addQualifiers.split(','))
-        # how to set a type to 'hidden'?
         return tuple(qu)
 
     @Lazy
@@ -112,14 +111,7 @@ class LoopsType(BaseType):
 
     @Lazy
     def optionsDict(self):
-        result = {'default': []}
-        for opt in self.options:
-            if ':' in opt:
-                key, value = opt.split(':', 1)
-                result[key] = value
-            else:
-                result['default'].append(opt)
-        return result
+        return getOptionsDict(self.options)
 
     # general infos
 
@@ -291,3 +283,13 @@ class TypeInterfaceSourceList(object):
     def __len__(self):
         return len(self.typeInterfaces)
 
+
+def getOptionsDict(options):
+    result = {'default': []}
+    for opt in options:
+        if ':' in opt:
+            key, value = opt.split(':', 1)
+            result[key] = value
+        else:
+            result['default'].append(opt)
+    return result

@@ -48,6 +48,7 @@ class VersionableResource(object):
 
     def __init__(self, context):
         self.context = context
+        self.__parent__ = context
 
     def getVersioningAttribute(self, attr, default):
         attrName = attrPattern % attr

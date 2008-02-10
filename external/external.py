@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ from loops.view import Node
 
 
 # import/export interfaces (for adapters)
-    
+
 class IExternalContentSource(Interface):
     """ Provides content from an external source.
     """
@@ -112,7 +112,7 @@ class NodesExporter(object):
         for child in self.context.values():
             self.extractNodeData(child, '', data)
         return data
-    
+
     def extractNodeData(self, item, path, data):
         name = zapi.getName(item)
         data.append({
@@ -126,7 +126,7 @@ class NodesExporter(object):
         path = path and '%s/%s' % (path, name) or name
         for child in item.values():
             self.extractNodeData(child, path, data)
-        
+
 
     def dumpData(self, file=None, noclose=False):
         if file is None:
@@ -147,7 +147,7 @@ class NodesImporter(object):
 
     def __init__(self, context):
         self.context = context
-    
+
     def getData(self, file=None):
         if file is None:
             file = open(self.filename, 'r')

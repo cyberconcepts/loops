@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,11 @@ from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
+from cybertools.browser.action import actions
+from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.jeep import Jeep
 from loops.browser.common import EditForm, BaseView, LoopsTerms, conceptMacrosTemplate
 from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
@@ -56,8 +60,14 @@ from loops.versioning.util import getVersion
 
 
 class ConceptEditForm(EditForm, I18NView):
+    """ Classic-style (zope.formlib-based) form for editing concepts.
+    """
 
-    @Lazy
+    #@Lazy  # zope.formlib does not issue a redirect after changes, so that
+            # it tries to redisplay the old form even after a type change that
+            # changes the set of available attributes. So the typeInterface
+            # must be recalculated e.g. after an update of the context object.
+    @property
     def typeInterface(self):
         return IType(self.context).typeInterface
 
@@ -79,7 +89,8 @@ class ConceptEditForm(EditForm, I18NView):
 
     def setUpWidgets(self, ignore_request=False):
         # TODO: get rid of removeSecurityProxy(): use ConceptSchema in interfaces
-        adapter = removeSecurityProxy(adapted(self.context, self.languageInfo))
+        #adapter = removeSecurityProxy(adapted(self.context, self.languageInfo))
+        adapter = adapted(self.context, self.languageInfo)
         self.adapters = {self.typeInterface: adapter,
                          IConceptSchema: adapter}
         self.widgets = setUpEditWidgets(
@@ -89,9 +100,87 @@ class ConceptEditForm(EditForm, I18NView):
         if desc:
             desc.height = 2
 
+
+class ConceptRelationView(BaseView):
+    """ For displaying children and resources lists, used by ConceptView.
+    """
+
+    def __init__(self, relation, request, contextIsSecond=False):
+        if contextIsSecond:
+            self.context = relation.second
+            self.other = relation.first
+        else:
+            self.context = relation.first
+            self.other = relation.second
+        self.context = getVersion(self.context, request)
+        self.predicate = relation.predicate
+        self.relation = relation
+        self.request = request
+
+    @Lazy
+    def adapted(self):
+        return adapted(self.context, self.languageInfo)
+
+    @Lazy
+    def data(self):
+        return self.instance.applyTemplate()
+
+    @Lazy
+    def instance(self):
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
+
+    @Lazy
+    def schema(self):
+        ti = self.typeInterface or IConceptSchema
+        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        return schemaFactory(ti, manager=self, request=self.request)
+
+    @Lazy
+    def title(self):
+        return self.adapted.title or getName(self.context)
+
+    @Lazy
+    def description(self):
+        return self.adapted.description
+
+    @Lazy
+    def token(self):
+        return ':'.join((self.loopsRoot.getLoopsUri(self.context),
+                         self.loopsRoot.getLoopsUri(self.predicate)))
+
+    @Lazy
+    def uidToken(self):
+        return ':'.join((util.getUidForObject(self.context),
+                         util.getUidForObject(self.predicate)))
+
+    @Lazy
+    def isProtected(self):
+        return getName(self.predicate) == 'hasType'
+
+    @Lazy
+    def predicateTitle(self):
+        return self.predicate.title
+
+    @Lazy
+    def predicateUrl(self):
+        return zapi.absoluteURL(self.predicate, self.request)
+
+    @Lazy
+    def relevance(self):
+        return self.relation.relevance
+
+    @Lazy
+    def order(self):
+        return self.relation.order
+
+
 class ConceptView(BaseView):
 
     template = ViewPageTemplateFile('concept_macros.pt')
+    childViewFactory = ConceptRelationView
 
     @Lazy
     def macro(self):
@@ -108,7 +197,7 @@ class ConceptView(BaseView):
                                                     self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
                          subMacro=self.template.macros['parents'],
-                         position=0, info=self)
+                         priority=20, info=self)
 
     @Lazy
     def adapted(self):
@@ -123,7 +212,8 @@ class ConceptView(BaseView):
         return self.adapted.description
 
     def fieldData(self):
-        # TODO: use cybertools.composer.schema.instance, see loops.browser.form
+        # obsolete - use getData() instead
+        # TODO: change view macros accordingly
         ti = IType(self.context).typeInterface
         if not ti:
             return
@@ -140,12 +230,35 @@ class ConceptView(BaseView):
             widget.setRenderedValue(value)
             yield dict(title=f.title, value=value, id=n, widget=widget)
 
-    def children(self, topLevelOnly=True, sort=True):
+    def getData(self, omit=('title', 'description')):
+        data = self.instance.applyTemplate()
+        for k in omit:
+            if k in data:
+                del data[k]
+        return data
+
+    @Lazy
+    def data(self):
+        return self.getData()
+
+    @Lazy
+    def instance(self):
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
+
+    @Lazy
+    def schema(self):
+        ti = self.typeInterface or IConceptSchema
+        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        return schemaFactory(ti, manager=self, request=self.request)
+
+    def getChildren(self, topLevelOnly=True, sort=True):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         standard = cm.getDefaultPredicate()
-        #rels = self.context.getChildRelations()
-        rels = (ConceptRelationView(r, self.request, contextIsSecond=True)
+        rels = (self.childViewFactory(r, self.request, contextIsSecond=True)
                 for r in self.context.getChildRelations(sort=None))
         if sort:
             rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
@@ -160,27 +273,37 @@ class ConceptView(BaseView):
                 if skip: continue
             yield r
 
+    # Override in subclass to control what is displayd in listings:
+    children = getChildren
+
     def childrenAlphaGroups(self):
-        letters = []
-        relations = {}
-        rels = self.children(topLevelOnly=False, sort=False)
+        result = Jeep()
+        rels = self.getChildren(topLevelOnly=False, sort=False)
         rels = sorted(rels, key=lambda r: r.title.lower())
         for letter, group in groupby(rels, lambda r: r.title.lower()[0]):
             letter = letter.upper()
-            letters.append(letter)
-            relations[letter] = list(group)
-        return dict(letters=letters, relations=relations)
+            result[letter] = list(group)
+        return result
+
+    def childrenByType(self):
+        result = Jeep()
+        rels = self.getChildren(topLevelOnly=False, sort=False)
+        rels = sorted(rels, key=lambda r: (r.typeTitle.lower(), r.title.lower()))
+        for type, group in groupby(rels, lambda r: r.type):
+            typeName = getName(type.typeProvider)
+            result[typeName] = list(group)
+        return result
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
                       key=(lambda x: x.first.title.lower()))
         for r in rels:
-            yield ConceptRelationView(r, self.request)
+            yield self.childViewFactory(r, self.request)
 
     def resources(self):
         rels = self.context.getResourceRelations()
         for r in rels:
-            yield ConceptRelationView(r, self.request, contextIsSecond=True)
+            yield self.childViewFactory(r, self.request, contextIsSecond=True)
 
     @Lazy
     def view(self):
@@ -212,6 +335,14 @@ class ConceptView(BaseView):
         from loops.browser.node import NodeView  # avoid circular import
         for node in self.context.getClients():
             yield NodeView(node, self.request)
+
+    def getActions(self, category='object', page=None):
+        t = IType(self.context)
+        actInfo = t.optionsDict.get('action.' + category, '')
+        actNames = [n.strip() for n in actInfo.split(',')]
+        if actNames:
+            return actions.get(category, actNames, view=self, page=page)
+        return []
 
 
 class ConceptConfigureView(ConceptView):
@@ -321,7 +452,7 @@ class ConceptConfigureView(ConceptView):
                 else:
                     start = end = searchType
                 criteria['loops_type'] = (start, end)
-            cat = zapi.getUtility(ICatalog)
+            cat = component.getUtility(ICatalog)
             result = cat.searchResults(**criteria)
             # TODO: can this be done in a faster way?
             result = [r for r in result if r.getLoopsRoot() == self.loopsRoot]
@@ -333,64 +464,8 @@ class ConceptConfigureView(ConceptView):
 
     def predicates(self):
         preds = PredicateSourceList(self.context)
-        terms = zapi.getMultiAdapter((preds, self.request), ITerms)
+        terms = component.getMultiAdapter((preds, self.request), ITerms)
         for pred in preds:
             yield terms.getTerm(pred)
 
-
-class ConceptRelationView(BaseView):
-
-    def __init__(self, relation, request, contextIsSecond=False):
-        if contextIsSecond:
-            self.context = relation.second
-            self.other = relation.first
-        else:
-            self.context = relation.first
-            self.other = relation.second
-        self.context = getVersion(self.context, request)
-        self.predicate = relation.predicate
-        self.relation = relation
-        self.request = request
-
-    @Lazy
-    def adapted(self):
-        return adapted(self.context, self.languageInfo)
-
-    @Lazy
-    def title(self):
-        return self.adapted.title or getName(self.context)
-
-    @Lazy
-    def description(self):
-        return self.adapted.description
-
-    @Lazy
-    def token(self):
-        return ':'.join((self.loopsRoot.getLoopsUri(self.context),
-                         self.loopsRoot.getLoopsUri(self.predicate)))
-
-    @Lazy
-    def uidToken(self):
-        return ':'.join((util.getUidForObject(self.context),
-                         util.getUidForObject(self.predicate)))
-
-    @Lazy
-    def isProtected(self):
-        return zapi.getName(self.predicate) == 'hasType'
-
-    @Lazy
-    def predicateTitle(self):
-        return self.predicate.title
-
-    @Lazy
-    def predicateUrl(self):
-        return zapi.absoluteURL(self.predicate, self.request)
-
-    @Lazy
-    def relevance(self):
-        return self.relation.relevance
-
-    @Lazy
-    def order(self):
-        return self.relation.order
 

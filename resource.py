@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ Definition of the Concept class.
 $Id$
 """
 
+from cStringIO import StringIO
+from persistent import Persistent
 from zope import component, schema
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -38,9 +40,6 @@ from zope.interface import implements
 from zope.size.interfaces import ISized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
-from persistent import Persistent
-from cStringIO import StringIO
-
 from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 from zope.event import notify
 
@@ -50,7 +49,6 @@ from cybertools.storage.interfaces import IExternalStorage
 from cybertools.text.interfaces import ITextTransform
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
-
 from loops.base import ParentInfo
 from loops.common import ResourceAdapterBase, adapted
 from loops.concept import ResourceRelation
@@ -62,6 +60,7 @@ from loops.interfaces import IResourceManager, IResourceManagerContained
 from loops.interfaces import ITypeConcept
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
+from loops.security.common import canListObject
 from loops import util
 from loops.versioning.util import getMaster
 from loops.view import TargetRelation
@@ -189,20 +188,24 @@ class Resource(Image, Contained):
             relationships = [TargetRelation]
         obj = getMaster(self)  # use the master version for relations
         rels = getRelations(second=obj, relationships=relationships)
-        return [r.first for r in rels]
+        return [r.first for r in rels if canListObject(r.first)]
 
-    def getConceptRelations (self, predicates=None, concept=None, sort='default'):
+    def getConceptRelations (self, predicates=None, concept=None, sort='default',
+                             noSecurityCheck=False):
         predicates = predicates is None and ['*'] or predicates
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.first.title.lower())
-        return sorted(getRelations(first=concept, second=obj, relationships=relationships),
-                            key=sort)
+        rels = (r for r in getRelations(first=concept, second=obj,
+                                        relationships=relationships)
+                  if canListObject(r.first, noSecurityCheck))
+        return sorted(rels, key=sort)
 
-    def getConcepts(self, predicates=None):
+    def getConcepts(self, predicates=None, noSecurityCheck=False):
         obj = getMaster(self)
-        return [r.first for r in obj.getConceptRelations(predicates)]
+        return [r.first for r in obj.getConceptRelations(predicates,
+                                                noSecurityCheck=noSecurityCheck)]
 
     def assignConcept(self, concept, predicate=None, order=0, relevance=1.0):
         obj = getMaster(self)
@@ -372,6 +375,8 @@ class ExternalFileAdapter(FileAdapter):
         self.storageName = storageName
 
     def getData(self):
+        if self.storageName == 'unknown':    # object not set up yet
+            return ''
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         return storage.getData(self.externalAddress, params=self.storageParams)
 

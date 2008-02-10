@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
 from cStringIO import StringIO
 
-from loops.external import IExternalContentSource
-from loops.external import ILoader, IExporter
+from loops.external.external import IExternalContentSource
+from loops.external.external import ILoader, IExporter
 
 
 class NodesExportImport(object):
@@ -38,7 +38,8 @@ class NodesExportImport(object):
     """
 
     def __init__(self, context, request):
-        self.context = removeSecurityProxy(context)
+        #self.context = removeSecurityProxy(context)
+        self.context = context
         self.request = request
         self.message = u''
 

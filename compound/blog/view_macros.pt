@@ -1,0 +1,71 @@
+<!-- ZPT macros for loops.knowledge.glossary views
+     $Id$ -->
+
+<metal:block define-macro="blog">
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <div tal:repeat="related item/blogPosts"
+           class="blog">
+    <tal:child define="data related/data">
+      <h1 class="headline">
+        <a href="#"
+           tal:content="related/title"
+           tal:attributes="href python: view.getUrlForTarget(related);">Post</a>
+      </h1>
+      <div class="info"
+           tal:define="url data/creatorUrl|nothing">
+        <span tal:content="data/date">2008-01-02</span> /
+        <a tal:omit-tag="not:url"
+           tal:content="data/creator"
+           tal:attributes="href url">Will Smith</a>
+      </div>
+      <div class="description"
+           tal:define="description data/description"
+           tal:condition="description">
+        <span tal:content="structure python:
+                item.renderText(description, 'text/restructured')">Description</span></div>
+      <div class="text"
+           tal:condition="nothing"
+           xtal:condition="python: repeat['related'].index() < 3">
+        <span tal:content="structure python:
+                item.renderText(data['text'], related.adapted.textContentType)"></span>
+      </div>
+    </tal:child>
+  </div>
+  <metal:resources use-macro="item/conceptMacros/conceptchildren" />
+  <metal:resources use-macro="item/conceptMacros/conceptresources" />
+</metal:block>
+
+
+<div metal:define-macro="blogpost"
+     tal:define="data item/data"
+     class="blogpost">
+  <h1 tal:attributes="ondblclick item/openEditWindow">
+    <span tal:content="item/title">Title</span>
+  </h1>
+  <div class="info"
+       tal:define="url data/creatorUrl|nothing">
+    <span tal:content="data/date">2008-01-02</span> /
+    <a tal:omit-tag="not:url"
+       tal:content="data/creator"
+       tal:attributes="href url">Will Smith</a>
+    <span tal:condition="item/adapted/private">
+      (<span i18n:translate="">Private</span>)
+    </span>
+  </div>
+  <div class="description"
+       tal:define="description description|item/description"
+       tal:condition="description">
+    <span tal:content="structure python:
+                item.renderText(description, 'text/restructured')">Description</span>
+  </div>
+  <div class="text"
+       tal:content="structure item/render">Here comes the text...</div>
+  <div class="comment"
+       tal:define="comment data/privateComment"
+       tal:condition="comment">
+    <h4 i18n:translate="" class="headline">Private Comment</h4>
+    <div tal:content="structure python:
+                item.renderText(comment, 'text/restructured')">Comment</div></div>
+  <metal:resources use-macro="item/conceptMacros/conceptchildren" />
+  <metal:resources use-macro="item/conceptMacros/conceptresources" />
+</div>

@@ -32,7 +32,7 @@ configuration):
   >>> #sorted(concepts)
   >>> #sorted(resources)
   >>> len(concepts) + len(resources)
-  35
+  38
 
 
 Type- and Text-based Queries
@@ -41,11 +41,11 @@ Type- and Text-based Queries
   >>> from loops.expert import query
   >>> qu = query.Title('ty*')
   >>> list(qu.apply())
-  [0, 1, 41]
+  [0, 1, 50]
 
   >>> qu = query.Type('loops:*')
   >>> len(list(qu.apply()))
-  35
+  38
 
   >>> qu = query.Type('loops:concept:predicate')
   >>> len(list(qu.apply()))
@@ -67,7 +67,7 @@ syntax (that in turn is based on hurry.query).
   >>> stateNew = concepts['new']
   >>> qu = query.Resources(stateNew)
   >>> list(qu.apply())
-  [57, 62]
+  [66, 71]
 
 
 Fin de partie

@@ -1,8 +1,8 @@
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-          <metal:fields use-macro="item/template/macros/concepttitle" /><br />
-          <metal:fields use-macro="item/template/macros/conceptfields" /><br />
-          <metal:fields use-macro="item/template/macros/conceptchildren" /><br />
+          <metal:fields use-macro="item/template/macros/concepttitle" />
+          <metal:fields use-macro="item/template/macros/conceptfields" />
+          <metal:fields use-macro="item/template/macros/conceptchildren" />
           <metal:fields use-macro="item/template/macros/conceptresources" />
   </div>
 </metal:data>
@@ -10,7 +10,8 @@
 
 <metal:title define-macro="concepttitle">
     <h1 tal:attributes="ondblclick item/openEditWindow">
-      <span tal:content="item/title">Title</span>
+      <a name="top"
+         tal:content="item/title">Title</a>
     </h1>
       <p tal:define="description description|item/description"
          tal:condition="description">
@@ -19,13 +20,16 @@
 
 
 <metal:fields define-macro="conceptfields">
+  <fieldset class="box"
+            tal:define="data python: list(item.fieldData())"
+            tal:condition="data">
     <table tal:attributes="ondblclick item/openEditWindow">
-      <tr tal:repeat="field item/fieldData">
-        <td><span tal:content="field/title"
-                  i18n:translate="" />:</td>
+      <tr tal:repeat="field data">
+        <td><b tal:content="field/title" i18n:translate="" />:</td>
         <td tal:content="structure field/widget"></td>
       </tr>
     </table>
+  </fieldset>
 </metal:fields>
 
 
@@ -47,7 +51,7 @@
                            ondblclick python: item.openEditWindow('configure.html')"
            tal:define="children python: list(item.children())"
            tal:condition="children">
-        <h2 i18n:translate="">Children</h2><br />
+        <h2 i18n:translate="">Children</h2>
         <table class="listing">
           <tr>
             <th i18n:translate="">Title</th>
@@ -81,7 +85,7 @@
                            ondblclick python: item.openEditWindow('resources.html')"
            tal:define="resources python: list(item.resources())"
            tal:condition="resources">
-        <h2 i18n:translate="">Resources</h2><br />
+        <h2 i18n:translate="">Resources</h2>
         <table class="listing">
           <tr>
             <th i18n:translate="">Title</th>

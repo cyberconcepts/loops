@@ -593,7 +593,7 @@ Actions
   >>> request = TestRequest()
   >>> view = NodeView(m112, request)
   >>> view.controller = Controller(view, request)
-  >>> view.setupController()
+  >>> #view.setupController()
 
   >>> actions = view.getActions('portlet')
   >>> len(actions)
@@ -758,7 +758,7 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkUrl textline False None
 
   >>> view.data
-  {'linkUrl': u'', 'contentType': u'', 'data': u'',
+  {'linkUrl': u'http://', 'contentType': 'text/restructured', 'data': u'',
    'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for

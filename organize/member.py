@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,10 +36,13 @@ from zope.i18nmessageid import MessageFactory
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from loops.interfaces import ILoops
+from loops.common import adapted
 from loops.concept import Concept
+from loops.interfaces import ILoops
 from loops.organize.interfaces import IMemberRegistrationManager
-from loops.organize.util import getPrincipalFolder, authPluginId, getInternalPrincipal
+from loops.organize.util import getPrincipalFolder, getGroupsFolder
+from loops.organize.util import getInternalPrincipal
+from loops.type import getOptionsDict
 from loops.util import _
 
 
@@ -51,29 +54,54 @@ class MemberRegistrationManager(object):
     def __init__(self, context):
         self.context = context
 
-    def register(self, userId, password, lastName, firstName=u'', **kw):
+    def register(self, userId, password, lastName, firstName=u'',
+                 groups=[], useExisting=False, **kw):
         # step 1: create an internal principal in the loops principal folder:
         pFolder = getPrincipalFolder(self.context)
         title = firstName and ' '.join((firstName, lastName)) or lastName
         principal = InternalPrincipal(userId, password, title)
-        pFolder[userId] = principal
-        # step 2: create a corresponding person concept:
+        if useExisting:
+            if userId not in pFolder:
+                pFolder[userId] = principal
+        else:
+            pFolder[userId] = principal
+        # step 2 (optional): assign to group(s)
+        personType = self.context.getLoopsRoot().getConceptManager()['person']
+        od = getOptionsDict(adapted(personType).options)
+        groupInfo = od.get('group')
+        if groupInfo:
+            gfName, groupNames = groupInfo.split(':')
+            gFolder = getGroupsFolder(gfName)
+            if not groups:
+                groups = groupNames.split(',')
+        else:
+            gFolder = getGroupsFolder()
+        if gFolder is not None:
+            for g in groups:
+                group = gFolder.get(g)
+                if group is not None:
+                    members = list(group.principals)
+                    members.append(pFolder.prefix + userId)
+                    group.principals = members
+        # step 3: create a corresponding person concept:
         cm = self.context.getConceptManager()
         id = baseId = 'person.' + userId
         # TODO: use NameChooser
-        num = 0
-        while id in cm:
-            num +=1
-            id = baseId + str(num)
-        person = cm[id] = Concept(title)
-        # TODO: the name of the person type object must be kept flexible!
-        # So we have to search for a type concept that has IPerson as
-        # its typeInterface...
+        if useExisting and id in cm:
+            person = cm[id]
+        else:
+            num = 0
+            while id in cm:
+                num +=1
+                id = baseId + str(num)
+            person = cm[id] = Concept(title)
         person.conceptType = cm['person']
-        personAdapter = IType(person).typeInterface(person)
+        personAdapter = adapted(person)
         personAdapter.firstName = firstName
         personAdapter.lastName = lastName
-        personAdapter.userId = '.'.join((authPluginId, userId))
+        personAdapter.userId = pFolder.prefix + userId
+        for k, v in kw.items():
+            setattr(personAdapter, k, v)
         notify(ObjectCreatedEvent(person))
         notify(ObjectModifiedEvent(person))
         return personAdapter

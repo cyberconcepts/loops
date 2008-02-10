@@ -9,43 +9,14 @@
 
   <!-- security definitions -->
 
-  <permission
-      id="loops.xmlrpc.ManageConcepts"
-      title="[loops-xmlrpc-manage-concepts-permission] loops: Manage Concepts (XML-RPC)"
-      />
-
-  <role
-      id="loops.xmlrpc.ConceptManager"
-      title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
-
-  <grant
-      permission="loops.xmlrpc.ManageConcepts"
-      role="loops.xmlrpc.ConceptManager" />
-
-  <permission
-      id="loops.ManageSite"
-      title="[loops-manage-site-permission] loops: Manage Site"
-      />
-
-  <role
-      id="loops.SiteManager"
-      title="[loops-manage-site-role] loops: Site Manager" />
-
-  <grant
-      permission="loops.ManageSite"
-      role="loops.SiteManager" />
-
-  <grant
-      permission="loops.xmlrpc.ManageConcepts"
-      role="loops.SiteManager" />
+  <include file="security.zcml" />
 
   <!-- event subscribers -->
 
   <subscriber
         for=".interfaces.ITargetRelation
              cybertools.relation.interfaces.IRelationInvalidatedEvent"
-        handler=".util.removeTargetRelation"
-        />
+        handler=".util.removeTargetRelation" />
 
   <!-- loops top-level container -->
 
@@ -120,22 +91,22 @@
       type="zope.app.content.interfaces.IContentType" />
 
   <class class=".concept.Concept">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <factory id="loops.Concept" description="Concept object" />
+    <require permission="zope.View" interface=".interfaces.IConcept" />
+    <require permission="zope.ManageContent" set_schema=".interfaces.IConcept" />
+  </class>
 
-    <implements
-       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+  <class class="loops.concept.ConceptRelation">
+    <require permission="zope.View" interface="loops.interfaces.IConceptRelation" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IConceptRelation" />
+  </class>
 
-    <factory
-        id="loops.Concept"
-        description="Concept object" />
-
-    <require
-        permission="zope.View"
-        interface=".interfaces.IConcept" />
-
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.IConcept" />
-
+  <class class="loops.concept.ResourceRelation">
+    <require permission="zope.View" interface="loops.interfaces.IConceptRelation" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IConceptRelation" />
   </class>
 
   <!-- resource manager and resource -->
@@ -224,7 +195,6 @@
         permission="zope.View"
         interface=".interfaces.IBaseResource
                    zope.size.interfaces.ISized" />
-
 
     <require
         permission="zope.ManageContent"
@@ -398,6 +368,10 @@
   <adapter factory="cybertools.composer.schema.field.FieldInstance" />
   <adapter factory="cybertools.composer.schema.field.NumberFieldInstance"
            name="number" />
+  <adapter factory="cybertools.composer.schema.field.DateFieldInstance"
+           name="date" />
+  <adapter factory="cybertools.composer.schema.field.BooleanFieldInstance"
+           name="boolean" />
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
 
@@ -480,7 +454,9 @@
 
   <include package=".browser" />
   <include package=".classifier" />
+  <include package=".compound.blog" />
   <include package=".constraint" />
+  <include package=".external" />
   <include package=".i18n" />
   <include package=".integrator" />
   <include package=".knowledge" />
@@ -488,6 +464,7 @@
   <include package=".process" />
   <include package=".rest" />
   <include package=".search" />
+  <include package=".security" />
   <include package=".versioning" />
   <include package=".xmlrpc" />
 

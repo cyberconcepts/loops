@@ -27,20 +27,37 @@ from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.security.interfaces import IAuthentication
 
-authPluginId = 'loops'
+from loops.common import adapted
+from loops.type import getOptionsDict
+
+defaultAuthPluginId = 'loops'
 
 
-def getPrincipalFolder(context=None):
+def getPrincipalFolder(context=None, authPluginId=None, ignoreErrors=False):
     pau = component.getUtility(IAuthentication, context=context)
     if not IPluggableAuthentication.providedBy(pau):
+        if ignoreErrors:
+            return None
         raise ValueError(u'There is no pluggable authentication '
                           'utility available.')
-    if not authPluginId in pau.authenticatorPlugins:
-        raise ValueError(u'There is no loops authenticator '
-                          'plugin available.')
+    if authPluginId is None and context is not None:
+        person = context.getLoopsRoot().getConceptManager()['person']
+        od = getOptionsDict(adapted(person).options)
+        authPluginId = od.get('principalfolder', defaultAuthPluginId)
+    if authPluginId is None:
+        authPluginId = defaultAuthPluginId
+    if authPluginId not in pau.authenticatorPlugins:
+        if ignoreErrors:
+            return None
+        raise ValueError(u"There is no loops authenticator "
+                          "plugin '%s' available." % authPluginId)
     for name, plugin in pau.getAuthenticatorPlugins():
         if name == authPluginId:
             return plugin
+
+
+def getGroupsFolder(context=None, name='gloops'):
+    return getPrincipalFolder(authPluginId=name, ignoreErrors=True)
 
 
 def getInternalPrincipal(id, context=None):

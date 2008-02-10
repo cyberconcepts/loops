@@ -16,7 +16,7 @@
   <metal:block fill-slot="ecmascript_slot"
                tal:condition="view/inlineEditingActive | nothing">
     <script>
-        dojo.require("dojo.widget.Editor");
+        dojo.require("dijit.Editor");
     </script>
   </metal:block>
 

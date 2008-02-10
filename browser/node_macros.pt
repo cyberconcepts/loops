@@ -27,24 +27,25 @@
                tal:condition="nocall:target">
             <tal:ignore condition="nothing">
                 <div metal:define-macro="editicons"
-                     style="float: right; border: 1px solid #ccc;
-                            margin-top: 1em">
+                     style="float: right;">
                   <span id="xedit_icon"
                        tal:condition="target/xeditable | nothing">
-                    <a href="#" title="Edit" style="padding: 5px"
+                    <a href="#" title="Edit"
                        tal:attributes="href string:${item/realTargetUrl}/external_edit?version=this;
                                        title string:Edit '${target/title}' with External Editor"><img
                                   src="edit.gif" alt="Edit"
                                   tal:attributes="src context/++resource++edit.gif" /></a>
                   </span>
                   <span id="inlineedit_icon"
-                       tal:condition="item/inlineEditable">
+                        xtal:condition="item/inlineEditable"
+                        tal:condition="nothing">
                     <a href="#" title="Edit" style="padding: 5px"
                        tal:attributes="title string:Edit '${target/title}' with Inline Editor;
                                        onclick python: item.inlineEdit(id)"><img
                                   src="edit.gif" alt="Edit"
                                   tal:attributes="src context/++resource++edit.gif" /></a>
                   </span>
+                  <tal:rte define="dummy item/checkRTE" />
                 </div>
             </tal:ignore>
             <div class="content-1 subcolumn" id="1.body"
@@ -178,7 +179,7 @@
 
 <metal:menu define-macro="menu"
             tal:define="item nocall:view/menu | nothing;
-                        level level|python: 1"
+                        level level|python: 1;"
             tal:condition="nocall:item">
     <metal:sub define-macro="submenu">
           <div class="menu-3"
@@ -214,6 +215,14 @@
 
 <metal:actions define-macro="actions">
     <tal:actions repeat="action python:view.getActions('portlet')">
+      <metal:action use-macro="action/macro" />
+    </tal:actions>
+</metal:actions>
+
+
+<metal:actions define-macro="personal">
+    <div><a href="logout.html" i18n:translate="">Log out</a></div>
+    <tal:actions repeat="action python:view.getActions('personal')">
       <metal:action use-macro="action/macro" />
     </tal:actions>
 </metal:actions>

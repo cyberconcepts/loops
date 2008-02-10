@@ -26,6 +26,9 @@ ZCML setup):
   >>> loopsRoot = site['loops']
   >>> loopsId = util.getUidForObject(loopsRoot)
 
+  >>> from loops.organize.tests import setupUtilitiesAndAdapters
+  >>> setupData = setupUtilitiesAndAdapters(loopsRoot)
+
   >>> type = concepts['type']
   >>> person = concepts['person']
 
@@ -39,10 +42,7 @@ Organizations: Persons (and Users), Institutions, Addresses...
 
 The classes used in this package are just adapters to IConcept.
 
-  >>> from loops.interfaces import IConcept
   >>> from loops.organize.interfaces import IPerson
-  >>> from loops.organize.party import Person
-  >>> component.provideAdapter(Person, (IConcept,), IPerson)
 
   >>> john = IPerson(johnC)
   >>> john.title
@@ -74,15 +74,8 @@ the person(s) belonging to a user/principal.
 For testing, we first have to provide the needed utilities and settings
 (in real life this is all done during Zope startup):
 
-  >>> from zope.app.security.interfaces import IAuthentication
-  >>> from zope.app.security.principalregistry import PrincipalRegistry
-  >>> auth = PrincipalRegistry()
-  >>> component.provideUtility(auth, IAuthentication)
-
-  >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-  >>> from zope.app.principalannotation import PrincipalAnnotationUtility
-  >>> principalAnnotations = PrincipalAnnotationUtility()
-  >>> component.provideUtility(principalAnnotations, IPrincipalAnnotationUtility)
+  >>> auth = setupData.auth
+  >>> principalAnnotations = setupData.principalAnnotations
 
   >>> principal = auth.definePrincipal('users.john', u'John', login='john')
   >>> john.userId = 'users.john'
@@ -116,6 +109,7 @@ principal annotation:
   >>> from zope.app.container.contained import ObjectRemovedEvent
   >>> from zope.event import notify
   >>> from zope.interface import Interface
+  >>> from loops.interfaces import IConcept
   >>> from loops.organize.party import removePersonReferenceFromPrincipal
   >>> from zope.app.testing import ztapi
   >>> ztapi.subscribe([IConcept, IObjectRemovedEvent], None,
@@ -157,6 +151,7 @@ with a principal folder:
 
   >>> from zope.app.appsetup.bootstrap import ensureUtility
   >>> from zope.app.authentication.authentication import PluggableAuthentication
+  >>> from zope.app.security.interfaces import IAuthentication
   >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
   ...               copy_to_zlog=False, asObject=True)
   <...PluggableAuthentication...>
@@ -212,7 +207,6 @@ Now we can also retrieve it from the authentication utility:
   >>> pau.getPrincipal('loops.newuser').title
   u'Tom Sawyer'
 
-
 Change Password
 ---------------
 
@@ -229,18 +223,100 @@ We need a principal for testing the login stuff:
   >>> principal = InternalPrincipal('scott', 'tiger', 'Scotty')
   >>> request.setPrincipal(principal)
 
-  >>> from cybertools.composer.schema.factory import SchemaFactory
-  >>> from cybertools.composer.schema.field import FieldInstance
-  >>> component.provideAdapter(SchemaFactory)
-  >>> component.provideAdapter(FieldInstance)
-
   >>> from loops.organize.browser import PasswordChange
   >>> pwcView = PasswordChange(menu, request)
   >>> pwcView.update()
   False
 
+
+Security
+========
+
+Automatic security settings on persons
+--------------------------------------
+
+  >>> from zope.traversing.api import getName
+  >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
+  [u'john', u'martha', u'person.newuser']
+
+Person objects that have a user assigned to them receive this user
+(principal) as their owner.
+
+  >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
+  >>> IPrincipalRoleMap(concepts['john']).getPrincipalsAndRoles()
+  [('loops.Owner', 'users.john', PermissionSetting: Allow)]
+  >>> IPrincipalRoleMap(concepts['person.newuser']).getPrincipalsAndRoles()
+  [('loops.Owner', u'loops.newuser', PermissionSetting: Allow)]
+
+The person ``martha`` hasn't got a user id, so there is no role assigned
+to it.
+
+  >>> IPrincipalRoleMap(concepts['martha']).getPrincipalsAndRoles()
+  []
+
+Only the owner (and a few other privileged people) should be able
+to edit a person object.
+
+We also need an interaction with a participation based on the principal
+whose permissions we want to check.
+
+  >>> from zope.app.authentication.principalfolder import Principal
+  >>> pJohn = Principal('users.john', 'xxx', u'John')
+
+  >>> from loops.tests.auth import login
+  >>> login(pJohn)
+
+We also want to grant some global permissions and roles, i.e. on the site or
+loops root level.
+
+  >>> rolePermissions = setupData.rolePermissions
+  >>> rolePermissions.grantPermissionToRole('zope.View', 'zope.Member')
+
+  >>> principalRoles = setupData.principalRoles
+  >>> principalRoles.assignRoleToPrincipal('zope.Member', 'users.john')
+
+Now we are ready to look for the real stuff - what John is allowed to do.
+
+  >>> from zope.security import canAccess, canWrite, checkPermission
+  >>> john = concepts['john']
+
+  >>> canAccess(john, 'title')
+  True
+
+Person objects that have an owner may be modified by this owner.
+
+  >>> canWrite(john, 'title')
+  True
+
+So let's try with another user with another role setting.
+
+  >>> rolePermissions.grantPermissionToRole('zope.ManageContent', 'loops.Staff')
+  >>> principalRoles.assignRoleToPrincipal('loops.Staff', 'users.martha')
+  >>> principalRoles.assignRoleToPrincipal('zope.Member', 'users.martha')
+
+  >>> pMartha = Principal('users.martha', 'xxx', u'Martha')
+  >>> login(pMartha)
+
+  >>> canAccess(john, 'title')
+  True
+  >>> canWrite(john, 'title')
+  False
+
+If we clear the userId attribute from a person object others may be allowed
+again to edit it...
+
+  >>> adapted(john).userId = ''
+  >>> canWrite(john, 'title')
+  True
+
+... but John no more...
+
+  >>> login(pJohn)
+  >>> canWrite(john, 'title')
+  False
+
+
 Fin de partie
 =============
 
   >>> placefulTearDown()
-

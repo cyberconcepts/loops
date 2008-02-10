@@ -1,0 +1,74 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter
+        factory="loops.compound.blog.post.BlogPost"
+        provides="loops.compound.blog.interfaces.IBlogPost"
+        trusted="True" />
+  <zope:class class="loops.compound.blog.post.BlogPost">
+    <require permission="zope.View"
+        interface="loops.compound.blog.interfaces.IBlogPost" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.compound.blog.interfaces.IBlogPost" />
+  </zope:class>
+
+  <zope:adapter factory="loops.compound.blog.schema.BlogPostSchemaFactory" />
+
+  <zope:adapter factory="loops.compound.blog.security.BlogPostSecuritySetter" />
+
+  <!-- views -->
+
+  <zope:adapter
+      name="blog.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.compound.blog.browser.BlogView"
+      permission="zope.View"
+      />
+
+  <zope:adapter
+      name="blogpost.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.compound.blog.browser.BlogPostView"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="create_blogpost.html"
+      for="loops.interfaces.INode"
+      class="loops.compound.blog.browser.CreateBlogPostForm"
+      permission="zope.ManageContent"
+      />
+
+  <browser:page
+      name="edit_blogpost.html"
+      for="loops.interfaces.INode"
+      class="loops.compound.blog.browser.EditBlogPostForm"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="create_blogpost"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.compound.blog.browser.CreateBlogPost"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name="edit_blogpost"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.compound.blog.browser.EditBlogPost"
+      permission="zope.ManageContent"
+      />
+
+</configure>

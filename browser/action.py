@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,43 +27,7 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
-action_macros = ViewPageTemplateFile('action_macros.pt')
-
-
-class Action(object):
-
-    template = action_macros
-    macroName = 'action'
-    condition = True
-    permission = None
-    url = '.'
-    viewName = ''
-    targetWindow = ''
-    title = ''
-    description = ''
-    icon = ''
-    cssClass = ''
-    onClick = ''
-    innerHtmlId = ''
-
-    def __init__(self, view, **kw):
-        self.view = view
-        for k, v in kw.items():
-            setattr(self, k, v)
-
-    @Lazy
-    def macro(self):
-        return self.template.macros[self.macroName]
-
-    @Lazy
-    def url(self):
-        return self.getActionUrl(self.view.url)
-
-    def getActionUrl(self, baseUrl):
-        if self.viewName:
-            return '/'.join((baseUrl, self.viewName))
-        else:
-            return baseUrl
+from cybertools.browser.action import Action
 
 
 class TargetAction(Action):

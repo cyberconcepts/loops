@@ -24,13 +24,13 @@ $Id$
 
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
-from zope import traversing
 from zope.app.catalog.interfaces import ICatalog
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IConcept, IConceptSchema
 from loops.common import AdapterBase
+from loops.interfaces import IConcept, IConceptSchema
+from loops.security.common import canListObject
 from loops.type import TypeInterfaceSourceList
 from loops.versioning.util import getVersion
 from loops import util
@@ -72,7 +72,8 @@ class BaseQuery(object):
             result = cat.searchResults(loops_type=(start, end), loops_title=title)
         else:
             result = cat.searchResults(loops_type=(start, end))
-        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot)
+        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot
+                     and canListObject(r))
         if 'exclude' in kw:
             r1 = set()
             for r in result:
@@ -139,6 +140,7 @@ class FullQuery(BaseQuery):
                 result = rc
         result = set(r for r in result
                             if r.getLoopsRoot() == self.loopsRoot
+                               and canListObject(r)
                                and getVersion(r) == r)
         return result
 

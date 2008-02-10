@@ -1,0 +1,60 @@
+<tal:show condition="not:view/submit">
+<html metal:use-macro="context/@@standard_macros/view">
+<head>
+</head>
+<body>
+
+  <metal:body fill-slot="body">
+
+    <h3>Export/Import loops Site</h3>
+
+    <div tal:define="message view/message | request/message | nothing"
+         tal:condition="message"
+         tal:content="message">Message</div>
+
+    <div>&nbsp;</div>
+    <div>
+      This form allows you to export the objects in a loops site to a
+      file and upload a file created by a content export.
+    </div>
+
+    <form action="." method="post"
+          tal:attributes="action string:${request/URL/-1}/export_loops.html">
+      <input type="hidden" name="loops.action" value="export" />
+      <div>&nbsp;</div>
+      <h4>Export Site</h4>
+      <div>&nbsp;</div>
+      <div class="row">
+        <div class="controls">
+          <input type="submit" name="loops.export" value="Export" />
+        </div>
+      </div>
+    </form>
+
+    <form action="." method="post" enctype="multipart/form-data"
+          tal:attributes="action request/URL">
+      <input type="hidden" name="loops.action" value="upload" />
+      <div>&nbsp;</div>
+      <h4>Import Site</h4>
+      <div class="row">
+        <div class="label">
+          <label for="field.data"
+                 title="The file to be uploaded.">File</label>
+        </div>
+        <div class="field">
+          <input class="fileType" id="field.data" name="field.data"
+                 size="20" type="file" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="controls">
+          <input type="submit" name="loops.upload" value="Upload" />
+        </div>
+      </div>
+    </form>
+
+  </metal:body>
+
+</body>
+</html>
+</tal:show>

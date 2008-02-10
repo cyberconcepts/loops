@@ -5,62 +5,31 @@ $Id$
 """
 
 from zope import component
-from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
-from zope.app.catalog.text import TextIndex
 
-from cybertools.relation.tests import IntIdsStub
-from cybertools.relation.registry import RelationRegistry
-from cybertools.relation.interfaces import IRelationRegistry
-from cybertools.relation.registry import IndexableRelationAdapter
 from cybertools.typology.interfaces import IType
-
-from loops.base import Loops
 from loops import util
-from loops.interfaces import IIndexAttributes
 from loops.concept import Concept
-from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.resource import Resource
-from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addObject
+from loops.tests.setup import TestSite as BaseTestSite
 from loops.type import ConceptType, ResourceType, TypeConcept
 
 
-class TestSite(object):
+class TestSite(BaseTestSite):
 
     def __init__(self, site):
         self.site = site
 
     def setup(self):
+        super(TestSite, self).setup()
         site = self.site
-
-        component.provideUtility(IntIdsStub())
-        relations = RelationRegistry()
-        relations.setupIndexes()
-        component.provideUtility(relations, IRelationRegistry)
-        component.provideAdapter(IndexableRelationAdapter)
-
-        component.provideAdapter(ConceptType)
-        component.provideAdapter(ResourceType)
-        component.provideAdapter(TypeConcept)
-
-        catalog = Catalog()
-        component.provideUtility(catalog, ICatalog)
-
-        catalog['loops_title'] = TextIndex('title', IIndexAttributes, True)
-        catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
-        catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
-
-        loopsRoot = site['loops'] = Loops()
+        loopsRoot = site['loops']
 
         component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
-
-        component.provideAdapter(ConceptIndexAttributes)
-        component.provideAdapter(ResourceIndexAttributes)
 
         tType = concepts.getTypeConcept()
         tDomain = concepts['domain']
@@ -123,11 +92,11 @@ class TestSite(object):
         d003.assignConcept(stateNew)
         d003.assignConcept(dtStudy)
 
+        catalog = component.getUtility(ICatalog)
         for c in concepts.values():
              catalog.index_doc(int(util.getUidForObject(c)), c)
         for r in resources.values():
              catalog.index_doc(int(util.getUidForObject(r)), r)
 
         return concepts, resources, views
-
 

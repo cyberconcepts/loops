@@ -34,22 +34,28 @@ class Compound(AdapterBase):
 
     implements(ICompound)
 
+    @Lazy
+    def compoundPredicate(self):
+        return self.context.getConceptManager()[compoundPredicateName]
+
     def getParts(self):
-        return self.context.getChildren([self.partOf])
+        if self.context.__parent__ is None:
+            return []
+        return self.context.getResources([self.partOf])
 
     def add(self, obj, position=None):
         if position is None:
             order = self.getMaxOrder() + 1
         else:
             order = self.getOrderForPosition(position)
-        self.context.assignChild(obj, self.partOf, order=order)
+        self.context.assignResource(obj, self.partOf, order=order)
 
     def remove(self, obj, position=None):
         if position is None:
-            self.context.deassignChild(obj, [self.partOf])
+            self.context.deassignResource(obj, [self.partOf])
         else:
             rel = self.getPartRelations()[position]
-            self.context.deassignChild(obj, [self.partOf], order=rel.order)
+            self.context.deassignResource(obj, [self.partOf], order=rel.order)
 
     def reorder(self, parts):
         existing = list(self.getPartRelations())
@@ -71,7 +77,7 @@ class Compound(AdapterBase):
     # helper methods and properties
 
     def getPartRelations(self):
-        return self.context.getChildRelations([self.partOf])
+        return self.context.getResourceRelations([self.partOf])
 
     def getMaxOrder(self):
         rels = self. getPartRelations()
@@ -104,6 +110,10 @@ class Compound(AdapterBase):
     @Lazy
     def conceptManager(self):
         return self.context.getConceptManager()
+
+    @Lazy
+    def resourceManager(self):
+        return self.getLoopsRoot().getResourceManager()
 
     @Lazy
     def partOf(self):

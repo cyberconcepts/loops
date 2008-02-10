@@ -6,21 +6,31 @@ $Id$
 
 from zope import component
 from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.catalog.text import TextIndex
 from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.principalannotation import PrincipalAnnotationUtility
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IAuthentication
+from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
+from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
+from zope.app.securitypolicy.rolepermission import AnnotationRolePermissionManager
 from zope.app.session.interfaces import IClientIdManager, ISessionDataContainer
 from zope.app.session import session
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implements
+from zope.interface import Interface, implements
+from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserView
+from zope.security.checker import Checker, defineChecker
 
+from cybertools.browser.controller import Controller
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
+from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
@@ -34,14 +44,21 @@ from loops.base import Loops
 from loops import util
 from loops.browser.node import ViewPropertiesConfigurator
 from loops.common import NameChooser
-from loops.interfaces import ILoopsObject, IIndexAttributes
-from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
+from loops.interfaces import ILoopsObject, IIndexAttributes
+from loops.interfaces import IDocument, IFile, ITextDocument
+from loops.organize.memberinfo import MemberInfoProvider
+from loops.query import QueryConcept
 from loops.query import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
+from loops.resource import Document, MediaAsset
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFactory
+from loops.security.common import grantAcquiredSecurity, revokeAcquiredSecurity
+from zope.security.management import setSecurityPolicy
+from loops.security.policy import LoopsSecurityPolicy
+from loops.security.setter import BaseSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 from loops.view import NodeAdapter
@@ -62,14 +79,25 @@ class TestSite(object):
     def baseSetup(self):
         site = self.site
 
+        #oldPolicy = setSecurityPolicy(ZopeSecurityPolicy)
+        oldPolicy = setSecurityPolicy(LoopsSecurityPolicy)
+        checker = Checker(dict(title='zope.View', data='zope.View'),
+                          dict(title='zope.ManageContent'))
+        defineChecker(Concept, checker)
+        defineChecker(Resource, checker)
+        defineChecker(Document, checker)
+
         component.provideUtility(IntIdsStub())
         relations = RelationRegistry()
         relations.setupIndexes()
         component.provideUtility(relations, IRelationRegistry)
-        component.provideAdapter(IndexableRelationAdapter)
 
+        component.provideUtility(PrincipalAnnotationUtility(), IPrincipalAnnotationUtility)
+        component.provideAdapter(IndexableRelationAdapter)
         component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
         component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
+        component.provideAdapter(AnnotationPrincipalRoleManager, (ILoopsObject,))
+        component.provideAdapter(AnnotationRolePermissionManager, (ILoopsObject,))
         component.provideUtility(principalRegistry, IAuthentication)
         component.provideAdapter(session.ClientId)
         component.provideAdapter(session.Session)
@@ -86,15 +114,25 @@ class TestSite(object):
         component.provideAdapter(NodeAdapter)
         component.provideAdapter(ViewPropertiesConfigurator)
         component.provideAdapter(NameChooser)
+        component.provideHandler(grantAcquiredSecurity)
+        component.provideHandler(revokeAcquiredSecurity)
+        component.provideAdapter(BaseSecuritySetter)
+
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')
         component.provideAdapter(FieldInstance)
         component.provideAdapter(NumberFieldInstance, name='number')
-
+        component.provideAdapter(DateFieldInstance, name='date')
+        component.provideAdapter(BooleanFieldInstance, name='boolean')
         component.provideAdapter(SchemaFactory)
         component.provideAdapter(ResourceSchemaFactory)
         component.provideAdapter(FileSchemaFactory)
         component.provideAdapter(NoteSchemaFactory)
+
+        component.provideAdapter(Controller, (Interface, IBrowserRequest),
+                            IBrowserView, name='controller')
+        component.provideAdapter(MemberInfoProvider,
+                                 (ILoopsObject, IBrowserRequest))
 
         component.getSiteManager().registerHandler(invalidateRelations,
                             (ILoopsObject, IObjectRemovedEvent))
