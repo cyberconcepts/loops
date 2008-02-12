@@ -45,11 +45,11 @@
 </metal:textline>
 
 
-<metal:textline define-macro="display_email">
+<metal:email define-macro="display_email">
       <a href="#"
          tal:attributes="href string:mailto:$value"
          tal:content="value"></a>
-</metal:textline>
+</metal:email>
 
 
 <metal:parents define-macro="conceptparents">

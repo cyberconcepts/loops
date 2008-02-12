@@ -370,6 +370,8 @@
            name="number" />
   <adapter factory="cybertools.composer.schema.field.DateFieldInstance"
            name="date" />
+  <adapter factory="cybertools.composer.schema.field.EmailFieldInstance"
+           name="email" />
   <adapter factory="cybertools.composer.schema.field.BooleanFieldInstance"
            name="boolean" />
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
