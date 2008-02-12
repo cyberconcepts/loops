@@ -71,6 +71,9 @@ class Loops(Folder):
     def getViewManager(self):
         return self['views']
 
+    def getRecordManager(self):
+        return self['records']
+
     def getLoopsUri(self, obj):
         return str(loopsPrefix + getPath(obj)[len(getPath(self)):])
 

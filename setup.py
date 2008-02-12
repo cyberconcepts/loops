@@ -36,6 +36,7 @@ from loops.concept import ConceptManager, Concept
 from loops.interfaces import ILoops, ITypeConcept
 from loops.interfaces import IFile, IImage, ITextDocument, INote
 from loops.query import IQueryConcept
+from loops.record import RecordManager
 from loops.resource import ResourceManager, Resource
 from loops.view import ViewManager, Node
 
@@ -72,6 +73,7 @@ class SetupManager(object):
         concepts = self.addObject(loopsRoot, ConceptManager, 'concepts')
         resources = self.addObject(loopsRoot, ResourceManager, 'resources')
         views = self.addObject(loopsRoot, ViewManager, 'views')
+        records = self.addObject(loopsRoot, RecordManager, 'records')
         return concepts, resources, views
 
     def setupCoreConcepts(self, conceptManager):
@@ -222,3 +224,19 @@ def addAndConfigureObject(container, class_, name, **kw):
         setattr(adapted, attr, kw[attr])
     notify(ObjectModifiedEvent(obj))
     return obj
+
+
+class SetupView(object):
+    """ Allows to carry out setup actions manually.
+    """
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        self.manager = ISetupManager(context)
+
+    def setupLoopsSite(self):
+        #self.manager.setupManagers()
+        self.manager.setup()
+        return 'Done'
+

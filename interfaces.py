@@ -31,10 +31,11 @@ from zope.app.file.interfaces import IImage as IBaseAsset
 from zope.app.folder.interfaces import IFolder
 from zope.component.interfaces import IObjectEvent
 from zope.size.interfaces import ISized
-from cybertools.relation.interfaces import IDyadicRelation
 
-import util
-from util import _
+from cybertools.relation.interfaces import IDyadicRelation
+from cybertools.tracking.interfaces import ITrackingStorage
+from loops import util
+from loops.util import _
 
 
 # common interfaces
@@ -516,6 +517,12 @@ class INodeContained(Interface):
     containers(INode, IViewManager)
 
 
+# record manager interfaces
+
+class IRecordManager(ILoopsObject):
+    contains(ITrackingStorage)
+
+
 # the loops top-level container
 
 class ILoops(ILoopsObject):
@@ -555,6 +562,10 @@ class ILoops(ILoopsObject):
 
     def getViewManager():
         """ Return the (default) view manager.
+        """
+
+    def getRecordManager():
+        """ Return the (default) record manager.
         """
 
 

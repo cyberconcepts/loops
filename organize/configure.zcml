@@ -108,4 +108,8 @@
   <zope:adapter factory="loops.organize.setup.SetupManager"
                 name="organize" />
 
+  <!-- include -->
+
+  <include package=".personal" />
+
 </configure>

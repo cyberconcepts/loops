@@ -1,0 +1,28 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <class class="cybertools.tracking.btree.TrackingStorage">
+    <require permission="zope.View"
+             interface="zope.app.container.interfaces.IReadContainer" />
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrackingStorage" />
+    <require permission="zope.ManageContent"
+             interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.tracking.interfaces.ITrackingStorage" />
+  </class>
+
+  <class class="loops.organize.personal.favorite.Favorite">
+    <require permission="zope.View"
+             interface="loops.organize.personal.interfaces.IFavorite" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.personal.interfaces.IFavorite" />
+  </class>
+
+  <adapter factory="loops.organize.personal.setup.SetupManager"
+           name="organize.personal" />
+
+</configure>

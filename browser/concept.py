@@ -211,7 +211,7 @@ class ConceptView(BaseView):
     def description(self):
         return self.adapted.description
 
-    def fieldData(self):
+    def xxx_fieldData(self):
         # obsolete - use getData() instead
         # TODO: change view macros accordingly
         ti = IType(self.context).typeInterface

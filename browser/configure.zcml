@@ -19,6 +19,12 @@
   <!-- new style pages -->
 
   <page for="loops.interfaces.INode"
+        name="index.html"
+        class="loops.browser.node.NodeView"
+        permission="zope.Public"
+        />
+
+  <page for="loops.interfaces.INode"
         name="main.html"
         class="loops.browser.node.NodeView"
         permission="zope.Public"
@@ -371,6 +377,20 @@
       menu="zmi_views" title="Contents"
       />
 
+  <!-- record manager -->
+
+  <containerViews
+      for="loops.interfaces.IRecordManager"
+      index="zope.ManageContent"
+      />
+
+  <menuItem
+      for="loops.interfaces.IRecordManager"
+      action="contents.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Contents"
+      />
+
   <!-- import/export -->
 
   <pages for="loops.interfaces.IViewManager"
@@ -401,10 +421,10 @@
       menu="zmi_views" title="Contents"
       />
 
-  <containerViews
+  <!--<containerViews
       for="loops.interfaces.INode"
       index="zope.ManageContent"
-      />
+      />-->
 
   <addform
       label="Add Node"
@@ -488,10 +508,10 @@
       menu="zmi_views" title="View"
       />-->
 
-  <defaultView
+  <!--<defaultView
       for="loops.interfaces.INode"
       name="main.html"
-      />
+      />-->
 
   <zope:adapter
       name="listpages"
@@ -716,6 +736,16 @@
       for="loops.interfaces.INode
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="cybertools.browser.configurator.IViewConfigurator"
+      />
+
+  <!-- manual setup action(s) -->
+
+  <page
+      name="setup_loopssite"
+      for="loops.interfaces.ILoops"
+      class="loops.setup.SetupView"
+      attribute="setupLoopsSite"
+      permission="zope.ManageSite"
       />
 
   <include package=".skin" />
