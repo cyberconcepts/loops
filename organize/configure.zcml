@@ -93,6 +93,11 @@
 
   <!-- other adapters -->
 
+  <zope:adapter factory="loops.organize.schema.PersonSchemaFactory" />
+
+  <zope:adapter factory="loops.organize.schema.SimpleListFieldInstance"
+                name="simplelist" />
+
   <zope:adapter
         for="loops.interfaces.ILoopsObject
              zope.publisher.interfaces.browser.IBrowserRequest"

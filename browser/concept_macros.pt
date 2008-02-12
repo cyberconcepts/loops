@@ -21,16 +21,35 @@
 
 <metal:fields define-macro="conceptfields">
   <fieldset class="box"
-            tal:define="data python: list(item.fieldData())"
-            tal:condition="data">
+            tal:define="data item/data;
+                        values python: [v for v in data.values() if v];
+                        fields item/fields"
+            tal:condition="values">
     <table tal:attributes="ondblclick item/openEditWindow">
-      <tr tal:repeat="field data">
-        <td><b tal:content="field/title" i18n:translate="" />:</td>
-        <td tal:content="structure field/widget"></td>
-      </tr>
+      <tal:row repeat="field fields">
+        <tr tal:define="fieldName field/name;
+                        value nocall:data/?fieldName;
+                        renderer field/displayRenderer"
+            tal:condition="nocall:value">
+          <td><b tal:content="field/title" i18n:translate="" />:</td>
+          <td><span metal:use-macro="item/template/macros/?renderer" /></td>
+        </tr>
+      </tal:row>
     </table>
   </fieldset>
 </metal:fields>
+
+
+<metal:textline define-macro="display_textline">
+      <span tal:content="nocall:value"></span>
+</metal:textline>
+
+
+<metal:textline define-macro="display_email">
+      <a href="#"
+         tal:attributes="href string:mailto:$value"
+         tal:content="value"></a>
+</metal:textline>
 
 
 <metal:parents define-macro="conceptparents">
@@ -117,7 +136,7 @@
                        tal:attributes="href string:${view/url}/.target${related/uniqueId}?loops.viewName=listversions">1.1</a>
                   </td>
                 </tal:version>
-                <td style="text-align: right">
+                <td style="text-align: right; white-space: nowrap">
                   <span tal:replace="related/context/sizeForDisplay">Type</span>
                 </td>
                 <td><span tal:replace="related/modified">2007-03-30</span></td>

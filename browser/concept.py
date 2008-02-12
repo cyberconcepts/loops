@@ -241,18 +241,27 @@ class ConceptView(BaseView):
     def data(self):
         return self.getData()
 
+    def getFields(self, omit=('title', 'description')):
+        fields = Jeep(self.schema.fields)
+        fields.remove(*omit)
+        return fields
+
     @Lazy
-    def instance(self):
-        instance = IInstance(self.adapted)
-        instance.template = self.schema
-        instance.view = self
-        return instance
+    def fields(self):
+        return self.getFields()
 
     @Lazy
     def schema(self):
         ti = self.typeInterface or IConceptSchema
         schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
         return schemaFactory(ti, manager=self, request=self.request)
+
+    @Lazy
+    def instance(self):
+        instance = IInstance(self.adapted)
+        instance.template = self.schema
+        instance.view = self
+        return instance
 
     def getChildren(self, topLevelOnly=True, sort=True):
         cm = self.loopsRoot.getConceptManager()

@@ -81,7 +81,7 @@
                          tal:attributes="href string:${view/url}/.target${row/uniqueId}?loops.viewName=listversions">1.1</a>
                     </td>
                   </tal:version>
-                  <td style="text-align: right">
+                  <td style="text-align: right; white-space: nowrap">
                     <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
                   </td>
                   <td><span tal:replace="row/modified">modified</span></td>
