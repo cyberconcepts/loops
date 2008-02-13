@@ -379,10 +379,6 @@ is used to retrieve a macro used by NodeView.
 As the display of the standard macros is controlled by permissions we have
 to install a checker first.
 
-  >>> from zope.security.checker import NamesChecker, defineChecker
-  >>> nodeChecker = NamesChecker(('body', 'title',))
-  >>> defineChecker(Node, nodeChecker)
-
   >>> from cybertools.browser.controller import Controller
   >>> from loops.browser.util import node_macros
   >>> from loops.browser.common import BaseView

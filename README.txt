@@ -336,9 +336,6 @@ or resources they are related to.
 The view manager has already been created during setup.
 
   >>> from loops.view import ViewManager, Node
-  >>> from zope.security.checker import NamesChecker, defineChecker
-  >>> nodeChecker = NamesChecker(('body', 'title',))
-  >>> defineChecker(Node, nodeChecker)
 
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:

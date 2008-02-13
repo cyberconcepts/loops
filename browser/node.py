@@ -106,8 +106,6 @@ class NodeView(BaseView):
                         priority=10)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
-        # force early portlet registrations by target by setting up target view
-        self.virtualTarget
 
     @Lazy
     def view(self):

@@ -62,7 +62,7 @@ from loops.security.policy import LoopsSecurityPolicy
 from loops.security.setter import BaseSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
-from loops.view import NodeAdapter
+from loops.view import Node, NodeAdapter
 
 
 class ClientIdManager(object):
@@ -82,11 +82,12 @@ class TestSite(object):
 
         #oldPolicy = setSecurityPolicy(ZopeSecurityPolicy)
         oldPolicy = setSecurityPolicy(LoopsSecurityPolicy)
-        checker = Checker(dict(title='zope.View', data='zope.View'),
+        checker = Checker(dict(title='zope.View', data='zope.View', body='zope.View'),
                           dict(title='zope.ManageContent'))
         defineChecker(Concept, checker)
         defineChecker(Resource, checker)
         defineChecker(Document, checker)
+        defineChecker(Node, checker)
 
         component.provideUtility(IntIdsStub())
         relations = RelationRegistry()

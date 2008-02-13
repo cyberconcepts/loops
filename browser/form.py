@@ -29,7 +29,7 @@ from zope.interface import Interface
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
-from zope.app.container.contained import NameChooser
+#from zope.app.container.contained import NameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.contenttype import guess_content_type
@@ -246,7 +246,7 @@ class CreateObjectForm(ObjectForm):
     def adapted(self):
         ad = self.typeInterface(Resource())
         ad.storageName = 'unknown'  # hack for file objects: don't try to retrieve data
-        return (ad)
+        return ad
 
     @Lazy
     def instance(self):
