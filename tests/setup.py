@@ -133,7 +133,7 @@ class TestSite(object):
         component.provideAdapter(NoteSchemaFactory)
 
         component.provideAdapter(Controller, (Interface, IBrowserRequest),
-                            IBrowserView, name='controller')
+                                 IBrowserView, name='controller')
         component.provideAdapter(MemberInfoProvider,
                                  (ILoopsObject, IBrowserRequest))
 

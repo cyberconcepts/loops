@@ -126,7 +126,8 @@ class NodeView(BaseView):
         if target is not None:
             basicView = component.getMultiAdapter((target, self.request), name=viewName)
             # xxx: obsolete when self.targetObject is virtual target:
-            return basicView.view
+            if hasattr(basicView, 'view'):
+                return basicView.view
         return self.page
 
     @Lazy
@@ -325,7 +326,8 @@ class NodeView(BaseView):
             basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
                 basicView._viewName = self.context.viewName
-            return basicView.view
+            if hasattr(basicView, 'view'):
+                return basicView.view
 
     @Lazy
     def targetId(self):
