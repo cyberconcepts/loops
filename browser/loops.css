@@ -25,6 +25,19 @@ table.listing td {
     white-space: normal;
 }
 
+dl.docutils dt {
+    font-weight: bold;
+    margin-top: 0.3em;
+}
+
+dl.docutils dd {
+    margin-left: 2em;
+}
+
+dl.docutils dd ul li {
+    margin-left: -1em;
+}
+
 fieldset.box {
     margin: 1em 0 0.5em 0;
     padding: 0.5em;
