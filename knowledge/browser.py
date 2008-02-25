@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ from zope.i18nmessageid import MessageFactory
 from cybertools.typology.interfaces import IType
 from loops.browser.common import BaseView
 from loops.knowledge.interfaces import IPerson, ITask
-from loops.organize.browser import getPersonForUser
+from loops.organize.party import getPersonForUser
 
 _ = MessageFactory('zope')
 

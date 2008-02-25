@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 #
 
 """
-Definition of view classes and other browser related stuff for the
-loops.organize package.
+Definition of view classes and other browser related stuff for
+members (persons).
 
 $Id$
 """

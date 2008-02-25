@@ -30,6 +30,7 @@ from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.organize.interfaces import IPerson as IBasePerson
+from cybertools.organize.interfaces import ITask
 from loops.interfaces import IConceptSchema
 from loops.organize.util import getPrincipalFolder
 from loops.util import _
@@ -147,3 +148,10 @@ class IMemberRegistrationManager(Interface):
             Raise a Validation Error (?) if the oldPw does not match the
             current password.
         """
+
+# task
+
+class ITask(IConceptSchema, ITask):
+
+    pass
+

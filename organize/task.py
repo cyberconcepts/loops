@@ -24,7 +24,7 @@ $Id$
 
 from zope.interface import implements
 
-from cybertools.organize.interfaces import ITask
+from loops.organize.interfaces import ITask
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList

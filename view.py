@@ -66,11 +66,11 @@ class View(object):
     description = property(getDescription, setDescription)
 
     _viewName = u''
-    def getViewName(self): return self._viewName or getattr(self, '_viewer', u'')
-    def setViewName(self, viewName): self._viewName = viewName
+    def getViewName(self): return self._viewName #or getattr(self, '_viewer', u'')
+    def setViewName(self, viewName):
+        self._viewName = viewName
+        #self._viewer = u''  # BBB
     viewName = property(getViewName, setViewName)
-
-    viewer = property(getViewName, setViewName) # BBB
 
     def getTarget(self):
         rels = getRelations(first=self, relationships=[TargetRelation])

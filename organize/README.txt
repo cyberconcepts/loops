@@ -191,7 +191,7 @@ and register it.
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest(form=data)
-  >>> from loops.organize.browser import MemberRegistration
+  >>> from loops.organize.browser.member import MemberRegistration
   >>> regView = MemberRegistration(menu, request)
   >>> regView.update()
   False
@@ -223,7 +223,7 @@ We need a principal for testing the login stuff:
   >>> principal = InternalPrincipal('scott', 'tiger', 'Scotty')
   >>> request.setPrincipal(principal)
 
-  >>> from loops.organize.browser import PasswordChange
+  >>> from loops.organize.browser.member import PasswordChange
   >>> pwcView = PasswordChange(menu, request)
   >>> pwcView.update()
   False
@@ -314,6 +314,46 @@ again to edit it...
   >>> login(pJohn)
   >>> canWrite(john, 'title')
   False
+
+
+Tasks and Events
+================
+
+Task view with edit action
+--------------------------
+
+  >>> from loops.setup import addAndConfigureObject
+  >>> from loops.organize.interfaces import ITask
+  >>> task = addAndConfigureObject(concepts, Concept, 'task', title=u'Task',
+  ...                              conceptType=type, typeInterface=ITask)
+
+  >>> from loops.organize.task import Task
+  >>> component.provideAdapter(Task)
+
+  >>> task01 = addAndConfigureObject(concepts, Concept, 'task01',
+  ...                                title=u'Task #1', conceptType=task)
+
+  >>> from loops.organize.browser.task import TaskView
+  >>> view = TaskView(task01, TestRequest())
+  >>> view.getActions('portlet')
+  [<loops.browser.action.DialogAction ...>]
+
+Events listing
+--------------
+
+  >>> event = addAndConfigureObject(concepts, Concept, 'event', title=u'Event',
+  ...                               conceptType=type, typeInterface=ITask)
+  >>> event01 = addAndConfigureObject(concepts, Concept, 'event01',
+  ...                                 title=u'Event #1', conceptType=event,
+  ...                           )
+
+  >>> from loops.organize.browser.event import Events
+  >>> listing = Events(johnC, TestRequest())
+  >>> listing.getActions('portlet')
+  [<loops.browser.action.DialogAction ...>]
+
+  >>> list(listing.events())
+  [<loops.browser.concept.ConceptRelationView ...>]
 
 
 Fin de partie

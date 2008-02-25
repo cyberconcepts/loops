@@ -3,15 +3,13 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="loops">
 
   <!-- party: person, address, task, ... -->
 
   <zope:adapter factory="loops.organize.party.Person"
                 provides="loops.organize.interfaces.IPerson"
                 trusted="True" />
-
   <zope:class class="loops.organize.party.Person">
     <require permission="zope.View"
              interface="loops.organize.interfaces.IPerson" />
@@ -25,9 +23,7 @@
         handler="loops.organize.party.removePersonReferenceFromPrincipal"
         />
 
-  <zope:adapter factory="loops.organize.party.Address"
-                trusted="True" />
-
+  <zope:adapter factory="loops.organize.party.Address" trusted="True" />
   <zope:class class="loops.organize.party.Address">
     <require permission="zope.View"
              interface="cybertools.organize.interfaces.IAddress" />
@@ -35,37 +31,13 @@
              set_schema="cybertools.organize.interfaces.IAddress" />
   </zope:class>
 
-  <zope:adapter factory="loops.organize.task.Task"
-                trusted="True" />
-
+  <zope:adapter factory="loops.organize.task.Task" trusted="True" />
   <zope:class class="loops.organize.task.Task">
     <require permission="zope.View"
-             interface="cybertools.organize.interfaces.ITask" />
+             interface="loops.organize.interfaces.ITask" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.organize.interfaces.ITask" />
+             set_schema="loops.organize.interfaces.ITask" />
   </zope:class>
-
-  <!-- my stuff and other views -->
-
-  <zope:adapter
-        name="mystuff"
-        for="loops.interfaces.IConcept
-             zope.publisher.interfaces.browser.IBrowserRequest"
-        provides="zope.interface.Interface"
-        factory="loops.organize.browser.MyStuff"
-        permission="zope.View"
-        />
-
-  <!-- widget(s) -->
-
-  <zope:view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="cybertools.organize.interfaces.SimpleList
-           zope.schema.interfaces.ITextLine"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      factory="cybertools.browser.widget.SimpleListDisplayWidget"
-      permission="zope.Public"
-      />
 
   <!-- member registration -->
 
@@ -76,20 +48,6 @@
     <require permission ="zope.Public"
              interface="loops.organize.interfaces.IMemberRegistrationManager" />
   </zope:class>
-
-  <browser:page
-        for="loops.interfaces.INode"
-        name="register_user.html"
-        class="loops.organize.browser.MemberRegistration"
-        permission="zope.Public"
-        />
-
-  <browser:page
-        for="loops.interfaces.INode"
-        name="change_password.html"
-        class="loops.organize.browser.PasswordChange"
-        permission="zope.Public"
-        />
 
   <!-- other adapters -->
 
@@ -110,6 +68,7 @@
 
   <!-- include -->
 
+  <include package=".browser" />
   <include package=".personal" />
 
 </configure>

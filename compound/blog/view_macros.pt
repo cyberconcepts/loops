@@ -1,4 +1,4 @@
-<!-- ZPT macros for loops.knowledge.glossary views
+<!-- ZPT macros for loops.compound.blog views
      $Id$ -->
 
 <metal:block define-macro="blog">

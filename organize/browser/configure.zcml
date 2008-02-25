@@ -1,0 +1,58 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:adapter
+      name="mystuff"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.browser.member.MyStuff"
+      permission="zope.View"
+      />
+
+  <zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="cybertools.organize.interfaces.SimpleList
+           zope.schema.interfaces.ITextLine"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory="cybertools.browser.widget.SimpleListDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="loops.interfaces.INode"
+      name="register_user.html"
+      class="loops.organize.browser.member.MemberRegistration"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="loops.interfaces.INode"
+      name="change_password.html"
+      class="loops.organize.browser.member.PasswordChange"
+      permission="zope.Public"
+      />
+
+  <zope:adapter
+      name="task.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.browser.task.TaskView"
+      permission="zope.View"
+      />
+
+  <zope:adapter
+      name="list_events.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.browser.event.Events"
+      permission="zope.View"
+      />
+
+</configure>
