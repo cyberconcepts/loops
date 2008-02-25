@@ -79,8 +79,7 @@ class ObjectForm(NodeView):
 
     def closeAction(self, submit=False):
         if self.isInnerHtml:
-            return ("closeDataWidget(%s); dialog.hide();" %
-                        (submit and 'true' or 'false'))
+            return "return closeDialog(%s);" % (submit and 'true' or 'false')
         if submit:
             return "xhrSubmitPopup('dialog_form', '%s'); return false" % (self.request.URL)
         return 'window.close()'

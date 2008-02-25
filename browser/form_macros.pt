@@ -4,6 +4,7 @@
 <metal:block define-macro="edit" i18n:domain="loops">
     <form method="post" enctype="multipart/form-data"
           id="dialog_form" class="dialog"
+          dojoType="dijit.form.Form"
           tal:define="langInfo view/languageInfo;
                       languages langInfo/availableLanguages;
                       language langInfo/language;

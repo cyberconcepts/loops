@@ -143,6 +143,30 @@ function addConceptAssignment(prefix, suffix) {
     node.appendChild(tr);
 }
 
+function validate() {
+    var form = dijit.byId('dialog_form');
+    if (form != undefined && !form.isValid()) {
+        return false;
+    }
+    var titleField = dojo.byId('title');
+    if (titleField != undefined && titleField.value == '') {
+        return false;
+    }
+    if (form != undefined) {
+        return form.submit();
+    }
+    return true;
+}
+
+function closeDialog(save) {
+    if (save && !validate()) {
+        return false;
+    }
+    closeDataWidget(save);
+    dialog.hide();
+    return true;
+}
+
 function closeDataWidget(save) {
     var widget = dijit.byId('data');
     if (widget != undefined && save) {
