@@ -203,8 +203,11 @@ def addObject(container, class_, name, **kw):
     if name in container:
         return container[name]
     obj = container[name] = class_()
-    for attr in kw:
-        setattr(obj, attr, kw[attr])
+    for attr, value in kw.items():
+        if attr == 'type':
+            obj.setType(value)
+        else:
+            setattr(obj, attr, value)
     notify(ObjectCreatedEvent(obj))
     notify(ObjectModifiedEvent(obj))
     return obj

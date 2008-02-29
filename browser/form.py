@@ -52,7 +52,7 @@ from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.i18n.browser import I18NView
-from loops.query import ConceptQuery
+from loops.query import ConceptQuery, IQueryConcept
 from loops.resource import Resource
 from loops.type import ITypeConcept
 from loops import util
@@ -265,12 +265,22 @@ class CreateObjectForm(ObjectForm):
     @property
     def assignments(self):
         target = self.virtualTargetObject
-        if (IConcept.providedBy(target) and
-                target.conceptType !=
-                    self.loopsRoot.getConceptManager().getTypeConcept()):
+        if self.maybeAssignedAsParent(target):
             rv = ConceptRelationView(ResourceRelation(target, None), self.request)
             return (rv,)
         return ()
+
+    def maybeAssignedAsParent(self, obj):
+        if not IConcept.providedBy(obj):
+            return False
+        if obj.conceptType == self.loopsRoot.getConceptManager().getTypeConcept():
+            return False
+        if 'noassign' in IType(obj).qualifiers:
+            return False
+        adap = adapted(obj)
+        if 'noassign' in getattr(adap, 'options', []):
+            return False
+        return True
 
 
 class CreateObjectPopup(CreateObjectForm):
@@ -329,9 +339,7 @@ class CreateConceptForm(CreateObjectForm):
     @property
     def assignments(self):
         target = self.virtualTargetObject
-        if (IConcept.providedBy(target) and
-                target.conceptType !=
-                    self.loopsRoot.getConceptManager().getTypeConcept()):
+        if self.maybeAssignedAsParent(target):
             rv = ConceptRelationView(ConceptRelation(target, None), self.request)
             return (rv,)
         return ()

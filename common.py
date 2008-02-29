@@ -38,7 +38,11 @@ from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
 from loops.interfaces import IResourceAdapter
 
 
+# convenience functions
+
 def adapted(obj, langInfo=None):
+    """ Return adapter based on the object type's type interface.
+    """
     t = IType(obj, None)
     if t is not None:
         ti = t.typeInterface
@@ -50,6 +54,33 @@ def adapted(obj, langInfo=None):
             if adapted is not None:
                 return adapted
     return obj
+
+
+# helper functions for specifying automatic attribute handling
+
+def adapterAttributes(*args):
+    attrs = []
+    for arg in args:
+        if isinstance(arg, basestring):
+            attrs.append(arg)
+        elif isinstance(arg, type):
+            attrs.extend(list(arg._adapterAttributes))
+        else:
+            raise ValueError("Argument must be string or class, '%s' is '%s'." %
+                             (arg, type(arg)))
+    return tuple(attrs)
+
+def contextAttributes(*args):
+    attrs = []
+    for arg in args:
+        if isinstance(arg, basestring):
+            attrs.append(arg)
+        elif isinstance(arg, type):
+            attrs.extend(list(arg._contextAttributes))
+        else:
+            raise ValueError("Argument must be string or class, '%s' is '%s'." %
+                             (arg, type(arg)))
+    return attrs
 
 
 # type interface adapters

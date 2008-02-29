@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,25 @@
 #
 
 """
-Generic query functionality for retrieving stuff from a loops database
+Generic query functionality for retrieving stuff from a loops database.
 
 $Id$
 """
 
 from BTrees.IIBTree import IITreeSet
 from BTrees.IFBTree import IFBTree, IFTreeSet
-
+from BTrees.IOBTree import IOBTree
 from zope import interface, component
+from zope.app.intid.interfaces import IIntIds
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implements, implementer
 from zope.cachedescriptors.property import Lazy
-
 from hurry.query.query import Term
 from hurry.query.query import Text as BaseText
 from hurry.query.query import Eq, Between
 
+from loops.expert.interfaces import IQuery
+from loops.security.common import canListObject
 from loops import util
 
 titleIndex = ('', 'loops_title')
@@ -41,12 +43,15 @@ textIndex = ('', 'loops_text')
 typeIndex = ('', 'loops_type')
 
 
+@implementer(IQuery)
 def Title(value):
     return BaseText(titleIndex, value)
 
+@implementer(IQuery)
 def Text(value):
     return BaseText(textIndex, value)
 
+@implementer(IQuery)
 def Type(value):
     if value.endswith('*'):
         v1 = value[:-1]
@@ -55,16 +60,56 @@ def Type(value):
     return Eq(typeIndex, value)
 
 
-class Resources(Term):
+class ConceptMapTerm(Term):
+
+    implements(IQuery)
 
     def __init__(self, concept, **kw):
         self.context = concept
-        self.kwargs = kw
+        for k, v in kw.items():
+            setattr(self, k, v)
+
+
+class Resources(ConceptMapTerm):
+
+    predicates = None
 
     def apply(self):
         result = IFTreeSet()
-        #result = IFBTree()
         for r in self.context.getResources():
             result.insert(int(util.getUidForObject(r)))
-            #result[int(util.getUidForObject(r))] = 1.0
         return result
+
+
+class Children(ConceptMapTerm):
+
+    includeResources = False
+    recursive = False
+    predicates = None
+
+    def apply(self):
+        result = IFTreeSet()
+        self.getRecursive(self.context, result)
+        return result
+
+    def getRecursive(self, c, result):
+        if self.includeResources:
+            for r in c.getResources():
+                uid = int(util.getUidForObject(r))
+                if uid not in result:
+                    result.insert(uid)
+        for c in c.getChildren():
+            uid = int(util.getUidForObject(c))
+            if uid not in result:
+                result.insert(uid)
+                if self.recursive:
+                    self.getRecursive(c, result)
+
+
+def getObjects(uids, root=None, checkPermission=canListObject):
+    intIds = component.getUtility(IIntIds)
+    for uid in uids:
+        obj = util.getObjectForUid(uid, intIds)
+        if ((root is None or obj.getLoopsRoot() == root) and
+            (checkPermission is None or checkPermission(obj))):
+            yield obj

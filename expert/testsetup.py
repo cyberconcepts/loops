@@ -11,6 +11,8 @@ from cybertools.typology.interfaces import IType
 from loops import util
 from loops.concept import Concept
 from loops.resource import Resource
+from loops.knowledge.interfaces import IPerson
+from loops.knowledge.knowledge import Person
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addObject
 from loops.tests.setup import TestSite as BaseTestSite
@@ -27,6 +29,8 @@ class TestSite(BaseTestSite):
         site = self.site
         loopsRoot = site['loops']
 
+        component.provideAdapter(Person, provides=IPerson)
+
         component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
@@ -34,6 +38,7 @@ class TestSite(BaseTestSite):
         tType = concepts.getTypeConcept()
         tDomain = concepts['domain']
         tTextDocument = concepts['textdocument']
+        tPerson = concepts['person']
 
         tCountry = addObject(concepts, Concept, 'country', title=u'Country',
                            type=tType)
@@ -76,18 +81,18 @@ class TestSite(BaseTestSite):
         dtNote = addObject(concepts, Concept, 'dt_note',
                            title=u'Note', type=tDocumentType)
 
-        d001 = addObject(resources, Resource, 'd001',
-                           title=u'Doc 001', type=tTextDocument)
+        jim = addObject(concepts, Concept, 'jim', title=u'Jim', type=tPerson)
+        jim.assignChild(cust1)
+
+        d001 = resources['d001.txt']
         d001.assignConcept(cust1)
         d001.assignConcept(stateReleased)
         d001.assignConcept(dtNote)
-        d002 = addObject(resources, Resource, 'd002',
-                           title=u'Doc 002', type=tTextDocument)
+        d002 = resources['d002.txt']
         d002.assignConcept(cust3)
         d002.assignConcept(stateNew)
         d002.assignConcept(dtNote)
-        d003 = addObject(resources, Resource, 'd003',
-                           title=u'Doc 003', type=tTextDocument)
+        d003 = resources['d003.txt']
         d003.assignConcept(cust1)
         d003.assignConcept(stateNew)
         d003.assignConcept(dtStudy)

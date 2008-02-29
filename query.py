@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -169,12 +169,26 @@ class IQueryConcept(IConceptSchema):
         default=u'',
         required=True)
 
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
+        required=False)
+
 
 class QueryConcept(AdapterBase):
 
     implements(IQueryConcept)
 
-    _contextAttributes = list(IQueryConcept) + list(IConcept)
+    _contextAttributes = AdapterBase._contextAttributes + ['viewName']
+    _adapterAttributes = AdapterBase._adapterAttributes + ('options',)
+
+    def getOptions(self):
+        return getattr(self.context, '_options', [])
+    def setOptions(self, value):
+        self.context._options = value
+    options = property(getOptions, setOptions)
 
 
 TypeInterfaceSourceList.typeInterfaces += (IQueryConcept,)

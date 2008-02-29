@@ -81,10 +81,11 @@ def toUnicode(text, encoding='UTF-8'):
         return text
 
 
-def getObjectForUid(uid):
+def getObjectForUid(uid, intIds=None):
     if uid == '*': # wild card
         return '*'
-    intIds = component.getUtility(IIntIds)
+    if intIds is None:
+        intIds = component.getUtility(IIntIds)
     return intIds.getObject(int(uid))
 
 def getUidForObject(obj):

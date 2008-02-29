@@ -679,6 +679,15 @@ been created during setup.
   >>> form.presetTypesForAssignment
   [{'token': 'loops:concept:customer', 'title': u'Customer'}]
 
+If the node's target is a type concept we don't get any assignments because
+it does not make much sense to assign resources or other concepts as
+children to type concepts.
+
+  >>> m112.target = customer
+  >>> form = CreateObjectForm(m112, TestRequest())
+  >>> form.assignments
+  ()
+
 OK, so much about the form - now we want to create a new object based
 on data provided in this form:
 

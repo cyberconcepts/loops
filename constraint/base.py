@@ -27,7 +27,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.traversing.api import getName
 
-from loops.common import AdapterBase
+from loops.common import AdapterBase, adapterAttributes, contextAttributes
 from loops.constraint.interfaces import IStaticConstraint
 from loops.type import TypeInterfaceSourceList
 
@@ -42,8 +42,8 @@ hasChildConstraint = 'haschildconstraint'
 
 class StaticConstraint(AdapterBase):
 
-    _contextAttributes = AdapterBase._contextAttributes + ['relationType', 'cardinality']
-    _adapterAttributes = AdapterBase._adapterAttributes + ('predicates', 'types',)
+    _contextAttributes = contextAttributes(AdapterBase, 'relationType', 'cardinality')
+    _adapterAttributes = adapterAttributes(AdapterBase, 'predicates', 'types')
 
     implements(IStaticConstraint)
 
