@@ -412,8 +412,8 @@ class BaseView(GenericView, I18NView):
         cm.register('js-execute', jsCall, jsCall=jsCall)
         cm.register('css', identifier='tundra.css', position=0,
                     resourceName='ajax.dojo/dijit/themes/tundra/tundra.css', media='all')
-        cm.register('css', identifier='dojo.css', position=1,
-                    resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
+        #cm.register('css', identifier='dojo.css', position=1,
+        #            resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
 
     def registerDojoDateWidget(self):
         self.registerDojo()

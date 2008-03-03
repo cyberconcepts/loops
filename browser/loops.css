@@ -5,12 +5,15 @@
 
 */
 
+/* general */
+
 a[href]:hover {
     text-decoration: none;
     color: #803000;
 }
 
 pre {
+    font-size: 100%;
     background-color: #f4f4f4;
     overflow: scroll;
     max-height: 35em;
@@ -20,6 +23,12 @@ ul, p {
     margin-top: 0.4em;
     margin-bottom: 0.5em;
 }
+
+ol li, ul li {
+    line-height: 1.5em;
+}
+
+/* class-specific */
 
 table.listing td {
     white-space: normal;
@@ -63,31 +72,30 @@ fieldset.box td {
 }
 
 .content-1 h1, h1 {
-    font-size: 160%;
+    font-size: 180%;
     margin-top: 0.8em;
-    padding-bottom: 3px;
 }
 
 .content-2 h1, .content-1 h2, h2 {
-    font-size: 140%;
+    font-size: 160%;
     font-weight: normal;
     margin-top: 0.7em;
 }
 
 .content-3 h1, .content-2 h2, .content-1 h3, h3 {
-    font-size: 130%;
+    font-size: 145%;
     font-weight: normal;
     margin-top: 0.7em;
 }
 
 .content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4, h4 {
-    font-size: 120%;
+    font-size: 125%;
     font-weight: normal;
     margin-top: 0.7em;
 }
 
 .content-5 h1, .content-4 h2, .content-3 h3, content-2 h4 {
-    font-size: 100%;
+    font-size: 110%;
     border: none;
     margin-top: 0.7em;
 }

@@ -22,6 +22,7 @@ Definition of view classes and other browser related stuff for tasks.
 $Id$
 """
 
+from datetime import datetime
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -59,7 +60,11 @@ class Events(ConceptView):
         cm = self.loopsRoot.getConceptManager()
         tEvent = cm['event']
         hasType = cm.getTypePredicate()
-        sort = lambda x: adapted(x.second).start
-        for r in tEvent.getChildRelations([hasType], sort=sort):
-            yield self.childViewFactory(r, self.request, contextIsSecond=True)
+        sort = lambda x: x.adapted.start
+        now = datetime.today()
+        relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
+                        for r in tEvent.getChildRelations([hasType], sort=None))
+        return sorted((rv for rv in relViews
+                          if not rv.adapted.end or rv.adapted.end >= now),
+                      key=sort)
 
