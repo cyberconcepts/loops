@@ -26,7 +26,7 @@ $Id$
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.interface import implements
-from zope.traversing.api import getName
+from zope.traversing.api import getName, traverse
 
 from loops.external.interfaces import IElement
 
@@ -57,7 +57,7 @@ class ConceptElement(Element):
     def __call__(self, loader):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
-                         if k not in ('name', 'title', 'type'))
+                         if k not in self.posArgs)
         loader.addConcept(self['name'], self['title'], type, **kw)
 
 
@@ -81,11 +81,6 @@ class TypeElement(ConceptElement):
         loader.addConcept(self['name'], self['title'], 'type', **kw)
 
 
-class ResourceElement(ConceptElement):
-
-    elementType = 'resource'
-
-
 class ChildElement(Element):
 
     elementType = 'child'
@@ -99,9 +94,56 @@ class ChildElement(Element):
         loader.assignChild(self['first'], self['second'], self['predicate'])
 
 
+class NodeElement(Element):
+
+    elementType = 'node'
+    posArgs = ('name', 'title', 'path', 'type')
+
+    def __init__(self, *args, **kw):
+        for idx, arg in enumerate(args):
+            self[self.posArgs[idx]] = arg
+        for k, v in kw.items():
+            self[k] = v
+
+    def __call__(self, loader):
+        type = self['type']
+        cont = traverse(loader.views, self['path'])
+        target = self.pop('target', None)
+        kw = dict((k, v) for k, v in self.items()
+                         if k not in self.posArgs)
+        node = loader.addNode(self['name'], self['title'], cont, type, **kw)
+        if target is not None:
+            node.target = traverse(loader.context, target)
+
+
+# not yet implemented
+
+class ResourceElement(Element):
+
+    elementType = 'resource'
+    posArgs = ('name', 'title', 'type')
+
+    def __call__(self, loader):
+        type = loader.concepts[self['type']]
+        kw = dict((k, v) for k, v in self.items()
+                         if k not in self.posArgs)
+        loader.addResource(self['name'], self['title'], type, **kw)
+
+
+class ResourceRelationElement(ChildElement):
+
+    elementType = 'resourceRelation'
+
+    def __call__(self, loader):
+        loader.assignResource(self['first'], self['second'], self['predicate'])
+
+
+# element registry
+
 elementTypes = dict(
     type=TypeElement,
     concept=ConceptElement,
     resource=ResourceElement,
     child=ChildElement,
+    node=NodeElement,
 )

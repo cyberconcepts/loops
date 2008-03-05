@@ -28,7 +28,7 @@ import itertools
 from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
@@ -48,6 +48,14 @@ class Base(object):
     @Lazy
     def concepts(self):
         return self.context.getConceptManager()
+
+    @Lazy
+    def resources(self):
+        return self.context.getResourceManager()
+
+    @Lazy
+    def views(self):
+        return self.context.getViewManager()
 
     @Lazy
     def typeConcept(self):
@@ -84,8 +92,7 @@ class Extractor(Base):
                                self.extractChildren(),
                                #self.extractResources(),
                                #self.extractResourceRelations(),
-                               #self.extractNodes(),
-                               #self.extractTargets(),
+                               self.extractNodes(),
                               )
 
     def extractTypes(self):
@@ -140,4 +147,22 @@ class Extractor(Base):
                     if r.relevance != 1.0:
                         args.append(r.relevance)
                     yield childElement(*args)
+
+    def extractNodes(self, parent=None, path=''):
+        if parent is None:
+            parent = self.views
+        element = elementTypes['node']
+        for name, obj in parent.items():
+            data = {}
+            for attr in ('description', 'body', 'viewName'):
+                value = getattr(obj, attr)
+                if value:
+                    data[attr] = value
+            target = obj.target
+            if target is not None:
+                data['target'] = '/'.join((getName(getParent(target)), getName(target)))
+            yield element(name, obj.title, path, obj.nodeType, **data)
+            childPath = path and '/'.join((path, name)) or name
+            for elem in self.extractNodes(obj, childPath):
+                yield elem
 

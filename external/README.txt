@@ -48,6 +48,16 @@ Creating the corresponding objects
   >>> adapted(concepts['myquery']).viewName
   'mystuff.html'
 
+Working with nodes
+------------------
+
+  >>> input = ("node('home', u'Home', '', u'menu', body=u'Welcome')\n"
+  ...          "node('myquery', u'My Query', 'home', u'page', "
+  ...          "     target='concepts/myquery')")
+  >>> reader = PyReader()
+  >>> elements = reader.read(input)
+  >>> loader.load(elements)
+
 
 Exporting loops Objects
 =======================
@@ -60,7 +70,7 @@ Extracting elements
   >>> extractor = Extractor(loopsRoot)
   >>> elements = list(extractor.extract())
   >>> len(elements)
-  13
+  15
 
 Writing object information to the external storage
 --------------------------------------------------
@@ -76,7 +86,9 @@ Writing object information to the external storage
   type(u'query', u'Query', options=u'', typeInterface='loops.query.IQueryConcept',
        viewName=u'')...
   concept(u'myquery', u'My Query', u'query', options=u'', viewName='mystuff.html')...
-  child(u'projects', u'customer', u'standard')...
+  child(u'projects', u'customer', u'standard')
+  node('home', u'Home', '', u'menu', body=u'Welcome')
+  node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
 
 
 The Export/Import View

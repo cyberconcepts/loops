@@ -325,9 +325,11 @@
   <adapter factory="loops.schema.NoteSchemaFactory" />
 
   <adapter factory="loops.setup.SetupManager" />
+
+  <!-- obsolete:
   <adapter factory="loops.external.NodesLoader" />
   <adapter factory="loops.external.NodesExporter" />
-  <adapter factory="loops.external.NodesImporter" />
+  <adapter factory="loops.external.NodesImporter" />-->
 
   <adapter factory="loops.target.DocumentProxy"
            permission="zope.ManageContent" />

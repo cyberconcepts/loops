@@ -19,6 +19,8 @@
 """
 Adapter implementations for export, import, ...
 
+Obsolete, replaced by functionality in loops.external.base and other modules
+
 $Id$
 """
 

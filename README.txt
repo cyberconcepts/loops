@@ -837,52 +837,11 @@ informations about all parents of an object.
 Import/Export
 =============
 
-Nodes may be exported to and loaded from external sources, typically
-file representations that allow the transfer of nodes from one Zope
-instance to another.
-
-  >>> from loops.external import NodesLoader
-  >>> loader = NodesLoader(views)
-  >>> data = [{'name': 'm2', 'path': '', 'description': u'desc 1',
-  ...          'title': u'M 2', 'body': u'test m2', 'nodeType': 'menu' },
-  ...         {'name': 'm21', 'path': 'm2', 'description': u'',
-  ...          'title': u'M 21', 'body': u'test m21', 'nodeType': 'page' },
-  ...         {'name': 'm114', 'path': 'm1/m11', 'description': u'',
-  ...          'title': u'M 114', 'body': u'test m114', 'nodeType': 'page' },]
-  >>> loader.load(data)
-  >>> views['m2']['m21'].title
-  u'M 21'
-  >>> views['m1']['m11']['m114'].title
-  u'M 114'
-
-  >>> from loops.external import NodesExporter, NodesImporter
-  >>> exporter = NodesExporter(views)
-  >>> data = exporter.extractData()
-  >>> len(data)
-  8
-  >>> data[3]['path']
-  u'm1/m11'
-  >>> data[3]['name']
-  u'm112'
-
-  >>> dumpname = os.path.dirname(__file__) + '/test.tmp'
-  >>> exporter.filename = dumpname
-  >>> exporter.dumpData()
-
-Load them again from the exported file:
-
-  >>> importer = NodesImporter(views)
-  >>> importer.filename = dumpname
-  >>> imported = importer.getData()
-  >>> imported == data
-  True
-
-  >>> loader.load(imported)
+Obsolete - see package loops.external.
 
 
 Fin de partie
 =============
 
-  >>> os.unlink(dumpname)
   >>> placefulTearDown()
 

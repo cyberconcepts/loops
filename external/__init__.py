@@ -2,4 +2,4 @@
 $Id$
 """
 
-from loops.external.external import NodesLoader, NodesExporter, NodesImporter
+#from loops.external.external import NodesLoader, NodesExporter, NodesImporter
