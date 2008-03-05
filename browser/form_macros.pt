@@ -68,7 +68,7 @@
           tal:define="qualifier request/qualifier | string:resource;
                       innerForm request/inner_form | string:inner_form.html;
                       typeToken python: request.get('form.type')
-                                    or '.loops/concepts/textdocument';
+                                    or view.defaultType;
                       fixedType request/fixed_type | nothing">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />

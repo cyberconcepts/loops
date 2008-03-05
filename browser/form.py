@@ -225,6 +225,7 @@ class CreateObjectForm(ObjectForm):
     def macro(self): return self.template.macros['create']
 
     defaultTitle = u'Create Resource, Type = '
+    defaultType = '.loops/concepts/textdocument'
     form_action = 'create_resource'
     dialog_name = 'create'
 

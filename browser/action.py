@@ -19,7 +19,7 @@
 """
 Base classes (sort of views) for action portlet items.
 
-$Id$
+$Id: action.py 2313 2008-01-15 13:00:34Z helmutm $
 """
 
 from urllib import urlencode
@@ -68,8 +68,9 @@ class DialogAction(Action):
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
         urlParams.update(self.addParams)
-        return self.jsOnClick % (self.dialogName, self.page.virtualTargetUrl,
-                                 self.viewName, urlencode(urlParams))
+        url = self.page.virtualTargetUrlWithSkin
+        return self.jsOnClick % (self.dialogName, url, self.viewName,
+                                 urlencode(urlParams))
 
     @Lazy
     def innerHtmlId(self):

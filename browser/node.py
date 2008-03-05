@@ -22,6 +22,7 @@ View class for Node objects.
 $Id$
 """
 
+from urlparse import urlparse, urlunparse
 from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
 from zope.app import zapi
@@ -342,6 +343,16 @@ class NodeView(BaseView):
             return '%s/.target%s' % (self.url, targetId)
         else:
             return self.url
+
+    @Lazy
+    def virtualTargetUrlWithSkin(self):
+        url = self.virtualTargetUrl
+        if self.skin:
+            parts = urlparse(url)
+            url = urlunparse(parts[:2] +
+                             ('/++skin++' + self.skin.__name__ + parts[2],) +
+                             parts[3:])
+        return url
 
     @Lazy
     def realTargetUrl(self):
