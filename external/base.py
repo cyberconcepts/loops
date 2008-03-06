@@ -125,7 +125,8 @@ class Extractor(Base):
         schema = schemaFactory(ti, manager=self) #, request=self.request)
         instance = IInstance(aObj)
         instance.template = schema
-        # TODO: use ``_not_exportable`` attribute of adapter to control export
+        # TODO: use ``_not_exportable`` attribute of adapter to control export;
+        # this should also convert object attributes like e.g. typeInterface
         #data = instance.applyTemplate(mode='export')
         data = instance.applyTemplate(mode='edit')
         if 'title' in data:

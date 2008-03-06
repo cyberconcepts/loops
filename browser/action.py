@@ -68,7 +68,8 @@ class DialogAction(Action):
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
         urlParams.update(self.addParams)
-        url = self.page.virtualTargetUrlWithSkin
+        #url = self.page.virtualTargetUrlWithSkin
+        url = self.page.virtualTargetUrl
         return self.jsOnClick % (self.dialogName, url, self.viewName,
                                  urlencode(urlParams))
 

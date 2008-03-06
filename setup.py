@@ -155,7 +155,7 @@ class SetupManager(object):
     def assignChild(self, conceptName, childName, predicate=None):
         if predicate is None:
             predicate = self.concepts.getDefaultPredicate()
-        if isinstance(predicate, str):
+        if isinstance(predicate, basestring):
             predicate = self.concepts[predicate]
         concept = self.concepts[conceptName]
         child = self.concepts[childName]

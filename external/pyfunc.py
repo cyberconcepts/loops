@@ -30,18 +30,22 @@ from loops.external.interfaces import IReader, IWriter
 from loops.external.element import elementTypes
 
 
-class PyReader(dict):
+class PyReader(object):
 
     implements(IReader)
-
-    def __init__(self):
-        self.elements = []
 
     def read(self, input):
         if not isinstance(input, str):
             input = input.read()
-        exec input in self
-        return self.elements
+        proc = InputProcessor()
+        exec input in proc
+        return proc.elements
+
+
+class InputProcessor(dict):
+
+    def __init__(self):
+        self.elements = []
 
     def __getitem__(self, key):
         def factory(*args, **kw):

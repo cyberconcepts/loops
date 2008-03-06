@@ -115,7 +115,7 @@ Now we are ready to enter a language-specific title.
   >>> form.update()
 
   >>> topic01.title
-  {'en': u'loops for Zope 3', 'it': u'loops per Zope 3'}
+  I18NValue({'en': u'loops for Zope 3', 'it': u'loops per Zope 3'})
 
 If we access an i18n attribute via a view that is i18n-aware we get the
 value corresponding to the language preferences that appear in the request.

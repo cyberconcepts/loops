@@ -25,7 +25,7 @@ $Id$
 
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
-from zope.interface import implements
+from zope.interface import Interface, implements
 from zope.traversing.api import getName, traverse
 
 from loops.external.interfaces import IElement
@@ -68,17 +68,18 @@ class TypeElement(ConceptElement):
 
     def __init__(self, name, title, *args, **kw):
         super(TypeElement, self).__init__(name, title, *args, **kw)
-        ti = self['typeInterface']
+        ti = self.get('typeInterface')
         if ti:
-            self['typeInterface'] = '.'.join((ti.__module__, ti.__name__))
-        else:
-            del self['typeInterface']
+            if not isinstance(ti, basestring):
+                self['typeInterface'] = '.'.join((ti.__module__, ti.__name__))
 
     def __call__(self, loader):
         kw = dict((k, v) for k, v in self.items()
                 if k not in ('name', 'title', 'type', 'typeInterface'))
-        kw['typeInterface'] = resolve(self['typeInterface'])
-        loader.addConcept(self['name'], self['title'], 'type', **kw)
+        ti = self.get('typeInterface')
+        if ti:
+            kw['typeInterface'] = resolve(ti)
+        loader.addConcept(self['name'], self['title'], loader.typeConcept, **kw)
 
 
 class ChildElement(Element):
@@ -113,7 +114,8 @@ class NodeElement(Element):
                          if k not in self.posArgs)
         node = loader.addNode(self['name'], self['title'], cont, type, **kw)
         if target is not None:
-            node.target = traverse(loader.context, target)
+            targetObject = traverse(loader.context, target, None)
+            node.target = targetObject
 
 
 # not yet implemented

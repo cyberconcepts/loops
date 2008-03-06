@@ -25,10 +25,11 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from loops.interfaces import IConceptSchema
 from loops.util import _
 
 
-class IClassifier(Interface):
+class IClassifier(IConceptSchema):
     """ An object that is able to analyze a resource and identify the
         concepts to assign.
     """

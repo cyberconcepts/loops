@@ -58,8 +58,8 @@ class I18NValue(PersistentMapping):
     #def __unicode__(self):
     #    return unicode(self.getDefault())
 
-    #def __repr__(self):
-    #    return repr(self.getDefault())
+    def __repr__(self):
+        return 'I18NValue(%r)' % dict(self)
 
 
 def getI18nValue(obj, attr, langInfo=None):
@@ -115,6 +115,9 @@ class I18NAdapterBase(AdapterBase):
 
     @Lazy
     def i18nAttributes(self):
+        if getattr(self.context, '__parent__', None) is None:
+            # temporary object during creation
+            return []
         tp = IType(self.context)
         attrs = tp.optionsDict.get('i18nattributes', '')
         return [attr.strip() for attr in attrs.split(',')]
