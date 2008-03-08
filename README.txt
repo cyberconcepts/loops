@@ -762,10 +762,11 @@ The new technique uses the ``fields`` and ``data`` attributes...
   data textarea False None
   contentType dropdown True <...SimpleVocabulary object...>
   linkUrl textline False None
+  linkText textline False None
 
   >>> view.data
   {'linkUrl': u'http://', 'contentType': 'text/restructured', 'data': u'',
-   'title': u'Test Note'}
+   'linkText': u'', 'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
 a NodeView.
@@ -832,6 +833,18 @@ informations about all parents of an object.
   ...     print p.object.title, len(p.relations)
   Note 1
   Type 2
+
+
+Caching
+=======
+
+To be done...
+
+  >>> from loops.common import cached
+  >>> obj = resources['test_note']
+  >>> cxObj = cached(obj)
+  >>> [p.object.title for p in cxObj.getAllParents()]
+  [u'Note', u'Type']
 
 
 Import/Export

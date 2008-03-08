@@ -37,8 +37,10 @@ class PersonSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(PersonSchemaFactory, self).__call__(interface, **kw)
-        schema.fields.phoneNumbers.instance_name ='simplelist'
-        schema.fields.birthDate.display_format = ('date', 'long')
+        if 'phoneNumbers' in schema.fields.keys():
+            schema.fields.phoneNumbers.instance_name ='simplelist'
+        if 'birthDate' in schema.fields.keys():
+            schema.fields.birthDate.display_format = ('date', 'long')
         return schema
 
 

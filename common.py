@@ -209,3 +209,9 @@ class NameChooser(BaseNameChooser):
     specialCharacters = {
         '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
+
+# caching
+
+def cached(obj):
+    return obj
+

@@ -30,7 +30,9 @@
     <b>
       <a href="."
          i18n:translate=""
-         tal:attributes="href linkUrl">more...</a>
+         tal:attributes="href linkUrl"
+         tal:define="linkText item/adapted/linkText|nothing"
+         tal:content="python: linkText or 'more...'">more...</a>
     </b>
   </div>
 </metal:block>

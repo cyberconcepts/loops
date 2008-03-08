@@ -285,6 +285,7 @@ class Concept(Contained, Persistent):
                   if canListObject(r.second))
         return sorted(rels, key=sort)
 
+
 # concept manager
 
 class ConceptManager(BTreeContainer):
