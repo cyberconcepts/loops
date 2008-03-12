@@ -1,0 +1,50 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:adapter factory="loops.integrator.content.base.ExternalAccess"
+                trusted="True" />
+  <zope:class class="loops.integrator.content.base.ExternalAccess">
+    <require permission="zope.View"
+             interface="loops.integrator.content.interfaces.IExternalAccess" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.integrator.content.interfaces.IExternalAccess" />
+  </zope:class>
+
+  <zope:class class="cybertools.integrator.filesystem.ReadContainer">
+    <require permission="zope.View"
+             interface="zope.app.container.interfaces.IReadContainer" />
+  </zope:class>
+
+  <zope:class class="cybertools.integrator.filesystem.File">
+    <require permission="zope.View"
+             interface="zope.app.file.interfaces.IFile" />
+  </zope:class>
+
+  <zope:class class="cybertools.integrator.filesystem.Image">
+    <require permission="zope.View"
+             interface="zope.app.file.interfaces.IImage" />
+  </zope:class>
+
+  <zope:utility factory="cybertools.integrator.filesystem.ContainerFactory"
+                name="filesystem" />
+
+  <zope:utility factory="cybertools.integrator.filesystem.FileFactory"
+                name="filesystem" />
+
+  <!-- view(s) -->
+
+  <browser:page
+        name="xa"
+        for="loops.interfaces.INode"
+        class="loops.integrator.content.browser.ExternalAccessView"
+        permission="zope.View" />
+
+  <browser:containerViews
+        for="zope.app.container.interfaces.IReadContainer"
+        index="zope.View" />
+
+</configure>

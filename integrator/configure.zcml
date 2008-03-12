@@ -54,4 +54,6 @@
         provides="zope.publisher.interfaces.IPublishTraverse"
         permission="zope.Public" />
 
+  <include package=".content" />
+
 </configure>

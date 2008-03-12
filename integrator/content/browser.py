@@ -17,32 +17,31 @@
 #
 
 """
-View class(es) for integrating external objects.
+View class(es) for accessing external objects.
 
 $Id$
 """
 
 from zope import interface, component
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.publisher.browser import getDefaultViewName
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView
+from loops.browser.node import NodeView
 from loops.common import adapted
 
 
-class ExternalCollectionView(ConceptView):
+class ExternalAccessView(NodeView):
 
-    macro_template = ViewPageTemplateFile('collection_macros.pt')
+    @Lazy
+    def adapted(self):
+        return adapted(self.virtualTargetObject)
 
-    @property
-    def macro(self):
-        return self.macro_template.macros['render_collection']
+    def __call__(self):
+        obj = self.adapted()
+        name = getDefaultViewName(obj, self.request)
+        view = component.getMultiAdapter((obj, self.request), name=name)
+        return view()
 
-    def update(self):
-        if 'update' in self.request.form:
-            cta = adapted(self.context)
-            if cta is not None:
-                cta.update()
-        return True
-
+    def publishTraverse(self, request, name):
+        return self.adapted()[name]

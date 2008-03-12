@@ -105,3 +105,20 @@ class IStatement(Interface):
     relevance = Attribute('A number denoting the relevance or correctness '
                     'of the statement')
 
+
+# more to come...
+
+class IOntologyExporter(Interface):
+    """ An adapter for creating an XML file with all appropriate informations
+        from the context and its children, selecting children via a
+        pattern or a set of selection criteria.
+
+        This may then be used by an external tool for classifying
+        a set of external objects.
+    """
+
+
+class IClassificationImporter(Interface):
+    """ An Adapter for importing an XML file with classification
+        information for a collection of external objects."
+    """

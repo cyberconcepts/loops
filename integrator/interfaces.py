@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #
 
 """
-Intergrator interfaces.
+Integrator interfaces.
 
 $Id$
 """
@@ -98,28 +98,5 @@ class IExternalCollectionProvider(Interface):
             provided. Return the list of objects created.
         """
 
-# classification stuff
-
-class IAutoClassifier(Interface):
-    """ An adapter that more or less automagically assigns concepts to a
-        resource using some sort of selection criteria for the concepts
-        that should be considered.
-    """
-
-
-class IOntologyExporter(Interface):
-    """ An adapter for creating an XML file with all appropriate informations
-        from the context and its children, selecting children via a
-        pattern or a set of selection criteria.
-
-        This may then be used by an external tool for classifying
-        a set of external objects.
-    """
-
-
-class IClassificationImporter(Interface):
-    """ An Adapter for importing an XML file with classification
-        information for a collection of external objects."
-    """
-
+# classification stuff moved to loops.classifier
 
