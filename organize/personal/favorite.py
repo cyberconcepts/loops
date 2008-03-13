@@ -22,10 +22,51 @@ Base classes for a notification framework.
 $Id$
 """
 
+from zope.component import adapts
 from zope.interface import implements
 
 from cybertools.tracking.btree import Track
-from loops.organize.personal.interfaces import IFavorite
+from cybertools.tracking.interfaces import ITrackingStorage
+from loops.organize.personal.interfaces import IFavorites, IFavorite
+from loops import util
+
+
+class Favorites(object):
+
+    implements(IFavorites)
+    adapts(ITrackingStorage)
+
+    def __init__(self, context):
+        self.context = context
+
+    def list(self, person, sortKey=None):
+        if person is None:
+            return
+        personUid = util.getUidForObject(person)
+        if sortKey is None:
+            sortKey = lambda x: -x.timeStamp
+        for item in sorted(self.context.query(userName=personUid), key=sortKey):
+            yield item.taskId
+
+    def add(self, obj, person):
+        if None in (obj, person):
+            return False
+        uid = util.getUidForObject(obj)
+        personUid = util.getUidForObject(person)
+        if self.context.query(userName=personUid, taskId=uid):
+            return False
+        return self.context.saveUserTrack(uid, 0, personUid, {})
+
+    def remove(self, obj, person):
+        if None in (obj, person):
+            return False
+        uid = util.getUidForObject(obj)
+        personUid = util.getUidForObject(person)
+        changed = False
+        for t in self.context.query(userName=personUid, taskId=uid):
+            changed = True
+            self.context.removeTrack(t)
+        return changed
 
 
 class Favorite(Track):
@@ -33,3 +74,4 @@ class Favorite(Track):
     implements(IFavorite)
 
     typeName = 'Favorite'
+

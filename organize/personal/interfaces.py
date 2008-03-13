@@ -28,10 +28,18 @@ from zope import schema
 from cybertools.tracking.interfaces import ITrack
 
 
+class IFavorites(Interface):
+    """ A collection of favorites.
+    """
+
+    def add(objectId, personId):
+        """ Add an object to the person's favorites collection.
+        """
+
+
 class IFavorite(ITrack):
     """ A favorite references a content object via the
         task id attribute; the user name references
         the user/person for which the favorite is to be stored.
         The tracking storage's run management is not used.
     """
-

@@ -2,7 +2,7 @@
 
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="zope">
+   i18n_domain="loops">
 
   <class class="cybertools.tracking.btree.TrackingStorage">
     <require permission="zope.View"
@@ -22,7 +22,15 @@
              set_schema="loops.organize.personal.interfaces.IFavorite" />
   </class>
 
+  <adapter factory="loops.organize.personal.favorite.Favorites" trusted="True" />
+  <class class="loops.organize.personal.favorite.Favorites">
+    <require permission="zope.View"
+             interface="loops.organize.personal.interfaces.IFavorites" />
+  </class>
+
   <adapter factory="loops.organize.personal.setup.SetupManager"
            name="organize.personal" />
+
+  <include package=".browser" />
 
 </configure>

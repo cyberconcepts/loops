@@ -79,6 +79,15 @@ Finally, we log in as the newly created user.
   >>> from loops.tests.auth import login
   >>> login(pJohn)
 
+One step is still missing: As we are now working with a real principal
+the security checks e.g. in views are active. So we have to provide
+our user with the necessary permissions.
+
+  >>> grantPermission = setupData.rolePermissions.grantPermissionToRole
+  >>> assignRole = setupData.principalRoles.assignRoleToPrincipal
+  >>> grantPermission('zope.View', 'zope.Member')
+  >>> assignRole('zope.Member', 'users.john')
+
 Working with the favorites storage
 ----------------------------------
 
@@ -93,23 +102,26 @@ can remember as favorites.
   >>> d003Id = util.getUidForObject(resources['d003.txt'])
   >>> johnCId = util.getUidForObject(johnC)
 
-(We always need a "run" - can we try to ignore this for favorites?)
+We do not access the favorites storage directly but by using an adapter.
 
-  >>> runId = favorites.startRun()
+  >>> from loops.organize.personal.favorite import Favorites
+  >>> component.provideAdapter(Favorites)
+  >>> from loops.organize.personal.interfaces import IFavorites
+  >>> favAdapted = IFavorites(favorites)
 
-For favorites we don't need any data...
+The adapter provides convenience methods for accessing the favorites storage.
 
-  >>> favorites.saveUserTrack(d001Id, runId, johnCId, {})
+  >>> favAdapted.add(resources['d001.txt'], johnC)
   '0000001'
-  >>> favorites.saveUserTrack(d003Id, runId, johnCId, {})
-  '0000002'
 
 So we are now ready to query the favorites.
 
   >>> favs = favorites.query(userName=johnCId)
   >>> favs
-  [<Favorite ['27', 1, '33', '...']: {}>,
-   <Favorite ['31', 1, '33', '...']: {}>]
+  [<Favorite ['27', 1, '33', '...']: {}>]
+
+  >>> list(favAdapted.list(johnC))
+  ['27']
 
   >>> util.getObjectForUid(favs[0].taskId) is resources['d001.txt']
   True
@@ -117,3 +129,33 @@ So we are now ready to query the favorites.
 User interface
 --------------
 
+  >>> from loops.view import Node
+  >>> home = views['home'] = Node()
+  >>> from loops.tests.auth import TestRequest
+  >>> from loops.organize.personal.browser.configurator import PortletConfigurator
+
+  >>> portletConf = PortletConfigurator(home, TestRequest())
+  >>> len(portletConf.viewProperties)
+  1
+
+  >>> from loops.organize.personal.browser.favorite import FavoriteView
+  >>> view = FavoriteView(home, TestRequest())
+
+Let's now trigger the saving of a favorite.
+
+  >>> d002Id = util.getUidForObject(resources['d002.txt'])
+  >>> request = TestRequest(form=dict(id=d002Id))
+  >>> view = FavoriteView(home, request)
+
+  >>> view.add()
+
+  >>> len(favorites.query(userName=johnCId))
+  2
+
+  >>> d002Id = util.getUidForObject(resources['d001.txt'])
+  >>> request = TestRequest(form=dict(id=d002Id))
+  >>> view = FavoriteView(home, request)
+  >>> view.remove()
+
+  >>> len(favorites.query(userName=johnCId))
+  1

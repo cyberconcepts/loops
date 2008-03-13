@@ -137,6 +137,10 @@ div.box h4 {
     padding: 0.2em 0.2em 0.2em 0.3em;
 }
 
+div.action {
+    border-top: 1px solid #eeeeee;
+}
+
 div.menu-1, div.menu-2 {
     border-top: 1px solid #eeeeee;
     font-weight: bold;
@@ -150,6 +154,12 @@ div.menu-1, div.menu-2 {
 .box div.body div.menu-4 {
     padding-left: 3em;
     font-size: 90%
+}
+
+.delete-item a[href] {
+    color: #ff7777;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .subcolumn {

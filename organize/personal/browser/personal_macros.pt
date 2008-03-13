@@ -1,0 +1,24 @@
+<metal:actions define-macro="favorites_portlet"
+               tal:define="view nocall:context/@@favorites.html;
+                           targetUid view/targetUid">
+    <div tal:repeat="item view/listFavorites">
+      <span style="float:right" class="delete-item">&nbsp;<a href="removeFavorite.html"
+          tal:attributes="href
+                string:${view/virtualTargetUrl}/removeFavorite.html?id=${item/uid};
+                          title string:Remove from favorites"
+          i18n:attributes="title">X</a>&nbsp;</span>
+      <a href=""
+         tal:attributes="href item/url;
+                         title item/description"
+         tal:content="item/title">Some object</a>
+    </div>
+    <div id="addFavorite" class="action"
+         tal:condition="targetUid">
+      <a href="addFavorite.html"
+         i18n:translate=""
+         tal:attributes="href
+                string:${view/virtualTargetUrl}/addFavorite.html?id=$targetUid;
+                         title string:Add current object to favorites"
+         i18n:attributes="title">Add to Favorites</a>
+    </div>
+</metal:actions>

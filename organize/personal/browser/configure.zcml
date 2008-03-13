@@ -1,0 +1,23 @@
+<!-- $Id$ -->
+
+<configure
+        xmlns:zope="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
+        i18n_domain="loops">
+
+  <zope:adapter
+        factory="loops.organize.personal.browser.configurator.PortletConfigurator"
+        for="loops.interfaces.INode
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        name="loops.organize.personal" />
+
+  <browser:pages
+        class="loops.organize.personal.browser.favorite.FavoriteView"
+        for="loops.interfaces.INode"
+        permission="zope.View">
+    <page name="favorites.html" />
+    <page name="addFavorite.html" attribute="add" />
+    <page name="removeFavorite.html" attribute="remove" />
+  </browser:pages>
+
+</configure>

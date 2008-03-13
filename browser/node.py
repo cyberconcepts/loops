@@ -290,6 +290,13 @@ class NodeView(BaseView):
                 target = getVersion(target, self.request)
         return target
 
+    @Lazy
+    def targetUid(self):
+        if self.virtualTargetObject:
+            return util.getUidForObject(self.virtualTargetObject)
+        else:
+            return None
+
     def targetView(self, name='index.html', methodName='show'):
         target = self.virtualTargetObject
         if target is not None:
