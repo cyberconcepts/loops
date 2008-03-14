@@ -72,7 +72,7 @@ class Loops(Folder):
         return self['views']
 
     def getRecordManager(self):
-        return self['records']
+        return self.get('records')
 
     def getLoopsUri(self, obj):
         return str(loopsPrefix + getPath(obj)[len(getPath(self)):])

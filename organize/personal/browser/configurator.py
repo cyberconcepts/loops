@@ -44,9 +44,16 @@ class PortletConfigurator(ViewConfigurator):
         self.context = context
         self.request = request
 
+    def hasFavorites(self):
+        records = self.context.getLoopsRoot().getRecordManager()
+        if records is not None:
+            return 'favorites' in records
+        return False
+
     @property
     def viewProperties(self):
-        if getPersonForUser(self.context, self.request) is None:
+        if (not self.hasFavorites()
+            or getPersonForUser(self.context, self.request) is None):
         #if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             return []
         favorites = MacroViewProperty(self.context, self.request)
