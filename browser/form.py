@@ -225,7 +225,6 @@ class CreateObjectForm(ObjectForm):
     def macro(self): return self.template.macros['create']
 
     defaultTitle = u'Create Resource, Type = '
-    defaultType = '.loops/concepts/textdocument'
     form_action = 'create_resource'
     dialog_name = 'create'
 
@@ -235,6 +234,11 @@ class CreateObjectForm(ObjectForm):
             return _(u'Create %s' % self.typeConcept.title)
         else:
             return _(self.defaultTitle)
+
+    @Lazy
+    def defaultTypeToken(self):
+        return (self.controller.params.get('form.create.defaultTypeToken')
+                or '.loops/concepts/textdocument')
 
     @Lazy
     def typeConcept(self):
