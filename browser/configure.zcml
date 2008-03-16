@@ -221,6 +221,15 @@
       permission="zope.View"
       />
 
+  <zope:adapter
+      name="folder.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.folder.FolderView"
+      permission="zope.View"
+      />
+
   <!-- resource manager -->
 
   <addform

@@ -17,6 +17,9 @@ msgstr "Begriff"
 msgid "Resource"
 msgstr "Ressource"
 
+msgid "Folder"
+msgstr "Ordner"
+
 msgid "Log out"
 msgstr "Abmelden"
 
@@ -31,6 +34,18 @@ msgstr "Ressource anlegen..."
 
 msgid "Create a new resource object."
 msgstr "Eine neue Ressource erzeugen"
+
+msgid "Create Folder..."
+msgstr "Ordner anlegen..."
+
+msgid "Create a new folder."
+msgstr "Einen neuen Ordner anlegen"
+
+msgid "Edit Folder..."
+msgstr "Ordner bearbeiten..."
+
+msgid "Modify folder."
+msgstr "Ordner ändern"
 
 msgid "Edit Blog Post..."
 msgstr "Eintrag bearbeiten..."

@@ -280,6 +280,13 @@ i.e. the 'topic' concept, via an adapter:
   >>> ITopic.providedBy(cc1Adapter)
   True
 
+There is a shortcut to getting the typeInterface adapter for an object.
+
+  >>> from loops.common import adapted
+  >>> cc1Adapter = adapted(cc1)
+  >>> ITopic.providedBy(cc1Adapter)
+  True
+
 
 Simple access to type information with BaseView
 -----------------------------------------------
@@ -299,8 +306,8 @@ context object's type:
   <Topic object ...>
 
 
-Concepts as queries
--------------------
+Concepts as Queries
+===================
 
 We first have to set up the query type, i.e. a type concept associated
 with the IQueryConcept interface. The query type concept itself has already
@@ -348,8 +355,8 @@ view/multi-adapter with this name:
   <class 'SimpleView'>
 
 
-Controlling presentation using view properties
-----------------------------------------------
+Controlling Presentation Using View Properties
+==============================================
 
   >>> from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
   >>> from zope.annotation.attribute import AttributeAnnotations
@@ -405,3 +412,59 @@ browser).
   >>> controller = Controller(view, request)
   >>> controller.skinName.value
   'SuperSkin'
+
+
+Folders
+=======
+
+  We may provide a concept type called a folder - there is no special
+  functionality about it but it may be used for building a pseudo hierarchy
+  using nested folders. This may make it easier for users to map the
+  structures of their documents in the filesystem to the loops concept
+  map.
+
+  >>> from loops.setup import addAndConfigureObject
+  >>> tFolder = addAndConfigureObject(concepts, Concept, 'folder',
+  ...                   title=u'Folder', conceptType=typeObject)
+
+Usually we want to create folders only in objects of a certain type,
+e.g. in a domain. So we activate the folder creation action by providing
+the domain type with a corresponding option.
+
+  >>> tDomain = concepts['domain']
+  >>> taDomain = adapted(tDomain)
+  >>> taDomain.options = ['action.portlet:createFolder']
+
+Importing the FolderView will register this action.
+
+  >>> from loops.browser.folder import FolderView
+
+If we now create a domain and set up a view on it it will provide the
+folder creation action.
+
+  >>> general = addAndConfigureObject(concepts, Concept, 'general',
+  ...                   title=u'General', conceptType=tDomain)
+
+  >>> from loops.browser.concept import ConceptView
+  >>> view = ConceptView(general, TestRequest())
+  >>> sorted(a.name for a in view.getActions('portlet'))
+  ['createFolder']
+
+Let's now create a folder.
+
+  >>> f01 = addAndConfigureObject(concepts, Concept, 'f01',
+  ...                   title=u'Test Folder', conceptType=tFolder)
+
+A folder should be associated with a FolderView that provides two actions
+for editing the folder and for creating a new subfolder.
+
+  >>> view = FolderView(f01, TestRequest())
+  >>> sorted(a.name for a in view.getActions('portlet'))
+  ['createFolder', 'editFolder']
+
+
+Fin de partie
+=============
+
+  >>> placefulTearDown()
+
