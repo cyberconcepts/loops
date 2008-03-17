@@ -50,6 +50,7 @@ from cybertools.browser.view import GenericView
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import DialogAction
+from loops.common import adapted
 from loops.i18n.browser import i18n_macros
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
@@ -308,7 +309,7 @@ class NodeView(BaseView):
             print '***', name, params
         target = self.virtualTargetObject
         if target is not None:
-            ti = IType(target).typeInterface
+            #ti = IType(target).typeInterface
             #targetView = None
             #if ti is not None:
             #    adapted = ti(target)
@@ -317,9 +318,11 @@ class NodeView(BaseView):
             #if targetView is None:
             #    targetView = component.getMultiAdapter((target, self.request),
             #            name=name)
-            target = adapted(target)
-            targetView = component.getMultiAdapter((target, self.request),
-                        name=name)
+            targetView = component.queryMultiAdapter(
+                                (adapted(target), self.request), name=name)
+            if targetView is None:
+                targetView = component.getMultiAdapter(
+                                (target, self.request), name=name)
             if name == 'index.html' and hasattr(targetView, 'show'):
                 return targetView.show()
             method = getattr(targetView, methodName, None)
