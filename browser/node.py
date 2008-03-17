@@ -111,7 +111,7 @@ class NodeView(BaseView):
     @Lazy
     def view(self):
         name = self.request.get('loops.viewName', '') or self.context.viewName
-        if '?' in name:
+        if name and '?' in name:
             name, params = name.split('?', 1)
             ann = self.request.annotations.get('loops.view', {})
             ann['params'] = params
