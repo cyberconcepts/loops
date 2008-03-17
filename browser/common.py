@@ -22,6 +22,7 @@ Common base class for loops browser view classes.
 $Id$
 """
 
+from cgi import parse_qs
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
@@ -125,6 +126,18 @@ class BaseView(GenericView, I18NView):
     def target(self):
         # allow for having a separate object the view acts upon
         return self.context
+
+    @Lazy
+    def params(self):
+        result = {}
+        paramString = self.request.annotations.get('loops.view', {}).get('params')
+        if paramString:
+            result = parse_qs(paramString)
+            for k, v in result.items():
+                if len(v) == 1:
+                    v = [x.strip() for x in v[0].split(',')]
+                    result[k] = v
+        return result
 
     def setSkin(self, skinName):
         skin = None

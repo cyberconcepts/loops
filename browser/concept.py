@@ -266,12 +266,19 @@ class ConceptView(BaseView):
     def getChildren(self, topLevelOnly=True, sort=True):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
+        params = self.params
+        criteria = {}
+        if params.get('types'):
+            criteria['types'] = [cm.get(name) for name in params['types']]
         standard = cm.getDefaultPredicate()
         rels = (self.childViewFactory(r, self.request, contextIsSecond=True)
                 for r in self.context.getChildRelations(sort=None))
         if sort:
             rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
         for r in rels:
+            if criteria:
+                if not self.checkCriteria(r, criteria):
+                    continue
             if topLevelOnly and r.predicate == hasType:
                 # only show top-level entries for type instances:
                 skip = False
@@ -279,8 +286,17 @@ class ConceptView(BaseView):
                     if parent.conceptType == self.context:
                         skip = True
                         break
-                if skip: continue
+                if skip:
+                    continue
             yield r
+
+    def checkCriteria(self, relation, criteria):
+        result = True
+        for k, v in criteria.items():
+            if k == 'types':
+                v = [item for item in v if item is not None]
+                result = result and (relation.context.conceptType in v)
+        return result
 
     # Override in subclass to control what is displayd in listings:
     children = getChildren

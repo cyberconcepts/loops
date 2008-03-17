@@ -110,10 +110,15 @@ class NodeView(BaseView):
 
     @Lazy
     def view(self):
-        viewName = self.request.get('loops.viewName') or self.context.viewName
-        if viewName:
+        name = self.request.get('loops.viewName', '') or self.context.viewName
+        if '?' in name:
+            name, params = name.split('?', 1)
+            ann = self.request.annotations.get('loops.view', {})
+            ann['params'] = params
+            self.request.annotations['loops.view'] = ann
+        if name:
             adapter = component.queryMultiAdapter(
-                            (self.context, self.request), name=viewName)
+                            (self.context, self.request), name=name)
             if adapter is not None:
                 return adapter
         return self
@@ -298,16 +303,22 @@ class NodeView(BaseView):
             return None
 
     def targetView(self, name='index.html', methodName='show'):
+        if '?' in name:
+            name, params = name.split('?', 1)
+            print '***', name, params
         target = self.virtualTargetObject
         if target is not None:
             ti = IType(target).typeInterface
-            targetView = None
-            if ti is not None:
-                adapted = ti(target)
-                targetView = component.queryMultiAdapter((adapted, self.request),
-                        name=name)
-            if targetView is None:
-                targetView = component.getMultiAdapter((target, self.request),
+            #targetView = None
+            #if ti is not None:
+            #    adapted = ti(target)
+            #    targetView = component.queryMultiAdapter((adapted, self.request),
+            #            name=name)
+            #if targetView is None:
+            #    targetView = component.getMultiAdapter((target, self.request),
+            #            name=name)
+            target = adapted(target)
+            targetView = component.getMultiAdapter((target, self.request),
                         name=name)
             if name == 'index.html' and hasattr(targetView, 'show'):
                 return targetView.show()
@@ -537,12 +548,17 @@ class SpecialNodeView(NodeView):
 
 
 class ListPages(SpecialNodeView):
+
     macroName = 'listpages'
 
+
 class ListResources(SpecialNodeView):
+
     macroName = 'listresources'
 
+
 class ListChildren(SpecialNodeView):
+
     macroName = 'listchildren'
 
 

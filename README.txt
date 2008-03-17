@@ -814,6 +814,26 @@ target object's view here:
 
 'http://127.0.0.1/loops/views/m1/m11/m111/.target23'
 
+Special views
+-------------
+
+We may set a special view for a node by providing a view name.
+
+  >>> from loops.browser.node import ListChildren
+  >>> component.provideAdapter(ListChildren, (INode, IBrowserRequest), Interface,
+  ...                          name='listchildren')
+
+  >>> m112.viewName = 'listchildren?types=person'
+  >>> view = NodeView(m112, TestRequest())
+
+  >>> targetView = view.view
+
+  >>> targetView.macroName
+  'listchildren'
+
+  >>> targetView.params
+  {'types': ['person']}
+
 
 Collecting Information about Parents
 ====================================
