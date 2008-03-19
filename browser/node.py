@@ -309,15 +309,6 @@ class NodeView(BaseView):
             print '***', name, params
         target = self.virtualTargetObject
         if target is not None:
-            #ti = IType(target).typeInterface
-            #targetView = None
-            #if ti is not None:
-            #    adapted = ti(target)
-            #    targetView = component.queryMultiAdapter((adapted, self.request),
-            #            name=name)
-            #if targetView is None:
-            #    targetView = component.getMultiAdapter((target, self.request),
-            #            name=name)
             targetView = component.queryMultiAdapter(
                                 (adapted(target), self.request), name=name)
             if targetView is None:
