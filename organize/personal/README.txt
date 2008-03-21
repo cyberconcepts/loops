@@ -118,10 +118,10 @@ So we are now ready to query the favorites.
 
   >>> favs = favorites.query(userName=johnCId)
   >>> favs
-  [<Favorite ['27', 1, '33', '...']: {}>]
+  [<Favorite ['29', 1, '35', '...']: {}>]
 
   >>> list(favAdapted.list(johnC))
-  ['27']
+  ['29']
 
   >>> util.getObjectForUid(favs[0].taskId) is resources['d001.txt']
   True

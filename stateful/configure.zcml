@@ -1,0 +1,22 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:utility
+        factory="cybertools.stateful.publishing.simplePublishing"
+        name="loops.simple_publishing" />
+
+  <zope:adapter
+        factory="loops.stateful.base.SimplePublishable"
+        name="loops.simple_publishing" trusted="True" />
+  <zope:class class="loops.stateful.base.SimplePublishable">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+</configure>

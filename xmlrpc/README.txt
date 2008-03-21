@@ -166,14 +166,14 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '22', 'id': '56',
+  {'description': u'', 'title': u'Zope 2', 'type': '24', 'id': '56',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '22', 'id': '58',
+  {'description': u'', 'title': u'Python', 'type': '24', 'id': '58',
    'name': u'python'}
 
 Changing the attributes of a concept

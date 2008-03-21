@@ -27,7 +27,7 @@ from zope.interface import implements, Interface
 
 from loops.concept import Concept
 from loops.interfaces import ITypeConcept
-from loops.organize.interfaces import IPerson
+from loops.organize.interfaces import IPerson, ITask
 from loops.setup import SetupManager as BaseSetupManager
 
 
@@ -39,10 +39,13 @@ class SetupManager(BaseSetupManager):
         predicate = concepts['predicate']
 
         person = self.addObject(concepts, Concept, 'person', title=u'Person',
-                                conceptType=type)
+                        conceptType=type)
         aPerson = ITypeConcept(person)
         if not aPerson.typeInterface: # allow overriding by other packages
             aPerson.typeInterface = IPerson
 
         owner = self.addObject(concepts, Concept, 'ownedby', title=u'owned by',
                         conceptType=predicate)
+
+        task = self.addAndConfigureObject(concepts, Concept, 'task', title=u'Task',
+                        conceptType=type, typeInterface=ITask)
