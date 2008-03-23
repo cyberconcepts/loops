@@ -165,6 +165,33 @@ class SetupManager(object):
         else:
             concept.assignChild(child, predicate)
 
+    def addResource(self, name, title, resourceType, description=u'', **kw):
+        if name in self.resources:
+            self.log("Resource '%s' ('%s') already exists." % (name, title))
+            c = self.resources[name]
+            if c.resourceType != resourceType:
+                self.log("Wrong resource type for '%s': '%s' instead of '%s'." %
+                         (name, getName(c.resourceType), getName(resourceType)))
+        else:
+            c = addAndConfigureObject(self.resources, Resource, name, title=title,
+                              description=description,
+                              resourceType=resourceType, **kw)
+            self.log("Resource '%s' ('%s') created." % (name, title))
+        return c
+
+    def assignResource(self, conceptName, resourceName, predicate=None):
+        if predicate is None:
+            predicate = self.concepts.getDefaultPredicate()
+        if isinstance(predicate, basestring):
+            predicate = self.concepts[predicate]
+        concept = self.concepts[conceptName]
+        resource = self.resources[resourceName]
+        if resource in concept.getResources([predicate]):
+            self.log("Concept '%s' is already assigned to '%s with predicate '%s'.'" %
+                     (conceptName, resourceName, getName(predicate)))
+        else:
+            concept.assignResource(resource, predicate)
+
     def addNode(self, name, title, container=None, nodeType='page',
                 description=u'', body=u'', targetName=None, **kw):
         if container is None:

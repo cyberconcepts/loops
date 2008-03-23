@@ -25,6 +25,8 @@ $Id$
 
 from cStringIO import StringIO
 import itertools
+import os
+import zdaemon
 from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
@@ -42,8 +44,9 @@ from loops.setup import SetupManager
 
 class Base(object):
 
-    def __init__(self, context):
+    def __init__(self, context, resourceDirectory=None):
         self.context = context
+        self.resourceDirectory = resourceDirectory
 
     @Lazy
     def concepts(self):
@@ -70,8 +73,8 @@ class Loader(Base, SetupManager):
 
     implements(ILoader)
 
-    def __init__(self, context):
-        self.context = context
+    def __init__(self, context, resourceDirectory=None):
+        super(Loader, self).__init__(context, resourceDirectory)
         self.logger = StringIO()
 
     def load(self, elements):
@@ -90,8 +93,8 @@ class Extractor(Base):
         return itertools.chain(self.extractTypes(),
                                self.extractConcepts(),
                                self.extractChildren(),
-                               #self.extractResources(),
-                               #self.extractResourceRelations(),
+                               self.extractResources(),
+                               self.extractResourceRelations(),
                                self.extractNodes(),
                               )
 
@@ -111,12 +114,14 @@ class Extractor(Base):
                 yield conceptElement(name, obj.title, tp, **data)
 
     def extractResources(self):
-        resourceElement = elementTypes['resource']
+        elementClass = elementTypes['resource']
         for name, obj in self.resources.items():
             # TODO: handle ``data`` attribute...
             data = self.getObjectData(obj)
             tp = getName(obj.resourceType)
-            yield resourceElement(name, obj.title, tp, **data)
+            element = elementClass(name, obj.title, tp, **data)
+            element.processExport(self)
+            yield element
 
     def getObjectData(self, obj):
         aObj = adapted(obj)
@@ -148,6 +153,19 @@ class Extractor(Base):
                     if r.relevance != 1.0:
                         args.append(r.relevance)
                     yield childElement(*args)
+
+    def extractResourceRelations(self):
+        elementClass = elementTypes['resourceRelation']
+        typePredicate = self.typePredicate
+        for c in self.concepts.values():
+            for r in c.getResourceRelations():
+                if r.predicate != typePredicate:
+                    args = [getName(r.first), getName(r.second), getName(r.predicate)]
+                    if r.order != 0:
+                        args.append(r.order)
+                    if r.relevance != 1.0:
+                        args.append(r.relevance)
+                    yield elementClass(*args)
 
     def extractNodes(self, parent=None, path=''):
         if parent is None:

@@ -23,6 +23,7 @@ and import of loops objects.
 $Id$
 """
 
+import os
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.interface import Interface, implements
@@ -44,6 +45,9 @@ class Element(dict):
             self['type'] = type
         for k, v in kw.items():
             self[k] = v
+
+    def processExport(self, extractor):
+        pass
 
     def __call__(self, loader):
         pass
@@ -95,6 +99,44 @@ class ChildElement(Element):
         loader.assignChild(self['first'], self['second'], self['predicate'])
 
 
+class ResourceElement(Element):
+
+    elementType = 'resource'
+    posArgs = ('name', 'title', 'type')
+
+    def processExport(self, extractor):
+        content = self.pop('data', '')
+        if (self.get('contentType', '').startswith('text/')
+            and isinstance(content, unicode)):
+            content = content.encode('UTF-8')
+        dataPath = os.path.join(extractor.resourceDirectory, self['name'])
+        f = open(dataPath, 'w')
+        f.write(content)
+        f.close()
+
+    def __call__(self, loader):
+        type = loader.concepts[self['type']]
+        kw = dict((k, v) for k, v in self.items()
+                         if k not in self.posArgs)
+        dataPath = os.path.join(loader.resourceDirectory, self['name'])
+        if os.path.exists(dataPath):
+            f = open(dataPath, 'r')
+            content = f.read()
+            if self.get('contentType', '').startswith('text/'):
+                content = content.decode('UTF-8')
+            kw['data'] = content
+            f.close()
+        loader.addResource(self['name'], self['title'], type, **kw)
+
+
+class ResourceRelationElement(ChildElement):
+
+    elementType = 'resourceRelation'
+
+    def __call__(self, loader):
+        loader.assignResource(self['first'], self['second'], self['predicate'])
+
+
 class NodeElement(Element):
 
     elementType = 'node'
@@ -118,34 +160,13 @@ class NodeElement(Element):
             node.target = targetObject
 
 
-# not yet implemented
-
-class ResourceElement(Element):
-
-    elementType = 'resource'
-    posArgs = ('name', 'title', 'type')
-
-    def __call__(self, loader):
-        type = loader.concepts[self['type']]
-        kw = dict((k, v) for k, v in self.items()
-                         if k not in self.posArgs)
-        loader.addResource(self['name'], self['title'], type, **kw)
-
-
-class ResourceRelationElement(ChildElement):
-
-    elementType = 'resourceRelation'
-
-    def __call__(self, loader):
-        loader.assignResource(self['first'], self['second'], self['predicate'])
-
-
 # element registry
 
 elementTypes = dict(
     type=TypeElement,
     concept=ConceptElement,
-    resource=ResourceElement,
     child=ChildElement,
+    resource=ResourceElement,
+    resourceRelation=ResourceRelationElement,
     node=NodeElement,
 )

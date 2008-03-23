@@ -22,16 +22,19 @@ view class(es) for import/export.
 $Id$
 """
 
+from cStringIO import StringIO
+import os
 from zope import component
 from zope.interface import Interface, implements
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
-from cStringIO import StringIO
+from zope.traversing.api import getPath
 
 from loops.external.base import Loader, Extractor
 from loops.external.interfaces import IReader, IWriter
+from loops import util
 
 
 class ExportImport(object):
@@ -43,6 +46,22 @@ class ExportImport(object):
         self.request = request
         self.message = u''
 
+    @Lazy
+    def baseDirectory(self):
+        return util.getVarDirectory(self.request)
+
+    @Lazy
+    def sitePath(self):
+        return getPath(self.context)[1:].replace('/', '_')
+
+    @Lazy
+    def resourceImportDirectory(self):
+        return os.path.join(self.baseDirectory, 'import', self.sitePath)
+
+    @Lazy
+    def resourceExportDirectory(self):
+        return os.path.join(self.baseDirectory, 'export', self.sitePath)
+
     def submit(self):
         action = self.request.get('loops.action', None)
         if action:
@@ -53,7 +72,7 @@ class ExportImport(object):
 
     def export(self):
         f = StringIO()
-        extractor = Extractor(self.context)
+        extractor = Extractor(self.context, self.resourceExportDirectory)
         elements = extractor.extract()
         writer = component.getUtility(IWriter)
         writer.write(elements, f)
@@ -64,11 +83,13 @@ class ExportImport(object):
 
     def upload(self):
         data = self.request.get('field.data', None)
+        resourceImportDirectory = (self.request.get('resourceImportDirectory', None)
+                                   or self.resourceImportDirectory)
         if not data:
             return False
         reader = component.getUtility(IReader)
         elements = reader.read(data)
-        loader = Loader(self.context)
+        loader = Loader(self.context, )
         loader.load(elements)
         self.message = u'Content uploaded and imported.'
         return False

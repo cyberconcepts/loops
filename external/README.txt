@@ -48,6 +48,22 @@ Creating the corresponding objects
   >>> adapted(concepts['myquery']).viewName
   'mystuff.html'
 
+Working with resources
+----------------------
+
+  >>> import os
+  >>> from loops.external.tests import dataDirectory
+  >>> loader.resourceDirectory = os.path.join(dataDirectory, 'import')
+
+  >>> input = ("resource('doc04.txt', u'Document 4', 'textdocument')\n"
+  ...          "resourceRelation('myquery', 'doc04.txt', 'standard')")
+  >>> reader = PyReader()
+  >>> elements = reader.read(input)
+  >>> loader.load(elements)
+
+  >>> sorted(resources)
+  [u'd001.txt', u'd002.txt', u'd003.txt', u'doc04.txt']
+
 Working with nodes
 ------------------
 
@@ -66,11 +82,10 @@ Extracting elements
 -------------------
 
   >>> from loops.external.base import Extractor
-
-  >>> extractor = Extractor(loopsRoot)
+  >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
   >>> elements = list(extractor.extract())
   >>> len(elements)
-  15
+  20
 
 Writing object information to the external storage
 --------------------------------------------------
@@ -86,7 +101,9 @@ Writing object information to the external storage
   type(u'query', u'Query', options=u'', typeInterface='loops.query.IQueryConcept',
        viewName=u'')...
   concept(u'myquery', u'My Query', u'query', options=u'', viewName='mystuff.html')...
-  child(u'projects', u'customer', u'standard')
+  child(u'projects', u'customer', u'standard')...
+  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')
+  resourceRelation(u'myquery', u'doc04.txt', u'standard')
   node('home', u'Home', '', u'menu', body=u'Welcome')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
 
@@ -97,7 +114,18 @@ The Export/Import View
   >>> from loops.external.browser import ExportImport
   >>> from zope.publisher.browser import TestRequest
 
-  >>> input = {'field.data': output}
+  >>> input = {'field.data': output, 'resourceDirectory': dataDirectory}
   >>> view = ExportImport(loopsRoot, TestRequest(input))
   >>> view.upload()
   False
+
+
+Fin de Partie
+=============
+
+  >>> placefulTearDown()
+
+  >>> exportDir = os.path.join(dataDirectory, 'export')
+  >>> for fname in os.listdir(exportDir):
+  ...     os.unlink(os.path.join(exportDir, fname))
+

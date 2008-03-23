@@ -22,12 +22,14 @@ Utility functions.
 $Id$
 """
 
+import os
 from zope import component
 from zope.app.intid.interfaces import IIntIds
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
 
+import cybertools
 from loops.browser.util import html_quote
 
 _ = MessageFactory('loops')
@@ -94,3 +96,14 @@ def getUidForObject(obj):
     intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
 
+
+def getVarDirectory(request=None):
+    instanceHome = None
+    if request is not None:
+        pub = request.publication
+        if pub is not None:
+            instanceHome = os.path.dirname(pub.db.getName())
+    if instanceHome is None:
+        instanceHome = os.path.dirname(os.path.dirname(os.path.dirname(
+                        os.path.dirname(cybertools.__file__))))
+    return os.path.join(instanceHome, 'var')

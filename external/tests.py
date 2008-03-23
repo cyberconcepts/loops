@@ -1,8 +1,12 @@
 # $Id$
 
 import unittest, doctest
+import os
 from zope.testing.doctestunit import DocFileSuite
 from zope.interface.verify import verifyClass
+
+
+dataDirectory = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class Test(unittest.TestCase):
