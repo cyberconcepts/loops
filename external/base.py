@@ -38,7 +38,8 @@ from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.external.interfaces import ILoader, IExtractor
 from loops.external.element import elementTypes
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, IResourceSchema
+from loops.resource import Document, MediaAsset
 from loops.setup import SetupManager
 
 
@@ -116,17 +117,18 @@ class Extractor(Base):
     def extractResources(self):
         elementClass = elementTypes['resource']
         for name, obj in self.resources.items():
-            # TODO: handle ``data`` attribute...
-            data = self.getObjectData(obj)
+            data = self.getObjectData(obj, IResourceSchema)
             tp = getName(obj.resourceType)
+            if isinstance(obj, Document):   # backward compatibility
+                tp = 'textdocument'
             element = elementClass(name, obj.title, tp, **data)
             element.processExport(self)
             yield element
 
-    def getObjectData(self, obj):
+    def getObjectData(self, obj, defaultInterface=IConceptSchema):
         aObj = adapted(obj)
         schemaFactory = component.getAdapter(aObj, ISchemaFactory)
-        ti = IType(obj).typeInterface or IConceptSchema
+        ti = IType(obj).typeInterface or defaultInterface
         schema = schemaFactory(ti, manager=self) #, request=self.request)
         instance = IInstance(aObj)
         instance.template = schema

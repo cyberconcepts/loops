@@ -290,7 +290,8 @@ class Document(Resource):
     def setData(self, data):
         self._data = data.replace('\r', '')
         self._size = len(data)
-    def getData(self): return self._data
+    def getData(self):
+        return self._data
     data = property(getData, setData)
 
 

@@ -106,11 +106,13 @@ class ResourceElement(Element):
 
     def processExport(self, extractor):
         content = self.pop('data', '')
+        fileFlags = 'wb'
         if (self.get('contentType', '').startswith('text/')
             and isinstance(content, unicode)):
             content = content.encode('UTF-8')
+            fileFlags = 'wt'
         dataPath = os.path.join(extractor.resourceDirectory, self['name'])
-        f = open(dataPath, 'w')
+        f = open(dataPath, fileFlags)
         f.write(content)
         f.close()
 

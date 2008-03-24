@@ -127,5 +127,7 @@ Fin de Partie
 
   >>> exportDir = os.path.join(dataDirectory, 'export')
   >>> for fname in os.listdir(exportDir):
-  ...     os.unlink(os.path.join(exportDir, fname))
+  ...     path = os.path.join(exportDir, fname)
+  ...     if not os.path.isdir(path):
+  ...         os.unlink(path)
 

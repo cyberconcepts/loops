@@ -98,12 +98,13 @@ def getUidForObject(obj):
 
 
 def getVarDirectory(request=None):
-    instanceHome = None
+    varDir = None
     if request is not None:
         pub = request.publication
         if pub is not None:
-            instanceHome = os.path.dirname(pub.db.getName())
-    if instanceHome is None:
+            varDir = os.path.dirname(pub.db.getName())
+    if varDir is None:
         instanceHome = os.path.dirname(os.path.dirname(os.path.dirname(
-                        os.path.dirname(cybertools.__file__))))
-    return os.path.join(instanceHome, 'var')
+                                os.path.dirname(cybertools.__file__))))
+        varDir = os.path.join(instanceHome, 'var')
+    return varDir
