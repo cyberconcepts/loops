@@ -272,9 +272,9 @@
            provides="loops.interfaces.IExternalFile" />
   <class class="loops.resource.ExternalFileAdapter">
     <require permission="zope.View"
-             interface="loops.interfaces.IFile" />
+             interface="loops.interfaces.IExternalFile" />
     <require permission="zope.ManageContent"
-             set_schema="loops.interfaces.IFile" />
+             set_schema="loops.interfaces.IExternalFile" />
   </class>
 
   <adapter factory="loops.resource.TextDocumentAdapter" trusted="True"
@@ -409,6 +409,7 @@
   <include package=".rest" />
   <include package=".search" />
   <include package=".security" />
+  <include package=".stateful" />
   <include package=".versioning" />
   <include package=".xmlrpc" />
 

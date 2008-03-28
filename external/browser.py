@@ -89,7 +89,7 @@ class ExportImport(object):
             return False
         reader = component.getUtility(IReader)
         elements = reader.read(data)
-        loader = Loader(self.context, )
+        loader = Loader(self.context)
         loader.load(elements)
         self.message = u'Content uploaded and imported.'
         return False

@@ -662,7 +662,35 @@ class IFile(IResourceAdapter, IResourceSchema):
     localFilename = Attribute('Filename provided during upload.')
 
 
+class IStorageInfo(Interface):
+
+    storageName = schema.BytesLine(
+                title=_(u'Storage Name'),
+                description=_(u'The name of a storage utility used for this '
+                        'object.'),
+                default='',
+                missing_value='',
+                required=False)
+
+    storageParams = schema.BytesLine(
+                title=_(u'Storage Parameters'),
+                description=_(u'Information used to address the external '
+                        'storage, e.g. a filename or path.'),
+                default='',
+                missing_value='',
+                required=False)
+
+    externalAddress = schema.BytesLine(
+                title=_(u'External Address'),
+                description=_(u'The full address for accessing the object '
+                        'on the external storage, e.g. a filename or path.'),
+                default='',
+                missing_value='',
+                required=False)
+
+
 class IExternalFile(IFile):
+#class IExternalFile(IFile, IStorageInfo):
     """ A file whose content (data attribute) is not stored in the ZODB
         but somewhere else, typically in the file system.
     """

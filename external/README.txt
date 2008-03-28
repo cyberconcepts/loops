@@ -74,6 +74,19 @@ Working with nodes
   >>> elements = reader.read(input)
   >>> loader.load(elements)
 
+Sub-elements
+------------
+
+  >>> from loops.external import annotation
+
+  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+  ...     annotations(creators='john')]"""
+  >>> elements = reader.read(input)
+  >>> elements[0].subElements
+  [{'creators': 'john'}]
+
+  >>> loader.load(elements)
+  [('creators', 'john')]
 
 Exporting loops Objects
 =======================
@@ -106,6 +119,20 @@ Writing object information to the external storage
   resourceRelation(u'myquery', u'doc04.txt', u'standard')
   node('home', u'Home', '', u'menu', body=u'Welcome')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
+
+Writing subElements
+-------------------
+
+  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+  ...     annotations(creators='john'),
+  ...     annotations(modified='2007-08-12')]"""
+  >>> elements = reader.read(input)
+  >>> output = StringIO()
+  >>> writer.write(elements, output)
+  >>> print output.getvalue()
+  concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+      annotations(creators='john'),
+      annotations(modified='2007-08-12')]...
 
 
 The Export/Import View

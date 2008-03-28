@@ -36,6 +36,21 @@ class IElement(Interface):
         or IElement objects.
     """
 
+    elementType = Attribute('A string denoting the element type.')
+    object = Attribute('The object that has been created from this '
+                'element during import.')
+    parent = Attribute('An optional parent element that this element is part of.')
+    subElements = Attribute('An optional list of sub-elements; initially None.')
+
+    def processExport(extractor):
+        """ Will be called by the extractor during export to allow for
+            special handling e.g. of certain attributes.
+        """
+
+    def add(element):
+        """ Add a sub-element, may be called by the extractor during export.
+        """
+
     def __call__(loader):
         """ Create the object that is specified by the element in the
             context of the loader and return it.
@@ -75,7 +90,8 @@ class IWriter(Interface):
 
 class IExtractor(Interface):
     """ Extracts information from loops objects and provides them as
-        IElement objects. Will typically be used as an adapter.
+        IElement objects. Will typically be used as an adapter on the
+        loops root object.
     """
 
     def extract():
@@ -83,3 +99,7 @@ class IExtractor(Interface):
             the content of the context object.
         """
 
+class ISubExtractor(IExtractor):
+    """ Used for extracting special informations from individual objects
+        that will be represented by sub-elements.
+    """

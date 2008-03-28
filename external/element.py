@@ -37,6 +37,10 @@ class Element(dict):
     implements(IElement)
 
     elementType = ''
+    posArgs = ()
+    object = None
+    parent = None
+    subElements = None
 
     def __init__(self, name, title, type=None, *args, **kw):
         self['name'] = name
@@ -46,8 +50,23 @@ class Element(dict):
         for k, v in kw.items():
             self[k] = v
 
+    def __getitem__(self, key):
+        if isinstance(key, Element):
+            key = (key,)
+        if isinstance(key, tuple):
+            for item in key:
+                item.parent = self
+                self.add(item)
+            return key
+        return super(Element, self).__getitem__(key)
+
     def processExport(self, extractor):
         pass
+
+    def add(self, element):
+        if self.subElements is None:
+            self.subElements = []
+        self.subElements.append(element)
 
     def __call__(self, loader):
         pass
@@ -62,7 +81,7 @@ class ConceptElement(Element):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
-        loader.addConcept(self['name'], self['title'], type, **kw)
+        self.object = loader.addConcept(self['name'], self['title'], type, **kw)
 
 
 class TypeElement(ConceptElement):
@@ -83,7 +102,8 @@ class TypeElement(ConceptElement):
         ti = self.get('typeInterface')
         if ti:
             kw['typeInterface'] = resolve(ti)
-        loader.addConcept(self['name'], self['title'], loader.typeConcept, **kw)
+        self.object = loader.addConcept(self['name'], self['title'],
+                            loader.typeConcept, **kw)
 
 
 class ChildElement(Element):
@@ -128,7 +148,7 @@ class ResourceElement(Element):
                 content = content.decode('UTF-8')
             kw['data'] = content
             f.close()
-        loader.addResource(self['name'], self['title'], type, **kw)
+        self.object = loader.addResource(self['name'], self['title'], type, **kw)
 
 
 class ResourceRelationElement(ChildElement):
@@ -160,6 +180,7 @@ class NodeElement(Element):
         if target is not None:
             targetObject = traverse(loader.context, target, None)
             node.target = targetObject
+        self.object = node
 
 
 # element registry
@@ -172,3 +193,5 @@ elementTypes = dict(
     resourceRelation=ResourceRelationElement,
     node=NodeElement,
 )
+
+toplevelElements = ('type', 'concept', 'resource', 'resourceRelation', 'node')

@@ -27,7 +27,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 
 from loops.external.interfaces import IReader, IWriter
-from loops.external.element import elementTypes
+from loops.external.element import elementTypes, toplevelElements
 
 
 class PyReader(object):
@@ -50,7 +50,8 @@ class InputProcessor(dict):
     def __getitem__(self, key):
         def factory(*args, **kw):
             element = elementTypes[key](*args, **kw)
-            self.elements.append(element)
+            if key in toplevelElements:
+                self.elements.append(element)
             return element
         return factory
 
@@ -59,8 +60,8 @@ class PyWriter(object):
 
     implements(IWriter)
 
-    def write(self, elements, output):
-        for element in elements:
+    def write(self, elements, output, level=0):
+        for idx, element in enumerate(elements):
             args = []
             for arg in element.posArgs:
                 if arg in element:
@@ -68,7 +69,18 @@ class PyWriter(object):
             for k, v in element.items():
                 if k not in element.posArgs:
                     args.append("%s=%s" % (str(k), repr(v)))
-            output.write('%s(%s)\n' % (element.elementType, ', '.join(args)))
+            if not element.subElements:
+                output.write('%s%s(%s)'
+                    % (level*'    ', element.elementType, ', '.join(args)))
+            else:
+                output.write('%s%s(%s)[\n'
+                    % (level*'    ', element.elementType, ', '.join(args)))
+                self.write(element.subElements, output, level+1)
+                output.write(']')
+            if level == 0:
+                output.write('\n')
+            elif idx < len(elements) - 1:
+                output.write(',\n')
 
 
 def toStr(value):

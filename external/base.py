@@ -36,7 +36,7 @@ from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
-from loops.external.interfaces import ILoader, IExtractor
+from loops.external.interfaces import ILoader, IExtractor, ISubExtractor
 from loops.external.element import elementTypes
 from loops.interfaces import IConceptSchema, IResourceSchema
 from loops.resource import Document, MediaAsset
@@ -81,6 +81,8 @@ class Loader(Base, SetupManager):
     def load(self, elements):
         for element in elements:
             element(self)
+            if element.subElements is not None:
+                self.load(element.subElements)
 
     # TODO: care for setting attributes via Instance (Editor)
     # instead of using SetupManager methods:
@@ -103,7 +105,9 @@ class Extractor(Base):
         typeElement = elementTypes['type']
         for obj in self.typeConcept.getChildren([self.typePredicate]):
             data = self.getObjectData(obj)
-            yield typeElement(getName(obj), obj.title, **data)
+            element = typeElement(getName(obj), obj.title, **data)
+            self.provideSubElements(obj, element)
+            yield element
 
     def extractConcepts(self):
         conceptElement = elementTypes['concept']
@@ -112,7 +116,9 @@ class Extractor(Base):
             if obj.conceptType != typeConcept:
                 data = self.getObjectData(obj)
                 tp = getName(obj.conceptType)
-                yield conceptElement(name, obj.title, tp, **data)
+                element = conceptElement(name, obj.title, tp, **data)
+                self.provideSubElements(obj, element)
+                yield element
 
     def extractResources(self):
         elementClass = elementTypes['resource']
@@ -123,25 +129,8 @@ class Extractor(Base):
                 tp = 'textdocument'
             element = elementClass(name, obj.title, tp, **data)
             element.processExport(self)
+            self.provideSubElements(obj, element)
             yield element
-
-    def getObjectData(self, obj, defaultInterface=IConceptSchema):
-        aObj = adapted(obj)
-        schemaFactory = component.getAdapter(aObj, ISchemaFactory)
-        ti = IType(obj).typeInterface or defaultInterface
-        schema = schemaFactory(ti, manager=self) #, request=self.request)
-        instance = IInstance(aObj)
-        instance.template = schema
-        # TODO: use ``_not_exportable`` attribute of adapter to control export;
-        # this should also convert object attributes like e.g. typeInterface
-        #data = instance.applyTemplate(mode='export')
-        data = instance.applyTemplate(mode='edit')
-        if 'title' in data:
-            del data['title']
-        data['description'] = obj.description
-        if not data['description']:
-            del data['description']
-        return data
 
     def extractChildren(self):
         childElement = elementTypes['child']
@@ -172,7 +161,7 @@ class Extractor(Base):
     def extractNodes(self, parent=None, path=''):
         if parent is None:
             parent = self.views
-        element = elementTypes['node']
+        elementClass = elementTypes['node']
         for name, obj in parent.items():
             data = {}
             for attr in ('description', 'body', 'viewName'):
@@ -182,8 +171,36 @@ class Extractor(Base):
             target = obj.target
             if target is not None:
                 data['target'] = '/'.join((getName(getParent(target)), getName(target)))
-            yield element(name, obj.title, path, obj.nodeType, **data)
+            elem = elementClass(name, obj.title, path, obj.nodeType, **data)
+            self.provideSubElements(obj, elem)
+            yield elem
             childPath = path and '/'.join((path, name)) or name
             for elem in self.extractNodes(obj, childPath):
+                self.provideSubElements(obj, elem)
                 yield elem
+
+    # helper methods
+
+    def getObjectData(self, obj, defaultInterface=IConceptSchema):
+        aObj = adapted(obj)
+        schemaFactory = component.getAdapter(aObj, ISchemaFactory)
+        ti = IType(obj).typeInterface or defaultInterface
+        schema = schemaFactory(ti, manager=self) #, request=self.request)
+        instance = IInstance(aObj)
+        instance.template = schema
+        # TODO: use ``_not_exportable`` attribute of adapter to control export;
+        # this should also convert object attributes like e.g. typeInterface
+        #data = instance.applyTemplate(mode='export')
+        data = instance.applyTemplate(mode='edit')
+        if 'title' in data:
+            del data['title']
+        data['description'] = obj.description
+        if not data['description']:
+            del data['description']
+        return data
+
+    def provideSubElements(self, obj, element):
+        for name, extractor in component.getAdapters((obj,), ISubExtractor):
+            for sub in extractor.extract():
+                element.add(sub)
 

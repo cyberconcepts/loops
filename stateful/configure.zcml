@@ -6,7 +6,7 @@
    i18n_domain="loops">
 
   <zope:utility
-        factory="cybertools.stateful.publishing.simplePublishing"
+        factory="cybertools.stateful.publishing.simplePublishingFactory"
         name="loops.simple_publishing" />
 
   <zope:adapter
