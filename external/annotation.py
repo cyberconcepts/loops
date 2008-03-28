@@ -23,7 +23,7 @@ $Id$
 """
 
 from datetime import datetime
-from time import time
+import time
 from zope.component import adapts
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements
@@ -47,7 +47,7 @@ class AnnotationsElement(Element):
         if dc is not None:
             for k, v in self.items():
                 if k in ('created', 'modified'):
-                    v = datetime(*time.strptime(u'%Y-%m-%dT%H:%M')[0:6])
+                    v = datetime(*time.strptime(v, u'%Y-%m-%dT%H:%M')[0:6])
                 setattr(dc, k, v)
 
 

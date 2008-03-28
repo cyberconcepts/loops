@@ -192,6 +192,10 @@ class Extractor(Base):
         # this should also convert object attributes like e.g. typeInterface
         #data = instance.applyTemplate(mode='export')
         data = instance.applyTemplate(mode='edit')
+        noexp = getattr(aObj, '_noexportAttributes', ())
+        for attr in noexp:
+            if attr in data:
+                del data[attr]
         if 'title' in data:
             del data['title']
         data['description'] = obj.description

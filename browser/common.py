@@ -28,6 +28,7 @@ from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
 from zope.app.security.interfaces import IAuthentication
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -161,9 +162,11 @@ class BaseView(GenericView, I18NView):
         pau = component.getUtility(IAuthentication)
         creators = []
         for c in cr:
-            principal = pau.getPrincipal(c)
-            if principal is not None:
+            try:
+                principal = pau.getPrincipal(c)
                 creators.append(principal.title)
+            except PrincipalLookupError:
+                creators.append(c)
         return ', '.join(creators)
 
     @Lazy

@@ -48,6 +48,7 @@ class BlogPost(Compound):
 
     _adapterAttributes = Compound._adapterAttributes + ('text', 'private', 'creator',)
     _contextAttributes = Compound._contextAttributes + ['date', 'privateComment']
+    _noexportAttributes = ('creator', 'text', 'private')
 
     defaultTextContentType = 'text/restructured'
     textContentType = defaultTextContentType

@@ -94,6 +94,7 @@ class AdapterBase(object):
 
     _adapterAttributes = ('context', '__parent__',)
     _contextAttributes = list(IConcept)
+    _noexportAttributes = ()
 
     def __init__(self, context):
         self.context = context
@@ -105,7 +106,11 @@ class AdapterBase(object):
 
     def __setattr__(self, attr, value):
         if attr in self._adapterAttributes:
-            object.__setattr__(self, attr, value)
+            try:
+                object.__setattr__(self, attr, value)
+            except AttributeError:
+                print '***', self.context.__name__, attr, value
+                raise
         else:
             self.checkAttr(attr)
             setattr(self.context, '_' + attr, value)

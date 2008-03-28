@@ -30,6 +30,7 @@ from zope.interface import Interface, implements
 from zope.traversing.api import getName, traverse
 
 from loops.external.interfaces import IElement
+from loops.i18n.common import I18NValue
 
 
 class Element(dict):
@@ -192,6 +193,7 @@ elementTypes = dict(
     resource=ResourceElement,
     resourceRelation=ResourceRelationElement,
     node=NodeElement,
+    I18NValue=I18NValue,
 )
 
 toplevelElements = ('type', 'concept', 'resource', 'resourceRelation', 'node')

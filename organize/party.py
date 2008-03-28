@@ -54,7 +54,7 @@ TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
 
 def getPersonForUser(context, request=None, principal=None):
     if principal is None:
-        principal = request.principal
+        principal = getattr(request, 'principal', None)
     if principal is None:
         return None
     loops = context.getLoopsRoot()
@@ -83,6 +83,8 @@ class Person(AdapterBase, BasePerson):
     def setUserId(self, userId):
         if userId:
             principal = self.getPrincipalForUserId(userId)
+            if principal is None:
+                return
             person = getPersonForUser(self.context, principal=principal)
             if person is not None and person != self.context:
                 raise ValueError(
