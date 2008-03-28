@@ -176,7 +176,7 @@ class Extractor(Base):
             yield elem
             childPath = path and '/'.join((path, name)) or name
             for elem in self.extractNodes(obj, childPath):
-                self.provideSubElements(obj, elem)
+                #self.provideSubElements(obj, elem)
                 yield elem
 
     # helper methods

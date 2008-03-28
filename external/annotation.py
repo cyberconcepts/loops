@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope.component import adapts
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements
 
 from loops.external.element import Element, elementTypes
@@ -47,8 +48,26 @@ class AnnotationsExtractor(object):
     implements(ISubExtractor)
     adapts(ILoopsObject)
 
+    dcAttributes = ('title', 'description', 'creators', 'created', 'modified')
+
+    def __init__(self, context):
+        self.context = context
+
     def extract(self):
-        return []
+        dc = IZopeDublinCore(self.context, None)
+        if dc is not None:
+            result = {}
+            for attr in self.dcAttributes:
+                value = getattr(dc, attr, None)
+                if attr in ('title',):
+                    if value == getattr(self.context, attr):
+                        value = None
+                if value:
+                    if attr in ('created', 'modified'):
+                        value = value.strftime('%Y-%m-%dT%H:%M')
+                    result[attr] = value
+            if result:
+                yield AnnotationsElement(**result)
 
 
 elementTypes.update(dict(

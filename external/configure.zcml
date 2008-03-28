@@ -9,17 +9,18 @@
 
   <zope:utility factory="loops.external.pyfunc.PyWriter" />
 
+  <zope:adapter factory="loops.external.annotation.AnnotationsExtractor" />
+
+  <!-- views -->
+
   <browser:pages for="loops.interfaces.ILoops"
          class="loops.external.browser.ExportImport"
          permission="zope.ManageSite">
-
     <browser:page name="exportimport.html"
           template="exportimport.pt"
           menu="zmi_views" title="Export/Import"  />
-
     <browser:page name="export_loops.html"
           attribute="export" />
-
   </browser:pages>
 
 </configure>
