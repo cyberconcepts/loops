@@ -22,6 +22,8 @@ Export/import of annotations.
 $Id$
 """
 
+from datetime import datetime
+from time import time
 from zope.component import adapts
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements
@@ -40,7 +42,13 @@ class AnnotationsElement(Element):
             self[k] = v
 
     def __call__(self, loader):
-        print self.items()
+        obj = self.parent.object
+        dc = IZopeDublinCore(obj, None)
+        if dc is not None:
+            for k, v in self.items():
+                if k in ('created', 'modified'):
+                    v = datetime(*time.strptime(u'%Y-%m-%dT%H:%M')[0:6])
+                setattr(dc, k, v)
 
 
 class AnnotationsExtractor(object):

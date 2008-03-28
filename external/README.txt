@@ -77,16 +77,29 @@ Working with nodes
 Sub-elements
 ------------
 
+Complex attributes or other informations related to an object may be
+represented by sub-elements. The standard example for this kind of data
+are the Dublin Core (DC) attributes.
+
+By importing the annotation module the corresponding element class will be
+registered.
+
   >>> from loops.external import annotation
 
   >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
-  ...     annotations(creators='john')]"""
+  ...     annotations(creators=(u'john',))]"""
   >>> elements = reader.read(input)
   >>> elements[0].subElements
-  [{'creators': 'john'}]
+  [{'creators': (u'john',)}]
+
+Loading the element with the sub-element stores the DC attributes.
 
   >>> loader.load(elements)
-  [('creators', 'john')]
+  >>> from zope.dublincore.interfaces import IZopeDublinCore
+  >>> dc = IZopeDublinCore(concepts['myquery'])
+  >>> dc.creators
+  (u'john',)
+
 
 Exporting loops Objects
 =======================
@@ -120,8 +133,11 @@ Writing object information to the external storage
   node('home', u'Home', '', u'menu', body=u'Welcome')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
 
-Writing subElements
+Writing sub-elements
 -------------------
+
+Let's first set up a sequence with one element containing
+two sub-elements.
 
   >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
   ...     annotations(creators='john'),
@@ -129,10 +145,28 @@ Writing subElements
   >>> elements = reader.read(input)
   >>> output = StringIO()
   >>> writer.write(elements, output)
+
+Writing this sequence reproduces the import format.
+
   >>> print output.getvalue()
   concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
       annotations(creators='john'),
       annotations(modified='2007-08-12')]...
+
+DC annotations will be exported automaticall after registering the
+corresponding extractor adapter.
+
+  >>> from loops.external.annotation import AnnotationsExtractor
+  >>> component.provideAdapter(AnnotationsExtractor)
+
+  >>> output = StringIO()
+  >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
+  >>> PyWriter().write(extractor.extract(), output)
+
+  >>> print output.getvalue()
+  type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')...
+  concept(u'myquery', u'My Query', u'query', options=u'', viewName='mystuff.html')[
+        annotations(creators=(u'john',))]...
 
 
 The Export/Import View

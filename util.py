@@ -76,11 +76,11 @@ def nl2br(text):
     else: # gracefully handle Mac line endings
         return '<br />\n'.join(text.split('\r'))
 
-def toUnicode(text, encoding='UTF-8'):
-    if type(text) is not unicode:
-        return text.decode(encoding)
+def toUnicode(value, encoding='UTF-8'):
+    if type(value) is not unicode:
+        return value.decode(encoding)
     else:
-        return text
+        return value
 
 
 def getObjectForUid(uid, intIds=None):
