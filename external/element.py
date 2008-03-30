@@ -69,7 +69,7 @@ class Element(dict):
             self.subElements = []
         self.subElements.append(element)
 
-    def __call__(self, loader):
+    def execute(self, loader):
         pass
 
 
@@ -78,7 +78,7 @@ class ConceptElement(Element):
     elementType = 'concept'
     posArgs = ('name', 'title', 'type')
 
-    def __call__(self, loader):
+    def execute(self, loader):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
@@ -97,7 +97,7 @@ class TypeElement(ConceptElement):
             if not isinstance(ti, basestring):
                 self['typeInterface'] = '.'.join((ti.__module__, ti.__name__))
 
-    def __call__(self, loader):
+    def execute(self, loader):
         kw = dict((k, v) for k, v in self.items()
                 if k not in ('name', 'title', 'type', 'typeInterface'))
         ti = self.get('typeInterface')
@@ -137,7 +137,7 @@ class ResourceElement(Element):
         f.write(content)
         f.close()
 
-    def __call__(self, loader):
+    def execute(self, loader):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
@@ -156,7 +156,7 @@ class ResourceRelationElement(ChildElement):
 
     elementType = 'resourceRelation'
 
-    def __call__(self, loader):
+    def execute(self, loader):
         loader.assignResource(self['first'], self['second'], self['predicate'])
 
 
@@ -171,7 +171,7 @@ class NodeElement(Element):
         for k, v in kw.items():
             self[k] = v
 
-    def __call__(self, loader):
+    def execute(self, loader):
         type = self['type']
         cont = traverse(loader.views, self['path'])
         target = self.pop('target', None)

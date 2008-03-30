@@ -80,7 +80,7 @@ class Loader(Base, SetupManager):
 
     def load(self, elements):
         for element in elements:
-            element(self)
+            element.execute(self)
             if element.subElements is not None:
                 self.load(element.subElements)
 

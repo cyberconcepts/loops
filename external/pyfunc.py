@@ -46,6 +46,7 @@ class InputProcessor(dict):
 
     def __init__(self):
         self.elements = []
+        self['__builtins__'] = {}   # security!
 
     def __getitem__(self, key):
         def factory(*args, **kw):

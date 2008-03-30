@@ -41,7 +41,7 @@ class AnnotationsElement(Element):
         for k, v in kw.items():
             self[k] = v
 
-    def __call__(self, loader):
+    def execute(self, loader):
         obj = self.parent.object
         dc = IZopeDublinCore(obj, None)
         if dc is not None:

@@ -51,7 +51,7 @@ class IElement(Interface):
         """ Add a sub-element, may be called by the extractor during export.
         """
 
-    def __call__(loader):
+    def execute(loader):
         """ Create the object that is specified by the element in the
             context of the loader and return it.
         """
