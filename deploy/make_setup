@@ -1,0 +1,39 @@
+#! /bin/bash
+#
+# produce Setup.exe
+# call this script directly from the deploy directory
+#
+# $Id$
+#
+
+DEVELOPMENT_INSTANCE=/home/33zope/mz
+LIB_SOURCE=$DEVELOPMENT_INSTANCE/lib/python
+LIB_DEST=instance/lib/python
+NSIS_EXE=c:\\programme\\nsis\\makensis.exe
+
+cd ../loops
+
+echo removing $LIB_DEST directories
+rm -rf $LIB_DEST/cybertools
+rm -rf $LIB_DEST/loops
+
+echo copying $LIB_SOURCE to $LIB_DEST
+cp -pr $LIB_SOURCE/cybertools $LIB_DEST
+cp -pr $LIB_SOURCE/loops $LIB_DEST
+
+echo removing $LIB_DEST/loops/deploy
+rm -rf $LIB_DEST/loops/deploy
+
+echo removing .py files from $LIB_DEST
+python ../deploy/remove_sourcefiles.py $LIB_DEST/cybertools
+python ../deploy/remove_sourcefiles.py $LIB_DEST/loops
+
+echo inserting main.pyc into library.zip
+cp $LIB_DEST/loops/main.pyc .
+zip library.zip main.pyc
+rm main.pyc
+
+cd ../deploy
+
+#echo creating setup.exe with NSIS
+#wine $NSIS_EXE loops.nsi

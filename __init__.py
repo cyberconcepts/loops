@@ -1,7 +1,5 @@
-# -*- coding: UTF-8 -*-
-# -*- Mode: Python; py-indent-offset: 4 -*-
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,5 +20,3 @@
 
 $Id$
 """
-
-#from loops.base import Loops
