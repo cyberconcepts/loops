@@ -38,55 +38,9 @@ In order to be able to login and store favorites and other personal data
 we have to prepare our environment. We need some basic adapter registrations,
 and a pluggable authentication utility with a principal folder.
 
-  >>> from loops.organize.tests import setupUtilitiesAndAdapters
-  >>> setupData = setupUtilitiesAndAdapters(loopsRoot)
-
-  >>> from zope.app.appsetup.bootstrap import ensureUtility
-  >>> from zope.app.authentication.authentication import PluggableAuthentication
-  >>> from zope.app.security.interfaces import IAuthentication
-  >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-  ...               copy_to_zlog=False, asObject=True)
-  <...PluggableAuthentication...>
-  >>> pau = component.getUtility(IAuthentication, context=site)
-
-  >>> from zope.app.authentication.principalfolder import PrincipalFolder
-  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
-  >>> pFolder = PrincipalFolder('users.')
-  >>> pau['users'] = pFolder
-  >>> pau.authenticatorPlugins = ('users',)
-
-So we can now register a user ...
-
-  >>> from zope.app.authentication.principalfolder import InternalPrincipal
-  >>> pFolder['john'] = InternalPrincipal('john', 'xx', u'John')
-  >>> from zope.app.authentication.principalfolder import FoundPrincipalFactory
-  >>> component.provideAdapter(FoundPrincipalFactory)
-
-... and create a corresponding person.
-
-  >>> from loops.concept import Concept
-  >>> johnC = concepts['john'] = Concept(u'John')
-  >>> person = concepts['person']
-  >>> johnC.conceptType = person
-  >>> from loops.common import adapted
-  >>> adapted(johnC).userId = 'users.john'
-
-Finally, we log in as the newly created user.
-
-  >>> from zope.app.authentication.principalfolder import Principal
-  >>> pJohn = Principal('users.john', 'xxx', u'John')
-
-  >>> from loops.tests.auth import login
-  >>> login(pJohn)
-
-One step is still missing: As we are now working with a real principal
-the security checks e.g. in views are active. So we have to provide
-our user with the necessary permissions.
-
-  >>> grantPermission = setupData.rolePermissions.grantPermissionToRole
-  >>> assignRole = setupData.principalRoles.assignRoleToPrincipal
-  >>> grantPermission('zope.View', 'zope.Member')
-  >>> assignRole('zope.Member', 'users.john')
+  >>> from loops.organize.tests import setupObjectsForTesting
+  >>> setupData = setupObjectsForTesting(site, concepts)
+  >>> johnC = setupData.johnC
 
 Working with the favorites storage
 ----------------------------------
@@ -116,7 +70,7 @@ The adapter provides convenience methods for accessing the favorites storage.
 
 So we are now ready to query the favorites.
 
-  >>> favs = favorites.query(userName=johnCId)
+  >>> favs = list(favorites.query(userName=johnCId))
   >>> favs
   [<Favorite ['29', 1, '35', '...']: {}>]
 
@@ -149,7 +103,7 @@ Let's now trigger the saving of a favorite.
 
   >>> view.add()
 
-  >>> len(favorites.query(userName=johnCId))
+  >>> len(list(favorites.query(userName=johnCId)))
   2
 
   >>> d002Id = util.getUidForObject(resources['d001.txt'])
@@ -157,5 +111,11 @@ Let's now trigger the saving of a favorite.
   >>> view = FavoriteView(home, request)
   >>> view.remove()
 
-  >>> len(favorites.query(userName=johnCId))
+  >>> len(list(favorites.query(userName=johnCId)))
   1
+
+
+Fin de partie
+=============
+
+  >>> placefulTearDown()

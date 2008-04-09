@@ -31,7 +31,7 @@ ZCML setup):
 
   >>> from loops.interfaces import ILoops
   >>> from loops.setup import ISetupManager
-  >>> from loops.process.setup import SetupManager
+  >>> from loops.organize.process.setup import SetupManager
   >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
   ...                           name='process')
 
@@ -53,7 +53,7 @@ Manage processes
 
 The classes used in this package are just adapters to IConcept.
 
-  >>> from loops.process.definition import Process
+  >>> from loops.organize.process.definition import Process
   >>> from cybertools.process.interfaces import IProcess
   >>> component.provideAdapter(Process, (IConcept,), IProcess)
 

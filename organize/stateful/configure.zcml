@@ -10,9 +10,9 @@
         name="loops.simple_publishing" />
 
   <zope:adapter
-        factory="loops.stateful.base.SimplePublishable"
+        factory="loops.organize.stateful.base.SimplePublishable"
         name="loops.simple_publishing" trusted="True" />
-  <zope:class class="loops.stateful.base.SimplePublishable">
+  <zope:class class="loops.organize.stateful.base.SimplePublishable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
     <require permission="zope.ManageContent"

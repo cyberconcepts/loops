@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -82,3 +82,11 @@ def getInternalPrincipal(id, context=None):
     if next is not None:
         return next.getPrincipal(pau.prefix + id)
     raise PrincipalLookupError(id)
+
+
+def getTrackingStorage(obj, name):
+    records = obj.getLoopsRoot().getRecordManager()
+    if records is not None:
+        return records.get(name)
+    return None
+

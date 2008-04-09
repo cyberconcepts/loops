@@ -43,7 +43,6 @@
 
   <zope:adapter factory="loops.organize.member.MemberRegistrationManager"
                 trusted="True" />
-
   <zope:class class="loops.organize.member.MemberRegistrationManager">
     <require permission ="zope.Public"
              interface="loops.organize.interfaces.IMemberRegistrationManager" />
@@ -70,5 +69,8 @@
 
   <include package=".browser" />
   <include package=".personal" />
+  <include package=".process" />
+  <include package=".stateful" />
+  <include package=".tracking" />
 
 </configure>

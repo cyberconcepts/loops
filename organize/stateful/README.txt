@@ -32,7 +32,7 @@ making an object statful we'll use an adapter.
   >>> component.provideUtility(simplePublishing, IStatesDefinition,
   ...                          name='loops.simple_publishing')
 
-  >>> from loops.stateful.base import SimplePublishable
+  >>> from loops.organize.stateful.base import SimplePublishable
   >>> component.provideAdapter(SimplePublishable, name='loops.simple_publishing')
 
 We may now take a document and adapt it to IStateful so that we may
@@ -57,3 +57,9 @@ not just kept in the adapter.
 
   >>> statefulDoc01.state
   'published'
+
+
+Fin de partie
+=============
+
+  >>> placefulTearDown()

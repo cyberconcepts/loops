@@ -58,29 +58,23 @@ def adapted(obj, langInfo=None):
 
 # helper functions for specifying automatic attribute handling
 
-def adapterAttributes(*args):
+def collectAttributeNames(lst, name):
     attrs = []
-    for arg in args:
+    for arg in lst:
         if isinstance(arg, basestring):
             attrs.append(arg)
         elif isinstance(arg, type):
-            attrs.extend(list(arg._adapterAttributes))
+            attrs.extend(list(getattr(arg, name)))
         else:
             raise ValueError("Argument must be string or class, '%s' is '%s'." %
                              (arg, type(arg)))
     return tuple(attrs)
 
+def adapterAttributes(*args):
+    return collectAttributeNames(args, '_adapterAttributes')
+
 def contextAttributes(*args):
-    attrs = []
-    for arg in args:
-        if isinstance(arg, basestring):
-            attrs.append(arg)
-        elif isinstance(arg, type):
-            attrs.extend(list(arg._contextAttributes))
-        else:
-            raise ValueError("Argument must be string or class, '%s' is '%s'." %
-                             (arg, type(arg)))
-    return attrs
+    return collectAttributeNames(args, '_contextAttributes')
 
 
 # type interface adapters
@@ -133,7 +127,7 @@ class ResourceAdapterBase(AdapterBase):
     implements(IStorageInfo)
     adapts(IResource)
 
-    _adapterAttributes = ('storageName', 'storageParams', ) + AdapterBase._adapterAttributes
+    _adapterAttributes = adapterAttributes('storageName', 'storageParams', AdapterBase)
     _contextAttributes = list(IResourceAdapter)
 
     storageName = None

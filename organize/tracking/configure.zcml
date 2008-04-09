@@ -1,0 +1,24 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="loops">
+
+  <class class="loops.organize.tracking.change.ChangeRecord">
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrack" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.tracking.interfaces.ITrack" />
+  </class>
+
+  <class class="loops.organize.tracking.change.ChangeRecord">
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrackingStorage" />
+  </class>
+
+  <subscriber handler="loops.organize.tracking.change.recordModification" />
+
+  <adapter factory="loops.organize.tracking.setup.SetupManager"
+           name="organize.tracking" />
+
+</configure>

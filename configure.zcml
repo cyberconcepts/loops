@@ -331,6 +331,7 @@
   <adapter factory="loops.external.NodesExporter" />
   <adapter factory="loops.external.NodesImporter" />-->
 
+  <!-- obsolete - remove: -->
   <adapter factory="loops.target.DocumentProxy"
            permission="zope.ManageContent" />
   <adapter factory="loops.target.MediaAssetProxy"
@@ -405,11 +406,9 @@
   <include package=".integrator" />
   <include package=".knowledge" />
   <include package=".organize" />
-  <include package=".process" />
   <include package=".rest" />
   <include package=".search" />
   <include package=".security" />
-  <include package=".stateful" />
   <include package=".versioning" />
   <include package=".xmlrpc" />
 
