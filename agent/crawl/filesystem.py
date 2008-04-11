@@ -53,16 +53,19 @@ class CrawlingJob(BaseCrawlingJob):
         for path, dirs, files in os.walk(directory):
             if '.svn' in dirs:
                 del dirs[dirs.index('.svn')]
-            for f in filter(files, pattern):
-                filename = os.path.join(path, f)
-                mtime = datetime.fromtimestamp(os.path.getmtime(filename))
-                if mtime <= lastRun:  # file not changed
-                    continue
-                meta = dict(
-                    path=filename,
-                )
-                self.collected.append(FileResource(filename, Metadata(meta)))
-                yield None
+            self.loadFiles(files, pattern)
+
+    def loadFiles(self, files, pattern):
+        for f in filter(files, pattern):
+            filename = os.path.join(path, f)
+            mtime = datetime.fromtimestamp(os.path.getmtime(filename))
+            if mtime <= lastRun:  # file not changed
+                continue
+            meta = dict(
+                path=filename,
+            )
+            self.collected.append(FileResource(filename, Metadata(meta)))
+            yield None
 
 
 class FileResource(object):

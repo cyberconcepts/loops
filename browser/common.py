@@ -433,7 +433,8 @@ class BaseView(GenericView, I18NView):
 
     def registerDojoDateWidget(self):
         self.registerDojo()
-        jsCall = 'dojo.require("dijit.form.DateTextBox");'
+        jsCall = ('dojo.require("dijit.form.DateTextBox"); '
+                  'dojo.require("dijit.form.TimeTextBox");')
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
     def registerDojoTextWidget(self):

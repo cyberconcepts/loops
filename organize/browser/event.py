@@ -60,8 +60,8 @@ class Events(ConceptView):
         cm = self.loopsRoot.getConceptManager()
         tEvent = cm['event']
         hasType = cm.getTypePredicate()
-        sort = lambda x: x.adapted.start
         now = datetime.today()
+        sort = lambda x: x.adapted.start or now
         relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
                         for r in tEvent.getChildRelations([hasType], sort=None))
         return sorted((rv for rv in relViews

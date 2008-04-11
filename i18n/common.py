@@ -121,6 +121,8 @@ class I18NAdapterBase(AdapterBase):
         tp = IType(self.context)
         attrs = tp.optionsDict.get('i18nattributes', '')
         return [attr.strip() for attr in attrs.split(',')]
+        # new implementation:
+        # return self.options.i18n.attributes
 
     def __getattr__(self, attr):
         self.checkAttr(attr)

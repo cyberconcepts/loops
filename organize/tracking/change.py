@@ -48,10 +48,15 @@ class ChangeManager(object):
         self.context = context
 
     @Lazy
+    def options(self):
+        return IOptions(self.context)
+
+    @Lazy
     def valid(self):
         return not (self.context is None or
                     self.storage is None or
                     self.person is None)
+        # and 'changes' in self.options.tracking
 
     @Lazy
     def loopsRoot(self):
