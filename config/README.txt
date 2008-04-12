@@ -34,9 +34,6 @@ Options Adapters
 Global and site options
 -----------------------
 
-  >>> from loops.config.base import LoopsOptions
-  >>> component.provideAdapter(LoopsOptions)
-
   >>> from cybertools.meta.interfaces import IOptions
   >>> opt = IOptions(loopsRoot)
   >>> opt
@@ -49,14 +46,15 @@ some options.
 
   >>> loopsRoot.options = ['useVersioning', 'organize.tracking:changes, access']
   >>> opt = IOptions(loopsRoot)
-  >>> print opt
-  organize(tracking=['changes', 'access'])
-  useVersioning=True
 
   >>> opt.organize.tracking
   ['changes', 'access']
   >>> opt.useVersioning
   True
+
+  >>> print opt
+  organize(tracking=['changes', 'access'])
+  useVersioning=True
 
 If we query an option that is not defined on the site level we get a
 dummy element that corresponds to False.
@@ -65,6 +63,26 @@ dummy element that corresponds to False.
   <AutoElement 'languages'>
   >>> bool(opt.i18n.languages)
   False
+
+We can use a utility for providing global settings.
+
+  >>> from cybertools.meta.interfaces import IOptions
+  >>> globalOpt = component.getUtility(IOptions)
+  >>> globalOpt.i18n.languages = ['en', 'de']
+  >>> globalOpt.i18n.languages
+  ['en', 'de']
+
+If we call the site options with the key we want to query the global
+options will be used as a fallback.
+
+  >>> opt('i18n.languages')
+  ['en', 'de']
+
+User options (preferences)
+--------------------------
+
+Type- and object-based settings
+-------------------------------
 
 
 Fin de partie

@@ -47,6 +47,7 @@ from loops.browser.node import ViewPropertiesConfigurator
 from loops.common import NameChooser
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
+from loops.config.base import GlobalOptions, LoopsOptions
 from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.organize.memberinfo import MemberInfoProvider
@@ -119,6 +120,8 @@ class TestSite(object):
         component.provideHandler(grantAcquiredSecurity)
         component.provideHandler(revokeAcquiredSecurity)
         component.provideAdapter(BaseSecuritySetter)
+        component.provideAdapter(LoopsOptions)
+        component.provideUtility(GlobalOptions())
 
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')

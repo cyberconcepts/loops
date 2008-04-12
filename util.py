@@ -108,3 +108,7 @@ def getVarDirectory(request=None):
                                 os.path.dirname(cybertools.__file__))))
         varDir = os.path.join(instanceHome, 'var')
     return varDir
+
+def getEtcDirectory(request=None):
+    varDir = getVarDirectory(request)
+    return os.path.join(os.path.dirname(varDir), 'etc')

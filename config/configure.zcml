@@ -1,0 +1,15 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:utility factory="loops.config.base.GlobalOptions" />
+
+  <zope:adapter factory="loops.config.base.LoopsOptions" trusted="True" />
+  <zope:class class="loops.config.base.LoopsOptions">
+    <allow interface="cybertools.meta.interfaces.IOptions" />
+  </zope:class>
+
+</configure>

@@ -400,6 +400,7 @@
   <include package=".browser" />
   <include package=".classifier" />
   <include package=".compound.blog" />
+  <include package=".config" />
   <include package=".constraint" />
   <include package=".external" />
   <include package=".i18n" />

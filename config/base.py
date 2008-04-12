@@ -22,15 +22,26 @@ Adapters and others classes for analyzing resources.
 $Id$
 """
 
+import os
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
 from zope.traversing.api import getName, getParent
 
 from cybertools.meta.config import Options
+from cybertools.meta.config import GlobalOptions as BaseGlobalOptions
+from cybertools.meta.interfaces import IOptions
 from cybertools.meta.namespace import Executor, ExecutionError
 from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops
+from loops import util
+
+
+class GlobalOptions(BaseGlobalOptions):
+
+    @Lazy
+    def _filename(self):
+        return os.path.join(util.getEtcDirectory(), 'loops.cfg')
 
 
 class LoopsOptions(Options):
@@ -39,11 +50,24 @@ class LoopsOptions(Options):
 
     builtins = Options.builtins + ('True', 'False')
     True, False = True, False
+    _initialized = False
 
     def __init__(self, context, *args, **kw):
         self.context = context
         super(LoopsOptions, self).__init__(*args, **kw)
-        self.loadContextOptions()
+        #self.loadContextOptions()
+
+    def __getitem__(self, key):
+        if not self._initialized:
+            self._initialized = True
+            self.loadContextOptions()
+        return super(LoopsOptions, self).__getitem__(key)
+
+    def __call__(self, key, default=None):
+        value = super(LoopsOptions, self).__call__(key)
+        if value is None:
+            value = component.getUtility(IOptions)(key, default)
+        return value
 
     def parseContextOptions(self):
         def result():
@@ -61,8 +85,4 @@ class LoopsOptions(Options):
         code = self.parseContextOptions()
         rc = Executor(self).execute(code)
         if rc:
-            raise ExecutionError('\n' + result)
-
-    #def __getitem__(self, key):
-    #    opt = self.baseOptions.get(key)
-    #    return opt
+            raise ExecutionError('\n' + rc)

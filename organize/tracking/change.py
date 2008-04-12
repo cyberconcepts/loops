@@ -28,6 +28,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.component import adapter
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.tracking.btree import Track, getTimeStamp
 from loops.concept import ConceptManager
 from loops.resource import ResourceManager
@@ -49,14 +50,15 @@ class ChangeManager(object):
 
     @Lazy
     def options(self):
-        return IOptions(self.context)
+        #return IOptions(self.context)
+        return IOptions(self.loopsRoot)
 
     @Lazy
     def valid(self):
-        return not (self.context is None or
+        return (not (self.context is None or
                     self.storage is None or
                     self.person is None)
-        # and 'changes' in self.options.tracking
+                and 'changes' in self.options('organize.tracking', ()))
 
     @Lazy
     def loopsRoot(self):

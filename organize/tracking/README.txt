@@ -48,6 +48,8 @@ Recording changes to objects
   >>> from loops.organize.tracking.change import recordModification
   >>> component.provideHandler(recordModification)
 
+  >>> loopsRoot.options = ['organize.tracking:changes']
+
   >>> tTask = concepts['task']
   >>> from loops.concept import Concept
   >>> from loops.setup import addAndConfigureObject
