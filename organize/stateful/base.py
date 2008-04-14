@@ -45,3 +45,4 @@ class StatefulLoopsObject(Stateful, StatefulAdapter):
 class SimplePublishable(StatefulLoopsObject):
 
     statesDefinition = 'loops.simple_publishing'
+

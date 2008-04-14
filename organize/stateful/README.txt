@@ -23,14 +23,16 @@ First we set up a loops site with basic and example concepts and resources.
 Stateful Objects
 ================
 
+A simple publishing workflow
+----------------------------
+
 Let's start with registering the states definitions and adapters needed.
 The states definition (aka 'workflow') is registered as a utility; for
 making an object statful we'll use an adapter.
 
   >>> from cybertools.stateful.interfaces import IStatesDefinition, IStateful
   >>> from cybertools.stateful.publishing import simplePublishing
-  >>> component.provideUtility(simplePublishing, IStatesDefinition,
-  ...                          name='loops.simple_publishing')
+  >>> component.provideUtility(simplePublishing(), name='loops.simple_publishing')
 
   >>> from loops.organize.stateful.base import SimplePublishable
   >>> component.provideAdapter(SimplePublishable, name='loops.simple_publishing')
@@ -57,6 +59,23 @@ not just kept in the adapter.
 
   >>> statefulDoc01.state
   'published'
+
+
+Controlling classification quality
+----------------------------------
+
+  >>> from loops.organize.stateful.quality import classificationQuality
+  >>> component.provideUtility(classificationQuality(),
+  ...                          name='loops.classification_quality')
+  >>> from loops.organize.stateful.quality import ClassificationQualityCheckable
+  >>> component.provideAdapter(ClassificationQualityCheckable,
+  ...                          name='loops.classification_quality')
+
+  >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
+  ...                                      name='loops.classification_quality')
+  >>> qcheckedDoc01.state
+  'unclassified'
+
 
 
 Fin de partie
