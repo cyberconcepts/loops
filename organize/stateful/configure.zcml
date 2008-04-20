@@ -5,6 +5,8 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <!-- stateful definitions and corresponding adapters -->
+
   <zope:utility
         factory="cybertools.stateful.publishing.simplePublishing"
         name="loops.simple_publishing" />
@@ -18,5 +20,24 @@
     <require permission="zope.ManageContent"
              set_schema="cybertools.stateful.interfaces.IStateful" />
   </zope:class>
+
+  <zope:utility
+        factory="loops.organize.stateful.quality.classificationQuality"
+        name="loops.classification_quality" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.quality.ClassificationQualityCheckable"
+        name="loops.classification_quality" trusted="True" />
+  <zope:class class="loops.organize.stateful.quality.ClassificationQualityCheckable">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+  <!-- event handlers -->
+
+  <zope:subscriber handler="loops.organize.stateful.quality.assign" />
+  <zope:subscriber handler="loops.organize.stateful.quality.deassign" />
 
 </configure>

@@ -70,12 +70,44 @@ Controlling classification quality
   >>> from loops.organize.stateful.quality import ClassificationQualityCheckable
   >>> component.provideAdapter(ClassificationQualityCheckable,
   ...                          name='loops.classification_quality')
+  >>> from loops.organize.stateful.quality import assign, deassign
+  >>> component.provideHandler(assign)
+  >>> component.provideHandler(deassign)
 
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
   ...                                      name='loops.classification_quality')
   >>> qcheckedDoc01.state
   'unclassified'
 
+  >>> tCustomer = concepts['customer']
+  >>> from loops.concept import Concept
+  >>> from loops.setup import addAndConfigureObject
+  >>> c01 = addAndConfigureObject(concepts, Concept, 'c01', conceptType=tCustomer,
+  ...                   title='im publishing')
+  >>> c02 = addAndConfigureObject(concepts, Concept, 'c02', conceptType=tCustomer,
+  ...                   title='DocFive')
+
+  >>> c01.assignResource(doc01)
+  >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
+  ...                                      name='loops.classification_quality')
+  >>> qcheckedDoc01.state
+  'classified'
+
+  >>> c02.assignResource(doc01)
+  >>> qcheckedDoc01.state
+  'classified'
+
+  >>> qcheckedDoc01.doTransition('verify')
+  >>> qcheckedDoc01.state
+  'verified'
+
+  >>> c02.deassignResource(doc01)
+  >>> qcheckedDoc01.state
+  'classified'
+
+  >>> c01.deassignResource(doc01)
+  >>> qcheckedDoc01.state
+  'unclassified'
 
 
 Fin de partie
