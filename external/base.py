@@ -113,6 +113,8 @@ class Extractor(Base):
         conceptElement = elementTypes['concept']
         typeConcept = self.typeConcept
         for name, obj in self.concepts.items():
+            if obj.conceptType is None:
+                raise ValueError('Concept type is None for %s.' % getName(obj))
             if obj.conceptType != typeConcept:
                 data = self.getObjectData(obj)
                 tp = getName(obj.conceptType)
