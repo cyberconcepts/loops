@@ -17,6 +17,8 @@
   </class>
 
   <subscriber handler="loops.organize.tracking.change.recordModification" />
+  <subscriber handler="loops.organize.tracking.change.recordAssignment" />
+  <subscriber handler="loops.organize.tracking.change.recordDeassignment" />
 
   <adapter factory="loops.organize.tracking.setup.SetupManager"
            name="organize.tracking" />

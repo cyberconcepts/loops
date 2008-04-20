@@ -59,6 +59,17 @@ Recording changes to objects
   >>> len(changes)
   1
 
+Recording assignment changes
+----------------------------
+
+  >>> from loops.organize.tracking.change import recordAssignment, recordDeassignment
+  >>> component.provideHandler(recordAssignment)
+  >>> component.provideHandler(recordDeassignment)
+
+  >>> t01.assignChild(johnC)
+  >>> len(changes)
+  2
+
 
 Fin de partie
 =============

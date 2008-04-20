@@ -78,14 +78,23 @@ class ChangeManager(object):
             return getPersonForUser(self.context, principal=principal)
         return None
 
-    def recordModification(self, event=None):
+    def recordModification(self, action='modify', **kw):
         if not self.valid:
             return
         uid = util.getUidForObject(self.context)
         personUid = util.getUidForObject(self.person)
         last = self.storage.getLastUserTrack(uid, 0, personUid)
-        if last is None or last.metadata['timeStamp'] < getTimeStamp() - 5:
-            self.storage.saveUserTrack(uid, 0, personUid, dict(action='modify'))
+        update = (last is not None and last.data.get('action') == action and
+                  last.metadata['timeStamp'] >= getTimeStamp() - 5)
+        data = dict(action=action)
+        relation = kw.get('relation')
+        if relation is not None:
+            data['predicate'] = util.getUidForObject(relation.predicate)
+            data['second'] = util.getUidForObject(relation.second)
+        if update:
+            self.storage.updateTrack(last, data)
+        else:
+            self.storage.saveUserTrack(uid, 0, personUid, data, update)
 
 
 class ChangeRecord(Track):
@@ -95,4 +104,12 @@ class ChangeRecord(Track):
 
 @adapter(ILoopsObject, IObjectModifiedEvent)
 def recordModification(obj, event):
-    ChangeManager(obj).recordModification(event)
+    ChangeManager(obj).recordModification()
+
+@adapter(ILoopsObject, IAssignmentEvent)
+def recordAssignment(obj, event):
+    ChangeManager(obj).recordModification('assign', relation=event.relation)
+
+@adapter(ILoopsObject, IDeassignmentEvent)
+def recordDeassignment(obj, event):
+    ChangeManager(obj).recordModification('deassign', relation=event.relation)
