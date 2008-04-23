@@ -55,6 +55,7 @@
             <tr metal:use-macro="customMacro" />
           </tal:custom>
           <tr metal:use-macro="view/template/macros/versioning" />
+          <tr metal:use-macro="view/template/macros/states" />
           <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
       </table>
@@ -214,6 +215,34 @@
         </td>
       </tr>
 </metal:versioning>
+
+
+<metal:states define-macro="states"
+                  tal:define="states view/states"
+                  tal:condition="states">
+      <tr><td colspan="5" i18n:translate="" class="headline">States</td></tr>
+      <tr tal:repeat="st states">
+        <tal:state define="stObj st/getStateObject;
+                           stDef st/statesDefinition;
+                           stTrans st/getAvailableTransitionsForUser">
+          <td colspan="2" i18n:translate=""
+              tal:content="stDef">loops.simple_publishing</td>
+          <td i18n:translate=""
+              tal:content="stObj/title">draft</td>
+          <td>
+            <select name="state.loops.simple_publishing"
+                    tal:condition="stTrans"
+                    tal:attributes="name string:state.$stDef">
+              <option i18n:translate="" value="-">No change</option>
+              <option tal:repeat="trans stTrans"
+                      tal:attributes="value trans/name"
+                      tal:content="trans/title">publish</option>
+            </select>
+          </td>
+          <td />
+        </tal:state>
+      </tr>
+</metal:states>
 
 
 <tr metal:define-macro="buttons" i18n:domain="" class="buttons">

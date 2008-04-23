@@ -383,12 +383,13 @@ class NodeView(BaseView):
             return ('%s/.target%s' %
                 (self.url, util.getUidForObject(target)))
 
-    def getActions(self, category='object'):
+    def getActions(self, category='object', target=None):
         actions = []
         self.registerDojo()
         if category in self.actions:
             actions.extend(self.actions[category](self))
-        target = self.virtualTarget
+        if target is None:
+            target = self.virtualTarget
         if target is not None:
             actions.extend(target.getActions(category, page=self))
         return actions
@@ -453,19 +454,25 @@ class NodeView(BaseView):
             ti = IType(target).typeInterface
             if ti is not None:
                 target = ti(target)
-                url = self.virtualTargetUrl
+            url = self.virtualTargetUrl
         return ExternalEditorView(target, self.request).load(url=url)
-
-    # helper methods
-
-    def registerDojoDialog(self):
-        self.registerDojo()
-        cm = self.controller.macros
-        jsCall = 'dojo.require("dijit.Dialog")'
-        cm.register('js-execute', jsCall, jsCall=jsCall)
 
 
 # inner HTML views
+
+
+class ObjectInfo(NodeView):
+
+    __call__ = innerHtml
+
+    @property
+    def macro(self):
+        return self.template.macros['object_info']
+
+    @Lazy
+    def dialog_name(self):
+        return self.request.get('dialog', 'object_info')
+
 
 class InlineEdit(NodeView):
     """ Provides inline editor as inner HTML"""

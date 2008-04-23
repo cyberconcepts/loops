@@ -175,6 +175,10 @@ div.menu-1, div.menu-2 {
     padding-top: 6px;
 }
 
+.icon-action {
+    display: inline;
+}
+
 .flow-left {
     float: left;
 }
@@ -250,7 +254,6 @@ table.listing th {
     text-align: center;
     padding: 1em 0 1em 0;
 }
-
 
 /* search stuff */
 

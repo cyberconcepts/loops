@@ -44,6 +44,7 @@ from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
 from cybertools.composer.schema.schema import FormState
+from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.concept import Concept, ConceptRelation, ResourceRelation
@@ -437,17 +438,30 @@ class EditObject(FormController, I18NView):
         formState = instance.applyTemplate(data=form, fieldHandlers=self.fieldHandlers)
         self.selected = []
         self.old = []
+        stateKeys = []
         for k in form.keys():
             if k.startswith(self.prefix):
                 fn = k[len(self.prefix):]
                 value = form[k]
                 if fn.startswith(self.conceptPrefix) and value:
                     self.collectConcepts(fn[len(self.conceptPrefix):], value)
+            if k.startswith('state.'):
+                stateKeys.append(k)
         self.collectAutoConcepts()
         if self.old or self.selected:
             self.assignConcepts(obj)
+        for k in stateKeys:
+            self.updateState(k)
         notify(ObjectModifiedEvent(obj))
         return formState
+
+    def updateState(self, key):
+        trans = self.request.form.get(key, '-')
+        if trans == '-':
+            return
+        stdName = key[len('state.'):]
+        stf = component.getAdapter(self.object, IStateful, name=stdName)
+        stf.doTransition(trans)
 
     def handleFileUpload(self, context, value, fieldInstance, formState):
         """ Special handler for fileupload fields;

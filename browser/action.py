@@ -27,7 +27,8 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.browser.action import Action
+from cybertools.browser.action import Action, actions
+from loops.util import _
 
 
 class TargetAction(Action):
@@ -68,7 +69,6 @@ class DialogAction(Action):
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
         urlParams.update(self.addParams)
-        #url = self.page.virtualTargetUrlWithSkin
         url = self.page.virtualTargetUrl
         return self.jsOnClick % (self.dialogName, url, self.viewName,
                                  urlencode(urlParams))
@@ -77,3 +77,20 @@ class DialogAction(Action):
     def innerHtmlId(self):
         return 'dialog.' + self.dialogName
 
+
+# standard actions
+
+actions.register('info', 'object', DialogAction,
+        description=_(u'Information about this object.'),
+        viewName='object_info.html',
+        dialogName='object_info',
+        icon='cybertools.icons/info.png',
+        cssClass='icon-action',
+)
+
+actions.register('external_edit', 'object', TargetAction,
+        description=_(u'Edit with external editor.'),
+        viewName='external_edit?version=this',
+        icon='edit.gif',
+        cssClass='icon-action',
+)

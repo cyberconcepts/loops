@@ -39,6 +39,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
 from zope.traversing.browser import absoluteURL
 
+from cybertools.browser.action import actions
 from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
 from loops.browser.action import DialogAction, TargetAction
@@ -48,6 +49,7 @@ from loops.browser.node import NodeView, node_macros
 from loops.common import adapted, NameChooser
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
 from loops.interfaces import ITypeConcept
+from loops.organize.stateful.browser import statefulActions
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
 from loops.util import _
@@ -182,14 +184,11 @@ class ResourceView(BaseView):
         return actions
 
     def getObjectActions(self, page=None):
-        actions = []
-        if page is None:
-            factory, view = Action, self
-        else:
-            factory, view = TargetAction, page
-        #if self.xeditable:
-        #    actions.append(factory(self, page=view,))
-        return actions
+        acts = ['info']
+        acts.extend('state.' + st for st in statefulActions)
+        if self.xeditable:
+            acts.append('external_edit')
+        return actions.get('object', acts, view=self, page=page)
 
     actions = dict(portlet=getPortletActions, object=getObjectActions)
 
@@ -207,6 +206,12 @@ class ResourceView(BaseView):
     def clients(self):
         for node in self.context.getClients():
             yield NodeView(node, self.request)
+
+
+class ResourceRelationView(ResourceView, ConceptRelationView):
+
+    def __init__(self, relation, request, contextIsSecond=False):
+        ConceptRelationView.__init__(self, relation, request, contextIsSecond)
 
 
 class ResourceConfigureView(ResourceView, ConceptConfigureView):

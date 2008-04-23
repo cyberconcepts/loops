@@ -25,29 +25,6 @@
           </div>
           <div tal:define="target nocall:item/targetObjectView"
                tal:condition="nocall:target">
-            <tal:ignore condition="nothing">
-                <div metal:define-macro="editicons"
-                     style="float: right;">
-                  <span id="xedit_icon"
-                       tal:condition="target/xeditable | nothing">
-                    <a href="#" title="Edit"
-                       tal:attributes="href string:${item/realTargetUrl}/external_edit?version=this;
-                                       title string:Edit '${target/title}' with External Editor"><img
-                                  src="edit.gif" alt="Edit"
-                                  tal:attributes="src context/++resource++edit.gif" /></a>
-                  </span>
-                  <span id="inlineedit_icon"
-                        xtal:condition="item/inlineEditable"
-                        tal:condition="nothing">
-                    <a href="#" title="Edit" style="padding: 5px"
-                       tal:attributes="title string:Edit '${target/title}' with Inline Editor;
-                                       onclick python: item.inlineEdit(id)"><img
-                                  src="edit.gif" alt="Edit"
-                                  tal:attributes="src context/++resource++edit.gif" /></a>
-                  </span>
-                  <tal:rte define="dummy item/checkRTE" />
-                </div>
-            </tal:ignore>
             <div class="content-1 subcolumn" id="1.body"
                  tal:define="node nocall:item;
                              item nocall:target"
@@ -208,6 +185,16 @@
 </metal:actions>
 
 
+<metal:actions define-macro="object_actions">
+  <div style="float: right;"
+       tal:define="target nocall:target|nothing">
+    <tal:actions repeat="action python:view.getActions('object', target=target)">
+      <metal:action use-macro="action/macro" />
+    </tal:actions>
+  </div>
+</metal:actions>
+
+
 <metal:actions define-macro="clipboard">
       <div class="menu-2">loops Development</div>
 </metal:actions>
@@ -229,6 +216,11 @@
 
 
 <!-- inner HTML macros -->
+
+<metal:info define-macro="object_info">
+  <div>Object Information</div>
+</metal:info>
+
 
 <div metal:define-macro="inline_edit"
      class="content-1" id="1.body">
@@ -262,4 +254,3 @@
            tal:attributes="src context/++resource++edit.gif" border="0" />
     </a>
 </metal:editlink>
-

@@ -2,10 +2,7 @@
   <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
     <tal:body define="itemNum view/itemNum;
                       id string:$itemNum.body;">
-      <tal:edit define="target nocall:item;
-                        item nocall:node|nocall:view;">
-        <div metal:use-macro="views/node_macros/editicons" />
-      </tal:edit>
+      <div metal:use-macro="views/node_macros/object_actions" />
       <h1 tal:content="item/title">Title</h1>
       <p tal:define="description description|item/description"
          tal:condition="description">
@@ -40,6 +37,7 @@
 
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
+    <div metal:use-macro="views/node_macros/object_actions" />
     <h3 tal:content="item/title">Title</h3><br />
     <img src="#"
          tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
@@ -50,6 +48,7 @@
 
 <metal:block define-macro="download">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
+    <div metal:use-macro="views/node_macros/object_actions" />
     <h3 tal:content="item/title">Title</h3>
     <p><i tal:content="item/description">Description</i></p>
     <p>

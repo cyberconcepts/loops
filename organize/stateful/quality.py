@@ -39,51 +39,70 @@ from loops.organize.stateful.base import StatefulLoopsObject
 @implementer(IStatesDefinition)
 def classificationQuality():
     return StatesDefinition('classificationQuality',
-        State('unclassified', 'unclassified', ('classify',)),
+        State('new', 'new', ('classify', 'verify',
+                             'change_classification', 'remove_classification'),
+              color='red'),
+        State('unclassified', 'unclassified', ('classify', 'verify'),
+              color='red'),
         State('classified', 'classified',
-              ('verify', 'change_classification', 'remove_classification')),
+              ('verify', 'change_classification', 'remove_classification'),
+              color='yellow'),
         State('verified', 'verified',
-              ('change_classification', 'remove_classification')),
+              ('change_classification', 'remove_classification'),
+              color='green'),
         Transition('classify', 'classify', 'classified'),
         Transition('verify', 'verify', 'verified'),
         Transition('change_classification', 'change classification', 'classified'),
         Transition('remove_classification', 'remove classification', 'unclassified'),
-        initialState='unclassified')
+        initialState='new')
 
 
 class ClassificationQualityCheckable(StatefulLoopsObject):
 
     statesDefinition = 'loops.classification_quality'
 
+    def getAvailableTransitionsForUser(self):
+        return [tr for tr in self.getAvailableTransitions()
+                   if tr.name == 'verify']
+
+    # automatic transitions
+
+    def assign(self, relation):
+        if not self.isRelevant(relation):
+            return
+        if self.state in ('new', 'unclassified'):
+            self.doTransition('classify')
+        else:
+            self.doTransition('change_classification')
+
+    def deassign(self, relation):
+        if not self.isRelevant(relation):
+            return
+        if self.state in ('new', 'classified', 'verified'):
+            old = self.context.getParentRelations()
+            if len(old) > 2:    # the hasType relation always remains
+                self.doTransition('change_classification')
+            else:
+                self.doTransition('remove_classification')
+
+    def isRelevant(self, relation):
+        """ Return True if the relation given is relevant for changing
+            the quality state.
+        """
+        return (IResource.providedBy(self.context) and
+                getName(relation.predicate) != 'hasType')
+
 
 # event handlers
 
 @adapter(ILoopsObject, IAssignmentEvent)
 def assign(obj, event):
-    target = event.relation.second
-    if not IResource.providedBy(target):
-        return
-    pred = event.relation.predicate
-    if getName(pred) == 'hasType':
-        return
-    stf = component.getAdapter(target, IStateful, name='loops.classification_quality')
-    if stf.state == 'unclassified':
-        stf.doTransition('classify')
-    else:
-        stf.doTransition('change_classification')
+    stf = component.getAdapter(event.relation.second, IStateful,
+                               name='loops.classification_quality')
+    stf.assign(event.relation)
 
 @adapter(ILoopsObject, IDeassignmentEvent)
 def deassign(obj, event):
-    target = event.relation.second
-    if not IResource.providedBy(target):
-        return
-    pred = event.relation.predicate
-    if getName(pred) == 'hasType':
-        return
-    stf = component.getAdapter(target, IStateful, name='loops.classification_quality')
-    if stf.state in ('classified', 'verified'):
-        old = target.getParentRelations()
-        if len(old) > 2:    # the hasType relation always remains
-            stf.doTransition('change_classification')
-        else:
-            stf.doTransition('remove_classification')
+    stf = component.getAdapter(event.relation.second, IStateful,
+                               name='loops.classification_quality')
+    stf.deassign(event.relation)

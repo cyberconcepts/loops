@@ -50,6 +50,7 @@ from zope.traversing.api import getName, getParent
 from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
@@ -370,6 +371,21 @@ class BaseView(GenericView, I18NView):
         addInfo = u', '.join(e for e in (current, released) if e)
         return u'%s (%s)' % (versionId, addInfo)
 
+    # states
+
+    @Lazy
+    def states(self):
+        result = []
+        if not checkPermission('loops.ManageSite', self.context):
+            # TODO: replace by more sensible permission
+            return result
+        target = self.virtualTargetObject
+        for std in ['loops.classification_quality',
+                    'loops.simple_publishing']:
+            stf = component.getAdapter(target, IStateful, name=std)
+            result.append(stf)
+        return result
+
     # controlling editing
 
     @Lazy
@@ -430,6 +446,17 @@ class BaseView(GenericView, I18NView):
                     resourceName='ajax.dojo/dijit/themes/tundra/tundra.css', media='all')
         #cm.register('css', identifier='dojo.css', position=1,
         #            resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
+
+    def registerDojoDialog(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dijit.Dialog")'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
+    def registerDojoTooltipDialog(self):
+        self.registerDojo()
+        jsCall = ('dojo.require("dijit.Dialog");'
+                  'dojo.require("dijit.form.Button");')
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
     def registerDojoDateWidget(self):
         self.registerDojo()

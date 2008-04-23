@@ -211,25 +211,6 @@ class ConceptView(BaseView):
     def description(self):
         return self.adapted.description
 
-    def xxx_fieldData(self):
-        # obsolete - use getData() instead
-        # TODO: change view macros accordingly
-        ti = IType(self.context).typeInterface
-        if not ti:
-            return
-        adapter = self.adapted
-        for n, f in schema.getFieldsInOrder(ti):
-            if n in ('title', 'description',):  # already shown in header
-                continue
-            value = getattr(adapter, n, '')
-            if not value:
-                continue
-            bound = f.bind(adapter)
-            widget = component.getMultiAdapter(
-                                (bound, self.request), IDisplayWidget)
-            widget.setRenderedValue(value)
-            yield dict(title=f.title, value=value, id=n, widget=widget)
-
     def getData(self, omit=('title', 'description')):
         data = self.instance.applyTemplate()
         for k in omit:
@@ -328,7 +309,9 @@ class ConceptView(BaseView):
     def resources(self):
         rels = self.context.getResourceRelations()
         for r in rels:
-            yield self.childViewFactory(r, self.request, contextIsSecond=True)
+            #yield self.childViewFactory(r, self.request, contextIsSecond=True)
+            from loops.browser.resource import ResourceRelationView
+            yield ResourceRelationView(r, self.request, contextIsSecond=True)
 
     @Lazy
     def view(self):

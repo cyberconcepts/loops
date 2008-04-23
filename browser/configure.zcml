@@ -565,7 +565,14 @@
 
   </pages>
 
-  <!-- forms (end-user view) -->
+  <!-- dialogs/forms (end-user views) -->
+
+  <page
+      name="object_info.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.ObjectInfo"
+      permission="zope.View"
+      />
 
   <page
       name="create_object.html"

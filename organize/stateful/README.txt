@@ -64,6 +64,8 @@ not just kept in the adapter.
 Controlling classification quality
 ----------------------------------
 
+We again first have to register states definitions and adapter classes.
+
   >>> from loops.organize.stateful.quality import classificationQuality
   >>> component.provideUtility(classificationQuality(),
   ...                          name='loops.classification_quality')
@@ -74,10 +76,15 @@ Controlling classification quality
   >>> component.provideHandler(assign)
   >>> component.provideHandler(deassign)
 
+Now we can get a stateful adapter for a resource.
+
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
   ...                                      name='loops.classification_quality')
   >>> qcheckedDoc01.state
-  'unclassified'
+  'new'
+
+Let's create two customer objects to be used for classification of resources
+later.
 
   >>> tCustomer = concepts['customer']
   >>> from loops.concept import Concept
@@ -86,6 +93,9 @@ Controlling classification quality
   ...                   title='im publishing')
   >>> c02 = addAndConfigureObject(concepts, Concept, 'c02', conceptType=tCustomer,
   ...                   title='DocFive')
+
+When we change the concept assignments of the resource - i.e. its classification
+- the classification quality state changes automaticalls
 
   >>> c01.assignResource(doc01)
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
@@ -97,9 +107,14 @@ Controlling classification quality
   >>> qcheckedDoc01.state
   'classified'
 
+In order to mark the classification as "verified" (i.e. quality-checked)
+we have to perform the corresponding transition explicitly.
+
   >>> qcheckedDoc01.doTransition('verify')
   >>> qcheckedDoc01.state
   'verified'
+
+Upon later changes of classification the "verified" state gets lost again.
 
   >>> c02.deassignResource(doc01)
   >>> qcheckedDoc01.state
@@ -108,6 +123,39 @@ Controlling classification quality
   >>> c01.deassignResource(doc01)
   >>> qcheckedDoc01.state
   'unclassified'
+
+Changing states when editing
+----------------------------
+
+We first need a node that provides us access to the resource as its target
+
+  >>> from loops.view import Node
+  >>> node = addAndConfigureObject(views, Node, 'node', target=doc01)
+
+  >>> from loops.browser.form import EditObjectForm, EditObject
+  >>> from zope.publisher.browser import TestRequest
+
+The form view gives us access to the states of the object.
+
+  >>> form = EditObjectForm(node, TestRequest())
+  >>> for st in form.states:
+  ...     sto = st.getStateObject()
+  ...     transitions = st.getAvailableTransitions()
+  ...     userTrans = st.getAvailableTransitionsForUser()
+  ...     print st.statesDefinition, sto.title, [t.title for t in transitions],
+  ...     print [t.title for t in userTrans]
+  loops.classification_quality unclassified ['classify', 'verify'] ['verify']
+  loops.simple_publishing published ['retract'] ['retract']
+
+Let's now update the form.
+
+  >>> input = {'state.loops.classification_quality': 'verify'}
+  >>> proc = EditObject(form, TestRequest(form=input))
+  >>> proc.update()
+  False
+
+  >>> qcheckedDoc01.state
+  'verified'
 
 
 Fin de partie
