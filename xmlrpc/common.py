@@ -120,15 +120,19 @@ class LoopsMethods(MethodPublisher, I18NView):
         return mapping
 
     def assignChild(self, objId, predicateId, childId):
-        obj = getObjectForUid(objId)
         pred = getObjectForUid(predicateId)
+        if pred == self.typePredicate:
+            return 'Not allowed'
+        obj = getObjectForUid(objId)
         child = getObjectForUid(childId)
         obj.assignChild(child, pred)
         return 'OK'
 
     def deassignChild(self, objId, predicateId, childId):
-        obj = getObjectForUid(objId)
         pred = getObjectForUid(predicateId)
+        if pred == self.typePredicate:
+            return 'Not allowed'
+        obj = getObjectForUid(objId)
         child = getObjectForUid(childId)
         obj.deassignChild(child, [pred])
         return 'OK'

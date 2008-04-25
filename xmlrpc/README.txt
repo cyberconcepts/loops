@@ -158,11 +158,17 @@ Updating the concept map
 
   >>> zopeId = xrf.getObjectByName('zope')['id']
   >>> zope3Id = xrf.getObjectByName('zope3')['id']
-  >>> xrf.assignChild(zopeId, zope3Id, defaultPred['id'])
+  >>> xrf.assignChild(zopeId, defaultPred['id'], zope3Id)
   'OK'
+  >>> pa = xrf.getParents(zope3Id)
+  >>> len(pa)
+  2
 
-  >>> xrf.deassignChild(zopeId, zope3Id, defaultPred['id'])
+  >>> xrf.deassignChild(zopeId, defaultPred['id'], zope3Id)
   'OK'
+  >>> pa = xrf.getParents(zope3Id)
+  >>> len(pa)
+  1
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
@@ -175,6 +181,12 @@ parameter is empty, the name will be generated from the title.
   >>> xrf.createConcept(topicId, u'', u'Python')
   {'description': u'', 'title': u'Python', 'type': '24', 'id': '58',
    'name': u'python'}
+
+If we try to deassign a ``hasType`` relation nothing will happen; a
+corresponding error value will be returned.
+
+  >>> xrf.deassignChild(topicId, typePred['id'], zope3Id)
+  'Not allowed'
 
 Changing the attributes of a concept
 ------------------------------------
