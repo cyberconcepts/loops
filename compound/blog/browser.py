@@ -86,13 +86,14 @@ class BlogView(ConceptView):
     def macro(self):
         return view_macros.macros['blog']
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         blogOwnerId = self.blogOwnerId
         if blogOwnerId:
             principal = self.request.principal
             if principal and principal.id != blogOwnerId:
                 return []
-        return actions.get(category, ['createBlogPost'], view=self, page=page)
+        return actions.get(category, ['createBlogPost'],
+                           view=self, page=page, target=target)
 
     @Lazy
     def blogOwnerId(self):
@@ -131,14 +132,14 @@ class BlogPostView(ConceptView):
             data['privateComment'] = u''
         return data
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet' and self.editable:
             actions.append(DialogAction(self, title=_(u'Edit Blog Post...'),
                   description=_(u'Modify blog post.'),
                   viewName='edit_blogpost.html',
                   dialogName='editBlogPost',
-                  page=page))
+                  page=page, target=target))
             #self.registerDojoTextWidget()
             self.registerDojoDateWidget()
         return actions
