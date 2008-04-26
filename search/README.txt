@@ -99,32 +99,16 @@ Basic (text/title) search
 The searchresults.html view, i.e. the SearchResults view class provides the
 result set of the search via its `results` property.
 
-Before accessing the `results` property we have to prepare a (for testing
-purposes fairly primitive) catalog and a resource we can search for:
-
-  >>> from zope.app.catalog.interfaces import ICatalog
-  >>> class DummyCat(object):
-  ...     implements(ICatalog)
-  ...     def searchResults(self, **criteria):
-  ...         result = []
-  ...         name = criteria.get('loops_title')
-  ...         if name and name.endswith('*'): name = name[:-1]
-  ...         typeToken = criteria.get('loops_type', ('resource',))
-  ...         if name or typeToken:
-  ...             if 'concept' in typeToken[0]:
-  ...                  if name:
-  ...                      result = concepts.get(name)
-  ...                  else:
-  ...                      tp = concepts[typeToken[0].split(':')[-1]]
-  ...                      result = list(tp.getChildren())
-  ...             else:
-  ...                 result = resources.get(name)
-  ...         if not result: return []
-  ...         return type(result) is list and result or [result]
-  >>> component.provideUtility(DummyCat())
+Before accessing the `results` property we have to prepare a
+resource we can search for and index it in the catalog.
 
   >>> from loops.resource import Resource
   >>> rplone = resources['plone'] = Resource()
+
+  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> from loops import util
+  >>> catalog = component.getUtility(ICatalog)
+  >>> catalog.index_doc(int(util.getUidForObject(rplone)), rplone)
 
   >>> from loops.search.browser import SearchResults
   >>> form = {'search.2.title': True, 'search.2.text': u'plone'}
@@ -155,6 +139,7 @@ resource (rplone) from above to one of the topics:
   >>> cplone = concepts['plone'] = Concept(u'Plone')
   >>> for c in (czope, czope2, czope3, cplone):
   ...     c.conceptType = topic
+  ...     catalog.index_doc(int(util.getUidForObject(c)), c)
   >>> czope.assignChild(czope2)
   >>> czope.assignChild(czope3)
   >>> czope2.assignChild(cplone)
@@ -164,7 +149,6 @@ Now we can fill our search form and execute the query; note that all concepts
 found are listed, plus all their children and all resources associated
 with them:
 
-  >>> from loops import util
   >>> uid = util.getUidForObject(concepts['zope'])
   >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': uid}
   >>> request = TestRequest(form=form)
@@ -193,7 +177,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  u"{identifier: 'id', items: [{label: 'Zope (Topic)', name: 'Zope', id: '33'}]}"
+  u"{identifier: 'id', items: [{label: 'Zope (Topic)', name: 'Zope', id: '34'}, {label: 'Zope 2 (Topic)', name: 'Zope 2', id: '37'}, {label: 'Zope 3 (Topic)', name: 'Zope 3', id: '39'}]}"
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -211,7 +195,9 @@ Let's start with a new type, the customer type.
 
   >>> cust1 = concepts['cust1'] = Concept(u'Zope Corporation')
   >>> cust2 = concepts['cust2'] = Concept(u'cyberconcepts')
-  >>> for c in (cust1, cust2): c.conceptType = customer
+  >>> for c in (cust1, cust2):
+  ...     c.conceptType = customer
+  ...     catalog.index_doc(int(util.getUidForObject(c)), c)
 
   >>> from cybertools.typology.interfaces import IType
   >>> IType(cust1).qualifiers

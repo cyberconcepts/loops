@@ -22,9 +22,12 @@ Query management stuff.
 $Id$
 """
 
+from BTrees.IOBTree import IOBTree
+from BTrees.IFBTree import weightedIntersection, weightedUnion, IFBucket
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
 from zope.app.catalog.interfaces import ICatalog
+from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
@@ -35,6 +38,16 @@ from loops.type import TypeInterfaceSourceList
 from loops.versioning.util import getVersion
 from loops import util
 from loops.util import _
+
+
+class ScoredSet(set):
+
+    def __init__(self, data=set(), scores={}):
+        super(ScoredSet, self).__init__(data)
+        self.scores = scores
+
+    def getScore(self, obj):
+        return self.scores.get(obj, -1)
 
 
 class IQuery(Interface):
@@ -112,10 +125,12 @@ class FullQuery(BaseQuery):
     def query(self, text=None, type=None, useTitle=True, useFull=False,
                     conceptTitle=None, conceptUid=None, conceptType=None, **kw):
         result = set()
+        scores = {}
+        intids = component.getUtility(IIntIds)
         rc = self.queryConceptsWithChildren(title=conceptTitle, uid=conceptUid,
                                             type=conceptType)
         if not rc and not text and '*' in type: # there should be some sort of selection...
-            return result
+            return ScoredSet(result, scores)
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!
             cat = self.catalog
             if type.endswith('*'):
@@ -126,13 +141,21 @@ class FullQuery(BaseQuery):
             criteria = {'loops_type': (start, end),}
             if useFull and text:
                 criteria['loops_text'] = text
-                r1 = set(cat.searchResults(**criteria))
+                r1 = cat.apply(criteria)    #r1 = set(cat.searchResults(**criteria))
             else:
-                r1 = set()
+                r1 = IFBucket()             #r1 = set()
             if useTitle and text:
+                if 'loops_text' in criteria:
+                    del criteria['loops_text']
                 criteria['loops_title'] = text
-            r2 = set(cat.searchResults(**criteria))
-            result = r1.union(r2)
+                r2 = cat.apply(criteria)    #r2 = set(cat.searchResults(**criteria))
+            else:
+                r2 = IFBucket()             #r2 = set()
+            x, uids = weightedUnion(r1, r2) #result = r1.union(r2)
+            for r, score in uids.items():
+                obj = intids.getObject(r)
+                result.add(obj)
+                scores[obj] = score
         if rc is not None:
             if result:
                 result = result.intersection(rc)
@@ -142,7 +165,7 @@ class FullQuery(BaseQuery):
                             if r.getLoopsRoot() == self.loopsRoot
                                and canListObject(r)
                                and getVersion(r) == r)
-        return result
+        return ScoredSet(result, scores)
 
 
 class ConceptQuery(BaseQuery):
