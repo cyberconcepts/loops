@@ -11,10 +11,10 @@
              set_schema="cybertools.tracking.interfaces.ITrack" />
   </class>
 
-  <class class="loops.organize.tracking.change.ChangeRecord">
+  <!--<class class="loops.organize.tracking.change.ChangeRecord">
     <require permission="zope.View"
              interface="cybertools.tracking.interfaces.ITrackingStorage" />
-  </class>
+  </class>-->
 
   <subscriber handler="loops.organize.tracking.change.recordModification" />
   <subscriber handler="loops.organize.tracking.change.recordAssignment" />

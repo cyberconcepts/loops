@@ -34,13 +34,13 @@ from zope.schema.interfaces import ValidationError
 from zope.app.form.interfaces import WidgetInputError
 from zope.security.proxy import removeSecurityProxy
 
-from cybertools.organize.interfaces import IAddress
 from cybertools.organize.party import Person as BasePerson
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
 from loops.concept import Concept
 from loops.interfaces import IConcept
+from loops.organize.interfaces import IAddress
 from loops.organize.interfaces import IPerson, ANNOTATION_KEY
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
 from loops.type import TypeInterfaceSourceList

@@ -29,6 +29,7 @@ from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.organize.interfaces import IAddress as IBaseAddress
 from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
 from loops.interfaces import IConceptSchema
@@ -97,6 +98,11 @@ class IPerson(IConceptSchema, IBasePerson):
                                    'folder prefix) of a user that should '
                                    'be associated with this person.'),
                     required=False,)
+
+
+class IAddress(IConceptSchema, IBaseAddress):
+    """ See cybertools.organize.
+    """
 
 
 class IPasswordEntry(Interface):

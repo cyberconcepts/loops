@@ -26,9 +26,9 @@
   <zope:adapter factory="loops.organize.party.Address" trusted="True" />
   <zope:class class="loops.organize.party.Address">
     <require permission="zope.View"
-             interface="cybertools.organize.interfaces.IAddress" />
+             interface="loops.organize.interfaces.IAddress" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.organize.interfaces.IAddress" />
+             set_schema="loops.organize.interfaces.IAddress" />
   </zope:class>
 
   <zope:adapter factory="loops.organize.task.Task" trusted="True" />
