@@ -387,24 +387,24 @@ class NodeView(BaseView):
         actions = []
         self.registerDojo()
         if category in self.actions:
-            actions.extend(self.actions[category](self))
+            actions.extend(self.actions[category](self, target=target))
         if target is None:
             target = self.virtualTarget
         if target is not None:
-            actions.extend(target.getActions(category, page=self))
+            actions.extend(target.getActions(category, page=self, target=target))
         return actions
 
-    def getPortletActions(self):
+    def getPortletActions(self, target=None):
         actions = []
         cmeUrl = self.conceptMapEditorUrl
         if cmeUrl:
             actions.append(Action(self, title='Edit Concept Map',
                       targetWindow='loops_cme',
                       description='Open concept map editor in new window',
-                      url=cmeUrl))
+                      url=cmeUrl, target=target))
         actions.append(DialogAction(self, title='Create Resource...',
                   description='Create a new resource object.',
-                  page=self))
+                  page=self, target=target))
         return actions
 
     actions = dict(portlet=getPortletActions)
@@ -506,31 +506,6 @@ class InlineEdit(NodeView):
         #versionParam = self.hasVersions and '?version=this' or ''
         #self.request.response.redirect(self.virtualTargetUrl + versionParam)
         return 'OK'
-
-
-class xxxCreateObject(NodeView, Form):
-
-    template = ViewPageTemplateFile('form_macros.pt')
-
-    @property
-    def macro(self): return self.template.macros['create']
-
-    form_fields = FormFields(
-        schema.TextLine(__name__='title', title=_(u'Title')),
-        schema.Text(__name__='body', title=_(u'Body Text')),
-        schema.TextLine(__name__='linkUrl', title=_(u'Link'), required=False),
-    )
-
-    title = _(u'Enter Note')
-    form_action = 'create_note'
-
-    def __init__(self, context, request):
-        super(CreateObject, self).__init__(context, request)
-        self.setUpWidgets()
-        self.widgets['body'].height = 3
-
-    def __call__(self):
-        return innerHtml(self)
 
 
 # special (named) views for nodes

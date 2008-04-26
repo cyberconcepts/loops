@@ -35,10 +35,14 @@ class TargetAction(Action):
 
     @Lazy
     def url(self):
-        if self.page is None:
+        #return self.getActionUrl(self.page.getUrlForTarget(self.view))
+        if self.page is None:   # how could this happen?
             baseUrl = self.view.virtualTargetUrl
         else:
-            baseUrl = self.page.virtualTargetUrl
+            if self.target is not None:
+                baseUrl = self.page.getUrlForTarget(self.target)
+            else:
+                baseUrl = self.page.virtualTargetUrl
         return self.getActionUrl(baseUrl)
 
 
@@ -55,7 +59,12 @@ class DialogAction(Action):
 
     @Lazy
     def url(self):
-        return self.viewName
+        #return '%s/%s' % (self.page.getUrlForTarget(self.view), self.viewName)
+        if self.target is not None:
+            url = self.page.getUrlForTarget(self.target)
+        else:
+            url = self.page.virtualTargetUrl
+        return '%s/%s' % (url, self.viewName)
 
     @Lazy
     def onClick(self):
@@ -69,7 +78,13 @@ class DialogAction(Action):
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
         urlParams.update(self.addParams)
-        url = self.page.virtualTargetUrl
+        #url = self.page.getUrlForTarget(self.view)
+        #return self.jsOnClick % (self.dialogName, url, self.viewName,
+        #                         urlencode(urlParams))
+        if self.target is not None:
+            url = self.page.getUrlForTarget(self.target)
+        else:
+            url = self.page.virtualTargetUrl
         return self.jsOnClick % (self.dialogName, url, self.viewName,
                                  urlencode(urlParams))
 

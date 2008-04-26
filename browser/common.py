@@ -392,13 +392,13 @@ class BaseView(GenericView, I18NView):
     def editable(self):
         return canWriteObject(self.context)
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         """ Return a list of actions that provide the view and edit actions
             available for the context object.
         """
         actions = []
         if category in self.actions:
-            actions.extend(self.actions[category](self, page=page))
+            actions.extend(self.actions[category](self, page=page, target=target))
         return actions
 
     def openEditWindow(self, viewName='edit.html'):

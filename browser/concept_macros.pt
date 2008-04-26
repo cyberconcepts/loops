@@ -114,7 +114,7 @@
             <th i18n:translate="">Size</th>
             <th i18n:translate="">Modification Date</th>
             <th i18n:translate="">Author(s)</th>
-            <th i18n:translate="">St</th>
+            <th i18n:translate="">Info</th>
           </tr>
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
@@ -143,7 +143,8 @@
                 <td><span tal:replace="related/modified">2007-03-30</span></td>
                 <td><span tal:replace="related/creators">John</span></td>
                 <td style="white-space: nowrap"
-                    tal:define="target nocall:related">
+                    tal:define="target nocall:related;
+                                style nothing">
                   <div metal:use-macro="views/node_macros/object_actions" />
                 </td>
               </tr>

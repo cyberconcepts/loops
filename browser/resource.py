@@ -175,20 +175,20 @@ class ResourceView(BaseView):
 
     # actions
 
-    def getPortletActions(self, page=None):
+    def getPortletActions(self, page=None, target=None):
         actions = []
         actions.append(DialogAction(self, title='Edit Resource...',
                   description='Modify resource object.',
                   viewName='edit_object.html', dialogName='edit',
-                  page=page))
+                  page=page, target=target))
         return actions
 
-    def getObjectActions(self, page=None):
+    def getObjectActions(self, page=None, target=None):
         acts = ['info']
         acts.extend('state.' + st for st in statefulActions)
         if self.xeditable:
             acts.append('external_edit')
-        return actions.get('object', acts, view=self, page=page)
+        return actions.get('object', acts, view=self, page=page, target=target)
 
     actions = dict(portlet=getPortletActions, object=getObjectActions)
 

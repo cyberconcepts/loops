@@ -349,12 +349,12 @@ class ConceptView(BaseView):
         for node in self.context.getClients():
             yield NodeView(node, self.request)
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         t = IType(self.context)
         actInfo = t.optionsDict.get('action.' + category, '')
         actNames = [n.strip() for n in actInfo.split(',')]
         if actNames:
-            return actions.get(category, actNames, view=self, page=page)
+            return actions.get(category, actNames, view=self, page=page, target=target)
         return []
 
 
