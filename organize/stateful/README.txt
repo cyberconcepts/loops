@@ -145,7 +145,7 @@ The form view gives us access to the states of the object.
   ...     print st.statesDefinition, sto.title, [t.title for t in transitions],
   ...     print [t.title for t in userTrans]
   loops.classification_quality unclassified ['classify', 'verify'] ['verify']
-  loops.simple_publishing published ['retract'] ['retract']
+  loops.simple_publishing published ['retract', 'archive'] ['retract', 'archive']
 
 Let's now update the form.
 
