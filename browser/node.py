@@ -40,13 +40,14 @@ from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.formlib.namedtemplate import NamedTemplate
 from zope.proxy import removeAllProxies
-from zope.security import canAccess, canWrite
+from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
 from cybertools.browser.action import Action
 from cybertools.browser.view import GenericView
+from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import DialogAction
@@ -296,6 +297,8 @@ class NodeView(BaseView):
                 target = getVersion(target, self.request)
         return target
 
+    target = virtualTargetObject
+
     @Lazy
     def targetUid(self):
         if self.virtualTargetObject:
@@ -371,6 +374,25 @@ class NodeView(BaseView):
         target = self.virtualTargetObject
         if target is not None:
             return BaseView(target, self.request).url
+
+    # states information
+
+    @Lazy
+    def xxx_states(self):
+        result = []
+        if not checkPermission('loops.ManageSite', self.context):
+            # TODO: replace by more sensible permission
+            return result
+        target = self.virtualTargetObject
+        #statesDefs = ['loops.classification_quality', 'loops.simple_publishing']
+        if IResource.providedBy(target):
+            statesDefs = self.globalOptions('organize.stateful.resource', ())
+        else:
+            statesDefs = ()
+        for std in statesDefs:
+            stf = component.getAdapter(target, IStateful, name=std)
+            result.append(stf)
+        return result
 
     # target viewing and editing support
 

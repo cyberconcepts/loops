@@ -30,7 +30,8 @@ from cybertools.stateful.interfaces import IStateful
 from loops.util import _
 
 
-statefulActions = ('loops.classification_quality',)
+statefulActions = ('loops.classification_quality',
+                   'loops.simple_publishing',)
 
 
 class StateAction(Action):
@@ -54,7 +55,8 @@ class StateAction(Action):
 
     @Lazy
     def icon(self):
-        return 'cybertools.icons/led%s.png' % self.stateObject.color
+        icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
+        return 'cybertools.icons/' + icon
 
 
 for std in statefulActions:

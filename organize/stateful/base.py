@@ -41,9 +41,6 @@ class StatefulLoopsObject(Stateful, StatefulAdapter):
 
     adapts(ILoopsObject)
 
-    def getAvailableTransitionsForUser(self):
-        return self.getAvailableTransitions()
-
 
 class SimplePublishable(StatefulLoopsObject):
 

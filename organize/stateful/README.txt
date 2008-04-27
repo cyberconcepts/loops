@@ -137,6 +137,9 @@ We first need a node that provides us access to the resource as its target
 
 The form view gives us access to the states of the object.
 
+  >>> loopsRoot.options = ['organize.stateful.resource:'
+  ...           'loops.classification_quality,loops.simple_publishing']
+
   >>> form = EditObjectForm(node, TestRequest())
   >>> for st in form.states:
   ...     sto = st.getStateObject()

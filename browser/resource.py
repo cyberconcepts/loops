@@ -185,7 +185,8 @@ class ResourceView(BaseView):
 
     def getObjectActions(self, page=None, target=None):
         acts = ['info']
-        acts.extend('state.' + st for st in statefulActions)
+        #acts.extend('state.' + st for st in statefulActions)
+        acts.extend('state.' + st.statesDefinition for st in self.states)
         if self.xeditable:
             acts.append('external_edit')
         return actions.get('object', acts, view=self, page=page, target=target)

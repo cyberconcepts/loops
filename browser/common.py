@@ -49,13 +49,14 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
+from cybertools.meta.interfaces import IOptions
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.i18n.browser import I18NView
-from loops.interfaces import IView, INode
+from loops.interfaces import IResource, IView, INode
 from loops.resource import Resource
 from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
@@ -320,6 +321,16 @@ class BaseView(GenericView, I18NView):
         return util.KeywordVocabulary(general
                             + self.listTypesForSearch(('resource',), ('system', 'hidden'),))
 
+    # options/settings
+
+    @Lazy
+    def options(self):
+        return IOptions(self.context)
+
+    @Lazy
+    def globalOptions(self):
+        return IOptions(self.loopsRoot)
+
     # versioning
 
     @Lazy
@@ -379,10 +390,13 @@ class BaseView(GenericView, I18NView):
         if not checkPermission('loops.ManageSite', self.context):
             # TODO: replace by more sensible permission
             return result
-        target = self.virtualTargetObject
-        for std in ['loops.classification_quality',
-                    'loops.simple_publishing']:
-            stf = component.getAdapter(target, IStateful, name=std)
+        #statesDefs = ['loops.classification_quality', 'loops.simple_publishing']
+        if IResource.providedBy(self.target):
+            statesDefs = self.globalOptions('organize.stateful.resource', ())
+        else:
+            statesDefs = ()
+        for std in statesDefs:
+            stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
         return result
 
