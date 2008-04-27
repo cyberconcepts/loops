@@ -34,6 +34,7 @@ from cybertools.stateful.interfaces import IStatesDefinition, IStateful
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
 from loops.interfaces import ILoopsObject, IResource
 from loops.organize.stateful.base import StatefulLoopsObject
+from loops.versioning.interfaces import IVersionable
 
 
 @implementer(IStatesDefinition)
@@ -70,20 +71,35 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
     def assign(self, relation):
         if not self.isRelevant(relation):
             return
+        versionable = IVersionable(self.context, None)
         if self.state in ('new', 'unclassified'):
-            self.doTransition('classify')
+            self.doTransitionWithVersions('classify', versionable)
         else:
-            self.doTransition('change_classification')
+            self.doTransitionWithVersions('change_classification', versionable)
 
     def deassign(self, relation):
         if not self.isRelevant(relation):
             return
+        versionable = IVersionable(self.context, None)
         if self.state in ('new', 'classified', 'verified'):
-            old = self.context.getParentRelations()
-            if len(old) > 2:    # the hasType relation always remains
-                self.doTransition('change_classification')
+            parents = self.context.getParentRelations()
+            if len(parents) > 1:    # the hasType relation always remains
+                self.doTransitionWithVersions('change_classification', versionable)
             else:
-                self.doTransition('remove_classification')
+                self.doTransitionWithVersions('remove_classification', versionable)
+
+    def doTransitionWithVersions(self, transition, versionable):
+        self.doTransition(transition)
+        if versionable is None:
+            return
+        for v in versionable.versions.values():
+            if v != self.context:
+                stf = component.getAdapter(v, IStateful, name=self.statesDefinition)
+                available = [t.name for t in stf.getAvailableTransitions()]
+                if transition in available:
+                    stf.doTransition(transition)
+                #else:
+                #    print '***', v.__name__, stf.state, transition, available
 
     def isRelevant(self, relation):
         """ Return True if the relation given is relevant for changing

@@ -28,6 +28,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserView
 from zope.security.checker import Checker, defineChecker
 
 from cybertools.browser.controller import Controller
+from cybertools.catalog.keyword import KeywordIndex
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
 from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
@@ -39,6 +40,7 @@ from cybertools.relation.interfaces import IRelation, IRelationRegistry
 from cybertools.relation.interfaces import IRelationInvalidatedEvent
 from cybertools.relation.registry import IndexableRelationAdapter
 from cybertools.relation.registry import invalidateRelations, removeRelation
+from cybertools.stateful.interfaces import IStatefulIndexInfo
 from cybertools.typology.interfaces import IType
 
 from loops.base import Loops
@@ -51,6 +53,7 @@ from loops.config.base import GlobalOptions, LoopsOptions
 from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.organize.memberinfo import MemberInfoProvider
+from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
 from loops.query import QueryConcept
 from loops.query import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
@@ -150,8 +153,11 @@ class TestSite(object):
         catalog['loops_title'] = TextIndex('title', IIndexAttributes, True)
         catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
         catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
+        catalog['loops_state'] = KeywordIndex('tokens', IStatefulIndexInfo, False)
         component.provideAdapter(ConceptIndexAttributes)
         component.provideAdapter(ResourceIndexAttributes)
+        component.provideAdapter(StatefulResourceIndexInfo)
+        component.provideHandler(handleTransition)
 
         loopsRoot = site['loops'] = Loops()
         setup = SetupManager(loopsRoot)

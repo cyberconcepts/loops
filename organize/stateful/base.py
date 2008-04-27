@@ -22,13 +22,16 @@ Basic implementations for stateful objects and adapters.
 $Id$
 """
 
+from zope.app.catalog.interfaces import ICatalog
 from zope import component
-from zope.component import adapts
+from zope.component import adapts, adapter
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.stateful.base import Stateful as BaseStateful
-from cybertools.stateful.base import StatefulAdapter
-from cybertools.stateful.interfaces import IStatesDefinition
-from loops.interfaces import ILoopsObject
+from cybertools.stateful.base import StatefulAdapter, IndexInfo
+from cybertools.stateful.interfaces import IStatesDefinition, ITransitionEvent
+from loops.interfaces import ILoopsObject, IResource
+from loops import util
 
 
 class Stateful(BaseStateful):
@@ -46,3 +49,21 @@ class SimplePublishable(StatefulLoopsObject):
 
     statesDefinition = 'loops.simple_publishing'
 
+
+class StatefulResourceIndexInfo(IndexInfo):
+
+    adapts(IResource)
+
+    @property
+    def availableStatesDefinitions(self):
+        options = IOptions(self.context.getLoopsRoot())
+        return options('organize.stateful.resource', ())
+
+
+@adapter(IResource, ITransitionEvent)
+def handleTransition(self, obj, event):
+    previous = event.previousState
+    next = event.transition.targetState
+    if next != previous:
+        cat = getUtility(ICatalog)
+        cat.index_doc(int(util.getUidForObject(obj)), obj)

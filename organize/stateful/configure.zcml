@@ -5,6 +5,13 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <zope:adapter
+        factory="loops.organize.stateful.base.StatefulResourceIndexInfo"
+        trusted="True" />
+  <zope:class class="loops.organize.stateful.base.StatefulResourceIndexInfo">
+    <allow interface="cybertools.stateful.interfaces.IStatefulIndexInfo" />
+  </zope:class>
+
   <!-- stateful definitions and corresponding adapters -->
 
   <zope:utility
@@ -37,6 +44,7 @@
 
   <!-- event handlers -->
 
+  <zope:subscriber handler="loops.organize.stateful.base.handleTransition" />
   <zope:subscriber handler="loops.organize.stateful.quality.assign" />
   <zope:subscriber handler="loops.organize.stateful.quality.deassign" />
 

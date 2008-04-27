@@ -230,8 +230,8 @@ class Concept(Contained, Persistent):
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getChildRelations(predicates, child):
             if order is None or rel.order == order:
-                notify(DeassignmentEvent(self, rel))
                 registry.unregister(rel)
+                notify(DeassignmentEvent(self, rel))
 
     def deassignParent(self, parent, predicates=None):
         parent.deassignChild(self, predicates)
@@ -269,8 +269,8 @@ class Concept(Contained, Persistent):
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getResourceRelations(predicates, resource):
             if order is None or rel.order == order:
-                notify(DeassignmentEvent(self, rel))
                 registry.unregister(rel)
+                notify(DeassignmentEvent(self, rel))
 
     # combined children+resources query
 
