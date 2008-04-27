@@ -23,8 +23,8 @@ $Id$
 """
 
 from BTrees.IIBTree import IITreeSet
-from BTrees.IFBTree import IFBTree, IFTreeSet
-from BTrees.IOBTree import IOBTree
+from BTrees.IFBTree import IFBucket, IFBTree, IFTreeSet
+from BTrees.IOBTree import IOBucket, IOBTree
 from zope import interface, component
 from zope.app.intid.interfaces import IIntIds
 from zope.component import adapts
@@ -33,6 +33,7 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.catalog.query import Term, Eq, Between
 from cybertools.catalog.query import Text as BaseText
+from cybertools.catalog.query import AnyOf
 from loops.expert.interfaces import IQuery
 from loops.security.common import canListObject
 from loops import util
@@ -40,7 +41,10 @@ from loops import util
 titleIndex = ('', 'loops_title')
 textIndex = ('', 'loops_text')
 typeIndex = ('', 'loops_type')
+stateIndex = ('', 'loops_state')
 
+
+# standard text/field/keyword index queries
 
 @implementer(IQuery)
 def Title(value):
@@ -58,6 +62,12 @@ def Type(value):
         return Between(typeIndex, v1, v2)
     return Eq(typeIndex, value)
 
+@implementer(IQuery)
+def State(statesDefinition, value):
+    return AnyOf(stateIndex, ':'.join((statesDefinition, value)))
+
+
+# concept map queries
 
 class ConceptMapTerm(Term):
 
@@ -104,6 +114,8 @@ class Children(ConceptMapTerm):
                 if self.recursive:
                     self.getRecursive(c, result)
 
+
+# utility functions
 
 def getObjects(uids, root=None, checkPermission=canListObject):
     intIds = component.getUtility(IIntIds)

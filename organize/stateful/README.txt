@@ -95,7 +95,7 @@ later.
   ...                   title='DocFive')
 
 When we change the concept assignments of the resource - i.e. its classification
-- the classification quality state changes automaticalls
+- the classification quality state changes automatically
 
   >>> c01.assignResource(doc01)
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,

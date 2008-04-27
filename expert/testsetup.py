@@ -44,8 +44,6 @@ class TestSite(BaseTestSite):
                            type=tType)
         tCustomer = addObject(concepts, Concept, 'customer', title=u'Customer',
                            type=tType)
-        tState = addObject(concepts, Concept, 'state', title=u'State',
-                            type=tType)
         tDocumentType = addObject(concepts, Concept, 'documenttype',
                            title=u'Document Type', type=tType)
         dGeneral = addObject(concepts, Concept, 'general',
@@ -53,7 +51,6 @@ class TestSite(BaseTestSite):
         dProjects = addObject(concepts, Concept, 'projects',
                            title=u'Project Domain', type=tDomain)
         tCountry.assignParent(dGeneral)
-        tState.assignParent(dGeneral)
         tCustomer.assignParent(dProjects)
         tDocumentType.assignParent(dProjects)
 
@@ -70,12 +67,6 @@ class TestSite(BaseTestSite):
         cust1.assignParent(countryDe)
         cust2.assignParent(countryDe)
         cust3.assignParent(countryUs)
-        stateNew = addObject(concepts, Concept, 'new',
-                           title=u'New', type=tState)
-        stateReleased = addObject(concepts, Concept, 'released',
-                           title=u'Released', type=tState)
-        stateObsolete = addObject(concepts, Concept, 'obsolete',
-                           title=u'Obsolete', type=tState)
         dtStudy = addObject(concepts, Concept, 'dt_study',
                            title=u'Study', type=tDocumentType)
         dtNote = addObject(concepts, Concept, 'dt_note',
@@ -86,15 +77,12 @@ class TestSite(BaseTestSite):
 
         d001 = resources['d001.txt']
         d001.assignConcept(cust1)
-        d001.assignConcept(stateReleased)
         d001.assignConcept(dtNote)
         d002 = resources['d002.txt']
         d002.assignConcept(cust3)
-        d002.assignConcept(stateNew)
         d002.assignConcept(dtNote)
         d003 = resources['d003.txt']
         d003.assignConcept(cust1)
-        d003.assignConcept(stateNew)
         d003.assignConcept(dtStudy)
 
         catalog = component.getUtility(ICatalog)

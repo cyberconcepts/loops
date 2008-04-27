@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  36
+  32
 
   >>> loopsRoot = site['loops']
 
@@ -47,11 +47,11 @@ Type- and text-based queries
   >>> from loops.expert import query
   >>> qu = query.Title('ty*')
   >>> list(qu.apply())
-  [0, 1, 47]
+  [0, 1, 45]
 
   >>> qu = query.Type('loops:*')
   >>> len(list(qu.apply()))
-  36
+  32
 
   >>> qu = query.Type('loops:concept:predicate')
   >>> len(list(qu.apply()))
@@ -61,6 +61,53 @@ Type- and text-based queries
   >>> list(qu.apply())
   [1]
 
+State-based queries
+-------------------
+
+  >>> qu = query.State('loops.classification_quality', 'new')
+  >>> list(qu.apply())
+  []
+
+  >>> from cybertools.stateful.publishing import simplePublishing
+  >>> component.provideUtility(simplePublishing(), name='loops.simple_publishing')
+  >>> from loops.organize.stateful.base import SimplePublishable
+  >>> component.provideAdapter(SimplePublishable, name='loops.simple_publishing')
+  >>> from loops.organize.stateful.quality import classificationQuality
+  >>> component.provideUtility(classificationQuality(),
+  ...                          name='loops.classification_quality')
+  >>> from loops.organize.stateful.quality import ClassificationQualityCheckable
+  >>> component.provideAdapter(ClassificationQualityCheckable,
+  ...                          name='loops.classification_quality')
+
+  >>> loopsRoot.options = ['organize.stateful.resource:'
+  ...                      'loops.classification_quality,loops.simple_publishing']
+
+  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> catalog = component.getUtility(ICatalog)
+  >>> from loops import util
+
+  >>> for r in resources.values():
+  ...     catalog.index_doc(int(util.getUidForObject(r)), r)
+
+  >>> qu = query.State('loops.classification_quality', 'new')
+  >>> list(qu.apply())
+  [23, 25, 27]
+
+  >>> from cybertools.stateful.interfaces import IStateful
+  >>> statefulD001 = component.getAdapter(resources['d001.txt'], IStateful,
+  ...                                     name='loops.classification_quality')
+
+  >>> from loops.organize.stateful.base import handleTransition
+  >>> component.provideHandler(handleTransition)
+
+  >>> statefulD001.doTransition('classify')
+  >>> list(qu.apply())
+  [25, 27]
+
+  >>> qu = query.State('loops.classification_quality', 'classified')
+  >>> list(qu.apply())
+  [23]
+
 Relationship-based queries
 --------------------------
 
@@ -69,10 +116,10 @@ relations to other objects the expert package provides methods
 for selecting and filtering related objects using our basic querying
 syntax (that in turn is based on hurry.query).
 
-  >>> stateNew = concepts['new']
-  >>> qu = query.Resources(stateNew)
+  >>> cust1 = concepts['cust1']
+  >>> qu = query.Resources(cust1)
   >>> list(qu.apply())
-  [25, 27]
+  [23, 27]
 
 Getting objects
 ---------------
@@ -136,7 +183,7 @@ Organizing Queries and Filters with Query Instances
 A query instance consists of
 
 - a base query (a composition of terms)
-- one or more query filter that will be joined with the base query
+- one or more query filters that will be joined with the base query
 - a result filter that will be applied to the result set of the
   preceding steps
 

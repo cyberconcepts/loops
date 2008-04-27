@@ -61,9 +61,9 @@ class StatefulResourceIndexInfo(IndexInfo):
 
 
 @adapter(IResource, ITransitionEvent)
-def handleTransition(self, obj, event):
+def handleTransition(obj, event):
     previous = event.previousState
     next = event.transition.targetState
     if next != previous:
-        cat = getUtility(ICatalog)
+        cat = component.getUtility(ICatalog)
         cat.index_doc(int(util.getUidForObject(obj)), obj)
