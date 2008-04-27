@@ -30,10 +30,9 @@ from zope.app.intid.interfaces import IIntIds
 from zope.component import adapts
 from zope.interface import implements, implementer
 from zope.cachedescriptors.property import Lazy
-from hurry.query.query import Term
-from hurry.query.query import Text as BaseText
-from hurry.query.query import Eq, Between
 
+from cybertools.catalog.query import Term, Eq, Between
+from cybertools.catalog.query import Text as BaseText
 from loops.expert.interfaces import IQuery
 from loops.security.common import canListObject
 from loops import util

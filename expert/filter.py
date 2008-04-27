@@ -22,10 +22,10 @@ Filter query results.
 $Id$
 """
 
-from hurry.query.query import And
 from BTrees.IOBTree import IOBTree
 from zope.interface import implements
 
+from cybertools.catalog.query import And
 from loops.expert.interfaces import IFilter
 from loops.expert.query import Children as ChildrenQuery
 

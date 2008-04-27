@@ -7,9 +7,6 @@ use of it.
 
   ($Id$)
 
-The query stuff depends on hurry.query, see
-http://cheeseshop.python.org/pypi/hurry.query
-
 
 Setting up a loops Site and Utilities
 =====================================
