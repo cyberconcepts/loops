@@ -89,6 +89,7 @@ class AdapterBase(object):
     _adapterAttributes = ('context', '__parent__',)
     _contextAttributes = list(IConcept)
     _noexportAttributes = ()
+    _textIndexAttributes = ()
 
     def __init__(self, context):
         self.context = context

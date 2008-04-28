@@ -42,7 +42,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 
 from loops.base import ParentInfo
-from loops.common import AdapterBase
+from loops.common import adapted, AdapterBase
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
@@ -389,9 +389,12 @@ class IndexAttributes(object):
         self.context = context
 
     def text(self):
-        context = self.context
-        # TODO: include attributes provided by concept type
-        return ' '.join((getName(context), context.title,))
+        ctx = self.context
+        #return ' '.join((getName(ctx), ctx.title,))
+        actx = adapted(ctx)
+        indexAttrs = getattr(actx, '_textIndexAttributes', ())
+        return ' '.join([getName(ctx), ctx.title, ctx.description] +
+                        [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
 
     def title(self):
         context = self.context
