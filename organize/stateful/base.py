@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope.app.catalog.interfaces import ICatalog
+from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts, adapter
 
@@ -43,6 +44,14 @@ class Stateful(BaseStateful):
 class StatefulLoopsObject(Stateful, StatefulAdapter):
 
     adapts(ILoopsObject)
+
+    @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
+    def typePredicate(self):
+        return self.loopsRoot.getConceptManager().getTypePredicate()
 
 
 class SimplePublishable(StatefulLoopsObject):

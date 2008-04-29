@@ -89,7 +89,7 @@ State-based queries
   >>> for r in resources.values():
   ...     catalog.index_doc(int(util.getUidForObject(r)), r)
 
-  >>> qu = query.State('loops.classification_quality', 'new')
+  >>> qu = query.State('loops.classification_quality', 'classified')
   >>> list(qu.apply())
   [23, 25, 27]
 
@@ -100,11 +100,11 @@ State-based queries
   >>> from loops.organize.stateful.base import handleTransition
   >>> component.provideHandler(handleTransition)
 
-  >>> statefulD001.doTransition('classify')
+  >>> statefulD001.doTransition('verify')
   >>> list(qu.apply())
   [25, 27]
 
-  >>> qu = query.State('loops.classification_quality', 'classified')
+  >>> qu = query.State('loops.classification_quality', 'verified')
   >>> list(qu.apply())
   [23]
 

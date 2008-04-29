@@ -42,7 +42,7 @@ class Events(ConceptView):
     def macro(self):
         return organize_macros.macros['events']
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet':
             actions.append(DialogAction(self, title=_(u'Create Event...'),
@@ -52,7 +52,8 @@ class Events(ConceptView):
                   typeToken='.loops/concepts/event',
                   fixedType=True,
                   innerForm='inner_concept_form.html',
-                  page=page))
+                  page=page,
+                  target=target))
             self.registerDojoDateWidget()
         return actions
 

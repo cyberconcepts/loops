@@ -36,13 +36,14 @@ organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 class TaskView(ConceptView):
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet':
             actions.append(DialogAction(self, title=_(u'Edit Task...'),
                   description=_(u'Modify task.'),
                   viewName='edit_concept.html',
                   dialogName='editTask',
-                  page=page))
+                  page=page,
+                  target=target))
             self.registerDojoDateWidget()
         return actions

@@ -82,8 +82,9 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
             return
         versionable = IVersionable(self.context, None)
         if self.state in ('new', 'classified', 'verified'):
-            parents = self.context.getParentRelations()
-            if len(parents) > 1:    # the hasType relation always remains
+            parents = [r for r in self.context.getParentRelations()
+                         if r.predicate != self.typePredicate]
+            if len(parents) > 0:
                 self.doTransitionWithVersions('change_classification', versionable)
             else:
                 self.doTransitionWithVersions('remove_classification', versionable)
@@ -107,6 +108,18 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
         """
         return (IResource.providedBy(self.context) and
                 getName(relation.predicate) != 'hasType')
+
+    def getState(self):
+        value = super(ClassificationQualityCheckable, self).getState()
+        if value == 'new':
+            parents = [r for r in self.context.getParentRelations()
+                         if r.predicate != self.typePredicate]
+            if len(parents) > 0:
+                value = 'classified'
+        return value
+    def setState(self, value):
+        super(ClassificationQualityCheckable, self).setState(value)
+    state = property(getState, setState)
 
 
 # event handlers
