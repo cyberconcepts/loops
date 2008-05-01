@@ -98,14 +98,16 @@ class DialogAction(Action):
 actions.register('info', 'object', DialogAction,
         description=_(u'Information about this object.'),
         viewName='object_info.html',
-        dialogName='object_info',
+        #dialogName='object_info',
+        dialogName='',
         icon='cybertools.icons/info.png',
         cssClass='icon-action',
+        addParams=dict(version='this')
 )
 
 actions.register('external_edit', 'object', TargetAction,
         description=_(u'Edit with external editor.'),
-        viewName='external_edit?version=this',
+        viewName='external_edit',
         icon='edit.gif',
         cssClass='icon-action',
 )

@@ -218,11 +218,6 @@
 
 <!-- inner HTML macros -->
 
-<metal:info define-macro="object_info">
-  <div>Object Information</div>
-</metal:info>
-
-
 <div metal:define-macro="inline_edit"
      class="content-1" id="1.body">
   <form action="." method="post" id="1.form">

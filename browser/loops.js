@@ -105,14 +105,14 @@ function setConceptTypeForComboBox(typeId, cbId) {
 }
 
 var dialog;
-var dialogName
+var dialogName;
 
 function objectDialog(dlgName, url) {
     dojo.require('dijit.Dialog');
     dojo.require('dojo.parser');
     dojo.require('dijit.form.FilteringSelect');
     dojo.require('dojox.data.QueryReadStore');
-    if (dialogName == undefined || dialogName != dlgName) {
+    if (dialogName == undefined || dialogName != dlgName || dialogName == '') {
         if (dialog != undefined) {
             dialog.destroyRecursive();
         }

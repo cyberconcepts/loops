@@ -64,6 +64,7 @@ from loops.versioning.util import getVersion
 
 
 node_macros = ViewPageTemplateFile('node_macros.pt')
+info_macros = ViewPageTemplateFile('info.pt')
 
 
 class NodeView(BaseView):
@@ -375,25 +376,6 @@ class NodeView(BaseView):
         if target is not None:
             return BaseView(target, self.request).url
 
-    # states information
-
-    @Lazy
-    def xxx_states(self):
-        result = []
-        if not checkPermission('loops.ManageSite', self.context):
-            # TODO: replace by more sensible permission
-            return result
-        target = self.virtualTargetObject
-        #statesDefs = ['loops.classification_quality', 'loops.simple_publishing']
-        if IResource.providedBy(target):
-            statesDefs = self.globalOptions('organize.stateful.resource', ())
-        else:
-            statesDefs = ()
-        for std in statesDefs:
-            stf = component.getAdapter(target, IStateful, name=std)
-            result.append(stf)
-        return result
-
     # target viewing and editing support
 
     def getUrlForTarget(self, target):
@@ -489,7 +471,7 @@ class ObjectInfo(NodeView):
 
     @property
     def macro(self):
-        return self.template.macros['object_info']
+        return info_macros.macros['object_info']
 
     @Lazy
     def dialog_name(self):

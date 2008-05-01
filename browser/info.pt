@@ -1,0 +1,46 @@
+<!-- object information -->
+
+
+<metal:info define-macro="object_info"
+            tal:define="item nocall:view/item">
+  <table class="object_info">
+    <tr>
+      <td colspan="2"><h2 i18n:translate="">Object Information</h2><br /></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Title</span>:</td>
+      <td tal:content="item/title"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Description</span>:</td>
+      <td tal:content="item/description"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Name</span>:</td>
+      <td tal:content="item/context/__name__"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Type</span>:</td>
+      <td tal:content="item/longTypeTitle"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Size</span>:</td>
+      <td tal:content="item/context/sizeForDisplay"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">modified</span>:</td>
+      <td tal:content="item/modified"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Creators</span>:</td>
+      <td tal:content="item/creators"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><br />
+        <input type="button" value="Close" onclick="closeDialog()"
+               i18n:attributes="value" />
+      </td>
+    </tr>
+  </table>
+
+</metal:info>

@@ -138,7 +138,7 @@
                   </td>
                 </tal:version>
                 <td style="text-align: right; white-space: nowrap">
-                  <span tal:replace="related/context/sizeForDisplay">Type</span>
+                  <span tal:replace="related/context/sizeForDisplay">2 MB</span>
                 </td>
                 <td><span tal:replace="related/modified">2007-03-30</span></td>
                 <td><span tal:replace="related/creators">John</span></td>
