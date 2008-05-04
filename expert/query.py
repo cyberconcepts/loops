@@ -31,7 +31,7 @@ from zope.component import adapts
 from zope.interface import implements, implementer
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.catalog.query import Term, Eq, Between
+from cybertools.catalog.query import Term, Eq, Between, Or
 from cybertools.catalog.query import Text as BaseText
 from cybertools.catalog.query import AnyOf
 from loops.expert.interfaces import IQuery
@@ -64,7 +64,9 @@ def Type(value):
 
 @implementer(IQuery)
 def State(statesDefinition, value):
-    return AnyOf(stateIndex, ':'.join((statesDefinition, value)))
+    if not isinstance(value, (list, tuple)):
+        value = [value]
+    return AnyOf(stateIndex, [':'.join((statesDefinition, v)) for v in value])
 
 
 # concept map queries
