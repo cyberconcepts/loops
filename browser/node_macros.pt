@@ -186,7 +186,7 @@
 
 
 <metal:actions define-macro="object_actions">
-  <div style="float: right;"
+  <div style="float: right;" class="object-actions"
        tal:define="target nocall:target|nothing;"
        tal:attributes="style style|string:float: right">
     <tal:actions repeat="action python:view.getActions('object', target=target)">
