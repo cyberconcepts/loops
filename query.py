@@ -151,6 +151,8 @@ class FullQuery(BaseQuery):
                 r2 = cat.apply(criteria)    #r2 = set(cat.searchResults(**criteria))
             else:
                 r2 = IFBucket()             #r2 = set()
+            if not r1 and not r2:
+                r1 = cat.apply(criteria)    # search only for type
             x, uids = weightedUnion(r1, r2) #result = r1.union(r2)
             for r, score in uids.items():
                 obj = intids.getObject(r)
