@@ -394,7 +394,9 @@ class EditObject(FormController, I18NView):
     @Lazy
     def schema(self):
         schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
-        return schemaFactory(self.typeInterface)
+        #return schemaFactory(self.typeInterface)
+        return schemaFactory(self.typeInterface, manager=self,
+                             request=self.request)
 
     @Lazy
     def fields(self):
