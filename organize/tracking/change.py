@@ -24,12 +24,14 @@ $Id$
 
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
+from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapter
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.tracking.btree import Track, getTimeStamp
+from cybertools.tracking.interfaces import ITrack
 from loops.concept import ConceptManager
 from loops.resource import ResourceManager
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
@@ -97,7 +99,14 @@ class ChangeManager(object):
             self.storage.saveUserTrack(uid, 0, personUid, data, update)
 
 
+class IChangeRecord(ITrack):
+
+    pass
+
+
 class ChangeRecord(Track):
+
+    implements(IChangeRecord)
 
     typeName = 'ChangeRecord'
 

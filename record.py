@@ -35,6 +35,8 @@ class RecordManager(BTreeContainer):
 
     implements(IRecordManager, ILoopsContained)
 
+    title = 'records'
+
     def getLoopsRoot(self):
         return getParent(self)
 

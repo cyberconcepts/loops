@@ -55,4 +55,19 @@
       permission="zope.View"
       />
 
+  <browser:page
+      for="cybertools.tracking.interfaces.ITrackingStorage"
+      name="index.html"
+      class="cybertools.tracking.browser.TrackingStorageView"
+      permission="zope.View"
+      />
+
+  <zope:adapter
+      for="cybertools.tracking.interfaces.ITrack
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="cybertools.tracking.browser.TrackView"
+      permission="zope.View"
+      />
+
 </configure>

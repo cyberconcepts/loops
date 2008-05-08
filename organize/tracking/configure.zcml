@@ -1,26 +1,29 @@
 <!-- $Id$ -->
 
 <configure
-   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
-  <class class="loops.organize.tracking.change.ChangeRecord">
+  <zope:class class="loops.organize.tracking.change.ChangeRecord">
     <require permission="zope.View"
              interface="cybertools.tracking.interfaces.ITrack" />
     <require permission="zope.ManageContent"
              set_schema="cybertools.tracking.interfaces.ITrack" />
-  </class>
+  </zope:class>
 
-  <!--<class class="loops.organize.tracking.change.ChangeRecord">
-    <require permission="zope.View"
-             interface="cybertools.tracking.interfaces.ITrackingStorage" />
-  </class>-->
+  <zope:adapter
+      for="loops.organize.tracking.change.IChangeRecord
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.tracking.browser.ChangeView"
+      permission="zope.View" />
 
-  <subscriber handler="loops.organize.tracking.change.recordModification" />
-  <subscriber handler="loops.organize.tracking.change.recordAssignment" />
-  <subscriber handler="loops.organize.tracking.change.recordDeassignment" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordModification" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordDeassignment" />
 
-  <adapter factory="loops.organize.tracking.setup.SetupManager"
-           name="organize.tracking" />
+  <zope:adapter factory="loops.organize.tracking.setup.SetupManager"
+                name="organize.tracking" />
 
 </configure>
