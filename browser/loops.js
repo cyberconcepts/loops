@@ -152,9 +152,9 @@ function validate() {
     if (titleField != undefined && titleField.value == '') {
         return false;
     }
-    if (form != undefined) {
+    /*if (form != undefined) {
         return form.submit();
-    }
+    }*/
     return true;
 }
 

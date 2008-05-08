@@ -111,9 +111,11 @@ class ObjectForm(NodeView):
 
     @Lazy
     def schema(self):
-        ti = self.typeInterface or IConceptSchema
-        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
-        return schemaFactory(ti, manager=self, request=self.request)
+        #ti = self.typeInterface or IConceptSchema
+        #schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        schemaFactory = ISchemaFactory(self.adapted)
+        return schemaFactory(self.typeInterface, manager=self,
+                             request=self.request)
 
     @Lazy
     def fields(self):
@@ -340,7 +342,10 @@ class CreateConceptForm(CreateObjectForm):
     @Lazy
     def typeInterface(self):
         if self.typeConcept:
-            return removeSecurityProxy(ITypeConcept(self.typeConcept).typeInterface)
+            ti = ITypeConcept(self.typeConcept).typeInterface
+            if ti is not None:
+                return removeSecurityProxy(ti)
+        return IConceptSchema
 
     @property
     def assignments(self):
@@ -393,7 +398,8 @@ class EditObject(FormController, I18NView):
 
     @Lazy
     def schema(self):
-        schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        #schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
+        schemaFactory = ISchemaFactory(self.adapted)
         #return schemaFactory(self.typeInterface)
         return schemaFactory(self.typeInterface, manager=self,
                              request=self.request)

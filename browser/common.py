@@ -483,6 +483,11 @@ class BaseView(GenericView, I18NView):
         jsCall = 'dojo.require("dijit.form.ValidationTextBox");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
+    def registerDojoEditor(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dijit.Editor");'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
 
 # vocabulary stuff
 

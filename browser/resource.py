@@ -176,12 +176,8 @@ class ResourceView(BaseView):
     # actions
 
     def getPortletActions(self, page=None, target=None):
-        actions = []
-        actions.append(DialogAction(self, title='Edit Resource...',
-                  description='Modify resource object.',
-                  viewName='edit_object.html', dialogName='edit',
-                  page=page, target=target))
-        return actions
+        return actions.get('portlet', ['edit_object'], view=self, page=page,
+                           target=target)
 
     def getObjectActions(self, page=None, target=None):
         acts = ['info']

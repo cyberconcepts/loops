@@ -49,9 +49,9 @@ actions.register('editFolder', 'portlet', DialogAction,
 
 class FolderView(ConceptView):
 
-    def getActions(self, category='concept', page=None):
+    def getActions(self, category='concept', page=None, target=None):
         if category == 'portlet':
             return actions.get(category, ['createFolder', 'editFolder'],
-                               view=self, page=page)
+                               view=self, page=page, target=target)
         return []
 

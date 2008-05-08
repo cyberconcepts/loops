@@ -102,7 +102,7 @@ actions.register('info', 'object', DialogAction,
         dialogName='',
         icon='cybertools.icons/info.png',
         cssClass='icon-action',
-        addParams=dict(version='this')
+        addParams=dict(version='this'),
 )
 
 actions.register('external_edit', 'object', TargetAction,
@@ -110,4 +110,12 @@ actions.register('external_edit', 'object', TargetAction,
         viewName='external_edit',
         icon='edit.gif',
         cssClass='icon-action',
+)
+
+actions.register('edit_object', 'portlet', DialogAction,
+        title=_(u'Edit Resource...'),
+        description=_(u'Modify resource object.'),
+        viewName='edit_object.html',
+        dialogName='edit',
+        prerequisites=['registerDojoEditor'],
 )
