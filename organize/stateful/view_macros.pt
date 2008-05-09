@@ -1,0 +1,6 @@
+<!-- $Id$ -->
+
+
+<metal:query define-macro="query">
+  <metal:results use-macro="item/search_macros/results" />
+</metal:query>

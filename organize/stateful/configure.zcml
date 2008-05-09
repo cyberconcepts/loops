@@ -42,6 +42,14 @@
              set_schema="cybertools.stateful.interfaces.IStateful" />
   </zope:class>
 
+  <!-- views -->
+
+  <browser:page
+        for="loops.interfaces.IConcept"
+        name="select_state.html"
+        class="loops.organize.stateful.browser.StateQuery"
+        permission="zope.View" />
+
   <!-- event handlers -->
 
   <zope:subscriber handler="loops.organize.stateful.base.handleTransition" />

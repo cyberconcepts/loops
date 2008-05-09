@@ -23,10 +23,15 @@ $Id$
 """
 
 from zope import component
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.action import Action, actions
 from cybertools.stateful.interfaces import IStateful
+from loops.browser.common import BaseView
+from loops.browser.concept import ConceptView
+from loops.expert import query
+from loops.search.browser import template as search_template
 from loops.util import _
 
 
@@ -64,3 +69,24 @@ for std in statefulActions:
             definition = std,
             cssClass='icon-action',
     )
+
+
+#class StateQuery(ConceptView):
+class StateQuery(BaseView):
+
+    template = ViewPageTemplateFile('view_macros.pt')
+
+    @Lazy
+    def search_macros(self):
+        return search_template.macros
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['query']
+
+    @Lazy
+    def results(self):
+        uids = query.State('loops.classification_quality',
+                           #['new', 'unclassified', 'classified']).apply()
+                           ['new', 'unclassified']).apply()
+        return self.viewIterator(query.getObjects(uids, self.loopsRoot))

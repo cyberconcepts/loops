@@ -43,9 +43,11 @@
 
     <div metal:define-macro="search_results" id="1.search.results"
          tal:attributes="id resultsId | request/search.resultsId"
-         i18n:domain="loops">
+         i18n:domain="loops"
+         tal:define="item nocall:view">
       <fieldset class="box"
                 tal:condition="request/search.submitted | nothing">
+      <metal:results define-macro="results">
         <h2 i18n:translate="">Search results</h2>
         <table class="listing" summary="Search results"
                i18n:attributes="summary">
@@ -61,7 +63,7 @@
             </tr>
           </thead>
           <tbody>
-            <tal:items tal:repeat="row view/results">
+            <tal:items tal:repeat="row item/results">
               <tal:item define="class python: repeat['row'].odd() and 'even' or 'odd';
                                 description row/description">
                 <tr tal:attributes="class class">
@@ -91,6 +93,7 @@
             </tal:items>
           </tbody>
         </table>
+      </metal:results>
       </fieldset>
     </div>
 
