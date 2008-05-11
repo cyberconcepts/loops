@@ -35,7 +35,7 @@ Accessing a Directory in the Filesystem
 
 Let's just reuse the settings of cybertools.integrator.
 
-  >>> from cybertools.integrator.tests import testDir
+  >>> from cybertools.integrator.tests.test_filesystem import testDir
   >>> from cybertools.integrator.filesystem import ContainerFactory, FileFactory
   >>> component.provideUtility(ContainerFactory(), name='filesystem')
   >>> component.provideUtility(FileFactory(), name='filesystem')
