@@ -2,7 +2,9 @@
   <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
     <tal:body define="itemNum view/itemNum;
                       id string:$itemNum.body;">
-      <div metal:use-macro="views/node_macros/object_actions" />
+      <tal:actions condition="view/showObjectActions">
+        <div metal:use-macro="views/node_macros/object_actions" />
+      </tal:actions>
       <h1 tal:content="item/title">Title</h1>
       <p tal:define="description description|item/description"
          tal:condition="description">

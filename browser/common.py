@@ -28,6 +28,7 @@ from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
 from zope.app.security.interfaces import IAuthentication
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
@@ -400,7 +401,7 @@ class BaseView(GenericView, I18NView):
             result.append(stf)
         return result
 
-    # controlling editing
+    # controlling actions and editing
 
     @Lazy
     def editable(self):
@@ -414,6 +415,10 @@ class BaseView(GenericView, I18NView):
         if category in self.actions:
             actions.extend(self.actions[category](self, page=page, target=target))
         return actions
+
+    @Lazy
+    def showObjectActions(self):
+        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
