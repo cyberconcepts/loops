@@ -16,11 +16,11 @@
 
   <zope:utility
         factory="cybertools.stateful.publishing.simplePublishing"
-        name="loops.simple_publishing" />
+        name="simple_publishing" />
 
   <zope:adapter
         factory="loops.organize.stateful.base.SimplePublishable"
-        name="loops.simple_publishing" trusted="True" />
+        name="simple_publishing" trusted="True" />
   <zope:class class="loops.organize.stateful.base.SimplePublishable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -30,11 +30,11 @@
 
   <zope:utility
         factory="loops.organize.stateful.quality.classificationQuality"
-        name="loops.classification_quality" />
+        name="classification_quality" />
 
   <zope:adapter
         factory="loops.organize.stateful.quality.ClassificationQualityCheckable"
-        name="loops.classification_quality" trusted="True" />
+        name="classification_quality" trusted="True" />
   <zope:class class="loops.organize.stateful.quality.ClassificationQualityCheckable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />

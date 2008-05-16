@@ -69,7 +69,7 @@ arguments, the name of the states definition and the state to search for.
 As we have not yet set up any states definitions for our objects we get
 an empty result.
 
-  >>> qu = query.State('loops.classification_quality', 'classified')
+  >>> qu = query.State('classification_quality', 'classified')
   >>> list(qu.apply())
   []
 
@@ -78,12 +78,12 @@ corresponding adapter and activate it for the current loops site.
 
   >>> from loops.organize.stateful.quality import classificationQuality
   >>> component.provideUtility(classificationQuality(),
-  ...                          name='loops.classification_quality')
+  ...                          name='classification_quality')
   >>> from loops.organize.stateful.quality import ClassificationQualityCheckable
   >>> component.provideAdapter(ClassificationQualityCheckable,
-  ...                          name='loops.classification_quality')
+  ...                          name='classification_quality')
 
-  >>> loopsRoot.options = ['organize.stateful.resource:loops.classification_quality']
+  >>> loopsRoot.options = ['organize.stateful.resource:classification_quality']
 
 We have now to reindex all documents so that the state index gets populated
 according to the new settings.
@@ -97,7 +97,7 @@ according to the new settings.
 Now the three documents we are working with are shown as classified (as
 they have at least one concept assigned).
 
-  >>> qu = query.State('loops.classification_quality', 'classified')
+  >>> qu = query.State('classification_quality', 'classified')
   >>> list(qu.apply())
   [23, 25, 27]
 
@@ -106,7 +106,7 @@ Using the stateful adapter for a resource we now manually execute the
 
   >>> from cybertools.stateful.interfaces import IStateful
   >>> statefulD001 = component.getAdapter(resources['d001.txt'], IStateful,
-  ...                                     name='loops.classification_quality')
+  ...                                     name='classification_quality')
   >>> statefulD001.doTransition('verify')
 
 Now only two resources are still in the ``qualified`` state, the changed
@@ -114,13 +114,13 @@ one being in the ``verified`` state.
 
   >>> list(qu.apply())
   [25, 27]
-  >>> qu = query.State('loops.classification_quality', 'verified')
+  >>> qu = query.State('classification_quality', 'verified')
   >>> list(qu.apply())
   [23]
 
 We may also provide a sequence of states for querying.
 
-  >>> qu = query.State('loops.classification_quality', ('classified', 'verified',))
+  >>> qu = query.State('classification_quality', ('classified', 'verified',))
   >>> list(qu.apply())
   [23, 25, 27]
 

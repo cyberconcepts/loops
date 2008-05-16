@@ -56,7 +56,7 @@ class StatefulLoopsObject(Stateful, StatefulAdapter):
 
 class SimplePublishable(StatefulLoopsObject):
 
-    statesDefinition = 'loops.simple_publishing'
+    statesDefinition = 'simple_publishing'
 
 
 class StatefulResourceIndexInfo(IndexInfo):

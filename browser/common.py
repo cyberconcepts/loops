@@ -267,7 +267,10 @@ class BaseView(GenericView, I18NView):
     def viewIterator(self, objs):
         request = self.request
         for o in objs:
-            yield BaseView(o, request)
+            view = component.queryMultiAdapter((o, request), name='index.html')
+            if view is None:
+                view = BaseView(o, request)
+            yield view
 
     def renderText(self, text, contentType):
         typeKey = util.renderingFactories.get(contentType, None)
@@ -391,11 +394,10 @@ class BaseView(GenericView, I18NView):
         if not checkPermission('loops.ManageSite', self.context):
             # TODO: replace by more sensible permission
             return result
-        #statesDefs = ['loops.classification_quality', 'loops.simple_publishing']
         if IResource.providedBy(self.target):
             statesDefs = self.globalOptions('organize.stateful.resource', ())
         else:
-            statesDefs = ()
+            statesDefs = self.globalOptions('organize.stateful.concept', ())
         for std in statesDefs:
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)

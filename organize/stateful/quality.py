@@ -39,7 +39,7 @@ from loops.versioning.interfaces import IVersionable
 
 @implementer(IStatesDefinition)
 def classificationQuality():
-    return StatesDefinition('classificationQuality',
+    return StatesDefinition('classification_quality',
         State('new', 'new', ('classify', 'verify',
                              'change_classification', 'remove_classification'),
               color='red'),
@@ -60,7 +60,7 @@ def classificationQuality():
 
 class ClassificationQualityCheckable(StatefulLoopsObject):
 
-    statesDefinition = 'loops.classification_quality'
+    statesDefinition = 'classification_quality'
 
     def getAvailableTransitionsForUser(self):
         return [tr for tr in self.getAvailableTransitions()
@@ -127,11 +127,11 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
 @adapter(ILoopsObject, IAssignmentEvent)
 def assign(obj, event):
     stf = component.getAdapter(event.relation.second, IStateful,
-                               name='loops.classification_quality')
+                               name='classification_quality')
     stf.assign(event.relation)
 
 @adapter(ILoopsObject, IDeassignmentEvent)
 def deassign(obj, event):
     stf = component.getAdapter(event.relation.second, IStateful,
-                               name='loops.classification_quality')
+                               name='classification_quality')
     stf.deassign(event.relation)

@@ -31,7 +31,7 @@ from zope.component import adapts
 from zope.interface import implements, implementer
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.catalog.query import Term, Eq, Between, Or
+from cybertools.catalog.query import Term, Eq, Between, And, Or
 from cybertools.catalog.query import Text as BaseText
 from cybertools.catalog.query import AnyOf
 from loops.expert.interfaces import IQuery

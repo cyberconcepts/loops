@@ -2,5 +2,49 @@
 
 
 <metal:query define-macro="query">
-  <metal:results use-macro="item/search_macros/results" />
+  <div>
+    <form method="post">
+      <input type="hidden" name="search_submitted" value="yes" />
+      <h1 i18n:translate="">Select Objects by State</h1>
+      <br />
+      <table class="listing"
+             tal:define="defs item/statesDefinitions">
+        <tr>
+          <th i18n:translate="">Object Type</th>
+          <th i18n:translate="">Workflow</th>
+          <th i18n:translate="">States</th>
+        </tr>
+        <tal:def repeat="deftype defs">
+          <tr tal:repeat="def defs/?deftype">
+            <td valign="top">
+              <span tal:condition="repeat/def/start"
+                    tal:content="deftype"
+                    i18n:translate="" />
+            </td>
+            <td tal:content="def/name"
+                i18n:translate=""></td>
+            <td>
+              <tal:state repeat="state def/states">
+                <input type="checkbox"
+                       tal:define="name string:state.$deftype.${def/name};
+                                   value state/name"
+                       tal:attributes="name string:$name:list;
+                                       value value;
+                                       checked python:
+                                           value in item.selectedStates.get(name, ())"
+                    /><span tal:content="state/title"
+                                               i18n:translate="" />
+                &nbsp;
+              </tal:state>
+            </td>
+          </tr>
+        </tal:def>
+      </table>
+      <input type="submit" name="button.search" value="Search" class="submit"
+             i18n:attributes="value" />
+    </form>
+  </div>
+  <tal:results condition="request/search_submitted|nothing">
+    <metal:results use-macro="item/search_macros/results" />
+  </tal:results>
 </metal:query>

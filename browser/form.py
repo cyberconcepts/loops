@@ -111,8 +111,6 @@ class ObjectForm(NodeView):
 
     @Lazy
     def schema(self):
-        #ti = self.typeInterface or IConceptSchema
-        #schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
         schemaFactory = ISchemaFactory(self.adapted)
         return schemaFactory(self.typeInterface, manager=self,
                              request=self.request)
@@ -398,9 +396,7 @@ class EditObject(FormController, I18NView):
 
     @Lazy
     def schema(self):
-        #schemaFactory = component.getAdapter(self.adapted, ISchemaFactory)
         schemaFactory = ISchemaFactory(self.adapted)
-        #return schemaFactory(self.typeInterface)
         return schemaFactory(self.typeInterface, manager=self,
                              request=self.request)
 

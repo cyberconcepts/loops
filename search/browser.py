@@ -34,6 +34,7 @@ from cybertools.ajax import innerHtml
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
+from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.query import ConceptQuery, FullQuery
 from loops import util
@@ -137,7 +138,8 @@ class Search(BaseView):
                     '%s/.target%s/@@searchresults.html' % (view.url, self.uniqueId))
 
 
-class SearchResults(BaseView):
+#class SearchResults(BaseView):
+class SearchResults(NodeView):
     """ Provides results as inner HTML """
 
     @Lazy

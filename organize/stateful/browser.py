@@ -27,16 +27,16 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.action import Action, actions
-from cybertools.stateful.interfaces import IStateful
+from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
-from loops.expert import query
+from loops.expert.query import And, Or, State, Type, getObjects
 from loops.search.browser import template as search_template
 from loops.util import _
 
 
-statefulActions = ('loops.classification_quality',
-                   'loops.simple_publishing',)
+statefulActions = ('classification_quality',
+                   'simple_publishing',)
 
 
 class StateAction(Action):
@@ -85,8 +85,47 @@ class StateQuery(BaseView):
         return self.template.macros['query']
 
     @Lazy
+    def statesDefinitions(self):
+        result = {}
+        result['resource'] = [component.getUtility(IStatesDefinition, name=n)
+                for n in self.globalOptions('organize.stateful.resource', ())]
+        result['concept'] = [component.getUtility(IStatesDefinition, name=n)
+                for n in self.globalOptions('organize.stateful.concept', ())]
+        return result
+
+    @Lazy
+    def selectedStates(self):
+        result = {}
+        for k, v in self.request.form.items():
+            if k.startswith('state.') and v:
+                result[k] = v
+        return result
+
+    @Lazy
     def results(self):
-        uids = query.State('loops.classification_quality',
-                           #['new', 'unclassified', 'classified']).apply()
-                           ['new', 'unclassified']).apply()
-        return self.viewIterator(query.getObjects(uids, self.loopsRoot))
+        conceptCriteria = {}
+        resourceCriteria = {}
+        q = None
+        for k, v in self.selectedStates.items():
+            k = k[len('state.'):]
+            type, statesDef = k.split('.')
+            if type == 'concept':
+                conceptCriteria[statesDef] = v
+            elif type == 'resource':
+                resourceCriteria[statesDef] = v
+        if conceptCriteria:
+            conceptQuery = And(Type('loops:concept:*'),
+                               *[State(c, v) for c, v in conceptCriteria.items()])
+        if resourceCriteria:
+            resourceQuery = And(Type('loops:resource:*'),
+                               *[State(c, v) for c, v in resourceCriteria.items()])
+            if conceptCriteria:
+                q = Or(conceptQuery, resourceQuery)
+            else:
+                q = resourceQuery
+        elif conceptCriteria:
+            q = conceptQuery
+        if q is not None:
+            uids = q.apply()
+            return self.viewIterator(getObjects(uids, self.loopsRoot))
+        return []

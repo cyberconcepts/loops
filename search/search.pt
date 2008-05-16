@@ -44,7 +44,9 @@
     <div metal:define-macro="search_results" id="1.search.results"
          tal:attributes="id resultsId | request/search.resultsId"
          i18n:domain="loops"
-         tal:define="item nocall:view">
+         tal:define="item nocall:view;
+                     controller nocall:view/@@controller;
+                     resourceBase controller/resourceBase;">
       <fieldset class="box"
                 tal:condition="request/search.submitted | nothing">
       <metal:results define-macro="results">
@@ -60,6 +62,8 @@
               <th i18n:translate="">Size</th>
               <th i18n:translate="">Modification Date</th>
               <th i18n:translate="">Author(s)</th>
+              <th i18n:translate=""
+                  tal:condition="view/showObjectActions">Info</th>
             </tr>
           </thead>
           <tbody>
@@ -88,6 +92,12 @@
                   </td>
                   <td><span tal:replace="row/modified">modified</span></td>
                   <td><span tal:replace="row/creators">John</span></td>
+                  <td style="white-space: nowrap"
+                      tal:define="target nocall:row;
+                                  style nothing"
+                      tal:condition="view/showObjectActions">
+                    <div metal:use-macro="views/node_macros/object_actions" />
+                  </td>
                 </tr>
               </tal:item>
             </tal:items>

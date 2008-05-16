@@ -32,17 +32,17 @@ making an object statful we'll use an adapter.
 
   >>> from cybertools.stateful.interfaces import IStatesDefinition, IStateful
   >>> from cybertools.stateful.publishing import simplePublishing
-  >>> component.provideUtility(simplePublishing(), name='loops.simple_publishing')
+  >>> component.provideUtility(simplePublishing(), name='simple_publishing')
 
   >>> from loops.organize.stateful.base import SimplePublishable
-  >>> component.provideAdapter(SimplePublishable, name='loops.simple_publishing')
+  >>> component.provideAdapter(SimplePublishable, name='simple_publishing')
 
 We may now take a document and adapt it to IStateful so that we may
 check the document's state and perform transitions to other states.
 
   >>> doc01 = resources['d001.txt']
   >>> statefulDoc01 = component.getAdapter(doc01, IStateful,
-  ...                                      name='loops.simple_publishing')
+  ...                                      name='simple_publishing')
 
   >>> statefulDoc01.state
   'draft'
@@ -55,7 +55,7 @@ Let's check if the state is really stored in the underlying object and
 not just kept in the adapter.
 
   >>> statefulDoc01_x = component.getAdapter(doc01, IStateful,
-  ...                                        name='loops.simple_publishing')
+  ...                                        name='simple_publishing')
 
   >>> statefulDoc01.state
   'published'
@@ -68,10 +68,10 @@ We again first have to register states definitions and adapter classes.
 
   >>> from loops.organize.stateful.quality import classificationQuality
   >>> component.provideUtility(classificationQuality(),
-  ...                          name='loops.classification_quality')
+  ...                          name='classification_quality')
   >>> from loops.organize.stateful.quality import ClassificationQualityCheckable
   >>> component.provideAdapter(ClassificationQualityCheckable,
-  ...                          name='loops.classification_quality')
+  ...                          name='classification_quality')
   >>> from loops.organize.stateful.quality import assign, deassign
   >>> component.provideHandler(assign)
   >>> component.provideHandler(deassign)
@@ -79,7 +79,7 @@ We again first have to register states definitions and adapter classes.
 Now we can get a stateful adapter for a resource.
 
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
-  ...                                      name='loops.classification_quality')
+  ...                                      name='classification_quality')
   >>> qcheckedDoc01.state
   'new'
 
@@ -99,7 +99,7 @@ When we change the concept assignments of the resource - i.e. its classification
 
   >>> c01.assignResource(doc01)
   >>> qcheckedDoc01 = component.getAdapter(doc01, IStateful,
-  ...                                      name='loops.classification_quality')
+  ...                                      name='classification_quality')
   >>> qcheckedDoc01.state
   'classified'
 
@@ -138,7 +138,7 @@ We first need a node that provides us access to the resource as its target
 The form view gives us access to the states of the object.
 
   >>> loopsRoot.options = ['organize.stateful.resource:'
-  ...           'loops.classification_quality,loops.simple_publishing']
+  ...           'classification_quality,simple_publishing']
 
   >>> form = EditObjectForm(node, TestRequest())
   >>> for st in form.states:
@@ -147,18 +147,37 @@ The form view gives us access to the states of the object.
   ...     userTrans = st.getAvailableTransitionsForUser()
   ...     print st.statesDefinition, sto.title, [t.title for t in transitions],
   ...     print [t.title for t in userTrans]
-  loops.classification_quality unclassified ['classify', 'verify'] ['verify']
-  loops.simple_publishing published ['retract', 'archive'] ['retract', 'archive']
+  classification_quality unclassified ['classify', 'verify'] ['verify']
+  simple_publishing published ['retract', 'archive'] ['retract', 'archive']
 
 Let's now update the form.
 
-  >>> input = {'state.loops.classification_quality': 'verify'}
+  >>> input = {'state.classification_quality': 'verify'}
   >>> proc = EditObject(form, TestRequest(form=input))
   >>> proc.update()
   False
 
   >>> qcheckedDoc01.state
   'verified'
+
+Querying objects by state
+-------------------------
+
+  >>> stateQuery = addAndConfigureObject(concepts, Concept, 'state_query',
+  ...                   conceptType=concepts['query'], viewName='select_state.html')
+  >>> from loops.organize.stateful.browser import StateQuery
+  >>> view = StateQuery(stateQuery, TestRequest())
+
+  >>> view.statesDefinitions
+  {'concept': [], 'resource': [...StatesDefinition..., ...StatesDefinition...]}
+
+  >>> input = {'state.resource.classification_quality': ['verified']}
+  >>> view = StateQuery(stateQuery, TestRequest(form=input))
+  >>> view.selectedStates
+  {'state.resource.classification_quality': ['verified']}
+
+  >>> list(view.results)
+  [<...>]
 
 
 Fin de partie
