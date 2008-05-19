@@ -44,7 +44,7 @@ class GlossaryView(ConceptView):
     def macro(self):
         return view_macros.macros['glossary']
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet':
             actions.append(DialogAction(self, title='Create Glossary Item...',
@@ -55,7 +55,7 @@ class GlossaryView(ConceptView):
                   typeToken='.loops/concepts/glossaryitem',
                   fixedType=True,
                   innerForm='inner_concept_form.html',
-                  page=page))
+                  page=page, target=target))
         return actions
 
 
@@ -65,7 +65,7 @@ class GlossaryItemView(ConceptView):
     def macro(self):
         return view_macros.macros['glossaryitem']
 
-    def getActions(self, category='object', page=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet':
             lang = self.request.get('loops.language')
@@ -75,7 +75,7 @@ class GlossaryItemView(ConceptView):
                   viewName='edit_glossaryitem.html',
                   dialogName='editGlossaryItem',
                   addParams=langParam,
-                  page=page))
+                  page=page, target=target))
         return actions
 
 

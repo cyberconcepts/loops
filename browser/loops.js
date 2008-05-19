@@ -152,17 +152,17 @@ function validate() {
     if (titleField != undefined && titleField.value == '') {
         return false;
     }
-    /*if (form != undefined) {
+    if (form != undefined) {
         return form.submit();
-    }*/
+    }
     return true;
 }
 
 function closeDialog(save) {
+    closeDataWidget(save);
     if (save && !validate()) {
         return false;
     }
-    closeDataWidget(save);
     dialog.hide();
     return true;
 }
@@ -173,7 +173,8 @@ function closeDataWidget(save) {
         value = widget.getValue();
         //widget.close(save);
         form = dojo.byId('dialog_form');
-        var ta = document.createElement('textarea');
+        var ta = document.createElement('input');
+        ta.type = 'hidden';
         ta.name = 'data';
         ta.value = value;
         form.appendChild(ta);
