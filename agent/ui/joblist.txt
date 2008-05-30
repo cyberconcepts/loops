@@ -1,4 +1,0 @@
-FileSysCont_1234;Running;daily;*.doc;C:\Documents;size<100kByte;transfer(http:loops.sampleserver.de)
-MailCrawl_2121;Running;daily;Subject:Update;Outlook;Account=Account_Root;transfer(http:loops.sampleserver.de)
-MailCrawl_4040;Paused;20s;Subject:Update;Outlook;Account=Account_Root;transfer(http:loops.sampleserver.de)
-FileSysCont_8797;Stopped;10m;*.jpg;C:\Tmp;size<100kByte;transfer(http:loops.sampleserver.de)
