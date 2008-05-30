@@ -164,13 +164,13 @@
       permission="zope.ManageContent"
       />
 
-  <addMenuItem
+  <!--<addMenuItem
       class="loops.concept.Concept"
       title="Concept"
       description="A Concept is a Concept is a Concept..."
       permission="zope.ManageContent"
       view="AddLoopsConcept.html"
-      />
+      />-->
 
   <pages
       for="loops.interfaces.IConcept"

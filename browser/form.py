@@ -29,6 +29,7 @@ from zope.interface import Interface
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
+from zope.app.container.contained import ObjectAddedEvent
 #from zope.app.container.contained import NameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -568,6 +569,7 @@ class CreateObject(EditObject):
         tc = form.get('form.type') or self.defaultTypeToken
         obj.setType(self.loopsRoot.loopsTraverse(tc))
         notify(ObjectCreatedEvent(obj))
+        #notify(ObjectAddedEvent(obj))
         self.object = obj
         self.updateFields() # TODO: suppress validation
         # TODO: error handling

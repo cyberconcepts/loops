@@ -30,6 +30,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.zopedublincore import ScalarProperty
 from zope.interface import implements
+from zope.interface.interface import InterfaceClass
 from zope.security.proxy import isinstance
 
 from cybertools.storage.interfaces import IStorageInfo
@@ -65,6 +66,8 @@ def collectAttributeNames(lst, name):
             attrs.append(arg)
         elif isinstance(arg, type):
             attrs.extend(list(getattr(arg, name)))
+        elif isinstance(arg, InterfaceClass):
+            attrs.extend(list(arg))
         else:
             raise ValueError("Argument must be string or class, '%s' is '%s'." %
                              (arg, type(arg)))

@@ -59,7 +59,7 @@
     <require
         permission="zope.View"
         attributes="getTypePredicate getDefaultPredicate getTypeConcept
-                    getPredicateType" />
+                    getPredicateType getLoopsRoot" />
   </class>
 
   <interface interface=".interfaces.IConcept"

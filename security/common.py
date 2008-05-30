@@ -23,11 +23,12 @@ $Id$
 """
 
 from zope import component
+from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
-from zope.lifecycleevent import IObjectCreatedEvent
+from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
@@ -109,6 +110,8 @@ def restrictView(obj, roles=allRolesExceptOwnerAndMaster, revert=False):
 
 # event handlers
 
+#@component.adapter(ILoopsObject, IObjectAddedEvent)
+#@component.adapter(ILoopsObject, IObjectModifiedEvent)
 @component.adapter(ILoopsObject, IObjectCreatedEvent)
 def setDefaultSecurity(obj, event):
     aObj = adapted(obj)

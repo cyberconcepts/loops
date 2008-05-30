@@ -102,7 +102,7 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
                        "a concept of type 'type'."),
         default=None,
         source="loops.conceptTypeSource",
-        required=False)
+        required=True)
 
     def getType():
         """ Return a concept that provides the object's type.

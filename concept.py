@@ -25,12 +25,14 @@ $Id$
 from zope import component, schema
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
+from zope.app.container.interfaces import IAdding
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.component.interfaces import ObjectEvent
 from zope.event import notify
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.proxy import removeSecurityProxy, isinstance
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
@@ -333,9 +335,13 @@ class ConceptTypeSourceList(object):
     implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
-        self.context = context
+        if IBrowserRequest.providedBy(context):
+            context = context.context
+        if IAdding.providedBy(context):
+            context = context.context
         if isinstance(context, AdapterBase):
-            self.context = self.context.context
+            context = context.context
+        self.context = context
 
 
     def __iter__(self):
