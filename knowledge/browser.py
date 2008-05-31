@@ -30,12 +30,33 @@ from zope.cachedescriptors.property import Lazy
 #from zope.formlib.namedtemplate import NamedTemplate
 from zope.i18nmessageid import MessageFactory
 
+from cybertools.browser.action import actions
 from cybertools.typology.interfaces import IType
+from loops.browser.action import DialogAction
 from loops.browser.common import BaseView
+from loops.browser.concept import ConceptView
 from loops.knowledge.interfaces import IPerson, ITask
 from loops.organize.party import getPersonForUser
 
 _ = MessageFactory('zope')
+
+
+actions.register('createTopic', 'portlet', DialogAction,
+        title=_(u'Create Topic...'),
+        description=_(u'Create a new topic.'),
+        viewName='create_concept.html',
+        dialogName='createTopic',
+        typeToken='.loops/concepts/topic',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+)
+
+actions.register('editTopic', 'portlet', DialogAction,
+        title=_(u'Edit Topic...'),
+        description=_(u'Modify topic.'),
+        viewName='edit_concept.html',
+        dialogName='editTopic',
+)
 
 
 class MyKnowledge(BaseView):

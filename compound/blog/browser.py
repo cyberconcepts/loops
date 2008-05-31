@@ -87,13 +87,15 @@ class BlogView(ConceptView):
         return view_macros.macros['blog']
 
     def getActions(self, category='object', page=None, target=None):
+        acts = list(super(BlogView, self).getActions(category, page, target))
         blogOwnerId = self.blogOwnerId
         if blogOwnerId:
             principal = self.request.principal
             if principal and principal.id != blogOwnerId:
-                return []
-        return actions.get(category, ['createBlogPost'],
-                           view=self, page=page, target=target)
+                return acts
+        blogActions = list(actions.get(category, ['createBlogPost'],
+                                view=self, page=page, target=target))
+        return blogActions + acts
 
     @Lazy
     def blogOwnerId(self):
