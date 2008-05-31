@@ -1,0 +1,11 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter factory="loops.system.setup.SetupManager"
+                name="system" />
+
+</configure>
