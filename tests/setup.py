@@ -82,8 +82,6 @@ class TestSite(object):
         self.site = site
 
     def baseSetup(self):
-        site = self.site
-
         #oldPolicy = setSecurityPolicy(ZopeSecurityPolicy)
         oldPolicy = setSecurityPolicy(LoopsSecurityPolicy)
         checker = Checker(dict(title='zope.View', data='zope.View', body='zope.View'),
@@ -159,13 +157,14 @@ class TestSite(object):
         component.provideAdapter(StatefulResourceIndexInfo)
         component.provideHandler(handleTransition)
 
-        loopsRoot = site['loops'] = Loops()
+        loopsRoot = self.site['loops'] = Loops()
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
         return concepts, resources, views
 
     def setup(self):
         concepts, resources, views = self.baseSetup()
+
         catalog = component.getUtility(ICatalog)
 
         tType = concepts.getTypeConcept()
@@ -188,6 +187,11 @@ class TestSite(object):
 
         self.indexAll(concepts, resources)
         return concepts, resources, views
+
+    def siteSetup(self, rootName='loops'):
+        loopsRoot = self.site[rootName] = Loops()
+        setup = SetupManager(loopsRoot)
+        return setup.setup()
 
     def indexAll(self, concepts, resources):
         for c in concepts.values():
