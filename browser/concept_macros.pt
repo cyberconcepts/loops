@@ -21,7 +21,7 @@
 
 <metal:fields define-macro="conceptfields">
   <fieldset class="box"
-            tal:define="data item/data;
+            tal:define="data item/getData;
                         values python: [v for v in data.values() if v];
                         fields item/fields"
             tal:condition="values">

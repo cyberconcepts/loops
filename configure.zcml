@@ -314,6 +314,8 @@
            name="email" />
   <adapter factory="cybertools.composer.schema.field.BooleanFieldInstance"
            name="boolean" />
+  <adapter factory="cybertools.composer.schema.field.ListFieldInstance"
+           name="list" />
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
 

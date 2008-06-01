@@ -37,8 +37,7 @@ from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.knowledge.interfaces import IPerson, ITask
 from loops.organize.party import getPersonForUser
-
-_ = MessageFactory('zope')
+from loops.util import _
 
 
 actions.register('createTopic', 'portlet', DialogAction,

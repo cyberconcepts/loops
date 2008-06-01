@@ -32,7 +32,7 @@ from cybertools.catalog.keyword import KeywordIndex
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
 from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
-from cybertools.composer.schema.field import EmailFieldInstance
+from cybertools.composer.schema.field import EmailFieldInstance, ListFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
@@ -131,6 +131,7 @@ class TestSite(object):
         component.provideAdapter(DateFieldInstance, name='date')
         component.provideAdapter(EmailFieldInstance, name='email')
         component.provideAdapter(BooleanFieldInstance, name='boolean')
+        component.provideAdapter(ListFieldInstance, name='list')
         component.provideAdapter(SchemaFactory)
         component.provideAdapter(ResourceSchemaFactory)
         component.provideAdapter(FileSchemaFactory)
