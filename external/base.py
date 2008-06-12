@@ -25,7 +25,7 @@ $Id$
 
 from cStringIO import StringIO
 import itertools
-import os
+import os, sys
 import zdaemon
 from zope import component
 from zope.cachedescriptors.property import Lazy
@@ -77,6 +77,7 @@ class Loader(Base, SetupManager):
     def __init__(self, context, resourceDirectory=None):
         super(Loader, self).__init__(context, resourceDirectory)
         self.logger = StringIO()
+        #self.logger = sys.stdout
 
     def load(self, elements):
         for element in elements:

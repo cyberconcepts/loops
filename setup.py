@@ -28,7 +28,7 @@ from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements, Interface
-from zope.traversing.api import getName
+from zope.traversing.api import getName, traverse
 
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
@@ -160,10 +160,12 @@ class SetupManager(object):
         concept = self.concepts[conceptName]
         child = self.concepts[childName]
         if child in concept.getChildren([predicate]):
-            self.log("Concept '%s' is already a child of '%s with predicate '%s'.'" %
+            self.log("Concept '%s' is already a child of '%s' with predicate '%s'.'" %
                      (childName, conceptName, getName(predicate)))
         else:
             concept.assignChild(child, predicate)
+            self.log("Concept '%s' assigned to '%s with predicate '%s'.'" %
+                     (childName, conceptName, getName(predicate)))
 
     def addResource(self, name, title, resourceType, description=u'', **kw):
         if name in self.resources:
@@ -187,13 +189,15 @@ class SetupManager(object):
         concept = self.concepts[conceptName]
         resource = self.resources[resourceName]
         if resource in concept.getResources([predicate]):
-            self.log("Concept '%s' is already assigned to '%s with predicate '%s'.'" %
-                     (conceptName, resourceName, getName(predicate)))
+            self.log("Resource '%s' is already assigned to '%s with predicate '%s'.'" %
+                     (resourceName, conceptName, getName(predicate)))
         else:
             concept.assignResource(resource, predicate)
+            self.log("Resource '%s' assigned to '%s with predicate '%s'.'" %
+                     (resourceName, conceptName, getName(predicate)))
 
     def addNode(self, name, title, container=None, nodeType='page',
-                description=u'', body=u'', targetName=None, **kw):
+                description=u'', body=u'', target=None, **kw):
         if container is None:
             container = self.views
             nodeType = 'menu'
@@ -209,9 +213,19 @@ class SetupManager(object):
                               description=description, body=body,
                               nodeType=nodeType, **kw)
             self.log("Node '%s' ('%s') created." % (name, title))
-        if targetName is not None:
-            if targetName in self.concepts:
-                n.target = self.concepts[targetName]
+        if target is not None:
+            targetObject = traverse(self, target, None)
+            if targetObject is not None:
+                if n.target == targetObject:
+                    self.log("Target '%s' already assigned to node '%s'." %
+                             (target, name))
+                else:
+                    n.target = targetObject
+                    self.log("Target '%s' assigned to node '%s'." %
+                             (target, name))
+            else:
+                self.log("Target '%s' for '%s' does not exist." %
+                         (target, name))
         return n
 
     def log(self, message):

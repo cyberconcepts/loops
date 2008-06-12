@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2004 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -611,7 +611,6 @@ class IIndexAttributes(Interface):
 
 # types stuff
 
-#class ITypeConcept(Interface):
 class ITypeConcept(IConceptSchema):
     """ Concepts of type 'type' should be adaptable to this interface.
     """
@@ -639,6 +638,21 @@ class ITypeConcept(IConceptSchema):
         required=False)
 
     # storage = schema.Choice()
+
+
+class IPredicate(IConceptSchema):
+    """ Provided by predicates (predicate concepts that specify relation types),
+        i.e. concepts of type 'predicate' should be adaptable to this interface.
+    """
+
+    typeInterface = schema.TextLine(    #schema.Choice
+        title=_(u'Type Interface'),
+        description=_(u'Optional: allows specification of additional '
+                    'attributes of relations that are instances of this '
+                    'predicate.'),
+        default=u'',    #None
+        #source="loops.TypeInterfaceSource",
+        required=False)
 
 
 class IResourceAdapter(IBaseResourceSchema):

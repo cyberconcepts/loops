@@ -213,7 +213,7 @@ class NameChooser(BaseNameChooser):
         '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
 
-# caching
+# caching (TBD)
 
 def cached(obj):
     return obj

@@ -54,6 +54,7 @@ from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.organize.memberinfo import MemberInfoProvider
 from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
+from loops.predicate import Predicate
 from loops.query import QueryConcept
 from loops.query import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
@@ -110,6 +111,7 @@ class TestSite(object):
 
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)
+        component.provideAdapter(Predicate)
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
         component.provideAdapter(QueryConcept)

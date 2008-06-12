@@ -116,7 +116,7 @@ class ChildElement(Element):
         for idx, arg in enumerate(args):
             self[self.posArgs[idx]] = arg
 
-    def __call__(self, loader):
+    def execute(self, loader):
         loader.assignChild(self['first'], self['second'], self['predicate'])
 
 
@@ -174,14 +174,14 @@ class NodeElement(Element):
     def execute(self, loader):
         type = self['type']
         cont = traverse(loader.views, self['path'])
-        target = self.pop('target', None)
+        #target = self.pop('target', None)
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
         node = loader.addNode(self['name'], self['title'], cont, type, **kw)
-        if target is not None:
-            targetObject = traverse(loader.context, target, None)
-            node.target = targetObject
-        self.object = node
+        #if target is not None:
+        #    targetObject = traverse(loader.context, target, None)
+        #    node.target = targetObject
+        #self.object = node
 
 
 # element registry
@@ -196,4 +196,5 @@ elementTypes = dict(
     I18NValue=I18NValue,
 )
 
-toplevelElements = ('type', 'concept', 'resource', 'resourceRelation', 'node')
+toplevelElements = ('type', 'concept', 'resource',
+                    'child', 'resourceRelation', 'node')
