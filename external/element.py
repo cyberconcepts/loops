@@ -143,9 +143,11 @@ class ResourceElement(Element):
                          if k not in self.posArgs)
         dataPath = os.path.join(loader.resourceDirectory, self['name'])
         if os.path.exists(dataPath):
-            f = open(dataPath, 'r')
+            ct = self.get('contentType', '')
+            flag = ct.startswith('text/') and 'r' or 'rb'
+            f = open(dataPath, flag)
             content = f.read()
-            if self.get('contentType', '').startswith('text/'):
+            if ct.startswith('text/'):
                 content = content.decode('UTF-8')
             kw['data'] = content
             f.close()
