@@ -28,11 +28,13 @@ Reading object information from an external source
 
   >>> from loops.external.pyfunc import PyReader
 
-  >>> input = "concept('myquery', u'My Query', 'query', viewName='mystuff.html')"
+  >>> input = ("concept('myquery', u'My Query', 'query', viewName='mystuff.html',"
+  ...          "        options='option1\\noption2')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
   >>> elements
-  [{'type': 'query', 'name': 'myquery', 'viewName': 'mystuff.html', 'title': u'My Query'}]
+  [{'options': 'option1\noption2', 'type': 'query', 'name': 'myquery',
+    'viewName': 'mystuff.html', 'title': u'My Query'}]
 
 Creating the corresponding objects
 ----------------------------------
@@ -45,8 +47,12 @@ Creating the corresponding objects
   (12, 3, 0)
 
   >>> from loops.common import adapted
-  >>> adapted(concepts['myquery']).viewName
-  'mystuff.html'
+  >>> adMyquery = adapted(concepts['myquery'])
+
+  >>> adMyquery.viewName
+  u'mystuff.html'
+  >>> adMyquery.options
+  [u'option1', u'option2']
 
 Working with resources
 ----------------------
@@ -86,7 +92,8 @@ registered.
 
   >>> from loops.external import annotation
 
-  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html',
+  ...                    options='option1\\noption2')[
   ...     annotations(creators=(u'john',))]"""
   >>> elements = reader.read(input)
   >>> elements[0].subElements
@@ -126,7 +133,8 @@ Writing object information to the external storage
   type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')...
   type(u'query', u'Query', options=u'', typeInterface='loops.query.IQueryConcept',
        viewName=u'')...
-  concept(u'myquery', u'My Query', u'query', options=u'', viewName='mystuff.html')...
+  concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
+       viewName=u'mystuff.html')...
   child(u'projects', u'customer', u'standard')...
   resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')
   resourceRelation(u'myquery', u'doc04.txt', u'standard')
@@ -153,7 +161,7 @@ Writing this sequence reproduces the import format.
       annotations(creators='john'),
       annotations(modified='2007-08-12')]...
 
-DC annotations will be exported automaticall after registering the
+DC annotations will be exported automatically after registering the
 corresponding extractor adapter.
 
   >>> from loops.external.annotation import AnnotationsExtractor
@@ -165,8 +173,9 @@ corresponding extractor adapter.
 
   >>> print output.getvalue()
   type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')...
-  concept(u'myquery', u'My Query', u'query', options=u'', viewName='mystuff.html')[
-        annotations(creators=(u'john',))]...
+  concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
+          viewName=u'mystuff.html')[
+              annotations(creators=(u'john',))]...
 
 
 The Export/Import View

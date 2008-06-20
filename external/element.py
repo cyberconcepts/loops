@@ -24,11 +24,17 @@ $Id$
 """
 
 import os
+from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.interface import Interface, implements
 from zope.traversing.api import getName, traverse
 
+from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.typology.interfaces import IType
+from loops.common import adapted
+from loops.interfaces import IConceptSchema
 from loops.external.interfaces import IElement
 from loops.i18n.common import I18NValue
 
@@ -82,7 +88,18 @@ class ConceptElement(Element):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
-        self.object = loader.addConcept(self['name'], self['title'], type, **kw)
+        # use IInstance adapter (name='editor') for unmarshalling values
+        #self.object = loader.addConcept(self['name'], self['title'], type, **kw)
+        self.object = loader.addConcept(self['name'], self['title'], type)
+        formState = self.getInstance().applyTemplate(data=kw, ignoreValidation=True)
+
+    def getInstance(self, omit=['title']):
+        adObject = adapted(self.object)
+        schemaFactory = ISchemaFactory(adObject)
+        ti = IType(self.object).typeInterface or IConceptSchema
+        instance = component.getAdapter(adObject, IInstance, name='editor')
+        instance.template = schemaFactory(ti, manager=self, omit=omit)
+        return instance
 
 
 class TypeElement(ConceptElement):
@@ -105,6 +122,8 @@ class TypeElement(ConceptElement):
             kw['typeInterface'] = resolve(ti)
         self.object = loader.addConcept(self['name'], self['title'],
                             loader.typeConcept, **kw)
+        instance = self.getInstance(omit=['title', 'typeInterface'])
+        formState = instance.applyTemplate(data=kw, ignoreValidation=True)
 
 
 class ChildElement(Element):

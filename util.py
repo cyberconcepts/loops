@@ -90,10 +90,11 @@ def getObjectForUid(uid, intIds=None):
         intIds = component.getUtility(IIntIds)
     return intIds.getObject(int(uid))
 
-def getUidForObject(obj):
+def getUidForObject(obj, intIds=None):
     if obj == '*': # wild card
         return '*'
-    intIds = component.getUtility(IIntIds)
+    if intIds is None:
+        intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
 
 

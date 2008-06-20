@@ -19,13 +19,17 @@ pre {
     max-height: 35em;
 }
 
-ul, p {
+ol, ul, p {
     margin-top: 0.4em;
     margin-bottom: 0.5em;
 }
 
 ol li, ul li {
     line-height: 1.5em;
+}
+
+blockquote ul {
+    margin: 0;
 }
 
 /* class-specific */
