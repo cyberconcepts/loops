@@ -400,22 +400,26 @@ class IndexAttributes(object):
     def text(self):
         ctx = self.context
         #return ' '.join((getName(ctx), ctx.title,))
+        description = ctx.description
+        if isinstance(description, I18NValue):
+            description = ' '.join(description.values())
         actx = adapted(ctx)
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
         #return ' '.join([getName(ctx), ctx.title, ctx.description] +
-        return ' '.join([self.title()] +
+        return ' '.join([self.title() + description] +
                         self.creators() +
                         [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
 
     def title(self):
         context = self.context
         title = context.title
-        description = context.description
+        #description = context.description
         if isinstance(title, I18NValue):
             title = ' '.join(title.values())
-        if isinstance(description, I18NValue):
-            description = ' '.join(description.values())
-        return ' '.join((getName(context), title, description)).strip()
+        #if isinstance(description, I18NValue):
+        #    description = ' '.join(description.values())
+        #return ' '.join((getName(context), title, description)).strip()
+        return ' '.join((getName(context), title)).strip()
 
     def creators(self):
         cr = IZopeDublinCore(self.context).creators or []
