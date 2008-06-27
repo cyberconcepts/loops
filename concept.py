@@ -47,6 +47,7 @@ from cybertools.util.jeep import Jeep
 
 from loops.base import ParentInfo
 from loops.common import adapted, AdapterBase
+from loops.i18n.common import I18NValue
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
@@ -407,8 +408,13 @@ class IndexAttributes(object):
 
     def title(self):
         context = self.context
-        return ' '.join((getName(context),
-                         context.title, context.description)).strip()
+        title = context.title
+        description = context.description
+        if isinstance(title, I18NValue):
+            title = ' '.join(title.values())
+        if isinstance(description, I18NValue):
+            description = ' '.join(description.values())
+        return ' '.join((getName(context), title, description)).strip()
 
     def creators(self):
         cr = IZopeDublinCore(self.context).creators or []
