@@ -76,6 +76,7 @@
             <th i18n:translate="">Title</th>
             <th i18n:translate="">Type</th>
             <th i18n:translate="">Modification Date</th>
+            <th i18n:translate="">Author(s)</th>
           </tr>
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
@@ -91,6 +92,7 @@
                 <td><span tal:content="related/typeTitle"
                           i18n:translate="">Type</span></td>
                 <td><span tal:replace="related/modified">Type</span></td>
+                <td><span tal:replace="related/creators">Type</span></td>
               </tr>
             </tal:item>
           </tal:items>

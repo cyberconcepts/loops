@@ -26,9 +26,11 @@ from zope import component, schema
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IAdding
+from zope.app.security.interfaces import IAuthentication
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.component.interfaces import ObjectEvent
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.event import notify
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
@@ -400,12 +402,23 @@ class IndexAttributes(object):
         actx = adapted(ctx)
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
         return ' '.join([getName(ctx), ctx.title, ctx.description] +
+                        self.creators() +
                         [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
 
     def title(self):
         context = self.context
         return ' '.join((getName(context),
                          context.title, context.description)).strip()
+
+    def creators(self):
+        cr = IZopeDublinCore(self.context).creators or []
+        pau = component.getUtility(IAuthentication)
+        creators = []
+        for c in cr:
+            principal = pau.getPrincipal(c)
+            if principal is not None:
+                creators.append(principal.title)
+        return creators
 
 
 # events
