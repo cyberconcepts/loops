@@ -402,7 +402,8 @@ class IndexAttributes(object):
         #return ' '.join((getName(ctx), ctx.title,))
         actx = adapted(ctx)
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
-        return ' '.join([getName(ctx), ctx.title, ctx.description] +
+        #return ' '.join([getName(ctx), ctx.title, ctx.description] +
+        return ' '.join([self.title()] +
                         self.creators() +
                         [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
 
