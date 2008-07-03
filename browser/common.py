@@ -418,6 +418,11 @@ class BaseView(GenericView, I18NView):
             actions.extend(self.actions[category](self, page=page, target=target))
         return actions
 
+    def getAdditionalActions(self, category='object', page=None, target=None):
+        """ Provide additional actions; override by subclass.
+        """
+        return []
+
     @Lazy
     def showObjectActions(self):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)

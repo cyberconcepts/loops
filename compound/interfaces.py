@@ -19,11 +19,10 @@
 """
 Compound objects like articles, blog posts, storyboard items, ...
 
-This is somehow related to cybertools.composer - so maybe we should
-move part of the code defined here to that more generic package.
-
 $Id$
 """
+
+#TODO: move generic stuff to cybertools.composer
 
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
@@ -79,7 +78,7 @@ class ICompound(IConceptSchema):
             parts given (a sequence) to the compound so that they are
             ordered according to this sequence.
 
-            If the parts`` argument contains a value that is not
+            If the ``parts`` argument contains a value that is not
             in the context objects`s list of parts raise an error. If the
             context object has parts that are not in the ``parts`` argument
             they will be moved to the end of the list.

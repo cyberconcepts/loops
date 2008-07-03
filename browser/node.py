@@ -396,6 +396,7 @@ class NodeView(BaseView):
             target = self.virtualTarget
         if target is not None:
             actions.extend(target.getActions(category, page=self, target=target))
+        actions.extend(self.view.getAdditionalActions(category, self, target))
         return actions
 
     def getPortletActions(self, target=None):
