@@ -437,7 +437,8 @@ class DocumentWriteFileAdapter(object):
         #context = ti is None and self.context or ti(self.context)
         context = adapted(self.context)
         if ITextDocument.providedBy(context) or IDocument.providedBy(context):
-            context.data = unicode(data.replace('\r', ''), 'UTF-8')
+            #context.data = unicode(data.replace('\r', ''), 'UTF-8')
+            context.data = util.toUnicode(data.replace('\r', ''))
         else:
             # don't decode files or external files even if contentType == 'text/...'
             # TODO: make use of tmpfile when using external files
