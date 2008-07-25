@@ -262,6 +262,7 @@
 <metal:html define-macro="input_html">
     <textarea name="field" rows="3" style="width: 450px"
            dojoType="dijit.Editor"
+           extraPlugins="['insertHorizontalRule','createLink']"
            tal:define="width field/width|nothing;
                        height field/height|python:3"
            tal:attributes="name name; id name;
