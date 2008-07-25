@@ -14,6 +14,7 @@ type(u'textdocument', u'Text', options=u'', typeInterface='loops.interfaces.ITex
 type(u'topic', u'Topic', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
 type(u'type', u'Type', options=u'', typeInterface='loops.interfaces.ITypeConcept', viewName=u'')
 concept(u'hasType', u'has Type', u'predicate')
+concept(u'ispartof', u'is Part of', u'predicate')
 concept(u'ownedby', u'owned by', u'predicate')
 concept(u'glossary', u'Glossary', u'query', options=u'', viewName=u'glossary.html')
 concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')
