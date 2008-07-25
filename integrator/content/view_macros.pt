@@ -1,0 +1,16 @@
+<!-- ZPT macros for loops.integrator.content views
+     $Id$ -->
+
+
+<div metal:define-macro="flashvideo">
+  <h1 tal:attributes="ondblclick item/openEditWindow">
+    <span tal:content="item/title">Title</span>
+  </h1>
+  <div><br />
+    <a href="." target="_blank" class="button"
+       tal:define="baseUrl python: view.getUrlForTarget(item.context)"
+       tal:attributes="href string:$baseUrl/xa/${item/startName}">Open Resource</a>
+  </div>
+  <metal:resources use-macro="item/conceptMacros/conceptchildren" />
+  <metal:resources use-macro="item/conceptMacros/conceptresources" />
+</div>

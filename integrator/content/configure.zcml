@@ -40,11 +40,20 @@
   <browser:page
         name="xa"
         for="loops.interfaces.INode"
-        class="loops.integrator.content.browser.ExternalAccessView"
+        class="loops.integrator.content.browser.ExternalAccessRenderer"
         permission="zope.View" />
 
   <browser:containerViews
         for="zope.app.container.interfaces.IReadContainer"
         index="zope.View" />
+
+  <zope:adapter
+      name="flashvideo.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.integrator.content.browser.FlashVideo"
+      permission="zope.View"
+      />
 
 </configure>

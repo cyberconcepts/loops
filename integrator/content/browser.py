@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope import interface, component
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser import getDefaultViewName
 from zope.cachedescriptors.property import Lazy
 
@@ -31,7 +32,10 @@ from loops.browser.node import NodeView
 from loops.common import adapted
 
 
-class ExternalAccessView(NodeView):
+view_macros = ViewPageTemplateFile('view_macros.pt')
+
+
+class ExternalAccessRenderer(NodeView):
 
     @Lazy
     def adapted(self):
@@ -45,3 +49,14 @@ class ExternalAccessView(NodeView):
 
     def publishTraverse(self, request, name):
         return self.adapted()[name]
+
+
+class FlashVideo(ConceptView):
+
+    @Lazy
+    def macro(self):
+        return view_macros.macros['flashvideo']
+
+    @Lazy
+    def startName(self):
+        return self.adapted.address + '.html'

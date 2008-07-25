@@ -57,7 +57,7 @@ class IExternalCollection(IConceptSchema):
             title=_(u'Base address'),
             description=_(u'A base path or URL for accessing this collection '
                            'on the external system'),
-            required=False)
+            required=True)
     address = schema.TextLine(
             title=_(u'Relative address'),
             description=_(u'Optional second (local) part of the '

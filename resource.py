@@ -379,7 +379,7 @@ class ExternalFileAdapter(FileAdapter):
         self.storageName = storageName
 
     def getData(self):
-        if self.storageName == 'unknown':    # object not set up yet
+        if self.storageName in ('unknown', None):    # object not set up yet
             return ''
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         return storage.getData(self.externalAddress, params=self.storageParams)
