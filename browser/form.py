@@ -71,13 +71,18 @@ class ObjectForm(NodeView):
     template = ViewPageTemplateFile('form_macros.pt')
     customMacro = None
     formState = FormState()     # dummy, don't update!
-    isInnerHtml = True
+    #isInnerHtml = True
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
         # target is the object the view acts upon - this is not necessarily
         # the same object as the context (the object the view was created for)
         self.target = context
+        #self.registerDojoForm()
+
+    @Lazy
+    def isInnerHtml(self):
+        return bool(self.request.form.get('dialog'))
 
     def closeAction(self, submit=False):
         if self.isInnerHtml:

@@ -224,7 +224,7 @@ img.notselected {
     margin: 1em 0 1em 0;
 }
 
-.button a, .button a:visited {
+.button a:link, .button a:visited {
     padding: 2px 4px 2px 4px;
     background-color: #e8e8e8;
     text-decoration: None;

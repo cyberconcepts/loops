@@ -59,4 +59,5 @@ class FlashVideo(ConceptView):
 
     @Lazy
     def startName(self):
+        # HTML file has the same name as the directory it is in.
         return self.adapted.address + '.html'
