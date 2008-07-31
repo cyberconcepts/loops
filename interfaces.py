@@ -620,7 +620,7 @@ class ITypeConcept(IConceptSchema):
         description=_(u'An interface that objects of this type can '
                         'be adapted to'),
         default=None,
-        source="loops.TypeInterfaceSource",
+        source='loops.TypeInterfaceSource',
         required=False)
 
     viewName = schema.TextLine(
@@ -645,13 +645,13 @@ class IPredicate(IConceptSchema):
         i.e. concepts of type 'predicate' should be adaptable to this interface.
     """
 
-    typeInterface = schema.TextLine(    #schema.Choice
-        title=_(u'Type Interface'),
+    predicateInterface = schema.Choice(
+        title=_(u'Predicate Interface'),
         description=_(u'Optional: allows specification of additional '
                     'attributes of relations that are instances of this '
                     'predicate.'),
-        default=u'',    #None
-        #source="loops.TypeInterfaceSource",
+        default=None,
+        source='loops.PredicateInterfaceSource',
         required=False)
 
 

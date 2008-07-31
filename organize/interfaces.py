@@ -34,6 +34,7 @@ from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
 from loops.interfaces import IConceptSchema
 from loops.organize.util import getPrincipalFolder
+from loops import util
 from loops.util import _
 
 ANNOTATION_KEY = 'loops.organize.person'
@@ -141,7 +142,7 @@ class IMemberRegistrationManager(Interface):
     """
 
     authPluginId = Attribute(u'The id of an authentication plugin to be '
-                              'used for managing members of this loops site')
+                             u'used for managing members of this loops site')
 
     def register(userId, password, lastName, firstName=u'', **kw):
         """ Register a new member for this loops site.
@@ -161,3 +162,18 @@ class ITask(IConceptSchema, ITask):
 
     pass
 
+
+# 'allocated' predicate
+
+class IAllocated(Interface):
+
+    allocType = schema.Choice(
+            title=_(u'Allocation Type'),
+            description=_(u'Specifies the kind of interaction a person or another '
+                    u'party has with the task or project it is allocated to.'),
+            source=util.KeywordVocabulary((
+                    ('standard', _(u'Standard')),
+                    ('master', _(u'Master')),
+                )),
+            default='standard',
+            required=True)

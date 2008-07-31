@@ -34,10 +34,10 @@ from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import IPredicate
 from loops.concept import Concept
 from loops.common import AdapterBase
-from loops.type import TypeInterfaceSourceList as BaseTypeInterfaceSourceList
+from loops.type import TypeInterfaceSourceList
 
 
-BaseTypeInterfaceSourceList.typeInterfaces += (IPredicate,)
+TypeInterfaceSourceList.typeInterfaces += (IPredicate,)
 
 
 class Predicate(AdapterBase):
@@ -49,7 +49,7 @@ class Predicate(AdapterBase):
     _contextAttributes = list(IPredicate) + list(IConcept)
 
 
-class TypeInterfaceSourceList(BaseTypeInterfaceSourceList):
+class PredicateInterfaceSourceList(TypeInterfaceSourceList):
     """ Collects type interfaces for predicates, i.e. interfaces that
         may be used for specifying additional attributes of relations.
     """

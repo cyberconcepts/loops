@@ -46,6 +46,9 @@ class SetupManager(BaseSetupManager):
 
         owner = self.addObject(concepts, Concept, 'ownedby', title=u'owned by',
                         conceptType=predicate)
+        #allocated = self.addAndConfigureObject(concepts, Concept, 'allocated',
+        #                title=u'allocated',
+        #                conceptType=predicate, predicateInterface=IAllocated)
 
         task = self.addAndConfigureObject(concepts, Concept, 'task', title=u'Task',
                         conceptType=type, typeInterface=ITask)

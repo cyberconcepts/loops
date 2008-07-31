@@ -40,16 +40,18 @@ from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
 from loops.concept import Concept
 from loops.interfaces import IConcept
-from loops.organize.interfaces import IAddress
-from loops.organize.interfaces import IPerson, ANNOTATION_KEY
+from loops.organize.interfaces import IAddress, IPerson, IAllocated
+from loops.organize.interfaces import ANNOTATION_KEY
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
 from loops.type import TypeInterfaceSourceList
+from loops.predicate import PredicateInterfaceSourceList
 from loops import util
 
 
 # register type interfaces - (TODO: use a function for this)
 
 TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
+PredicateInterfaceSourceList.typeInterfaces += (IAllocated,)
 
 
 def getPersonForUser(context, request=None, principal=None):

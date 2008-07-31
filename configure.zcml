@@ -406,6 +406,11 @@
       component="loops.type.TypeInterfaceSourceList"
       name="loops.TypeInterfaceSource" />
 
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.predicate.PredicateInterfaceSourceList"
+      name="loops.PredicateInterfaceSource" />
+
 
   <include package=".browser" />
   <include package=".classifier" />

@@ -355,6 +355,16 @@ Events listing
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]
 
+Allocation of persons to tasks
+------------------------------
+
+  >>> from loops.organize.interfaces import IAllocated
+  >>> predicate = concepts['predicate']
+  >>> allocated = addAndConfigureObject(concepts, Concept, 'allocated',
+  ...                   title=u'allocated',
+  ...                   conceptType=predicate, predicateInterface=IAllocated)
+
+
 
 Fin de partie
 =============
