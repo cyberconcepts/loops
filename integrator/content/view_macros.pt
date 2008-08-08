@@ -5,10 +5,11 @@
 <div metal:define-macro="flashvideo">
   <metal:resources use-macro="item/conceptMacros/concepttitle" />
   <div class="button">
-    <a href="." target="_blank"
+    <a href="."
        i18n:translate=""
        tal:define="baseUrl python: view.getUrlForTarget(item.context)"
-       tal:attributes="href string:$baseUrl/xa/${item/startName}">Play Movie</a>
+       tal:attributes="href string:$baseUrl/video.html/start?id=${item/adapted/address}">
+      Play Movie</a>
   </div>
   <metal:resources use-macro="item/conceptMacros/conceptchildren" />
   <metal:resources use-macro="item/conceptMacros/conceptresources" />

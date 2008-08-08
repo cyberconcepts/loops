@@ -1,0 +1,97 @@
+<!-- saved from url=(0013)about:internet -->
+<html lang="de">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style type="text/css">
+.button a:link, .button a:visited {
+    margin: 1em 0 1em 0;
+    padding: 2px 4px 2px 4px;
+    background-color: #e8e8e8;
+    text-decoration: None;
+    color: Black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #f4f4f4 #989898 #989898 #f4f4f4;
+}
+.button a:active { border-color: #989898 #f4f4f4 #f4f4f4 #989898; }
+
+</style>
+
+<title tal:content="view/title">00_Einleitung</title>
+<script language="javascript"> AC_FL_RunContent = 0; </script>
+<script language="javascript"> DetectFlashVer = 0; </script>
+<script src="AC_RunActiveContent.js" language="javascript"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+// -----------------------------------------------------------------------------
+// Globale Variablen
+// Erforderliche Hauptversion von Flash
+var requiredMajorVersion = 9;
+// Erforderliche Unterversion von Flash
+var requiredMinorVersion = 0;
+// Erforderliche Flash-Revision
+var requiredRevision = 115;
+// -----------------------------------------------------------------------------
+// -->
+</script>
+<script language="JavaScript" type="text/javascript"
+        tal:define="movieName request/id|string:"
+        tal:content="string:movieName = '$movieName';">
+</script>
+</head>
+<body bgcolor="#000000" style="font-family: Arial,Helvetica">
+<!--Im Film verwendete URLs-->
+<!--Im Film verwendeter Text-->
+<div style="width: 1000">
+<script language="JavaScript" type="text/javascript">
+<!--
+if (AC_FL_RunContent == 0 || DetectFlashVer == 0) {
+	alert("Diese Seite erfordert die Datei AC_RunActiveContent.js.");
+} else {
+	var hasRightVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+	if(hasRightVersion) {  // sofern eine akzeptable Version ermittelt wurde
+		// Flash-Film einbetten
+		AC_FL_RunContent(
+			'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,115,0',
+			'width', '1000',
+			'height', '768',
+			'src', '00_Einleitung',
+			'quality', 'high',
+			'pluginspage', 'http://www.macromedia.com/go/getflashplayer',
+			'align', 'middle',
+			'play', 'true',
+			'loop', 'true',
+			'scale', 'showall',
+			'wmode', 'window',
+			'devicefont', 'false',
+			'id', movieName,
+			'bgcolor', '#000000',
+			'name', '00_Einleitung',
+			'menu', 'true',
+			'allowScriptAccess','sameDomain',
+			'allowFullScreen','false',
+			'movie', movieName,
+			'salign', ''
+			); //end AC code
+	} else {  // Flash ist veraltet, oder das Plug-In wurde nicht ermittelt
+    var alternateContent = 'Alternativer HTML-Inhalt sollte hier platziert werden. '
+  	+ 'Für diesen Inhalt ist der Adobe Flash Player erforderlich. '
+   	+ '&lt;a href=http://www.macromedia.com/go/getflash/>Flash installieren&lt;/a>';
+    document.write(alternateContent);  // Nicht aus Flash stammenden Inhalt einfügen
+    }
+}
+// -->
+</script>
+<noscript>
+	// Stellen Sie alternativen Inhalt für Browser bereit,
+	// die keine Skriptuntersttzung bieten bzw. in denen Skripts deaktiviert wurden.
+  	Alternativer HTML-Inhalt sollte hier platziert werden. Für diesen Inhalt ist der Adobe Flash Player erforderlich.
+  	<a href="http://www.macromedia.com/go/getflash/">Flash installieren</a>
+</noscript>
+<div style="text-align: center"
+     class="button">
+  <a href="javascript:history.back()">Zurück</a>
+</div>
+</div></body>
+</html>

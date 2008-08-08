@@ -56,4 +56,6 @@
       permission="zope.View"
       />
 
+  <include package=".video" />
+
 </configure>
