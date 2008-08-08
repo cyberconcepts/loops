@@ -55,6 +55,7 @@ class DialogAction(Action):
     dialogName = 'create'
     qualifier = typeToken = innerForm = None
     fixedType = False
+    viewTitle = ''
     addParams = {}
 
     @Lazy
@@ -77,6 +78,8 @@ class DialogAction(Action):
             urlParams['inner_form'] = self.innerForm
         if self.fixedType:
             urlParams['fixed_type'] = 'yes'
+        if self.viewTitle:
+            urlParams['view_title'] = self.viewTitle
         urlParams.update(self.addParams)
         #url = self.page.getUrlForTarget(self.view)
         #return self.jsOnClick % (self.dialogName, url, self.viewName,
@@ -116,6 +119,14 @@ actions.register('edit_object', 'portlet', DialogAction,
         title=_(u'Edit Resource...'),
         description=_(u'Modify resource object.'),
         viewName='edit_object.html',
+        dialogName='edit',
+        prerequisites=['registerDojoEditor'],
+)
+
+actions.register('edit_concept', 'portlet', DialogAction,
+        title=_(u'Edit Concept...'),
+        description=_(u'Modify concept object.'),
+        viewName='edit_concept.html',
         dialogName='edit',
         prerequisites=['registerDojoEditor'],
 )
