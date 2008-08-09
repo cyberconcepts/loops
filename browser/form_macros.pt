@@ -1,5 +1,7 @@
+<html i18n:domain="loops">
 <!-- macros for rendering edit/create forms
      $Id$ -->
+
 
 <metal:block define-macro="edit" i18n:domain="loops">
     <form method="post" enctype="multipart/form-data"
@@ -272,3 +274,6 @@
            tal:content="data/?name|string:">
     </textarea>
 </metal:html>
+
+
+</html>

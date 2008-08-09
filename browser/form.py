@@ -238,7 +238,7 @@ class CreateObjectForm(ObjectForm):
     @Lazy
     def title(self):
         if self.request.form.get('fixed_type'):
-            return _(u'Create %s' % self.typeConcept.title)
+            return _(u'Create %s') % self.typeConcept.title
         else:
             return _(self.defaultTitle)
 

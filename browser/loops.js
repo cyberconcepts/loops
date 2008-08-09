@@ -144,10 +144,11 @@ function addConceptAssignment(prefix, suffix) {
 }
 
 function validate() {
-    var form = dijit.byId('dialog_form');
-    if (form != undefined && !form.isValid()) {
+    //var form = dijit.byId('dialog_form');
+    var form = dojo.byId('dialog_form');
+    /*if (form != undefined && !form.isValid()) {
         return false;
-    }
+    }*/
     var titleField = dojo.byId('title');
     if (titleField != undefined && titleField.value == '') {
         return false;

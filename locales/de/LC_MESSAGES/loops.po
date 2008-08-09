@@ -32,6 +32,9 @@ msgstr "Concept Map bearbeiten"
 msgid "Create Resource..."
 msgstr "Ressource anlegen..."
 
+msgid "Create %s"
+msgstr "%s anlegen"
+
 msgid "Create a new resource object."
 msgstr "Eine neue Ressource erzeugen"
 
@@ -79,6 +82,42 @@ msgstr "Glossareintrag anlegen..."
 
 msgid "Create Glossary Item"
 msgstr "Glossareintrag anlegen"
+
+msgid "Create Resource, Type = "
+msgstr "Ressource anlegen, Typ = "
+
+msgid "Edit Resource"
+msgstr "Ressource bearbeiten"
+
+msgid "Edit Resource..."
+msgstr "Ressource bearbeiten..."
+
+msgid "Edit Concept"
+msgstr "Begriff bearbeiten"
+
+msgid "Edit Concept..."
+msgstr "Begriff bearbeiten..."
+
+msgid "Create Event..."
+msgstr "Termin anlegen..."
+
+msgid "Create a new event"
+msgstr "Einen neuen Termin anlegen"
+
+msgid "Edit Task..."
+msgstr "Aufgabe bearbeiten..."
+
+msgid "Modify task"
+msgstr "Aufgabe bearbeiten"
+
+msgid "Edit Video..."
+msgstr "Video bearbeiten..."
+
+msgid "Edit Video"
+msgstr "Video bearbeiten"
+
+msgid "Modify video information"
+msgstr "Daten des Video-Objekts bearbeiten"
 
 msgid "Play Movie"
 msgstr "Video abspielen"
@@ -149,29 +188,8 @@ msgstr "Datei"
 msgid "Data"
 msgstr "Inhalt"
 
-msgid "Create Resource, Type = "
-msgstr "Ressource anlegen, Typ = "
-
-msgid "Edit Resource"
-msgstr "Ressource bearbeiten"
-
-msgid "Edit Resource..."
-msgstr "Ressource bearbeiten..."
-
-msgid "Edit Concept"
-msgstr "Begriff bearbeiten"
-
-msgid "Edit Concept..."
-msgstr "Begriff bearbeiten..."
-
-msgid "Edit Video..."
-msgstr "Video bearbeiten..."
-
-msgid "Edit Video"
-msgstr "Video bearbeiten"
-
-msgid "Modify video information"
-msgstr "Daten des Video-Objekts bearbeiten"
+msgid "Event"
+msgstr "Termin"
 
 msgid "Content Type"
 msgstr "Format"
@@ -343,6 +361,12 @@ msgstr "Ein Text, der für andere Benutzer nicht sichtbar sein soll"
 
 msgid "For quick creation of notes/links bookmark this link"
 msgstr "Für Notizen diesen Link zu Favoriten/Lesezeichen hinzufügen"
+
+msgid "Start date"
+msgstr "Beginn"
+
+msgid "End date"
+msgstr "Ende"
 
 msgid "Create loops Note"
 msgstr "loops-Notiz anlegen"
