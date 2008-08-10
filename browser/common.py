@@ -502,6 +502,13 @@ class BaseView(GenericView, I18NView):
         jsCall = 'dojo.require("dijit._editor.plugins.LinkDialog");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
+    def registerDojoFormAll(self):
+        self.registerDojo()
+        jsCall = ('dojo.require("dijit.form.Form"); '
+                  'dojo.require("dijit.form.FilteringSelect"); '
+                  'dojo.require("dojox.data.QueryReadStore");')
+        self.controller.macros.register('js-execute', 'dojo.form.all', jsCall=jsCall)
+
 
 # vocabulary stuff
 

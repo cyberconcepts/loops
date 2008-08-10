@@ -72,6 +72,7 @@ class ObjectForm(NodeView):
     customMacro = None
     formState = FormState()     # dummy, don't update!
     isInnerHtml = True
+    isPopup = False
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
@@ -80,16 +81,16 @@ class ObjectForm(NodeView):
         self.target = context
         #self.registerDojoForm()
 
-    #@Lazy
-    #def isInnerHtml(self):
-    #    return bool(self.request.form.get('dialog'))
-
     def closeAction(self, submit=False):
+        if self.isPopup:
+            if submit:
+                return ("xhrSubmitPopup('dialog_form', '%s'); return false"
+                        % (self.request.URL))
+            else:
+                return 'window.close()'
         if self.isInnerHtml:
             return "return closeDialog(%s);" % (submit and 'true' or 'false')
-        if submit:
-            return "xhrSubmitPopup('dialog_form', '%s'); return false" % (self.request.URL)
-        return 'window.close()'
+        return ''
 
     @Lazy
     def item(self):
@@ -207,6 +208,8 @@ class EditObjectForm(ObjectForm):
 
 class EditConceptForm(EditObjectForm):
 
+    isInnerHtml = True
+
     title = _(u'Edit Concept')
     form_action = 'edit_concept'
 
@@ -224,6 +227,15 @@ class EditConceptForm(EditObjectForm):
             r = ConceptRelationView(c, self.request)
             if not r.isProtected and r.context != self.target:
                 yield r
+
+
+class EditConceptPage(EditConceptForm):
+
+    isInnerHtml = False
+
+    def setupController(self):
+        super(EditConceptPage, self).setupController()
+        self.registerDojoFormAll()
 
 
 class CreateObjectForm(ObjectForm):
@@ -298,6 +310,7 @@ class CreateObjectForm(ObjectForm):
 class CreateObjectPopup(CreateObjectForm):
 
     isInnerHtml = False
+    isPopup = True
     nextUrl = ''    # no redirect upon submit
 
     def update(self):
@@ -432,6 +445,7 @@ class EditObject(FormController, I18NView):
             viewAnnotations['target'] = obj
         self.object = obj
         formState = self.updateFields()
+        self.view.formState = formState
         # TODO: error handling
         url = self.view.nextUrl
         if url is None:
@@ -444,7 +458,6 @@ class EditObject(FormController, I18NView):
         obj = self.object
         form = self.request.form
         instance = self.instance
-        #instance.template = self.schema
         formState = instance.applyTemplate(data=form, fieldHandlers=self.fieldHandlers)
         self.selected = []
         self.old = []
@@ -576,7 +589,8 @@ class CreateObject(EditObject):
         notify(ObjectCreatedEvent(obj))
         #notify(ObjectAddedEvent(obj))
         self.object = obj
-        self.updateFields() # TODO: suppress validation
+        formState = self.updateFields() # TODO: suppress validation
+        self.view.formState = formState
         # TODO: error handling
         url = self.view.nextUrl
         if url is None:
@@ -604,7 +618,10 @@ class EditConcept(EditObject):
     def update(self):
         self.object = self.view.virtualTargetObject
         formState = self.updateFields()
+        self.view.formState = formState
         # TODO: error handling
+        if formState.severity > 0:
+            return True
         self.request.response.redirect(self.view.virtualTargetUrl)
         return False
 

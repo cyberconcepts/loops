@@ -610,6 +610,13 @@
       />
 
   <page
+      name="edit_concept_page.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.EditConceptPage"
+      permission="zope.ManageContent"
+      />
+
+  <page
       name="inner_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerForm"
