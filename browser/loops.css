@@ -259,6 +259,17 @@ table.listing th {
     padding: 1em 0 1em 0;
 }
 
+.error {
+    background-color: #ffbb00;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+.error-heading {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
 /* search stuff */
 
 .searchForm input.button, input.submit {
