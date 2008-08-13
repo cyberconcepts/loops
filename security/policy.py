@@ -64,7 +64,8 @@ class LoopsSecurityPolicy(ZopeSecurityPolicy):
         for p in self.getParents(obj, checked):
             # TODO: care for correct combination if there is more than
             # one parent
-            roles.update(self.cached_principal_roles(p, principal))
+            if p is not None:
+                roles.update(self.cached_principal_roles(p, principal, checked))
         prinrole = IPrincipalRoleMap(obj, None)
         if prinrole:
             roles = roles.copy()
@@ -76,7 +77,8 @@ class LoopsSecurityPolicy(ZopeSecurityPolicy):
 
     def getParents(self, obj, checked):
         if obj in checked:      # cycle - leave the concept map
-            return [getattr(obj, '__parent__', None)]
+            parent = getattr(obj, '__parent__', None)
+            return [parent]
         # keep concept parents in cache
         cache = self.cache(obj)
         try:
