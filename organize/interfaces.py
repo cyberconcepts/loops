@@ -165,7 +165,7 @@ class ITask(IConceptSchema, ITask):
 
 # 'allocated' predicate
 
-class IAllocated(Interface):
+class IAllocated(IConceptSchema):
 
     allocType = schema.Choice(
             title=_(u'Allocation Type'),

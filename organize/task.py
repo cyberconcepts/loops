@@ -40,5 +40,5 @@ class Task(AdapterBase):
     implements(ITask)
 
     _adapterAttributes = ('context', '__parent__',)
-    _contextAttributes = list(ITask) + list(IConcept)
+    _contextAttributes = list(ITask) # + list(IConcept)
 
