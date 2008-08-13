@@ -17,7 +17,7 @@
 #
 
 """
-Predicate management.
+Definition and management of special predicates and corresponding relations.
 
 $Id$
 """
@@ -31,7 +31,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
 from loops.interfaces import ILoopsObject, IConcept, IResource
-from loops.interfaces import IPredicate
+from loops.interfaces import IPredicate, IMappingAttributeRelation
 from loops.concept import Concept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
@@ -46,7 +46,7 @@ class Predicate(AdapterBase):
 
     implements(IPredicate)
 
-    _contextAttributes = list(IPredicate) + list(IConcept)
+    _contextAttributes = list(IPredicate) # + list(IConcept)
 
 
 class PredicateInterfaceSourceList(TypeInterfaceSourceList):
@@ -56,3 +56,14 @@ class PredicateInterfaceSourceList(TypeInterfaceSourceList):
 
     typeInterfaces = ()
 
+
+# standard relation adapters
+
+PredicateInterfaceSourceList.typeInterfaces += (IMappingAttributeRelation,)
+
+
+class MappingAttributeRelation(AdapterBase):
+
+    implements(IMappingAttributeRelation)
+
+    _contextAttributes = list(IMappingAttributeRelation)

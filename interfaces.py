@@ -624,7 +624,7 @@ class ITypeConcept(IConceptSchema):
         required=False)
 
     viewName = schema.TextLine(
-        title=_(u'View name'),
+        title=_(u'View Name'),
         description=_(u'Name of a special view be used for presenting '
                        'objects of this type.'),
         default=u'',
@@ -640,6 +640,8 @@ class ITypeConcept(IConceptSchema):
     # storage = schema.Choice()
 
 
+# predicates
+
 class IPredicate(IConceptSchema):
     """ Provided by predicates (predicate concepts that specify relation types),
         i.e. concepts of type 'predicate' should be adaptable to this interface.
@@ -654,6 +656,31 @@ class IPredicate(IConceptSchema):
         source='loops.PredicateInterfaceSource',
         required=False)
 
+
+class IMappingAttributeRelation(IConceptSchema):
+    """ A relation based on a predicate ('mappingAttribute') that provides
+        values for an attribute name on a parent and a corresponding
+        identifiers on the the child objects that will be used as keys
+        on the parent's mapping attribute.
+
+        These values should be indexed by the relation registry to provide
+        direct access.
+    """
+
+    attrName = schema.TextLine(
+        title=_(u'Attribute Name'),
+        description=_(u'Name of the mapping attribute this predicate '
+                    'represents on the parent concept.'),
+        required=True)
+
+    attrIdentifier = schema.TextLine(
+        title=_(u'Child Identifier'),
+        description=_(u'Identifier of the child that may be used as a '
+                    'key on the parent\'s mapping attribute.'),
+        required=True)
+
+
+# resources
 
 class IResourceAdapter(IBaseResourceSchema):
     """ Base interface for adapters for resources. This is the base interface

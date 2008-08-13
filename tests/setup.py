@@ -35,7 +35,7 @@ from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInst
 from cybertools.composer.schema.field import EmailFieldInstance, ListFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
-from cybertools.relation.registry import RelationRegistry
+from cybertools.relation.registry import RelationRegistry, IIndexableRelation
 from cybertools.relation.interfaces import IRelation, IRelationRegistry
 from cybertools.relation.interfaces import IRelationInvalidatedEvent
 from cybertools.relation.registry import IndexableRelationAdapter
@@ -54,7 +54,7 @@ from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
 from loops.organize.memberinfo import MemberInfoProvider
 from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
-from loops.predicate import Predicate
+from loops.predicate import Predicate, MappingAttributeRelation
 from loops.query import QueryConcept
 from loops.query import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
@@ -95,6 +95,9 @@ class TestSite(object):
         component.provideUtility(IntIdsStub())
         relations = RelationRegistry()
         relations.setupIndexes()
+        for idx in ('_attrName', '_attrIdentifier'):
+            if idx not in relations:
+                relations[idx] = FieldIndex(idx, IIndexableRelation)
         component.provideUtility(relations, IRelationRegistry)
 
         component.provideUtility(PrincipalAnnotationUtility(), IPrincipalAnnotationUtility)
@@ -112,6 +115,7 @@ class TestSite(object):
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)
         component.provideAdapter(Predicate)
+        component.provideAdapter(MappingAttributeRelation)
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
         component.provideAdapter(QueryConcept)
