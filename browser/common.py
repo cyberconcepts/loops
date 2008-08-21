@@ -177,6 +177,14 @@ class BaseView(GenericView, I18NView):
         return self.context.getLoopsRoot()
 
     @Lazy
+    def conceptManager(self):
+        return self.loopsRoot.getConceptManager()
+
+    @Lazy
+    def typePredicate(self):
+        return self.conceptManager.getTypePredicate()
+
+    @Lazy
     def url(self):
         return absoluteURL(self.context, self.request)
 

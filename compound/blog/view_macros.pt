@@ -21,8 +21,7 @@
       <div class="description"
            tal:define="description data/description"
            tal:condition="description">
-        <span tal:content="structure python:
-                item.renderText(description, 'text/restructured')">Description</span></div>
+        <span tal:content="structure description">Description</span></div>
       <div class="text"
            tal:condition="nothing"
            xtal:condition="python: repeat['related'].index() < 3">
@@ -55,8 +54,7 @@
   <div class="description"
        tal:define="description description|item/description"
        tal:condition="description">
-    <span tal:content="structure python:
-                item.renderText(description, 'text/restructured')">Description</span>
+    <span tal:content="structure description">Description</span>
   </div>
   <div class="text"
        tal:content="structure item/render">Here comes the text...</div>

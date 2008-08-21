@@ -119,6 +119,13 @@ class BlogView(ConceptView):
                                  if k != 'blogpost'])
         return sorted(rels, key=lambda r: (r.order, r.title.lower()))
 
+    def isPersonalBlog(self):
+        tPerson = self.loopsRoot.getConceptManager()['person']
+        for p in self.context.getParents():
+            if p.conceptType == tPerson:
+                return True
+        return False
+
 
 class BlogPostView(ConceptView):
 
@@ -133,6 +140,11 @@ class BlogPostView(ConceptView):
         if not checkPermission('loops.ViewRestricted', self.context):
             data['privateComment'] = u''
         return data
+
+    @Lazy
+    def description(self):
+        return self.renderText(self.context.description, 'text/restructured')
+
 
     def getActions(self, category='object', page=None, target=None):
         actions = []
