@@ -258,13 +258,13 @@
              set_schema="loops.interfaces.IPredicate" />
   </class>
 
-  <adapter factory="loops.predicate.MappingAttributeRelation" trusted="True" />
+  <!--<adapter factory="loops.predicate.MappingAttributeRelation" trusted="True" />
   <class class="loops.predicate.MappingAttributeRelation">
     <require permission="zope.View"
              interface="loops.interfaces.IMappingAttributeRelation" />
     <require permission="zope.ManageContent"
              set_schema="loops.interfaces.IMappingAttributeRelation" />
-  </class>
+  </class>-->
 
   <adapter factory="loops.query.QueryConcept" trusted="True" />
   <class class="loops.query.QueryConcept">
