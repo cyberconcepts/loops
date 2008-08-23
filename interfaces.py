@@ -657,7 +657,8 @@ class IPredicate(IConceptSchema):
         required=False)
 
 
-class IMappingAttributeRelation(IConceptSchema):
+# probably not useful
+class xxIMappingAttributeRelation(IConceptSchema):
     """ A relation based on a predicate ('mappingAttribute') that provides
         values for an attribute name on a parent and a corresponding
         identifiers on the the child objects that will be used as keys

@@ -31,7 +31,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
 from loops.interfaces import ILoopsObject, IConcept, IResource
-from loops.interfaces import IPredicate, IMappingAttributeRelation
+from loops.interfaces import IPredicate #, IMappingAttributeRelation
 from loops.concept import Concept
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
@@ -59,11 +59,11 @@ class PredicateInterfaceSourceList(TypeInterfaceSourceList):
 
 # standard relation adapters
 
-PredicateInterfaceSourceList.typeInterfaces += (IMappingAttributeRelation,)
+#PredicateInterfaceSourceList.typeInterfaces += (IMappingAttributeRelation,)
 
 
-class MappingAttributeRelation(AdapterBase):
+#class MappingAttributeRelation(AdapterBase):
 
-    implements(IMappingAttributeRelation)
+    #implements(IMappingAttributeRelation)
 
-    _contextAttributes = list(IMappingAttributeRelation)
+    #_contextAttributes = list(IMappingAttributeRelation)
