@@ -32,6 +32,7 @@ from zope.dublincore.zopedublincore import ScalarProperty
 from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 from zope.security.proxy import isinstance
+from zope.traversing.api import getName
 
 from cybertools.storage.interfaces import IStorageInfo
 from cybertools.typology.interfaces import IType
@@ -212,6 +213,49 @@ class NameChooser(BaseNameChooser):
     specialCharacters = {
         '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
+
+
+# relation set: use relations of a certain predicate as a collection attribute
+
+class ParentRelationSet(object):
+
+    def __init__(self, context, predicateName):
+        self.adapted = context
+        if isinstance(context, AdapterBase):
+            self.context = context.context
+        else:
+            self.context = context
+        self.predicateName = predicateName
+
+    @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
+    def conceptManager(self):
+        return self.loopsRoot.getConceptManager()
+
+    @Lazy
+    def predicate(self):
+        return self.conceptManager[self.predicateName]
+
+    def __iter__(self):
+        for c in self.context.getParents([self.predicate]):
+            yield adapted(c)
+
+
+class ChildRelationSet(ParentRelationSet):
+
+    def add(self, related):
+        self.context.assignChild(related, self.predicate)
+
+    def remove(self, related):
+        self.context.deassignChild(related, [self.predicate])
+
+    def __iter__(self):
+        for c in self.context.getChildren([self.predicate]):
+            yield adapted(c)
+
 
 # caching (TBD)
 
