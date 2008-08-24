@@ -36,8 +36,8 @@ from zope.traversing.api import getName
 
 from cybertools.storage.interfaces import IStorageInfo
 from cybertools.typology.interfaces import IType
-from loops.interfaces import ILoopsObject, ILoopsContained, IConcept, IResource
-from loops.interfaces import IResourceAdapter
+from loops.interfaces import ILoopsObject, ILoopsContained
+from loops.interfaces import IConcept, IResource, IResourceAdapter
 
 
 # convenience functions
@@ -215,9 +215,44 @@ class NameChooser(BaseNameChooser):
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
 
 
-# relation set: use relations of a certain predicate as a collection attribute
+# virtual attributes
 
-class ParentRelationSet(object):
+class ContainerAttribute(object):
+    """ Use objects within a ConceptManager object for a collection attribute.
+    """
+
+    def __init__(self, context, typeName, idAttr='name', prefix=''):
+        self.context = context
+        self.typeName = typeName
+        self.idAttr = idAttr
+        self.prefix = prefix
+
+    @Lazy
+    def typeConcept(self):
+        return self.context[self.typeName]
+
+    def create(self, id, **kw):
+        from loops.concept import Concept
+        from loops.setup import addAndConfigureObject
+        if self.idAttr != 'name' and self.idAttr not in kw:
+            kw[self.idAttr] = id
+        c = addAndConfigureObject(self.context, Concept, self.prefix + id,
+                    conceptType=self.typeConcept, **kw)
+        return adapted(c)
+
+    def remove(self, id):
+        del self.context[self.prefix + id]
+
+    def get(self, id, default=None, langInfo=None):
+        return adapted(self.context.get(self.prefix + id, default), langInfo=langInfo)
+
+    def __iter__(self):
+        for c in self.typeConcept.getChildren([self.context.getTypePredicate()]):
+            yield adapted(c)
+
+
+class RelationSet(object):
+    """ Use relations of a certain predicate for a collection attribute."""
 
     def __init__(self, context, predicateName):
         self.adapted = context
@@ -239,17 +274,34 @@ class ParentRelationSet(object):
     def predicate(self):
         return self.conceptManager[self.predicateName]
 
+
+class ParentRelationSet(RelationSet):
+
+    def add(self, related):
+        if isinstance(related, AdapterBase):
+            related = related.context
+        self.context.assignParent(related, self.predicate)
+
+    def remove(self, related):
+        if isinstance(related, AdapterBase):
+            related = related.context
+        self.context.deassignParent(related, [self.predicate])
+
     def __iter__(self):
         for c in self.context.getParents([self.predicate]):
             yield adapted(c)
 
 
-class ChildRelationSet(ParentRelationSet):
+class ChildRelationSet(RelationSet):
 
     def add(self, related):
+        if isinstance(related, AdapterBase):
+            related = related.context
         self.context.assignChild(related, self.predicate)
 
     def remove(self, related):
+        if isinstance(related, AdapterBase):
+            related = related.context
         self.context.deassignChild(related, [self.predicate])
 
     def __iter__(self):
