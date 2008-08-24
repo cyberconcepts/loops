@@ -221,6 +221,8 @@ class ContainerAttribute(object):
     """ Use objects within a ConceptManager object for a collection attribute.
     """
 
+    langInfo = None
+
     def __init__(self, context, typeName, idAttr='name', prefix=''):
         self.context = context
         self.typeName = typeName
@@ -244,15 +246,18 @@ class ContainerAttribute(object):
         del self.context[self.prefix + id]
 
     def get(self, id, default=None, langInfo=None):
-        return adapted(self.context.get(self.prefix + id, default), langInfo=langInfo)
+        return adapted(self.context.get(self.prefix + id, default),
+                       langInfo=self.langInfo)
 
     def __iter__(self):
         for c in self.typeConcept.getChildren([self.context.getTypePredicate()]):
-            yield adapted(c)
+            yield adapted(c, langInfo=self.langInfo)
 
 
 class RelationSet(object):
     """ Use relations of a certain predicate for a collection attribute."""
+
+    langInfo = None
 
     def __init__(self, context, predicateName):
         self.adapted = context
@@ -289,7 +294,7 @@ class ParentRelationSet(RelationSet):
 
     def __iter__(self):
         for c in self.context.getParents([self.predicate]):
-            yield adapted(c)
+            yield adapted(c, langInfo=self.langInfo)
 
 
 class ChildRelationSet(RelationSet):
@@ -306,7 +311,7 @@ class ChildRelationSet(RelationSet):
 
     def __iter__(self):
         for c in self.context.getChildren([self.predicate]):
-            yield adapted(c)
+            yield adapted(c, langInfo=self.langInfo)
 
 
 # caching (TBD)
