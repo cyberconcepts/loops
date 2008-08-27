@@ -33,7 +33,6 @@ import cybertools
 from loops.browser.util import html_quote
 
 _ = MessageFactory('loops')
-#_ = MessageFactory('zope')  # it's easier not use a special i18n domain?
 
 
 renderingFactories = {

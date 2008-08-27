@@ -513,12 +513,34 @@ class BaseView(GenericView, I18NView):
     def registerDojoFormAll(self):
         self.registerDojo()
         jsCall = ('dojo.require("dijit.form.Form"); '
+                  'dojo.require("dijit.form.DateTextBox"); '
+                  'dojo.require("dijit.form.TimeTextBox");'
                   'dojo.require("dijit.form.FilteringSelect"); '
                   'dojo.require("dojox.data.QueryReadStore");')
         self.controller.macros.register('js-execute', 'dojo.form.all', jsCall=jsCall)
 
 
 # vocabulary stuff
+
+class SimpleTerms(object):
+    """ Provide the ITerms interface, e.g. for usage in selection
+        lists.
+    """
+
+    implements(ITerms)
+
+    def __init__(self, source, request):
+        # the source parameter is a list of tuples (token, title).
+        self.source = source
+        self.terms = dict(source)
+
+    def getTerm(self, value):
+        token, title = value
+        return SimpleTerm(token, token, title)
+
+    def getValue(self, token):
+        return (token, self.terms[token])
+
 
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection

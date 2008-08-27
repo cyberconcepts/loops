@@ -23,7 +23,6 @@ $Id$
 """
 
 from zope import component
-from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
@@ -33,13 +32,15 @@ from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.publisher.browser import applySkin
+from zope import schema
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName, getParent
 from persistent import Persistent
+
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
 from cybertools.util.jeep import Jeep
-
 from loops.base import ParentInfo
 from loops.common import AdapterBase
 from loops.interfaces import IView, INode, INodeSchema, INodeAdapter
@@ -49,11 +50,17 @@ from loops.interfaces import ITargetRelation
 from loops.interfaces import IConcept
 from loops.versioning.util import getVersion
 from loops import util
+from loops.util import _
 
 
 class View(object):
 
     implements(IView, INodeContained, IRelatable)
+
+    def __init__(self, title=u'', description=u''):
+        self.title = title
+        self.description = description
+        super(View, self).__init__()
 
     _title = u''
     def getTitle(self): return self._title
@@ -66,10 +73,10 @@ class View(object):
     description = property(getDescription, setDescription)
 
     _viewName = u''
-    def getViewName(self): return self._viewName #or getattr(self, '_viewer', u'')
+    def getViewName(self):
+        return self._viewName
     def setViewName(self, viewName):
         self._viewName = viewName
-        #self._viewer = u''  # BBB
     viewName = property(getViewName, setViewName)
 
     def getTarget(self):
@@ -78,11 +85,11 @@ class View(object):
             return None
         if len(rels) > 1:
             raise ValueError('There may be only one target for a View object: %s - %s'
-                % (zapi.getName(self), `[zapi.getName(r.second) for r in rels]`))
+                % (getName(self), `[getName(r.second) for r in rels]`))
         return list(rels)[0].second
 
     def setTarget(self, target):
-        registry = zapi.getUtility(IRelationRegistry)
+        registry = component.getUtility(IRelationRegistry)
         rels = list(registry.query(first=self, relationship=TargetRelation))
         if len(rels) > 0:
             oldRel = rels[0]
@@ -98,13 +105,8 @@ class View(object):
 
     target = property(getTarget, setTarget)
 
-    def __init__(self, title=u'', description=u''):
-        self.title = title
-        self.description = description
-        super(View, self).__init__()
-
     def getLoopsRoot(self):
-        return zapi.getParent(self).getLoopsRoot()
+        return getParent(self).getLoopsRoot()
 
     def getAllParents(self, collectGrants=False):
         return Jeep()
@@ -127,11 +129,11 @@ class Node(View, OrderedContainer):
     contentType = u'zope.source.rest'
 
     def getParentNode(self, nodeTypes=None):
-        parent = zapi.getParent(self)
+        parent = getParent(self)
         while INode.providedBy(parent):
             if not nodeTypes or parent.nodeType in nodeTypes:
                 return parent
-            parent = zapi.getParent(parent)
+            parent = getParent(parent)
         return None
 
     def getAllParents(self, collectGrants=False):
@@ -179,7 +181,7 @@ class ViewManager(OrderedContainer):
     implements(IViewManager, ILoopsContained)
 
     def getLoopsRoot(self):
-        return zapi.getParent(self)
+        return getParent(self)
 
     def getViewManager(self):
         return self
@@ -206,3 +208,27 @@ class NodeAdapter(AdapterBase):
     adapts(INode)
 
     _contextAttributes = ('title', 'description', 'body',)
+
+
+nodeTypes = [
+        ('text', _(u'Text')), # shown as part of an enclosing page
+        ('page', _(u'Page')), # standalone page with a menu item
+        ('menu', _(u'Menu')), # top-level menu (also a page)
+        ('info', _(u'Info')), # not shown automatically, but may be a link target
+]
+
+class NodeTypeSourceList(object):
+
+    implements(schema.interfaces.IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __contains__(self, token):
+        return token in [t[0] for t in nodeTypes]
+
+    def __iter__(self):
+        return iter(nodeTypes)
+
+    def __len__(self):
+        return len(nodeTypes)

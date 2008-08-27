@@ -419,8 +419,14 @@
       component="loops.predicate.PredicateInterfaceSourceList"
       name="loops.PredicateInterfaceSource" />
 
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.view.NodeTypeSourceList"
+      name="loops.nodeTypeSource" />
+
 
   <include package=".browser" />
+  <include package=".browser.layout" />
   <include package=".classifier" />
   <include package=".compound.blog" />
   <include package=".config" />

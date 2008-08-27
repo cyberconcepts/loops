@@ -433,12 +433,7 @@ class INodeSchema(IView):
     nodeType = schema.Choice(
         title=_(u'Node Type'),
         description=_(u'Type of the node'),
-        source=util.KeywordVocabulary((
-                ('text', _(u'Text')),
-                ('page', _(u'Page')),
-                ('menu', _(u'Menu')),
-                ('info', _(u'Info')),
-            )),
+        source='loops.nodeTypeSource',
         default='info',
         required=True)
 
