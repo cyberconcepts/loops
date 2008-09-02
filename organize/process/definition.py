@@ -30,10 +30,11 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from cybertools.process.interfaces import IProcess
+#from cybertools.process.interfaces import IProcess
 from cybertools.process.definition import Process as BaseProcess
 from loops.interfaces import IConcept
 from loops.common import AdapterBase
+from loops.organize.process.interfaces import IProcess
 from loops.type import TypeInterfaceSourceList
 
 

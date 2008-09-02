@@ -63,6 +63,7 @@ from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
+from loops import version
 from loops.versioning.interfaces import IVersionable
 
 
@@ -120,6 +121,14 @@ class BaseView(GenericView, I18NView):
                 #request.response.redirect('login.html')
         except ForbiddenAttribute:  # ignore when testing
             pass
+
+    @Lazy
+    def versions(self):
+        return version.versions
+
+    @Lazy
+    def longVersions(self):
+        return version.longVersions
 
     def update(self):
         result = super(BaseView, self).update()

@@ -17,21 +17,12 @@
 #
 
 """
-Interfaces for process/workflow management with loops.
-
-$Id$
+loops version specifications.
 """
 
-from zope.interface import Interface, Attribute
-from zope import interface, component, schema
-from zope.i18nmessageid import MessageFactory
-from zope.security.proxy import removeSecurityProxy
+revision = '$Id$'
+shortVersion = '0.8'
+longVersion = '%s-%s' % (shortVersion, ' '.join(revision.split()[2:5]))
 
-from cybertools.process.interfaces import IProcess
-from loops.interfaces import IConceptSchema
-from loops.util import _
-
-
-class IProcess(IConceptSchema, IProcess):
-
-    pass
+versions = dict(loops=shortVersion)
+longVersions = dict(loops=longVersion)
