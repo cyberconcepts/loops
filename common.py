@@ -126,6 +126,10 @@ class AdapterBase(object):
     def getLoopsRoot(self):
         return self.context.getLoopsRoot()
 
+    @property
+    def name(self):
+        return getName(self.context)
+
 
 class ResourceAdapterBase(AdapterBase):
 

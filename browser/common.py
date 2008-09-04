@@ -480,8 +480,8 @@ class BaseView(GenericView, I18NView):
         cm = self.controller.macros
         cm.register('js', 'dojo.js', template=dojoMacroTemplate, name='main',
                     position=0,
-                    #djConfig='isDebug: true, parseOnLoad: true, usePlainJson: true, '
                     djConfig='parseOnLoad: true, usePlainJson: true, '
+                             #'isDebug: true, '
                              'locale: "%s"' % self.languageInfo.language)
         jsCall = 'dojo.require("dojo.parser");'
         cm.register('js-execute', jsCall, jsCall=jsCall)
