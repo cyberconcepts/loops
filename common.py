@@ -221,8 +221,6 @@ class NameChooser(BaseNameChooser):
 
 # virtual attributes/properties
 
-#class ContainerAttribute(object):
-#class ContainedCollection(object):
 class TypeInstances(object):
     """ Use objects within a ConceptManager object for a collection attribute.
     """
@@ -257,11 +255,13 @@ class TypeInstances(object):
         return adapted(c)
 
     def remove(self, id):
-        del self.context[self.prefix + id]
+        obj = self.get(id)
+        if obj is None:
+            raise KeyError(id)
+        else:
+            del self.context[getName(obj.context)]
 
     def get(self, id, default=None, langInfo=None):
-        #return adapted(self.context.get(self.prefix + id, default),
-        #               langInfo=self.langInfo)
         from loops.expert import query
         result = (query.Identifier(id) & query.Type(self.typeToken)).apply()
         for obj in query.getObjects(result):
@@ -335,6 +335,19 @@ class ChildRelationSet(RelationSet):
 
 
 # property descriptors
+
+class TypeInstancesProperty(object):
+
+    def __init__(self, typeName, idAttr='name', prefix=''):
+        self.typeName = typeName
+        self.idAttr = idAttr
+        self.prefix = prefix
+
+    def __get__(self, inst, class_=None):
+        if inst is None:
+            return self
+        return TypeInstances(inst.context, self.typeName, self.idAttr, self.prefix)
+
 
 class RelationSetProperty(object):
 

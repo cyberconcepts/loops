@@ -536,7 +536,7 @@ class IndexAttributes(object):
         return creators
 
     def identifier(self):
-        return getName(self)
+        return getName(self.context)
 
 
 class ResourceTypeSourceList(object):

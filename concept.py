@@ -439,7 +439,7 @@ class IndexAttributes(object):
     def identifier(self):
         id = getattr(self.adapted, 'identifier', None)
         if id is None:
-            return getName(self)
+            return getName(self.context)
         return id
 
 
