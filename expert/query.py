@@ -41,6 +41,7 @@ from loops import util
 titleIndex = ('', 'loops_title')
 textIndex = ('', 'loops_text')
 typeIndex = ('', 'loops_type')
+identifierIndex = ('', 'loops_identifier')
 stateIndex = ('', 'loops_state')
 
 
@@ -53,6 +54,10 @@ def Title(value):
 @implementer(IQuery)
 def Text(value):
     return BaseText(textIndex, value)
+
+@implementer(IQuery)
+def Identifier(value):
+    return Eq(identifierIndex, value)
 
 @implementer(IQuery)
 def Type(value):

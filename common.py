@@ -219,9 +219,11 @@ class NameChooser(BaseNameChooser):
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
 
 
-# virtual attributes
+# virtual attributes/properties
 
-class ContainerAttribute(object):
+#class ContainerAttribute(object):
+#class ContainedCollection(object):
+class TypeInstances(object):
     """ Use objects within a ConceptManager object for a collection attribute.
     """
 
@@ -237,6 +239,14 @@ class ContainerAttribute(object):
     def typeConcept(self):
         return self.context[self.typeName]
 
+    @Lazy
+    def typeToken(self):
+        return 'loops:concept:' + self.typeName
+
+    @Lazy
+    def typePredicate(self):
+        return self.context.getTypePredicate()
+
     def create(self, id, **kw):
         from loops.concept import Concept
         from loops.setup import addAndConfigureObject
@@ -250,11 +260,17 @@ class ContainerAttribute(object):
         del self.context[self.prefix + id]
 
     def get(self, id, default=None, langInfo=None):
-        return adapted(self.context.get(self.prefix + id, default),
-                       langInfo=self.langInfo)
+        #return adapted(self.context.get(self.prefix + id, default),
+        #               langInfo=self.langInfo)
+        from loops.expert import query
+        result = (query.Identifier(id) & query.Type(self.typeToken)).apply()
+        for obj in query.getObjects(result):
+            return adapted(obj, langInfo=self.langInfo)
+        else:
+            return default
 
     def __iter__(self):
-        for c in self.typeConcept.getChildren([self.context.getTypePredicate()]):
+        for c in self.typeConcept.getChildren([self.typePredicate]):
             yield adapted(c, langInfo=self.langInfo)
 
 
@@ -316,6 +332,29 @@ class ChildRelationSet(RelationSet):
     def __iter__(self):
         for c in self.context.getChildren([self.predicate]):
             yield adapted(c, langInfo=self.langInfo)
+
+
+# property descriptors
+
+class RelationSetProperty(object):
+
+    def __init__(self, predicateName):
+        self.predicateName = predicateName
+
+    def __get__(self, inst, class_=None):
+        if inst is None:
+            return self
+        return self.factory(inst, self.predicateName)
+
+
+class ParentRelationSetProperty(RelationSetProperty):
+
+    factory = ParentRelationSet
+
+
+class ChildRelationSetProperty(RelationSetProperty):
+
+    factory = ChildRelationSet
 
 
 # caching (TBD)

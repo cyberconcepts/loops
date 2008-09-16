@@ -397,13 +397,18 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
     def text(self):
-        ctx = self.context
+        #ctx = self.context
         #return ' '.join((getName(ctx), ctx.title,))
-        description = ctx.description
+        description = self.context.description
         if isinstance(description, I18NValue):
             description = ' '.join(description.values())
-        actx = adapted(ctx)
+        #actx = adapted(ctx)
+        actx = self.adapted
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
         #return ' '.join([getName(ctx), ctx.title, ctx.description] +
         return ' '.join([self.title(), description] +
@@ -430,6 +435,12 @@ class IndexAttributes(object):
             if principal is not None:
                 creators.append(principal.title)
         return creators
+
+    def identifier(self):
+        id = getattr(self.adapted, 'identifier', None)
+        if id is None:
+            return getName(self)
+        return id
 
 
 # events

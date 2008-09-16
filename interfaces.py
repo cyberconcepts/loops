@@ -586,13 +586,13 @@ class IConceptRelation(IDyadicRelation):
 # interfaces for catalog indexes
 
 class IIndexAttributes(Interface):
-    """ Attributes odr methods providing index values. Typically provided
+    """ Attributes or methods providing index values. Typically provided
         by an adapter.
     """
 
     def title():
         """ Return a text containing title and similar attributes to be
-            indexed by a full-text index.
+            indexed by the title index.
         """
 
     def text():
@@ -601,6 +601,11 @@ class IIndexAttributes(Interface):
 
     def type():
         """ Return a string that identifies the type of the object.
+        """
+
+    def identifier():
+        """ Returns a value that may be used for identifying an object within
+            a restricted range, e.g. the instances of a type.
         """
 
 

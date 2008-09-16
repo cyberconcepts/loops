@@ -535,6 +535,9 @@ class IndexAttributes(object):
                 creators.append(principal.title)
         return creators
 
+    def identifier(self):
+        return getName(self)
+
 
 class ResourceTypeSourceList(object):
 
