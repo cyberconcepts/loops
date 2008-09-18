@@ -17,33 +17,18 @@
 #
 
 """
-Layout management and controlling via view space nodes.
+Layout stuff
 
 $Id$
 """
 
-from zope.cachedescriptors.property import Lazy
-from zope.component import adapts
 from zope.interface import implements
 
-from cybertools.composer.layout.interfaces import ILayout
-from loops.interfaces import INode
-from loops.view import nodeTypes, NodeAdapter
+from loops.interfaces import ILayoutNode, ILayoutNodeContained
+from loops.view import Node
 
 
-nodeTypes.append(('layout', 'Layout'))
+class LayoutNode(Node):
 
-
-class NodeLayoutProvider(NodeAdapter):
-
-    pass
-
-
-class NodeLayout(object):
-
-    implements(ILayout)
-    adapts(INode)
-
-    def __init__(self, context):
-        self.context = context
+    implements(ILayoutNode, ILayoutNodeContained)
 

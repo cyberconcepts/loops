@@ -37,6 +37,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
 
+from cybertools.composer.layout.base import LayoutManager
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
@@ -45,6 +46,7 @@ from loops.base import ParentInfo
 from loops.common import AdapterBase
 from loops.interfaces import IView, INode, INodeSchema, INodeAdapter
 from loops.interfaces import IViewManager, INodeContained
+from loops.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import ITargetRelation
 from loops.interfaces import IConcept
@@ -174,6 +176,11 @@ class Node(View, OrderedContainer):
 
     def isMenuItem(self):
         return self.nodeType in ('page', 'menu')
+
+
+class LayoutNode(Node, LayoutManager):
+
+    implements(ILayoutNode, ILayoutNodeContained)
 
 
 class ViewManager(OrderedContainer):

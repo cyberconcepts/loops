@@ -52,6 +52,7 @@ from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.config.base import GlobalOptions, LoopsOptions
 from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
+from loops.layout.base import LayoutNode
 from loops.organize.memberinfo import MemberInfoProvider
 from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
 from loops.predicate import Predicate   #, MappingAttributeRelation
