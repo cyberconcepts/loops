@@ -3,21 +3,6 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope">
-
-  <zope:utility
-        factory="cybertools.composer.layout.base.LayoutManager" />
-
-  <!-- layouts -->
-
-  <zope:utility
-        component="cybertools.composer.layout.browser.liquid.default.body"
-        provides="cybertools.composer.layout.interfaces.ILayout"
-        name="body.liquid" />
-
-  <zope:utility
-        component="cybertools.composer.layout.browser.default.footer"
-        provides="cybertools.composer.layout.interfaces.ILayout"
-        name="footer.default" />
+   i18n_domain="loops">
 
 </configure>
