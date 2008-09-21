@@ -123,6 +123,10 @@ class BaseView(GenericView, I18NView):
             pass
 
     @Lazy
+    def name(self):
+        return getName(self.context)
+
+    @Lazy
     def versions(self):
         return version.versions
 
