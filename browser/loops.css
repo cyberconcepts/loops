@@ -38,6 +38,20 @@ table.listing td {
     white-space: normal;
 }
 
+table.listing-details td {
+    white-space: normal;
+    border: 1px solid lightgrey;
+}
+
+table.listing-details tr.heading td {
+    border: none;
+}
+
+table.listing-details tr.heading td h3 {
+    font-weight: bold;
+    border: none;
+}
+
 dl.docutils dt {
     font-weight: bold;
     margin-top: 0.3em;
