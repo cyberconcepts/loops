@@ -17,23 +17,18 @@
 #
 
 """
-Layout node + instance implementations.
+Layout node views.
 
 $Id$
 """
 
-from zope.interface import implements
+from zope.cachedescriptors.property import Lazy
 
-from cybertools.composer.layout.base import LayoutInstance
-from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
-from loops.view import Node
+from cybertools.composer.layout.browser.view import Page
 
 
-class LayoutNode(Node):
+class LayoutNodeView(Page):
 
-    implements(ILayoutNode, ILayoutNodeContained)
-
-
-class NodeLayoutInstance(LayoutInstance):
-
-    pass
+    @Lazy
+    def layoutName(self):
+        return self.context.viewName or 'page'

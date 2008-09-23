@@ -565,35 +565,6 @@
 
   </pages>
 
-  <!-- layout nodes -->
-
-  <page
-      name="index.html"
-      for="loops.interfaces.ILayoutNode"
-      class="cybertools.composer.layout.browser.view.Page"
-      permission="zope.View"
-      />
-
-  <addform
-      label="Add Layout Node"
-      name="AddLoopsLayoutNode.html"
-      content_factory="loops.layout.base.LayoutNode"
-      schema="loops.interfaces.ILayoutNode"
-      fields="title description nodeType viewName body"
-      template="add.pt"
-      permission="zope.ManageContent">
-    <widget field="description" height="2" />
-    <widget field="body" height="8" />
-  </addform>
-
-  <addMenuItem
-      class="loops.layout.base.LayoutNode"
-      title="Layout Node"
-      description="A layout node controls the presentation of objects"
-      permission="zope.ManageContent"
-      view="AddLoopsLayoutNode.html"
-      />
-
   <!-- dialogs/forms (end-user views) -->
 
   <page

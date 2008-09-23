@@ -184,20 +184,6 @@
         interface="zope.app.container.interfaces.IReadContainer" />-->
   </class>
 
-  <class class=".layout.base.LayoutNode">
-    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
-    <factory id="loops.LayoutNode" description="Layout Node" />
-    <require
-        permission="zope.View"
-        interface=".interfaces.ILayoutNode" />
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.ILayoutNode" />
-    <!--<require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />-->
-  </class>
-
   <!-- record manager -->
 
   <interface interface="loops.interfaces.IRecordManager"

@@ -17,23 +17,30 @@
 #
 
 """
-Layout node + instance implementations.
+interface definitions for the loops.layout stuff.
 
 $Id$
 """
 
-from zope.interface import implements
+from zope.app.container.constraints import contains, containers
+from zope.interface import Interface
 
-from cybertools.composer.layout.base import LayoutInstance
-from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
-from loops.view import Node
-
-
-class LayoutNode(Node):
-
-    implements(ILayoutNode, ILayoutNodeContained)
+from loops.interfaces import INodeSchema, IBaseNode, IViewManager
 
 
-class NodeLayoutInstance(LayoutInstance):
+class ILayoutView(INodeSchema):
+    """ Base interface for view nodes that use the cybertools.composer.layout
+        presentation mechanism.
+    """
 
-    pass
+
+class ILayoutNode(ILayoutView, IBaseNode):
+
+    contains(ILayoutView)
+
+
+class ILayoutNodeContained(Interface):
+
+    containers(ILayoutNode, IViewManager)
+
+

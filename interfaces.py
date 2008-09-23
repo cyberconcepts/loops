@@ -511,23 +511,6 @@ class INodeContained(Interface):
     containers(INode, IViewManager)
 
 
-# layout views/nodes
-
-class ILayoutView(INodeSchema):
-    """ Base interface for view nodes that use the cybertools.composer.layout
-        presentation mechanism.
-    """
-
-
-class ILayoutNode(ILayoutView, IBaseNode):
-
-    contains(ILayoutView)
-
-
-class ILayoutNodeContained(Interface):
-    containers(ILayoutNode, IViewManager)
-
-
 # record manager interfaces
 
 class IRecordManager(ILoopsObject):

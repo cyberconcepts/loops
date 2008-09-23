@@ -5,4 +5,48 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <zope:class class="loops.layout.base.LayoutNode">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <factory id="loops.LayoutNode" description="Layout Node" />
+    <require
+        permission="zope.View"
+        interface="loops.layout.interfaces.ILayoutNode" />
+    <require
+        permission="zope.ManageContent"
+        set_schema="loops.layout.interfaces.ILayoutNode" />
+  </zope:class>
+
+  <zope:adapter
+        for="loops.layout.interfaces.ILayoutNode"
+        factory="loops.layout.base.NodeLayoutInstance" />
+
+  <!-- views -->
+
+  <browser:page
+      name="index.html"
+      for="loops.layout.interfaces.ILayoutNode"
+      class="loops.layout.browser.LayoutNodeView"
+      permission="zope.View"
+      />
+
+  <browser:addform
+      label="Add Layout Node"
+      name="AddLoopsLayoutNode.html"
+      content_factory="loops.layout.base.LayoutNode"
+      schema="loops.layout.interfaces.ILayoutNode"
+      fields="title description nodeType viewName body"
+      template="../browser/add.pt"
+      permission="zope.ManageContent">
+    <widget field="description" height="2" />
+    <widget field="body" height="8" />
+  </browser:addform>
+
+  <browser:addMenuItem
+      class="loops.layout.base.LayoutNode"
+      title="Layout Node"
+      description="A layout node controls the presentation of objects"
+      permission="zope.ManageContent"
+      view="AddLoopsLayoutNode.html"
+      />
+
 </configure>
