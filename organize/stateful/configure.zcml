@@ -12,6 +12,13 @@
     <allow interface="cybertools.stateful.interfaces.IStatefulIndexInfo" />
   </zope:class>
 
+  <zope:adapter
+        factory="loops.organize.stateful.base.StatefulConceptIndexInfo"
+        trusted="True" />
+  <zope:class class="loops.organize.stateful.base.StatefulConceptIndexInfo">
+    <allow interface="cybertools.stateful.interfaces.IStatefulIndexInfo" />
+  </zope:class>
+
   <!-- stateful definitions and corresponding adapters -->
 
   <zope:utility

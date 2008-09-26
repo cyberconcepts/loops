@@ -12,13 +12,16 @@
 
 
 <metal:title define-macro="concepttitle">
+    <tal:actions condition="view/showObjectActions">
+        <div metal:use-macro="views/node_macros/object_actions" />
+    </tal:actions>
     <h1 tal:attributes="ondblclick item/openEditWindow">
       <a name="top"
          tal:content="item/title">Title</a>
     </h1>
-      <p tal:define="description description|item/description"
-         tal:condition="description">
-        <i tal:content="description">Description</i></p>
+    <p tal:define="description description|item/description"
+       tal:condition="description">
+      <i tal:content="description">Description</i></p>
 </metal:title>
 
 
@@ -80,6 +83,8 @@
             <th i18n:translate="">Type</th>
             <th i18n:translate="">Modification Date</th>
             <th i18n:translate="">Author(s)</th>
+            <th i18n:translate=""
+                tal:condition="view/showObjectActions">Info</th>
           </tr>
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
@@ -96,6 +101,12 @@
                           i18n:translate="">Type</span></td>
                 <td><span tal:replace="related/modified">Type</span></td>
                 <td><span tal:replace="related/creators">Type</span></td>
+                <td style="white-space: nowrap"
+                    tal:define="target nocall:related;
+                                style nothing"
+                    tal:condition="view/showObjectActions">
+                  <div metal:use-macro="views/node_macros/object_actions" />
+                </td>
               </tr>
             </tal:item>
           </tal:items>

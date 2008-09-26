@@ -31,7 +31,7 @@ from cybertools.meta.interfaces import IOptions
 from cybertools.stateful.base import Stateful as BaseStateful
 from cybertools.stateful.base import StatefulAdapter, IndexInfo
 from cybertools.stateful.interfaces import IStatesDefinition, ITransitionEvent
-from loops.interfaces import ILoopsObject, IResource
+from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops import util
 
 
@@ -57,6 +57,16 @@ class StatefulLoopsObject(Stateful, StatefulAdapter):
 class SimplePublishable(StatefulLoopsObject):
 
     statesDefinition = 'simple_publishing'
+
+
+class StatefulConceptIndexInfo(IndexInfo):
+
+    adapts(IConcept)
+
+    @property
+    def availableStatesDefinitions(self):
+        options = IOptions(self.context.getLoopsRoot())
+        return options('organize.stateful.concept', ())
 
 
 class StatefulResourceIndexInfo(IndexInfo):
