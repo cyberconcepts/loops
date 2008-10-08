@@ -427,6 +427,19 @@ class IBaseNode(IOrderedContainer):
         """ Return the loops root object.
         """
 
+    def getParentNode(nodeTypes=None):
+        """ Return the next node up the node hierarchy. If the nodeTypes
+            parameter is given, search for the next node that has one of
+            the types in the nodeTypes list.
+
+            Return None if no suitable node can be found.
+        """
+
+    def getChildNodes(nodeTypes=None):
+        """ Return a sequence of nodes contained in this node. If the
+            nodeTypes parameter is given return only nodes of these types.
+        """
+
 
 class INodeSchema(IView):
 
@@ -455,19 +468,6 @@ class INode(INodeSchema, IBaseNode):
         has a body attribute that may be shown e.g. on web pages.
     """
     contains(IView)
-
-    def getParentNode(nodeTypes=None):
-        """ Return the next node up the node hierarchy. If the nodeTypes
-            parameter is given, search for the next node that has one of
-            the types in the nodeTypes list.
-
-            Return None if no suitable node can be found.
-        """
-
-    def getChildNodes(nodeTypes=None):
-        """ Return a sequence of nodes contained in this node. If the
-            nodeTypes parameter is given return only nodes of these types.
-        """
 
     def getMenu():
         """ Return the menu node this node belongs to or None if not found.
@@ -501,7 +501,8 @@ class INodeAdapter(Interface):
     """
 
 
-class IViewManager(ILoopsObject, IBaseNode):
+#class IViewManager(ILoopsObject, IBaseNode):
+class IViewManager(ILoopsObject, IOrderedContainer):
     """ A manager/container for views.
     """
     contains(IView)

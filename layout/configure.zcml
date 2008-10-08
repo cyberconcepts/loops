@@ -26,8 +26,7 @@
       name="index.html"
       for="loops.layout.interfaces.ILayoutNode"
       class="loops.layout.browser.LayoutNodeView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <browser:addform
       label="Add Layout Node"
@@ -46,7 +45,6 @@
       title="Layout Node"
       description="A layout node controls the presentation of objects"
       permission="zope.ManageContent"
-      view="AddLoopsLayoutNode.html"
-      />
+      view="AddLoopsLayoutNode.html" />
 
 </configure>

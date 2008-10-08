@@ -195,11 +195,9 @@ class Extractor(Base):
         #data = instance.applyTemplate(mode='export')
         data = instance.applyTemplate(mode='edit')
         noexp = getattr(aObj, '_noexportAttributes', ())
-        for attr in noexp:
+        for attr in tuple(noexp) + ('title', 'name'):
             if attr in data:
                 del data[attr]
-        if 'title' in data:
-            del data['title']
         data['description'] = obj.description
         if not data['description']:
             del data['description']

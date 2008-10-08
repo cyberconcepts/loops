@@ -22,9 +22,12 @@ Layout node + instance implementations.
 $Id$
 """
 
+from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 
-from cybertools.composer.layout.base import LayoutInstance
+from cybertools.composer.layout.base import Layout, LayoutInstance
+from cybertools.composer.layout.interfaces import ILayoutInstance
+from loops.layout.browser import ConceptView
 from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.view import Node
 
@@ -34,6 +37,38 @@ class LayoutNode(Node):
     implements(ILayoutNode, ILayoutNodeContained)
 
 
+# layout instances
+
 class NodeLayoutInstance(LayoutInstance):
 
-    pass
+    def getLayouts(self, region):
+        """ Return sublayout instances.
+        """
+        if region is None:
+            return []
+        result = []
+        sublayouts = self.template.sublayouts
+        if sublayouts is not None:  # hard-coded sublayouts
+            for l in region.layouts:
+                if sublayouts is None or l.name in sublayouts:
+                    li = ILayoutInstance(self.context)
+                    li.template = l
+                    result.append(li)
+            return result
+        # sublayouts specified via subnodes
+        subnodes = self.context.values()
+        names = region.layouts.keys()
+        for n in subnodes:
+            if n.viewName in names:
+                layout = region.layouts[n.viewName]
+                li = ILayoutInstance(n)
+                li.template = layout
+                result.append(li)
+        # if not result: get layouts from parent node(s)
+        return result
+
+    @Lazy
+    def targetView(self):
+        request = self.view.request
+        return ConceptView(self.context.target, request, self.context)
+
