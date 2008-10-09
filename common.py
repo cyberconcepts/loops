@@ -302,10 +302,10 @@ class RelationSet(object):
 
 class ParentRelationSet(RelationSet):
 
-    def add(self, related):
+    def add(self, related, order=0, relevance=1.0):
         if isinstance(related, AdapterBase):
             related = related.context
-        self.context.assignParent(related, self.predicate)
+        self.context.assignParent(related, self.predicate, order, relevance)
 
     def remove(self, related):
         if isinstance(related, AdapterBase):
@@ -319,10 +319,10 @@ class ParentRelationSet(RelationSet):
 
 class ChildRelationSet(RelationSet):
 
-    def add(self, related):
+    def add(self, related, order=0, relevance=1.0):
         if isinstance(related, AdapterBase):
             related = related.context
-        self.context.assignChild(related, self.predicate)
+        self.context.assignChild(related, self.predicate, order, relevance)
 
     def remove(self, related):
         if isinstance(related, AdapterBase):
@@ -368,6 +368,27 @@ class ParentRelationSetProperty(RelationSetProperty):
 class ChildRelationSetProperty(RelationSetProperty):
 
     factory = ChildRelationSet
+
+
+class ParentRelation(object):
+
+    def __init__(self, predicateName):
+        self.predicateName = predicateName
+
+    def __get__(self, inst, class_=None):
+        if inst is None:
+            return self
+        for obj in ParentRelationSet(inst, self.predicateName):
+            return obj
+        return None
+
+    def __set__(self, inst, value):
+        s = ParentRelationSet(inst, self.predicateName)
+        for current in s:
+            if current != value:
+                s.remove(current)
+        if value is not None:
+            s.add(value)
 
 
 # caching (TBD)
