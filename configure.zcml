@@ -199,6 +199,12 @@
         interface="zope.app.container.interfaces.IWriteContainer" />
   </class>
 
+  <!-- relation set properties -->
+
+  <class class="loops.common.ParentRelationSet">
+    <allow attributes="add remove __iter__" />
+  </class>
+
   <!-- adapters -->
 
   <adapter factory="loops.common.LoopsDCAdapter"
