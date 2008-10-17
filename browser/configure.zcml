@@ -208,6 +208,14 @@
       menu="zmi_views" title="View"
       />
 
+  <page
+      name="index.html"
+      for="loops.interfaces.IConcept"
+      class=".concept.ConceptView"
+      template="concept.pt"
+      permission="zope.View"
+      />
+
   <defaultView
       for="loops.interfaces.IConcept"
       name="concept.html"

@@ -51,8 +51,9 @@ class StateAction(Action):
 
     @Lazy
     def description(self):
-        return (u'State information for %s: %s' %
-                (self.definition, self.stateObject.title))
+        return _(u'State information for $definition: $title',
+                 mapping=dict(definition=self.definition,
+                              title=self.stateObject.title))
 
     @Lazy
     def stateObject(self):

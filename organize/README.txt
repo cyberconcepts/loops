@@ -348,9 +348,14 @@ Events listing
   ...                           )
 
   >>> from loops.organize.browser.event import Events
-  >>> listing = Events(johnC, TestRequest())
+  >>> events = addAndConfigureObject(concepts, Concept, 'events', title=u'Events',
+  ...                                conceptType=concepts['query'])
+  >>> listing = Events(events, TestRequest())
   >>> listing.getActions('portlet')
   [<loops.browser.action.DialogAction ...>]
+
+  >>> from loops.config.base import QueryOptions
+  >>> component.provideAdapter(QueryOptions)
 
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]

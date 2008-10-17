@@ -371,6 +371,7 @@ class ChildRelationSetProperty(RelationSetProperty):
 
 
 class ParentRelation(object):
+    # TODO: provide special method for supplying relevance and order
 
     def __init__(self, predicateName):
         self.predicateName = predicateName
@@ -388,7 +389,7 @@ class ParentRelation(object):
             if current != value:
                 s.remove(current)
         if value is not None:
-            s.add(value)
+            s.add(value)    # how to supply additional parameters?
 
 
 # caching (TBD)

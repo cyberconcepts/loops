@@ -39,7 +39,7 @@ from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import applySkin
-from zope.publisher.interfaces.browser import IBrowserSkinType
+from zope.publisher.interfaces.browser import IBrowserSkinType, IBrowserView
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.security import canAccess, checkPermission
@@ -138,6 +138,9 @@ class BaseView(GenericView, I18NView):
         result = super(BaseView, self).update()
         self.checkLanguage()
         return result
+
+    def registerPortlets(self):
+        pass
 
     @Lazy
     def target(self):
@@ -289,6 +292,8 @@ class BaseView(GenericView, I18NView):
         request = self.request
         for o in objs:
             view = component.queryMultiAdapter((o, request), name='index.html')
+            #if view is None:
+            #    view = component.queryMultiAdapter((o, request), IBrowserView)
             if view is None:
                 view = BaseView(o, request)
             yield view

@@ -12,4 +12,9 @@
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
+  <zope:adapter factory="loops.config.base.QueryOptions" trusted="True" />
+  <zope:class class="loops.config.base.QueryOptions">
+    <allow interface="cybertools.meta.interfaces.IOptions" />
+  </zope:class>
+
 </configure>

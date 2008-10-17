@@ -210,6 +210,8 @@ class ResourceRelationView(ResourceView, ConceptRelationView):
     def __init__(self, relation, request, contextIsSecond=False):
         ConceptRelationView.__init__(self, relation, request, contextIsSecond)
 
+    getActions = ResourceView.getActions
+
 
 class ResourceConfigureView(ResourceView, ConceptConfigureView):
 

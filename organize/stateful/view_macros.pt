@@ -21,21 +21,25 @@
                     tal:content="deftype"
                     i18n:translate="" />
             </td>
-            <td tal:content="def/name"
+            <td valign="top"
+                tal:content="def/name"
                 i18n:translate=""></td>
             <td>
-              <tal:state repeat="state def/states">
-                <input type="checkbox"
-                       tal:define="name string:state.$deftype.${def/name};
-                                   value state/name"
-                       tal:attributes="name string:$name:list;
-                                       value value;
-                                       checked python:
-                                           value in item.selectedStates.get(name, ())"
-                    /><span tal:content="state/title"
-                                               i18n:translate="" />
-                &nbsp;
-              </tal:state>
+              <tal:states repeat="state def/states">
+                <tal:state define="name string:state.$deftype.${def/name};
+                                   value state/name">
+                  <input type="checkbox"
+                         tal:attributes="name string:$name:list;
+                                         value value;
+                                         checked python:
+                                             value in item.selectedStates.get(name, ());
+                                         id string:$name.$value"
+                      />&nbsp;<label tal:content="state/title"
+                                     i18n:translate=""
+                                     tal:attributes="for string:$name.$value" />
+                  &nbsp;
+                </tal:state>
+              </tal:states>
             </td>
           </tr>
         </tal:def>

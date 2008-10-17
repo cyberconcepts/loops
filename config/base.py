@@ -33,7 +33,8 @@ from cybertools.meta.config import GlobalOptions as BaseGlobalOptions
 from cybertools.meta.interfaces import IOptions
 from cybertools.meta.namespace import Executor, ExecutionError
 from cybertools.typology.interfaces import IType
-from loops.interfaces import ILoops
+from loops.interfaces import ILoops, ILoopsObject
+from loops.query import IQueryConcept
 from loops import util
 
 
@@ -46,7 +47,7 @@ class GlobalOptions(BaseGlobalOptions):
 
 class LoopsOptions(Options):
 
-    adapts(ILoops)
+    adapts(ILoopsObject)
 
     builtins = Options.builtins + ('True', 'False')
     True, False = True, False
@@ -86,3 +87,9 @@ class LoopsOptions(Options):
         rc = Executor(self).execute(code)
         if rc:
             raise ExecutionError('\n' + rc)
+
+
+class QueryOptions(LoopsOptions):
+
+    adapts(IQueryConcept)
+

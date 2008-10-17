@@ -22,11 +22,12 @@ Definition of view classes and other browser related stuff for tasks.
 $Id$
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.meta.interfaces import IOptions
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.common import adapted
@@ -62,10 +63,13 @@ class Events(ConceptView):
         tEvent = cm['event']
         hasType = cm.getTypePredicate()
         now = datetime.today()
+        delta = int(self.request.get('delta',
+                        IOptions(adapted(self.context))('delta', [0])[0]))
         sort = lambda x: x.adapted.start or now
         relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
                         for r in tEvent.getChildRelations([hasType], sort=None))
         return sorted((rv for rv in relViews
-                          if not rv.adapted.end or rv.adapted.end >= now),
+                          if not rv.adapted.end or
+                             rv.adapted.end >= now - timedelta(delta)),
                       key=sort)
 
