@@ -1,0 +1,25 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <page for="loops.interfaces.IResource"
+        name="mediaasset.html"
+        class="loops.media.browser.asset.MediaAssetView"
+        permission="zope.View"
+        attribute="show" />
+
+  <page for="loops.interfaces.INode"
+        name="mediaasset.html"
+        class="loops.media.browser.asset.MediaAssetNodeView"
+        permission="zope.View"
+        attribute="show" />
+
+  <page for="loops.interfaces.ILoopsObject"
+        name="regenerate_media_assets.html"
+        class="loops.media.browser.admin.RegenerationView"
+        permission="zope.View" />
+
+</configure>

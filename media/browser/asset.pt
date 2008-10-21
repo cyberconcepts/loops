@@ -1,0 +1,16 @@
+<!-- ZPT macros for demo view -->
+
+<metal:block define-macro="asset">
+  <h1 tal:content="item/adapted/title">Title</h1>
+
+  <h2>Content type</h2>
+  <p tal:content="item/adapted/getContentType">image/jpeg</p>
+
+  <div tal:define="descr item/adapted/description" tal:condition="descr">
+    <h2>Description</h2>
+    <p tal:content="item/adapted/description">Description</p>
+  </div>
+
+  <p><img tal:attributes="src string:${item/url}/@@mediaasset.html" /></p>
+</metal:block>
+

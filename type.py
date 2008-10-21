@@ -289,7 +289,7 @@ def getOptionsDict(options):
     for opt in options:
         if ':' in opt:
             key, value = opt.split(':', 1)
-            result[key] = value
+            result[key.strip()] = value.strip()
         else:
-            result['default'].append(opt)
+            result['default'].append(opt.strip())
     return result

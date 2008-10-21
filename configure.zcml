@@ -441,6 +441,7 @@
   <include package=".integrator" />
   <include package=".knowledge" />
   <include package=".layout" />
+  <include package=".media" />
   <include package=".organize" />
   <include package=".rest" />
   <include package=".search" />

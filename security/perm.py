@@ -31,8 +31,6 @@ from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, IRolePermi
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager, \
                                                IPrincipalPermissionMap
 from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
-from zope.publisher.browser import BrowserView
-from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParents
 
 

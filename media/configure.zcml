@@ -1,0 +1,20 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter factory="loops.media.asset.MediaAsset"
+                provides="loops.media.interfaces.IMediaAsset"
+                trusted="True" />
+  <zope:class class="loops.media.asset.MediaAsset">
+    <require permission="zope.View"
+             interface="loops.media.interfaces.IMediaAsset" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.media.interfaces.IMediaAsset" />
+  </zope:class>
+
+  <include package=".browser" />
+
+</configure>
