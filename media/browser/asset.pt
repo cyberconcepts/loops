@@ -1,16 +1,16 @@
 <!-- ZPT macros for demo view -->
 
 <metal:block define-macro="asset">
-  <h1 tal:content="item/adapted/title">Title</h1>
+    <h1 tal:content="item/adapted/title">Title</h1>
+    <div tal:define="descr item/adapted/description" tal:condition="descr">
+      <h2>Description</h2>
+      <p tal:content="item/adapted/description">Description</p>
+    </div>
 
-  <h2>Content type</h2>
-  <p tal:content="item/adapted/getContentType">image/jpeg</p>
-
-  <div tal:define="descr item/adapted/description" tal:condition="descr">
-    <h2>Description</h2>
-    <p tal:content="item/adapted/description">Description</p>
-  </div>
-
-  <p><img tal:attributes="src string:${item/url}/@@mediaasset.html" /></p>
+    <p tal:define="url python: view.getUrlForTarget(item)">
+      <a href="#"
+         tal:attributes="href string:${url}/view"><img
+            tal:attributes="src string:${url}/@@mediaasset.html?v=medium" /></a>
+    </p>
 </metal:block>
 

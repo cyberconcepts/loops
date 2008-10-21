@@ -40,15 +40,14 @@ class RegenerationView(object):
         tMediaAsset = self.context.getLoopsRoot().getConceptManager()[conceptType]
         # Remove old transformed versions
         #storageDir = assetManager.options.get("storage_parameters")
-        #print storageDir
         # Regenerate all media asset transforations
         resources = tMediaAsset.getResources()
         logger = getLogger('Asset Manager')
         errors = 0
         for res in resources:
-            logger.info('*** regenerating: ' + res.__name__)
             asset = component.queryAdapter(res, IMediaAsset)
-            if asset != None:
+            if asset != None and res.contentType.startswith('image/'):
+                logger.info('*** regenerating: ' + res.__name__)
                 try:
                     asset.transform()
                 except:

@@ -6,6 +6,11 @@
    i18n_domain="zope">
 
   <page for="loops.interfaces.IResource"
+        name="image_medium.html"
+        class="loops.media.browser.asset.MediaAssetView"
+        permission="zope.View" />
+
+  <page for="loops.interfaces.IResource"
         name="mediaasset.html"
         class="loops.media.browser.asset.MediaAssetView"
         permission="zope.View"

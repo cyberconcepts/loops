@@ -65,12 +65,12 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
 
     def setData(self, data):
         ExternalFileAdapter.setData(self, data)
-        if data:
+        if data and self.getMimeType().startswith('image/'):
             self.transform(self.rules)
     data = property(ExternalFileAdapter.getData, setData)
 
     def getMimeType(self):
-        return self.context.contentType
+        return self.context.contentType or ''
 
     def getDataPath(self):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
