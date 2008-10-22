@@ -101,7 +101,7 @@
                           i18n:translate="">Type</span></td>
                 <td><span tal:replace="related/modified">Type</span></td>
                 <td><span tal:replace="related/creators">Type</span></td>
-                <td style="white-space: nowrap"
+                <td style="white-space: nowrap; text-align: center"
                     tal:define="target nocall:related;
                                 style nothing"
                     tal:condition="view/showObjectActions">
@@ -123,6 +123,7 @@
         <h2 i18n:translate="">Resources</h2>
         <table class="listing">
           <tr>
+            <th tal:condition="view/showCheckboxes|nothing">&nbsp;</th>
             <th i18n:translate="">Title</th>
             <th i18n:translate="">Type</th>
             <th i18n:translate=""
@@ -137,6 +138,8 @@
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description">
               <tr tal:attributes="class class">
+                <td tal:condition="view/showCheckboxes|nothing"
+                    class="checkbox"><input type="checkbox" /></td>
                 <td valign="top">
                   <a href="#"
                      tal:attributes="href string:${view/url}/.target${related/uniqueId};
@@ -159,7 +162,7 @@
                 </td>
                 <td><span tal:replace="related/modified">2007-03-30</span></td>
                 <td><span tal:replace="related/creators">John</span></td>
-                <td style="white-space: nowrap"
+                <td style="white-space: nowrap; text-align: center"
                     tal:define="target nocall:related;
                                 style nothing"
                     tal:condition="view/showObjectActions">

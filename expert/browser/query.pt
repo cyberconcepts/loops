@@ -1,0 +1,10 @@
+<metal:query define-macro="query">
+    <div id="query">
+      <h1 tal:attributes="class string:content-$level;
+                          ondblclick item/openEditWindow"
+          tal:content="item/title">
+        Query
+      </h1>
+    </div>
+</metal:query>
+

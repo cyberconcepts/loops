@@ -492,7 +492,9 @@ class BaseView(GenericView, I18NView):
                     djConfig='parseOnLoad: true, usePlainJson: true, '
                              #'isDebug: true, '
                              'locale: "%s"' % self.languageInfo.language)
-        jsCall = 'dojo.require("dojo.parser");'
+        jsCall = ('dojo.require("dojo.parser"); '
+                  'dojo.registerModulePath("jocy", "/@@/cybertools.jocy"); '
+                  'dojo.require("jocy.data");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
         cm.register('css', identifier='tundra.css', position=0,
                     resourceName='ajax.dojo/dijit/themes/tundra/tundra.css', media='all')

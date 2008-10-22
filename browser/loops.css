@@ -36,6 +36,14 @@ blockquote ul {
 
 table.listing td {
     white-space: normal;
+    vertical-align: middle;
+}
+
+table.listing td.checkbox {
+    text-align: center;
+    width: 10px;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 table.listing-details td {
