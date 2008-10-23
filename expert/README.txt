@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  32
+  33
 
   >>> loopsRoot = site['loops']
 
@@ -47,19 +47,19 @@ Type- and text-based queries
   >>> from loops.expert import query
   >>> qu = query.Title('ty*')
   >>> list(qu.apply())
-  [0, 1, 45]
+  [0, 1, 47]
 
   >>> qu = query.Type('loops:*')
   >>> len(list(qu.apply()))
-  32
+  33
 
   >>> qu = query.Type('loops:concept:predicate')
   >>> len(list(qu.apply()))
-  6
+  7
 
   >>> qu = query.Type('loops:concept:predicate') & query.Title('t*')
   >>> list(qu.apply())
-  [1]
+  [1, 43]
 
 State-based queries
 -------------------
@@ -99,7 +99,7 @@ they have at least one concept assigned).
 
   >>> qu = query.State('classification_quality', 'classified')
   >>> list(qu.apply())
-  [23, 25, 27]
+  [21, 23, 25]
 
 Using the stateful adapter for a resource we now manually execute the
 ``verify`` transition.
@@ -113,16 +113,16 @@ Now only two resources are still in the ``qualified`` state, the changed
 one being in the ``verified`` state.
 
   >>> list(qu.apply())
-  [25, 27]
+  [23, 25]
   >>> qu = query.State('classification_quality', 'verified')
   >>> list(qu.apply())
-  [23]
+  [21]
 
 We may also provide a sequence of states for querying.
 
   >>> qu = query.State('classification_quality', ('classified', 'verified',))
   >>> list(qu.apply())
-  [23, 25, 27]
+  [21, 23, 25]
 
 Relationship-based queries
 --------------------------
@@ -135,7 +135,7 @@ syntax (that in turn is based on hurry.query).
   >>> cust1 = concepts['cust1']
   >>> qu = query.Resources(cust1)
   >>> list(qu.apply())
-  [23, 27]
+  [21, 25]
 
 Getting objects
 ---------------
@@ -206,6 +206,15 @@ A query instance consists of
   >>> from loops.expert.instance import QueryInstance
   >>> qi = QueryInstance(qu, fltr)
   >>> #qi.apply()
+
+
+Query Concepts and Query Views
+==============================
+
+  >>> from loops.expert.concept import QueryConcept
+  >>> component.provideAdapter(QueryConcept)
+
+  >>> from loops.expert.browser.base import BaseQueryView
 
 
 Fin de partie

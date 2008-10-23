@@ -10,6 +10,7 @@ from zope.app.catalog.interfaces import ICatalog
 from cybertools.typology.interfaces import IType
 from loops import util
 from loops.concept import Concept
+from loops.expert.setup import SetupManager as ExpertSetupManager
 from loops.resource import Resource
 from loops.knowledge.interfaces import IPerson
 from loops.knowledge.knowledge import Person
@@ -32,6 +33,7 @@ class TestSite(BaseTestSite):
         component.provideAdapter(Person, provides=IPerson)
 
         component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        component.provideAdapter(ExpertSetupManager, name='expert')
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
 

@@ -37,7 +37,7 @@ top-level loops container and a concept manager:
   >>> #sorted(concepts)
   >>> #sorted(resources)
   >>> len(concepts) + len(resources)
-  14
+  13
 
   >>> loopsRoot = site['loops']
 
@@ -121,7 +121,7 @@ type manager.
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
   >>> sorted(t.title for t in types)
-  [u'Customer', u'Domain', u'Predicate', u'Query', u'Topic', u'Type', u'Unknown Type']
+  [u'Customer', u'Domain', u'Predicate', u'Topic', u'Type', u'Unknown Type']
 
 Using a PredicateSourceList we can retrieve a list of the available
 predicates.
@@ -197,7 +197,6 @@ types and predicates.
   [(u'Customer', '.loops/concepts/customer'),
    (u'Domain', '.loops/concepts/domain'),
    (u'Predicate', '.loops/concepts/predicate'),
-   (u'Query', '.loops/concepts/query'),
    (u'Topic', '.loops/concepts/topic'),
    (u'Type', '.loops/concepts/type'),
    (u'Unknown Type', '.loops/concepts/unknown')]
@@ -487,7 +486,7 @@ view; these views we have to provide as multi-adapters:
   >>> view = ConfigureView(m111, TestRequest(form = form))
   >>> tt = view.targetTypes()
   >>> len(tt)
-  10
+  9
   >>> sorted((t.token, t.title) for t in view.targetTypes())[1]
   ('.loops/concepts/domain', u'Domain')
   >>> view.update()
@@ -580,7 +579,7 @@ is ``NodeView.getUrlForTarget()`` that expects a ConceptView, ResourceView,
 or ConceptRelationView as its argument.
 
   >>> view.getUrlForTarget(childRels[0])
-  'http://127.0.0.1/loops/views/m1/m11/m112/.target39'
+  'http://127.0.0.1/loops/views/m1/m11/m112/.target37'
 
 Actions
 -------

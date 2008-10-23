@@ -226,7 +226,7 @@ get a type manager from all loops objects, always with the same context:
   >>> types = typeManager.types
   >>> typeTokens = sorted(t.token for t in types)
   >>> len(typeTokens)
-  9
+  8
 
   >>> typeManager.getType('.loops/concepts/topic') == cc1_type
   True
@@ -237,7 +237,7 @@ condition:
   >>> types = typeManager.listTypes(include=('concept',))
   >>> typeTokens = sorted(t.token for t in types)
   >>> len(typeTokens)
-  6
+  5
   >>> types = typeManager.listTypes(exclude=('concept',))
   >>> typeTokens = sorted(t.token for t in types)
   >>> len(typeTokens)
@@ -313,9 +313,11 @@ We first have to set up the query type, i.e. a type concept associated
 with the IQueryConcept interface. The query type concept itself has already
 been provided by the setup, but we have to register a corresponding adapter.
 
-  >>> from loops.query import QueryConcept
+  >>> from loops.expert.concept import IQueryConcept, QueryConcept
   >>> component.provideAdapter(QueryConcept)
-  >>> query = concepts['query']
+  >>> from loops.setup import addAndConfigureObject
+  >>> query = addAndConfigureObject(concepts, Concept,
+  ...               'query', conceptType=typeObject, typeInterface=IQueryConcept)
 
 Next we need a concept of this type:
 
@@ -423,7 +425,6 @@ Folders
   structures of their documents in the filesystem to the loops concept
   map.
 
-  >>> from loops.setup import addAndConfigureObject
   >>> tFolder = addAndConfigureObject(concepts, Concept, 'folder',
   ...                   title=u'Folder', conceptType=typeObject)
 

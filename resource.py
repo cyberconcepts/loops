@@ -357,7 +357,6 @@ class ExternalFileAdapter(FileAdapter):
     def getExternalAddress(self):
         return getattr(self.context, '_externalAddress', self.context.__name__)
     def setExternalAddress(self, addr):
-        # TODO (?) - use intId as default?
         self.context._externalAddress = addr
     externalAddress = property(getExternalAddress, setExternalAddress)
 

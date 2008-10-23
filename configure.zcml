@@ -436,6 +436,7 @@
   <include package=".compound.blog" />
   <include package=".config" />
   <include package=".constraint" />
+  <include package=".expert" />
   <include package=".external" />
   <include package=".i18n" />
   <include package=".integrator" />

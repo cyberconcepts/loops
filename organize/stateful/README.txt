@@ -14,7 +14,7 @@ First we set up a loops site with basic and example concepts and resources.
 
   >>> from loops.organize.setup import SetupManager
   >>> component.provideAdapter(SetupManager, name='organize')
-  >>> from loops.tests.setup import TestSite
+  >>> from loops.expert.testsetup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
@@ -40,7 +40,11 @@ making an object statful we'll use an adapter.
 We may now take a document and adapt it to IStateful so that we may
 check the document's state and perform transitions to other states.
 
-  >>> doc01 = resources['d001.txt']
+  >>> from loops.resource import Resource
+  >>> from loops.setup import addAndConfigureObject
+  >>> tText = concepts['textdocument']
+  >>> doc01 = resources['doc01.txt'] = addAndConfigureObject(resources,
+  ...                       Resource, 'doc01.txt', conceptType=tText)
   >>> statefulDoc01 = component.getAdapter(doc01, IStateful,
   ...                                      name='simple_publishing')
 
@@ -88,7 +92,6 @@ later.
 
   >>> tCustomer = concepts['customer']
   >>> from loops.concept import Concept
-  >>> from loops.setup import addAndConfigureObject
   >>> c01 = addAndConfigureObject(concepts, Concept, 'c01', conceptType=tCustomer,
   ...                   title='im publishing')
   >>> c02 = addAndConfigureObject(concepts, Concept, 'c02', conceptType=tCustomer,

@@ -33,6 +33,7 @@ from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
 from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
 from cybertools.composer.schema.field import EmailFieldInstance, ListFieldInstance
+from cybertools.composer.schema.field import FileUploadFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry, IIndexableRelation
@@ -56,8 +57,7 @@ from loops.layout.base import LayoutNode
 from loops.organize.memberinfo import MemberInfoProvider
 from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
 from loops.predicate import Predicate   #, MappingAttributeRelation
-from loops.query import QueryConcept
-from loops.query import QueryConcept
+from loops.expert.concept import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
 from loops.resource import Document, MediaAsset
 from loops.resource import IndexAttributes as ResourceIndexAttributes
@@ -139,6 +139,7 @@ class TestSite(object):
         component.provideAdapter(EmailFieldInstance, name='email')
         component.provideAdapter(BooleanFieldInstance, name='boolean')
         component.provideAdapter(ListFieldInstance, name='list')
+        component.provideAdapter(FileUploadFieldInstance, name='fileupload')
         component.provideAdapter(SchemaFactory)
         component.provideAdapter(ResourceSchemaFactory)
         component.provideAdapter(FileSchemaFactory)

@@ -36,7 +36,8 @@ from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
 from loops.common import adapted
-from loops.query import ConceptQuery, FullQuery
+#from loops.query import ConceptQuery, FullQuery
+from loops.expert.concept import ConceptQuery, FullQuery
 from loops import util
 from loops.util import _
 

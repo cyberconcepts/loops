@@ -6,7 +6,7 @@
     i18n_domain="loops">
 
   <zope:adapter
-      name="query"
+      name="query.html"
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"

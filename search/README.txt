@@ -21,13 +21,13 @@ ZCML setup):
   >>> from loops.type import ConceptType, TypeConcept
   >>> from loops.interfaces import ITypeConcept
   >>> from loops.base import Loops
-  >>> from loops.tests.setup import TestSite
+  >>> from loops.expert.testsetup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
 
   >>> loopsRoot = site['loops']
   >>> query = concepts['query']
-  >>> topic = concepts['topic'] = Concept(u'Topic')
+  >>> topic = concepts['topic']
 
 In addition we create a concept that holds the search page and a node
 (page) that links to this concept:
@@ -66,13 +66,13 @@ zcml in real life:
 
   >>> t = searchView.typesForSearch()
   >>> len(t)
-  9
+  14
   >>> t.getTermByToken('loops:resource:*').title
   'Any Resource'
 
   >>> t = searchView.conceptTypesForSearch()
   >>> len(t)
-  4
+  9
   >>> t.getTermByToken('loops:concept:*').title
   'Any Concept'
 
@@ -91,7 +91,7 @@ a controller attribute for the search view.
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'submitReplacing("1.results", "1.search.form",
-       "http://127.0.0.1/loops/views/page/.target29/@@searchresults.html");...'
+       "http://127.0.0.1/loops/views/page/.target80/@@searchresults.html");...'
 
 Basic (text/title) search
 -------------------------
@@ -177,7 +177,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  u"{identifier: 'id', items: [{label: 'Zope (Topic)', name: 'Zope', id: '34'}, {label: 'Zope 2 (Topic)', name: 'Zope 2', id: '37'}, {label: 'Zope 3 (Topic)', name: 'Zope 3', id: '39'}]}"
+  u"{identifier: 'id', items: [{label: 'Zope (Topic)', name: 'Zope', id: '85'}, {label: 'Zope 2 (Topic)', name: 'Zope 2', id: '87'}, {label: 'Zope 3 (Topic)', name: 'Zope 3', id: '89'}]}"
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -193,8 +193,8 @@ Let's start with a new type, the customer type.
   >>> custType.options
   []
 
-  >>> cust1 = concepts['cust1'] = Concept(u'Zope Corporation')
-  >>> cust2 = concepts['cust2'] = Concept(u'cyberconcepts')
+  >>> cust1 = concepts['cust1']
+  >>> cust2 = concepts['cust2']
   >>> for c in (cust1, cust2):
   ...     c.conceptType = customer
   ...     catalog.index_doc(int(util.getUidForObject(c)), c)
@@ -219,16 +219,17 @@ and thus include the customer type in the preset search types.
 
   >>> searchView.conceptsForType('loops:concept:customer')
   [{'token': 'none', 'title': u'not selected'},
-   {'token': '47', 'title': u'Zope Corporation'},
-   {'token': '49', 'title': u'cyberconcepts'}]
+   {'token': '58', 'title': u'Customer 1'},
+   {'token': '60', 'title': u'Customer 2'},
+   {'token': '62', 'title': u'Customer 3'}]
 
 Let's use this new search option for querying:
 
-  >>> form = {'search.4.text_selected': u'47'}
+  >>> form = {'search.4.text_selected': u'58'}
   >>> resultsView = SearchResults(page, TestRequest(form=form))
   >>> results = list(resultsView.results)
   >>> results[0].title
-  u'Zope Corporation'
+  u'Customer 1'
 
 
 Automatic Filtering

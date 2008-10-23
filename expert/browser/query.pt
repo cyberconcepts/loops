@@ -1,10 +1,20 @@
 <metal:query define-macro="query">
-    <div id="query">
-      <h1 tal:attributes="class string:content-$level;
-                          ondblclick item/openEditWindow"
-          tal:content="item/title">
-        Query
-      </h1>
+    <div id="query"
+         tal:define="resources item/results"
+         tal:attributes="class string:content-$level;">
+      <form method="post">
+        <input type="hidden" name="form.action"
+               tal:attributes="value item/form_action" />
+        <metal:infos use-macro="item/infos/concepttitle" />
+        <div tal:content="item/queryInfo" />
+        <metal:listing use-macro="item/listings/resources" /><br />
+        <div class="buttons">
+          <input type="submit" name="action.delete"
+                 value="Delete objects" class="submit"
+                 onClick="confirm('Do you really want to delete the selected objects?')"
+                 i18n:attributes="value" />
+        </div>
+      </form>
     </div>
 </metal:query>
 

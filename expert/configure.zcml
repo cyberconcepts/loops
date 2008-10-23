@@ -1,0 +1,27 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <adapter factory="loops.expert.concept.QueryConcept" trusted="True" />
+  <class class="loops.expert.concept.QueryConcept">
+    <require permission="zope.View"
+             interface="loops.expert.concept.IQueryConcept" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.concept.IQueryConcept" />
+  </class>
+
+  <adapter name="execute_query_action"
+           for="loops.browser.node.NodeView
+                zope.publisher.interfaces.browser.IBrowserRequest"
+           factory="loops.expert.browser.base.ActionExecutor"
+           permission="zope.ManageContent" />
+
+  <adapter factory="loops.expert.setup.SetupManager"
+           name="expert" />
+
+  <include package=".browser" />
+
+</configure>

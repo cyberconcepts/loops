@@ -18,7 +18,7 @@ ZCML setup):
 
   >>> from loops.organize.setup import SetupManager
   >>> component.provideAdapter(SetupManager, name='organize')
-  >>> from loops.tests.setup import TestSite
+  >>> from loops.expert.testsetup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
 
@@ -237,7 +237,7 @@ Automatic security settings on persons
 
   >>> from zope.traversing.api import getName
   >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
-  [u'john', u'martha', u'person.newuser']
+  [u'jim', u'john', u'martha', u'person.newuser']
 
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.

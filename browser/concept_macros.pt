@@ -121,9 +121,10 @@
            tal:define="resources python: list(item.resources())"
            tal:condition="resources">
         <h2 i18n:translate="">Resources</h2>
-        <table class="listing">
+        <table class="listing"
+               metal:define-macro="resources">
           <tr>
-            <th tal:condition="view/showCheckboxes|nothing">&nbsp;</th>
+            <th tal:condition="item/showCheckboxes|nothing">&nbsp;</th>
             <th i18n:translate="">Title</th>
             <th i18n:translate="">Type</th>
             <th i18n:translate=""
@@ -138,8 +139,11 @@
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description">
               <tr tal:attributes="class class">
-                <td tal:condition="view/showCheckboxes|nothing"
-                    class="checkbox"><input type="checkbox" /></td>
+                <td tal:condition="item/showCheckboxes|nothing"
+                    tal:define="uid related/uniqueId"
+                    class="checkbox">
+                  <input type="checkbox" name="selection:list" checked
+                         tal:attributes="value uid;" /></td>
                 <td valign="top">
                   <a href="#"
                      tal:attributes="href string:${view/url}/.target${related/uniqueId};

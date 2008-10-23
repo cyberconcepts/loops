@@ -34,7 +34,7 @@ ZCML setup):
 Let's look what setup has provided us with:
 
   >>> len(concepts)
-  19
+  18
 
 Now let's add a few more concepts:
 
@@ -58,7 +58,7 @@ There are a few standard objects we can retrieve directly:
 
   >>> defaultPred = xrf.getDefaultPredicate()
   >>> defaultPred['id'], defaultPred['name']
-  ('16', u'standard')
+  ('14', u'standard')
   >>> typePred = xrf.getTypePredicate()
   >>> typePred['id'], typePred['name']
   ('1', u'hasType')
@@ -71,7 +71,7 @@ note that the 'hasType' predicate is not shown as it should not be
 applied in an explicit assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
-  [u'customer', u'domain', u'file', u'note', u'person', u'predicate', u'query',
+  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
    u'task', u'textdocument', u'topic', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
   [u'depends', u'knows', u'ownedby', u'provides', u'requires', u'standard']
@@ -80,10 +80,10 @@ We can also retrieve a certain object by its id or its name:
 
   >>> obj2 = xrf.getObjectById('5')
   >>> obj2['id'], obj2['name']
-  ('5', u'query')
+  ('5', u'note')
   >>> textdoc = xrf.getObjectByName(u'textdocument')
   >>> textdoc['id'], textdoc['name']
-  ('11', u'textdocument')
+  ('9', u'textdocument')
 
 All methods that retrieve one object also returns its children and parents:
 
@@ -94,7 +94,7 @@ All methods that retrieve one object also returns its children and parents:
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
   [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
-   u'query', u'task', u'textdocument', u'topic', u'type']
+   u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -113,7 +113,7 @@ We can also retrieve children and parents explicitely:
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
   [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
-   u'query', u'task', u'textdocument', u'topic', u'type']
+   u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = xrf.getParents('7')
   >>> len(pa)
@@ -172,14 +172,14 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '24', 'id': '56',
+  {'description': u'', 'title': u'Zope 2', 'type': '22', 'id': '54',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '24', 'id': '58',
+  {'description': u'', 'title': u'Python', 'type': '22', 'id': '56',
    'name': u'python'}
 
 If we try to deassign a ``hasType`` relation nothing will happen; a

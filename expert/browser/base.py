@@ -26,8 +26,12 @@ $Id$
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName, getParent
 
-from loops.browser.common import BaseView
+from cybertools.browser.form import FormController
+from loops.browser.common import BaseView, concept_macros
+from loops.browser.concept import ConceptView
+from loops.browser.resource import ResourceView, ResourceRelationView
 from loops.common import adapted
 from loops import util
 from loops.util import _
@@ -36,11 +40,65 @@ from loops.util import _
 queryTemplate = ViewPageTemplateFile('query.pt')
 
 
+#class BaseQueryView(ConceptView):
 class BaseQueryView(BaseView):
 
     template = queryTemplate
+    childViewFactory = ResourceRelationView
+    showCheckboxes = True
+    form_action = 'execute_query_action'
 
     @Lazy
     def macro(self):
-        return template.macros['query']
+        return self.template.macros['query']
 
+    @property
+    def infos(self):
+        return concept_macros.macros
+
+    @property
+    def listings(self):
+        return concept_macros.macros
+
+    @property
+    def listings(self):
+        return concept_macros.macros
+
+    @Lazy
+    def targetPredicate(self):
+        return self.conceptManager['querytarget']
+
+    @Lazy
+    def defaultPredicate(self):
+        return self.conceptManager.getDefaultPredicate()
+
+    @Lazy
+    def targets(self):
+        return self.context.getChildren([self.targetPredicate])
+
+    def queryInfo(self):
+        targetNames = ', '.join(["'%s'" % t.title for t in self.targets])
+        return _(u'Selection using: $targets',
+                 mapping=dict(targets=targetNames))
+
+    def results(self):
+        for t in self.targets:
+            for r in t.getResourceRelations([self.defaultPredicate]):
+                yield self.childViewFactory(r, self.request, contextIsSecond=True)
+
+
+class ActionExecutor(FormController):
+
+    def update(self):
+        form = self.request.form
+        actions = [k for k in form.keys() if k.startswith('action.')]
+        if actions:
+            uids = form.get('selection', [])
+            action = actions[0]
+            if action == 'action.delete':
+                print '*** delete', uids
+                for uid in uids:
+                    obj = util.getObjectForUid(uid)
+                parent = getParent(obj)
+                del parent[getName(obj)]
+        return True

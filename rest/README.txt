@@ -35,7 +35,7 @@ ZCML setup):
 Let's look what setup has provided us with:
 
   >>> sorted(concepts)
-  [u'domain', u'file', u'hasType', u'note', u'predicate', u'query',
+  [u'domain', u'file', u'hasType', u'note', u'predicate',
    u'standard', u'textdocument', u'type']
 
 

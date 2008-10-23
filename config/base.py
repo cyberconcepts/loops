@@ -34,7 +34,8 @@ from cybertools.meta.interfaces import IOptions
 from cybertools.meta.namespace import Executor, ExecutionError
 from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoops, ILoopsObject
-from loops.query import IQueryConcept
+#from loops.query import IQueryConcept
+from loops.expert.concept import IQueryConcept
 from loops import util
 
 

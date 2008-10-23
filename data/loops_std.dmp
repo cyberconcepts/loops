@@ -9,7 +9,7 @@ type(u'note', u'Note', options=u'', typeInterface='loops.interfaces.INote', view
 type(u'person', u'Person', options=u'', typeInterface='loops.knowledge.interfaces.IPerson', viewName=u'')
 type(u'predicate', u'Predicate', options=u'', typeInterface=u'', viewName=u'')
 type(u'process', u'Prozess', options=u'', typeInterface=u'', viewName=u'')
-type(u'query', u'Query', options=u'', typeInterface='loops.query.IQueryConcept', viewName=u'')
+type(u'query', u'Query', options=u'', typeInterface='loops.expert.concept.IQueryConcept', viewName=u'')
 type(u'textdocument', u'Text', options=u'', typeInterface='loops.interfaces.ITextDocument', viewName=u'')
 type(u'topic', u'Topic', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
 type(u'type', u'Type', options=u'', typeInterface='loops.interfaces.ITypeConcept', viewName=u'')

@@ -35,7 +35,7 @@ from loops.common import adapted
 from loops.concept import ConceptManager, Concept
 from loops.interfaces import ILoops, ITypeConcept
 from loops.interfaces import IFile, IImage, ITextDocument, INote
-from loops.query import IQueryConcept
+#from loops.query import IQueryConcept
 from loops.record import RecordManager
 from loops.resource import ResourceManager, Resource
 from loops.view import ViewManager, Node
@@ -82,16 +82,16 @@ class SetupManager(object):
         predicate = self.addObject(conceptManager, Concept, 'predicate', title=u'Predicate')
         standard = self.addObject(conceptManager, Concept, 'standard', title=u'subobject')
         domain = self.addObject(conceptManager, Concept, 'domain', title=u'Domain')
-        query = self.addObject(conceptManager, Concept, 'query', title=u'Query')
+        #query = self.addObject(conceptManager, Concept, 'query', title=u'Query')
         file = self.addObject(conceptManager, Concept, 'file', title=u'File')
         textdocument = self.addObject(conceptManager, Concept,
                                       'textdocument', title=u'Text')
         note = self.addObject(conceptManager, Concept, 'note', title=u'Note')
-        for c in (typeConcept, domain, query, note, file, textdocument, predicate):
+        for c in (typeConcept, domain, note, file, textdocument, predicate):
             c.conceptType = typeConcept
             notify(ObjectModifiedEvent(c))
         ITypeConcept(typeConcept).typeInterface = ITypeConcept
-        ITypeConcept(query).typeInterface = IQueryConcept
+        #ITypeConcept(query).typeInterface = IQueryConcept
         ITypeConcept(file).typeInterface = IFile
         ITypeConcept(textdocument).typeInterface = ITextDocument
         ITypeConcept(note).typeInterface = INote

@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  14
+  13
 
 
 Accessing a Directory in the Filesystem

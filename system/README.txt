@@ -39,7 +39,7 @@ In addition to the application site we need a loops system management site.
   >>> systemRoot = site['loops.system']
 
   >>> sorted(sysConcepts)
-  [u'domain', u'file', u'hasType', u'job', u'note', u'predicate', u'query',
+  [u'domain', u'file', u'hasType', u'job', u'note', u'predicate',
    u'standard', u'textdocument', u'type']
 
 

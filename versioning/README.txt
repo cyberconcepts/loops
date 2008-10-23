@@ -29,7 +29,7 @@ configuration):
   >>> #sorted(concepts)
   >>> #sorted(resources)
   >>> len(concepts) + len(resources)
-  24
+  23
 
 
 Version Information

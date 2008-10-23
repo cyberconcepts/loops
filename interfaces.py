@@ -745,6 +745,14 @@ class IExternalFile(IFile):
                 missing_value='',
                 required=False)
 
+    externalAddress = schema.BytesLine(
+                title=_(u'External Address'),
+                description=_(u'The full address for accessing the object '
+                        'on the external storage, e.g. a filename or path.'),
+                default='',
+                missing_value='',
+                required=False)
+
 
 class IImage(IResourceAdapter):
     """ A media asset that may be embedded in a (web) page as an image.

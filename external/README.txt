@@ -12,12 +12,12 @@ Let's set up a loops site with basic and example concepts and resources.
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
 
-  >>> from loops.tests.setup import TestSite
+  >>> from loops.expert.testsetup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
   >>> len(concepts), len(resources), len(views)
-  (11, 3, 0)
+  (30, 3, 0)
 
 
 Importing loops Objects
@@ -44,7 +44,7 @@ Creating the corresponding objects
   >>> loader = Loader(loopsRoot)
   >>> loader.load(elements)
   >>> len(concepts), len(resources), len(views)
-  (12, 3, 0)
+  (31, 3, 0)
 
   >>> from loops.common import adapted
   >>> adMyquery = adapted(concepts['myquery'])
@@ -118,7 +118,7 @@ Extracting elements
   >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
   >>> elements = list(extractor.extract())
   >>> len(elements)
-  20
+  52
 
 Writing object information to the external storage
 --------------------------------------------------
@@ -130,13 +130,13 @@ Writing object information to the external storage
   >>> writer = PyWriter()
   >>> writer.write(elements, output)
   >>> print output.getvalue()
-  type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')...
-  type(u'query', u'Query', options=u'', typeInterface='loops.query.IQueryConcept',
+  type(u'country', u'Country', options=u'', typeInterface=u'', viewName=u'')...
+  type(u'query', u'Query', options=u'', typeInterface='loops.expert.concept.IQueryConcept',
        viewName=u'')...
   concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
        viewName=u'mystuff.html')...
   child(u'projects', u'customer', u'standard')...
-  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')
+  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')...
   resourceRelation(u'myquery', u'doc04.txt', u'standard')
   node('home', u'Home', '', u'menu', body=u'Welcome')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
@@ -172,7 +172,7 @@ corresponding extractor adapter.
   >>> PyWriter().write(extractor.extract(), output)
 
   >>> print output.getvalue()
-  type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')...
+  type(u'country', u'Country', options=u'', typeInterface=u'', viewName=u'')...
   concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
           viewName=u'mystuff.html')[
               annotations(creators=(u'john',))]...
