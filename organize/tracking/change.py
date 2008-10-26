@@ -59,7 +59,7 @@ class ChangeManager(object):
     def valid(self):
         return (not (self.context is None or
                     self.storage is None or
-                    self.person is None)
+                    self.personId is None)
                 and 'changes' in self.options('organize.tracking', ()))
 
     @Lazy
@@ -74,18 +74,20 @@ class ChangeManager(object):
         return None
 
     @Lazy
-    def person(self):
+    def personId(self):
         principal = getCurrentPrincipal()
         if principal is not None:
-            return getPersonForUser(self.context, principal=principal)
+            person = getPersonForUser(self.context, principal=principal)
+            if person is None:
+                return principal.id
+            return util.getUidForObject(person)
         return None
 
     def recordModification(self, action='modify', **kw):
         if not self.valid:
             return
         uid = util.getUidForObject(self.context)
-        personUid = util.getUidForObject(self.person)
-        last = self.storage.getLastUserTrack(uid, 0, personUid)
+        last = self.storage.getLastUserTrack(uid, 0, self.personId)
         update = (last is not None and last.data.get('action') == action and
                   last.metadata['timeStamp'] >= getTimeStamp() - 5)
         data = dict(action=action)
@@ -96,7 +98,7 @@ class ChangeManager(object):
         if update:
             self.storage.updateTrack(last, data)
         else:
-            self.storage.saveUserTrack(uid, 0, personUid, data, update)
+            self.storage.saveUserTrack(uid, 0, self.personId, data, update)
 
 
 class IChangeRecord(ITrack):
@@ -114,6 +116,10 @@ class ChangeRecord(Track):
 @adapter(ILoopsObject, IObjectModifiedEvent)
 def recordModification(obj, event):
     ChangeManager(obj).recordModification()
+
+@adapter(ILoopsObject, IObjectCreatedEvent)
+def recordModification(obj, event):
+    ChangeManager(obj).recordModification('create')
 
 @adapter(ILoopsObject, IAssignmentEvent)
 def recordAssignment(obj, event):

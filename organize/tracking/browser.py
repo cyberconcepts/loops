@@ -50,14 +50,20 @@ class ChangeView(TrackView):
     @Lazy
     def user(self):
         uid = self.metadata['userName']
-        return util.getObjectForUid(uid)
+        if uid.isdigit():
+            obj = util.getObjectForUid(uid)
+            if obj is not None:
+                return obj
+        return uid
 
     @Lazy
     def userTitle(self):
+        if isinstance(self.user, basestring):
+            return self.user
         return getattr(self.user, 'title', getName(self.user))
 
     @Lazy
     def userUrl(self):
         user = self.user
-        if user is not None:
-            return '%s/@@SelectedManagementView.html' % absoluteURL(user, self.request)
+        if user is not None and not isinstance(user, basestring):
+            return '%s/@@introspector.html' % absoluteURL(user, self.request)
