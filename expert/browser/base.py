@@ -95,6 +95,6 @@ class ActionExecutor(FormController):
                 print '*** delete', uids
                 for uid in uids:
                     obj = util.getObjectForUid(uid)
-                parent = getParent(obj)
-                del parent[getName(obj)]
+                    parent = getParent(obj)
+                    del parent[getName(obj)]
         return True
