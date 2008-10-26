@@ -60,6 +60,18 @@ table.listing-details tr.heading td h3 {
     border: none;
 }
 
+table.listing th span.ascending {
+    background-image: url(/++resource++cybertools.icons/arrowdown.gif);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+table.listing th span.descending {
+    background-image: url(/++resource++cybertools.icons/arrowup.gif);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
 dl.docutils dt {
     font-weight: bold;
     margin-top: 0.3em;

@@ -123,9 +123,13 @@
         <h2 i18n:translate="">Resources</h2>
         <table class="listing"
                metal:define-macro="resources">
-          <tr>
+          <tr tal:define="sortcol request/resources_sortcol|nothing;
+                          sortdir request/resources_sortdir|string:ascending">
             <th tal:condition="item/showCheckboxes|nothing">&nbsp;</th>
-            <th i18n:translate="">Title</th>
+            <th i18n:translate="">Title
+              <span tal:condition="python: sortcol == 'title'"
+                    tal:attributes="class sortdir">&nbsp;&nbsp;
+              </span></th>
             <th i18n:translate="">Type</th>
             <th i18n:translate=""
                 tal:condition="view/useVersioning">V</th>

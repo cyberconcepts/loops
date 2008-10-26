@@ -60,10 +60,6 @@ class BaseQueryView(BaseView):
     def listings(self):
         return concept_macros.macros
 
-    @property
-    def listings(self):
-        return concept_macros.macros
-
     @Lazy
     def targetPredicate(self):
         return self.conceptManager['querytarget']
