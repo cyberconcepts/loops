@@ -33,6 +33,7 @@ from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.publisher.browser import applySkin
 from zope import schema
+from zope.security import canAccess
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
@@ -147,6 +148,8 @@ class Node(View, OrderedContainer):
 
     def getChildNodes(self, nodeTypes=None):
         for item in self.values():
+            if not canAccess(item, 'title'):
+                continue
             if INode.providedBy(item) \
                     and (not nodeTypes or item.nodeType in nodeTypes):
                 yield item
