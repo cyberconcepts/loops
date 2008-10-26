@@ -20,6 +20,7 @@
       permission="zope.View" />
 
   <zope:subscriber handler="loops.organize.tracking.change.recordModification" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordAdding" />
   <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />
   <zope:subscriber handler="loops.organize.tracking.change.recordDeassignment" />
 

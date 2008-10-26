@@ -117,9 +117,13 @@ class ChangeRecord(Track):
 def recordModification(obj, event):
     ChangeManager(obj).recordModification()
 
-@adapter(ILoopsObject, IObjectCreatedEvent)
-def recordModification(obj, event):
-    ChangeManager(obj).recordModification('create')
+#@adapter(ILoopsObject, IObjectCreatedEvent)
+#def recordCreation(obj, event):
+#    ChangeManager(obj).recordModification('create')
+
+@adapter(ILoopsObject, IObjectAddedEvent)
+def recordAdding(obj, event):
+    ChangeManager(obj).recordModification('add')
 
 @adapter(ILoopsObject, IAssignmentEvent)
 def recordAssignment(obj, event):
