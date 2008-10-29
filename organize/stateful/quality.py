@@ -27,7 +27,6 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.traversing.api import getName
 
-from cybertools.stateful.definition import registerStatesDefinition
 from cybertools.stateful.definition import StatesDefinition
 from cybertools.stateful.definition import State, Transition
 from cybertools.stateful.interfaces import IStatesDefinition, IStateful

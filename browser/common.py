@@ -123,6 +123,10 @@ class BaseView(GenericView, I18NView):
             pass
 
     @Lazy
+    def conceptMacros(self):
+        return concept_macros.macros
+
+    @Lazy
     def name(self):
         return getName(self.context)
 

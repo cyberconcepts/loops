@@ -49,7 +49,7 @@ from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
-from loops.browser.common import EditForm, BaseView, LoopsTerms, conceptMacrosTemplate
+from loops.browser.common import EditForm, BaseView, LoopsTerms, concept_macros
 from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.i18n.browser import I18NView
@@ -187,16 +187,12 @@ class ConceptRelationView(BaseView):
 
 class ConceptView(BaseView):
 
-    template = ViewPageTemplateFile('concept_macros.pt')
+    template = concept_macros
     childViewFactory = ConceptRelationView
 
     @Lazy
     def macro(self):
         return self.template.macros['conceptdata']
-
-    @Lazy
-    def conceptMacros(self):
-        return conceptMacrosTemplate.macros
 
     def __init__(self, context, request):
         super(ConceptView, self).__init__(context, request)
