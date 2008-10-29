@@ -1,13 +1,15 @@
 <!-- ZPT macros for demo view -->
 
 <metal:block define-macro="asset">
-  <div tal:attributes="class string:content-$level;">
-    <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
+    <div metal:use-macro="views/node_macros/object_actions" />
+    <h1 tal:content="item/title">Title</h1><br />
     <p tal:define="url python: view.getUrlForTarget(item)">
       <a href="#"
          tal:attributes="href string:${url}/view"><img
             tal:attributes="src string:${url}/@@mediaasset.html?v=medium" /></a>
     </p>
+    <p><i tal:content="item/description">Description</i></p>
   </div>
 </metal:block>
 
