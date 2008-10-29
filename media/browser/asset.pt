@@ -1,5 +1,3 @@
-<!-- ZPT macros for demo view -->
-
 <metal:block define-macro="asset">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <div metal:use-macro="views/node_macros/object_actions" />
