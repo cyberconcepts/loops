@@ -34,6 +34,12 @@ blockquote ul {
 
 /* class-specific */
 
+.description {
+    font-style: italic;
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
+}
+
 table.listing td {
     white-space: normal;
     vertical-align: middle;
