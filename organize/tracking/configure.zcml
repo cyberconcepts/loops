@@ -26,6 +26,13 @@
 
   <zope:subscriber handler="loops.organize.tracking.access.logAccess" />
 
+  <browser:page
+        name="load_access_records"
+        for="loops.interfaces.ILoops"
+        class="loops.organize.tracking.access.AccessRecordManager"
+        attribute="loadRecordsFromLog"
+        permission="zope.Public" />
+
   <zope:adapter factory="loops.organize.tracking.setup.SetupManager"
                 name="organize.tracking" />
 

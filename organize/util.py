@@ -84,6 +84,14 @@ def getInternalPrincipal(id, context=None):
     raise PrincipalLookupError(id)
 
 
+def getPrincipalForUserId(id, context=None):
+    auth = component.getUtility(IAuthentication, context=context)
+    try:
+        return auth.getPrincipal(id)
+    except PrincipalLookupError:
+        return None
+
+
 def getTrackingStorage(obj, name):
     records = obj.getLoopsRoot().getRecordManager()
     if records is not None:

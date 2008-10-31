@@ -22,10 +22,13 @@ Recording changes to loops objects.
 $Id$
 """
 
+import logging
 import os
+import time
 
+import transaction
 from zope.app.publication.interfaces import IEndRequestEvent
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapter
 from zope.security.proxy import removeSecurityProxy
@@ -35,13 +38,14 @@ from cybertools.tracking.btree import Track, getTimeStamp
 from cybertools.tracking.interfaces import ITrack
 from cybertools.tracking.logfile import Logger, loggers
 from loops.interfaces import ILoopsObject
-from loops.organize.party import getPersonForUser
-from loops.security.common import getCurrentPrincipal
+from loops.organize.tracking.base import BaseRecordManager
 from loops import util
 
 
+# logging
+
+logfile_option = 'organize.tracking.logfile'
 request_key = 'loops.organize.tracking.access'
-loggers_key = 'loops.access'
 
 fields = {
     '001': ('principal', 'node', 'target', 'view', 'params'),
@@ -71,11 +75,12 @@ def logAccess(event):
     logger = loggers.get(loggers_key)
     if not logger:
         options = IOptions(context.getLoopsRoot())
-        logfile = options('organize.tracking.logfile')
+        logfile = options(logfile_option)
         if not logfile:
             return
-        path = os.path.join(util.getVarDirectory(), logfile[0])
-        logger = loggers[loggers_key] = Logger(loggers_key, path)
+        fn = logfile[0]
+        path = os.path.join(util.getVarDirectory(), fn)
+        logger = loggers[fn] = Logger(fn, path)
     logger.log(marshall(data))
 
 
@@ -85,3 +90,88 @@ def marshall(data):
     for key in fields[version]:
         values.append(data.get(key) or '')
     return ';'.join(values)
+
+
+# record manager
+
+class AccessRecordManager(BaseRecordManager):
+
+    storageName = 'access'
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    @Lazy
+    def logfile(self):
+        value = self.options(logfile_option)
+        return value and value[0] or None
+
+    @Lazy
+    def valid(self):
+        return self.storage is not None and self.logfile
+
+    def loadRecordsFromLog(self):
+        if not self.valid:
+            return
+        fn = self.logfile
+        path = os.path.join(util.getVarDirectory(), fn)
+        logger = loggers.get(fn)
+        if not logger:
+            logger = loggers[fn] = Logger(fn, path)
+        if not os.path.exists(path):
+            return
+        lf = open(path, 'r')
+        for idx, line in enumerate(lf):
+            self.processLogRecord(idx, line)
+        lf.close()
+        transaction.commit()
+        logger.doRollover()
+
+    def processLogRecord(self, idx, line):
+        if not line:
+            return
+        values = line.split(';')
+        timeString = values.pop(0)
+        version = values.pop(0)
+        if version not in fields:
+            logging.getLogger('AccessRecordManager').warn(
+                        'Undefined logging record version %r on record %i.'
+                            % (version, idx))
+            return
+        if len(values) != len(fields[version]):
+            logging.getLogger('AccessRecordManager').warn(
+                        'Length of record %i does not match version %r.'
+                            % (idx, version))
+            return
+        data = {}
+        for idx, field in enumerate(fields[version]):
+            data[field] = values[idx]
+        timeStamp = timeStringToTimeStamp(timeString)
+        personId = self.getPersonId(data['principal'])
+        taskId = data['target'] or data['node']
+        existing = self.storage.query(taskId=taskId, userName=self.personId,
+                                      timeStamp=timeStamp)
+        for track in existing:
+            if track.data == data:  # has been recorded already
+                return
+        self.storage.saveUserTrack(taskId, 0, personId, data,
+                                   timeStamp=timeStamp)
+
+
+class IAccessRecord(ITrack):
+
+    pass
+
+
+class AccessRecord(Track):
+
+    implements(IAccessRecord)
+
+    typeName = 'AccessRecord'
+
+
+def timeStringToTimeStamp(timeString):
+    s, decimal = timeString.split(',')
+    t = time.strptime(s, '%Y-%m-%d %H:%M:%S')
+    return int(time.mktime(t))

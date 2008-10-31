@@ -37,13 +37,14 @@ from loops.resource import ResourceManager
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
 from loops.interfaces import ILoopsObject
 from loops.organize.party import getPersonForUser
+from loops.organize.tracking.base import BaseRecordManager
 from loops.security.common import getCurrentPrincipal
 from loops import util
 
 
-class ChangeManager(object):
+class ChangeManager(BaseRecordManager):
 
-    context = None
+    storageName = 'changes'
 
     def __init__(self, context):
         if isinstance(context, (ConceptManager, ResourceManager)):
@@ -51,37 +52,11 @@ class ChangeManager(object):
         self.context = context
 
     @Lazy
-    def options(self):
-        #return IOptions(self.context)
-        return IOptions(self.loopsRoot)
-
-    @Lazy
     def valid(self):
         return (not (self.context is None or
                     self.storage is None or
                     self.personId is None)
                 and self.options('organize.tracking.changes'))
-
-    @Lazy
-    def loopsRoot(self):
-        return self.context.getLoopsRoot()
-
-    @Lazy
-    def storage(self):
-        records = self.loopsRoot.getRecordManager()
-        if records is not None:
-            return records.get('changes')
-        return None
-
-    @Lazy
-    def personId(self):
-        principal = getCurrentPrincipal()
-        if principal is not None:
-            person = getPersonForUser(self.context, principal=principal)
-            if person is None:
-                return principal.id
-            return util.getUidForObject(person)
-        return None
 
     def recordModification(self, action='modify', **kw):
         if not self.valid:
@@ -116,10 +91,6 @@ class ChangeRecord(Track):
 @adapter(ILoopsObject, IObjectModifiedEvent)
 def recordModification(obj, event):
     ChangeManager(obj).recordModification()
-
-#@adapter(ILoopsObject, IObjectCreatedEvent)
-#def recordCreation(obj, event):
-#    ChangeManager(obj).recordModification('create')
 
 @adapter(ILoopsObject, IObjectAddedEvent)
 def recordAdding(obj, event):
