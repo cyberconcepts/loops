@@ -24,6 +24,8 @@
   <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />
   <zope:subscriber handler="loops.organize.tracking.change.recordDeassignment" />
 
+  <zope:subscriber handler="loops.organize.tracking.access.logAccess" />
+
   <zope:adapter factory="loops.organize.tracking.setup.SetupManager"
                 name="organize.tracking" />
 

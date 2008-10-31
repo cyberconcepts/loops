@@ -24,8 +24,8 @@ ZCML setup):
   >>> concepts, resources, views = t.setup()
 
 
-Tracking Changes and Object Access
-==================================
+Tracking Changes
+================
 
   >>> loopsRoot = concepts.getLoopsRoot()
   >>> records = loopsRoot.getRecordManager()
@@ -48,7 +48,7 @@ Recording changes to objects
   >>> from loops.organize.tracking.change import recordModification
   >>> component.provideHandler(recordModification)
 
-  >>> loopsRoot.options = ['organize.tracking:changes']
+  >>> loopsRoot.options = ['organize.tracking.changes']
 
   >>> tTask = concepts['task']
   >>> from loops.concept import Concept
@@ -69,6 +69,12 @@ Recording assignment changes
   >>> t01.assignChild(johnC)
   >>> len(changes)
   2
+
+
+Tracking Object Access
+======================
+
+  >>> from loops.organize.tracking.access import record
 
 
 Fin de partie

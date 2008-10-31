@@ -60,7 +60,7 @@ class ChangeManager(object):
         return (not (self.context is None or
                     self.storage is None or
                     self.personId is None)
-                and 'changes' in self.options('organize.tracking', ()))
+                and self.options('organize.tracking.changes'))
 
     @Lazy
     def loopsRoot(self):

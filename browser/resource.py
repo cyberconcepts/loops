@@ -146,6 +146,7 @@ class ResourceView(BaseView):
     def show(self, useAttachment=False):
         """ show means: "download"..."""
         context = self.context
+        self.recordAccess('show', target=self.uniqueId)
         ti = IType(context).typeInterface
         if ti is not None:
             context = ti(context)
@@ -289,6 +290,7 @@ class DocumentView(ResourceView):
     def render(self):
         """ Return the rendered content (data) of the context object.
         """
+        self.recordAccess('render', target=self.uniqueId)
         ctx = adapted(self.context)
         text = ctx.data
         contentType = ctx.contentType
@@ -301,11 +303,12 @@ class DocumentView(ResourceView):
                 and canWrite(self.context, 'data'))
 
 
-class ExternalEditorView(ExternalEditorView):
+class ExternalEditorView(ExternalEditorView, BaseView):
 
     def load(self, url=None):
         #context = removeSecurityProxy(self.context)
         context = self.context
+        self.recordAccess('external_edit', target=self.uniqueId)
         data = adapted(context).data
         r = []
         context = removeSecurityProxy(context)

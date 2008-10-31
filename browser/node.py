@@ -60,6 +60,7 @@ from loops import util
 from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.organize.tracking import access
 from loops.versioning.util import getVersion
 
 
@@ -81,6 +82,19 @@ class NodeView(BaseView):
     @Lazy
     def macro(self):
         return self.template.macros['content']
+
+    def update(self):
+        result = super(NodeView, self).update()
+        self.recordAccess()
+        return result
+
+    def recordAccess(self, viewName=''):
+        target = self.virtualTargetObject
+        targetUid = target is not None and util.getUidForObject(target) or ''
+        access.record(self.request, principal=self.principalId,
+                                    node=self.uniqueId,
+                                    target=targetUid,
+                                    view=viewName)
 
     def setupController(self):
         cm = self.controller.macros
@@ -462,6 +476,7 @@ class NodeView(BaseView):
             if ti is not None:
                 target = ti(target)
             url = self.virtualTargetUrl
+        self.recordAccess('external_edit')
         return ExternalEditorView(target, self.request).load(url=url)
 
 

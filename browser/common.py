@@ -58,6 +58,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode
+from loops.organize.tracking import access
 from loops.resource import Resource
 from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
@@ -129,6 +130,14 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def name(self):
         return getName(self.context)
+
+    @Lazy
+    def principalId(self):
+        principal = self.request.principal
+        return principal and principal.id or ''
+
+    def recordAccess(self, viewName, **kw):
+        access.record(self.request, principal=self.principalId, view=viewName, **kw)
 
     @Lazy
     def versions(self):
