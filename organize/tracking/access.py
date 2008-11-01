@@ -72,13 +72,13 @@ def logAccess(event):
     data = event.request.annotations.get(request_key)
     if not data:
         return
-    logger = loggers.get(loggers_key)
+    options = IOptions(context.getLoopsRoot())
+    logfileOption = options(logfile_option)
+    if not logfileOption:
+        return
+    fn = logfileOption[0]
+    logger = loggers.get(fn)
     if not logger:
-        options = IOptions(context.getLoopsRoot())
-        logfile = options(logfile_option)
-        if not logfile:
-            return
-        fn = logfile[0]
         path = os.path.join(util.getVarDirectory(), fn)
         logger = loggers[fn] = Logger(fn, path)
     logger.log(marshall(data))
