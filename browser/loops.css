@@ -310,6 +310,24 @@ table.listing th {
     font-weight: bold;
 }
 
+/* comments */
+
+div.comment {
+    padding: 0.5em;
+    background-color: #eeeeff;
+    border: 1px solid #aaaaff;
+}
+
+.comment h3 {
+    margin-top: 0;
+}
+
+.comment .info {
+    font-style: italic;
+    padding-top: 3px;
+    padding-bottom: 0;
+}
+
 /* search stuff */
 
 .searchForm input.button, input.submit {
