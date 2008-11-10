@@ -227,11 +227,15 @@ class TypeInstances(object):
 
     langInfo = None
 
-    def __init__(self, context, typeName, idAttr='name', prefix=''):
+    def __init__(self, context, typeName, idAttr='name', prefix='', container=None):
         self.context = context
         self.typeName = typeName
         self.idAttr = idAttr
         self.prefix = prefix
+        if container is None:
+            self.container = context
+        else:
+            self.container = context.getLoopsRoot()[container]
 
     @Lazy
     def typeConcept(self):
@@ -250,7 +254,7 @@ class TypeInstances(object):
         from loops.setup import addAndConfigureObject
         if self.idAttr != 'name' and self.idAttr not in kw:
             kw[self.idAttr] = id
-        c = addAndConfigureObject(self.context, Concept, self.prefix + id,
+        c = addAndConfigureObject(self.container, Concept, self.prefix + id,
                     conceptType=self.typeConcept, **kw)
         return adapted(c)
 
@@ -338,15 +342,17 @@ class ChildRelationSet(RelationSet):
 
 class TypeInstancesProperty(object):
 
-    def __init__(self, typeName, idAttr='name', prefix=''):
+    def __init__(self, typeName, idAttr='name', prefix='', container=None):
         self.typeName = typeName
         self.idAttr = idAttr
         self.prefix = prefix
+        self.container = container
 
     def __get__(self, inst, class_=None):
         if inst is None:
             return self
-        return TypeInstances(inst.context, self.typeName, self.idAttr, self.prefix)
+        return TypeInstances(inst.context, self.typeName, self.idAttr,
+                             self.prefix, self.container)
 
 
 class RelationSetProperty(object):
