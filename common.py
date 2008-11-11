@@ -309,6 +309,7 @@ class ParentRelationSet(RelationSet):
     def add(self, related, order=0, relevance=1.0):
         if isinstance(related, AdapterBase):
             related = related.context
+        self.context.deassignParent(related, [self.predicate])
         self.context.assignParent(related, self.predicate, order, relevance)
 
     def remove(self, related):
