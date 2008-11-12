@@ -20,7 +20,7 @@
         for="loops.layout.interfaces.ILayoutNode"
         factory="loops.layout.base.NodeLayoutInstance" />
 
-  <!-- views -->
+  <!-- content views -->
 
   <browser:page
       name="index.html"
@@ -46,5 +46,29 @@
       description="A layout node controls the presentation of objects"
       permission="zope.ManageContent"
       view="AddLoopsLayoutNode.html" />
+
+  <!-- target views -->
+
+  <browser:page
+      name="index.html"
+      for="loops.interfaces.IConceptSchema"
+      class="loops.layout.browser.ConceptView"
+      permission="zope.View" />
+
+  <zope:adapter
+      name="layout"
+      for="loops.interfaces.IConceptSchema
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.layout.browser.ConceptView" />
+
+  <!-- traversal adapter -->
+
+  <zope:view factory="loops.layout.browser.NodeTraverser"
+        for="loops.layout.interfaces.ILayoutNode"
+        type="zope.publisher.interfaces.http.IHTTPRequest"
+        provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+        allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+        permission="zope.Public" />
 
 </configure>

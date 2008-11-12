@@ -22,11 +22,13 @@ Layout node + instance implementations.
 $Id$
 """
 
+from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 
 from cybertools.composer.layout.base import Layout, LayoutInstance
 from cybertools.composer.layout.interfaces import ILayoutInstance
+from loops.common import adapted
 from loops.layout.browser import ConceptView
 from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.view import Node
@@ -70,5 +72,8 @@ class NodeLayoutInstance(LayoutInstance):
     @Lazy
     def targetView(self):
         request = self.view.request
-        return ConceptView(self.context.target, request, self.context)
+        target = adapted(self.context.target)
+        view = component.getMultiAdapter((target, request), name='layout')
+        view.node = self.context
+        return view
 
