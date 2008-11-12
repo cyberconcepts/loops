@@ -38,6 +38,7 @@ from cybertools.storage.interfaces import IStorageInfo
 from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoopsObject, ILoopsContained
 from loops.interfaces import IConcept, IResource, IResourceAdapter
+from loops import util
 
 
 # convenience functions
@@ -95,6 +96,8 @@ class AdapterBase(object):
     _noexportAttributes = ()
     _textIndexAttributes = ()
 
+    languageInfo = None
+
     def __init__(self, context):
         self.context = context
         self.__parent__ = context # to get the permission stuff right
@@ -130,6 +133,14 @@ class AdapterBase(object):
     def name(self):
         return getName(self.context)
 
+    @Lazy
+    def uid(self):
+        return util.getUidForObject(self.context)
+
+    def getChildren(self):
+        for c in self.context.getChildren():
+            yield adapted(c, self.languageInfo)
+
 
 class ResourceAdapterBase(AdapterBase):
 
@@ -141,6 +152,10 @@ class ResourceAdapterBase(AdapterBase):
 
     storageName = None
     storageParams = None
+
+    def getChildren(self):
+        for r in self.context.getResources():
+            yield adapted(r)
 
 
 # other adapters
@@ -309,7 +324,7 @@ class ParentRelationSet(RelationSet):
     def add(self, related, order=0, relevance=1.0):
         if isinstance(related, AdapterBase):
             related = related.context
-        self.context.deassignParent(related, [self.predicate])
+        self.context.deassignParent(related, [self.predicate])  # avoid duplicates
         self.context.assignParent(related, self.predicate, order, relevance)
 
     def remove(self, related):
@@ -327,6 +342,7 @@ class ChildRelationSet(RelationSet):
     def add(self, related, order=0, relevance=1.0):
         if isinstance(related, AdapterBase):
             related = related.context
+        self.context.deassignChild(related, [self.predicate])   # avoid duplicates
         self.context.assignChild(related, self.predicate, order, relevance)
 
     def remove(self, related):

@@ -185,11 +185,26 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
         """
 
 
+class ILoopsAdapter(IConceptSchema):
+    """ Common interface for concept and resource adapters.
+    """
+
+    context = Attribute('The underlying persistent object.')
+    uid = Attribute('Unique id of the context object.')
+
+    def getChildren():
+        """ Return a collection of child objects provided by the context
+            object.
+        """
+
+
 class IConceptView(Interface):
-    """ Used for accessing a concept via a node's target attribute"""
+    """ Used for accessing a concept via a node's target attribute.
+
+        Obsolete.
+    """
 
 
-#class IConceptManager(ILoopsObject, IContainer):
 class IConceptManager(ILoopsObject):
     """ A manager/container for concepts.
     """
@@ -684,7 +699,7 @@ class xxIMappingAttributeRelation(IConceptSchema):
 
 # resources
 
-class IResourceAdapter(IBaseResourceSchema):
+class IResourceAdapter(IBaseResourceSchema, ILoopsAdapter):
     """ Base interface for adapters for resources. This is the base interface
         of the interfaces to be used as typeInterface attribute on type concepts
         specifying resource types.

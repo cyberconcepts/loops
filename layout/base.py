@@ -29,7 +29,6 @@ from zope.interface import implements
 from cybertools.composer.layout.base import Layout, LayoutInstance
 from cybertools.composer.layout.interfaces import ILayoutInstance
 from loops.common import adapted
-from loops.layout.browser import ConceptView
 from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.view import Node
 
