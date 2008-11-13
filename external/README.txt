@@ -17,7 +17,7 @@ Let's set up a loops site with basic and example concepts and resources.
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
   >>> len(concepts), len(resources), len(views)
-  (30, 3, 0)
+  (30, 3, 1)
 
 
 Importing loops Objects
@@ -44,7 +44,7 @@ Creating the corresponding objects
   >>> loader = Loader(loopsRoot)
   >>> loader.load(elements)
   >>> len(concepts), len(resources), len(views)
-  (31, 3, 0)
+  (31, 3, 1)
 
   >>> from loops.common import adapted
   >>> adMyquery = adapted(concepts['myquery'])
@@ -138,7 +138,7 @@ Writing object information to the external storage
   child(u'projects', u'customer', u'standard')...
   resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')...
   resourceRelation(u'myquery', u'doc04.txt', u'standard')
-  node('home', u'Home', '', u'menu', body=u'Welcome')
+  node('home', u'Home', '', u'menu')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
 
 Writing sub-elements

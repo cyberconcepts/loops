@@ -66,7 +66,6 @@ class NodeLayoutInstance(LayoutInstance):
                 li = ILayoutInstance(n)
                 li.template = layout
                 result.append(li)
-        # if not result: get layouts from parent node(s)
         return result
 
     @Lazy

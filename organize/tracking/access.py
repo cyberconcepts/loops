@@ -59,7 +59,7 @@ def record(request, **kw):
 
 
 @adapter(IEndRequestEvent)
-def logAccess(event):
+def logAccess(event, baseDir=None):
     object = removeSecurityProxy(event.object)
     context = getattr(object, 'context', None)
     if context is None:
@@ -79,7 +79,7 @@ def logAccess(event):
     fn = logfileOption[0]
     logger = loggers.get(fn)
     if not logger:
-        path = os.path.join(util.getVarDirectory(), fn)
+        path = os.path.join(baseDir or util.getVarDirectory(), fn)
         logger = loggers[fn] = Logger(fn, path)
     logger.log(marshall(data))
 
@@ -101,6 +101,7 @@ class AccessRecordManager(BaseRecordManager):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.baseDir = util.getVarDirectory()
 
     @Lazy
     def logfile(self):
@@ -115,7 +116,7 @@ class AccessRecordManager(BaseRecordManager):
         if not self.valid:
             return
         fn = self.logfile
-        path = os.path.join(util.getVarDirectory(), fn)
+        path = os.path.join(self.baseDir, fn)
         logger = loggers.get(fn)
         if not logger:
             logger = loggers[fn] = Logger(fn, path)

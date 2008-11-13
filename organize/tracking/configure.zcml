@@ -7,10 +7,26 @@
 
   <zope:class class="loops.organize.tracking.change.ChangeRecord">
     <require permission="zope.View"
-             interface="cybertools.tracking.interfaces.ITrack" />
+             interface="loops.organize.tracking.change.IChangeRecord" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.tracking.interfaces.ITrack" />
+             set_schema="loops.organize.tracking.change.IChangeRecord" />
   </zope:class>
+
+  <zope:class class="loops.organize.tracking.access.AccessRecord">
+    <require permission="zope.View"
+             interface="loops.organize.tracking.access.IAccessRecord" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.tracking.access.IAccessRecord" />
+  </zope:class>
+
+  <zope:subscriber handler="loops.organize.tracking.change.recordModification" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordAdding" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />
+  <zope:subscriber handler="loops.organize.tracking.change.recordDeassignment" />
+
+  <zope:subscriber handler="loops.organize.tracking.access.logAccess" />
+
+  <!-- views -->
 
   <zope:adapter
       for="loops.organize.tracking.change.IChangeRecord
@@ -19,12 +35,12 @@
       factory="loops.organize.tracking.browser.ChangeView"
       permission="zope.View" />
 
-  <zope:subscriber handler="loops.organize.tracking.change.recordModification" />
-  <zope:subscriber handler="loops.organize.tracking.change.recordAdding" />
-  <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />
-  <zope:subscriber handler="loops.organize.tracking.change.recordDeassignment" />
-
-  <zope:subscriber handler="loops.organize.tracking.access.logAccess" />
+  <zope:adapter
+      for="loops.organize.tracking.access.IAccessRecord
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.tracking.browser.AccessView"
+      permission="zope.View" />
 
   <browser:page
         name="load_access_records"

@@ -83,8 +83,7 @@ So we are now ready to query the favorites.
 User interface
 --------------
 
-  >>> from loops.view import Node
-  >>> home = views['home'] = Node()
+  >>> home = views['home']
   >>> from loops.tests.auth import TestRequest
   >>> from loops.organize.personal.browser.configurator import PortletConfigurator
 

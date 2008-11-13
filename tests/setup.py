@@ -195,6 +195,8 @@ class TestSite(object):
         d003 = addObject(resources, Resource, 'd003.txt',
                            title=u'Doc 003', resourceType=tTextDocument)
 
+        home = addObject(views, Node, 'home', title=u'Home', nodeType=u'menu')
+
         self.indexAll(concepts, resources)
         return concepts, resources, views
 

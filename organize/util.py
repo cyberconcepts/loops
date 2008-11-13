@@ -25,8 +25,7 @@ $Id$
 from zope import interface, component, schema
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.security.interfaces import IAuthentication
-
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from loops.common import adapted
 from loops.type import getOptionsDict
 

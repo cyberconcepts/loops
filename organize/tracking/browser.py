@@ -39,7 +39,10 @@ class ChangeView(TrackView):
 
     @Lazy
     def taskTitle(self):
-        return getattr(self.task, 'title', getName(self.task))
+        task = self.task
+        if task is None:
+            return self.metadata['taskId']
+        return getattr(task, 'title', getName(task))
 
     @Lazy
     def taskUrl(self):
@@ -67,3 +70,8 @@ class ChangeView(TrackView):
         user = self.user
         if user is not None and not isinstance(user, basestring):
             return '%s/@@introspector.html' % absoluteURL(user, self.request)
+
+
+class AccessView(ChangeView):
+
+    pass

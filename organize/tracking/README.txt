@@ -74,10 +74,47 @@ Recording assignment changes
 Tracking Object Access
 ======================
 
-  >>> from loops.organize.tracking.access import record
+Access records are not directly stored in the ZODB (in order to avoid
+conflict errors) but first stored to a log file.
+
+  >>> from loops.organize.tracking.access import logfile_option, record, logAccess
+  >>> from loops.organize.tracking.access import AccessRecordManager
+  >>> from loops.organize.tracking.tests import testDir
+  >>> from loops.browser.node import NodeView
+  >>> from loops.browser.resource import ResourceView
+  >>> from loops import util
+  >>> from zope.app.publication.interfaces import EndRequestEvent
+  >>> from zope.publisher.browser import TestRequest
+
+  >>> loopsRoot.options = [logfile_option + ':test.log']
+
+  >>> request = TestRequest()
+  >>> home = views['home']
+  >>> record(request, principal='users.john', view='render',
+  ...                 node=util.getUidForObject(home),
+  ...                 target=util.getUidForObject(resources['d001.txt']),
+  ...       )
+  >>> record(request, principal='users.john', view='render',
+  ...                 node=util.getUidForObject(home),
+  ...                 target=util.getUidForObject(resources['d002.txt']),
+  ...       )
+
+  >>> logAccess(EndRequestEvent(NodeView(home, request), request), testDir)
+
+They can then be read in via an AccessRecordManager object, i.e. a view
+that may be called via ``wget`` using a crontab entry or some other kind
+of job control.
+
+  >>> rm = AccessRecordManager(loopsRoot, TestRequest())
+  >>> rm.baseDir = testDir
+  >>> rm.loadRecordsFromLog()
 
 
 Fin de partie
 =============
 
+  >>> import os
+  >>> for fn in os.listdir(testDir):
+  ...     if '.log' in fn:
+  ...         os.unlink(os.path.join(testDir, fn))
   >>> placefulTearDown()
