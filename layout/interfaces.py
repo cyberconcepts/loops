@@ -25,7 +25,7 @@ $Id$
 from zope.app.container.constraints import contains, containers
 from zope.interface import Interface
 
-from loops.interfaces import INodeSchema, IBaseNode, IViewManager
+from loops.interfaces import INodeSchema, IBaseNode, INode, IViewManager
 
 
 class ILayoutView(INodeSchema):
@@ -34,7 +34,7 @@ class ILayoutView(INodeSchema):
     """
 
 
-class ILayoutNode(ILayoutView, IBaseNode):
+class ILayoutNode(ILayoutView, INode):
 
     contains(ILayoutView)
 

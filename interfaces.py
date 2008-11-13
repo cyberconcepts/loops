@@ -186,7 +186,7 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
 
 
 class ILoopsAdapter(IConceptSchema):
-    """ Common interface for concept and resource adapters.
+    """ Common interface for concept (and possibly resource) adapters.
     """
 
     context = Attribute('The underlying persistent object.')

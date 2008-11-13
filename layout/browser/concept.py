@@ -26,19 +26,14 @@ from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
 
-from cybertools.composer.layout.browser.view import Page
 from loops.browser.common import BaseView
 from loops.common import adapted
 from loops.i18n.browser import LanguageInfo
 from loops.interfaces import IConcept
-from loops.layout.interfaces import ILayoutNode
-from loops.versioning.util import getVersion
 from loops import util
 
 
 class ConceptView(object):
-
-    node = None
 
     def __init__(self, context, request):
         self.context = context  # this is the adapted concept!

@@ -50,6 +50,7 @@ class NodeTraverser(ItemTraverser):
                 target = getVersion(target, request)
                 target = adapted(target, LanguageInfo(target, request))
                 viewAnnotations['target'] = target
-                return target
+                #return target
+                return self.context
         obj = super(NodeTraverser, self).publishTraverse(request, name)
         return obj

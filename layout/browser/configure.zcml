@@ -34,15 +34,9 @@
 
   <!-- target views -->
 
-  <browser:page
-      name="index.html"
-      for="loops.interfaces.IConceptSchema"
-      class="loops.layout.browser.concept.ConceptView"
-      permission="zope.View" />
-
   <zope:adapter
       name="layout"
-      for="loops.interfaces.IConceptSchema
+      for="loops.interfaces.ILoopsAdapter
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.layout.browser.concept.ConceptView" />

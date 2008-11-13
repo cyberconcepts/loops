@@ -154,8 +154,7 @@ class ResourceAdapterBase(AdapterBase):
     storageParams = None
 
     def getChildren(self):
-        for r in self.context.getResources():
-            yield adapted(r)
+        return []
 
 
 # other adapters

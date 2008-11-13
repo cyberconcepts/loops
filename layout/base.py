@@ -56,8 +56,9 @@ class NodeLayoutInstance(LayoutInstance):
                     li.template = l
                     result.append(li)
             return result
-        # sublayouts specified via subnodes
-        subnodes = self.context.values()
+        # sublayouts specified via subnodes of the current menu node
+        menu = self.context.getMenu()
+        subnodes = menu.getMenuItems()
         names = region.layouts.keys()
         for n in subnodes:
             if n.viewName in names:
