@@ -210,6 +210,10 @@ class BaseView(GenericView, I18NView):
         return self.loopsRoot.getConceptManager()
 
     @Lazy
+    def resourceManager(self):
+        return self.loopsRoot.getResourceManager()
+
+    @Lazy
     def typePredicate(self):
         return self.conceptManager.getTypePredicate()
 

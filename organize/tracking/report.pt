@@ -1,0 +1,31 @@
+<metal:report define-macro="report"
+              tal:define="info item/getData">
+  <h2 i18n:translate="">Statistics Report</h2>
+  <metal:listing use-macro="info/macro" />
+</metal:report>
+
+
+<metal:overview define-macro="overview">
+  <table class="listing">
+    <tr>
+      <th i18n:translate="">Period</th>
+      <th i18n:translate="">access</th>
+      <th i18n:translate="">changes</th>
+      <th i18n:translate="">additions</th>
+      <th i18n:translate="">total</th>
+    </tr>
+    <tr tal:repeat="row info/data"
+        tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
+      <td tal:content="row/period"></td>
+      <td class="number"
+          tal:content="row/access"></td>
+      <td class="number"
+          tal:content="row/changed"></td>
+      <td class="number"
+          tal:content="row/new"></td>
+      <td class="number"
+          tal:content="row/count"></td>
+    </tr>
+  </table>
+</metal:overview>
+

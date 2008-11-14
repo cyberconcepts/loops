@@ -59,6 +59,13 @@ Recording changes to objects
   >>> len(changes)
   1
 
+  >>> from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+  >>> from zope.event import notify
+  >>> resources['d001.txt'].title = 'Change Doc 001'
+  >>> notify(ObjectModifiedEvent(resources['d001.txt']))
+  >>> len(changes)
+  2
+
 Recording assignment changes
 ----------------------------
 
@@ -68,14 +75,18 @@ Recording assignment changes
 
   >>> t01.assignChild(johnC)
   >>> len(changes)
-  2
+  3
 
 
 Tracking Object Access
 ======================
 
 Access records are not directly stored in the ZODB (in order to avoid
-conflict errors) but first stored to a log file.
+conflict errors) but are first stored to a log file.
+
+Even this logging is a two-step process: the data to be logged are first collected
+in the request; all collected data are then written triggered by the
+EndRequestEvent.
 
   >>> from loops.organize.tracking.access import logfile_option, record, logAccess
   >>> from loops.organize.tracking.access import AccessRecordManager
@@ -94,20 +105,40 @@ conflict errors) but first stored to a log file.
   ...                 node=util.getUidForObject(home),
   ...                 target=util.getUidForObject(resources['d001.txt']),
   ...       )
+  >>> logAccess(EndRequestEvent(NodeView(home, request), request), testDir)
+
   >>> record(request, principal='users.john', view='render',
   ...                 node=util.getUidForObject(home),
   ...                 target=util.getUidForObject(resources['d002.txt']),
   ...       )
-
   >>> logAccess(EndRequestEvent(NodeView(home, request), request), testDir)
 
-They can then be read in via an AccessRecordManager object, i.e. a view
+The access log can then be read in via an AccessRecordManager object, i.e. a view
 that may be called via ``wget`` using a crontab entry or some other kind
 of job control.
+
+  >>> access = records['access']
+  >>> len(access)
+  0
 
   >>> rm = AccessRecordManager(loopsRoot, TestRequest())
   >>> rm.baseDir = testDir
   >>> rm.loadRecordsFromLog()
+  >>> len(access)
+  2
+
+
+Tracking Reports
+================
+
+  >>> from loops.organize.tracking.report import TrackingStats
+
+  >>> view = TrackingStats(home, TestRequest())
+  >>> result = view.getData()
+  >>> result['macro'][4][1][u'define-macro']
+  u'overview'
+  >>> result['data']
+  [{'access': 2, 'new': 0, 'changed': 1, 'period': '2008-11', 'count': 3}]
 
 
 Fin de partie

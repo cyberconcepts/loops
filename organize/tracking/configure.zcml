@@ -28,6 +28,12 @@
 
   <!-- views -->
 
+  <browser:page
+      name="tracking_stats.html"
+      for="loops.interfaces.IConcept"
+      class="loops.organize.tracking.report.TrackingStats"
+      permission="zope.View" />
+
   <zope:adapter
       for="loops.organize.tracking.change.IChangeRecord
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -43,11 +49,11 @@
       permission="zope.View" />
 
   <browser:page
-        name="load_access_records"
-        for="loops.interfaces.ILoops"
-        class="loops.organize.tracking.access.AccessRecordManager"
-        attribute="loadRecordsFromLog"
-        permission="zope.Public" />
+      name="load_access_records"
+      for="loops.interfaces.ILoops"
+      class="loops.organize.tracking.access.AccessRecordManager"
+      attribute="loadRecordsFromLog"
+      permission="zope.Public" />
 
   <zope:adapter factory="loops.organize.tracking.setup.SetupManager"
                 name="organize.tracking" />

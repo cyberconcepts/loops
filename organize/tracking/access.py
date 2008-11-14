@@ -56,6 +56,7 @@ def record(request, **kw):
     data = request.annotations.setdefault(request_key, {})
     for k, v in kw.items():
         data[k] = v
+    # ???: better to collect data in a list of dictionaries?
 
 
 @adapter(IEndRequestEvent)

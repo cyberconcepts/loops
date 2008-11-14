@@ -45,6 +45,10 @@ table.listing td {
     vertical-align: middle;
 }
 
+table.listing td.number {
+    text-align: right;
+}
+
 table.listing td.checkbox {
     text-align: center;
     width: 10px;
