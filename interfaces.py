@@ -108,6 +108,10 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
         """ Return a concept that provides the object's type.
         """
 
+    def getClients(relationships=None):
+        """ Return a sequence of objects that the concept is the target of.
+        """
+
     def getChildren(predicates=None):
         """ Return a sequence of concepts related to self as child concepts,
             optionally restricted to the predicates given.

@@ -43,15 +43,18 @@ class LayoutNode(Node):
 class NodeLayoutInstance(LayoutInstance):
 
     @Lazy
+    def target(self):
+        return adapted(self.context.target)
+
+    @Lazy
     def targetView(self):
         request = self.view.request
-        target = adapted(self.context.target)
-        view = component.getMultiAdapter((target, request), name='layout')
+        view = component.getMultiAdapter((self.target, request), name='layout')
         view.node = self.context
         return view
 
 
-class NavigationNodeLayoutInstance(NodeLayoutInstance):
+class NavigationLayoutInstance(NodeLayoutInstance):
 
     def getLayouts(self, region):
         """ Return sublayout instances specified via subnodes of the current menu node.
@@ -70,3 +73,33 @@ class NavigationNodeLayoutInstance(NodeLayoutInstance):
                 li.template = layout
                 result.append(li)
         return result
+
+
+class TargetLayoutInstance(NodeLayoutInstance):
+
+    def getLayouts(self, region):
+        """ Return sublayout instances specified by the target object.
+        """
+        target = self.target
+        if region is None or target is None:
+            return []
+        result = []
+        names = region.layouts.keys()
+        tp = target.context.conceptType
+        for n in tp.getClients():
+            if n.nodeType == 'info' and n.viewName in names:
+                layout = region.layouts[n.viewName]
+                li = component.getAdapter(n, ILayoutInstance,
+                                          name=layout.instanceName)
+                li.template = layout
+                result.append(li)
+        return result
+
+    @Lazy
+    def target(self):
+        viewAnnotations = self.view.request.annotations.get('loops.view', {})
+        target = viewAnnotations.get('target')
+        if target is None:
+            target = adapted(self.context.target)
+        return target
+
