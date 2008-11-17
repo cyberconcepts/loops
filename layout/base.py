@@ -42,32 +42,6 @@ class LayoutNode(Node):
 
 class NodeLayoutInstance(LayoutInstance):
 
-    def getLayouts(self, region):
-        """ Return sublayout instances.
-        """
-        if region is None:
-            return []
-        result = []
-        sublayouts = self.template.sublayouts
-        if sublayouts is not None:  # hard-coded sublayouts
-            for l in region.layouts:
-                if sublayouts is None or l.name in sublayouts:
-                    li = ILayoutInstance(self.context)
-                    li.template = l
-                    result.append(li)
-            return result
-        # sublayouts specified via subnodes of the current menu node
-        menu = self.context.getMenu()
-        subnodes = menu.getMenuItems()
-        names = region.layouts.keys()
-        for n in subnodes:
-            if n.viewName in names:
-                layout = region.layouts[n.viewName]
-                li = ILayoutInstance(n)
-                li.template = layout
-                result.append(li)
-        return result
-
     @Lazy
     def targetView(self):
         request = self.view.request
@@ -76,3 +50,23 @@ class NodeLayoutInstance(LayoutInstance):
         view.node = self.context
         return view
 
+
+class NavigationNodeLayoutInstance(NodeLayoutInstance):
+
+    def getLayouts(self, region):
+        """ Return sublayout instances specified via subnodes of the current menu node.
+        """
+        if region is None:
+            return []
+        result = []
+        menu = self.context.getMenu()
+        subnodes = menu.getMenuItems()
+        names = region.layouts.keys()
+        for n in subnodes:
+            if n.viewName in names:
+                layout = region.layouts[n.viewName]
+                li = component.getAdapter(n, ILayoutInstance,
+                                          name=layout.instanceName)
+                li.template = layout
+                result.append(li)
+        return result

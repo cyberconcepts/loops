@@ -20,6 +20,11 @@
         for="loops.layout.interfaces.ILayoutNode"
         factory="loops.layout.base.NodeLayoutInstance" />
 
+  <zope:adapter
+        for="loops.layout.interfaces.ILayoutNode"
+        name="navigation"
+        factory="loops.layout.base.NavigationNodeLayoutInstance" />
+
   <include package=".browser" />
 
 </configure>
