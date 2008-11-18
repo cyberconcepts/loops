@@ -22,6 +22,8 @@ Layout-based concept views.
 $Id$
 """
 
+import re
+
 from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
@@ -45,7 +47,7 @@ class ConceptView(object):
 
     @Lazy
     def url(self):
-        return '%s/.%s' % (absoluteURL(self.node, self.request), self.context.uid)
+        return '%s/.%s-%s' % (absoluteURL(self.node, self.request), self.context.uid, normalize(self.context.title))
 
     @property
     def children(self):
@@ -54,3 +56,8 @@ class ConceptView(object):
             view.node = self.node
             yield view
 
+
+pattern = re.compile(r'[ /\?\+%]')
+
+def normalize(text):
+    return pattern.sub('-', text)

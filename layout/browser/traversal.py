@@ -40,6 +40,8 @@ class NodeTraverser(ItemTraverser):
     def publishTraverse(self, request, name):
         if name.startswith('.'):
             if len(name) > 1:
+                if '-' in name:
+                    name, ignore = name.split('-', 1)
                 uid = int(name[1:])
                 target = util.getObjectForUid(uid)
             else:
