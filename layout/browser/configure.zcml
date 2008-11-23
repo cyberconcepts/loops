@@ -18,11 +18,11 @@
       name="AddLoopsLayoutNode.html"
       content_factory="loops.layout.base.LayoutNode"
       schema="loops.layout.interfaces.ILayoutNode"
-      fields="title description nodeType viewName body"
+      fields="title description nodeType viewName pageName body"
       template="../../browser/add.pt"
       permission="zope.ManageContent">
     <widget field="description" height="2" />
-    <widget field="body" height="8" />
+    <widget field="body" height="3" />
   </browser:addform>
 
   <browser:addMenuItem
@@ -31,6 +31,19 @@
       description="A layout node controls the presentation of objects"
       permission="zope.ManageContent"
       view="AddLoopsLayoutNode.html" />
+
+  <browser:editform
+      label="Edit Node"
+      name="edit.html"
+      schema="loops.layout.interfaces.ILayoutNode"
+      fields="title description nodeType viewName pageName body"
+      for="loops.layout.interfaces.ILayoutNode"
+      template="../../browser/edit.pt"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit Node">
+    <widget field="description" height="2" />
+    <widget field="body" height="3" />
+  </browser:editform>
 
   <!-- target views -->
 

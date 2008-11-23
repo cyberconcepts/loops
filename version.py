@@ -21,7 +21,7 @@ loops version specifications.
 """
 
 revision = '$Id$'
-shortVersion = '0.8'
+shortVersion = '0.9'
 longVersion = '%s-%s' % (shortVersion, ' '.join(revision.split()[2:5]))
 
 versions = dict(loops=shortVersion)

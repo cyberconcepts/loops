@@ -24,6 +24,7 @@ $Id$
 
 from zope.app.container.constraints import contains, containers
 from zope.interface import Interface
+from zope import schema
 
 from loops.interfaces import INodeSchema, IBaseNode, INode, IViewManager
 
@@ -32,6 +33,13 @@ class ILayoutView(INodeSchema):
     """ Base interface for view nodes that use the cybertools.composer.layout
         presentation mechanism.
     """
+
+    pageName = schema.TextLine(
+        title=_(u'Page name'),
+        description=_(u'Name that may be used to identify the layout '
+                      u'via a name in the URL.'),
+        default=u'',
+        required=False)
 
 
 class ILayoutNode(ILayoutView, INode):

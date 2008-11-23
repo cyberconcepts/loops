@@ -25,6 +25,7 @@ $Id$
 from zope.app.container.traversal import ItemTraverser
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.publisher.interfaces import NotFound
 
 from loops.common import adapted
 from loops.i18n.browser import LanguageInfo
@@ -38,6 +39,7 @@ class NodeTraverser(ItemTraverser):
     adapts(ILayoutNode)
 
     def publishTraverse(self, request, name):
+        viewAnnotations = request.annotations.setdefault('loops.view', {})
         if name.startswith('.'):
             if len(name) > 1:
                 if '-' in name:
@@ -54,5 +56,9 @@ class NodeTraverser(ItemTraverser):
                 viewAnnotations['target'] = target
                 #return target
                 return self.context
-        obj = super(NodeTraverser, self).publishTraverse(request, name)
+        try:
+            obj = super(NodeTraverser, self).publishTraverse(request, name)
+        except NotFound, e:
+            viewAnnotations['pageName'] = name
+            return self.context
         return obj

@@ -35,12 +35,18 @@ from loops.view import Node
 
 class LayoutNode(Node):
 
+    pageName = u''
+
     implements(ILayoutNode, ILayoutNodeContained)
 
 
 # layout instances
 
 class NodeLayoutInstance(LayoutInstance):
+
+    @Lazy
+    def viewAnnotations(self):
+        return self.view.request.annotations.get('loops.view', {})
 
     @Lazy
     def target(self):
@@ -81,6 +87,7 @@ class TargetLayoutInstance(NodeLayoutInstance):
         """ Return sublayout instances specified by the target object.
         """
         target = self.target
+        pageName = self.viewAnnotations.get('pageName', u'')
         if region is None or target is None:
             return []
         result = []
@@ -88,17 +95,20 @@ class TargetLayoutInstance(NodeLayoutInstance):
         tp = target.context.conceptType
         for n in tp.getClients():
             if n.nodeType == 'info' and n.viewName in names:
+                if pageName != n.pageName:
+                    continue
                 layout = region.layouts[n.viewName]
                 li = component.getAdapter(n, ILayoutInstance,
                                           name=layout.instanceName)
                 li.template = layout
                 result.append(li)
+        # TODO: if not result: provide error info with names, pageName,
+        #       info on client nodes
         return result
 
     @Lazy
     def target(self):
-        viewAnnotations = self.view.request.annotations.get('loops.view', {})
-        target = viewAnnotations.get('target')
+        target = self.viewAnnotations.get('target')
         if target is None:
             target = adapted(self.context.target)
         return target
