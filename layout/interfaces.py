@@ -27,6 +27,7 @@ from zope.interface import Interface
 from zope import schema
 
 from loops.interfaces import INodeSchema, IBaseNode, INode, IViewManager
+from loops.util import _
 
 
 class ILayoutView(INodeSchema):
