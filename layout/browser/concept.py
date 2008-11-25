@@ -46,6 +46,10 @@ class ConceptView(object):
         return self.context.title
 
     @Lazy
+    def description(self):
+        return self.context.description
+
+    @Lazy
     def url(self):
         return '%s/.%s-%s' % (absoluteURL(self.node, self.request), self.context.uid, normalize(self.context.title))
 

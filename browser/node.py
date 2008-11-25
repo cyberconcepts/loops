@@ -51,7 +51,7 @@ from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import DialogAction
-from loops.common import adapted
+from loops.common import adapted, AdapterBase
 from loops.i18n.browser import i18n_macros
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
@@ -327,6 +327,8 @@ class NodeView(BaseView):
             print '***', name, params
         target = self.virtualTargetObject
         if target is not None:
+            if isinstance(target, AdapterBase):
+                target = target.context
             targetView = component.queryMultiAdapter(
                                 (adapted(target), self.request), name=name)
             if targetView is None:
