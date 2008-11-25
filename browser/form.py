@@ -42,6 +42,7 @@ from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
 from cybertools.browser.view import popupTemplate
 from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.grid.field import grid_macros
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
 from cybertools.composer.schema.schema import FormState
@@ -110,6 +111,7 @@ class ObjectForm(NodeView):
         renderers = dict(schema_macros.macros)
         # replace HTML edit widget with Dojo Editor
         renderers['input_html'] = self.template.macros['input_html']
+        renderers['input_grid'] = grid_macros.macros['input_grid']
         return renderers
 
     @Lazy

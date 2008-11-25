@@ -549,12 +549,20 @@ class BaseView(GenericView, I18NView):
 
     def registerDojoFormAll(self):
         self.registerDojo()
+        cm = self.controller.macros
         jsCall = ('dojo.require("dijit.form.Form"); '
                   'dojo.require("dijit.form.DateTextBox"); '
-                  'dojo.require("dijit.form.TimeTextBox");'
+                  'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
-                  'dojo.require("dojox.data.QueryReadStore");')
-        self.controller.macros.register('js-execute', 'dojo.form.all', jsCall=jsCall)
+                  'dojo.require("dojox.grid.DataGrid"); '
+                  'dojo.require("dojo.data.ItemFileWriteStore"); '
+                  'dojo.require("dojox.data.QueryReadStore"); ')
+        cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
+        cm.register('css', identifier='dojox.grid.css', position=0,
+                    resourceName='ajax.dojo/dojox/grid/resources/Grid.css', media='all')
+        cm.register('css', identifier='dojox.grid_tundra.css', position=0,
+                    resourceName='ajax.dojo/dojox/grid/resources/tundraGrid.css',
+                    media='all')
 
 
 # vocabulary stuff

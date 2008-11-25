@@ -340,6 +340,8 @@
            name="list" />
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
+  <adapter factory="cybertools.composer.schema.grid.field.GridFieldInstance"
+           name="grid" />
 
   <adapter factory="cybertools.composer.schema.factory.SchemaFactory" />
   <adapter factory="loops.schema.ResourceSchemaFactory" />
