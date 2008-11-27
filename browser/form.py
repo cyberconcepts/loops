@@ -263,7 +263,7 @@ class CreateObjectForm(ObjectForm):
 
     @Lazy
     def typeConcept(self):
-        typeToken = self.request.get('form.type')
+        typeToken = self.request.get('form.type') or self.defaultTypeToken
         if typeToken:
             return self.loopsRoot.loopsTraverse(typeToken)
 
