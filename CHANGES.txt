@@ -1,0 +1,9 @@
+Change Log
+==========
+
+$Id$
+
+0.9
+---
+
+- add definition of loops package version (see loops/version.py)

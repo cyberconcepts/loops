@@ -50,8 +50,12 @@ class ConceptView(object):
         return self.context.description
 
     @Lazy
+    def menu(self):
+        return self.node.getMenu()
+
+    @Lazy
     def url(self):
-        return '%s/.%s-%s' % (absoluteURL(self.node, self.request),
+        return '%s/.%s-%s' % (absoluteURL(self.menu, self.request),
                               self.context.uid, normalize(self.context.title))
 
     @property

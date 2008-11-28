@@ -21,8 +21,10 @@ loops version specifications.
 """
 
 revision = '$Id$'
-shortVersion = '0.9'
-longVersion = '%s-%s' % (shortVersion, ' '.join(revision.split()[2:5]))
+version = '0.9'
+package = 'loops'
 
-versions = dict(loops=shortVersion)
-longVersions = dict(loops=longVersion)
+from cybertools.util.version import versions
+
+versions.add(package, version, revision)
+

@@ -25,6 +25,7 @@ $Id$
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.composer.layout.browser.view import Page
+from loops.common import adapted
 
 
 class LayoutNodeView(Page):
@@ -43,4 +44,22 @@ class LayoutNodeView(Page):
             n = n.getParentNode()
         result.append('page')
         return result
+
+    @Lazy
+    def viewAnnotations(self):
+        return self.request.annotations.get('loops.view', {})
+
+    @Lazy
+    def target(self):
+        target = self.viewAnnotations.get('target')
+        if target is None:
+            target = adapted(self.context.target)
+        return target
+
+    @Lazy
+    def headTitle(self):
+        if self.target:
+            return ' - '.join((self.context.title, self.target.title))
+        else:
+            return self.context.title
 
