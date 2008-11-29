@@ -26,11 +26,13 @@
   <class class="loops.base.Loops">
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <factory id="loops.Loops" description="loops top-level container" />
-    <allow attributes="getSiteManager" />
+    <allow attributes="getSiteManager __getitem__" />
     <require permission="zope.ManageServices"
              attributes="setSiteManager" />
     <require permission="zope.View"
-             interface="zope.app.container.interfaces.IReadContainer" />
+             attributes="get __contains__ keys values items __iter__ __len__"/>
+    <!--<require permission="zope.View"
+             interface="zope.app.container.interfaces.IReadContainer" />-->
     <require permission="zope.ManageContent"
              interface="zope.app.container.interfaces.IWriteContainer" />
     <!--<require permission="zope.View"
@@ -158,9 +160,11 @@
 
   <class class=".view.ViewManager">
     <factory id="loops.ViewManager" description="View manager" />
-    <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
+    <allow attributes="__getitem__" />
+    <require permission="zope.View"
+             attributes="get __contains__ keys values items __iter__ __len__"/>
+    <!--<require permission="zope.View"
+             interface="zope.app.container.interfaces.IReadContainer" />-->
     <require
         permission="zope.ManageContent"
         interface="zope.app.container.interfaces.IWriteContainer"
