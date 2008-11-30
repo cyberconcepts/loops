@@ -1,0 +1,15 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <browser:page
+      name="process_jobs.cmd"
+      for="loops.interfaces.ILoops"
+      class="loops.organize.job.browser.Executor"
+      attribute="processJobs"
+      permission="zope.Public" />
+
+</configure>

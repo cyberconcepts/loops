@@ -6,4 +6,10 @@ $Id$
 0.9
 ---
 
+- basic job management: a job executor view calls job managers specified
+  by loops root option ``organize.job.managers``
+- allow ``__getitem__`` on Loops and ViewManager, this is a prerequisite for
+  using virtual hosts over more than one path element (e.g. leading to
+  views/home) on protected sites; this also allows calling of job processiong
+  views via wget without login credentials
 - add definition of loops package version (see loops/version.py)
