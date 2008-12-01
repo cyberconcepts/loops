@@ -89,6 +89,7 @@ in the request; all collected data are then written triggered by the
 EndRequestEvent.
 
   >>> from loops.organize.tracking.access import logfile_option, record, logAccess
+  >>> #from loops.organize.tracking.access import AccessRecordManagerView
   >>> from loops.organize.tracking.access import AccessRecordManager
   >>> from loops.organize.tracking.tests import testDir
   >>> from loops.browser.node import NodeView
@@ -121,7 +122,8 @@ of job control.
   >>> len(access)
   0
 
-  >>> rm = AccessRecordManager(loopsRoot, TestRequest())
+  >>> #rm = AccessRecordManagerView(loopsRoot, TestRequest())
+  >>> rm = AccessRecordManager(loopsRoot)
   >>> rm.baseDir = testDir
   >>> rm.loadRecordsFromLog()
   >>> len(access)
@@ -138,7 +140,7 @@ Tracking Reports
   >>> result['macro'][4][1][u'define-macro']
   u'overview'
   >>> result['data']
-  [{'access': 2, 'new': 0, 'changed': 1, 'period': '2008-11', 'count': 3}]
+  [{'access': 2, 'new': 0, 'changed': 1, 'period': '...', 'count': 3}]
 
 
 Fin de partie

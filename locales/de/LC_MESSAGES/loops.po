@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2008-10-15 12:00 CET\n"
+"PO-Revision-Date: 2008-11-01 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -376,4 +376,7 @@ msgstr "loops-Notiz anlegen"
 
 msgid "State information for $definition: $title"
 msgstr "Status ($definition): $title"
+
+msgid "User ID"
+msgstr "Benutzerkennung"
 

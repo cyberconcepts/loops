@@ -38,6 +38,7 @@ from cybertools.tracking.btree import Track, getTimeStamp
 from cybertools.tracking.interfaces import ITrack
 from cybertools.tracking.logfile import Logger, loggers
 from loops.interfaces import ILoopsObject
+from loops.organize.job.base import JobManager
 from loops.organize.tracking.base import BaseRecordManager
 from loops import util
 
@@ -95,14 +96,16 @@ def marshall(data):
 
 # record manager
 
-class AccessRecordManager(BaseRecordManager):
+class AccessRecordManager(BaseRecordManager, JobManager):
 
     storageName = 'access'
 
-    def __init__(self, context, request):
+    def __init__(self, context):
         self.context = context
-        self.request = request
         self.baseDir = util.getVarDirectory()
+
+    def process(self):
+        self.loadRecordsFromLog()
 
     @Lazy
     def logfile(self):
@@ -159,6 +162,16 @@ class AccessRecordManager(BaseRecordManager):
                 return
         self.storage.saveUserTrack(taskId, 0, personId, data,
                                    timeStamp=timeStamp)
+
+
+class AccessRecordManagerView(AccessRecordManager):
+    # obsolete, records are now loaded via AccessRecordManager adapter
+    # that is called via a job executor view.
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        self.baseDir = util.getVarDirectory()
 
 
 class IAccessRecord(ITrack):

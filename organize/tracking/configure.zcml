@@ -26,6 +26,14 @@
 
   <zope:subscriber handler="loops.organize.tracking.access.logAccess" />
 
+  <zope:adapter
+      factory="loops.organize.tracking.access.AccessRecordManager"
+      name="load_access_records"
+      trusted="True" />
+  <zope:class class="loops.organize.tracking.access.AccessRecordManager">
+    <allow attributes="process" />
+  </zope:class>
+
   <!-- views -->
 
   <browser:page
@@ -51,7 +59,7 @@
   <browser:page
       name="load_access_records"
       for="loops.interfaces.ILoops"
-      class="loops.organize.tracking.access.AccessRecordManager"
+      class="loops.organize.tracking.access.AccessRecordManagerView"
       attribute="loadRecordsFromLog"
       permission="zope.Public" />
 
