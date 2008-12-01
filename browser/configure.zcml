@@ -16,7 +16,7 @@
   <resource name="loops.css" file="loops.css" />
   <resource name="loops.js" file="loops.js" />
 
-  <!-- new style pages -->
+  <!-- node pages -->
 
   <page for="loops.interfaces.INode"
         name="index.html"
@@ -139,14 +139,6 @@
       permission="zope.ManageContent"
       />
 
-  <!--<addMenuItem
-      class="loops.concept.ConceptManager"
-      title="Concept Manager"
-      description="A concept manager manages concepts"
-      permission="zope.ManageContent"
-      view="AddLoopsConceptManager.html"
-      />-->
-
   <containerViews
       for="loops.interfaces.IConceptManager"
       add="zope.ManageContent"
@@ -248,14 +240,6 @@
       template="add.pt"
       permission="zope.ManageContent"
       />
-
-  <!--<addMenuItem
-      class="loops.resource.ResourceManager"
-      title="Resource Manager"
-      description="A resource manager manages resources"
-      permission="zope.ManageContent"
-      view="AddLoopsResourceManager.html"
-      />-->
 
   <containerViews
       for="loops.interfaces.IResourceManager"
@@ -373,14 +357,6 @@
       permission="zope.ManageContent"
       />
 
-  <!--<addMenuItem
-      class="loops.view.ViewManager"
-      title="View Manager"
-      description="A view manager manages views, like nodes, menu items, ..."
-      permission="zope.ManageContent"
-      view="AddLoopsViewManager.html"
-      />-->
-
   <containerViews
       for="loops.interfaces.IViewManager"
       index="zope.ManageContent"
@@ -407,17 +383,6 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Contents"
       />
-
-  <!-- import/export - obsolete:
-  <pages for="loops.interfaces.IViewManager"
-         class=".external.NodesExportImport"
-         permission="zope.ManageContent">
-    <page name="exportimport.html"
-          template="exportimport.pt"
-          menu="zmi_views" title="Export/Import"  />
-    <page name="export_nodes.html"
-          attribute="export" />
-  </pages>-->
 
   <!-- node -->
 
@@ -511,20 +476,6 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Configure"
       />
-
-  <!--<page
-      name="node.html"
-      for="loops.interfaces.INode"
-      template="node.pt"
-      class=".node.NodeView"
-      permission="zope.View"
-      menu="zmi_views" title="View"
-      />-->
-
-  <!--<defaultView
-      for="loops.interfaces.INode"
-      name="main.html"
-      />-->
 
   <zope:adapter
       name="listpages"

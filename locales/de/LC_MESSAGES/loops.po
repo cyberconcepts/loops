@@ -380,3 +380,20 @@ msgstr "Status ($definition): $title"
 msgid "User ID"
 msgstr "Benutzerkennung"
 
+# management interface
+
+msgid "Top"
+msgstr "Ganz nach oben"
+
+msgid "Up"
+msgstr "Nach oben"
+
+msgid "Down"
+msgstr "Nach unten"
+
+msgid "Bottom"
+msgstr "Ganz nach unten"
+
+msgid "Edit Node"
+msgstr "Bearbeiten"
+
