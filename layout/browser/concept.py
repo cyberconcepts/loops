@@ -65,6 +65,13 @@ class ConceptView(object):
             view.node = self.node
             yield view
 
+    def requireDojo(*packages):
+        # TODO: make sure dojo and dojo_require are displayed in page.js
+        djInfo = self.request.annotations.setdefault('ajax.dojo', {})
+        requirements = djInfo.setdefault('requirements', set())
+        for p in packages:
+            requirements.add(p)
+
 
 pattern = re.compile(r'[ /\?\+%]')
 
