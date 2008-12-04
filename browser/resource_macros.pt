@@ -42,7 +42,8 @@
     <div metal:use-macro="views/node_macros/object_actions" />
     <h3 tal:content="item/title">Title</h3><br />
     <img src="#"
-         tal:attributes="src string:${view/url}/.target${view/targetId}/view" />
+         tal:attributes="src
+                string:${view/url}/.target${view/targetId}/view?version=this" />
     <p><i tal:content="item/description">Description</i></p>
   </div>
 </metal:block>
@@ -57,7 +58,8 @@
       <span class="button">
         <a href="#"
            i18n:translate=""
-           tal:attributes="href string:${view/url}/.target${view/targetId}/download.html">
+           tal:attributes="href
+                string:${view/url}/.target${view/targetId}/download.html?version=this">
           Download
         </a>
       </span>
@@ -65,7 +67,8 @@
             tal:condition="item/viewable | nothing">
         <a href="#"
            i18n:translate=""
-           tal:attributes="href string:${view/url}/.target${view/targetId}/view">
+           tal:attributes="href
+                string:${view/url}/.target${view/targetId}/view?version=this">
           View
         </a>
       </span>

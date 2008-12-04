@@ -4,8 +4,9 @@
     <h1 tal:content="item/title">Title</h1><br />
     <p tal:define="url python: view.getUrlForTarget(item)">
       <a href="#"
-         tal:attributes="href string:${url}/view"><img
-            tal:attributes="src string:${url}/@@mediaasset.html?v=medium" /></a>
+         tal:attributes="href string:${url}/view?version=this"><img
+            tal:attributes="src
+                    string:${url}/@@mediaasset.html?version=this&v=medium" /></a>
     </p>
     <p><i tal:content="item/description">Description</i></p>
   </div>
