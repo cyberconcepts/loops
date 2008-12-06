@@ -173,6 +173,8 @@ class TrackDetails(object):
         obj = util.getObjectForUid(self.track.taskId)
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
+        if url:
+            url = url + '?version=this'
         return dict(object=obj, title=obj.title, url=url)
 
     @Lazy
