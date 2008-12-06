@@ -173,12 +173,13 @@ class TrackDetails(object):
 
     @Lazy
     def user(self):
-        obj = util.getObjectForUid(self.track.userName)
+        userName = self.track.userName
+        obj = util.getObjectForUid(userName)
         if obj is None:
             try:
                 userTitle = self.authentication.getPrincipal(userName)
             except PrincipalLookupError:
-                userTitle = self.track.userName
+                userTitle = userName
             return dict(object=None, title=userTitle, url='')
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
