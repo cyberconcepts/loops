@@ -132,18 +132,21 @@ class RecentChanges(TrackingStats):
         result = []
         for track in self.changeRecords:
             if track.data['action'] == 'add' and track.taskId not in new:
+                sameChanged = changed.get(track.taskId)
+                if sameChanged and sameChanged.timeStamp < track.timeStamp + 60:
+                    # change immediate after creation
+                    if result[-1].taskId == track.taskId:
+                        result.pop()
                 new[track.taskId] = track
                 result.append(track)
                 continue
             if track.data['action'] == 'modify' and track.taskId not in changed:
-                sameNew = new.get(track.taskId)
-                if sameNew and sameNew.timeStamp > track.timeStamp - 60:
-                    # change immediate after creation
-                    continue
                 changed[track.taskId] = track
                 result.append(track)
                 continue
-        return dict(data=[TrackDetails(self, tr) for tr in result[:length]],
+            if len(resul) > length:
+                break
+        return dict(data=[TrackDetails(self, tr) for tr in result],
                     macro=self.macros['recent_changes'])
 
 
