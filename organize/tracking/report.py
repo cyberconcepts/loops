@@ -23,6 +23,7 @@ $Id$
 """
 
 from datetime import date, datetime
+from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
