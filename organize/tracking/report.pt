@@ -37,7 +37,7 @@
       <th i18n:translate="">Title</th>
       <th i18n:translate="">User</th>
       <th i18n:translate="">Date/Time</th>
-      <th i18n:translate="">Change</th>
+      <th i18n:translate="">New</th>
     </tr>
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
@@ -50,8 +50,8 @@
            tal:omit-tag="not:url"
            tal:content="row/user/title" /></td>
       <td tal:content="row/timeStamp"></td>
-      <td i18n:translate=""
-          tal:content="row/action"></td>
+      <td class="center"
+          tal:content="row/markNew"></td>
     </tr>
   </table>
 </metal:recent>

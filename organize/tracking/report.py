@@ -191,7 +191,11 @@ class TrackDetails(object):
 
     @Lazy
     def action(self):
-        return self.track.data['action']
+        return self.track.data.get('action', '')
+
+    @Lazy
+    def markNew(self):
+        return self.action == 'add' and '*' or ''
 
     @Lazy
     def timeStamp(self):
