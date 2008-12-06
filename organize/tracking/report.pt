@@ -1,6 +1,7 @@
 <metal:report define-macro="report"
               tal:define="info item/getData">
-  <h2 i18n:translate="">Statistics Report</h2>
+  <h2 i18n:translate=""
+      tal:content="item/title|default">Statistics Report</h2><br />
   <metal:listing use-macro="info/macro" />
 </metal:report>
 
@@ -29,3 +30,27 @@
   </table>
 </metal:overview>
 
+
+<metal:recent define-macro="recent_changes">
+  <table class="listing">
+    <tr>
+      <th i18n:translate="">Title</th>
+      <th i18n:translate="">User</th>
+      <th i18n:translate="">Date/Time</th>
+      <th i18n:translate="">Change</th>
+    </tr>
+    <tr tal:repeat="row info/data"
+        tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
+      <td tal:define="url row/object/url">
+        <a tal:attributes="href url"
+           tal:omit-tag="not:url"
+           tal:content="row/object/title" /></td>
+      <td tal:define="url row/user/url">
+        <a tal:attributes="href url"
+           tal:omit-tag="not:url"
+           tal:content="row/user/title" /></td>
+      <td tal:content="row/timeStamp"></td>
+      <td tal:content="row/action"></td>
+    </tr>
+  </table>
+</metal:recent>

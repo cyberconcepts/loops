@@ -42,6 +42,12 @@
       class="loops.organize.tracking.report.TrackingStats"
       permission="zope.View" />
 
+  <browser:page
+      name="recent_changes.html"
+      for="loops.interfaces.IConcept"
+      class="loops.organize.tracking.report.RecentChanges"
+      permission="zope.View" />
+
   <zope:adapter
       for="loops.organize.tracking.change.IChangeRecord
            zope.publisher.interfaces.browser.IBrowserRequest"

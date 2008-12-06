@@ -133,6 +133,9 @@ of job control.
 Tracking Reports
 ================
 
+Overview (cumulative) statistics
+--------------------------------
+
   >>> from loops.organize.tracking.report import TrackingStats
 
   >>> view = TrackingStats(home, TestRequest())
@@ -141,6 +144,28 @@ Tracking Reports
   u'overview'
   >>> result['data']
   [{'access': 2, 'new': 0, 'changed': 1, 'period': '...', 'count': 3}]
+
+Recent changes
+--------------
+
+  >>> from loops.organize.tracking.report import RecentChanges
+  >>> view = RecentChanges(home, TestRequest())
+  >>> result = view.getData()
+  >>> result['macro'][4][1][u'define-macro']
+  u'recent_changes'
+
+  >>> data = result['data']
+  >>> data
+  [<ChangeRecord ['27', 2, '33', '...']: {'action': 'modify'}>]
+
+  >>> data[0].timeStamp
+  u'... ...:...'
+  >>> data[0].object
+  {'url': '', 'object': <loops.resource.Resource ...>, 'title': 'Change Doc 001'}
+  >>> data[0].user
+  {'url': '', 'object': <loops.concept.Concept ...>, 'title': u'john'}
+  >>> data[0].action
+  'modify'
 
 
 Fin de partie

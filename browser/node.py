@@ -76,6 +76,8 @@ class NodeView(BaseView):
 
     def __init__(self, context, request):
         super(NodeView, self).__init__(context, request)
+        viewAnnotations = request.annotations.setdefault('loops.view', {})
+        viewAnnotations['nodeView'] = self
         viewConfig = getViewConfiguration(context, request)
         self.setSkin(viewConfig.get('skinName'))
 
@@ -738,6 +740,8 @@ class NodeTraverser(ItemTraverser):
     component.adapts(INode)
 
     def publishTraverse(self, request, name):
+        viewAnnotations = request.annotations.setdefault('loops.view', {})
+        viewAnnotations['node'] = self.context
         if self.context.nodeType == 'menu':
             setViewConfiguration(self.context, request)
         if name == '.loops':
@@ -761,8 +765,6 @@ class NodeTraverser(ItemTraverser):
                 target = self.context.target
             if target is not None:
                 # remember self.context in request
-                viewAnnotations = request.annotations.setdefault('loops.view', {})
-                viewAnnotations['node'] = self.context
                 if request.method == 'PUT':
                     # we have to use the target object directly
                     return target

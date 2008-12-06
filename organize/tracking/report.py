@@ -28,9 +28,11 @@ from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
+from cybertools.util import format
 from loops.browser.common import BaseView
 from loops.interfaces import IResource
 from loops import util
+from loops.util import _
 
 
 report_macros = ViewPageTemplateFile('report.pt')
@@ -39,6 +41,7 @@ report_macros = ViewPageTemplateFile('report.pt')
 class TrackingStats(BaseView):
 
     template = report_macros
+    title = _(u'Statistics Report')
 
     @Lazy
     def macro(self):
@@ -112,10 +115,74 @@ class TrackingStats(BaseView):
             the period given.
         """
 
-    def getObjectDetails(uid):
-        """ Listing of last n accesses and changes of the object specified by
-            the uid given.
+    def getObjectDetails(uid, period=None):
+        """ Listing of (last n?) accesses and changes of the object specified by
+            the uid given, optionally limited to the period (month) given.
         """
+
+
+class RecentChanges(TrackingStats):
+
+    title = _(u'Recent Changes')
+
+    def getData(self):
+        length = self.request.form.get('length', 15)
+        new = {}
+        changed = {}
+        result = []
+        for track in self.changeRecords:
+            if track.data['action'] == 'add' and track.taskId not in new:
+                new[track.taskId] = track
+                result.append(track)
+                continue
+            if track.data['action'] == 'modify' and track.taskId not in changed:
+                sameNew = new.get(track.taskId)
+                if sameNew and sameNew.timeStamp > track.timeStamp - 60:
+                    # change immediate after creation
+                    continue
+                changed[track.taskId] = track
+                result.append(track)
+                continue
+        return dict(data=[TrackDetails(self, tr) for tr in result[:length]],
+                    macro=self.macros['recent_changes'])
+
+
+class TrackDetails(object):
+
+    timeStampFormat = 'short'
+
+    def __init__(self, view, track):
+        self.view = view
+        self.track = track
+
+    @Lazy
+    def object(self):
+        obj = util.getObjectForUid(self.track.taskId)
+        node = self.view.nodeView
+        url = node is not None and node.getUrlForTarget(obj) or ''
+        return dict(object=obj, title=obj.title, url=url)
+
+    @Lazy
+    def user(self):
+        obj = util.getObjectForUid(self.track.userName)
+        if obj is None:
+            return dict(object=None, title=userName, url='')
+        node = self.view.nodeView
+        url = node is not None and node.getUrlForTarget(obj) or ''
+        return dict(object=obj, title=obj.title, url=url)
+
+    @Lazy
+    def action(self):
+        return self.track.data['action']
+
+    @Lazy
+    def timeStamp(self):
+        value = datetime.fromtimestamp(self.track.timeStamp)
+        return format.formatDate(value, 'dateTime', self.timeStampFormat,
+                                 self.view.languageInfo.language)
+
+    def __repr__(self):
+        return repr(self.track)
 
 
 def formatAsMonth(d):

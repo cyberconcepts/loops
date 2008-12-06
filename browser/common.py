@@ -161,6 +161,19 @@ class BaseView(GenericView, I18NView):
         return self.context
 
     @Lazy
+    def viewAnnotations(self):
+        return self.request.annotations.get('loops.view', {})
+
+    @Lazy
+    def node(self):
+        return self.viewAnnotations.get('node')
+
+    @Lazy
+    def nodeView(self):
+        ann = self.request.annotations.get('loops.view', {})
+        return self.viewAnnotations.get('nodeView')
+
+    @Lazy
     def params(self):
         result = {}
         paramString = self.request.annotations.get('loops.view', {}).get('params')
