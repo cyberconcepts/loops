@@ -177,7 +177,7 @@ class TrackDetails(object):
         obj = util.getObjectForUid(userName)
         if obj is None:
             try:
-                userTitle = self.authentication.getPrincipal(userName)
+                userTitle = self.authentication.getPrincipal(userName).title
             except PrincipalLookupError:
                 userTitle = userName
             return dict(object=None, title=userTitle, url='')
