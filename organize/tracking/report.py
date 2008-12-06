@@ -166,7 +166,7 @@ class TrackDetails(object):
     def user(self):
         obj = util.getObjectForUid(self.track.userName)
         if obj is None:
-            return dict(object=None, title=userName, url='')
+            return dict(object=None, title=self.track.userName, url='')
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         return dict(object=obj, title=obj.title, url=url)
