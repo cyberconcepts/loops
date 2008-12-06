@@ -50,7 +50,8 @@
            tal:omit-tag="not:url"
            tal:content="row/user/title" /></td>
       <td tal:content="row/timeStamp"></td>
-      <td tal:content="row/action"></td>
+      <td i18n:translate=""
+          tal:content="row/action"></td>
     </tr>
   </table>
 </metal:recent>
