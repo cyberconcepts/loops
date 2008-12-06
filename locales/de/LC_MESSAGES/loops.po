@@ -407,6 +407,12 @@ msgstr "Benutzer"
 msgid "Change"
 msgstr "Änderung"
 
+msgid "add"
+msgstr "hinzugefügt"
+
+msgid "modify"
+msgstr "geändert"
+
 # management interface
 
 msgid "Top"
