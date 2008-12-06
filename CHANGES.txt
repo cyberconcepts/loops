@@ -8,6 +8,7 @@ $Id$
 
 New features
 
+- tracking reports: overview; recent changes
 - basic job management: a job executor view calls job managers specified
   by loops root option ``organize.job.managers``
 - allow ``__getitem__`` on Loops and ViewManager, this is a prerequisite for
