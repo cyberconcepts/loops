@@ -144,7 +144,7 @@ class RecentChanges(TrackingStats):
                 changed[track.taskId] = track
                 result.append(track)
                 continue
-            if len(resul) > length:
+            if len(result) > length:
                 break
         return dict(data=[TrackDetails(self, tr) for tr in result],
                     macro=self.macros['recent_changes'])
