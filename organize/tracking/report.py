@@ -30,6 +30,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
 from loops.browser.common import BaseView
 from loops.interfaces import IResource
@@ -52,6 +53,10 @@ class TrackingStats(BaseView):
     @Lazy
     def macros(self):
         return self.template.macros
+
+    @Lazy
+    def options(self):
+        return IOptions(self.adapted)
 
     @Lazy
     def accessRecords(self):
@@ -128,11 +133,15 @@ class RecentChanges(TrackingStats):
     title = _(u'Recent Changes')
 
     def getData(self):
-        length = int(self.request.form.get('length', 15))
+        sizeOption = self.options('size')
+        size = int(self.request.form.get('size') or
+                   (sizeOption and sizeOption[0]) or 15)
         new = {}
         changed = {}
         result = []
         for track in self.changeRecords:
+            if len(result) >= size:
+                break
             if track.data['action'] == 'add' and track.taskId not in new:
                 sameChanged = changed.get(track.taskId)
                 if sameChanged and sameChanged.timeStamp < track.timeStamp + 60:
@@ -146,8 +155,6 @@ class RecentChanges(TrackingStats):
                 changed[track.taskId] = track
                 result.append(track)
                 continue
-            if len(result) > length:
-                break
         return dict(data=[TrackDetails(self, tr) for tr in result],
                     macro=self.macros['recent_changes'])
 

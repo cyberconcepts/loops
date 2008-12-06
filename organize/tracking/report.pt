@@ -1,7 +1,7 @@
 <metal:report define-macro="report"
               tal:define="info item/getData">
-  <h2 i18n:translate=""
-      tal:content="item/title|default">Statistics Report</h2><br />
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <br />
   <metal:listing use-macro="info/macro" />
 </metal:report>
 

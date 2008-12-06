@@ -136,9 +136,15 @@ Tracking Reports
 Overview (cumulative) statistics
 --------------------------------
 
-  >>> from loops.organize.tracking.report import TrackingStats
+  >>> from loops.expert.concept import IQueryConcept
+  >>> tQuery = concepts['query'] = addAndConfigureObject(concepts, Concept,
+  ...                   'query', conceptType=concepts.getTypeConcept(),
+  ...                   typeInterface=IQueryConcept)
+  >>> statQuery = addAndConfigureObject(concepts, Concept, 'stats',
+  ...                   conceptType=tQuery)
 
-  >>> view = TrackingStats(home, TestRequest())
+  >>> from loops.organize.tracking.report import TrackingStats
+  >>> view = TrackingStats(statQuery, TestRequest())
   >>> result = view.getData()
   >>> result['macro'][4][1][u'define-macro']
   u'overview'
@@ -149,7 +155,7 @@ Recent changes
 --------------
 
   >>> from loops.organize.tracking.report import RecentChanges
-  >>> view = RecentChanges(home, TestRequest())
+  >>> view = RecentChanges(statQuery, TestRequest())
   >>> result = view.getData()
   >>> result['macro'][4][1][u'define-macro']
   u'recent_changes'
