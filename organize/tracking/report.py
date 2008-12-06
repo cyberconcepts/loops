@@ -36,6 +36,7 @@ from loops.browser.common import BaseView
 from loops.interfaces import IResource
 from loops import util
 from loops.util import _
+from loops.versioning.interfaces import IVersionable
 
 
 report_macros = ViewPageTemplateFile('report.pt')
@@ -142,7 +143,7 @@ class RecentChanges(TrackingStats):
             if track.data['action'] == 'add' and track.taskId not in new:
                 sameChanged = changed.get(track.taskId)
                 if sameChanged and sameChanged.timeStamp < track.timeStamp + 60:
-                    # change immediate after creation
+                    # skip change immediate after creation
                     if result[-1].taskId == track.taskId:
                         result.pop()
                 new[track.taskId] = track
@@ -170,12 +171,16 @@ class TrackDetails(object):
 
     @Lazy
     def object(self):
-        obj = util.getObjectForUid(self.track.taskId)
+        return util.getObjectForUid(self.track.taskId)
+
+    @Lazy
+    def objectData(self):
+        obj = self.object
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
-        if url:
-            url = url + '?version=this'
-        return dict(object=obj, title=obj.title, url=url)
+        versionable = IVersionable(self.object, None)
+        version = versionable is not None and versionable.versionId or ''
+        return dict(object=obj, title=obj.title, url=url, version=version)
 
     @Lazy
     def user(self):

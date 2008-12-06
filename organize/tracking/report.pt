@@ -35,23 +35,36 @@
   <table class="listing">
     <tr>
       <th i18n:translate="">Title</th>
+      <th i18n:translate=""
+          tal:condition="view/useVersioning">V</th>
       <th i18n:translate="">User</th>
       <th i18n:translate="">Date/Time</th>
       <th i18n:translate="">New</th>
     </tr>
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
-      <td tal:define="url row/object/url">
-        <a tal:attributes="href url"
-           tal:omit-tag="not:url"
-           tal:content="row/object/title" /></td>
-      <td tal:define="url row/user/url">
-        <a tal:attributes="href url"
-           tal:omit-tag="not:url"
-           tal:content="row/user/title" /></td>
-      <td tal:content="row/timeStamp"></td>
-      <td class="center"
-          tal:content="row/markNew"></td>
+      <tal:row define="object row/objectData;
+                       url object/url">
+        <td tal:attributes="title object/object/description">
+          <a tal:omit-tag="not:url"
+             tal:attributes="href string:$url?version=this"
+             tal:content="object/title" /></td>
+        <tal:version tal:condition="view/useVersioning">
+          <td class="center"
+              tal:define="version object/version">
+            <a tal:omit-tag="python: version == '1.1'"
+               tal:attributes="href string:$url?loops.viewName=listversions"
+               tal:content="version">1.1</a>
+          </td>
+        </tal:version>
+        <td tal:define="url row/user/url">
+          <a tal:attributes="href url"
+             tal:omit-tag="not:url"
+             tal:content="row/user/title" /></td>
+        <td tal:content="row/timeStamp"></td>
+        <td class="center"
+            tal:content="row/markNew"></td>
+      </tal:row>
     </tr>
   </table>
 </metal:recent>
