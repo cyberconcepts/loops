@@ -399,7 +399,7 @@ msgid "Tracking Statistics"
 msgstr "Zugriffsstatistik"
 
 msgid "Recent Changes"
-msgstr "Kürzlich geänderte Dokumente"
+msgstr "Neue und geänderte Dokumente"
 
 msgid "User"
 msgstr "Benutzer"
