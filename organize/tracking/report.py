@@ -24,6 +24,7 @@ $Id$
 
 from datetime import date, datetime
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
@@ -159,6 +160,10 @@ class TrackDetails(object):
         self.track = track
 
     @Lazy
+    def authentication(self):
+        return component.getUtility(IAuthentication)
+
+    @Lazy
     def object(self):
         obj = util.getObjectForUid(self.track.taskId)
         node = self.view.nodeView
@@ -169,7 +174,11 @@ class TrackDetails(object):
     def user(self):
         obj = util.getObjectForUid(self.track.userName)
         if obj is None:
-            return dict(object=None, title=self.track.userName, url='')
+            try:
+                userTitle = self.authentication.getPrincipal(userName)
+            except PrincipalLookupError:
+                userTitle = self.track.userName
+            return dict(object=None, title=userTitle, url='')
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         return dict(object=obj, title=obj.title, url=url)
