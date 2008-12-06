@@ -10,10 +10,10 @@
   <table class="listing">
     <tr>
       <th i18n:translate="">Period</th>
-      <th i18n:translate="">access</th>
-      <th i18n:translate="">changes</th>
-      <th i18n:translate="">additions</th>
-      <th i18n:translate="">total</th>
+      <th i18n:translate="">Access</th>
+      <th i18n:translate="">Changes</th>
+      <th i18n:translate="">Additions</th>
+      <th i18n:translate="">Total</th>
     </tr>
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">

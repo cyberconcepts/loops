@@ -41,7 +41,7 @@ report_macros = ViewPageTemplateFile('report.pt')
 class TrackingStats(BaseView):
 
     template = report_macros
-    title = _(u'Statistics Report')
+    title = _(u'Tracking Statistics')
 
     @Lazy
     def macro(self):
@@ -126,7 +126,7 @@ class RecentChanges(TrackingStats):
     title = _(u'Recent Changes')
 
     def getData(self):
-        length = self.request.form.get('length', 15)
+        length = int(self.request.form.get('length', 15))
         new = {}
         changed = {}
         result = []
