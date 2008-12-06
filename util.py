@@ -89,7 +89,10 @@ def getObjectForUid(uid, intIds=None):
         return None
     if intIds is None:
         intIds = component.getUtility(IIntIds)
-    return intIds.getObject(int(uid))
+    try:
+        return intIds.getObject(int(uid))
+    except KeyError:
+        return None
 
 def getUidForObject(obj, intIds=None):
     if obj == '*': # wild card
