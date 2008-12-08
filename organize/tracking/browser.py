@@ -22,6 +22,8 @@ View class(es) for change tracks.
 $Id$
 """
 
+from zope import component
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
@@ -57,13 +59,20 @@ class BaseTrackView(TrackView):
             obj = util.getObjectForUid(uid)
             if obj is not None:
                 return obj
-        return uid
+        try:
+            return self.authentication.getPrincipal(uid) or uid
+        except PrincipalLookupError:
+            return uid
+
+    @Lazy
+    def authentication(self):
+        return component.getUtility(IAuthentication)
 
     @Lazy
     def userTitle(self):
         if isinstance(self.user, basestring):
             return self.user
-        return getattr(self.user, 'title', getName(self.user))
+        return self.user.title
 
     @Lazy
     def userUrl(self):

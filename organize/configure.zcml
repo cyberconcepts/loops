@@ -59,8 +59,7 @@
         for="loops.interfaces.ILoopsObject
              zope.publisher.interfaces.browser.IBrowserRequest"
         factory="loops.organize.memberinfo.MemberInfoProvider"
-        permission="zope.Public"
-        />
+        permission="zope.Public" />
 
   <zope:adapter factory="loops.organize.setup.SetupManager"
                 name="organize" />
