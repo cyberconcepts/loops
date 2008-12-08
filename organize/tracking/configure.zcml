@@ -5,6 +5,17 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <zope:class class="cybertools.tracking.btree.TrackingStorage">
+    <require permission="zope.View"
+             interface="zope.app.container.interfaces.IReadContainer" />
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrackingStorage" />
+    <require permission="zope.ManageContent"
+             interface="zope.app.container.interfaces.IWriteContainer" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.tracking.interfaces.ITrackingStorage" />
+  </zope:class>
+
   <zope:class class="loops.organize.tracking.change.ChangeRecord">
     <require permission="zope.View"
              interface="loops.organize.tracking.change.IChangeRecord" />
@@ -73,20 +84,6 @@
       order="0"
       title="View"
       action="index.html" />
-
-  <!--<zope:adapter
-      for="loops.organize.tracking.change.IChangeRecord
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.organize.tracking.browser.ChangeView"
-      permission="zope.View" />
-
-  <zope:adapter
-      for="loops.organize.tracking.access.IAccessRecord
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.organize.tracking.browser.AccessView"
-      permission="zope.View" />-->
 
   <!-- application views -->
 

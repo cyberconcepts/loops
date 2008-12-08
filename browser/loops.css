@@ -40,6 +40,22 @@ blockquote ul {
     margin-bottom: 0.3em;
 }
 
+.dialog div.heading {
+    font-weight: bold;
+    font-size: 140%;
+    margin: 0.5em 0 0.3em 0;
+}
+
+.dialog label {
+    display: block;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+
+.dialog div.buttons {
+    margin-top: 0.5em;
+}
+
 table.listing td {
     white-space: normal;
     vertical-align: middle;

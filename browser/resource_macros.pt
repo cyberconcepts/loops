@@ -15,6 +15,7 @@
         The body
       </div>
     </tal:body>
+    <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
 
@@ -33,6 +34,7 @@
          tal:define="linkText item/adapted/linkText|nothing"
          tal:content="python: linkText or 'more...'">more...</a>
     </b>
+    <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
 
@@ -45,6 +47,7 @@
          tal:attributes="src
                 string:${view/url}/.target${view/targetId}/view?version=this" />
     <p><i tal:content="item/description">Description</i></p>
+    <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
 
@@ -80,8 +83,9 @@
            tal:attributes="href string:$url/external_edit?version=this">
          Open for editing
         </a>
-       </span>
-     </p>
+      </span>
+    </p>
+    <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
 

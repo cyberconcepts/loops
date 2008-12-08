@@ -561,6 +561,11 @@ class BaseView(GenericView, I18NView):
         jsCall = 'dojo.require("dijit.form.ValidationTextBox");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
+    def registerDojoTextarea(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dijit.form.SimpleTextarea");'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
     def registerDojoEditor(self):
         self.registerDojo()
         jsCall = 'dojo.require("dijit.Editor");'
@@ -574,6 +579,7 @@ class BaseView(GenericView, I18NView):
         jsCall = ('dojo.require("dijit.form.Form"); '
                   'dojo.require("dijit.form.DateTextBox"); '
                   'dojo.require("dijit.form.TimeTextBox"); '
+                  'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
                   'dojo.require("dojox.grid.DataGrid"); '
                   'dojo.require("dojo.data.ItemFileWriteStore"); '

@@ -68,6 +68,7 @@
   <!-- include -->
 
   <include package=".browser" />
+  <include package=".comment" />
   <include package=".job" />
   <include package=".personal" />
   <include package=".process" />

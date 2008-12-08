@@ -27,24 +27,104 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.action import actions
+from cybertools.tracking.btree import TrackingStorage
 from loops.browser.action import DialogAction
 from loops.browser.common import BaseView
+from loops.browser.form import ObjectForm, EditObject
+from loops.browser.node import NodeView
+from loops.organize.comment.base import Comment
+from loops.organize.party import getPersonForUser
+from loops.organize.tracking.browser import BaseTrackView
+from loops.setup import addObject
+from loops import util
 from loops.util import _
 
 
 comment_macros = ViewPageTemplateFile('comment_macros.pt')
 
-actions.register('addComment', 'button', DialogAction,
-        title=_(u'Add Comment'),
-        description=_(u'Add a comment to this object.'),
-        viewName='create_comment.html',
-        dialogName='createComment',
-        innerForm='inner_comment_form.html',
-        #prerequisites=['registerDojoDateWidget'],
-)
+
+class CommentsView(NodeView):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    @Lazy
+    def allowed(self):
+        return False
+        return True
+
+    @Lazy
+    def addUrl(self):
+        return '%s/create_comment.html' % self.nodeView.getUrlForTarget(self.context)
+
+    @Lazy
+    def addOnClick(self):
+        self.registerDojoFormAll()
+        return "objectDialog('createComment', '%s'); return false;" % self.addUrl
+
+    def allItems(self):
+        result = []
+        rm = self.loopsRoot.getRecordManager()
+        ts = rm.get('comments')
+        target = self.virtualTargetObject
+        if None in (ts, target):
+            return result
+        for tr in reversed(list(ts.query(taskId=util.getUidForObject(target)))):
+            view = CommentView(tr, self.request)
+            view.parent = self
+            result.append(view)
+        return result
 
 
-class CommentsView(BaseView):
+class CommentView(BaseTrackView):
 
-    pass
+    @Lazy
+    def subject(self):
+        return self.context.data['subject']
 
+    @Lazy
+    def text(self):
+        return self.parent.renderText(self.context.data['text'],
+               self.context.contentType)
+
+
+class CreateCommentForm(ObjectForm):
+
+    template = comment_macros
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['create_comment']
+
+
+class CreateComment(EditObject):
+
+    @Lazy
+    def personId(self):
+        p = getPersonForUser(self.context, self.request)
+        if p is not None:
+            return util.getUidForObject(p)
+        return self.request.principal.id
+
+    @Lazy
+    def object(self):
+        return self.view.virtualTargetObject
+
+    def update(self):
+        form = self.request.form
+        subject = form.get('subject')
+        text = form.get('text')
+        if not subject or not text or self.personId is None or self.object is None:
+            return True
+        #contentType = form.get('contentType') or 'text/restructured'
+        rm = self.view.loopsRoot.getRecordManager()
+        ts = rm.get('comments')
+        if ts is None:
+            ts = addObject(rm, TrackingStorage, 'comments', trackFactory=Comment)
+        uid = util.getUidForObject(self.object)
+        ts.saveUserTrack(uid, 0, self.personId, dict(
+                subject=subject, text=text))
+        url = self.view.virtualTargetUrl + '?version=this'
+        self.request.response.redirect(url)
+        return False

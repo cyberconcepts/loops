@@ -3,32 +3,67 @@
 
 
 <metal:comments define-macro="comments"
-                tal:condition="view/commentsAllowed">
+                tal:define="comments nocall:view/comments"
+                tal:condition="comments/allowed">
   <br />
   <h2 i18n:translate="">Comments</h2>
-  <div class="button">
-    <a i18n:translate=""
-       tal:attributes="href python: view.addCommentUrlFor(item.context)">Add Comment</a>
-  </div>
-  <tal:comments define="comments item/comments"
-                tal:condition="comments">
-    <tal:comment tal:repeat="comment comments">
+  <metal:comments define-macro="comments_listing"
+                  tal:define="comments comments|nocall:view/comments;
+                              items comments/allItems">
+    <tal:comment tal:repeat="comment items">
       <br />
       <div class="comment">
         <h3>
           <span tal:content="comment/subject">Resource Title</span></h3>
         <div class="info">
-          <span tal:replace="comment/creator">John</span>,
+          <span tal:replace="comment/userTitle">John</span>,
           <span tal:replace="comment/timeStamp">2007-03-30</span>
         </div>
         <p class="content"
-           tal:define="text comment/text;
-                       contentType comment/contentType"
-           tal:content="structure python: view.renderText(text, contentType)" />
+           tal:content="structure comment/text" />
       </div>
     </tal:comment>
-  </tal:comments>
+  </metal:comments>
+  <div metal:define-macro="comments_button_add"
+       tal:define="comments comments|nocall:view/comments"
+       class="button">
+    <a i18n:translate=""
+       tal:attributes="href comments/addUrl;
+                       onClick comments/addOnClick">Add Comment</a>
+  </div>
 </metal:comments>
+
+
+<metal:block define-macro="create_comment">
+    <form method="post"
+          id="addComment_form" class="dialog"
+          dojoType="dijit.form.Form">
+      <input type="hidden" name="form.action" value="create_comment" />
+      <input type="hidden" name="contentType" value="text/restructured" />
+      <div class="heading" i18n:translate="">Add Comment</div>
+      <div>
+        <label i18n:translate=""
+               for="comment_subject">Subject</label>
+        <div><input type="text" name="subject" id="comment_subject"
+                    dojoType="dijit.form.ValidationTextBox" required="true"
+                    style="width: 60em" /></div>
+        <label i18n:translate=""
+               for="comment_text">Comment</label>
+        <div>
+          <textarea name="text" cols="80" rows="6" id="comment_text"
+                    dojoType="dijit.form.SimpleTextarea"
+                    style="width: 60em"></textarea><div>
+      </div>
+      <div class="buttons">
+        <input value="Save" type="submit"
+               onClick="return closeDialog(true)"
+               i18n:attributes="value">
+        <input type="button" value="Cancel"
+               onClick="return closeDialog(false)"
+               i18n:attributes="value">
+      </div>
+    </form>
+</metal:block>
 
 
 </html>

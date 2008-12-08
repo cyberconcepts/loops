@@ -1,0 +1,42 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:class class="loops.organize.comment.base.Comment">
+    <require permission="zope.View"
+             interface="cybertools.tracking.comment.interfaces.IComment" />
+    <require permission="zope.ManageSite"
+             set_schema="cybertools.tracking.comment.interfaces.IComment" />
+  </zope:class>
+
+  <!-- views -->
+
+  <browser:page
+      name="comments.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.comment.browser.CommentsView"
+      permission="zope.View" />
+
+  <browser:page
+      name="index.html"
+      for="cybertools.tracking.comment.interfaces.IComment"
+      class="loops.organize.comment.browser.CommentView"
+      permission="zope.View" />
+
+  <browser:page
+      name="create_comment.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.comment.browser.CreateCommentForm"
+      permission="zope.View" />
+
+  <zope:adapter
+      name="create_comment"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.comment.browser.CreateComment"
+      permission="zope.View" />
+
+</configure>
