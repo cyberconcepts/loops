@@ -59,10 +59,7 @@ class BaseTrackView(TrackView):
             obj = util.getObjectForUid(uid)
             if obj is not None:
                 return obj
-        try:
-            return self.authentication.getPrincipal(uid) or uid
-        except PrincipalLookupError:
-            return uid
+        return uid
 
     @Lazy
     def authentication(self):
@@ -71,7 +68,11 @@ class BaseTrackView(TrackView):
     @Lazy
     def userTitle(self):
         if isinstance(self.user, basestring):
-            return self.user
+            uid = self.user
+            try:
+                return self.authentication.getPrincipal(uid).title or uid
+            except PrincipalLookupError:
+                return uid
         return self.user.title
 
     @Lazy
