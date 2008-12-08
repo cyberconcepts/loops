@@ -511,6 +511,14 @@ class BaseView(GenericView, I18NView):
 
     inlineEditable = False
 
+    # comments
+
+    @Lazy
+    def comments(self):
+        return []
+
+    # dojo stuff
+
     def inlineEdit(self, id):
         self.registerDojo()
         return 'return inlineEdit("%s", "")' % id

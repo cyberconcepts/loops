@@ -60,6 +60,7 @@ from loops import util
 from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.organize.comment.browser import comment_macros
 from loops.organize.tracking import access
 from loops.versioning.util import getVersion
 
@@ -326,7 +327,6 @@ class NodeView(BaseView):
     def targetView(self, name='index.html', methodName='show'):
         if '?' in name:
             name, params = name.split('?', 1)
-            print '***', name, params
         target = self.virtualTargetObject
         if target is not None:
             if isinstance(target, AdapterBase):
@@ -482,6 +482,22 @@ class NodeView(BaseView):
             url = self.virtualTargetUrl
         self.recordAccess('external_edit')
         return ExternalEditorView(target, self.request).load(url=url)
+
+    # comments
+
+    @Lazy
+    def comment_macros(self):
+        return comment_macros.macros
+
+    # better: provide a ``comments`` view on the target object.
+
+    @Lazy
+    def commentsAllowed(self):
+        return False
+        return True
+
+    def addCommentUrlFor(self, target):
+        return '#'
 
 
 # inner HTML views

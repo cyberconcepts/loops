@@ -30,7 +30,7 @@ from cybertools.tracking.browser import TrackView
 from loops import util
 
 
-class ChangeView(TrackView):
+class BaseTrackView(TrackView):
 
     @Lazy
     def task(self):
@@ -72,6 +72,11 @@ class ChangeView(TrackView):
             return '%s/@@introspector.html' % absoluteURL(user, self.request)
 
 
-class AccessView(ChangeView):
+class ChangeView(BaseTrackView):
+
+    pass
+
+
+class AccessView(BaseTrackView):
 
     pass

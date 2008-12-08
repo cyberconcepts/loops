@@ -34,21 +34,47 @@
     <allow attributes="process" />
   </zope:class>
 
-  <!-- views -->
+  <!-- ZMI views -->
 
   <browser:page
-      name="tracking_stats.html"
-      for="loops.interfaces.IConcept"
-      class="loops.organize.tracking.report.TrackingStats"
+      for="cybertools.tracking.interfaces.ITrackingStorage"
+      name="index.html"
+      class="cybertools.tracking.browser.TrackingStorageView"
+      permission="zope.View" />
+
+  <browser:menuItem
+      menu="zmi_views"
+      for="cybertools.tracking.interfaces.ITrackingStorage"
+      order="0"
+      title="View"
+      action="index.html" />
+
+  <browser:page
+      for="cybertools.tracking.interfaces.ITrack"
+      name="index.html"
+      class="loops.organize.tracking.browser.BaseTrackView"
       permission="zope.View" />
 
   <browser:page
-      name="recent_changes.html"
-      for="loops.interfaces.IConcept"
-      class="loops.organize.tracking.report.RecentChanges"
+      for="loops.organize.tracking.change.IChangeRecord"
+      name="index.html"
+      class="loops.organize.tracking.browser.ChangeView"
       permission="zope.View" />
 
-  <zope:adapter
+  <browser:page
+      for="loops.organize.tracking.access.IAccessRecord"
+      name="index.html"
+      class="loops.organize.tracking.browser.AccessView"
+      permission="zope.View" />
+
+  <browser:menuItem
+      menu="zmi_views"
+      for="cybertools.tracking.interfaces.ITrack"
+      order="0"
+      title="View"
+      action="index.html" />
+
+  <!--<zope:adapter
       for="loops.organize.tracking.change.IChangeRecord
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
@@ -60,6 +86,20 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.organize.tracking.browser.AccessView"
+      permission="zope.View" />-->
+
+  <!-- application views -->
+
+  <browser:page
+      name="tracking_stats.html"
+      for="loops.interfaces.IConcept"
+      class="loops.organize.tracking.report.TrackingStats"
+      permission="zope.View" />
+
+  <browser:page
+      name="recent_changes.html"
+      for="loops.interfaces.IConcept"
+      class="loops.organize.tracking.report.RecentChanges"
       permission="zope.View" />
 
   <browser:page

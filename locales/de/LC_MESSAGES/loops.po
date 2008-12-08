@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2008-12-06 12:00 CET\n"
+"PO-Revision-Date: 2008-12-07 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -416,7 +416,19 @@ msgstr "hinzufügen"
 msgid "modify"
 msgstr "ändern"
 
+msgid "Comments"
+msgstr "Kommentare"
+
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
+
 # management interface
+
+msgid "label_type"
+msgstr "Typ"
+
+msgid "Node"
+msgstr "Navigationsknoten"
 
 msgid "Top"
 msgstr "Ganz nach oben"
@@ -430,6 +442,18 @@ msgstr "Nach unten"
 msgid "Bottom"
 msgstr "Ganz nach unten"
 
-msgid "Edit Node"
-msgstr "Bearbeiten"
+msgid "Edit Permissions"
+msgstr "Berechtigungen bearbeiten"
+
+msgid "Currently assigned target"
+msgstr "Derzeit zugeordnetes Zielobjekt"
+
+msgid "Create Target"
+msgstr "Zielobjekt anlegen"
+
+msgid "Assign Target"
+msgstr "Zielobjekt zuordnen"
+
+msgid "Search Term"
+msgstr "Suchbegriff"
 

@@ -427,14 +427,14 @@
       />
 
   <editform
-      label="Edit Node"
+      label="Edit"
       name="edit.html"
       schema="loops.interfaces.INode"
       fields="title description nodeType viewName body"
       for="loops.interfaces.INode"
       template="edit.pt"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Node">
+      menu="zmi_views" title="Edit">
 
     <widget field="description" height="2" />
     <widget field="body" height="8" />

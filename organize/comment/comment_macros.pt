@@ -1,0 +1,34 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<metal:comments define-macro="comments"
+                tal:condition="view/commentsAllowed">
+  <br />
+  <h2 i18n:translate="">Comments</h2>
+  <div class="button">
+    <a i18n:translate=""
+       tal:attributes="href python: view.addCommentUrlFor(item.context)">Add Comment</a>
+  </div>
+  <tal:comments define="comments item/comments"
+                tal:condition="comments">
+    <tal:comment tal:repeat="comment comments">
+      <br />
+      <div class="comment">
+        <h3>
+          <span tal:content="comment/subject">Resource Title</span></h3>
+        <div class="info">
+          <span tal:replace="comment/creator">John</span>,
+          <span tal:replace="comment/timeStamp">2007-03-30</span>
+        </div>
+        <p class="content"
+           tal:define="text comment/text;
+                       contentType comment/contentType"
+           tal:content="structure python: view.renderText(text, contentType)" />
+      </div>
+    </tal:comment>
+  </tal:comments>
+</metal:comments>
+
+
+</html>
