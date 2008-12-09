@@ -8,15 +8,15 @@
   <br />
   <h2 i18n:translate="">Comments</h2>
   <metal:comments define-macro="comments_listing"
-                  tal:define="comments comments|nocall:view/comments;
+                  tal:define="comments nocall:comments|nocall:view/comments;
                               items comments/allItems">
     <tal:comment tal:repeat="comment items">
       <br />
       <div class="comment">
         <h3>
-          <span tal:content="comment/subject">Resource Title</span></h3>
+          <span tal:content="comment/subject">Subject</span></h3>
         <div class="info">
-          <span tal:replace="comment/userTitle">John</span>,
+          <span tal:replace="comment/user/title">John</span>,
           <span tal:replace="comment/timeStamp">2007-03-30</span>
         </div>
         <p class="content"
@@ -25,7 +25,7 @@
     </tal:comment>
   </metal:comments>
   <div metal:define-macro="comments_button_add"
-       tal:define="comments comments|nocall:view/comments"
+       tal:define="comments nocall:comments|nocall:view/comments"
        class="button">
     <a i18n:translate=""
        tal:attributes="href comments/addUrl;

@@ -63,15 +63,16 @@ Creating comments
 Viewing comments
 ----------------
 
-  >>> from loops.organize.comment.browser import CommentsView, CommentView
+  >>> from loops.organize.comment.browser import CommentsView
   >>> comments = CommentsView(home, TestRequest())
 
   >>> items = list(comments.allItems())
   >>> items
-  [<loops.organize.comment.browser.CommentView ...>]
+  [<Comment ['27', 1, '33', '... ...']:
+    {'text': 'Comment text', 'subject': 'My comment'}>]
   >>> item = items[0]
-  >>> item.subject, item.timeStamp, item.userTitle
-  ('My comment', '... ...', u'john')
+  >>> item.subject, item.timeStamp, item.user['title']
+  ('My comment', u'... ...', u'john')
 
 
 Fin de partie

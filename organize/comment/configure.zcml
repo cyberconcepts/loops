@@ -21,12 +21,6 @@
       permission="zope.View" />
 
   <browser:page
-      name="index.html"
-      for="cybertools.tracking.comment.interfaces.IComment"
-      class="loops.organize.comment.browser.CommentView"
-      permission="zope.View" />
-
-  <browser:page
       name="create_comment.html"
       for="loops.interfaces.INode"
       class="loops.organize.comment.browser.CreateCommentForm"

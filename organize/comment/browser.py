@@ -34,7 +34,7 @@ from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.organize.comment.base import Comment
 from loops.organize.party import getPersonForUser
-from loops.organize.tracking.browser import BaseTrackView
+from loops.organize.tracking.report import TrackDetails
 from loops.setup import addObject
 from loops import util
 from loops.util import _
@@ -51,8 +51,7 @@ class CommentsView(NodeView):
 
     @Lazy
     def allowed(self):
-        return False
-        return True
+        return self.globalOptions('organize.allowComments')
 
     @Lazy
     def addUrl(self):
@@ -71,22 +70,20 @@ class CommentsView(NodeView):
         if None in (ts, target):
             return result
         for tr in reversed(list(ts.query(taskId=util.getUidForObject(target)))):
-            view = CommentView(tr, self.request)
-            view.parent = self
-            result.append(view)
+            result.append(CommentDetails(self, tr))
         return result
 
 
-class CommentView(BaseTrackView):
+class CommentDetails(TrackDetails):
 
     @Lazy
     def subject(self):
-        return self.context.data['subject']
+        return self.track.data['subject']
 
     @Lazy
     def text(self):
-        return self.parent.renderText(self.context.data['text'],
-               self.context.contentType)
+        return self.view.renderText(self.track.data['text'],
+               self.track.contentType)
 
 
 class CreateCommentForm(ObjectForm):
