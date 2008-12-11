@@ -203,15 +203,17 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def creators(self):
-        cr = IZopeDublinCore(self.context).creators or []
-        pau = component.getUtility(IAuthentication)
-        creators = []
-        for c in cr:
-            try:
-                principal = pau.getPrincipal(c)
-                creators.append(principal.title)
-            except PrincipalLookupError:
-                creators.append(c)
+        # TODO: use an IAuthorInfo (or similar) adapter
+        creators = getattr(self.adapted, 'authors', None) or []
+        if not creators:
+            cr = IZopeDublinCore(self.context).creators or []
+            pau = component.getUtility(IAuthentication)
+            for c in cr:
+                try:
+                    principal = pau.getPrincipal(c)
+                    creators.append(principal.title)
+                except PrincipalLookupError:
+                    creators.append(c)
         return ', '.join(creators)
 
     @Lazy
@@ -581,6 +583,7 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
+                  #'dojo.require("dijit.layout.TabContainer"); '
                   'dojo.require("dojox.grid.DataGrid"); '
                   'dojo.require("dojo.data.ItemFileWriteStore"); '
                   'dojo.require("dojox.data.QueryReadStore"); ')

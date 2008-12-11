@@ -55,7 +55,7 @@ class CommentsView(NodeView):
 
     @Lazy
     def addUrl(self):
-        return '%s/create_comment.html' % self.nodeView.getUrlForTarget(self.context)
+        return '%s/create_comment.html' % self.getUrlForTarget(self.context)
 
     @Lazy
     def addOnClick(self):
@@ -69,7 +69,7 @@ class CommentsView(NodeView):
         target = self.virtualTargetObject
         if None in (ts, target):
             return result
-        for tr in reversed(list(ts.query(taskId=util.getUidForObject(target)))):
+        for tr in ts.query(taskId=util.getUidForObject(target)):
             result.append(CommentDetails(self, tr))
         return result
 

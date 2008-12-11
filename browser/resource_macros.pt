@@ -1,7 +1,8 @@
 <metal:block define-macro="render">
-  <div tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
-    <tal:body define="itemNum view/itemNum;
-                      id string:$itemNum.body;">
+    <div metal:define-macro="render_base"
+         tal:define="itemNum view/itemNum;
+                     id string:$itemNum.body;"
+         tal:attributes="ondblclick python: item.openEditWindow('configure.html')">
       <tal:actions condition="view/showObjectActions">
         <div metal:use-macro="views/node_macros/object_actions" />
       </tal:actions>
@@ -14,15 +15,14 @@
            tal:content="structure item/render">
         The body
       </div>
-    </tal:body>
+    </div>
     <metal:fields use-macro="view/comment_macros/comments" />
-  </div>
 </metal:block>
 
 
 <metal:block define-macro="render_note">
   <metal:block tal:define="description nothing">
-    <metal:render use-macro="item/template/macros/render" />
+    <metal:render use-macro="item/template/macros/render_base" />
   </metal:block>
   <div class="content-1" id="1.link"
        tal:define="linkUrl item/linkUrl"
