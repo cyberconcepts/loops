@@ -27,13 +27,14 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
+from zope.interface.interface import InterfaceClass
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
 from loops.browser.common import BaseView
-from loops.interfaces import IResource
+from loops.interfaces import IConcept, IResource
 from loops import util
 from loops.util import _
 from loops.versioning.interfaces import IVersionable
@@ -45,6 +46,8 @@ report_macros = ViewPageTemplateFile('report.pt')
 class TrackingStats(BaseView):
 
     template = report_macros
+
+    typeMapping = {'resource:*': IResource, 'concept:*': IConcept}
 
     @Lazy
     def macro(self):
@@ -59,6 +62,10 @@ class TrackingStats(BaseView):
         return IOptions(self.adapted)
 
     @Lazy
+    def typeNames(self):
+        return self.options('types') or ['resource:*']
+
+    @Lazy
     def accessRecords(self):
         return self.filter(reversed(self.loopsRoot.getRecordManager()['access'].values()))
 
@@ -69,10 +76,34 @@ class TrackingStats(BaseView):
     def filter(self, tracks):
         for tr in tracks:
             try:
-                if IResource.providedBy(util.getObjectForUid(tr.taskId)):
+                if self.checkType(util.getObjectForUid(tr.taskId)):
                     yield tr
             except KeyError:
                 pass
+
+    @Lazy
+    def typeObjects(self):
+        result = []
+        for tn in self.typeNames:
+            ifc = self.typeMapping.get(tn)
+            if ifc is None:
+                tp = self.conceptManager.get(tn)
+                if tp is not None:
+                    result.append(tp)
+            else:
+                result.append(ifc)
+        return result
+
+    def checkType(self, obj):
+        if not IResource.providedBy(obj) and not IConcept.providedBy(obj):
+            return False
+        for t in self.typeObjects:
+            if isinstance(t, InterfaceClass):
+                if t.providedBy(obj):
+                    return True
+            elif obj.getType() == t:
+                    return True
+        return False
 
     def getData(self):
         form = self.request.form
@@ -157,7 +188,7 @@ class RecentChanges(TrackingStats):
                     macro=self.macros['recent_changes'])
 
 
-class TrackDetails(object):
+class TrackDetails(BaseView):
 
     timeStampFormat = 'short'
 
@@ -174,13 +205,18 @@ class TrackDetails(object):
         return util.getObjectForUid(self.track.taskId)
 
     @Lazy
+    def context(self):
+        return self.object
+
+    @Lazy
     def objectData(self):
         obj = self.object
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         versionable = IVersionable(self.object, None)
         version = versionable is not None and versionable.versionId or ''
-        return dict(object=obj, title=obj.title, url=url, version=version)
+        return dict(object=obj, title=obj.title,
+                    type=self.longTypeTitle, url=url, version=version)
 
     @Lazy
     def user(self):

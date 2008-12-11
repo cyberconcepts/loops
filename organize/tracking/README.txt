@@ -167,8 +167,8 @@ Recent changes
   >>> data[0].timeStamp
   u'... ...:...'
   >>> data[0].objectData
-  {'url': '', 'version': '', 'object': <loops.resource.Resource ...>,
-   'title': 'Change Doc 001'}
+  {'url': '', 'version': '', 'type': u'Text',
+   'object': <loops.resource.Resource ...>, 'title': 'Change Doc 001'}
   >>> data[0].user
   {'url': '', 'object': <loops.concept.Concept ...>, 'title': u'john'}
   >>> data[0].action

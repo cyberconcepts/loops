@@ -304,14 +304,13 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def longTypeTitle(self):
-        t = self.typeTitle
-        ct = getattr(self.context, 'contentType')
+        ct = getattr(self.context, 'contentType', None)
         if ct:
             ext = mimetypes.extensions.get(ct)
             if ext:
                 #return '%s (%s)' % (t, ext.upper())
                 return ext.upper()
-        return t
+        return self.typeTitle
 
     @Lazy
     def typeUrl(self):
@@ -584,8 +583,8 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
                   #'dojo.require("dijit.layout.TabContainer"); '
-                  'dojo.require("dojox.grid.DataGrid"); '
-                  'dojo.require("dojo.data.ItemFileWriteStore"); '
+                  #'dojo.require("dojox.grid.DataGrid"); '
+                  #'dojo.require("dojo.data.ItemFileWriteStore"); '
                   'dojo.require("dojox.data.QueryReadStore"); ')
         cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
         cm.register('css', identifier='dojox.grid.css', position=0,

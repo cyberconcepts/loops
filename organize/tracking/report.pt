@@ -1,3 +1,6 @@
+<!-- $Id$ -->
+
+
 <metal:report define-macro="report"
               tal:define="info item/getData">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
@@ -35,6 +38,7 @@
   <table class="listing">
     <tr>
       <th i18n:translate="">Title</th>
+      <th i18n:translate="">Type</th>
       <th i18n:translate=""
           tal:condition="view/useVersioning">V</th>
       <th i18n:translate="">User</th>
@@ -49,6 +53,7 @@
           <a tal:omit-tag="not:url"
              tal:attributes="href string:$url?version=this"
              tal:content="object/title" /></td>
+        <td tal:content="object/type"></td>
         <tal:version tal:condition="view/useVersioning">
           <td class="center"
               tal:define="version object/version">
