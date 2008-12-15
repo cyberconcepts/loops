@@ -582,17 +582,21 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
-                  #'dojo.require("dijit.layout.TabContainer"); '
-                  #'dojo.require("dojox.grid.DataGrid"); '
-                  #'dojo.require("dojo.data.ItemFileWriteStore"); '
                   'dojo.require("dojox.data.QueryReadStore"); ')
         cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
+
+    def registerDojoFormAllGrid(self):
+        self.registerDojoFormAll()
+        cm = self.controller.macros
+        jsCall = ('dojo.require("dijit.layout.TabContainer"); '
+                  'dojo.require("dojox.grid.DataGrid"); '
+                  'dojo.require("dojo.data.ItemFileWriteStore"); ')
+        cm.register('js-execute', 'dojo.form.grid', jsCall=jsCall)
         cm.register('css', identifier='dojox.grid.css', position=0,
                     resourceName='ajax.dojo/dojox/grid/resources/Grid.css', media='all')
         cm.register('css', identifier='dojox.grid_tundra.css', position=0,
                     resourceName='ajax.dojo/dojox/grid/resources/tundraGrid.css',
                     media='all')
-
 
 # vocabulary stuff
 
