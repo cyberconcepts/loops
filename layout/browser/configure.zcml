@@ -33,14 +33,13 @@
       view="AddLoopsLayoutNode.html" />
 
   <browser:editform
-      label="Edit Node"
+      label="Edit Layout Node"
       name="edit.html"
       schema="loops.layout.interfaces.ILayoutNode"
       fields="title description nodeType viewName pageName body"
       for="loops.layout.interfaces.ILayoutNode"
       template="../../browser/edit.pt"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Edit Node">
+      permission="zope.ManageContent">
     <widget field="description" height="2" />
     <widget field="body" height="3" />
   </browser:editform>

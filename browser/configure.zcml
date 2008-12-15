@@ -3,7 +3,7 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser"
-   i18n_domain="zope">
+   i18n_domain="loops">
 
   <icon
       name="zmi_icon"
@@ -427,7 +427,7 @@
       />
 
   <editform
-      label="Edit"
+      label="Edit Node"
       name="edit.html"
       schema="loops.interfaces.INode"
       fields="title description nodeType viewName body"

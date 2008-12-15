@@ -60,7 +60,7 @@ class NodeLayoutInstance(LayoutInstance):
         return view
 
 
-class NavigationLayoutInstance(NodeLayoutInstance):
+class SubnodesLayoutInstance(NodeLayoutInstance):
 
     def getLayouts(self, region):
         """ Return sublayout instances specified via subnodes of the current menu node.

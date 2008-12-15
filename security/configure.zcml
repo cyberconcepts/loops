@@ -3,7 +3,7 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope">
+   i18n_domain="loops">
 
   <zope:adapter factory="loops.security.setter.BaseSecuritySetter" />
 
