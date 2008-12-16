@@ -31,6 +31,10 @@ from loops.common import adapted
 class LayoutNodeView(Page):
 
     @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
     def layoutName(self):
         return self.context.viewName or 'page'
 

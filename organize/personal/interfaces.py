@@ -32,8 +32,16 @@ class IFavorites(Interface):
     """ A collection of favorites.
     """
 
-    def add(objectId, personId):
+    def add(obj, person):
         """ Add an object to the person's favorites collection.
+        """
+
+    def remove(obj, person):
+        """ Remove an object from the person's favorites collection.
+        """
+
+    def list(person, sortKey=None):
+        """ Return a list of favorite objects for the person given.
         """
 
 
