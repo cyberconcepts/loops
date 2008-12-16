@@ -49,7 +49,7 @@ class NodeTraverser(ItemTraverser):
             else:
                 target = self.context.target
             if target is not None:
-                viewAnnotations = request.annotations.setdefault('loops.view', {})
+                #viewAnnotations = request.annotations.setdefault('loops.view', {})
                 viewAnnotations['node'] = self.context
                 target = getVersion(target, request)
                 target = adapted(target, LanguageInfo(target, request))

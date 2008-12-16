@@ -1,5 +1,5 @@
 <metal:actions define-macro="favorites_portlet"
-               tal:define="view nocall:context/@@favorites.html;
+               tal:define="view nocall:context/@@favorites_view;
                            targetUid view/targetUid">
     <div tal:repeat="item view/listFavorites">
       <span style="float:right" class="delete-item">&nbsp;<a href="removeFavorite.html"

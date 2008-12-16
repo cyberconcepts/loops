@@ -15,7 +15,7 @@
         class="loops.organize.personal.browser.favorite.FavoriteView"
         for="loops.interfaces.INode"
         permission="zope.View">
-    <page name="favorites.html" />
+    <page name="favorites_view" />
     <page name="addFavorite.html" attribute="add" />
     <page name="removeFavorite.html" attribute="remove" />
   </browser:pages>
