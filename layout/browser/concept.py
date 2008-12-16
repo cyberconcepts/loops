@@ -50,6 +50,10 @@ class ConceptView(object):
         return self.context.description
 
     @Lazy
+    def uid(self):
+        return util.getUidForObject(self.context.context)
+
+    @Lazy
     def menu(self):
         return self.node.getMenu()
 
