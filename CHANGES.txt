@@ -8,6 +8,7 @@ $Id$
 
 New features
 
+- full-text indexing for OpenOffice (ODF) documents (text, spreadsheet, presentation)
 - tracking reports: overview; recent changes
 - basic job management: a job executor view calls job managers specified
   by loops root option ``organize.job.managers``

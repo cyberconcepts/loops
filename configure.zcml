@@ -396,6 +396,21 @@
            name="application/vnd.ms-excel"
            factory="cybertools.text.xls.XlsTransform" />
 
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/vnd.oasis.opendocument.text"
+           factory="cybertools.text.ooffice.OOTransform" />
+
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/vnd.oasis.opendocument.spreadsheet"
+           factory="cybertools.text.ooffice.OOTransform" />
+
+  <adapter for="loops.interfaces.IFile"
+           provides="cybertools.text.interfaces.ITextTransform"
+           name="application/vnd.oasis.opendocument.presentation"
+           factory="cybertools.text.ooffice.OOTransform" />
+
   <!-- utilities -->
 
   <utility
