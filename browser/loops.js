@@ -189,3 +189,19 @@ function inlineEdit(id) {
         editor = new dijit.Editor({}, dojo.byId(id));
     }
 }
+
+// FCKeditor stuff
+
+function createFCKEditorInstance(fieldName, width, height) {
+    var editor = new FCKeditor(fieldName);
+    /*if (document.all) {
+        editor.Config['ToolbarStartExpanded'] = false;
+    }*/
+    editor.BasePath = '/@@/fckeditor/';
+    //editor.Config['SkinPath'] = editor.BasePath + 'editor/skins/office2003/';
+    editor.Config['SkinPath'] = editor.BasePath + 'editor/skins/silver/';
+    editor.ToolbarSet = 'Standard';
+    editor.Width = width;
+    editor.Height = height;
+    editor.ReplaceTextarea();
+}
