@@ -1,0 +1,34 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:class class="loops.organize.work.base.WorkItem">
+    <require permission="zope.View"
+             interface="cybertools.organize.work.IWorkItem" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.organize.work.IWorkItem" />
+  </zope:class>
+
+  <!-- ZMI views -->
+
+  <browser:page
+      for="cybertools.organize.interfaces.IWorkItem"
+      name="index.html"
+      class="loops.organize.work.browser.WorkItemView"
+      permission="zope.View" />
+
+  <!-- application views -->
+
+  <browser:page
+      name="create_workitem.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.work.browser.CreateWorkItemForm"
+      permission="zope.ManageContent" />
+
+  <zope:adapter factory="loops.organize.work.setup.SetupManager"
+                name="organize.work" />
+
+</configure>

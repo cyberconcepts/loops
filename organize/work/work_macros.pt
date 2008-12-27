@@ -1,0 +1,31 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<metal:block define-macro="create_workitem">
+    <form method="post"
+          id="addWorkitem_form" class="dialog"
+          dojoType="dijit.form.Form">
+      <input type="hidden" name="form.action" value="create_workitem" />
+      <div class="heading" i18n:translate="">Add Work Item</div>
+      <div>
+        <label i18n:translate=""
+               for="description">Description</label>
+        <div>
+          <textarea name="description" cols="80" rows="6" id="description"
+                    dojoType="dijit.form.SimpleTextarea"
+                    style="width: 60em"></textarea><div>
+      </div>
+      <div class="buttons">
+        <input value="Save" type="submit"
+               onClick="return closeDialog(true)"
+               i18n:attributes="value">
+        <input type="button" value="Cancel"
+               onClick="return closeDialog(false)"
+               i18n:attributes="value">
+      </div>
+    </form>
+</metal:block>
+
+
+</html>
