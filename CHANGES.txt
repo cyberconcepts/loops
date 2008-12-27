@@ -8,6 +8,9 @@ $Id$
 
 New features
 
+- provide basic elements for embedding FCKeditor: cybertools.ajax.fckeditor,
+  JavaScript call (createFCKEditorInstance()); needs separate installation
+  of FCKeditor in cybertools/ajax/fckeditor (except fckconfig.js)
 - full-text indexing for OpenOffice (ODF) documents (text, spreadsheet, presentation)
 - tracking reports: overview; recent changes
 - basic job management: a job executor view calls job managers specified

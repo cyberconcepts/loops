@@ -73,5 +73,6 @@
   <include package=".process" />
   <include package=".stateful" />
   <include package=".tracking" />
+  <include package=".work" />
 
 </configure>
