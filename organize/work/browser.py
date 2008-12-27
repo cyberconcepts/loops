@@ -22,6 +22,7 @@ View class(es) for change tracks.
 $Id$
 """
 
+import time
 from zope import component
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
@@ -53,6 +54,14 @@ class CreateWorkItemForm(ObjectForm):
     def macro(self):
         return self.template.macros['create_workitem']
 
+    @Lazy
+    def defaultDate(self):
+        return time.strftime('%Y-%m-%d')
+
+    @Lazy
+    def defaultTime(self):
+        return time.strftime('%Y-%m-%dT%H:%M')
+
 
 # actions
 
@@ -61,4 +70,5 @@ actions.register('createWorkitem', 'portlet', DialogAction,
         description=_(u'Create a work item for this object.'),
         viewName='create_workitem.html',
         dialogName='createWorkitem',
+        prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget'],
 )
