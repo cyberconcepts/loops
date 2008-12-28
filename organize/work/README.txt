@@ -31,6 +31,15 @@ Work Items - Plannning and Recording Activities for Tasks
   >>> loopsRoot = concepts.getLoopsRoot()
   >>> records = loopsRoot.getRecordManager()
 
+  >>> from cybertools.organize.work import WorkItems
+  >>> component.provideAdapter(WorkItems)
+
+  >>> from cybertools.organize.interfaces import IWorkItems
+  >>> workItems = IWorkItems(records['work'])
+
+  >>> from cybertools.organize.work import workItemStates
+  >>> component.provideUtility(workItemStates(), name='organize.workItemStates')
+
 More setup
 ----------
 
@@ -41,6 +50,11 @@ and a pluggable authentication utility with a principal folder.
   >>> from loops.organize.tests import setupObjectsForTesting
   >>> setupData = setupObjectsForTesting(site, concepts)
   >>> johnC = setupData.johnC
+
+  >>> from zope.app.authentication.principalfolder import Principal
+  >>> pJohn = Principal('users.john', 'xxx', u'John')
+  >>> from loops.tests.auth import login
+  >>> login(pJohn)
 
 We also assign a task as a target to the home node so that we are able
 to assign work items to this task.
@@ -65,8 +79,14 @@ When this form is submitted, a form controller is automatically created
 for the view on the currently shown node. The data from the form is processed
 by calling the form controller's update method
 
-  >>> input = {'form.action': 'create_workitem', 'workitem.action': 'finish'}
+  >>> #input = {'form.action': 'create_workitem', 'workitem.action': 'finish'}
+  >>> input = {u'comment': u'Comment', u'workitem.action': u'finish',
+  ...          u'description': u'Description', u'start_time': u'T19:24:00',
+  ...          u'form.action': u'create_workitem', u'end_time': u'T19:24:00',
+  ...          u'duration': u'1:15', u'effort': u'0:15', u'start_date': u'2008-12-28'}
   >>> request = TestRequest(form=input)
+  >>> request.setPrincipal(pJohn)
+
   >>> from loops.browser.node import NodeView
   >>> view = NodeView(home, request)
   >>> cwiController = CreateWorkItem(view, request)

@@ -31,8 +31,10 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
+from cybertools.organize.interfaces import IWorkItems
 from loops.browser.action import DialogAction
 from loops.browser.form import ObjectForm, EditObject
+from loops.organize.party import getPersonForUser
 from loops.organize.tracking.browser import BaseTrackView
 from loops import util
 from loops.util import _
@@ -65,7 +67,29 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
 class CreateWorkItem(EditObject, BaseTrackView):
 
+    @Lazy
+    def personId(self):
+        p = getPersonForUser(self.context, self.request)
+        if p is not None:
+            return util.getUidForObject(p)
+        return self.request.principal.id
+
+    @Lazy
+    def object(self):
+        return self.view.virtualTargetObject
+
+    @Lazy
+    def data(self):
+        result = {}
+        form = self.request.form
+        #print '***', form
+        return result
+
     def update(self):
+        rm = self.view.loopsRoot.getRecordManager()
+        workItems = IWorkItems(rm.get('work'))
+        wi = workItems.add(util.getUidForObject(self.object), self.personId)
+        wi.doAction('finish', **self.data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
         return False
