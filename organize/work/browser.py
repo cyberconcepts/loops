@@ -31,11 +31,11 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
-from cybertools.tracking.browser import TrackView
 from loops.browser.action import DialogAction
 from loops.browser.form import ObjectForm, EditObject
 from loops.organize.tracking.browser import BaseTrackView
 from loops import util
+from loops.util import _
 
 
 work_macros = ViewPageTemplateFile('work_macros.pt')
@@ -46,7 +46,7 @@ class WorkItemView(BaseTrackView):
     pass
 
 
-class CreateWorkItemForm(ObjectForm):
+class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     template = work_macros
 
@@ -61,6 +61,14 @@ class CreateWorkItemForm(ObjectForm):
     @Lazy
     def defaultTime(self):
         return time.strftime('%Y-%m-%dT%H:%M')
+
+
+class CreateWorkItem(EditObject, BaseTrackView):
+
+    def update(self):
+        url = self.view.virtualTargetUrl + '?version=this'
+        self.request.response.redirect(url)
+        return False
 
 
 # actions

@@ -28,6 +28,15 @@
       class="loops.organize.work.browser.CreateWorkItemForm"
       permission="zope.ManageContent" />
 
+  <zope:adapter
+      name="create_workitem"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.work.browser.CreateWorkItem"
+      permission="zope.View" />
+
+  <!-- setup -->
+
   <zope:adapter factory="loops.organize.work.setup.SetupManager"
                 name="organize.work" />
 

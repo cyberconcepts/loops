@@ -7,6 +7,7 @@
           id="addWorkitem_form" class="dialog"
           dojoType="dijit.form.Form">
       <input type="hidden" name="form.action" value="create_workitem" />
+      <input type="hidden" name="workitem.action" value="finish" />
       <div class="heading" i18n:translate="">Add Work Item</div>
       <div>
         <label i18n:translate=""
@@ -17,34 +18,33 @@
                     style="width: 60em"></textarea></div>
       </div>
       <div>
-        <label i18n:translate=""
-               for="start-end">Start - End</label>
-        <div id="start-end">
-          <input type="text" name="field" style="width: 8em"
-                 dojoType="dijit.form.DateTextBox"
-                 name="start_date" required="true"
-                 tal:attributes="value view/defaultDate" />
-          <input type="text" name="field" style="width: 6em"
-                 dojoType="dijit.form.TimeTextBox"
-                 name="start_time" required="true"
-                 tal:attributes="value view/defaultTime" /> -
-          <input type="text" name="field" style="width: 6em"
-                 dojoType="dijit.form.TimeTextBox"
-                 name="end_time" required="true"
-                 tal:attributes="value view/defaultTime" />
-        </div>
-        <label i18n:translate=""
-               for="duration-effort">Duration / Effort (hh:mm)</label>
-        <div id="duration-effort">
-          <input type="text" style="width: 5em"
-                 dojoType="dijit.form.ValidationTextBox"
-                 regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
-                 name="duration" /> /
-          <input type="text" style="width: 5em"
-                 dojoType="dijit.form.ValidationTextBox"
-                 regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
-                 name="effort" />
-        </div>
+            <label i18n:translate=""
+                   for="start-end">Start - End</label>
+            <div id="start-end">
+              <input type="text" style="width: 8em"
+                     dojoType="dijit.form.DateTextBox"
+                     name="start_date" required="true"
+                     tal:attributes="value view/defaultDate" />
+              <input type="text" style="width: 6em"
+                     dojoType="dijit.form.TimeTextBox"
+                     name="start_time" required="true"
+                     tal:attributes="value view/defaultTime" /> -
+              <input type="text" style="width: 6em"
+                     dojoType="dijit.form.TimeTextBox"
+                     name="end_time" required="true"
+                     tal:attributes="value view/defaultTime" /></div>
+            <label i18n:translate=""
+                   for="duration-effort">Duration / Effort (hh:mm)</label>
+            <div id="duration-effort">
+              <input type="text" style="width: 5em"
+                     dojoType="dijit.form.ValidationTextBox"
+                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     name="duration" /> /
+              <input type="text" style="width: 5em"
+                     dojoType="dijit.form.ValidationTextBox"
+                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     name="effort" /></div>
+      </div>
       <div>
         <label i18n:translate=""
                for="comment">Comment</label>
@@ -53,15 +53,13 @@
                     dojoType="dijit.form.SimpleTextarea"
                     style="width: 60em"></textarea></div>
       </div>
-      <div>
       <div class="buttons">
         <input value="Save" type="submit"
                onClick="return closeDialog(true)"
                i18n:attributes="value">
         <input type="button" value="Cancel"
                onClick="return closeDialog(false)"
-               i18n:attributes="value">
-      </div>
+               i18n:attributes="value"></div>
     </form>
 </metal:block>
 
