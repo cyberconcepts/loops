@@ -25,6 +25,12 @@
   <!-- application views -->
 
   <browser:page
+      name="workitems.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.work.browser.WorkItemsView"
+      permission="zope.View" />
+
+  <browser:page
       name="create_workitem.html"
       for="loops.interfaces.INode"
       class="loops.organize.work.browser.CreateWorkItemForm"

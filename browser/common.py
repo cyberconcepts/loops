@@ -404,19 +404,16 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def versionId(self):
-        #versionable = IVersionable(self.context, None)
         versionable = IVersionable(self.target, None)
         return versionable and versionable.versionId or ''
 
     @Lazy
     def currentVersionId(self):
-        #versionable = IVersionable(self.context, None)
         versionable = IVersionable(self.target, None)
         return versionable and versionable.currentVersion.versionId or ''
 
     @Lazy
     def hasVersions(self):
-        #versionable = IVersionable(self.context, None)
         versionable = IVersionable(self.target, None)
         return versionable and len(versionable.versions) > 1 or False
 
@@ -424,8 +421,6 @@ class BaseView(GenericView, I18NView):
     def versionInfo(self):
         if not self.useVersioning:
             return None
-        #context = self.context
-        #versionable = IVersionable(context, None)
         target = self.target
         versionable = IVersionable(target, None)
         if versionable is None:
@@ -511,6 +506,11 @@ class BaseView(GenericView, I18NView):
                     or None)
 
     inlineEditable = False
+
+    # work items
+    @Lazy
+    def workItems(self):
+        return []
 
     # comments
 

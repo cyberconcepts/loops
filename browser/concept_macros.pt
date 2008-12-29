@@ -7,6 +7,7 @@
           <metal:fields use-macro="item/template/macros/conceptfields" />
           <metal:fields use-macro="item/template/macros/conceptchildren" />
           <metal:fields use-macro="item/template/macros/conceptresources" />
+          <metal:fields use-macro="view/work_macros/workitems" />
           <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:data>

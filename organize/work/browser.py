@@ -34,13 +34,46 @@ from cybertools.browser.action import actions
 from cybertools.organize.interfaces import IWorkItems
 from loops.browser.action import DialogAction
 from loops.browser.form import ObjectForm, EditObject
+from loops.browser.node import NodeView
 from loops.organize.party import getPersonForUser
 from loops.organize.tracking.browser import BaseTrackView
+from loops.organize.tracking.report import TrackDetails
 from loops import util
 from loops.util import _
 
 
 work_macros = ViewPageTemplateFile('work_macros.pt')
+
+
+class WorkItemsView(NodeView):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    @Lazy
+    def workItems(self):
+        ts = self.loopsRoot.getRecordManager().get('work')
+        if ts is not None:
+            return IWorkItems(ts)
+
+    @Lazy
+    def allWorkItems(self):
+        result = []
+        target = self.virtualTargetObject
+        workItems = self.workItems
+        if None in (workItems, target):
+            return result
+        for wi in workItems.query(task=util.getUidForObject(target)):
+            result.append(WorkItemDetails(self, wi))
+        return result
+
+
+class WorkItemDetails(TrackDetails):
+
+    @Lazy
+    def description(self):
+        return self.track.description
 
 
 class WorkItemView(BaseTrackView):

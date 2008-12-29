@@ -482,8 +482,19 @@ class NodeView(BaseView):
         self.recordAccess('external_edit')
         return ExternalEditorView(target, self.request).load(url=url)
 
-    # comments
+    # work items
 
+    @Lazy
+    def work_macros(self):
+        from loops.organize.work.browser import work_macros
+        return work_macros.macros
+
+    @Lazy
+    def workItems(self):
+        return component.getMultiAdapter((self.context, self.request),
+                                         name='workitems.html')
+
+    # comments
 
     @Lazy
     def comment_macros(self):

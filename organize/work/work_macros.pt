@@ -2,6 +2,28 @@
 <!-- $Id$ -->
 
 
+<metal:work define-macro="workitems"
+                tal:define="workItems nocall:view/workItems"
+                tal:condition="workItems/allWorkItems">
+  <br />
+  <h2 i18n:translate="">Work Items</h2>
+  <metal:workitems define-macro="workitems_listing"
+                   tal:define="workItems nocall:workItems|nocall:view/workItems;">
+    <tal:workitem tal:repeat="workItem workItems/allWorkItems">
+      <br />
+      <div class="comment">
+        <h3>
+          <span tal:content="workItem/description">Subject</span></h3>
+        <div class="info">
+          <span tal:replace="workItem/user/title">John</span>,
+          <span tal:replace="workItem/timeStamp">2007-03-30</span>
+        </div>
+      </div>
+    </tal:workitem>
+  </metal:workitems>
+</metal:work>
+
+
 <metal:block define-macro="create_workitem">
     <form method="post"
           id="addWorkitem_form" class="dialog"
