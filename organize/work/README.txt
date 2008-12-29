@@ -79,11 +79,10 @@ When this form is submitted, a form controller is automatically created
 for the view on the currently shown node. The data from the form is processed
 by calling the form controller's update method
 
-  >>> #input = {'form.action': 'create_workitem', 'workitem.action': 'finish'}
-  >>> input = {u'comment': u'Comment', u'workitem.action': u'finish',
-  ...          u'description': u'Description', u'start_time': u'T19:24:00',
-  ...          u'form.action': u'create_workitem', u'end_time': u'T19:24:00',
-  ...          u'duration': u'1:15', u'effort': u'0:15', u'start_date': u'2008-12-28'}
+  >>> input = {u'form.action': u'create_workitem', u'workitem.action': u'finish',
+  ...          u'description': u'Description', u'comment': u'Comment',
+  ...          u'start_date': u'2008-12-28', u'start_time': u'T19:00:00',
+  ...          u'end_time': u'T20:15:00', u'duration': u'1:15', u'effort': u'0:15'}
   >>> request = TestRequest(form=input)
   >>> request.setPrincipal(pJohn)
 
@@ -93,6 +92,18 @@ by calling the form controller's update method
 
   >>> cwiController.update()
   False
+
+  >>> list(workItems)
+  [<WorkItem ['36', 1, '33', '2008-12-28 19:15', 'finished']:
+   {'comment': u'Comment', 'end': 1230491700, 'description': u'Description',
+    'created': ..., 'creator': '33', 'assigned': ...,
+    'start': 1230487200, 'duration': 4500, 'effort': 900}>]
+
+  >>> from loops.organize.work.browser import WorkItemView
+  >>> wi01 = workItems['0000001']
+  >>> view = WorkItemView(wi01, TestRequest())
+  >>> view.taskUrl
+  'http://127.0.0.1/loops/concepts/loops_dev/@@SelectedManagementView.html'
 
 
 Fin de partie

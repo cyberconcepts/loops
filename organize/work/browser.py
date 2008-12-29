@@ -78,18 +78,41 @@ class CreateWorkItem(EditObject, BaseTrackView):
     def object(self):
         return self.view.virtualTargetObject
 
-    @Lazy
-    def data(self):
-        result = {}
+    def processForm(self):
         form = self.request.form
-        #print '***', form
-        return result
+        action = form.get('workitem.action')
+        if not action:
+            return None, {}
+        result = dict()
+        def setValue(k):
+            v = form.get(k)
+            if v:
+                result[k] = v
+        for k in ('description', 'comment'):
+            setValue(k)
+        startDate = form.get('start_date')
+        startTime = form.get('start_time')
+        endTime = form.get('end_time')
+        if startDate and startTime:
+            result['start'] = parseDateTime(startDate + startTime)
+        if startDate and endTime:
+            result['end'] = parseDateTime(startDate + endTime)
+        duration = form.get('duration')
+        if duration:
+            result['duration'] = parseTime(duration)
+        effort = form.get('effort')
+        if effort:
+            result['effort'] = parseTime(effort)
+        return action, result
 
     def update(self):
         rm = self.view.loopsRoot.getRecordManager()
         workItems = IWorkItems(rm.get('work'))
+        action, data = self.processForm()
+        if not action:
+            return True
         wi = workItems.add(util.getUidForObject(self.object), self.personId)
-        wi.doAction('finish', **self.data)
+        wi.doAction(action, **data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
         return False
@@ -104,3 +127,16 @@ actions.register('createWorkitem', 'portlet', DialogAction,
         dialogName='createWorkitem',
         prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget'],
 )
+
+
+# auxiliary functions
+
+def parseTime(s):
+    if ':' in s:
+        h, m = [int(v) for v in s.split(':')]
+    else:
+        h, m = int(s), 0
+    return h * 3600 + m * 60
+
+def parseDateTime(s):
+    return int(time.mktime(time.strptime(s, '%Y-%m-%dT%H:%M:%S')))
