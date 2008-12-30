@@ -75,6 +75,14 @@ class WorkItemDetails(TrackDetails):
     def description(self):
         return self.track.description
 
+    @Lazy
+    def start(self):
+        return self.formatTimeStamp(self.track.start)
+
+    @Lazy
+    def end(self):
+        return self.formatTimeStamp(self.track.end)[-5:]
+
 
 class WorkItemView(BaseTrackView):
 
@@ -121,7 +129,7 @@ class CreateWorkItem(EditObject, BaseTrackView):
             v = form.get(k)
             if v:
                 result[k] = v
-        for k in ('description', 'comment'):
+        for k in ('title', 'description', 'comment'):
             setValue(k)
         startDate = form.get('start_date')
         startTime = form.get('start_time')

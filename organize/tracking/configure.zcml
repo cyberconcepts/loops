@@ -30,6 +30,8 @@
              set_schema="loops.organize.tracking.access.IAccessRecord" />
   </zope:class>
 
+  <zope:subscriber handler="cybertools.tracking.btree.unindexTrack" />
+
   <zope:subscriber handler="loops.organize.tracking.change.recordModification" />
   <zope:subscriber handler="loops.organize.tracking.change.recordAdding" />
   <zope:subscriber handler="loops.organize.tracking.change.recordAssignment" />

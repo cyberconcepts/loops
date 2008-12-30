@@ -87,8 +87,8 @@ by calling the form controller's update method
   >>> request.setPrincipal(pJohn)
 
   >>> from loops.browser.node import NodeView
-  >>> view = NodeView(home, request)
-  >>> cwiController = CreateWorkItem(view, request)
+  >>> nodeView = NodeView(home, request)
+  >>> cwiController = CreateWorkItem(nodeView, request)
 
   >>> cwiController.update()
   False
@@ -104,6 +104,11 @@ by calling the form controller's update method
   >>> view = WorkItemView(wi01, TestRequest())
   >>> view.taskUrl
   'http://127.0.0.1/loops/concepts/loops_dev/@@SelectedManagementView.html'
+
+  >>> from loops.organize.work.browser import WorkItemDetails
+  >>> view = WorkItemDetails(nodeView, wi01)
+  >>> view.start, view.end
+  (u'08/12/28 19:00', u'20:15')
 
 
 Fin de partie

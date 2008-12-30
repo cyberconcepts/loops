@@ -9,39 +9,53 @@
   <h2 i18n:translate="">Work Items</h2>
   <metal:workitems define-macro="workitems_listing"
                    tal:define="workItems nocall:workItems|nocall:view/workItems;">
-    <tal:workitem tal:repeat="workItem workItems/allWorkItems">
-      <br />
-      <div class="comment">
-        <h3>
-          <span tal:content="workItem/description">Subject</span></h3>
-        <div class="info">
-          <span tal:replace="workItem/user/title">John</span>,
-          <span tal:replace="workItem/timeStamp">2007-03-30</span>
-        </div>
-      </div>
-    </tal:workitem>
+    <table class="listing">
+      <tr>
+        <th i18n:translate="">Title</th>
+        <th i18n:translate="">User</th>
+        <th i18n:translate="">Start</th>
+        <th i18n:translate="">End</th>
+      </tr>
+      <tal:workitem tal:repeat="workItem workItems/allWorkItems">
+        <tr tal:attributes="class python:
+                                repeat['workItem'].odd() and 'even' or 'odd'">
+          <td>
+            <span tal:content="workItem/track/title">Title</span></td>
+          <td>
+            <span tal:replace="workItem/user/title">John</span></td>
+          <td class="nowrap">
+            <span tal:replace="workItem/start">2007-03-30</span></td>
+          <td class="nowrap">
+            <span tal:replace="workItem/end">2007-03-30</span></td>
+        </tr>
+      </tal:workitem>
+    </table>
   </metal:workitems>
 </metal:work>
 
 
 <metal:block define-macro="create_workitem">
-    <form method="post"
-          id="addWorkitem_form" class="dialog"
+    <form method="post" id="addWorkitem_form" class="dialog"
           dojoType="dijit.form.Form">
       <input type="hidden" name="form.action" value="create_workitem" />
       <input type="hidden" name="workitem.action" value="finish" />
       <div class="heading" i18n:translate="">Add Work Item</div>
       <div>
-        <label i18n:translate=""
-               for="description">Description</label>
+        <label i18n:translate="" for="title">Title</label>
+        <div>
+          <input name="title" id="title"
+                 dojoType="dijit.form.ValidationTextBox" required
+                 style="width: 60em" /></div>
+      </div>
+      <div>
+        <label i18n:translate="" for="description">Description</label>
         <div>
           <textarea name="description" cols="80" rows="4" id="description"
                     dojoType="dijit.form.SimpleTextarea"
                     style="width: 60em"></textarea></div>
       </div>
       <div>
-            <label i18n:translate=""
-                   for="start-end">Start - End</label>
+            <label i18n:translate="" for="start-end">Start - End</label>
             <div id="start-end">
               <input type="text" name="start_date" style="width: 8em"
                      dojoType="dijit.form.DateTextBox"
@@ -63,8 +77,7 @@
                      regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}" /></div>
       </div>
       <div>
-        <label i18n:translate=""
-               for="comment">Comment</label>
+        <label i18n:translate="" for="comment">Comment</label>
         <div>
           <textarea name="comment" cols="80" rows="4" id="comment"
                     dojoType="dijit.form.SimpleTextarea"

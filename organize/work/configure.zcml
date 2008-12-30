@@ -8,8 +8,6 @@
   <zope:class class="loops.organize.work.base.WorkItem">
     <require permission="zope.View"
              interface="cybertools.organize.work.IWorkItem" />
-    <require permission="zope.View"
-             attributes="getName" />
     <require permission="zope.ManageContent"
              set_schema="cybertools.organize.work.IWorkItem" />
   </zope:class>

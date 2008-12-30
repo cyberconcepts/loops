@@ -69,6 +69,10 @@ table.listing td.center {
     text-align: center;
 }
 
+table.listing td.nowrap {
+    white-space: nowrap;
+}
+
 table.listing td.checkbox {
     text-align: center;
     width: 10px;

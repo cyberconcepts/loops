@@ -242,7 +242,15 @@ class TrackDetails(BaseView):
 
     @Lazy
     def timeStamp(self):
-        value = datetime.fromtimestamp(self.track.timeStamp)
+        return self.formatTimeStamp(self.track.timeStamp)
+        #value = datetime.fromtimestamp(self.track.timeStamp)
+        #return format.formatDate(value, 'dateTime', self.timeStampFormat,
+        #                         self.view.languageInfo.language)
+
+    def formatTimeStamp(self, ts):
+        if not ts:
+            return u''
+        value = datetime.fromtimestamp(ts)
         return format.formatDate(value, 'dateTime', self.timeStampFormat,
                                  self.view.languageInfo.language)
 
