@@ -61,7 +61,7 @@ class IExternalCollection(IConceptSchema):
     address = schema.TextLine(
             title=_(u'Relative address'),
             description=_(u'Optional second (local) part of the '
-                           'collection\'s address'),
+                          u'collection\'s address'),
             required=False)
     pattern = schema.TextLine(
             title=_(u'Selection pattern'),
@@ -98,6 +98,4 @@ class IExternalCollectionProvider(Interface):
             type with the name 'extfile') for each of the addresses
             provided. Return the list of objects created.
         """
-
-# classification stuff moved to loops.classifier
 
