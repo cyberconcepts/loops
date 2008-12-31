@@ -1,11 +1,19 @@
-<metal:resources define-macro="render_collection"
-                 tal:define="dummy item/update">
+<html i18n:domain="loops">
 
-  <metal:concept use-macro="item/template/macros/conceptdata" />
 
-  <form action="." method="post">
-    <input type="submit" name="update" value="Update Collection" />
-  </form>
+<metal:block define-macro="render_collection"
+             tal:define="dummy item/update">
 
-</metal:resources>
+  <metal:block use-macro="view/concept_macros/conceptdata">
+    <metal:fill fill-slot="fields">
+      <metal:block use-macro="view/concept_macros/conceptfields" />
+      <form action="." method="post">
+        <input type="submit" name="update" value="Update Collection" />
+      </form>
+    </metal:fill>
+  </metal:block>
 
+</metal:block>
+
+
+</html>

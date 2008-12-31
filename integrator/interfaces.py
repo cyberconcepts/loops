@@ -50,13 +50,13 @@ class IExternalCollection(IConceptSchema):
     providerName = schema.TextLine(
             title=_(u'Provider name'),
             description=_(u'The name of a utility that provides the '
-                           'external objects; default is a directory '
-                           'collection provider'),
+                          u'external objects; default is a directory '
+                          u'collection provider'),
             required=False)
     baseAddress = schema.TextLine(
             title=_(u'Base address'),
             description=_(u'A base path or URL for accessing this collection '
-                           'on the external system'),
+                          u'on the external system'),
             required=True)
     address = schema.TextLine(
             title=_(u'Relative address'),
@@ -66,7 +66,13 @@ class IExternalCollection(IConceptSchema):
     pattern = schema.TextLine(
             title=_(u'Selection pattern'),
             description=_(u'A regular expression for selecting external objects '
-                           'that should belong to this collection'),
+                          u'that should belong to this collection'),
+            required=False)
+    exclude = schema.List(
+            title=_(u'Exclude'),
+            description=_(u'Names of directories and files that should not '
+                          u'be included.'),
+            value_type=schema.TextLine(),
             required=False)
     lastUpdated = Attribute('Date and time of last update.')
 
@@ -93,9 +99,12 @@ class IExternalCollectionProvider(Interface):
             IExternalCollection interface.
         """
 
-    def createExtFileObjects(clientCollection, addresses, extFileType=None):
-        """ Create a resource of type 'extFileType' (default is the
-            type with the name 'extfile') for each of the addresses
-            provided. Return the list of objects created.
+    def createExtFileObjects(clientCollection, addresses, extFileTypes=None):
+        """ Create a resource for each of the addresses provided.
+            Return the list of objects created.
+
+            The ``extFileTypes`` argument is a mapping of MIME types to
+            names of concept types. The MIME types may contain wildcards,
+            e.g. 'image/*', '*/*'.
         """
 

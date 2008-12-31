@@ -69,13 +69,22 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
             self.transform(self.rules)
     data = property(ExternalFileAdapter.getData, setData)
 
+    def setExternalAddress(self, addr):
+        ExternalFileAdapter.setExternalAddress(self, addr)
+        if addr and self.getMimeType().startswith('image/'):
+            self.transform(self.rules)
+    externalAddress = property(ExternalFileAdapter.getExternalAddress,
+                               setExternalAddress)
+
     def getMimeType(self):
         return self.context.contentType or ''
 
     def getDataPath(self):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
+        #print '***', self.storageName, self.storageParams, self.options
         return storage.getDir(self.externalAddress,
-                              self.options['storage_parameters'])
+                              #self.options['storage_parameters'])
+                              self.storageParams['subdirectory'])
 
     def getOriginalData(self):
         return ExternalFileAdapter.getData(self)

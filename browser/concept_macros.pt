@@ -3,12 +3,14 @@
 
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-          <metal:fields use-macro="item/template/macros/concepttitle" />
-          <metal:fields use-macro="item/template/macros/conceptfields" />
-          <metal:fields use-macro="item/template/macros/conceptchildren" />
-          <metal:fields use-macro="item/template/macros/conceptresources" />
-          <metal:fields use-macro="view/work_macros/workitems" />
-          <metal:fields use-macro="view/comment_macros/comments" />
+          <metal:block use-macro="view/concept_macros/concepttitle" />
+          <metal:slot define-slot="fields">
+            <metal:block use-macro="view/concept_macros/conceptfields" />
+          </metal:slot>
+          <metal:block use-macro="view/concept_macros/conceptchildren" />
+          <metal:block use-macro="view/concept_macros/conceptresources" />
+          <metal:block use-macro="view/work_macros/workitems" />
+          <metal:block use-macro="view/comment_macros/comments" />
   </div>
 </metal:data>
 
@@ -154,7 +156,10 @@
                   <a href="#"
                      tal:attributes="href string:${view/url}/.target${related/uniqueId};
                                      title description">
-                    <span tal:replace="related/title">Resource Title</span>
+                    <img tal:define="icon related/icon"
+                         tal:condition="icon"
+                         tal:attributes="src icon/src" />
+                    <div tal:content="related/title">Resource Title</div>
                   </a>
                 </td>
                 <td><span tal:replace="related/longTypeTitle">Type</span></td>

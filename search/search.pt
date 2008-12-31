@@ -72,9 +72,13 @@
                                 description row/description">
                 <tr tal:attributes="class class">
                   <td>
-                    <a tal:attributes="href string:${view/url}/.target${row/uniqueId}?version=this;
-                                       title description"
-                       tal:content="row/title" />
+                    <a tal:attributes="href
+                        string:${view/url}/.target${row/uniqueId}?version=this;
+                                       title description">
+                      <img tal:define="icon row/icon"
+                           tal:condition="icon"
+                           tal:attributes="src icon/src" />
+                      <div tal:content="row/title" /></a>
                   </td>
                   <td i18n:translate=""
                       tal:content="row/longTypeTitle|row/typeTitle">Type</td>

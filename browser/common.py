@@ -108,6 +108,7 @@ class EditForm(form.EditForm):
 class BaseView(GenericView, I18NView):
 
     actions = {}
+    icon = None
 
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
@@ -126,6 +127,8 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def conceptMacros(self):
         return concept_macros.macros
+
+    concept_macros = conceptMacros
 
     @Lazy
     def name(self):

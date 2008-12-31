@@ -275,7 +275,8 @@ class Resource(Image, Contained):
             oldAdapted.data = ''            # clear old storage
             context._storageName = None     # let's take storage from new type options
             context._storageParams = None   # "
-            newAdapted.data = data
+            if data:    # do not write empty files
+                newAdapted.data = data
 
 
 # Document and MediaAsset are legacy classes, will become obsolete

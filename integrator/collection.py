@@ -59,8 +59,14 @@ class ExternalCollectionAdapter(AdapterBase):
     implements(IExternalCollection)
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__',)
+    _adapterAttributes = ('context', '__parent__', 'exclude')
     _contextAttributes = list(IExternalCollection) + list(IConcept)
+
+    def getExclude(self):
+        return getattr(self.context, '_exclude', None) or []
+    def setExclude(self, value):
+        self.context._exclude = value
+    exclude = property(getExclude, setExclude)
 
     def update(self):
         existing = self.context.getResources()
@@ -109,26 +115,43 @@ class DirectoryCollectionProvider(object):
 
     implements(IExternalCollectionProvider)
 
+    extFileTypeMapping = {
+        'image/*': 'media_asset',
+        '*/*': 'extfile',
+    }
+
     def collect(self, client):
         directory = self.getDirectory(client)
         pattern = re.compile(client.pattern or '.*')
         for path, dirs, files in os.walk(directory):
             if '.svn' in dirs:
                 del dirs[dirs.index('.svn')]
+            for ex in client.exclude:
+                if ex in dirs:
+                    del dirs[dirs.index(ex)]
             for f in files:
                 if pattern.match(f):
                     mtime = os.stat(os.path.join(path, f))[stat.ST_MTIME]
                     yield (os.path.join(path[len(directory)+1:], f),
                            datetime.fromtimestamp(mtime))
 
-    def createExtFileObjects(self, client, addresses, extFileType=None):
-        if extFileType is None:
-            extFileType = client.context.getLoopsRoot().getConceptManager()['extfile']
+    def createExtFileObjects(self, client, addresses, extFileTypes=None):
+        if extFileTypes is None:
+            cm = client.context.getLoopsRoot().getConceptManager()
+            extFileTypes = dict((k, cm.get(v))
+                                for k, v in self.extFileTypeMapping.items())
         container = client.context.getLoopsRoot().getResourceManager()
         directory = self.getDirectory(client)
         for addr in addresses:
             name = self.generateName(container, addr)
             title = self.generateTitle(addr)
+            contentType = guess_content_type(addr,
+                                    default='application/octet-stream')[0]
+            extFileType = extFileTypes.get(contentType)
+            if extFileType is None:
+                extFileType = extFileTypes.get(contentType.split('/')[0] + '/*')
+                if extFileType is None:
+                    extFileType = extFileTypes['*/*']
             obj = addAndConfigureObject(
                             container, Resource, name,
                             title=title,
@@ -136,9 +159,8 @@ class DirectoryCollectionProvider(object):
                             externalAddress=addr,
                             storageName='fullpath',
                             storageParams=dict(subdirectory=directory),
-                            contentType = guess_content_type(addr,
-                                    default='application/octet-stream')[0]
-                            )
+                            contentType=contentType,
+            )
             yield obj
 
     def getDirectory(self, client):

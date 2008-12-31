@@ -48,7 +48,9 @@ from loops.browser.concept import ConceptRelationView, ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.common import adapted, NameChooser
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
+from loops.interfaces import IMediaAsset as legacy_IMediaAsset
 from loops.interfaces import ITypeConcept
+from loops.media.interfaces import IMediaAsset
 from loops.organize.stateful.browser import statefulActions
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
@@ -95,12 +97,18 @@ class DocumentEditForm(EditForm):
 
 
 class MediaAssetEditForm(EditForm):
-    form_fields = FormFields(IMediaAsset)
+    form_fields = FormFields(legacy_IMediaAsset)
 
 
 class ResourceView(BaseView):
 
     template = ViewPageTemplateFile('resource_macros.pt')
+
+    @Lazy
+    def icon(self):
+        if IMediaAsset.providedBy(self.adapted):
+            return dict(src='%s/mediaasset.html?v=minithumb' %
+                        (self.nodeView.getUrlForTarget(self.context)))
 
     @property
     def macro(self):
