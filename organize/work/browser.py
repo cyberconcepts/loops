@@ -17,7 +17,7 @@
 #
 
 """
-View class(es) for change tracks.
+View class(es) for work items.
 
 $Id$
 """
@@ -33,6 +33,7 @@ from zope.traversing.api import getName
 from cybertools.browser.action import actions
 from cybertools.organize.interfaces import IWorkItems
 from loops.browser.action import DialogAction
+from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.organize.party import getPersonForUser
@@ -45,17 +46,34 @@ from loops.util import _
 work_macros = ViewPageTemplateFile('work_macros.pt')
 
 
-class WorkItemsView(NodeView):
+# work item collections
+
+class BaseWorkItemsView(object):
+
+    columns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration'])
+
+    lastMonth = None
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     @Lazy
+    def work_macros(self):
+        return work_macros.macros
+
+    @Lazy
     def workItems(self):
         ts = self.loopsRoot.getRecordManager().get('work')
         if ts is not None:
             return IWorkItems(ts)
+
+
+class WorkItemsView(BaseWorkItemsView, NodeView):
+    """ Standard view for showing work items for a node's target.
+    """
+
+    columns = set(['User', 'Title', 'Start', 'End', 'Duration'])
 
     @Lazy
     def allWorkItems(self):
@@ -69,7 +87,33 @@ class WorkItemsView(NodeView):
         return result
 
 
+class UserWorkItems(BaseWorkItemsView, ConceptView):
+    """ A query view showing work items for a person, the query's parent.
+    """
+
+    columns = set(['Task', 'Title', 'Start', 'End', 'Duration'])
+
+    @property
+    def macro(self):
+        return self.work_macros['userworkitems']
+
+    @Lazy
+    def allWorkItems(self):
+        workItems = self.workItems
+        if self.workItems is None:
+            return []
+        result = []
+        for target in self.context.getParents([self.defaultPredicate]):
+            for wi in workItems.query(userName=util.getUidForObject(target)):
+                result.append(WorkItemDetails(self, wi))
+        return result
+
+
+# single work items
+
 class WorkItemDetails(TrackDetails):
+    """ Render a single work item.
+    """
 
     @Lazy
     def description(self):
@@ -81,13 +125,30 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def end(self):
-        return self.formatTimeStamp(self.track.end)[-5:]
+        ts = self.formatTimeStamp(self.track.end)
+        return ts and ts[-5:] or ''
+
+    @Lazy
+    def duration(self):
+        return self.formatTimeDelta(self.track.duration)
+
+    @Lazy
+    def effort(self):
+        return self.formatTimeDelta(self.track.effort)
+
+    def formatTimeDelta(self, value):
+        if not value:
+            return ''
+        h, m = divmod(int(value) / 60, 60)
+        return '%02i:%02i' % (h, m)
 
 
 class WorkItemView(BaseTrackView):
+    """ Show a single work item in the management view.
+    """
 
-    pass
 
+# forms and form controllers
 
 class CreateWorkItemForm(ObjectForm, BaseTrackView):
 

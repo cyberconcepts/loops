@@ -28,6 +28,14 @@
       class="loops.organize.work.browser.WorkItemsView"
       permission="zope.View" />
 
+  <zope:adapter
+        name="userworkitems.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.organize.work.browser.UserWorkItems"
+        permission="zope.View" />
+
   <browser:page
       name="create_workitem.html"
       for="loops.interfaces.INode"

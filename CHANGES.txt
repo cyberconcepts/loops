@@ -3,6 +3,23 @@ Change Log
 
 $Id$
 
+1.0
+---
+
+New features
+
+- work items (work in progress): activate by adding option
+  ``action.portlet:createWorkitem`` to type; work items listing is shown
+  automatically in standard concept view.
+- my work items: a query view (``userworkitems.html``); assign the query
+  to the person as a standard child
+
+Bug fixes
+
+- external collection: now works correctly (without creating empty files
+  in the var directory); resource type of generated object controlled by
+  mime type; automatically executes transformation steps on media assets
+
 0.9
 ---
 

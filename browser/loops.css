@@ -80,6 +80,11 @@ table.listing td.checkbox {
     padding-right: 2px;
 }
 
+table.listing td.headline {
+    font-weight: bold;
+    border: 1px solid lightgrey;
+}
+
 table.listing-details td {
     white-space: normal;
     border: 1px solid lightgrey;

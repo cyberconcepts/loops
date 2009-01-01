@@ -236,6 +236,10 @@ class BaseView(GenericView, I18NView):
         return self.conceptManager.getTypePredicate()
 
     @Lazy
+    def defaultPredicate(self):
+        return self.conceptManager.getDefaultPredicate()
+
+    @Lazy
     def url(self):
         return absoluteURL(self.context, self.request)
 

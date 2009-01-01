@@ -197,6 +197,17 @@ class TrackDetails(BaseView):
         self.track = track
 
     @Lazy
+    def month(self):
+        ts = datetime.fromtimestamp(self.track.timeStamp)
+        return formatAsMonth(date(ts.year, ts.month, 1))
+
+    @property
+    def monthChanged(self):
+        result = self.view.lastMonth != self.month
+        self.view.lastMonth = self.month
+        return result
+
+    @Lazy
     def authentication(self):
         return component.getUtility(IAuthentication)
 
