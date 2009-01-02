@@ -393,7 +393,8 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def options(self):
-        return IOptions(self.context)
+        #return IOptions(self.context)
+        return IOptions(self.adapted)
 
     @Lazy
     def globalOptions(self):

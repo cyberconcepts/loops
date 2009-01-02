@@ -468,6 +468,7 @@
   <include package=".rest" />
   <include package=".search" />
   <include package=".security" />
+  <include package=".system" />
   <include package=".versioning" />
   <include package=".xmlrpc" />
 

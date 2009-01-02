@@ -51,7 +51,8 @@ class CommentsView(NodeView):
 
     @Lazy
     def allowed(self):
-        return self.globalOptions('organize.allowComments')
+        return (self.virtualTargetObject is not None and
+                    self.globalOptions('organize.allowComments'))
 
     @Lazy
     def addUrl(self):

@@ -1,0 +1,18 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<!-- listings -->
+
+<metal:work define-macro="sites_listing">
+  <h2 i18n:translate="">loops Sites</h2>
+    <ul>
+      <tal:site tal:repeat="row item/sites">
+        <li><a tal:attributes="href row/url"
+                 tal:content="row/dcTitle">My Site</a></li>
+      </tal:site>
+    </ul>
+</metal:work>
+
+
+</html>

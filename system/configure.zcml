@@ -8,4 +8,6 @@
   <zope:adapter factory="loops.system.setup.SetupManager"
                 name="system" />
 
+  <include package=".site" />
+
 </configure>
