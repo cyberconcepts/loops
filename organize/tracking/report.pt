@@ -21,12 +21,18 @@
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
       <td tal:content="row/period"></td>
-      <td class="number"
-          tal:content="row/access"></td>
-      <td class="number"
-          tal:content="row/changed"></td>
-      <td class="number"
-          tal:content="row/new"></td>
+      <td class="number">
+        <a tal:omit-tag="python: row['access'] == 0"
+           tal:attributes="href string:?period=${row/period}&select=access"
+           tal:content="row/access" /></td>
+      <td class="number">
+        <a tal:omit-tag="python: row['changed'] == 0"
+           tal:attributes="href string:?period=${row/period}&select=changes"
+           tal:content="row/changed" /></td>
+      <td class="number">
+        <a tal:omit-tag="python: row['new'] == 0"
+           tal:attributes="href string:?period=${row/period}&select=new"
+          tal:content="row/new" /></td>
       <td class="number"
           tal:content="row/count"></td>
     </tr>
@@ -34,7 +40,22 @@
 </metal:overview>
 
 
+<metal:recent define-macro="period">
+  <h2 i18n:translate="">
+    Period <span i18n:name="period" tal:content="request/period" />,
+    <span i18n:name="select" tal:content="request/select" /></h2>
+  <p><a tal:attributes="href python: request.URL[-1]">
+       Back to overview</a></p>
+  <metal:listing use-macro="item/macros/listing" />
+</metal:recent>
+
+
 <metal:recent define-macro="recent_changes">
+  <metal:listing use-macro="item/macros/listing" />
+</metal:recent>
+
+
+<metal:recent define-macro="listing">
   <table class="listing">
     <tr>
       <th i18n:translate="">Title</th>
@@ -43,7 +64,8 @@
           tal:condition="view/useVersioning">V</th>
       <th i18n:translate="">User</th>
       <th i18n:translate="">Date/Time</th>
-      <th i18n:translate="">New</th>
+      <th i18n:translate=""
+          tal:condition="info/showNewColumn">New</th>
     </tr>
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
@@ -68,6 +90,7 @@
              tal:content="row/user/title" /></td>
         <td tal:content="row/timeStamp"></td>
         <td class="center"
+            tal:condition="info/showNewColumn"
             tal:content="row/markNew"></td>
       </tal:row>
     </tr>

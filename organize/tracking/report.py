@@ -23,6 +23,7 @@ $Id$
 """
 
 from datetime import date, datetime
+import time
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
@@ -66,12 +67,20 @@ class TrackingStats(BaseView):
         return self.options('types') or ['resource:*']
 
     @Lazy
+    def accessContainer(self):
+        return self.loopsRoot.getRecordManager()['access']
+
+    @Lazy
+    def changesContainer(self):
+        return self.loopsRoot.getRecordManager()['changes']
+
+    @Lazy
     def accessRecords(self):
-        return self.filter(reversed(self.loopsRoot.getRecordManager()['access'].values()))
+        return self.filter(reversed(self.accessContainer.values()))
 
     @Lazy
     def changeRecords(self):
-        return self.filter(reversed(self.loopsRoot.getRecordManager()['changes'].values()))
+        return self.filter(reversed(self.changesContainer.values()))
 
     def filter(self, tracks):
         for tr in tracks:
@@ -109,17 +118,19 @@ class TrackingStats(BaseView):
         form = self.request.form
         period = form.get('period')
         uid = form.get('id')
-        if period is not None:
-            result = self.getPeriodDetails(period)
-            macroName = 'period'
-        elif uid is not None:
-            result = self.getObjectDetails(uid)
+        select = form.get('select') or 'changes'
+        if uid is not None:
+            result = self.getObjectDetails(uid, period, select)
             macroName = 'object'
+        elif period is not None:
+            result = self.getPeriodDetails(period, select)
+            macroName = 'period'
         else:
             result = self.getOverview()
             macroName = 'overview'
         macro = self.macros[macroName]
-        return dict(data=result, macro=macro)
+        return dict(data=result, macro=macro,
+                    showNewColumn=(select in ('changes', 'new')))
 
     def getOverview(self):
         """ Period-based (monthly) listing of the numbers of object accesses, new,
@@ -148,12 +159,30 @@ class TrackingStats(BaseView):
             num = num - data['new']
         return result
 
-    def getPeriodDetails(period):
+    def getPeriodDetails(self, period, select='changes'):
         """ Listing of accessed, new, changed, [deleted] objects during
             the period given.
         """
+        parts = [int(x) for x in period.split('-')]
+        parts.append(1)
+        start = date(*parts)
+        if parts[1] == 12:
+            end = date(parts[0] + 1, 1, 1)
+        else:
+            end = date(parts[0], parts[1] + 1, 1)
+        start = int(time.mktime(start.timetuple()))
+        end = int(time.mktime(end.timetuple()))
+        if select in ('changes', 'new'):
+            data = reversed(list(self.filter(
+                        self.changesContainer.query(timeFromTo=(start, end)))))
+            if select == 'new':
+                data = [tr for tr in data if tr.data['action'] == 'add']
+        if select == 'access':
+            data = reversed(list(self.filter(
+                        self.accessContainer.query(timeFromTo=(start, end)))))
+        return [TrackDetails(self, tr) for tr in data]
 
-    def getObjectDetails(uid, period=None):
+    def getObjectDetails(self, uid, period=None, select='changes'):
         """ Listing of (last n?) accesses and changes of the object specified by
             the uid given, optionally limited to the period (month) given.
         """
@@ -185,7 +214,8 @@ class RecentChanges(TrackingStats):
                 result.append(track)
                 continue
         return dict(data=[TrackDetails(self, tr) for tr in result],
-                    macro=self.macros['recent_changes'])
+                    macro=self.macros['recent_changes'],
+                    showNewColumn=True)
 
 
 class TrackDetails(BaseView):
@@ -206,6 +236,14 @@ class TrackDetails(BaseView):
         result = self.view.lastMonth != self.month
         self.view.lastMonth = self.month
         return result
+
+    @Lazy
+    def day(self):
+        value = self.formatTimeStamp(self.track.timeStamp, 'date')
+        if value == self.view.lastDay:
+            return u''
+        self.view.lastDay = value
+        return value
 
     @Lazy
     def authentication(self):
@@ -258,11 +296,11 @@ class TrackDetails(BaseView):
         #return format.formatDate(value, 'dateTime', self.timeStampFormat,
         #                         self.view.languageInfo.language)
 
-    def formatTimeStamp(self, ts):
+    def formatTimeStamp(self, ts, f='dateTime'):
         if not ts:
             return u''
         value = datetime.fromtimestamp(ts)
-        return format.formatDate(value, 'dateTime', self.timeStampFormat,
+        return format.formatDate(value, f, self.timeStampFormat,
                                  self.view.languageInfo.language)
 
     def __repr__(self):

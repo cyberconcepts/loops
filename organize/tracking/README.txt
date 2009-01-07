@@ -151,6 +151,16 @@ Overview (cumulative) statistics
   >>> result['data']
   [{'access': 2, 'new': 0, 'changed': 1, 'period': '...', 'count': 3}]
 
+
+Changes for a certain period (month)
+------------------------------------
+
+  >>> input = dict(period='2009-01', select='access')
+  >>> view = TrackingStats(statQuery, TestRequest(form=input))
+  >>> result = view.getData()
+  >>> result['data']
+  [...]
+
 Recent changes
 --------------
 
