@@ -99,16 +99,18 @@ by calling the form controller's update method
     'created': ..., 'creator': '33', 'assigned': ...,
     'start': 1230487200, 'duration': 4500, 'effort': 900}>]
 
-  >>> from loops.organize.work.browser import WorkItemView
+  >>> from loops.organize.work.browser import WorkItemView, WorkItemsView
   >>> wi01 = workItems['0000001']
   >>> view = WorkItemView(wi01, TestRequest())
   >>> view.taskUrl
   'http://127.0.0.1/loops/concepts/loops_dev/@@SelectedManagementView.html'
 
+  >>> itemsView = WorkItemsView(home, request)
+
   >>> from loops.organize.work.browser import WorkItemDetails
-  >>> view = WorkItemDetails(nodeView, wi01)
-  >>> view.start, view.end
-  (u'08/12/28 19:00', u'20:15')
+  >>> view = WorkItemDetails(itemsView, wi01)
+  >>> view.day, view.start, view.end
+  (u'08/12/28', u'19:00', u'20:15')
 
 
 Fin de partie

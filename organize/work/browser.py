@@ -52,7 +52,7 @@ class BaseWorkItemsView(object):
 
     columns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration'])
 
-    lastMonth = None
+    lastMonth = lastDay = None
 
     def __init__(self, context, request):
         self.context = context
@@ -73,7 +73,7 @@ class WorkItemsView(BaseWorkItemsView, NodeView):
     """ Standard view for showing work items for a node's target.
     """
 
-    columns = set(['User', 'Title', 'Start', 'End', 'Duration'])
+    columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration'])
 
     @Lazy
     def allWorkItems(self):
@@ -91,7 +91,7 @@ class UserWorkItems(BaseWorkItemsView, ConceptView):
     """ A query view showing work items for a person, the query's parent.
     """
 
-    columns = set(['Task', 'Title', 'Start', 'End', 'Duration'])
+    columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration'])
 
     @property
     def macro(self):
@@ -121,7 +121,7 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def start(self):
-        return self.formatTimeStamp(self.track.start)
+        return self.formatTimeStamp(self.track.start, 'time')
 
     @Lazy
     def end(self):
