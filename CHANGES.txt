@@ -8,6 +8,7 @@ $Id$
 
 New features
 
+- tracking reports: period details
 - loops sites: a query view (``loops_sites.html``); add an option
   ``system.sites:/...,...`` with the paths to the sites that should be
   listed; only sites are listed to which the user has access
