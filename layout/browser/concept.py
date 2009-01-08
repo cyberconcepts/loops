@@ -26,6 +26,7 @@ import re
 
 from zope import component
 from zope.cachedescriptors.property import Lazy
+from zope.proxy import removeAllProxies
 from zope.traversing.browser import absoluteURL
 
 from loops.browser.common import BaseView
@@ -75,6 +76,16 @@ class ConceptView(object):
         requirements = djInfo.setdefault('requirements', set())
         for p in packages:
             requirements.add(p)
+
+    def renderText(self, text, contentType):
+        typeKey = util.renderingFactories.get(contentType, None)
+        if typeKey is None:
+            if contentType == u'text/html':
+                return util.toUnicode(text)
+            return u'<pre>%s</pre>' % util.html_quote(util.toUnicode(text))
+        source = component.createObject(typeKey, text)
+        view = component.getMultiAdapter((removeAllProxies(source), self.request))
+        return view.render()
 
 
 pattern = re.compile(r'[ /\?\+%]')
