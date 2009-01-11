@@ -214,7 +214,7 @@ class CreateWorkItem(EditObject, BaseTrackView):
         if not action:
             return True
         wi = workItems.add(util.getUidForObject(self.object), self.personId)
-        wi.doAction(action, **data)
+        wi.doAction(action, self.personId, **data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
         return False
