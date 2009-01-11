@@ -68,6 +68,18 @@ class BaseWorkItemsView(object):
         if ts is not None:
             return IWorkItems(ts)
 
+    @Lazy
+    def workItemsCriteria(self):
+        result = {}
+        form = self.request.form
+        start = parseDate(form.get('wi_start'))
+        end = parseDate(form.get('wi_end'))
+        if end:
+            end += 3600 * 24    # include full end date
+        if start or end:
+            result['timeFromTo'] = (start, end)
+        return result
+
 
 class WorkItemsView(BaseWorkItemsView, NodeView):
     """ Standard view for showing work items for a node's target.
@@ -82,7 +94,9 @@ class WorkItemsView(BaseWorkItemsView, NodeView):
         workItems = self.workItems
         if None in (workItems, target):
             return result
-        for wi in workItems.query(task=util.getUidForObject(target)):
+        criteria = self.workItemsCriteria
+        criteria['task'] = util.getUidForObject(target)
+        for wi in workItems.query(**criteria):
             result.append(WorkItemDetails(self, wi))
         return sorted(result, key=lambda x: x.track.timeStamp)
 
@@ -104,7 +118,10 @@ class UserWorkItems(BaseWorkItemsView, ConceptView):
             return []
         result = []
         for target in self.context.getParents([self.defaultPredicate]):
-            for wi in workItems.query(userName=util.getUidForObject(target)):
+            criteria = dict(self.workItemsCriteria)
+            un = criteria.setdefault('userName', [])
+            un.append(util.getUidForObject(target))
+            for wi in workItems.query(**criteria):
                 result.append(WorkItemDetails(self, wi))
         return sorted(result, key=lambda x: x.track.timeStamp)
 
@@ -233,6 +250,8 @@ actions.register('createWorkitem', 'portlet', DialogAction,
 # auxiliary functions
 
 def parseTime(s):
+    if not s:
+        return None
     if ':' in s:
         h, m = [int(v) for v in s.split(':')]
     else:
@@ -240,4 +259,11 @@ def parseTime(s):
     return h * 3600 + m * 60
 
 def parseDateTime(s):
+    if not s:
+        return None
     return int(time.mktime(time.strptime(s, '%Y-%m-%dT%H:%M:%S')))
+
+def parseDate(s):
+    if not s:
+        return None
+    return int(time.mktime(time.strptime(s, '%Y-%m-%d')))
