@@ -84,7 +84,7 @@ class WorkItemsView(BaseWorkItemsView, NodeView):
             return result
         for wi in workItems.query(task=util.getUidForObject(target)):
             result.append(WorkItemDetails(self, wi))
-        return result
+        return sorted(result, key=lambda x: x.track.timeStamp)
 
 
 class UserWorkItems(BaseWorkItemsView, ConceptView):
@@ -106,7 +106,7 @@ class UserWorkItems(BaseWorkItemsView, ConceptView):
         for target in self.context.getParents([self.defaultPredicate]):
             for wi in workItems.query(userName=util.getUidForObject(target)):
                 result.append(WorkItemDetails(self, wi))
-        return result
+        return sorted(result, key=lambda x: x.track.timeStamp)
 
 
 # single work items

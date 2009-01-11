@@ -94,10 +94,10 @@ by calling the form controller's update method
   False
 
   >>> list(workItems)
-  [<WorkItem ['36', 1, '33', '2008-12-28 19:15', 'finished']:
+  [<WorkItem ['36', 1, '33', '2008-12-28 18:00', 'finished']:
    {'comment': u'Comment', 'end': 1230491700, 'description': u'Description',
-    'created': ..., 'creator': '33', 'assigned': ...,
-    'start': 1230487200, 'duration': 4500, 'effort': 900}>]
+    'created': ..., 'creator': '33', 'start': 1230487200,
+    'duration': 4500, 'effort': 900}>]
 
   >>> from loops.organize.work.browser import WorkItemView, WorkItemsView
   >>> wi01 = workItems['0000001']

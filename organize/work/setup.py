@@ -31,5 +31,5 @@ class SetupManager(BaseSetupManager):
 
     def setup(self):
         records = self.context.getRecordManager()
-        work = self.addObject(records, TrackingStorage, 'work',
-                                   trackFactory=WorkItem)
+        if 'work' not in records:
+            records['work'] = TrackingStorage(trackFactory=WorkItem)
