@@ -125,8 +125,7 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def end(self):
-        ts = self.formatTimeStamp(self.track.end)
-        return ts and ts[-5:] or ''
+        return self.formatTimeStamp(self.track.end, 'time')
 
     @Lazy
     def duration(self):
