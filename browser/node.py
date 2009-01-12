@@ -118,12 +118,18 @@ class NodeView(BaseView):
             mi = self.controller.memberInfo
             title = mi.title.value or _(u'Personal Informations')
             obj = mi.get('object')
-            url = obj is not None and self.getUrlForTarget(obj.value) or None
-            cm.register('portlet_right', 'personal', title=title,
-                        subMacro=node_macros.macros['personal'],
-                        icon='cybertools.icons/user.png',
-                        url=url,
-                        priority=10)
+            if obj is not None:
+                query = self.conceptManager.get('personal_info')
+                if query is None:
+                    #url = self.url + '/personal_info.html'
+                    url = self.getUrlForTarget(obj.value)
+                else:
+                    url = self.getUrlForTarget(query)
+                cm.register('portlet_right', 'personal', title=title,
+                            subMacro=node_macros.macros['personal'],
+                            icon='cybertools.icons/user.png',
+                            url=url,
+                            priority=10)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
 

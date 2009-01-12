@@ -51,7 +51,7 @@ from loops.util import _
 organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 
-class MyStuff(ConceptView):
+class PersonalInfo(ConceptView):
 
     def __init__(self, context, request):
         self.context = context

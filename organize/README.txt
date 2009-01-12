@@ -335,7 +335,14 @@ Task view with edit action
 
   >>> from loops.organize.browser.task import TaskView
   >>> view = TaskView(task01, TestRequest())
-  >>> view.getActions('portlet')
+  >>> list(view.getActions('portlet'))
+  []
+
+OK, the action is not provided automatically any more by the TaskView
+but has to be entered as a type option.
+
+  >>> adapted(task).options = ['action.portlet:editTask']
+  >>> list(view.getActions('portlet'))
   [<loops.browser.action.DialogAction ...>]
 
 Events listing

@@ -26,9 +26,19 @@ from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.browser.action import actions
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.util import _
+
+
+actions.register('editTask', 'portlet', DialogAction,
+        title=_(u'Edit Task...'),
+        description=_(u'Modify task.'),
+        viewName='edit_concept.html',
+        dialogName='editTask',
+        prerequisites=['registerDojoDateWidget'],
+)
 
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
@@ -36,7 +46,9 @@ organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 class TaskView(ConceptView):
 
-    def getActions(self, category='object', page=None, target=None):
+    pass
+
+    def xx_getActions(self, category='object', page=None, target=None):
         actions = []
         if category == 'portlet':
             actions.append(DialogAction(self, title=_(u'Edit Task...'),

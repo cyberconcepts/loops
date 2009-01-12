@@ -6,11 +6,11 @@
    i18n_domain="loops">
 
   <zope:adapter
-      name="mystuff"
+      name="personal_info.html"
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
-      factory="loops.organize.browser.member.MyStuff"
+      factory="loops.organize.browser.member.PersonalInfo"
       permission="zope.View"
       />
 
