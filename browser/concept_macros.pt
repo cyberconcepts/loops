@@ -206,7 +206,7 @@
 <!-- portlets -->
 
 <metal:actions define-macro="parents">
-          <div tal:repeat="concept macro/info/view/parents">
+          <div tal:repeat="concept macro/info/view/parents|macro/info/parents">
             <a href="#"
                tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
               <span i18n:translate="" tal:content="concept/title">Concept</span>
