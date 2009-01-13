@@ -56,9 +56,24 @@ blockquote ul {
     margin-top: 0.5em;
 }
 
+table.listing {
+    margin: 1px;
+    margin-top: 6px;
+}
+
+table.listing th {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    color: #000040;
+}
+
 table.listing td {
+    padding: 0 1px 0 1px;
     white-space: normal;
     vertical-align: middle;
+}
+
+fieldset.box table.listing td {
+    padding: 0 1px 0 1px;
 }
 
 table.listing td.number {
@@ -309,16 +324,6 @@ img.notselected {
 
 .button a:active {
     border-color: #989898 #f4f4f4 #f4f4f4 #989898;
-}
-
-table.listing {
-    margin: 1px;
-    margin-top: 6px;
-}
-
-table.listing th {
-    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
-    color: #000040;
 }
 
 .itemViews {
