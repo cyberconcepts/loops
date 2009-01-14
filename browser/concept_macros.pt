@@ -101,7 +101,7 @@
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
                 </td>
-                <td><span tal:content="related/typeTitle"
+                <td class="center"><span tal:content="related/typeTitle"
                           i18n:translate="">Type</span></td>
                 <td><span tal:replace="related/modified">Type</span></td>
                 <td><span tal:replace="related/creators">Type</span></td>
@@ -162,7 +162,8 @@
                     <div tal:content="related/title">Resource Title</div>
                   </a>
                 </td>
-                <td><span tal:replace="related/longTypeTitle">Type</span></td>
+                <td class="center">
+                  <span tal:replace="related/longTypeTitle">Type</span></td>
                 <tal:version tal:condition="view/useVersioning">
                   <td class="center"
                       tal:define="versionId related/versionId">

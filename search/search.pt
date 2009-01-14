@@ -80,10 +80,10 @@
                            tal:attributes="src icon/src" />
                       <div tal:content="row/title" /></a>
                   </td>
-                  <td i18n:translate=""
+                  <td i18n:translate="" class="center"
                       tal:content="row/longTypeTitle|row/typeTitle">Type</td>
                   <tal:version condition="view/useVersioning">
-                    <td style="text-align: center"
+                    <td class="center"
                         tal:define="versionId row/versionId|string:">
                       <a href="#"
                          tal:content="versionId"
@@ -91,12 +91,12 @@
                          tal:attributes="href string:${view/url}/.target${row/uniqueId}?loops.viewName=listversions">1.1</a>
                     </td>
                   </tal:version>
-                  <td style="text-align: right; white-space: nowrap">
+                  <td class="nowrap number">
                     <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
                   </td>
                   <td><span tal:replace="row/modified">modified</span></td>
                   <td><span tal:replace="row/creators">John</span></td>
-                  <td style="white-space: nowrap"
+                  <td class="nowrap center"
                       tal:define="target nocall:row;
                                   style nothing"
                       tal:condition="view/showObjectActions">

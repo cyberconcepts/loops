@@ -30,6 +30,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
+from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from cybertools.organize.interfaces import IWorkItems
 from loops.browser.action import DialogAction
@@ -37,6 +38,7 @@ from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.organize.party import getPersonForUser
+from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.browser import BaseTrackView
 from loops.organize.tracking.report import TrackDetails
 from loops import util
@@ -50,7 +52,7 @@ work_macros = ViewPageTemplateFile('work_macros.pt')
 
 class BaseWorkItemsView(object):
 
-    columns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration'])
+    columns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration', 'Info'])
 
     lastMonth = lastDay = None
 
@@ -85,7 +87,7 @@ class WorkItemsView(BaseWorkItemsView, NodeView):
     """ Standard view for showing work items for a node's target.
     """
 
-    columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration'])
+    columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
 
     @Lazy
     def allWorkItems(self):
@@ -105,7 +107,7 @@ class UserWorkItems(BaseWorkItemsView, ConceptView):
     """ A query view showing work items for a person, the query's parent.
     """
 
-    columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration'])
+    columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
 
     @property
     def macro(self):
@@ -152,11 +154,72 @@ class WorkItemDetails(TrackDetails):
     def effort(self):
         return self.formatTimeDelta(self.track.effort)
 
+    @Lazy
+    def startDay(self):
+        return self.formatTimeStamp(self.track.timeStamp, 'date')
+
+    @Lazy
+    def created(self):
+        return self.formatTimeStamp(self.track.created, 'dateTime')
+
     def formatTimeDelta(self, value):
         if not value:
             return ''
         h, m = divmod(int(value) / 60, 60)
         return '%02i:%02i' % (h, m)
+
+    @Lazy
+    def isLastInRun(self):
+        currentWorkItems = list(self.view.workItems.query(runId=self.track.runId))
+        return self.track == currentWorkItems[-1]
+
+    def actions(self):
+        info = DialogAction(self.view,
+                      description=_(u'Information about this work item.'),
+                      viewName='workitem_info.html',
+                      dialogName='',
+                      icon='cybertools.icons/info.png',
+                      cssClass='icon-action',
+                      page=self.view.nodeView,
+                      target=self.object,
+                      addParams=dict(id=self.track.__name__))
+        actions = [info, WorkItemStateAction(self)]
+        if self.isLastInRun:
+            self.view.registerDojoDateWidget()
+            self.view.registerDojoNumberWidget()
+            actions.append(DialogAction(self.view,
+                      description=_(u'Create a work item.'),
+                      viewName='create_workitem.html',
+                      dialogName='',
+                      icon='edit.gif',
+                      cssClass='icon-action',
+                      page=self.view.nodeView,
+                      target=self.object,
+                      addParams=dict(id=self.track.__name__)))
+        return actions
+
+
+class WorkItemInfo(NodeView):
+    """ Provides info box.
+    """
+
+    __call__ = innerHtml
+
+    @property
+    def macro(self):
+        return work_macros.macros['workitem_info']
+
+    @Lazy
+    def dialog_name(self):
+        return self.request.get('dialog', 'workitem_info')
+
+    @Lazy
+    def track(self):
+        id = self.request.form.get('id')
+        if id is not None:
+            workItems = self.loopsRoot.getRecordManager()['work']
+            track = workItems.get(id)
+            return WorkItemDetails(self, track)
 
 
 class WorkItemView(BaseTrackView):
@@ -175,6 +238,21 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return self.template.macros['create_workitem']
 
     @Lazy
+    def track(self):
+        id = self.request.form.get('id')
+        if id is not None:
+            workItems = self.loopsRoot.getRecordManager()['work']
+            return workItems.get(id)
+
+    @Lazy
+    def title(self):
+        return self.track is not None and self.track.title or u''
+
+    @Lazy
+    def description(self):
+        return self.track is not None and self.track.description or u''
+
+    @Lazy
     def defaultDate(self):
         return time.strftime('%Y-%m-%d')
 
@@ -184,6 +262,13 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
 
 class CreateWorkItem(EditObject, BaseTrackView):
+
+    @Lazy
+    def track(self):
+        id = self.request.form.get('id')
+        if id is not None:
+            workItems = self.loopsRoot.getRecordManager()['work']
+            return workItems.get(id)
 
     @Lazy
     def personId(self):
@@ -229,7 +314,10 @@ class CreateWorkItem(EditObject, BaseTrackView):
         action, data = self.processForm()
         if not action:
             return True
-        wi = workItems.add(util.getUidForObject(self.object), self.personId)
+        if self.track is not None:
+            wi = self.track
+        else:
+            wi = workItems.add(util.getUidForObject(self.object), self.personId)
         wi.doAction(action, self.personId, **data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
@@ -245,6 +333,19 @@ actions.register('createWorkitem', 'portlet', DialogAction,
         dialogName='createWorkitem',
         prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget'],
 )
+
+
+class WorkItemStateAction(StateAction):
+
+    cssClass = 'icon-action'
+
+    @Lazy
+    def stateful(self):
+        return self.view.track
+
+    @Lazy
+    def description(self):
+        return _(self.stateObject.title)
 
 
 # auxiliary functions

@@ -269,7 +269,9 @@ class TrackDetails(BaseView):
 
     @Lazy
     def user(self):
-        userName = self.track.userName
+        return self.getUserForUserName(self.track.userName)
+
+    def getUserForUserName(self, userName):
         obj = util.getObjectForUid(userName)
         if obj is None:
             try:
@@ -292,9 +294,6 @@ class TrackDetails(BaseView):
     @Lazy
     def timeStamp(self):
         return self.formatTimeStamp(self.track.timeStamp)
-        #value = datetime.fromtimestamp(self.track.timeStamp)
-        #return format.formatDate(value, 'dateTime', self.timeStampFormat,
-        #                         self.view.languageInfo.language)
 
     def formatTimeStamp(self, ts, f='dateTime'):
         if not ts:

@@ -117,6 +117,7 @@ class NodeView(BaseView):
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             mi = self.controller.memberInfo
             title = mi.title.value or _(u'Personal Informations')
+            url=None
             obj = mi.get('object')
             if obj is not None:
                 query = self.conceptManager.get('personal_info')
@@ -125,11 +126,11 @@ class NodeView(BaseView):
                     url = self.getUrlForTarget(obj.value)
                 else:
                     url = self.getUrlForTarget(query)
-                cm.register('portlet_right', 'personal', title=title,
-                            subMacro=node_macros.macros['personal'],
-                            icon='cybertools.icons/user.png',
-                            url=url,
-                            priority=10)
+            cm.register('portlet_right', 'personal', title=title,
+                        subMacro=node_macros.macros['personal'],
+                        icon='cybertools.icons/user.png',
+                        url=url,
+                        priority=10)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
 

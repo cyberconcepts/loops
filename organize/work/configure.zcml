@@ -49,6 +49,12 @@
       factory="loops.organize.work.browser.CreateWorkItem"
       permission="zope.View" />
 
+  <browser:page
+      name="workitem_info.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.work.browser.WorkItemInfo"
+      permission="zope.View" />
+
   <!-- setup -->
 
   <zope:adapter factory="loops.organize.work.setup.SetupManager"

@@ -5,8 +5,8 @@
 <!-- listings -->
 
 <metal:work define-macro="workitems"
-                tal:define="work nocall:view/workItems"
-                tal:condition="work/allWorkItems">
+            tal:define="work nocall:view/workItems"
+            tal:condition="work/allWorkItems">
   <br />
   <h2 i18n:translate="">Work Items</h2>
   <metal:workitems define-macro="workitems_listing"
@@ -14,7 +14,7 @@
     <table class="listing">
       <tr>
         <tal:colheader repeat="column python:
-                ('Day', 'Start', 'End', 'Duration', 'Task', 'User', 'Title')">
+                ('Day', 'Start', 'End', 'Duration', 'Task', 'User', 'Title', 'Info')">
           <th tal:condition="python: column in work.columns"
               tal:content="column"
               i18n:translate="">Task</th>
@@ -39,6 +39,11 @@
               tal:content="row/user/title">John</a></td>
           <td tal:content="row/track/title"
               tal:attributes="title row/track/description">Title</td>
+          <td class="nowrap">
+            <tal:actions repeat="action row/actions">
+              <metal:action use-macro="action/macro" />
+            </tal:actions>
+          </td>
         </tr>
       </tal:workitem>
     </table>
@@ -60,20 +65,22 @@
           dojoType="dijit.form.Form">
       <input type="hidden" name="form.action" value="create_workitem" />
       <input type="hidden" name="workitem.action" value="finish" />
+      <input type="hidden" name="id"
+             tal:attributes="value request/form/id|nothing" />
       <div class="heading" i18n:translate="">Add Work Item</div>
       <div>
         <label i18n:translate="" for="title">Title</label>
         <div>
-          <input name="title" id="title"
+          <input name="title" id="title" style="width: 60em"
                  dojoType="dijit.form.ValidationTextBox" required
-                 style="width: 60em" /></div>
+                 tal:attributes="value view/title" /></div>
       </div>
       <div>
         <label i18n:translate="" for="description">Description</label>
         <div>
           <textarea name="description" cols="80" rows="4" id="description"
-                    dojoType="dijit.form.SimpleTextarea"
-                    style="width: 60em"></textarea></div>
+                    dojoType="dijit.form.SimpleTextarea" style="width: 60em"
+                    tal:content="view/description"></textarea></div>
       </div>
       <div>
             <label i18n:translate="" for="start-end">Start - End</label>
@@ -113,6 +120,63 @@
                i18n:attributes="value"></div>
     </form>
 </metal:block>
+
+
+<metal:info define-macro="workitem_info"
+            tal:define="item nocall:view/track">
+  <table class="object_info" width="400">
+    <tr>
+      <td colspan="2"><h2 i18n:translate="">Work Item Information</h2><br /></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Title</span>:</td>
+      <td tal:content="item/track/title"></td>
+    </tr>
+    <tr>
+      <td valign="top"><span i18n:translate="">Description</span>:</td>
+      <td tal:content="item/description"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Party</span>:</td>
+      <td tal:content="item/user/title"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Task</span>:</td>
+      <td tal:content="item/object/title"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Start - End</span>:</td>
+      <td><span tal:content="item/startDay" />
+          <span tal:content="item/start" /> -
+          <span tal:content="item/end" /></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Duration/Effort</span>:</td>
+      <td><span tal:content="item/duration" /> /
+          <span tal:content="item/effort" /></td>
+    </tr>
+    <tr>
+      <td valign="top"><span i18n:translate="">Comment</span>:</td>
+      <td tal:content="item/track/comment"></td>
+    </tr>
+    <tr tal:define="state item/track/getStateObject">
+      <td><span i18n:translate="">State</span>:</td>
+      <td tal:content="state/title"></td>
+    </tr>
+    <tr>
+      <td><span i18n:translate="">Created</span>:</td>
+      <td><span tal:content="item/created" />
+          (<span tal:content="python:
+                   item.getUserForUserName(item.track.creator)['title']" />)</td>
+    </tr>
+    <tr>
+      <td colspan="2"><br />
+        <input type="button" value="Close" onclick="closeDialog()"
+               i18n:attributes="value" />
+      </td>
+    </tr>
+  </table>
+</metal:info>
 
 
 </html>
