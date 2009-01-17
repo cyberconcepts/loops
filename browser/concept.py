@@ -101,8 +101,8 @@ class ConceptEditForm(EditForm, I18NView):
             desc.height = 2
 
 
-class ConceptRelationView(BaseView):
-    """ For displaying children and resources lists, used by ConceptView.
+class BaseRelationView(BaseView):
+    """ For displaying children and resources lists.
     """
 
     def __init__(self, relation, request, contextIsSecond=False):
@@ -123,6 +123,9 @@ class ConceptRelationView(BaseView):
 
     @Lazy
     def data(self):
+        return self.getData()
+
+    def getData(self):
         return self.instance.applyTemplate()
 
     @Lazy
@@ -176,19 +179,13 @@ class ConceptRelationView(BaseView):
     def order(self):
         return self.relation.order
 
-    def getActions(self, category='object', page=None, target=None):
-        t = IType(self.context)
-        actInfo = t.optionsDict.get('action.' + category, '')
-        actNames = [n.strip() for n in actInfo.split(',')]
-        if actNames:
-            return actions.get(category, actNames, view=self, page=page, target=target)
-        return []
-
 
 class ConceptView(BaseView):
 
     template = concept_macros
-    childViewFactory = ConceptRelationView
+
+    def childViewFactory(self, *args, **kw):
+        return ConceptRelationView(*args, **kw)
 
     @Lazy
     def macro(self):
@@ -354,12 +351,32 @@ class ConceptView(BaseView):
             yield NodeView(node, self.request)
 
     def getActions(self, category='object', page=None, target=None):
+        acts = []
         t = IType(self.context)
         actInfo = t.optionsDict.get('action.' + category, '')
         actNames = [n.strip() for n in actInfo.split(',')]
         if actNames:
-            return actions.get(category, actNames, view=self, page=page, target=target)
-        return []
+            acts = list(actions.get(category, actNames,
+                                    view=self, page=page, target=target))
+        if category in self.actions:
+            acts.extend(self.actions[category](self, page, target))
+        return acts
+
+    def getObjectActions(self, page=None, target=None):
+        acts = ['info']
+        acts.extend('state.' + st.statesDefinition for st in self.states)
+        if self.globalOptions('organize.allowSendEmail'):
+            acts.append('send_email')
+        return actions.get('object', acts, view=self, page=page, target=target)
+
+    actions = dict(object=getObjectActions)
+
+
+class ConceptRelationView(ConceptView, BaseRelationView):
+
+    __init__ = BaseRelationView.__init__
+
+    getData = BaseRelationView.getData
 
 
 class ConceptConfigureView(ConceptView):

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
-from zope.formlib.namedtemplate import NamedTemplate
 from zope.proxy import removeAllProxies
 from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
@@ -50,7 +49,7 @@ from cybertools.browser.view import GenericView
 from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.xedit.browser import ExternalEditorView
-from loops.browser.action import DialogAction
+from loops.browser.action import actions, DialogAction
 from loops.common import adapted, AdapterBase
 from loops.i18n.browser import i18n_macros
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
@@ -438,6 +437,12 @@ class NodeView(BaseView):
                   page=self, target=target))
         return actions
 
+    def xx_getObjectActions(self, target=None):
+        acts = []
+        if self.globalOptions('organize.allowSendEmail'):
+            acts.append('send_email')
+        return actions.get('object', acts, view=self, page=self, target=target)
+
     actions = dict(portlet=getPortletActions)
 
     @Lazy
@@ -704,7 +709,9 @@ class ConfigureView(NodeView):
 
 class NodeAdding(Adding):
 
-    def addingInfo(self):
+    pass
+
+    def xx_addingInfo(self):
         info = super(NodeAdding, self).addingInfo()
         #info.append({'title': 'Document',
         #             'action': 'AddLoopsNodeDocument.html',

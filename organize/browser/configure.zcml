@@ -11,8 +11,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.organize.browser.member.PersonalInfo"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -20,22 +19,19 @@
            zope.schema.interfaces.ITextLine"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory="cybertools.browser.widget.SimpleListDisplayWidget"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
   <browser:page
       for="loops.interfaces.INode"
       name="register_user.html"
       class="loops.organize.browser.member.MemberRegistration"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
   <browser:page
       for="loops.interfaces.INode"
       name="change_password.html"
       class="loops.organize.browser.member.PasswordChange"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
   <zope:adapter
       name="task.html"
@@ -43,8 +39,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.organize.browser.task.TaskView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="list_events.html"
@@ -52,15 +47,19 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.organize.browser.event.Events"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       for="cybertools.tracking.interfaces.ITrack
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="cybertools.tracking.browser.TrackView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
+
+  <browser:page
+      name="object_send_email.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.browser.party.SendEmailForm"
+      permission="zope.View" />
 
 </configure>

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,11 +24,18 @@ $Id$
 """
 
 from zope import interface, component
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.dublincore.interfaces import IZopeDublinCore
 
+from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from loops.browser.action import DialogAction
+from loops.browser.node import NodeView
+from loops.common import adapted
 from loops.util import _
+
+organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 
 actions.register('createPerson', 'portlet', DialogAction,
@@ -66,3 +73,53 @@ actions.register('editAddress', 'portlet', DialogAction,
         viewName='edit_concept.html',
         dialogName='editAddress',
 )
+
+actions.register('send_email', 'object', DialogAction,
+        description=_(u'Send a link to this object by email.'),
+        viewName='object_send_email.html',
+        dialogName='',
+        icon='cybertools.icons/email.png',
+        cssClass='icon-action',
+        prerequisites=['registerDojoTextWidget', 'registerDojoTextarea'],
+        addParams=dict(version='this'),
+)
+
+
+class SendEmailForm(NodeView):
+
+    __call__ = innerHtml
+
+    @property
+    def macro(self):
+        return organize_macros.macros['send_email']
+
+    @Lazy
+    def dialog_name(self):
+        return self.request.get('dialog', 'object_send_email')
+
+    @Lazy
+    def title(self):
+        return self.target.title
+
+    @Lazy
+    def targetUrl(self):
+        return self.getUrlForTarget(self.virtualTargetObject)
+
+    @Lazy
+    def members(self):
+        persons = self.conceptManager['person'].getChildren([self.typePredicate])
+        persons = [adapted(p) for p in persons]
+        return [dict(title=p.title, email=p.email) for p in persons if p.email]
+
+    @Lazy
+    def mailBody(self):
+        return '\n\n%s\n%s\n\n' % (self.title, self.targetUrl)
+
+    @Lazy
+    def subject(self):
+        menu = self.context.getMenu()
+        zdc = IZopeDublinCore(menu)
+        zdc.languageInfo = self.languageInfo
+        site = zdc.title or menu.title
+        return _(u"loops Notification from '$site'",
+                 mapping=dict(site=site))

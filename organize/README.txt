@@ -132,6 +132,7 @@ concept assigned we should get an error:
   >>> johnC.conceptType = person
   >>> john = IPerson(johnC)
   >>> john.userId = 'users.john'
+  >>> john.email = 'john@loopz.org'
 
   >>> marthaC = concepts['martha'] = Concept(u'Martha')
   >>> marthaC.conceptType = person
@@ -376,6 +377,20 @@ Allocation of persons to tasks
   ...                   title=u'allocated',
   ...                   conceptType=predicate, predicateInterface=IAllocated)
 
+
+Send Email to Members
+=====================
+
+  >>> menu.target = event01
+
+  >>> from loops.organize.browser.party import SendEmailForm
+  >>> form = SendEmailForm(menu, TestRequest())
+  >>> form.members
+  [{'email': 'john@loopz.org', 'title': u'John'}]
+  >>> form.subject
+  u"loops Notification from '$site'"
+  >>> form.mailBody
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.target95\n\n'
 
 
 Fin de partie

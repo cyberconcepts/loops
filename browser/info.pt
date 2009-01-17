@@ -3,7 +3,7 @@
 
 <metal:info define-macro="object_info"
             tal:define="item nocall:view/item">
-  <table class="object_info">
+  <table class="object_info" width="400">
     <tr>
       <td colspan="2"><h2 i18n:translate="">Object Information</h2><br /></td>
     </tr>
@@ -23,9 +23,10 @@
       <td><span i18n:translate="">Type</span>:</td>
       <td tal:content="item/longTypeTitle"></td>
     </tr>
-    <tr>
+    <tr tal:define="size item/context/sizeForDisplay|nothing"
+        tal:condition="size">
       <td><span i18n:translate="">Size</span>:</td>
-      <td tal:content="item/context/sizeForDisplay"></td>
+      <td tal:content="size"></td>
     </tr>
     <tr>
       <td><span i18n:translate="">modified</span>:</td>

@@ -44,7 +44,8 @@ from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
 from loops.browser.action import DialogAction, TargetAction
 from loops.browser.common import EditForm, BaseView
-from loops.browser.concept import ConceptRelationView, ConceptConfigureView
+from loops.browser.concept import BaseRelationView, ConceptRelationView
+from loops.browser.concept import ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.common import adapted, NameChooser
 from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
@@ -190,8 +191,9 @@ class ResourceView(BaseView):
 
     def getObjectActions(self, page=None, target=None):
         acts = ['info']
-        #acts.extend('state.' + st for st in statefulActions)
         acts.extend('state.' + st.statesDefinition for st in self.states)
+        if self.globalOptions('organize.allowSendEmail'):
+            acts.append('send_email')
         if self.xeditable:
             acts.append('external_edit')
         return actions.get('object', acts, view=self, page=page, target=target)
@@ -214,10 +216,9 @@ class ResourceView(BaseView):
             yield NodeView(node, self.request)
 
 
-class ResourceRelationView(ResourceView, ConceptRelationView):
+class ResourceRelationView(ResourceView, BaseRelationView):
 
-    def __init__(self, relation, request, contextIsSecond=False):
-        ConceptRelationView.__init__(self, relation, request, contextIsSecond)
+    __init__ = BaseRelationView.__init__
 
     getActions = ResourceView.getActions
 
