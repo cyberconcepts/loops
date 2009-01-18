@@ -64,7 +64,7 @@
     <form method="post" id="addWorkitem_form" class="dialog"
           dojoType="dijit.form.Form">
       <input type="hidden" name="form.action" value="create_workitem" />
-      <input type="hidden" name="workitem.action" value="finish" />
+      <!--<input type="hidden" name="workitem.action" value="finish" />-->
       <input type="hidden" name="id"
              tal:attributes="value request/form/id|nothing" />
       <div class="heading" i18n:translate="">Add Work Item</div>
@@ -83,33 +83,44 @@
                     tal:content="view/description"></textarea></div>
       </div>
       <div>
+            <label i18n:translate="" for="action">Action</label>
+            <select name="workitem.action" id="action">
+              <option tal:repeat="action view/actions"
+                      tal:attributes="value action/name"
+                      tal:content="action/title" />
+            </select>
+      </div>
+      <div>
             <label i18n:translate="" for="start-end">Start - End</label>
             <div id="start-end">
               <input type="text" name="start_date" style="width: 8em"
                      dojoType="dijit.form.DateTextBox"
-                     tal:attributes="value view/defaultDate" />
+                     tal:attributes="value view/date" />
               <input type="text" name="start_time" style="width: 6em"
                      dojoType="dijit.form.TimeTextBox"
-                     tal:attributes="value view/defaultTime" /> -
+                     tal:attributes="value view/startTime" /> -
               <input type="text" name="end_time" style="width: 6em"
                      dojoType="dijit.form.TimeTextBox"
-                     tal:attributes="value view/defaultTime" /></div>
+                     tal:attributes="value view/endTime" /></div>
             <label i18n:translate=""
                    for="duration-effort">Duration / Effort (hh:mm)</label>
             <div id="duration-effort">
               <input type="text" name="duration" style="width: 5em"
                      dojoType="dijit.form.ValidationTextBox"
-                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}" /> /
+                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     tal:attributes="value view/duration" /> /
               <input type="text" name="effort" style="width: 5em"
                      dojoType="dijit.form.ValidationTextBox"
-                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}" /></div>
+                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     tal:attributes="value view/effort" /></div>
       </div>
       <div>
         <label i18n:translate="" for="comment">Comment</label>
         <div>
           <textarea name="comment" cols="80" rows="4" id="comment"
                     dojoType="dijit.form.SimpleTextarea"
-                    style="width: 60em"></textarea></div>
+                    style="width: 60em"
+                    tal:content="view/comment"></textarea></div>
       </div>
       <div class="buttons">
         <input value="Save" type="submit"

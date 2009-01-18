@@ -99,6 +99,9 @@ by calling the form controller's update method
     'created': ..., 'creator': '33', 'start': 1230487200,
     'duration': 4500, 'effort': 900}>]
 
+Work items views
+----------------
+
   >>> from loops.organize.work.browser import WorkItemView, WorkItemsView
   >>> wi01 = workItems['0000001']
   >>> view = WorkItemView(wi01, TestRequest())
@@ -111,6 +114,34 @@ by calling the form controller's update method
   >>> view = WorkItemDetails(itemsView, wi01)
   >>> view.day, view.start, view.end
   (u'08/12/28', u'19:00', u'20:15')
+
+Work items life cycle
+---------------------
+
+Let's create another work item, now in state planned.
+
+  >>> input = {u'form.action': u'create_workitem', u'workitem.action': u'plan',
+  ...          u'title': u'Install Zope',
+  ...          u'start_date': u'2009-01-19', u'start_time': u'T09:00:00'}
+  >>> request = TestRequest(form=input)
+  >>> request.setPrincipal(pJohn)
+  >>> nodeView = NodeView(home, request)
+  >>> cwiController = CreateWorkItem(nodeView, request)
+  >>> cwiController.update()
+  False
+
+If we now open another form, providing the identifier of the newly created
+work item, the form will be pre-filled with some of the item's data.
+
+  >>> form = CreateWorkItemForm(home, TestRequest(form=dict(id='0000002')))
+  >>> form.title
+  u'Install Zope'
+
+  >>> form.actions
+  [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
+   {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
+   {'name': 'finish', 'title': 'finish'}, {'name': 'cancel', 'title': 'cancel'},
+   {'name': 'modify', 'title': 'modify'}]
 
 
 Fin de partie

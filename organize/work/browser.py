@@ -33,6 +33,7 @@ from zope.traversing.api import getName
 from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from cybertools.organize.interfaces import IWorkItems
+from cybertools.tracking.btree import getTimeStamp
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
@@ -41,6 +42,7 @@ from loops.organize.party import getPersonForUser
 from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.browser import BaseTrackView
 from loops.organize.tracking.report import TrackDetails
+from loops.organize.work.base import WorkItem
 from loops import util
 from loops.util import _
 
@@ -163,10 +165,7 @@ class WorkItemDetails(TrackDetails):
         return self.formatTimeStamp(self.track.created, 'dateTime')
 
     def formatTimeDelta(self, value):
-        if not value:
-            return ''
-        h, m = divmod(int(value) / 60, 60)
-        return '%02i:%02i' % (h, m)
+        return formatTimeDelta(value)
 
     @Lazy
     def isLastInRun(self):
@@ -243,22 +242,58 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         if id is not None:
             workItems = self.loopsRoot.getRecordManager()['work']
             return workItems.get(id)
+        return WorkItem(None, 0, None, {})
 
     @Lazy
     def title(self):
-        return self.track is not None and self.track.title or u''
+        return self.track.title or u''
 
     @Lazy
     def description(self):
-        return self.track is not None and self.track.description or u''
+        return self.track.description or u''
 
     @Lazy
-    def defaultDate(self):
-        return time.strftime('%Y-%m-%d')
+    def date(self):
+        ts = self.track.start or getTimeStamp()
+        return time.strftime('%Y-%m-%d', time.localtime(ts))
 
     @Lazy
-    def defaultTime(self):
-        return time.strftime('%Y-%m-%dT%H:%M')
+    def startTime(self):
+        ts = self.track.start or getTimeStamp()
+        return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+
+    @Lazy
+    def endTime(self):
+        if self.state == 'running':
+            ts = getTimeStamp()
+        else:
+            ts = self.track.end or getTimeStamp()
+        return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+
+    @Lazy
+    def state(self):
+        return self.track.state
+
+    @Lazy
+    def actions(self):
+        return [dict(name=t.name, title=t.title)
+                    for t in self.track.getAvailableTransitions()]
+
+    @Lazy
+    def duration(self):
+        if self.state == 'running':
+            return u''
+        return formatTimeDelta(self.track.duration)
+
+    @Lazy
+    def effort(self):
+        if self.state == 'running':
+            return u''
+        return formatTimeDelta(self.track.effort)
+
+    @Lazy
+    def comment(self):
+        return self.track.comment or u''
 
 
 class CreateWorkItem(EditObject, BaseTrackView):
@@ -368,3 +403,10 @@ def parseDate(s):
     if not s:
         return None
     return int(time.mktime(time.strptime(s, '%Y-%m-%d')))
+
+def formatTimeDelta(value):
+    if not value:
+        return u''
+    h, m = divmod(int(value) / 60, 60)
+    return u'%02i:%02i' % (h, m)
+
