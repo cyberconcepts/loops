@@ -251,11 +251,8 @@ class CreateObjectForm(ObjectForm):
     dialog_name = 'create'
 
     @Lazy
-    def title(self):
-        if self.request.form.get('fixed_type'):
-            return _(u'Create %s') % self.typeConcept.title
-        else:
-            return _(self.defaultTitle)
+    def fixedType(self):
+        return self.request.form.get('fixed_type')
 
     @Lazy
     def defaultTypeToken(self):
@@ -263,8 +260,19 @@ class CreateObjectForm(ObjectForm):
                 or '.loops/concepts/textdocument')
 
     @Lazy
+    def typeToken(self):
+        return self.request.form.get('form.type') or self.defaultTypeToken
+
+    @Lazy
+    def title(self):
+        if self.fixedType:
+            return _(u'Create %s') % self.typeConcept.title
+        else:
+            return _(self.defaultTitle)
+
+    @Lazy
     def typeConcept(self):
-        typeToken = self.request.get('form.type') or self.defaultTypeToken
+        typeToken = self.typeToken
         if typeToken:
             return self.loopsRoot.loopsTraverse(typeToken)
 

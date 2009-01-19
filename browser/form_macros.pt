@@ -65,9 +65,8 @@
           id="dialog_form" class="dialog"
           tal:define="qualifier request/qualifier | string:resource;
                       innerForm request/inner_form | string:inner_form.html;
-                      typeToken python: request.get('form.type')
-                                    or view.defaultTypeToken;
-                      fixedType request/fixed_type | nothing">
+                      typeToken view/typeToken;
+                      fixedType view/fixedType">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="fixed_type"
