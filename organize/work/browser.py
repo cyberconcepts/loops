@@ -68,9 +68,11 @@ class BaseWorkItemsView(object):
 
     @Lazy
     def workItems(self):
-        ts = self.loopsRoot.getRecordManager().get('work')
-        if ts is not None:
-            return IWorkItems(ts)
+        rm = self.loopsRoot.getRecordManager()
+        if rm is not None:
+            ts = rm.get('work')
+            if ts is not None:
+                return IWorkItems(ts)
 
     @Lazy
     def workItemsCriteria(self):
