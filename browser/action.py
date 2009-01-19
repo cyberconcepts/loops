@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,9 +33,14 @@ from loops.util import _
 
 class TargetAction(Action):
 
-    @Lazy
+    page = None
+    qualifier = typeToken = None
+    fixedType = False
+    viewTitle = ''
+    addParams = {}
+
+    #@Lazy
     def url(self):
-        #return self.getActionUrl(self.page.getUrlForTarget(self.view))
         if self.page is None:   # how could this happen?
             baseUrl = self.view.virtualTargetUrl
         else:
@@ -43,7 +48,17 @@ class TargetAction(Action):
                 baseUrl = self.page.getUrlForTarget(self.target)
             else:
                 baseUrl = self.page.virtualTargetUrl
-        return self.getActionUrl(baseUrl)
+        paramString = ''
+        urlParams = {}
+        if self.typeToken:
+            urlParams['form.type'] = self.typeToken
+        if self.fixedType:
+            urlParams['fixed_type'] = 'yes'
+        urlParams.update(self.addParams)
+        if urlParams:
+            paramString = '?' + urlencode(urlParams)
+        url = self.getActionUrl(baseUrl)
+        return url + paramString
 
 
 class DialogAction(Action):

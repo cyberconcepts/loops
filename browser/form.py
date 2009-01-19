@@ -74,6 +74,7 @@ class ObjectForm(NodeView):
     formState = FormState()     # dummy, don't update!
     isInnerHtml = True
     isPopup = False
+    showAssignments = True
 
     def __init__(self, context, request):
         super(ObjectForm, self).__init__(context, request)
@@ -373,6 +374,19 @@ class CreateConceptForm(CreateObjectForm):
             rv = ConceptRelationView(ConceptRelation(target, None), self.request)
             return (rv,)
         return ()
+
+
+class CreateConceptPage(CreateConceptForm):
+
+    isInnerHtml = False
+
+    def setupController(self):
+        super(CreateConceptPage, self).setupController()
+        self.registerDojoFormAll()
+
+    @Lazy
+    def nextUrl(self):
+        return self.nodeView.getUrlForTarget(self.context)
 
 
 class InnerForm(CreateObjectForm):

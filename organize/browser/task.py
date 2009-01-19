@@ -48,14 +48,3 @@ class TaskView(ConceptView):
 
     pass
 
-    def xx_getActions(self, category='object', page=None, target=None):
-        actions = []
-        if category == 'portlet':
-            actions.append(DialogAction(self, title=_(u'Edit Task...'),
-                  description=_(u'Modify task.'),
-                  viewName='edit_concept.html',
-                  dialogName='editTask',
-                  page=page,
-                  target=target))
-            self.registerDojoDateWidget()
-        return actions

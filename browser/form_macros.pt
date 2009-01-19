@@ -46,12 +46,7 @@
         </td></tr></tbody>
 
         <tbody>
-          <tr>
-            <td colspan="5" class="headline"
-                i18n:translate="">Assign Parent Concepts</td>
-          </tr>
           <tr metal:use-macro="view/template/macros/assignments" />
-          <tr metal:use-macro="view/template/macros/search_concepts" />
           <tal:custom define="customMacro view/customMacro"
                       condition="customMacro">
             <tr metal:use-macro="customMacro" />
@@ -75,6 +70,8 @@
                       fixedType request/fixed_type | nothing">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
+      <input type="hidden" name="fixed_type"
+             tal:attributes="value fixedType" />
       <table cellpadding="3" class="form">
         <tbody><tr><th colspan="5" class="headline">
               <span tal:content="request/view_title|view/title"
@@ -108,12 +105,7 @@
         </td></tr></tbody>
 
         <tbody>
-          <tr>
-            <td colspan="5" class="headline"
-                i18n:translate="">Assign Parent Concepts</td>
-          </tr>
           <tr metal:use-macro="view/template/macros/assignments" />
-          <tr metal:use-macro="view/template/macros/search_concepts" />
           <tal:custom define="customMacro view/customMacro"
                       condition="customMacro">
             <tr metal:use-macro="customMacro" />
@@ -125,7 +117,12 @@
 </metal:block>
 
 
-<metal:assignments define-macro="assignments">
+<metal:assignments define-macro="assignments"
+                   tal:condition="view/showAssignments">
+    <tr>
+      <td colspan="5" class="headline"
+          i18n:translate="">Assign Parent Concepts</td>
+    </tr>
     <tbody id="form.assignments">
       <tr tal:repeat="type view/presetTypesForAssignment">
         <td><span i18n:translate="">Type</span>: </td>
@@ -153,42 +150,46 @@
         </td>
       </tr>
     </tbody>
+    <tbody>
+      <tr metal:define-macro="search_concepts">
+        <td>
+          <label for="concept.search.type">
+            <span i18n:translate="">Type</span>:</label></td>
+        <td>
+          <select id="concept.search.type"
+                  onChange="setConceptTypeForComboBox('concept.search.type', 'concept.search.text')">
+            <tal:types repeat="type view/conceptTypesForSearch">
+              <option value="loops:*"
+                      i18n:translate=""
+                      tal:attributes="value type/token"
+                      tal:content="type/title">Topic</option>
+            </tal:types>
+          </select>&nbsp;&nbsp;
+        </td>
+        <td>
+          <label for="concept.search.text">
+            <span i18n:translate="">Concept</span>:</label></td>
+        <td>
+          <input type="hidden"
+                 id="concept.search.predicate"
+                 tal:attributes="value view/defaultPredicateUid" />
+          <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+               url="listConceptsForComboBox.js?searchType=" >
+          </div>
+          <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
+                 autoComplete="False" labelAttr="label"
+                 name="concept.search.text" id="concept.search.text" />
+        </td>
+        <td>
+          <input type="button" value="Select"
+                 i18n:attributes="value"
+                 onClick="addConceptAssignment('concept', 'assignments')" />
+        </td>
+      </tr>
+    </tbody>
 </metal:assignments>
 
 
-<tr metal:define-macro="search_concepts">
-    <td><label for="concept.search.type"><span i18n:translate="">Type</span>:</label></td>
-    <td>
-      <select id="concept.search.type"
-              onChange="setConceptTypeForComboBox('concept.search.type', 'concept.search.text')">
-        <tal:types repeat="type view/conceptTypesForSearch">
-          <option value="loops:*"
-                  i18n:translate=""
-                  tal:attributes="value type/token"
-                  tal:content="type/title">Topic</option>
-        </tal:types>
-      </select>&nbsp;&nbsp;
-    </td>
-    <td>
-      <label for="concept.search.text">
-        <span i18n:translate="">Concept</span>:</label></td>
-    <td>
-      <input type="hidden"
-             id="concept.search.predicate"
-             tal:attributes="value view/defaultPredicateUid" />
-      <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
-           url="listConceptsForComboBox.js?searchType=" >
-      </div>
-      <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
-             autoComplete="False" labelAttr="label"
-             name="concept.search.text" id="concept.search.text" />
-    </td>
-    <td>
-      <input type="button" value="Select"
-             i18n:attributes="value"
-             onClick="addConceptAssignment('concept', 'assignments')" />
-    </td>
-</tr>
 
 
 <metal:versioning define-macro="versioning"
