@@ -1,0 +1,4 @@
+<metal:macro define-macro="text"
+             tal:define="target nocall:view/context/targetView">
+  <div tal:content="structure target/render" />
+</metal:macro>

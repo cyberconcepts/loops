@@ -25,10 +25,13 @@ $Id$
 import re
 
 from zope import component
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.proxy import removeAllProxies
 from zope.traversing.browser import absoluteURL
 
+from cybertools.browser.renderer import RendererFactory
+from cybertools.composer.layout.base import Layout
 from loops.common import adapted
 from loops.i18n.browser import LanguageInfo
 from loops.interfaces import IConcept
@@ -36,12 +39,14 @@ from loops.layout.browser.base import BaseView
 from loops import util
 
 
-class ConceptView(BaseView):
+resourceRenderers = RendererFactory(ViewPageTemplateFile('resource.pt'))
 
-    @property
-    def children(self):
-        for c in self.context.getChildren():
-            view = component.getMultiAdapter((c, self.request), name='layout')
-            view.node = self.node
-            yield view
 
+Layout('text.standard', 'center.content',
+       renderer=resourceRenderers.text, instanceName='target')
+
+
+class TextView(BaseView):
+
+    def render(self):
+        return self.renderText(self.context.data, self.context.contentType)

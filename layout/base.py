@@ -92,7 +92,8 @@ class TargetLayoutInstance(NodeLayoutInstance):
             return []
         result = []
         names = region.layouts.keys()
-        tp = target.context.conceptType
+        #tp = target.context.conceptType
+        tp = target.context.getType()
         for n in tp.getClients():
             if n.nodeType == 'info' and n.viewName in names:
                 if pageName != n.pageName:

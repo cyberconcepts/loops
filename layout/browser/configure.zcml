@@ -53,6 +53,13 @@
       provides="zope.interface.Interface"
       factory="loops.layout.browser.concept.ConceptView" />
 
+  <zope:adapter
+      name="layout"
+      for="loops.interfaces.ITextDocument
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.layout.browser.resource.TextView" />
+
   <!-- traversal adapter -->
 
   <zope:view factory="loops.layout.browser.traversal.NodeTraverser"
@@ -61,5 +68,9 @@
         provides="zope.publisher.interfaces.browser.IBrowserPublisher"
         allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
         permission="zope.Public" />
+
+  <!-- layouts -->
+
+  <zope:module module="loops.layout.browser.resource" />
 
 </configure>
