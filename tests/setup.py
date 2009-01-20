@@ -61,7 +61,9 @@ from loops.expert.concept import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
 from loops.resource import Document, MediaAsset
 from loops.resource import IndexAttributes as ResourceIndexAttributes
-from loops.schema import ResourceSchemaFactory, FileSchemaFactory, NoteSchemaFactory
+from loops.schema.factory import ResourceSchemaFactory, FileSchemaFactory, \
+                                 NoteSchemaFactory
+from loops.schema.field import RelationSetFieldInstance
 from loops.security.common import grantAcquiredSecurity, revokeAcquiredSecurity
 from zope.security.management import setSecurityPolicy
 from loops.security.policy import LoopsSecurityPolicy
@@ -141,6 +143,7 @@ class TestSite(object):
         component.provideAdapter(BooleanFieldInstance, name='boolean')
         component.provideAdapter(ListFieldInstance, name='list')
         component.provideAdapter(FileUploadFieldInstance, name='fileupload')
+        component.provideAdapter(RelationSetFieldInstance, name='relationset')
         component.provideAdapter(SchemaFactory)
         component.provideAdapter(ResourceSchemaFactory)
         component.provideAdapter(FileSchemaFactory)

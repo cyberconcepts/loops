@@ -143,6 +143,17 @@ function addConceptAssignment(prefix, suffix) {
     node.appendChild(tr);
 }
 
+function addRelation(fieldName) {
+    valuesNode = dojo.byId(fieldName + '_values');
+    widget = dijit.byId(fieldName + '_search');
+    token = widget.getValue();
+    title = widget.getDisplayedValue();
+    ih = '<input type="checkbox" name="' + name + ':list" value="' + token + '" checked> <span>' + title + '</span>';
+    newNode = document.createElement('div');
+    newNode.innerHTML = ih;
+    valuesNode.appendChild(newNode);
+}
+
 function validate() {
     //var form = dijit.byId('dialog_form');
     var form = dojo.byId('dialog_form');

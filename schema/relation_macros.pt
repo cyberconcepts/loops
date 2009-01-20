@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      i18n:domain="loops">
+<body>
+
+
+<metal:textline define-macro="input_relationset"
+                tal:define="fieldInstance field/getFieldInstance;
+                            types fieldInstance/typesParams">
+    <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+         tal:attributes="url string:listConceptsForComboBox.js$types;
+                         jsId string:${name}_search_store" >
+    </div>
+    <div tal:attributes="id string:${name}_values">
+      <div tal:repeat="obj data/?name">
+        <input type="checkbox" checked
+               tal:attributes="name string:$name:list;
+                               value obj/uid" />
+        <span tal:content="obj/title" />
+      </div>
+    </div>
+    <input dojoType="dijit.form.FilteringSelect"
+           autoComplete="False" labelAttr="label"
+           tal:attributes="store string:${name}_search_store;
+                           name string:${name}_search;
+                           id string:${name}_search;
+                           onChange string:addRelation('$name')" />
+</metal:textline>
+
+
+</body>
+</html>

@@ -96,6 +96,8 @@ class AdapterBase(object):
     _noexportAttributes = ()
     _textIndexAttributes = ()
 
+    __is_dummy__ = False
+
     languageInfo = None
 
     def __init__(self, context):
@@ -107,7 +109,7 @@ class AdapterBase(object):
         return getattr(self.context, '_' + attr, None)
 
     def __setattr__(self, attr, value):
-        if attr in self._adapterAttributes:
+        if attr.startswith('__') or attr in self._adapterAttributes:
             try:
                 object.__setattr__(self, attr, value)
             except AttributeError:
@@ -332,6 +334,8 @@ class ParentRelationSet(RelationSet):
         self.context.deassignParent(related, [self.predicate])
 
     def __iter__(self):
+        if self.adapted.__is_dummy__:
+            return
         for c in self.context.getParents([self.predicate]):
             yield adapted(c, langInfo=self.langInfo)
 
@@ -350,6 +354,8 @@ class ChildRelationSet(RelationSet):
         self.context.deassignChild(related, [self.predicate])
 
     def __iter__(self):
+        if self.adapted.__is_dummy__:
+            return
         for c in self.context.getChildren([self.predicate]):
             yield adapted(c, langInfo=self.langInfo)
 

@@ -98,29 +98,32 @@ class Search(BaseView):
         title = request.get('name')
         if title == '*':
             title = None
-        type = request.get('searchType')
+        types = request.get('searchType')
         data = []
-        if title or type:
+        if title or types:
             if title is not None:
                 title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
                 #title = title.split(' ', 1)[0]
-            if not type:
-                type = 'loops:concept:*'
-            result = ConceptQuery(self).query(title=title or None, type=type,
-                                              exclude=('system',))
-            for o in result:
-                if o.getLoopsRoot() == self.loopsRoot:
-                    name = adapted(o, self.languageInfo).title
-                    if title and title.endswith('*'):
-                        title = title[:-1]
-                    sort = ((title and name.startswith(title) and '0' or '1')
-                            + name.lower())
-                    if o.conceptType is None:
-                        raise ValueError('Concept Type missing for %r.' % name)
-                    data.append({'label': '%s (%s)' % (name, o.conceptType.title),
-                                 'name': name,
-                                 'id': util.getUidForObject(o),
-                                 'sort': sort})
+            if not types:
+                types = ['loops:concept:*']
+            if not isinstance(types, (list, tuple)):
+                types = [types]
+            for type in types:
+                result = ConceptQuery(self).query(title=title or None, type=type,
+                                                  exclude=('system',))
+                for o in result:
+                    if o.getLoopsRoot() == self.loopsRoot:
+                        name = adapted(o, self.languageInfo).title
+                        if title and title.endswith('*'):
+                            title = title[:-1]
+                        sort = ((title and name.startswith(title) and '0' or '1')
+                                + name.lower())
+                        if o.conceptType is None:
+                            raise ValueError('Concept Type missing for %r.' % name)
+                        data.append({'label': '%s (%s)' % (name, o.conceptType.title),
+                                     'name': name,
+                                     'id': util.getUidForObject(o),
+                                     'sort': sort})
         data.sort(key=lambda x: x['sort'])
         if not title:
             data.insert(0, {'label': '', 'name': '', 'id': ''})

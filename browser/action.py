@@ -39,7 +39,7 @@ class TargetAction(Action):
     viewTitle = ''
     addParams = {}
 
-    #@Lazy
+    @Lazy
     def url(self):
         if self.page is None:   # how could this happen?
             baseUrl = self.view.virtualTargetUrl

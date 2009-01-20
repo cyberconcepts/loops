@@ -57,6 +57,7 @@ from loops.browser.concept import ConceptRelationView
 from loops.i18n.browser import I18NView
 from loops.query import ConceptQuery, IQueryConcept
 from loops.resource import Resource
+from loops.schema.field import relation_macros
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
@@ -113,6 +114,7 @@ class ObjectForm(NodeView):
         # replace HTML edit widget with Dojo Editor
         renderers['input_html'] = self.template.macros['input_html']
         renderers['input_grid'] = grid_macros.macros['input_grid']
+        renderers['input_relationset'] = relation_macros.macros['input_relationset']
         return renderers
 
     @Lazy
@@ -358,6 +360,7 @@ class CreateConceptForm(CreateObjectForm):
         if ti is None:
             return c
         ad = ti(c)
+        ad.__is_dummy__ = True
         return ad
 
     @Lazy
@@ -394,7 +397,8 @@ class CreateConceptPage(CreateConceptForm):
 
     @Lazy
     def nextUrl(self):
-        return self.nodeView.getUrlForTarget(self.context)
+        #return self.nodeView.getUrlForTarget(self.context)
+        return self.getUrlForTarget(self.context)
 
 
 class InnerForm(CreateObjectForm):

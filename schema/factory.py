@@ -17,64 +17,16 @@
 #
 
 """
-Specialized fields and schema factories
+Specialized fields factories.
 
 $Id$
 """
 
 from zope.component import adapts
-from zope.interface import Attribute, implements
-from zope.schema import Choice, List
-from zope.schema.interfaces import IChoice, IList
 
 from cybertools.composer.schema.factory import SchemaFactory
 from loops.interfaces import IResourceAdapter, IFile, INote
 
-# fields
-
-class IRelation(IChoice):
-    """ An object addressed via a single relation.
-    """
-
-    target_types = Attribute('A list of names that denote types of '
-                'loops objects (typically concept types) that may be used as '
-                'targets for the relation.')
-
-
-class IRelationSet(IList):
-    """ A collection of objects addressed via a set of relations.
-
-        Despite its name, the collection may have a predefined order.
-    """
-
-    target_types = Attribute('A list of names that denote types of '
-                'loops objects (typically concept types) that may be used as '
-                'targets for the relations.')
-
-
-class Relation(Choice):
-
-    implements(IRelation)
-
-    __typeInfo = ('relation',)
-
-    def __init__(self, *args, **kw):
-        self.target_types = kw.pop('target_types')
-        super(Relation, self).__init__(*args, **kw)
-
-
-class RelationSet(List):
-
-    implements(IRelationSet)
-
-    __typeInfo = ('relationset',)
-
-    def __init__(self, *args, **kw):
-        self.target_types = kw.pop('target_types')
-        super(RelationSet, self).__init__(*args, **kw)
-
-
-# schema factories
 
 class ResourceSchemaFactory(SchemaFactory):
 
