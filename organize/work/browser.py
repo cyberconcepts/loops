@@ -50,88 +50,6 @@ from loops.util import _
 work_macros = ViewPageTemplateFile('work_macros.pt')
 
 
-# work item collections
-
-class BaseWorkItemsView(object):
-
-    columns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration', 'Info'])
-
-    lastMonth = lastDay = None
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    @Lazy
-    def work_macros(self):
-        return work_macros.macros
-
-    @Lazy
-    def workItems(self):
-        rm = self.loopsRoot.getRecordManager()
-        if rm is not None:
-            ts = rm.get('work')
-            if ts is not None:
-                return IWorkItems(ts)
-
-    @Lazy
-    def workItemsCriteria(self):
-        result = {}
-        form = self.request.form
-        start = parseDate(form.get('wi_start'))
-        end = parseDate(form.get('wi_end'))
-        if end:
-            end += 3600 * 24    # include full end date
-        if start or end:
-            result['timeFromTo'] = (start, end)
-        return result
-
-
-class WorkItemsView(BaseWorkItemsView, NodeView):
-    """ Standard view for showing work items for a node's target.
-    """
-
-    columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
-
-    @Lazy
-    def allWorkItems(self):
-        result = []
-        target = self.virtualTargetObject
-        workItems = self.workItems
-        if None in (workItems, target):
-            return result
-        criteria = self.workItemsCriteria
-        criteria['task'] = util.getUidForObject(target)
-        for wi in workItems.query(**criteria):
-            result.append(WorkItemDetails(self, wi))
-        return sorted(result, key=lambda x: x.track.timeStamp)
-
-
-class UserWorkItems(BaseWorkItemsView, ConceptView):
-    """ A query view showing work items for a person, the query's parent.
-    """
-
-    columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
-
-    @property
-    def macro(self):
-        return self.work_macros['userworkitems']
-
-    @Lazy
-    def allWorkItems(self):
-        workItems = self.workItems
-        if self.workItems is None:
-            return []
-        result = []
-        for target in self.context.getParents([self.defaultPredicate]):
-            criteria = dict(self.workItemsCriteria)
-            un = criteria.setdefault('userName', [])
-            un.append(util.getUidForObject(target))
-            for wi in workItems.query(**criteria):
-                result.append(WorkItemDetails(self, wi))
-        return sorted(result, key=lambda x: x.track.timeStamp)
-
-
 # single work items
 
 class WorkItemDetails(TrackDetails):
@@ -226,6 +144,87 @@ class WorkItemInfo(NodeView):
 class WorkItemView(BaseTrackView):
     """ Show a single work item in the management view.
     """
+
+
+# work item collections
+
+class BaseWorkItemsView(object):
+
+    allColumns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration', 'Info'])
+    columns = allColumns
+    detailsFactory = WorkItemDetails
+
+    lastMonth = lastDay = None
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    @Lazy
+    def work_macros(self):
+        return work_macros.macros
+
+    @Lazy
+    def workItems(self):
+        rm = self.loopsRoot.getRecordManager()
+        if rm is not None:
+            ts = rm.get('work')
+            if ts is not None:
+                return IWorkItems(ts)
+
+    @Lazy
+    def baseCriteria(self):
+        result = {}
+        form = self.request.form
+        start = parseDate(form.get('wi_start'))
+        end = parseDate(form.get('wi_end'))
+        if end:
+            end += 3600 * 24    # include full end date
+        if start or end:
+            result['timeFromTo'] = (start, end)
+        state = form.get('wi_state')
+        if state is not None:
+            result['state'] = state
+        return result
+
+    def query(self, **criteria):
+        if self.workItems is None:
+            return []
+        return [self.detailsFactory(self, wi)
+                for wi in self.workItems.query(**criteria)]
+
+
+class WorkItemsView(BaseWorkItemsView, NodeView):
+    """ Standard view for showing work items for a node's target.
+    """
+
+    columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
+
+    @Lazy
+    def listWorkItems(self):
+        target = self.virtualTargetObject
+        criteria = self.baseCriteria
+        criteria['task'] = util.getUidForObject(target)
+        return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
+
+
+class PersonWorkItems(BaseWorkItemsView, ConceptView):
+    """ A query view showing work items for a person, the query's parent.
+    """
+
+    columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
+
+    @property
+    def macro(self):
+        return self.work_macros['userworkitems']
+
+    @Lazy
+    def listWorkItems(self):
+        criteria = self.baseCriteria
+        for target in self.context.getParents([self.defaultPredicate]):
+            un = criteria.setdefault('userName', [])
+            un.append(util.getUidForObject(target))
+        return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
 # forms and form controllers

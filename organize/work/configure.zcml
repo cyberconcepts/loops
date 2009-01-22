@@ -29,11 +29,11 @@
       permission="zope.View" />
 
   <zope:adapter
-        name="userworkitems.html"
+        name="personworkitems.html"
         for="loops.interfaces.IConcept
              zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
-        factory="loops.organize.work.browser.UserWorkItems"
+        factory="loops.organize.work.browser.PersonWorkItems"
         permission="zope.View" />
 
   <browser:page

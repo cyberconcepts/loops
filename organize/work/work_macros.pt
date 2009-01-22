@@ -6,21 +6,20 @@
 
 <metal:work define-macro="workitems"
             tal:define="work nocall:view/workItems"
-            tal:condition="work/allWorkItems">
+            tal:condition="work/listWorkItems">
   <br />
   <h2 i18n:translate="">Work Items</h2>
   <metal:workitems define-macro="workitems_listing"
                    tal:define="work nocall:work|nocall:view/workItems;">
     <table class="listing">
       <tr>
-        <tal:colheader repeat="column python:
-                ('Day', 'Start', 'End', 'Duration', 'Task', 'User', 'Title', 'Info')">
+        <tal:colheader repeat="column work/allColumns">
           <th tal:condition="python: column in work.columns"
               tal:content="column"
               i18n:translate="">Task</th>
         </tal:colheader>
       </tr>
-      <tal:workitem tal:repeat="row work/allWorkItems">
+      <tal:workitem tal:repeat="row work/listWorkItems">
         <tr tal:condition="row/monthChanged">
           <td class="headline"
               tal:attributes="colspan python: len(work.columns)"
