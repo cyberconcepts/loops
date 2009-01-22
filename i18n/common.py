@@ -130,7 +130,7 @@ class I18NAdapterBase(AdapterBase):
         return getI18nValue(self.context, '_' + attr, langInfo)
 
     def __setattr__(self, attr, value):
-        if attr in self._adapterAttributes:
+        if attr.startswith('__') or attr in self._adapterAttributes:
             object.__setattr__(self, attr, value)
         else:
             langInfo = attr in self.i18nAttributes and self.languageInfo or None
