@@ -156,6 +156,9 @@ class BlogPostView(ConceptView):
                   page=page, target=target))
             #self.registerDojoTextWidget()
             self.registerDojoDateWidget()
+        else:
+            actions = super(BlogPostView, self).getActions(category,
+                                                    page=page, target=target)
         return actions
 
     def render(self):
