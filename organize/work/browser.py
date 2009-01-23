@@ -150,8 +150,8 @@ class WorkItemView(BaseTrackView):
 
 class BaseWorkItemsView(object):
 
-    allColumns = set(['Task', 'User', 'Title', 'Start', 'End', 'Duration', 'Info'])
-    columns = allColumns
+    allColumns = ['Day', 'Start', 'End', 'Duration', 'Task', 'User', 'Title', 'Info']
+    columns = set(allColumns)
     detailsFactory = WorkItemDetails
 
     lastMonth = lastDay = None
