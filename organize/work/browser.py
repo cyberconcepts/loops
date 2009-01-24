@@ -106,6 +106,7 @@ class WorkItemDetails(TrackDetails):
         if self.isLastInRun:
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
+            self.view.registerDojoTextarea()
             actions.append(DialogAction(self.view,
                       description=_(u'Create a work item.'),
                       viewName='create_workitem.html',
@@ -261,7 +262,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def startTime(self):
         ts = self.track.start or getTimeStamp()
-        return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+        return time.strftime('T%H:%M', time.localtime(ts))
 
     @Lazy
     def endTime(self):
@@ -269,7 +271,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
             ts = getTimeStamp()
         else:
             ts = self.track.end or getTimeStamp()
-        return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
+        return time.strftime('T%H:%M', time.localtime(ts))
 
     @Lazy
     def state(self):
@@ -329,13 +332,14 @@ class CreateWorkItem(EditObject, BaseTrackView):
                 result[k] = v
         for k in ('title', 'description', 'comment'):
             setValue(k)
-        startDate = form.get('start_date')
-        startTime = form.get('start_time')
-        endTime = form.get('end_time')
+        startDate = form.get('start_date', '').strip()
+        startTime = form.get('start_time', '').strip().replace('T', '')
+        endTime = form.get('end_time', '').strip().replace('T', '')
+        #print '***', startDate, startTime, endTime
         if startDate and startTime:
-            result['start'] = parseDateTime(startDate + startTime)
+            result['start'] = parseDateTime('T'.join((startDate, startTime)))
         if startDate and endTime:
-            result['end'] = parseDateTime(startDate + endTime)
+            result['end'] = parseDateTime('T'.join((startDate, endTime)))
         duration = form.get('duration')
         if duration:
             result['duration'] = parseTime(duration)
@@ -367,7 +371,8 @@ actions.register('createWorkitem', 'portlet', DialogAction,
         description=_(u'Create a work item for this object.'),
         viewName='create_workitem.html',
         dialogName='createWorkitem',
-        prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget'],
+        prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget',
+                       'registerDojoTextarea'],
 )
 
 
