@@ -219,9 +219,20 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
     def macro(self):
         return self.work_macros['userworkitems']
 
+    def getCriteria(self):
+        crit = self.baseCriteria
+        tft = crit.get('timeFromTo') or (None, None)
+        if not tft[0]:
+            tft = (getTimeStamp() - (3 * 24 * 3600), tft[1])
+            crit['timeFromTo'] = tft
+        if not crit.get('state'):
+            crit['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
+                             'finished', 'delegated']
+        return crit
+
     @Lazy
     def listWorkItems(self):
-        criteria = self.baseCriteria
+        criteria = self.getCriteria()
         for target in self.context.getParents([self.defaultPredicate]):
             un = criteria.setdefault('userName', [])
             un.append(util.getUidForObject(target))
@@ -359,7 +370,8 @@ class CreateWorkItem(EditObject, BaseTrackView):
         else:
             wi = workItems.add(util.getUidForObject(self.object), self.personId)
         wi.doAction(action, self.personId, **data)
-        url = self.view.virtualTargetUrl + '?version=this'
+        url = self.view.virtualTargetUrl
+        #url = self.request.URL
         self.request.response.redirect(url)
         return False
 
