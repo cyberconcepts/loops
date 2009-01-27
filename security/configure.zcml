@@ -24,14 +24,12 @@
   <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
   <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
 
-  <browser:page name="permissions.html" for="*"
-        class=".perm.PermissionView"
+  <browser:page
+        for="zope.annotation.interfaces.IAnnotatable"
+        name="permissions.html"
+        permission="zope.Security"
         template="manage_permissionform.pt"
-        permission="zope.Security" />
-
-  <browser:menuItem for="*" action="@@permissions.html"
-        menu="zmi_actions" title="Edit Permissions"
-        filter="python: context.__name__ not in ('views', 'concepts', 'resources')"
-        permission="zope.Security" />
+        class=".perm.PermissionView"
+        menu="zmi_actions" title="Edit Permissions" />
 
 </configure>

@@ -24,7 +24,8 @@
   <div tal:define="permId view/permissionId;
                    perm view/permission;">
     <form>
-      <select name="permission_to_manage">
+      <select name="permission_to_manage"
+              onChange="submit()">
         <option tal:repeat="pId view/getPermissions"
                 tal:attributes="value pId;
                                 selected python: pId == permId"
