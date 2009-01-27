@@ -183,9 +183,6 @@
     <require
         permission="zope.ManageContent"
         set_schema=".interfaces.INode" />
-    <!--<require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />-->
   </class>
 
   <!-- record manager -->

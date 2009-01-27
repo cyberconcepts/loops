@@ -503,8 +503,10 @@ class NodeView(BaseView):
 
     @Lazy
     def workItems(self):
-        return component.getMultiAdapter((self.context, self.request),
-                                         name='workitems.html')
+        target = self.virtualTargetObject
+        if target is not None:
+            return component.getMultiAdapter((target, self.request),
+                                             name='taskworkitems.html')
 
     # comments
 

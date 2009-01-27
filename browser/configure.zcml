@@ -111,14 +111,13 @@
       title="loops Container"
       description="A top-level loops container"
       permission="zope.ManageContent"
-      view="AddLoopsContainer.html"
-      />
+      view="AddLoopsContainer.html" />
 
   <containerViews
       for="loops.interfaces.ILoops"
-      contents="zope.ManageContent"
-      add="zope.ManageContent"
-      />
+      index="zope.View"
+      contents="loops.ManageSite"
+      add="loops.ManageSite" />
 
   <page
       name="edit.html"
@@ -136,13 +135,13 @@
       schema="loops.interfaces.IConceptManager"
       content_factory="loops.concept.ConceptManager"
       template="add.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <containerViews
       for="loops.interfaces.IConceptManager"
-      add="zope.ManageContent"
-      />
+      index="loops.ManageSite"
+      contents="loops.ManageSite"
+      add="loops.ManageSite" />
 
   <!-- concept -->
 
@@ -243,8 +242,9 @@
 
   <containerViews
       for="loops.interfaces.IResourceManager"
-      add="zope.ManageContent"
-      />
+      index="loops.ManageSite"
+      contents="loops.ManageSite"
+      add="loops.ManageSite" />
 
   <!-- resource in general -->
 
@@ -354,55 +354,44 @@
       schema="loops.interfaces.IViewManager"
       content_factory="loops.view.ViewManager"
       template="add.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <containerViews
       for="loops.interfaces.IViewManager"
-      index="zope.ManageContent"
-      add="zope.ManageContent"
-      />
+      index="zope.View"
+      add="zope.ManageContent" />
 
   <menuItem
       for="loops.interfaces.IViewManager"
       action="contents.html"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Contents"
-      />
+      menu="zmi_views" title="Contents" />
 
   <!-- record manager -->
 
   <containerViews
       for="loops.interfaces.IRecordManager"
-      index="zope.ManageContent"
-      />
+      index="loops.ManageSite"
+      add="loops.ManageSite" />
 
   <menuItem
       for="loops.interfaces.IRecordManager"
       action="contents.html"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Contents"
-      />
+      permission="loops.ManageSite"
+      menu="zmi_views" title="Contents" />
 
   <!-- node -->
 
   <icon
       name="zmi_icon"
       for="loops.interfaces.INode"
-      file="node_icon.gif"
-      />
+      file="node_icon.gif" />
 
   <menuItem
       for="loops.interfaces.INode"
-      action="@@contents.html"
+      action="contents.html"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Contents"
-      />
-
-  <!--<containerViews
-      for="loops.interfaces.INode"
-      index="zope.ManageContent"
-      />-->
+      menu="zmi_views" title="Contents" />
 
   <addform
       label="Add Node"
@@ -412,10 +401,8 @@
       fields="title description nodeType viewName body"
       template="add.pt"
       permission="zope.ManageContent">
-
     <widget field="description" height="2" />
     <widget field="body" height="8" />
-
   </addform>
 
   <addMenuItem
@@ -423,8 +410,7 @@
       title="Node"
       description="A node provides access to concepts, possibly hierarchically organized"
       permission="zope.ManageContent"
-      view="AddLoopsNode.html"
-      />
+      view="AddLoopsNode.html" />
 
   <editform
       label="Edit Node"

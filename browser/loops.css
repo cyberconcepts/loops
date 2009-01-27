@@ -64,10 +64,11 @@ table.listing {
 table.listing th {
     font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
     color: #000040;
+    padding: 0 2px 0 2px;
 }
 
 table.listing td {
-    padding: 0 1px 0 1px;
+    padding: 0 2px 0 2px;
     white-space: normal;
     vertical-align: middle;
 }

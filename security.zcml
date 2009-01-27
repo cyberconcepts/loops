@@ -16,25 +16,42 @@
       title="[loops-manage-site-permission] loops: Manage Site" />
 
   <permission
+      id="loops.ManageTypes"
+      title="[loops-manage-types-permission] loops: Manage Types" />
+
+  <permission
+      id="loops.ManageWorkspaces"
+      title="[loops-manage-workspaces-permission] loops: Manage Workspaces" />
+
+  <permission
       id="loops.ViewRestricted"
       title="[loops-view-restricted-permission] loops: View Restricted Information" />
+
+  <permission
+      id="loops.EditRestricted"
+      title="[loops-edit-restricted-permission] loops: Edit Restricted Information" />
 
   <!-- roles and default permissions for roles -->
 
   <role id="loops.SiteManager"
         title="[loops-manage-site-role] loops: Site Manager" />
   <grant role="loops.SiteManager" permission="loops.ManageSite" />
+  <grant role="loops.SiteManager" permission="loops.ManageTypes" />
+  <grant role="loops.SiteManager" permission="loops.ManageWorkspaces" />
   <grant role="loops.SiteManager" permission="loops.xmlrpc.ManageConcepts" />
   <grant role="loops.SiteManager" permission="zope.ManageContent" />
   <grant role="loops.SiteManager" permission="zope.View" />
 
   <role id="loops.Staff"
         title="[loops-staff-role] loops: Staff" />
+  <grant role="loops.Staff" permission="loops.ManageWorkspaces" />
+  <grant role="loops.Staff" permission="loops.EditRestricted" />
   <grant role="loops.Staff" permission="zope.ManageContent" />
   <grant role="loops.Staff" permission="zope.View" />
 
   <role id="loops.Master"
         title="[loops-master-role] loops: Master" />
+  <grant role="loops.Master" permission="zope.ManageContent" />
 
   <role id="loops.xmlrpc.ConceptManager"
         title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ class Resource(Image, Contained):
         typePred = cm.getTypePredicate()
         if typePred is None:
             return None
-        concepts = self.getConcepts([typePred])
+        concepts = self.getConcepts([typePred], noSecurityCheck=True)
         # TODO (?): check for multiple types (->Error)
         return concepts and concepts[0] or cm.get('file', None)
     def setResourceType(self, concept):

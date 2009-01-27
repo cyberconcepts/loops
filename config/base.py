@@ -73,7 +73,8 @@ class LoopsOptions(Options):
 
     def parseContextOptions(self):
         def result():
-            for opt in  self.context.options:
+            options = getattr(self.context, 'options', [])
+            for opt in  options:
                 parts = opt.split(':', 1)
                 key = parts[0].strip()
                 if len(parts) == 1:
@@ -94,3 +95,8 @@ class QueryOptions(LoopsOptions):
 
     adapts(IQueryConcept)
 
+
+class DummyOptions(Options):
+
+    def __getitem__(self, key):
+        return []

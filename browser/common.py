@@ -56,6 +56,7 @@ from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
+from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode
 from loops.organize.tracking import access
@@ -114,13 +115,9 @@ class BaseView(GenericView, I18NView):
         super(BaseView, self).__init__(context, request)
         # TODO: get rid of removeSecurityProxy() call - not yet...
         self.context = removeSecurityProxy(context)
-        #self.context = context
-        #self.setSkin(self.loopsRoot.skinName)
-        #self.checkLanguage()
         try:
             if not canAccessObject(context):
-                raise Unauthorized
-                #request.response.redirect('login.html')
+                raise Unauthorized('%r: title' % (context))
         except ForbiddenAttribute:  # ignore when testing
             pass
 
@@ -393,8 +390,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def options(self):
-        #return IOptions(self.context)
-        return IOptions(self.adapted)
+        return component.queryAdapter(self.adapted, IOptions) or DummyOptions()
 
     @Lazy
     def globalOptions(self):
