@@ -22,11 +22,13 @@
 
   <!-- application views -->
 
-  <browser:page
-      name="workitems.html"
-      for="loops.interfaces.INode"
-      class="loops.organize.work.browser.WorkItemsView"
-      permission="zope.View" />
+  <zope:adapter
+        name="taskworkitems.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.organize.work.browser.TaskWorkItems"
+        permission="zope.View" />
 
   <zope:adapter
         name="personworkitems.html"
@@ -34,6 +36,14 @@
              zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.organize.work.browser.PersonWorkItems"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="userworkitems.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.organize.work.browser.UserWorkItems"
         permission="zope.View" />
 
   <browser:page

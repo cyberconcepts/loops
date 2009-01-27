@@ -6,7 +6,7 @@
 
 <metal:work define-macro="workitems"
             tal:define="work nocall:view/workItems"
-            tal:condition="work/listWorkItems">
+            tal:condition="work/listWorkItems|nothing">
   <br />
   <h2 i18n:translate="">Work Items</h2>
   <metal:workitems define-macro="workitems_listing"
@@ -49,10 +49,11 @@
   </metal:workitems>
 </metal:work>
 
-<metal:work define-macro="userworkitems"
+
+<metal:work define-macro="workitems_query"
                 tal:define="work nocall:item">
   <br />
-  <h2 i18n:translate="" tal:content="item/title">Work Items</h2>
+  <metal:block use-macro="view/concept_macros/concepttitle" />
   <metal:workitems use-macro="item/work_macros/workitems_listing" />
 </metal:work>
 
@@ -106,11 +107,11 @@
             <div id="duration-effort">
               <input type="text" name="duration" style="width: 5em"
                      dojoType="dijit.form.ValidationTextBox"
-                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
                      tal:attributes="value view/duration" /> /
               <input type="text" name="effort" style="width: 5em"
                      dojoType="dijit.form.ValidationTextBox"
-                     regexp="[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                     regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
                      tal:attributes="value view/effort" /></div>
       </div>
       <div>

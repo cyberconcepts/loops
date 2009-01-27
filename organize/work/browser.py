@@ -22,6 +22,7 @@ View class(es) for work items.
 $Id$
 """
 
+from datetime import date
 import time
 from zope import component
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
@@ -165,6 +166,10 @@ class BaseWorkItemsView(object):
     def work_macros(self):
         return work_macros.macros
 
+    @property
+    def macro(self):
+        return self.work_macros['workitems_query']
+
     @Lazy
     def workItems(self):
         rm = self.loopsRoot.getRecordManager()
@@ -177,15 +182,21 @@ class BaseWorkItemsView(object):
     def baseCriteria(self):
         result = {}
         form = self.request.form
-        start = parseDate(form.get('wi_start'))
-        end = parseDate(form.get('wi_end'))
-        if end:
-            end += 3600 * 24    # include full end date
-        if start or end:
-            result['timeFromTo'] = (start, end)
-        state = form.get('wi_state')
-        if state is not None:
-            result['state'] = state
+        tsFrom = parseDate(form.get('wi_from') or self.options.wi_from)
+        tsTo = parseDate(form.get('wi_to') or self.options.wi_to)
+        if tsTo:
+            tsTo += 3600 * 24    # include full end date
+        if tsFrom or tsTo:
+            result['timeFromTo'] = (tsFrom, tsTo)
+        state = form.get('wi_state') or self.options.wi_state
+        if not state:
+            result['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
+                             'finished', 'delegated']
+        else:
+            if state == 'all':
+                del result['state']
+            else:
+                result['state'] = state
         return result
 
     def query(self, **criteria):
@@ -195,17 +206,15 @@ class BaseWorkItemsView(object):
                 for wi in self.workItems.query(**criteria)]
 
 
-class WorkItemsView(BaseWorkItemsView, NodeView):
+class TaskWorkItems(BaseWorkItemsView, ConceptView):
     """ Standard view for showing work items for a node's target.
     """
 
     columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
 
-    @Lazy
     def listWorkItems(self):
-        target = self.virtualTargetObject
         criteria = self.baseCriteria
-        criteria['task'] = util.getUidForObject(target)
+        criteria['task'] = util.getUidForObject(self.context)
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
@@ -215,28 +224,25 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
 
     columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
 
-    @property
-    def macro(self):
-        return self.work_macros['userworkitems']
-
     def getCriteria(self):
-        crit = self.baseCriteria
-        tft = crit.get('timeFromTo') or (None, None)
-        if not tft[0]:
-            tft = (getTimeStamp() - (3 * 24 * 3600), tft[1])
-            crit['timeFromTo'] = tft
-        if not crit.get('state'):
-            crit['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
-                             'finished', 'delegated']
-        return crit
+        return self.baseCriteria
 
-    @Lazy
     def listWorkItems(self):
         criteria = self.getCriteria()
         for target in self.context.getParents([self.defaultPredicate]):
             un = criteria.setdefault('userName', [])
             un.append(util.getUidForObject(target))
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
+
+
+class UserWorkItems(PersonWorkItems):
+
+    def listWorkItems(self):
+        criteria = self.getCriteria()
+        p = getPersonForUser(self.context, self.request)
+        if p is not None:
+            criteria['userName'] = util.getUidForObject(p)
+            return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
 # forms and form controllers
@@ -344,19 +350,15 @@ class CreateWorkItem(EditObject, BaseTrackView):
         for k in ('title', 'description', 'comment'):
             setValue(k)
         startDate = form.get('start_date', '').strip()
-        startTime = form.get('start_time', '').strip().replace('T', '')
-        endTime = form.get('end_time', '').strip().replace('T', '')
+        startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
+        endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'
         #print '***', startDate, startTime, endTime
-        if startDate and startTime:
+        #if startDate and startTime:
+        if startDate:
             result['start'] = parseDateTime('T'.join((startDate, startTime)))
-        if startDate and endTime:
             result['end'] = parseDateTime('T'.join((startDate, endTime)))
-        duration = form.get('duration')
-        if duration:
-            result['duration'] = parseTime(duration)
-        effort = form.get('effort')
-        if effort:
-            result['effort'] = parseTime(effort)
+        result['duration'] = parseTime(form.get('duration'))
+        result['effort'] = parseTime(form.get('effort'))
         return action, result
 
     def update(self):
@@ -403,6 +405,9 @@ class WorkItemStateAction(StateAction):
 
 # auxiliary functions
 
+specialDays = ['yesterday', 'today', 'tomorrow']
+weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
 def parseTime(s):
     if not s:
         return None
@@ -420,6 +425,20 @@ def parseDateTime(s):
 def parseDate(s):
     if not s:
         return None
+    if isinstance(s, (list, tuple)):
+        s = s[0]
+    if s[0] in ('-', '+') or s.isdigit():
+        delta = int(s) * 3600 * 24
+        return int(time.mktime(date.today().timetuple())) + delta
+    elif s in specialDays:
+        delta = (specialDays.index(s) - 1) * 3600 * 24
+        return int(time.mktime(date.today().timetuple())) + delta
+    elif s in weekDays:
+        wd = weekDays.index(s)
+        today = date.today()
+        todayWd = today.weekday
+        delta = (wd + 8 - todayWd) % 8
+        return int(time.mktime(today.timetuple())) + delta
     return int(time.mktime(time.strptime(s, '%Y-%m-%d')))
 
 def formatTimeDelta(value):

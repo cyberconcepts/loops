@@ -102,16 +102,15 @@ by calling the form controller's update method
 Work items views
 ----------------
 
-  >>> from loops.organize.work.browser import WorkItemView, WorkItemsView
+  >>> from loops.organize.work.browser import WorkItemView, TaskWorkItems
   >>> wi01 = workItems['0000001']
   >>> view = WorkItemView(wi01, TestRequest())
   >>> view.taskUrl
   'http://127.0.0.1/loops/concepts/loops_dev/@@SelectedManagementView.html'
 
-  >>> itemsView = WorkItemsView(home, request)
-
+  >>> work = TaskWorkItems(task01, request)
   >>> from loops.organize.work.browser import WorkItemDetails
-  >>> view = WorkItemDetails(itemsView, wi01)
+  >>> view = WorkItemDetails(work, wi01)
   >>> view.day, view.start, view.end
   (u'08/12/28', u'19:00', u'20:15')
 
@@ -142,6 +141,39 @@ work item, the form will be pre-filled with some of the item's data.
    {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
    {'name': 'finish', 'title': 'finish'}, {'name': 'cancel', 'title': 'cancel'},
    {'name': 'modify', 'title': 'modify'}]
+
+
+Work Item Queries
+=================
+
+  >>> from loops.common import adapted
+  >>> from loops.expert.concept import IQueryConcept
+  >>> from loops.organize.work.browser import UserWorkItems, PersonWorkItems
+
+  >>> tQuery = addAndConfigureObject(concepts, Concept, 'query',
+  ...                   title=u'Query', conceptType=concepts.getTypeConcept(),
+  ...                   typeInterface=IQueryConcept)
+
+  >>> query = addAndConfigureObject(concepts, Concept, 'userworkitems',
+  ...                               conceptType=tQuery)
+
+The UserWorkItems view does not give any results because there is no current
+user (principal) available in our test setting.
+
+  >>> work = UserWorkItems(query, TestRequest())
+  >>> work.listWorkItems()
+
+So we use the PersonWorkItems view, assigning john to the query.
+
+  >>> query.assignParent(johnC)
+  >>> adapted(query).options = ['wi_from:2009-01-01', 'wi_to:today']
+
+  >>> input = dict()
+  >>> work = PersonWorkItems(query, TestRequest(form=input))
+  >>> work.listWorkItems()
+  [<WorkItem ['36', 2, '33', '2009-01-19 08:00', 'planned']:
+   {'start': 1232352000, 'created': ..., 'title': u'Install Zope',
+    'creator': '33'}>]
 
 
 Fin de partie
