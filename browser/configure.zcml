@@ -603,16 +603,14 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.CreateConcept"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <zope:adapter
       name="edit_concept"
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.EditConcept"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <!-- inner HTML views -->
 

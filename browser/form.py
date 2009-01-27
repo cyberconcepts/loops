@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -115,6 +115,7 @@ class ObjectForm(NodeView):
         renderers['input_html'] = self.template.macros['input_html']
         renderers['input_grid'] = grid_macros.macros['input_grid']
         renderers['input_relationset'] = relation_macros.macros['input_relationset']
+        renderers['input_relation'] = relation_macros.macros['input_relation']
         return renderers
 
     @Lazy
@@ -397,8 +398,7 @@ class CreateConceptPage(CreateConceptForm):
 
     @Lazy
     def nextUrl(self):
-        #return self.nodeView.getUrlForTarget(self.context)
-        return self.getUrlForTarget(self.context)
+        return self.getUrlForTarget(self.virtualTargetObject)
 
 
 class InnerForm(CreateObjectForm):

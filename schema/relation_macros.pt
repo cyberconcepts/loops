@@ -17,6 +17,13 @@
                                value obj/uid" />
         <span tal:content="obj/title" />
       </div>
+      <div tal:repeat="obj python:
+                fieldInstance.getPresetTargets(view)">
+        <input type="checkbox" checked
+               tal:attributes="name string:$name:list;
+                               value obj/uid" />
+        <span tal:content="obj/title" />
+      </div>
     </div>
     <input dojoType="dijit.form.FilteringSelect"
            autoComplete="False" labelAttr="label"
@@ -24,6 +31,32 @@
                            name string:${name}_search;
                            id string:${name}_search;
                            onChange string:addRelation('$name')" />
+</metal:textline>
+
+
+<metal:textline define-macro="input_relation"
+                tal:define="fieldInstance field/getFieldInstance;
+                            types fieldInstance/typesParams">
+    <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
+         tal:attributes="url string:listConceptsForComboBox.js$types;
+                         jsId string:${name}_search_store" >
+    </div>
+    <div tal:define="obj data/?name"
+         tal:attributes="id string:${name}_values"><div>
+        <tal:block tal:condition="obj">
+          <input type="checkbox" checked
+                 tal:attributes="name string:$name;
+                               value obj/uid" />
+          <span tal:content="obj/title" />
+        </tal:block>
+      </div>
+    </div>
+    <input dojoType="dijit.form.FilteringSelect"
+           autoComplete="False" labelAttr="label"
+           tal:attributes="store string:${name}_search_store;
+                           name string:${name}_search;
+                           id string:${name}_search;
+                           onChange string:setRelation('$name')" />
 </metal:textline>
 
 

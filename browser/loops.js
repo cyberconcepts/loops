@@ -147,11 +147,26 @@ function addRelation(fieldName) {
     valuesNode = dojo.byId(fieldName + '_values');
     widget = dijit.byId(fieldName + '_search');
     token = widget.getValue();
-    title = widget.getDisplayedValue();
-    ih = '<input type="checkbox" name="' + name + ':list" value="' + token + '" checked> <span>' + title + '</span>';
-    newNode = document.createElement('div');
-    newNode.innerHTML = ih;
-    valuesNode.appendChild(newNode);
+    if (token) {
+        title = widget.getDisplayedValue();
+        ih = '<div><input type="checkbox" name="' + fieldName + ':list" value="' + token + '" checked> <span>' + title + '</span></div>';
+        newNode = document.createElement('div');
+        newNode.innerHTML = ih;
+        valuesNode.appendChild(newNode);
+    }
+}
+
+function setRelation(fieldName) {
+    valuesNode = dojo.byId(fieldName + '_values');
+    widget = dijit.byId(fieldName + '_search');
+    token = widget.getValue();
+    if (token) {
+        title = widget.getDisplayedValue();
+        ih = '<div><input type="checkbox" name="' + fieldName + '" value="' + token + '" checked> <span>' + title + '</span></div>';
+        newNode = document.createElement('div');
+        newNode.innerHTML = ih;
+        valuesNode.replaceChild(newNode, valuesNode.firstChild);
+    }
 }
 
 function validate() {

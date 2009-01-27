@@ -345,6 +345,8 @@
            name="grid" />
   <adapter factory="loops.schema.field.RelationSetFieldInstance"
            name="relationset" />
+  <adapter factory="loops.schema.field.RelationFieldInstance"
+           name="relation" />
 
   <adapter factory="cybertools.composer.schema.factory.SchemaFactory" />
   <adapter factory="loops.schema.factory.ResourceSchemaFactory" />

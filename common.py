@@ -387,6 +387,16 @@ class RelationSetProperty(object):
             return self
         return self.factory(inst, self.predicateName)
 
+    def __set__(self, inst, value):
+        rs = self.factory(inst, self.predicateName)
+        current = list(rs)
+        for c in current:
+            if c not in value:
+                rs.remove(c)
+        for v in value:
+            if v not in current:
+                rs.add(v)
+
 
 class ParentRelationSetProperty(RelationSetProperty):
 

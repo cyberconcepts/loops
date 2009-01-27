@@ -28,9 +28,10 @@ from zope.interface import implements
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 import zope.schema
+from zope.traversing.api import getName
 
 from cybertools.composer.schema.factory import createField
-from cybertools.composer.schema.field import ListFieldInstance
+from cybertools.composer.schema.field import FieldInstance, ListFieldInstance
 from cybertools.composer.schema.interfaces import IField, IFieldInstance
 from cybertools.composer.schema.interfaces import fieldTypes, undefined
 from cybertools.util.format import toStr, toUnicode
@@ -41,17 +42,7 @@ from loops import util
 relation_macros = ViewPageTemplateFile('relation_macros.pt')
 
 
-class RelationSetFieldInstance(ListFieldInstance):
-
-    def marshall(self, value):
-        return [dict(title=v.title, uid=util.getUidForObject(v.context))
-                for v in value]
-
-    def display(self, value):
-        return value
-
-    def unmarshall(self, value):
-        return value
+class BaseRelationFieldInstance(object):
 
     @Lazy
     def typesParams(self):
@@ -62,3 +53,40 @@ class RelationSetFieldInstance(ListFieldInstance):
         if result:
             return '?' + '&'.join(result)
         return ''
+
+    def getPresetTargets(self, view):
+        if view.adapted.__is_dummy__:
+            # only for object in creation
+            target = view.virtualTargetObject
+            if getName(target.conceptType) in self.context.target_types:
+                return [dict(title=target.title, uid=util.getUidForObject(target))]
+        return []
+
+
+class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
+
+    def marshall(self, value):
+        return [dict(title=v.title, uid=util.getUidForObject(v.context))
+                for v in value]
+
+    def display(self, value):
+        return ' | '.join([v.title for v in value])
+
+    def unmarshall(self, value):
+        return [util.getObjectForUid(v) for v in value]
+
+
+class RelationFieldInstance(FieldInstance, BaseRelationFieldInstance):
+
+    def marshall(self, value):
+        if value:
+            return dict(title=value.title, uid=util.getUidForObject(value))
+
+    def display(self, value):
+        if value:
+            return value.title
+        return u''
+
+    def unmarshall(self, value):
+        return util.getObjectForUid(value)
+

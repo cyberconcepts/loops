@@ -189,8 +189,6 @@
 </metal:assignments>
 
 
-
-
 <metal:versioning define-macro="versioning"
                   tal:define="versionInfo view/versionInfo"
                   tal:condition="versionInfo">

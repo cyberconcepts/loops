@@ -24,13 +24,13 @@ $Id$
 
 from zope.component import adapts
 from zope.interface import Attribute, implements
-from zope.schema import Choice, List
-from zope.schema.interfaces import IChoice, IList
+from zope.schema import Field, List
+from zope.schema.interfaces import IField, IList
 
 from cybertools.composer.schema.interfaces import FieldType
 
 
-class IRelation(IChoice):
+class IRelation(IField):
     """ An object addressed via a single relation.
     """
 
@@ -50,11 +50,14 @@ class IRelationSet(IList):
                 'targets for the relations.')
 
 
-class Relation(Choice):
+class Relation(Field):
 
     implements(IRelation)
 
-    __typeInfo__ = ('relation',)
+    __typeInfo__ = ('relation',
+                    FieldType('relation', 'relation',
+                              u'A field representing a related object.',
+                              instanceName='relation'))
 
     def __init__(self, *args, **kw):
         self.target_types = kw.pop('target_types')
