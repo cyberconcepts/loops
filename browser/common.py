@@ -346,6 +346,10 @@ class BaseView(GenericView, I18NView):
         view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
+    @Lazy
+    def renderedDescription(self):
+        return self.renderText(self.description, 'text/restructured')
+
     # type listings
 
     def listTypes(self, include=None, exclude=None, sortOn='title'):

@@ -113,7 +113,10 @@ class AdapterBase(object):
             try:
                 object.__setattr__(self, attr, value)
             except AttributeError:
-                print '***', self.context.__name__, attr, value
+                from logging import getLogger
+                getLogger('loops.common.AdapterBase').warn(
+                            'AttributeError: %r, %r, %r.' %
+                                (self.context.__name__, attr, value))
                 raise
         else:
             self.checkAttr(attr)

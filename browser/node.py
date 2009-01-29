@@ -107,11 +107,9 @@ class NodeView(BaseView):
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
         if canWrite(self.context, 'title') or (
+                # TODO: is this useful in any case?
                 self.virtualTargetObject is not None and
                     canWrite(self.virtualTargetObject, 'title')):
-            #cm.register('portlet_right', 'clipboard', title='Clipboard',
-            #            subMacro=self.template.macros['clipboard'])
-            # this belongs to loops.organize
             cm.register('portlet_right', 'actions', title=_(u'Actions'),
                         subMacro=node_macros.macros['actions'],
                         priority=100)
