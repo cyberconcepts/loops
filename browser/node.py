@@ -106,7 +106,9 @@ class NodeView(BaseView):
                     subMacros=[i18n_macros.macros['language_switch']])
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
-        if canWrite(self.context, 'title'):
+        if canWrite(self.context, 'title') or (
+                self.virtualTargetObject is not None and
+                    canWrite(self.virtualTargetObject, 'title')):
             #cm.register('portlet_right', 'clipboard', title='Clipboard',
             #            subMacro=self.template.macros['clipboard'])
             # this belongs to loops.organize
