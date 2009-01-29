@@ -411,6 +411,8 @@ class ChildRelationSetProperty(RelationSetProperty):
 class ParentRelation(object):
     # TODO: provide special method for supplying relevance and order
 
+    langInfo = None
+
     def __init__(self, predicateName):
         self.predicateName = predicateName
 
@@ -418,7 +420,7 @@ class ParentRelation(object):
         if inst is None:
             return self
         for obj in ParentRelationSet(inst, self.predicateName):
-            return obj
+            return adapted(obj, langInfo=self.langInfo)
         return None
 
     def __set__(self, inst, value):
