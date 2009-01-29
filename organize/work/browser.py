@@ -185,7 +185,7 @@ class BaseWorkItemsView(object):
         tsFrom = parseDate(form.get('wi_from') or self.options.wi_from)
         tsTo = parseDate(form.get('wi_to') or self.options.wi_to)
         if tsTo:
-            tsTo += 3600 * 24    # include full end date
+            tsTo += 3600 * 24 - 1    # include full end date
         if tsFrom or tsTo:
             result['timeFromTo'] = (tsFrom, tsTo)
         state = form.get('wi_state') or self.options.wi_state
