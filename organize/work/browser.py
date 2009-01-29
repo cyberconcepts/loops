@@ -93,6 +93,16 @@ class WorkItemDetails(TrackDetails):
         currentWorkItems = list(self.view.workItems.query(runId=self.track.runId))
         return self.track == currentWorkItems[-1]
 
+    @Lazy
+    def isToday(self):
+        return date.fromtimestamp(self.track.timeStamp) == date.today()
+
+    @Lazy
+    def weekDay(self):
+        value = date.fromtimestamp(self.track.timeStamp)
+        if value is not None:
+            return weekDays[value.weekday()].title()
+
     def actions(self):
         info = DialogAction(self.view,
                       description=_(u'Information about this work item.'),
