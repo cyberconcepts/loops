@@ -124,6 +124,8 @@ class DirectoryCollectionProvider(object):
         directory = self.getDirectory(client)
         pattern = re.compile(client.pattern or '.*')
         for path, dirs, files in os.walk(directory):
+            if client.excludeDirectories:
+                del dirs[:]
             if '.svn' in dirs:
                 del dirs[dirs.index('.svn')]
             for ex in client.exclude:

@@ -68,9 +68,15 @@ class IExternalCollection(IConceptSchema):
             description=_(u'A regular expression for selecting external objects '
                           u'that should belong to this collection'),
             required=False)
+    excludeDirectories = schema.Bool(
+            title=_(u'Exclude directories'),
+            description=_(u'Check this if only object directly at the specified '
+                          u'address should be included in the collection.'),
+            default=False,
+            required=False)
     exclude = schema.List(
             title=_(u'Exclude'),
-            description=_(u'Names of directories and files that should not '
+            description=_(u'Names of objects (directories and files) that should not '
                           u'be included.'),
             value_type=schema.TextLine(),
             required=False)
