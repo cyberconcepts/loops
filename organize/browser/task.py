@@ -46,5 +46,12 @@ organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 class TaskView(ConceptView):
 
-    pass
+    @Lazy
+    def macro(self):
+        return organize_macros.macros['task']
+
+    @Lazy
+    def workItems(self):
+        return component.getMultiAdapter((self.context, self.request),
+                                         name='taskworkitems.html')
 

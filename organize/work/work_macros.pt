@@ -5,7 +5,7 @@
 <!-- listings -->
 
 <metal:work define-macro="workitems"
-            tal:define="work nocall:view/workItems"
+            tal:define="work nocall:item/workItems"
             tal:condition="work/listWorkItems|nothing">
   <br />
   <h2 i18n:translate="">Work Items</h2>
@@ -25,12 +25,13 @@
               tal:attributes="colspan python: len(work.columns)"
               tal:content="row/month">2009-01</td></tr>
         <tr tal:attributes="class python:
-                                repeat['row'].odd() and 'even' or 'odd'">
+                                (repeat['row'].odd() and 'even' or 'odd')">
           <td class="nowrap center"
-              tal:attributes="title row/weekDay"
-              i18n:attributes="title">
-            <b tal:omit-tag="not:row/isToday"
-               tal:content="row/day">2007-03-30</b></td>
+              tal:define="today python: row.isToday and ' today' or ''"
+              tal:attributes="title row/weekDay;
+                              class string:nowrap center$today"
+              i18n:attributes="title"
+              tal:content="row/day">2007-03-30</td>
           <td class="nowrap center" tal:content="row/start">17:30</td>
           <td class="nowrap center" tal:content="row/end">20:00</td>
           <td class="nowrap center" tal:content="row/duration">2:30</td>

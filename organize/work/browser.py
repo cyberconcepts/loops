@@ -201,12 +201,9 @@ class BaseWorkItemsView(object):
         state = form.get('wi_state') or self.options.wi_state
         if not state:
             result['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
-                             'finished', 'delegated']
-        else:
-            if state == 'all':
-                del result['state']
-            else:
-                result['state'] = state
+                               'finished', 'delegated']
+        elif state != 'all':
+            result['state'] = state
         return result
 
     def query(self, **criteria):
@@ -222,9 +219,14 @@ class TaskWorkItems(BaseWorkItemsView, ConceptView):
 
     columns = set(['User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
 
+    @Lazy
+    def target(self):
+        return self.context
+
     def listWorkItems(self):
         criteria = self.baseCriteria
-        criteria['task'] = util.getUidForObject(self.context)
+        criteria['task'] = util.getUidForObject(self.target)
+        # TODO: option: include subtasks
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 

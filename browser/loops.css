@@ -398,6 +398,13 @@ div.comment {
     padding-top: 0.4em;
 }
 
+/* calendar, work items */
+
+.today {
+    color: #444488;
+    font-weight: bold;
+}
+
 /* dojo stuff */
 
 .dijitDialog {

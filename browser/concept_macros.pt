@@ -3,14 +3,18 @@
 
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-          <metal:block use-macro="view/concept_macros/concepttitle" />
-          <metal:slot define-slot="fields">
-            <metal:block use-macro="view/concept_macros/conceptfields" />
-          </metal:slot>
-          <metal:block use-macro="view/concept_macros/conceptchildren" />
-          <metal:block use-macro="view/concept_macros/conceptresources" />
-          <metal:block use-macro="view/work_macros/workitems" />
-          <metal:block use-macro="view/comment_macros/comments" />
+      <metal:block use-macro="view/concept_macros/concepttitle" />
+      <metal:slot define-slot="fields">
+        <metal:block use-macro="view/concept_macros/conceptfields" />
+      </metal:slot>
+      <metal:slot define-slot="children">
+        <metal:block use-macro="view/concept_macros/conceptchildren" />
+      </metal:slot>
+      <metal:slot define-slot="resources">
+        <metal:block use-macro="view/concept_macros/conceptresources" />
+      </metal:slot>
+      <metal:slot define-slot="querydata" />
+      <metal:block use-macro="view/comment_macros/comments" />
   </div>
 </metal:data>
 
@@ -209,8 +213,9 @@
 <metal:actions define-macro="parents">
           <div tal:repeat="concept macro/info/view/parents|macro/info/parents">
             <a href="#"
-               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
-              <span i18n:translate="" tal:content="concept/title">Concept</span>
+               tal:attributes="href python: view.getUrlForTarget(concept)">
+              <span i18n:translate=""
+                    tal:content="concept/title">Concept</span>
               (<i tal:content="concept/typeTitle"
                   i18n:translate="">Type</i>)
             </a>

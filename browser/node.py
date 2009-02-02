@@ -501,13 +501,6 @@ class NodeView(BaseView):
         from loops.organize.work.browser import work_macros
         return work_macros.macros
 
-    @Lazy
-    def workItems(self):
-        target = self.virtualTargetObject
-        if target is not None:
-            return component.getMultiAdapter((target, self.request),
-                                             name='taskworkitems.html')
-
     # comments
 
     @Lazy
