@@ -128,14 +128,15 @@ class LoopsSecurityPolicy(ZopeSecurityPolicy):
             parents = cache.parents
         except AttributeError:
             parents = []
-            try:
-                parents.append(obj.getType())
-            except AttributeError:
-                pass
-            except TypeError:
-                from logging import getLogger
-                getLogger('loops.security.policy').warn(
-                                'TypeError: %s.getType: %r' % (obj, obj.getType))
+            if IConcept.providedBy(obj) or IResource.providedBy(obj):
+                try:
+                    parents.append(obj.getType())
+                except AttributeError:
+                    pass
+                except TypeError:
+                    from logging import getLogger
+                    getLogger('loops.security.policy').warn(
+                                    'TypeError: %s.getType: %r' % (obj, obj.getType))
             #if IConcept.providedBy(obj):
             #    parents = [p for p in obj.getParents(noSecurityCheck=True)
             #                 if p != obj]
