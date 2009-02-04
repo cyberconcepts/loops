@@ -300,6 +300,15 @@
              set_schema="loops.interfaces.IExternalFile" />
   </class>
 
+  <adapter factory="loops.resource.AddressableExternalFileAdapter" trusted="True"
+           provides="loops.interfaces.IAddressableExternalFile" />
+  <class class="loops.resource.AddressableExternalFileAdapter">
+    <require permission="zope.View"
+             interface="loops.interfaces.IAddressableExternalFile" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IAddressableExternalFile" />
+  </class>
+
   <adapter factory="loops.resource.TextDocumentAdapter" trusted="True"
            provides="loops.interfaces.ITextDocument" />
   <class class="loops.resource.TextDocumentAdapter">
@@ -353,6 +362,8 @@
   <adapter factory="loops.schema.factory.ResourceSchemaFactory"
            for="loops.interfaces.IResource" />
   <adapter factory="loops.schema.factory.FileSchemaFactory" />
+  <adapter factory="loops.schema.factory.AddressableFileSchemaFactory"
+           for="loops.interfaces.IAddressableExternalFile" />
   <adapter factory="loops.schema.factory.NoteSchemaFactory" />
 
   <adapter factory="loops.setup.SetupManager" />

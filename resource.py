@@ -30,6 +30,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
 from zope.app.security.interfaces import IAuthentication
+from zope.contenttype import guess_content_type
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
@@ -53,7 +54,7 @@ from loops.base import ParentInfo
 from loops.common import ResourceAdapterBase, adapted
 from loops.concept import ResourceRelation
 from loops.interfaces import IBaseResource, IResource
-from loops.interfaces import IFile, IExternalFile, INote
+from loops.interfaces import IFile, IExternalFile, IAddressableExternalFile, INote
 from loops.interfaces import IDocument, ITextDocument, IDocumentSchema, IDocumentView
 from loops.interfaces import IMediaAsset, IMediaAssetView
 from loops.interfaces import IResourceManager, IResourceManagerContained
@@ -385,6 +386,19 @@ class ExternalFileAdapter(FileAdapter):
         return storage.getData(self.externalAddress, params=self.storageParams)
 
     data = property(getData, setData)
+
+
+class AddressableExternalFileAdapter(ExternalFileAdapter):
+
+    implements(IAddressableExternalFile)
+
+    def setExternalAddress(self, addr):
+        super(AddressableExternalFileAdapter, self).setExternalAddress(addr)
+        contentType = guess_content_type(self.externalAddress, self.data[:100])
+        if contentType:
+            self.contentType = contentType[0]
+    externalAddress = property(ExternalFileAdapter.getExternalAddress,
+                               setExternalAddress)
 
 
 class DocumentAdapter(ResourceAdapterBase):

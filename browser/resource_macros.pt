@@ -42,11 +42,11 @@
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <div metal:use-macro="views/node_macros/object_actions" />
-    <h3 tal:content="item/title">Title</h3><br />
+    <h1 tal:content="item/title">Title</h1><br />
     <img src="#"
          tal:attributes="src
                 string:${view/url}/.target${view/targetId}/view?version=this" />
-    <p><i tal:content="item/description">Description</i></p>
+    <p><i tal:content="structure item/renderedDescription">Description</i></p>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
@@ -55,8 +55,8 @@
 <metal:block define-macro="download">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <div metal:use-macro="views/node_macros/object_actions" />
-    <h3 tal:content="item/title">Title</h3>
-    <p><i tal:content="item/description">Description</i></p>
+    <h1 tal:content="item/title">Title</h1>
+    <p><i tal:content="structure item/renderedDescription">Description</i>&nbsp;</p>
     <p>
       <span class="button">
         <a href="#"
