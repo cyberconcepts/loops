@@ -26,7 +26,7 @@ from zope import component, schema
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IAdding
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.component.interfaces import ObjectEvent
@@ -402,15 +402,12 @@ class IndexAttributes(object):
         return adapted(self.context)
 
     def text(self):
-        #ctx = self.context
-        #return ' '.join((getName(ctx), ctx.title,))
+        # TODO: use IIndexAttributes(self.adapted) if available
         description = self.context.description
         if isinstance(description, I18NValue):
             description = ' '.join(description.values())
-        #actx = adapted(ctx)
         actx = self.adapted
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
-        #return ' '.join([getName(ctx), ctx.title, ctx.description] +
         return ' '.join([self.title(), description] +
                         self.creators() +
                         [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
@@ -418,12 +415,8 @@ class IndexAttributes(object):
     def title(self):
         context = self.context
         title = context.title
-        #description = context.description
         if isinstance(title, I18NValue):
             title = ' '.join(title.values())
-        #if isinstance(description, I18NValue):
-        #    description = ' '.join(description.values())
-        #return ' '.join((getName(context), title, description)).strip()
         return ' '.join((getName(context), title)).strip()
 
     def creators(self):
@@ -431,9 +424,11 @@ class IndexAttributes(object):
         pau = component.getUtility(IAuthentication)
         creators = []
         for c in cr:
-            principal = pau.getPrincipal(c)
-            if principal is not None:
+            try:
+                principal = pau.getPrincipal(c)
                 creators.append(principal.title)
+            except PrincipalLookupError:
+                creators.append(c)
         return creators
 
     def identifier(self):
