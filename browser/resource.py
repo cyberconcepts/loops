@@ -58,6 +58,9 @@ from loops.versioning.interfaces import IVersionable
 from loops.util import _
 
 
+resource_macros = ViewPageTemplateFile('resource_macros.pt')
+
+
 class CustomFileWidget(FileWidget):
 
     def hasInput(self):
@@ -103,7 +106,8 @@ class MediaAssetEditForm(EditForm):
 
 class ResourceView(BaseView):
 
-    template = ViewPageTemplateFile('resource_macros.pt')
+    #template = ViewPageTemplateFile('resource_macros.pt')
+    template = resource_macros
 
     @Lazy
     def icon(self):

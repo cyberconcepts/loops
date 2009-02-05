@@ -140,8 +140,15 @@
   <containerViews
       for="loops.interfaces.IConceptManager"
       index="loops.ManageSite"
-      contents="loops.ManageSite"
       add="loops.ManageSite" />
+
+  <page
+      for="loops.interfaces.IConceptManager"
+      name="contents.html"
+      template="contents.pt"
+      class="cybertools.container.ordered.ContainerView"
+      permission="loops.ManageSite"
+      menu="zmi_views" title="Contents" />
 
   <!-- concept -->
 
@@ -237,14 +244,20 @@
       schema="loops.interfaces.IResourceManager"
       content_factory="loops.resource.ResourceManager"
       template="add.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <containerViews
       for="loops.interfaces.IResourceManager"
       index="loops.ManageSite"
-      contents="loops.ManageSite"
       add="loops.ManageSite" />
+
+  <page
+      for="loops.interfaces.IResourceManager"
+      name="contents.html"
+      template="contents.pt"
+      class="cybertools.container.ordered.ContainerView"
+      permission="loops.ManageSite"
+      menu="zmi_views" title="Contents" />
 
   <!-- resource in general -->
 

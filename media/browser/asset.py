@@ -28,7 +28,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from loops.browser.node import NodeView
-from loops.browser.resource import ResourceView
+from loops.browser.resource import ResourceView, resource_macros
 from loops.common import adapted
 from loops import util
 
@@ -39,7 +39,11 @@ class MediaAssetView(ResourceView):
 
     @Lazy
     def macro(self):
-        return template.macros['asset']
+        #return template.macros['asset']
+        if 'image/' in self.context.contentType:
+            return template.macros['asset']
+        else:
+            return resource_macros.macros['download']
 
     def show(self, useAttachment=False):
         versionId = self.request.get('v')

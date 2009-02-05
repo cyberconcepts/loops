@@ -283,6 +283,7 @@ class CreateObjectForm(ObjectForm):
     def adapted(self):
         ad = self.typeInterface(Resource())
         ad.storageName = 'unknown'  # hack for file objects: don't try to retrieve data
+        ad.__type__ = adapted(self.typeConcept)
         return ad
 
     @Lazy

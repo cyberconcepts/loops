@@ -97,6 +97,7 @@ class AdapterBase(object):
     _textIndexAttributes = ()
 
     __is_dummy__ = False
+    __type__ = None
 
     languageInfo = None
 
@@ -137,6 +138,13 @@ class AdapterBase(object):
     @property
     def name(self):
         return getName(self.context)
+
+    @Lazy
+    def type(self):
+        return self.__type__ or self.getType()
+
+    def getType(self):
+        return adapted(self.context.getType())
 
     @Lazy
     def uid(self):

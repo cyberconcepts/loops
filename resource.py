@@ -224,6 +224,11 @@ class Resource(Image, Contained):
     def getSize(self):
         if self._size:
             return self._size
+        size = getattr(adapted(self), 'size', None)
+        if size is None:
+            return len(adapted(self).data)
+        return size
+
         tp = IType(self, None)
         if tp is not None:
             ti = tp.typeInterface
@@ -357,9 +362,15 @@ class ExternalFileAdapter(FileAdapter):
     storageParams = property(getStorageParams, setStorageParams)
 
     def getExternalAddress(self):
-        return getattr(self.context, '_externalAddress', self.context.__name__)
+        return getattr(self.context, '_externalAddress', None) or self.context.__name__
     def setExternalAddress(self, addr):
         self.context._externalAddress = addr
+        if addr:
+            data = self.data
+            self.context._size = len(data)
+            contentType = guess_content_type(addr, self.data[:100])
+            if contentType:
+                self.contentType = contentType[0]
     externalAddress = property(getExternalAddress, setExternalAddress)
 
     @property
@@ -372,12 +383,14 @@ class ExternalFileAdapter(FileAdapter):
     def setData(self, data):
         storageParams = self.storageParams
         storageName = self.storageName
+        externalAddress = self.externalAddress
         storage = component.getUtility(IExternalStorage, name=storageName)
         storage.setData(self.externalAddress, data, params=storageParams)
         self.context._size = len(data)
         # remember storage settings:
         self.storageParams = storageParams
         self.storageName = storageName
+        self.externalAddress = externalAddress
 
     def getData(self):
         if self.storageName in ('unknown', None):    # object not set up yet
@@ -386,6 +399,13 @@ class ExternalFileAdapter(FileAdapter):
         return storage.getData(self.externalAddress, params=self.storageParams)
 
     data = property(getData, setData)
+
+    @property
+    def size(self):
+        if self.storageName in ('unknown', None):    # object not set up yet
+            return ''
+        storage = component.getUtility(IExternalStorage, name=self.storageName)
+        return storage.getSize(self.externalAddress, params=self.storageParams)
 
 
 class AddressableExternalFileAdapter(ExternalFileAdapter):

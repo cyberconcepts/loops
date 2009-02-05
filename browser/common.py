@@ -403,6 +403,10 @@ class BaseView(GenericView, I18NView):
     def globalOptions(self):
         return IOptions(self.loopsRoot)
 
+    @Lazy
+    def typeOptions(self):
+        return IOptions(adapted(self.typeProvider))
+
     # versioning
 
     @Lazy
