@@ -26,7 +26,7 @@ from zope.component import adapts
 
 from cybertools.composer.schema.factory import SchemaFactory
 from loops.common import adapted
-from loops.interfaces import IResourceAdapter, IFile, INote, IAddressableExternalFile
+from loops.interfaces import IResourceAdapter, IFile, INote
 from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
 
@@ -59,21 +59,6 @@ class FileSchemaFactory(SchemaFactory):
         for f in hide:
             if f in schema.fields:
                 schema.fields.remove(f)
-        #if 'request' in kw:
-        #    principal = kw['request'].principal
-        #    if not principal or principal.id != 'rootadmin':
-        #        schema.fields.remove('contentType')
-        return schema
-
-
-class AddressableFileSchemaFactory(SchemaFactory):
-
-    adapts(IAddressableExternalFile)
-
-    def __call__(self, interface, **kw):
-        schema = super(AddressableFileSchemaFactory, self).__call__(interface, **kw)
-        schema.fields.remove('data')
-        #schema.fields.remove('contentType')
         return schema
 
 

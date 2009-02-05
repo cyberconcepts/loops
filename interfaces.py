@@ -772,22 +772,6 @@ class IExternalFile(IFile):
                required=False)
 
 
-class IAddressableExternalFile(IExternalFile):
-    """ A file whose content (data attribute) is not stored in the ZODB
-        but somewhere else, typically in the file system; the data won't
-        be provided by uploading a file but by explicitly specifying
-        the address of the file.
-    """
-
-    externalAddress = schema.BytesLine(
-               title=_(u'External Address'),
-               description=_(u'The full address for accessing the object '
-                       'on the external storage, e.g. a filename or path.'),
-               default='',
-               missing_value='',
-               required=False)
-
-
 class IImage(IResourceAdapter):
     """ A media asset that may be embedded in a (web) page as an image.
     """
