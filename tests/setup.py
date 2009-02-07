@@ -42,6 +42,7 @@ from cybertools.relation.interfaces import IRelationInvalidatedEvent
 from cybertools.relation.registry import IndexableRelationAdapter
 from cybertools.relation.registry import invalidateRelations, removeRelation
 from cybertools.stateful.interfaces import IStatefulIndexInfo
+from cybertools.text.html import HtmlTransform
 from cybertools.typology.interfaces import IType
 
 from loops.base import Loops
@@ -169,6 +170,7 @@ class TestSite(object):
         catalog['loops_state'] = KeywordIndex('tokens', IStatefulIndexInfo, False)
         component.provideAdapter(ConceptIndexAttributes)
         component.provideAdapter(ResourceIndexAttributes)
+        component.provideAdapter(HtmlTransform, (ITextDocument,), name='text/html')
         component.provideAdapter(StatefulResourceIndexInfo)
         component.provideHandler(handleTransition)
 

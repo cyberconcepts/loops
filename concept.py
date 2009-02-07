@@ -401,16 +401,24 @@ class IndexAttributes(object):
     def adapted(self):
         return adapted(self.context)
 
+    @Lazy
+    def adaptedIndexAttributes(self):
+        if self.adapted != self.context:
+            return component.queryAdapter(self.adapted, IIndexAttributes)
+            return IIndexAttributes(self.adapted, None)
+
     def text(self):
-        # TODO: use IIndexAttributes(self.adapted) if available
+        if self.adaptedIndexAttributes is not None:
+            return self.adaptedIndexAttributes.text()
         description = self.context.description
         if isinstance(description, I18NValue):
             description = ' '.join(description.values())
         actx = self.adapted
         indexAttrs = getattr(actx, '_textIndexAttributes', ())
+        indexValues = [getattr(actx, attr, u'???') for attr in indexAttrs]
         return ' '.join([self.title(), description] +
-                        self.creators() +
-                        [getattr(actx, attr, u'???') for attr in indexAttrs]).strip()
+                        [c for c in self.creators() if c is not None] +
+                        [v for v in indexValues if v is not None]).strip()
 
     def title(self):
         context = self.context
@@ -418,6 +426,10 @@ class IndexAttributes(object):
         if isinstance(title, I18NValue):
             title = ' '.join(title.values())
         return ' '.join((getName(context), title)).strip()
+
+    def date(self):
+        if self.adaptedIndexAttributes is not None:
+            return self.adaptedIndexAttributes.date()
 
     def creators(self):
         cr = IZopeDublinCore(self.context).creators or []

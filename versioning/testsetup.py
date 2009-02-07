@@ -5,11 +5,17 @@ $Id$
 """
 
 from zope import component
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.catalog.text import TextIndex
 from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.security.interfaces import IAuthentication
+from zope.app.security.principalregistry import principalRegistry
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IZopeDublinCore
 
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
@@ -20,8 +26,10 @@ from cybertools.typology.interfaces import IType
 from loops.base import Loops
 from loops import util
 from loops.interfaces import IResource, IIndexAttributes
+from loops.common import LoopsDCAdapter
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
+from loops.interfaces import ILoopsObject, IConcept
 from loops.resource import Resource
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
@@ -42,7 +50,11 @@ class TestSite(object):
         relations = RelationRegistry()
         relations.setupIndexes()
         component.provideUtility(relations, IRelationRegistry)
+        component.provideUtility(principalRegistry, IAuthentication)
         component.provideAdapter(IndexableRelationAdapter)
+        component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
+        component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
+        component.provideAdapter(LoopsDCAdapter, (IConcept,), IZopeDublinCore)
 
         component.provideAdapter(ConceptType)
         component.provideAdapter(ResourceType)

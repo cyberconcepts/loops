@@ -520,6 +520,18 @@ class IndexAttributes(object):
         self.context = context
 
     def text(self):
+        actx = adapted(self.context)
+        txt = transformToText(actx)
+        if txt is not None:
+            return txt
+        if not actx.contentType.startswith('text'):
+            return u''
+        data = actx.data
+        if type(data) != unicode:
+            data = data.decode('UTF-8')
+        return data
+
+    def xx_text(self):
         context = self.context
         ti = IType(context).typeInterface
         if ti is not None:
@@ -559,6 +571,22 @@ class IndexAttributes(object):
     def identifier(self):
         return getName(self.context)
 
+def transformToText(obj, data=None, contentType=None):
+    if data is None:
+        data = obj.data
+    if contentType is None:
+        contentType = obj.contentType
+    transform = component.queryAdapter(obj, ITextTransform, name=contentType)
+    if transform is not None:
+        #rfa = component.queryAdapter(IReadFile, obj)
+        rfa = IReadFile(obj, None)
+        if rfa is None:
+            if isinstance(data, unicode):
+                data = data.encode('UTF-8')
+            return transform(StringIO(data))
+        else:
+            return transform(rfa)
+
 
 class ResourceTypeSourceList(object):
 
@@ -577,4 +605,3 @@ class ResourceTypeSourceList(object):
 
     def __len__(self):
         return len(self.resourceTypes)
-
