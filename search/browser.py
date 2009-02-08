@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
 from loops.common import adapted
-#from loops.query import ConceptQuery, FullQuery
 from loops.expert.concept import ConceptQuery, FullQuery
 from loops import util
 from loops.util import _

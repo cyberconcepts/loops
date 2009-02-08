@@ -27,9 +27,9 @@
       <a name="top"
          tal:content="item/title">Title</a>
     </h1>
-    <p tal:define="description description|item/description"
+    <p tal:define="description description|item/renderedDescription"
        tal:condition="description">
-      <i tal:content="description">Description</i></p>
+      <i tal:content="structure description">Description</i></p>
 </metal:title>
 
 

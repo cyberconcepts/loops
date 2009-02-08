@@ -1,0 +1,80 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<div metal:define-macro="quicksearch"
+     class="top-actions quicksearch">
+    <form method="get" action="search.html">
+      <input type="text" name="search.text" />
+    </form>
+</div>
+
+
+<div metal:define-macro="search_results" id="search.results"
+     tal:define="item nocall:view">
+    <fieldset class="box">
+      <metal:results define-macro="results">
+        <h2 i18n:translate="">Search results</h2>
+        <table class="listing" summary="Search results"
+               i18n:attributes="summary">
+          <thead>
+            <tr>
+              <th i18n:translate="">Title</th>
+              <th i18n:translate="">Type</th>
+              <th i18n:translate=""
+                  tal:condition="view/useVersioning">V</th>
+              <th i18n:translate="">Size</th>
+              <th i18n:translate="">Modification Date</th>
+              <th i18n:translate="">Author(s)</th>
+              <th i18n:translate=""
+                  tal:condition="view/showObjectActions">Info</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tal:items tal:repeat="row item/results">
+              <tal:item define="class python: repeat['row'].odd() and 'even' or 'odd';
+                                description row/description">
+                <tr tal:attributes="class class">
+                  <td>
+                    <a tal:attributes="href
+                        string:${view/url}/.target${row/uniqueId}?version=this;
+                                       title description">
+                      <img tal:define="icon row/icon"
+                           tal:condition="icon"
+                           tal:attributes="src icon/src" />
+                      <div tal:content="row/title" /></a>
+                  </td>
+                  <td i18n:translate="" class="center"
+                      tal:content="row/longTypeTitle|row/typeTitle">Type</td>
+                  <tal:version condition="view/useVersioning">
+                    <td class="center"
+                        tal:define="versionId row/versionId|string:">
+                      <a href="#"
+                         tal:content="versionId"
+                         tal:omit-tag="python: versionId and versionId=='1.1'"
+                         tal:attributes="href string:${view/url}/.target${row/uniqueId}?loops.viewName=listversions">1.1</a>
+                    </td>
+                  </tal:version>
+                  <td class="nowrap number">
+                    <span tal:replace="row/context/sizeForDisplay|string:">Size</span>
+                  </td>
+                  <td><span tal:replace="row/modified">modified</span></td>
+                  <td><span tal:replace="row/creators">John</span></td>
+                  <td class="nowrap center"
+                      tal:define="target nocall:row;
+                                  style nothing"
+                      tal:condition="view/showObjectActions">
+                    <div metal:use-macro="views/node_macros/object_actions" />
+                  </td>
+                </tr>
+              </tal:item>
+            </tal:items>
+          </tbody>
+        </table>
+      </metal:results>
+    </fieldset>
+</div>
+
+
+
+</html>

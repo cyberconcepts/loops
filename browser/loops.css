@@ -160,6 +160,22 @@ fieldset.box td {
     top: 1em;
 }
 
+.quicksearch {
+    position: absolute;
+    right: 2em;
+    top: 1em;
+}
+
+.quicksearch input {
+    font-size: 80%;
+}
+
+.language-switch {
+    position: absolute;
+    right: 2em;
+    top: 3em;
+}
+
 .top image {
     margin-top: -1px;
 }

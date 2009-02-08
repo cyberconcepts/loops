@@ -13,4 +13,10 @@
       factory="loops.expert.browser.base.BaseQueryView"
       permission="zope.View" />
 
+  <browser:page
+      name="search.html"
+      for="loops.interfaces.INode"
+      class="loops.expert.browser.search.SearchResults"
+      permission="zope.View" />
+
 </configure>
