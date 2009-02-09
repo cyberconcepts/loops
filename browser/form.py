@@ -108,15 +108,19 @@ class ObjectForm(NodeView):
     def typeInterface(self):
         return IType(self.target).typeInterface or ITextDocument
 
-    @Lazy
-    def fieldRenderers(self):
+    def getFieldRenderers(self):
         renderers = dict(schema_macros.macros)
         # replace HTML edit widget with Dojo Editor
         renderers['input_html'] = self.template.macros['input_html']
         renderers['input_grid'] = grid_macros.macros['input_grid']
+        renderers['input_records'] = grid_macros.macros['input_records']
         renderers['input_relationset'] = relation_macros.macros['input_relationset']
         renderers['input_relation'] = relation_macros.macros['input_relation']
         return renderers
+
+    @Lazy
+    def fieldRenderers(self):
+        return self.getFieldRenderers()
 
     @Lazy
     def fieldEditRenderers(self):

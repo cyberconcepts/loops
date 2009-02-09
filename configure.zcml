@@ -343,6 +343,8 @@
            name="fileupload" />
   <adapter factory="cybertools.composer.schema.grid.field.GridFieldInstance"
            name="grid" />
+  <adapter factory="cybertools.composer.schema.grid.field.RecordsFieldInstance"
+           name="records" />
   <adapter factory="loops.schema.field.RelationSetFieldInstance"
            name="relationset" />
   <adapter factory="loops.schema.field.RelationFieldInstance"
