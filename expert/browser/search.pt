@@ -6,6 +6,8 @@
      class="top-actions quicksearch">
     <form method="get" action="search.html">
       <input type="text" name="search.text" />
+      <input type="submit" name="search.submit" value="Search"
+             i18n:attributes="value" />
     </form>
 </div>
 
