@@ -5,7 +5,8 @@
 <div metal:define-macro="quicksearch"
      class="top-actions quicksearch">
     <form method="get" action="search.html">
-      <input type="text" name="search.text" />
+      <input type="text" name="search.text"
+             tal:attributes="value request/search.text|string:" />
       <input type="submit" name="search.submit" value="Search"
              i18n:attributes="value" />
     </form>
