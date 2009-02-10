@@ -59,8 +59,10 @@ class ExternalCollectionAdapter(AdapterBase):
     implements(IExternalCollection)
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__', 'exclude')
+    _adapterAttributes = ('context', '__parent__', 'exclude', 'newResources')
     _contextAttributes = list(IExternalCollection) + list(IConcept)
+
+    newResources = None
 
     def getExclude(self):
         return getattr(self.context, '_exclude', None) or []
@@ -87,8 +89,8 @@ class ExternalCollectionAdapter(AdapterBase):
             else:
                 new.append(addr)
         if new:
-            newResources = provider.createExtFileObjects(self, new)
-            for r in newResources:
+            self.newResources = provider.createExtFileObjects(self, new)
+            for r in self.newResources:
                 self.context.assignResource(r)
         for addr in old:
             if addr not in oldFound:
