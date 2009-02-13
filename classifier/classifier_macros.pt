@@ -1,11 +1,21 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
 <metal:resources define-macro="render_classifier"
                  tal:define="dummy item/update">
 
-  <metal:concept use-macro="item/template/macros/conceptdata" />
+  <metal:concept use-macro="item/template/macros/conceptdata">
+    <metal:fill fill-slot="querydata">
+      <br />
+      <form action="." method="post">
+        <input type="submit" name="update" value="Run Auto-Classification" />
+      </form>
+    </metal:fill>
 
-  <form action="." method="post">
-    <input type="submit" name="update" value="Run Auto-Classification" />
-  </form>
+  </metal:concept>
 
 </metal:resources>
 
+
+</html>
