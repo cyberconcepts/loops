@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ Original authors: Johann Schimpf, Erich Seifert.
 $Id$
 """
 
+from datetime import datetime
 from logging import getLogger
 import os
 
@@ -83,8 +84,12 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         #print '***', self.storageName, self.storageParams, self.options
         return storage.getDir(self.externalAddress,
-                              #self.options['storage_parameters'])
                               self.storageParams['subdirectory'])
 
     def getOriginalData(self):
         return ExternalFileAdapter.getData(self)
+
+    @property
+    def modified(self):
+        return datetime.fromtimestamp(os.path.getctime(self.getDataPath()))
+

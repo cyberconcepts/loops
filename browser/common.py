@@ -200,8 +200,10 @@ class BaseView(GenericView, I18NView):
     def modified(self):
         """ get date/time of last modification
         """
-        dc = IZopeDublinCore(self.context)
-        d = dc.modified or dc.created
+        d = getattr(self.adapted, 'modified', None)
+        if not d:
+            dc = IZopeDublinCore(self.context)
+            d = dc.modified or dc.created
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
     @Lazy
