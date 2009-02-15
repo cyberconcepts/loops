@@ -50,6 +50,8 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
 
     implements(IMediaAsset)
 
+    _adapterAttributes = ExternalFileAdapter._adapterAttributes + ('modified',)
+
     isMediaAsset = True
 
     def __init__(self, context):
@@ -89,7 +91,12 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     def getOriginalData(self):
         return ExternalFileAdapter.getData(self)
 
-    @property
-    def modified(self):
-        return datetime.fromtimestamp(os.path.getctime(self.getDataPath()))
+    def getModified(self):
+        d = getattr(self.context, '_modified', None)
+        if d is None:
+            return datetime.fromtimestamp(os.path.getctime(self.getDataPath()))
+        return d
+    def setModified(self, value):
+        self.context._modified = value
+    modified = property(getModified, setModified)
 
