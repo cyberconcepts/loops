@@ -94,7 +94,7 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     def getModified(self):
         d = getattr(self.context, '_modified', None)
         if d is None:
-            return datetime.fromtimestamp(os.path.getctime(self.getDataPath()))
+            return datetime.fromtimestamp(os.path.getmtime(self.getDataPath()))
         return d
     def setModified(self, value):
         self.context._modified = value
