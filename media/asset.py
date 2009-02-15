@@ -93,7 +93,7 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
 
     def getModified(self):
         d = getattr(self.context, '_modified', None)
-        if d is None:
+        if not d:
             return datetime.fromtimestamp(os.path.getmtime(self.getDataPath()))
         return d
     def setModified(self, value):
