@@ -35,6 +35,7 @@ from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from cybertools.organize.interfaces import IWorkItems
 from cybertools.tracking.btree import getTimeStamp
+from cybertools.util import format
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
@@ -60,6 +61,14 @@ class WorkItemDetails(TrackDetails):
     @Lazy
     def description(self):
         return self.track.description
+
+    @Lazy
+    def descriptionPlain(self):
+        return format.nl2pipe(self.description)
+
+    @Lazy
+    def descriptionFormatted(self):
+        return format.nl2br(self.description)
 
     @Lazy
     def start(self):

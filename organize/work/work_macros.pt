@@ -42,7 +42,7 @@
             <a tal:attributes="href row/user/url"
               tal:content="row/user/title">John</a></td>
           <td tal:content="row/track/title"
-              tal:attributes="title row/track/description">Title</td>
+              tal:attributes="title row/descriptionPlain">Title</td>
           <td class="nowrap">
             <tal:actions repeat="action row/actions">
               <metal:action use-macro="action/macro" />
@@ -150,7 +150,7 @@
     </tr>
     <tr>
       <td valign="top"><span i18n:translate="">Description</span>:</td>
-      <td tal:content="item/description"></td>
+      <td tal:content="structure item/descriptionFormatted"></td>
     </tr>
     <tr>
       <td><span i18n:translate="">Party</span>:</td>
