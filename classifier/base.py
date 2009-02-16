@@ -94,15 +94,16 @@ class Classifier(AdapterBase):
                 statement.subject = resource
             if statement.predicate is None:
                 statement.predicate = self.defaultPredicate
-            self.log('Assigning: %s %s %s' % (statement.subject.title,
-                     statement.predicate.title, object.title), 5)
-            self.assignConcept(statement.subject, object,
-                               statement.predicate)
+            self.assignConcept(statement.subject, object, statement.predicate)
 
     def assignConcept(self, resource, concept, predicate):
         resources = concept.getResources([predicate])
         if resource not in resources:
             concept.assignResource(resource, predicate)
+            message = 'Assigning: %s %s %s'
+        else:
+            message = 'Already assigned: %s %s %s'
+        self.log(message % (resource.title, predicate.title, concept.title), 5)
 
     def log(self, message, level=5):
         if level >= self.logLevel:
