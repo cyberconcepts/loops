@@ -92,6 +92,26 @@
 
 <!-- named views -->
 
+<metal:body define-macro="content_only">
+  <tal:nodebody define="body item/body"
+                condition="body">
+    <div class="content-1"
+         tal:content="structure body"
+         tal:attributes="id string:${view/itemNum}.body;">
+      Body
+    </div><br />
+  </tal:nodebody>
+  <div tal:define="target nocall:item/targetObjectView"
+       tal:condition="nocall:target">
+    <div class="content-1 subcolumn" id="1.body"
+         tal:attributes="class string:content-$level;"
+         tal:content="structure target/render">
+        The body
+    </div>
+  </div>
+</metal:body>
+
+
 <metal:body define-macro="listpages">
   <div class="content-1"
        tal:content="structure item/body"

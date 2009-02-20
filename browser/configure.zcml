@@ -477,13 +477,20 @@
       />
 
   <zope:adapter
+      name="content"
+      for="loops.interfaces.INode
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.node.ContentView"
+      permission="zope.View" />
+
+  <zope:adapter
       name="listpages"
       for="loops.interfaces.INode
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.node.ListPages"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="listresources"
@@ -491,8 +498,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.node.ListResources"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="listchildren"
@@ -500,8 +506,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.node.ListChildren"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="external_edit"

@@ -586,6 +586,11 @@ class SpecialNodeView(NodeView):
         return self
 
 
+class ContentView(SpecialNodeView):
+
+    macroName = 'content_only'
+
+
 class ListPages(SpecialNodeView):
 
     macroName = 'listpages'
