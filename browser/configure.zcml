@@ -644,21 +644,16 @@
 
   <!-- render file or image assigned to a node as target -->
 
-  <page
-      name="view"
-      for="loops.interfaces.INode"
-      class=".node.NodeView"
-      attribute="targetDefaultView"
-      permission="zope.View"
-      />
-
-  <page
-      name="download.html"
-      for="loops.interfaces.INode"
-      class=".node.NodeView"
-      attribute="targetDownload"
-      permission="zope.View"
-      />
+  <pages for="loops.interfaces.INode"
+         class=".node.NodeView"
+         permission="zope.View">
+    <page name="view"
+          attribute="targetDefaultView" />
+    <page name="download.html"
+          attribute="targetDownload" />
+    <page name="render.html"
+          attribute="targetRender" />
+  </pages>
 
   <!-- vocabulary, traversing, and other stuff -->
 

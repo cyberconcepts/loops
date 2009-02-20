@@ -165,8 +165,6 @@ class ResourceView(BaseView):
             context = ti(context)
         data = context.data
         response = self.request.response
-        response.setHeader('Content-Type', context.contentType)
-        response.setHeader('Content-Length', len(data))
         ct = context.contentType
         #if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
         if useAttachment:
@@ -175,6 +173,11 @@ class ResourceView(BaseView):
             filename = NameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
+        response.setHeader('Content-Length', len(data))
+        if ct.startswith('text/'):
+            response.setHeader('Content-Type', 'text/html')
+            return self.renderText(data, ct)
+        response.setHeader('Content-Type', ct)
         return data
 
     def download(self):

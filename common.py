@@ -165,6 +165,7 @@ class ResourceAdapterBase(AdapterBase):
 
     storageName = None
     storageParams = None
+    localFilename = None
 
     def getChildren(self):
         return []
