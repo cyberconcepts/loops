@@ -24,6 +24,7 @@ $Id$
 """
 
 from datetime import datetime
+from logging import getLogger
 import os, re, stat
 
 from zope.app.container.interfaces import INameChooser
@@ -156,6 +157,10 @@ class DirectoryCollectionProvider(object):
                 extFileType = extFileTypes.get(contentType.split('/')[0] + '/*')
                 if extFileType is None:
                     extFileType = extFileTypes['*/*']
+            if extFileType is None:
+                getLogger('loops.integrator.collection.DirectoryCollectionProvider'
+                            ).warn('No external file type found for %r, '
+                                   'content type: %r' % (name, contentType))
             obj = addAndConfigureObject(
                             container, Resource, name,
                             title=title,
