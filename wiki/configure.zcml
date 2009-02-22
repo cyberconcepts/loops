@@ -1,0 +1,24 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:utility factory="cybertools.wiki.base.config.WikiConfiguration" />
+
+  <zope:utility factory="cybertools.wiki.dcu.html.Writer"
+                name="docutils.html" />
+
+  <zope:utility factory="cybertools.wiki.dcu.rstx.Parser"
+                name="docutils.rstx" />
+
+  <zope:adapter factory="cybertools.wiki.tracking.link.LinkManager" />
+
+  <zope:adapter factory="loops.wiki.link.LoopsLinkProcessor"
+                name="loops" />
+
+  <zope:adapter factory="loops.wiki.setup.SetupManager"
+                name="wiki" />
+
+</configure>

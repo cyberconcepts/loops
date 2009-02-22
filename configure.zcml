@@ -478,6 +478,7 @@
   <include package=".security" />
   <include package=".system" />
   <include package=".versioning" />
+  <include package=".wiki" />
   <include package=".xmlrpc" />
 
 </configure>

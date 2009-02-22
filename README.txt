@@ -536,9 +536,20 @@ view for rendering.)
   >>> doc1.data = u'Test data\n\nAnother paragraph'
   >>> view.renderTarget()
   u'<pre>Test data\n\nAnother paragraph</pre>'
+
   >>> doc1.contentType = 'text/restructured'
+  >>> doc1.data = u'Test data\n\nAnother `paragraph <para>`_'
+  >>> from loops.wiki.base import wikiLinksActive
   >>> view.renderTarget()
-  u'<p>Test data</p>\n<p>Another paragraph</p>\n'
+  u'<p>Test data</p>\n<p>Another <a class="reference" href="para">paragraph</a></p>\n'
+
+u'<p>Test data</p>\n<p>Another <a class="reference create"
+    href="http://127.0.0.1/loops/wiki/create.html?linkid=0000001">?paragraph</a></p>\n'
+
+  >>> #links = loopsRoot.getRecordManager()['links']
+  >>> #links['0000001']
+
+<Link ['42', 1, '', '... ...', u'para', None]: {}>
 
 If the target object is removed from its container all references
 to it are removed as well. (To make this work we have to handle

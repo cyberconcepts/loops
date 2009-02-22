@@ -44,6 +44,10 @@ from cybertools.relation.registry import invalidateRelations, removeRelation
 from cybertools.stateful.interfaces import IStatefulIndexInfo
 from cybertools.text.html import HtmlTransform
 from cybertools.typology.interfaces import IType
+from cybertools.wiki.base.config import WikiConfiguration
+from cybertools.wiki.dcu.html import Writer as DocutilsHTMLWriter
+from cybertools.wiki.dcu.rstx import Parser as DocutilsRstxParser
+from cybertools.wiki.tracking.link import LinkManager
 
 from loops.base import Loops
 from loops import util
@@ -72,6 +76,8 @@ from loops.security.setter import BaseSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 from loops.view import Node, NodeAdapter
+from loops.wiki.link import LoopsLinkProcessor
+from loops.wiki.setup import SetupManager as WikiSetupManager
 
 
 class ClientIdManager(object):
@@ -173,6 +179,13 @@ class TestSite(object):
         component.provideAdapter(HtmlTransform, (ITextDocument,), name='text/html')
         component.provideAdapter(StatefulResourceIndexInfo)
         component.provideHandler(handleTransition)
+
+        component.provideAdapter(WikiSetupManager, name='wiki')
+        component.provideUtility(WikiConfiguration())
+        component.provideAdapter(LinkManager)
+        component.provideUtility(DocutilsHTMLWriter(), name='docutils.html')
+        component.provideUtility(DocutilsRstxParser(), name='docutils.rstx')
+        component.provideAdapter(LoopsLinkProcessor, name='loops')
 
         loopsRoot = self.site['loops'] = Loops()
         setup = SetupManager(loopsRoot)

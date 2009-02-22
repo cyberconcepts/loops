@@ -55,7 +55,10 @@ from loops.media.interfaces import IMediaAsset
 from loops.organize.stateful.browser import statefulActions
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
+from loops import util
 from loops.util import _
+from loops.wiki.base import wikiLinksActive
+from loops.wiki.base import LoopsWikiManager, LoopsWiki, LoopsWikiPage
 
 
 resource_macros = ViewPageTemplateFile('resource_macros.pt')
@@ -149,7 +152,6 @@ class ResourceView(BaseView):
                return component.queryMultiAdapter((context, self.request),
                            name=viewName)
         ct = context.contentType
-        #if ct.startswith('text/') and ct != 'text/rtf':
         ti = IType(context).typeInterface
         if (not ti or issubclass(ti, ITextDocument)
             or (ct.startswith('text/') and ct != 'text/rtf')):
@@ -166,10 +168,8 @@ class ResourceView(BaseView):
         data = context.data
         response = self.request.response
         ct = context.contentType
-        #if useAttachment or (not ct.startswith('image/') and ct != 'application/pdf'):
         if useAttachment:
             filename = adapted(self.context).localFilename or getName(self.context)
-            #filename = urllib.quote(filename)
             filename = NameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
@@ -179,6 +179,21 @@ class ResourceView(BaseView):
             return self.renderText(data, ct)
         response.setHeader('Content-Type', ct)
         return data
+
+    def renderText(self, text, contentType):
+        if contentType == 'text/restructured' and wikiLinksActive(self.loopsRoot):
+            # TODO: make this more flexible/configurable
+            wm = LoopsWikiManager(self.loopsRoot)
+            wiki = LoopsWiki('loops')
+            wiki.__parent__ = self.loopsRoot
+            wiki.__name__ = 'wiki'
+            wm.addWiki(wiki)
+            #wp = wiki.createPage(getName(self.context))
+            wp = wiki.addPage(LoopsWikiPage(self.context))
+            wp.text = text
+            #print wp.wiki.getManager()
+            #return util.toUnicode(wp.render(self.request))
+        return super(ResourceView, self).renderText(text, contentType)
 
     def download(self):
         """ Force download, e.g. of a PDF file """

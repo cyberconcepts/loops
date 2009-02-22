@@ -144,8 +144,6 @@ class Resource(Image, Contained):
         self.resourceType = value
 
     def _setData(self, data):
-        #if not data:
-        #    return
         dataFile = StringIO(data)  # let File tear it into pieces
         super(Resource, self)._setData(dataFile)
         if not self.contentType:
@@ -224,17 +222,11 @@ class Resource(Image, Contained):
     def getSize(self):
         if self._size:
             return self._size
-        size = getattr(adapted(self), 'size', None)
+        adobj = adapted(self)
+        size = getattr(adobj, 'size', None)
         if size is None:
-            return len(adapted(self).data)
+            return len(adobj.data)
         return size
-
-        tp = IType(self, None)
-        if tp is not None:
-            ti = tp.typeInterface
-            if ti is not None:
-                return len(ti(self).data)
-        return len(self.data)
 
     def sizeForSorting(self):
         return 'byte', self.getSize()
