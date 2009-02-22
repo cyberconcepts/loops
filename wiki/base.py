@@ -54,6 +54,12 @@ class LoopsWikiManager(WikiManager):
             return ILinkManager(self.context.getRecordManager()['links'])
         return super(LoopsWikiManager, self).getPlugin(type, name)
 
+    def getUid(self, obj):
+        return util.getUidForObject(obj)
+
+    def getObject(self, uid):
+        return util.getObjectForUid(uid)
+
 
 class LoopsWiki(Wiki):
 
