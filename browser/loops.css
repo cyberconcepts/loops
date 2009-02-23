@@ -182,31 +182,31 @@ fieldset.box td {
 
 .content-1 h1, h1 {
     font-size: 180%;
-    margin-top: 0.8em;
+    padding-top: 0.6em;
 }
 
 .content-2 h1, .content-1 h2, h2 {
     font-size: 160%;
     font-weight: normal;
-    margin-top: 0.7em;
+    padding-top: 0.5em;
 }
 
 .content-3 h1, .content-2 h2, .content-1 h3, h3 {
     font-size: 145%;
     font-weight: normal;
-    margin-top: 0.7em;
+    padding-top: 0.4em;
 }
 
 .content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4, h4 {
     font-size: 125%;
     font-weight: normal;
-    margin-top: 0.7em;
+    padding-top: 0.3em;
 }
 
 .content-5 h1, .content-4 h2, .content-3 h3, content-2 h4 {
     font-size: 110%;
     border: none;
-    margin-top: 0.7em;
+    padding-top: 0.2em;
 }
 
 .box {
@@ -282,6 +282,24 @@ div.menu-1, div.menu-2 {
     border-bottom: none;
     margin-top: 12px;
     padding-top: 6px;
+}
+
+.object-actions {
+    float: right;
+    margin: 0;
+}
+
+.object-actions {
+    padding: 1.5em 0 0 0;
+}
+
+.content-2 .object-actions {
+    padding: 1em 0 0 0;
+}
+
+.listing .object-actions {
+    padding: 0;
+    text-align: left;
 }
 
 .icon-action {
