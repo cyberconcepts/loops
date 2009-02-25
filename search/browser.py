@@ -35,7 +35,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
-from loops.common import adapted
+from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
 from loops import util
 from loops.util import _
@@ -108,18 +108,19 @@ class Search(BaseView):
             if not isinstance(types, (list, tuple)):
                 types = [types]
             for type in types:
-                result = ConceptQuery(self).query(title=title or None, type=type,
-                                                  exclude=('system',))
+                result = self.executeQuery(title=title or None, type=type,
+                                                 exclude=('system',))
                 for o in result:
                     if o.getLoopsRoot() == self.loopsRoot:
-                        name = adapted(o, self.languageInfo).title
+                        adObj = adapted(o, self.languageInfo)
+                        name = self.getRowName(adObj)
                         if title and title.endswith('*'):
                             title = title[:-1]
                         sort = ((title and name.startswith(title) and '0' or '1')
                                 + name.lower())
                         if o.conceptType is None:
                             raise ValueError('Concept Type missing for %r.' % name)
-                        data.append({'label': '%s (%s)' % (name, o.conceptType.title),
+                        data.append({'label': self.getRowLabel(adObj, name),
                                      'name': name,
                                      'id': util.getUidForObject(o),
                                      'sort': sort})
@@ -127,12 +128,23 @@ class Search(BaseView):
         if not title:
             data.insert(0, {'label': '', 'name': '', 'id': ''})
         json = []
-        for item in data:
+        for item in data[:20]:
             json.append("{label: '%s', name: '%s', id: '%s'}" %
                           (item['label'], item['name'], item['id']))
         json = "{identifier: 'id', items: [%s]}" % ', '.join(json)
         #print '***', json
         return json
+
+    def executeQuery(self, **kw):
+        return ConceptQuery(self).query(**kw)
+
+    def getRowName(self, obj):
+        return obj.title
+
+    def getRowLabel(self, obj, name):
+        if isinstance(obj, AdapterBase):
+            obj = obj.context
+        return '%s (%s)' % (name, obj.conceptType.title)
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()

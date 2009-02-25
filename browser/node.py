@@ -105,9 +105,10 @@ class NodeView(BaseView):
         cm.register('top_actions', 'top_actions', name='multi_actions',
                     subMacros=[i18n_macros.macros['language_switch']])
         if self.globalOptions('expert.quicksearch'):
-            from loops.expert.browser.search import search_macros
+            from loops.expert.browser.search import searchMacrosTemplate
             cm.register('top_actions', 'top_quicksearch', name='multi_actions',
-                        subMacros=[search_macros.macros['quicksearch']], priority=20)
+                        subMacros=[searchMacrosTemplate.macros['quicksearch']],
+                        priority=20)
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
         if canWrite(self.context, 'title') or (

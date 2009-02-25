@@ -201,8 +201,10 @@ class BaseWorkItemsView(object):
     def baseCriteria(self):
         result = {}
         form = self.request.form
-        tsFrom = parseDate(form.get('wi_from') or self.options.wi_from)
-        tsTo = parseDate(form.get('wi_to') or self.options.wi_to)
+        tsFrom = parseDate(form.get('wi_from') or
+                            self.options.wi_from or self.typeOptions.wi_from)
+        tsTo = parseDate(form.get('wi_to') or
+                            self.options.wi_to or self.typeOptions.wi_to)
         if tsTo:
             tsTo += 3600 * 24 - 1    # include full end date
         if tsFrom or tsTo:

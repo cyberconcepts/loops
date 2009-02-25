@@ -6,7 +6,9 @@
       <tal:actions condition="view/showObjectActions">
         <div metal:use-macro="views/node_macros/object_actions" />
       </tal:actions>
-      <h1 tal:content="item/title">Title</h1>
+      <h1><a tal:omit-tag="python: level > 1"
+             tal:attributes="href request/URL"
+             tal:content="item/title">Title</a></h1>
       <p tal:define="description description|item/description"
          tal:condition="description">
         <i tal:content="description">Description</i></p>

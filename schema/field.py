@@ -45,6 +45,10 @@ relation_macros = ViewPageTemplateFile('relation_macros.pt')
 class BaseRelationFieldInstance(object):
 
     @Lazy
+    def selection_view(self):
+        return getattr(self.context, 'selection_view', 'listConceptsForComboBox.js')
+
+    @Lazy
     def typesParams(self):
         result = []
         types = self.context.target_types

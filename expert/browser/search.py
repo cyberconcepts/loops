@@ -34,15 +34,19 @@ from loops import util
 from loops.util import _
 
 
-search_macros = ViewPageTemplateFile('search.pt')
+searchMacrosTemplate = ViewPageTemplateFile('search.pt')
 
 
 class SearchResults(NodeView):
     """ Provides results listing """
 
     @Lazy
+    def search_macros(self):
+        return searchMacrosTemplate.macros
+
+    @Lazy
     def macro(self):
-        return search_macros.macros['search_results']
+        return self.search_macros['quicksearch_view']
 
     @Lazy
     def item(self):
@@ -52,7 +56,7 @@ class SearchResults(NodeView):
     def results(self):
         form = self.request.form
         text = form.get('search.text')
-        type = self.globalOptions('expert.quicksearch')[0]
+        type = self.globalOptions('expert.quicksearch')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=True, useFull=True,)
         return self.viewIterator(result)

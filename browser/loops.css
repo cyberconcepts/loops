@@ -298,8 +298,9 @@ div.menu-1, div.menu-2 {
 }
 
 .listing .object-actions {
+    float: none;
     padding: 0;
-    text-align: left;
+    text-align: center;
 }
 
 .icon-action {

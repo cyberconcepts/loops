@@ -1,4 +1,4 @@
-<tal:show i18n:domain="zope">
+<tal:show i18n:domain="loops">
 <html metal:use-macro="context/@@skin_macros/page">
 <head></head>
 <body>

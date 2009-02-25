@@ -7,7 +7,7 @@
                 tal:define="fieldInstance field/getFieldInstance;
                             types fieldInstance/typesParams">
     <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
-         tal:attributes="url string:listConceptsForComboBox.js$types;
+         tal:attributes="url string:${fieldInstance/selection_view}$types;
                          jsId string:${name}_search_store" >
     </div>
     <div tal:attributes="id string:${name}_values">
@@ -38,7 +38,7 @@
                 tal:define="fieldInstance field/getFieldInstance;
                             types fieldInstance/typesParams">
     <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
-         tal:attributes="url string:listConceptsForComboBox.js$types;
+         tal:attributes="url string:${fieldInstance/selection_view}$types;
                          jsId string:${name}_search_store" >
     </div>
     <div tal:define="obj data/?name"

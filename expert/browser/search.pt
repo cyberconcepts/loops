@@ -13,11 +13,18 @@
 </div>
 
 
+<div metal:define-macro="quicksearch_view" id="search.results"
+     tal:define="item nocall:view">
+    <h1 i18n:translate="">Search results</h1><br />
+    <metal:results use-macro="item/search_macros/results" />
+</div>
+
+
 <div metal:define-macro="search_results" id="search.results"
      tal:define="item nocall:view">
     <fieldset class="box">
+      <h2 i18n:translate="">Search results</h2>
       <metal:results define-macro="results">
-        <h2 i18n:translate="">Search results</h2>
         <table class="listing" summary="Search results"
                i18n:attributes="summary">
           <thead>
@@ -36,11 +43,11 @@
           <tbody>
             <tal:items tal:repeat="row item/results">
               <tal:item define="class python: repeat['row'].odd() and 'even' or 'odd';
-                                description row/description">
+                                description row/description;
+                                targetUrl python:view.getUrlForTarget(row)">
                 <tr tal:attributes="class class">
                   <td>
-                    <a tal:attributes="href
-                        string:${view/url}/.target${row/uniqueId}?version=this;
+                    <a tal:attributes="href string:$targetUrl?version=this;
                                        title description">
                       <img tal:define="icon row/icon"
                            tal:condition="icon"
@@ -55,7 +62,8 @@
                       <a href="#"
                          tal:content="versionId"
                          tal:omit-tag="python: versionId and versionId=='1.1'"
-                         tal:attributes="href string:${view/url}/.target${row/uniqueId}?loops.viewName=listversions">1.1</a>
+                         tal:attributes="href
+                                string:$targetUrl?loops.viewName=listversions">1.1</a>
                     </td>
                   </tal:version>
                   <td class="nowrap number">

@@ -124,31 +124,34 @@ class FullQuery(BaseQuery):
             return ScoredSet(result, scores)
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!
             cat = self.catalog
-            if type.endswith('*'):
-                start = type[:-1]
-                end = start + '\x7f'
-            else:
-                start = end = type
-            criteria = {'loops_type': (start, end),}
-            if useFull and text:
-                criteria['loops_text'] = text
-                r1 = cat.apply(criteria)    #r1 = set(cat.searchResults(**criteria))
-            else:
-                r1 = IFBucket()             #r1 = set()
-            if useTitle and text:
-                if 'loops_text' in criteria:
-                    del criteria['loops_text']
-                criteria['loops_title'] = text
-                r2 = cat.apply(criteria)    #r2 = set(cat.searchResults(**criteria))
-            else:
-                r2 = IFBucket()             #r2 = set()
-            if not r1 and not r2:
-                r1 = cat.apply(criteria)    # search only for type
-            x, uids = weightedUnion(r1, r2) #result = r1.union(r2)
-            for r, score in uids.items():
-                obj = intids.getObject(r)
-                result.add(obj)
-                scores[obj] = score
+            if isinstance(type, basestring):
+                type = [type]
+            for tp in type:
+                if tp.endswith('*'):
+                    start = tp[:-1]
+                    end = start + '\x7f'
+                else:
+                    start = end = tp
+                criteria = {'loops_type': (start, end),}
+                if useFull and text:
+                    criteria['loops_text'] = text
+                    r1 = cat.apply(criteria)    #r1 = set(cat.searchResults(**criteria))
+                else:
+                    r1 = IFBucket()             #r1 = set()
+                if useTitle and text:
+                    if 'loops_text' in criteria:
+                        del criteria['loops_text']
+                    criteria['loops_title'] = text
+                    r2 = cat.apply(criteria)    #r2 = set(cat.searchResults(**criteria))
+                else:
+                    r2 = IFBucket()             #r2 = set()
+                if not r1 and not r2:
+                    r1 = cat.apply(criteria)    # search only for type
+                x, uids = weightedUnion(r1, r2) #result = r1.union(r2)
+                for r, score in uids.items():
+                    obj = intids.getObject(r)
+                    result.add(obj)
+                    scores[obj] = score
         if rc is not None:
             if result:
                 result = result.intersection(rc)
