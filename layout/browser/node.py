@@ -33,6 +33,10 @@ class LayoutNodeView(Page):
     @Lazy
     def loopsRoot(self):
         return self.context.getLoopsRoot()
+        
+    @Lazy
+    def defaultPredicate(self):
+        return self.loopsRoot.getConceptManager().getDefaultPredicate()
 
     @Lazy
     def layoutName(self):
