@@ -421,7 +421,8 @@ class NodeView(BaseView):
 
     def getActions(self, category='object', target=None):
         actions = []
-        self.registerDojo()
+        #self.registerDojo()
+        self.registerDojoFormAll()
         if category in self.actions:
             actions.extend(self.actions[category](self, target=target))
         if target is None:

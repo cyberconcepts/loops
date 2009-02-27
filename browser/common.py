@@ -70,7 +70,7 @@ from loops.versioning.interfaces import IVersionable
 
 
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
-conceptMacrosTemplate = concept_macros      # "old" name
+conceptMacrosTemplate = concept_macros      #
 
 
 class NameField(schema.ASCIILine):
