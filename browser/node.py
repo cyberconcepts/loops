@@ -366,7 +366,7 @@ class NodeView(BaseView):
         return self.targetView('download.html', 'download')
 
     def targetRender(self):
-        return self.targetView('download.html', 'show')
+        return u'<div>%s</div>' % self.targetView('download.html', 'show')
 
     @Lazy
     def virtualTarget(self):
