@@ -53,7 +53,7 @@ class FileSchemaFactory(SchemaFactory):
         options = IOptions(self.context.type)
         hide = options('hide_fields') or []
         show = options('show_fields') or []
-        for f in ('contentType', 'externalAddress',):
+        for f in ('contentType', 'externalAddress', 'modified'):
             if f in schema.fields and f not in show:
                 schema.fields.remove(f)
         for f in hide:
