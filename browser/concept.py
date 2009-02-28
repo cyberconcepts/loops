@@ -371,6 +371,11 @@ class ConceptView(BaseView):
 
     actions = dict(object=getObjectActions)
 
+    def checkAction(self, name, category, target):
+        if name in (self.typeOptions('hide_action.' + category) or []):
+            return False
+        return True
+
 
 class ConceptRelationView(ConceptView, BaseRelationView):
 

@@ -496,6 +496,9 @@ class BaseView(GenericView, I18NView):
     def showObjectActions(self):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
+    def checkAction(self, name, category, target):
+        return True
+
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
             if checkPermission('loops.ManageSite', self.context):

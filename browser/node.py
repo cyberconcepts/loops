@@ -423,10 +423,10 @@ class NodeView(BaseView):
         actions = []
         #self.registerDojo()
         self.registerDojoFormAll()
-        if category in self.actions:
-            actions.extend(self.actions[category](self, target=target))
         if target is None:
             target = self.virtualTarget
+        if category in self.actions:
+            actions.extend(self.actions[category](self, target=target))
         if target is not None:
             actions.extend(target.getActions(category, page=self, target=target))
         if target != self.virtualTarget:  # self view must be used directly for target
@@ -441,18 +441,18 @@ class NodeView(BaseView):
                       targetWindow='loops_cme',
                       description='Open concept map editor in new window',
                       url=cmeUrl, target=target))
-        actions.append(DialogAction(self, title='Create Resource...',
-                  description='Create a new resource object.',
-                  page=self, target=target))
+        if self.checkAction('create_resource', 'portlet', target):
+            actions.append(DialogAction(self, title='Create Resource...',
+                      description='Create a new resource object.',
+                      page=self, target=target))
         return actions
 
-    def xx_getObjectActions(self, target=None):
-        acts = []
-        if self.globalOptions('organize.allowSendEmail'):
-            acts.append('send_email')
-        return actions.get('object', acts, view=self, page=self, target=target)
-
     actions = dict(portlet=getPortletActions)
+
+    def checkAction(self, name, category, target):
+        if name in ('create_resource',) and target is not None:
+            return target.checkAction(name, category, target)
+        return True
 
     @Lazy
     def popupCreateObjectForm(self):
