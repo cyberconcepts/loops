@@ -46,6 +46,7 @@ from cybertools.text.html import HtmlTransform
 from cybertools.typology.interfaces import IType
 from cybertools.wiki.base.config import WikiConfiguration
 from cybertools.wiki.dcu.html import Writer as DocutilsHTMLWriter
+from cybertools.wiki.dcu import process
 from cybertools.wiki.dcu.rstx import Parser as DocutilsRstxParser
 from cybertools.wiki.tracking.link import LinkManager
 
@@ -76,7 +77,7 @@ from loops.security.setter import BaseSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 from loops.view import Node, NodeAdapter
-from loops.wiki.link import LoopsLinkProcessor
+#from loops.wiki.link import LoopsLinkProcessor
 from loops.wiki.setup import SetupManager as WikiSetupManager
 
 
@@ -185,7 +186,8 @@ class TestSite(object):
         component.provideAdapter(LinkManager)
         component.provideUtility(DocutilsHTMLWriter(), name='docutils.html')
         component.provideUtility(DocutilsRstxParser(), name='docutils.rstx')
-        component.provideAdapter(LoopsLinkProcessor, name='loops')
+        #component.provideAdapter(LoopsLinkProcessor, name='loops')
+        component.provideAdapter(process.Reference, name='default')
 
         loopsRoot = self.site['loops'] = Loops()
         setup = SetupManager(loopsRoot)

@@ -539,7 +539,11 @@ view for rendering.)
 
   >>> doc1.contentType = 'text/restructured'
   >>> doc1.data = u'Test data\n\nAnother `paragraph <para>`_'
+
   >>> from loops.wiki.base import wikiLinksActive
+  >>> wikiLinksActive(loopsRoot)
+  True
+
   >>> view.renderTarget()
   u'<p>Test data</p>\n<p>Another <a class="reference" href="para">paragraph</a></p>\n'
 

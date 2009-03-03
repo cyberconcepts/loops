@@ -31,5 +31,5 @@ class SetupManager(BaseSetupManager):
 
     def setup(self):
         records = self.context.getRecordManager()
-        links = self.addObject(records, TrackingStorage, 'links',
-                               trackFactory=Link)
+        if 'links' not in records:
+            records['links'] = TrackingStorage(trackFactory=Link)

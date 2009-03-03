@@ -43,7 +43,7 @@ class LoopsWikiManager(WikiManager):
     """
 
     linkManager = 'tracking'
-    nodeProcessors = dict(reference=['loops'])
+    #nodeProcessors = dict(reference=['loops'])
 
     def __init__(self, context):
         super(LoopsWikiManager, self).__init__()
@@ -58,14 +58,22 @@ class LoopsWikiManager(WikiManager):
         return util.getUidForObject(obj)
 
     def getObject(self, uid):
-        return util.getObjectForUid(uid)
+        obj = self.resolveUid(uid)
+        if obj is None:
+            return LoopsWikiPage(util.getObjectForUid(uid))
+        return obj
 
 
 class LoopsWiki(Wiki):
 
     def getPage(self, name):
         if name.startswith('.target'):
+            if '?' in name: # TODO: handle this on a general level
+                name, params = name.split('?', 1)
+            if '#' in name:
+                name, anchor = name.split('#', 1)
             return self.getManager().getObject(int(name[7:]))
+        return super(LoopsWiki, self).getPage(name)
 
 
 class LoopsWikiPage(WikiPage):
@@ -76,5 +84,16 @@ class LoopsWikiPage(WikiPage):
         self.context = context
         self.name = getName(context)
 
-    def getUid(self):
+    # IWebResource
+
+    @property
+    def uid(self):
         return util.getUidForObject(self.context)
+
+    def getURI(self, request):
+        ann = request.annotations.get('loops.view', {})
+        nodeView = ann.get('nodeView')
+        if nodeView is not None:
+            return nodeView.getUrlForTarget(self.context)
+        return super(LoopsWikiPage, self).getURI(request)
+

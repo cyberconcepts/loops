@@ -15,8 +15,11 @@
 
   <zope:adapter factory="cybertools.wiki.tracking.link.LinkManager" />
 
-  <zope:adapter factory="loops.wiki.link.LoopsLinkProcessor"
-                name="loops" />
+  <!--<zope:adapter factory="loops.wiki.link.LoopsLinkProcessor"
+                name="loops" />-->
+
+  <zope:adapter factory="cybertools.wiki.dcu.process.Reference"
+                name="default" />
 
   <zope:adapter factory="loops.wiki.setup.SetupManager"
                 name="wiki" />
