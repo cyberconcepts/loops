@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -58,6 +58,9 @@ class MemberRegistrationManager(object):
                  groups=[], useExisting=False, **kw):
         # step 1: create an internal principal in the loops principal folder:
         pFolder = getPrincipalFolder(self.context)
+        # if isinstance(pFolder, PersonBasedAuthenticator):
+        #     pFolder.setPassword(userId, password)
+        # else:
         title = firstName and ' '.join((firstName, lastName)) or lastName
         principal = InternalPrincipal(userId, password, title)
         if useExisting:

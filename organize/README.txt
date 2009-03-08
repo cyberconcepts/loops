@@ -230,6 +230,15 @@ We need a principal for testing the login stuff:
   False
 
 
+Pure Person-based Authentication
+================================
+
+The person-based authenticator provides authentication without having to
+store a persistent (internal) principal object.
+
+  >>> from loops.organize.auth import PersonBasedAuthenticator
+
+
 Security
 ========
 

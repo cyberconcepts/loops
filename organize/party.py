@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ $Id$
 
 from persistent.mapping import PersistentMapping
 from zope import interface, component
-from zope.app import zapi
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.component import adapts
@@ -33,6 +32,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.schema.interfaces import ValidationError
 from zope.app.form.interfaces import WidgetInputError
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.organize.party import Person as BasePerson
 from cybertools.relation.interfaces import IRelationRegistry
@@ -91,7 +91,7 @@ class Person(AdapterBase, BasePerson):
             if person is not None and person != self.context:
                 raise ValueError(
                     'There is alread a person (%s) assigned to user %s.'
-                    % (zapi.getName(person), userId))
+                    % (getName(person), userId))
             pa = annotations(principal)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)
