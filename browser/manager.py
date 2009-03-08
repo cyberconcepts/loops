@@ -23,9 +23,12 @@ $Id$
 """
 
 from zope.app import zapi
+from zope import component
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
 from zope.formlib.form import FormFields
+
+from cybertools.relation.interfaces import IRelationRegistry
 from loops.base import Loops
 from loops.interfaces import ILoops
 from loops.browser.common import AddForm, EditForm, BaseView
@@ -58,3 +61,13 @@ class LoopsEditForm(EditForm):
     form_fields = FormFields(ILoops)
 
 
+class CleanupRelations(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def cleanup(self):
+        rr = component.getUtility(IRelationRegistry)
+        rr.cleanupRelations()
+        return 'Done'

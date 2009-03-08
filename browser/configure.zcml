@@ -727,6 +727,14 @@
       permission="zope.ManageSite"
       />
 
+  <page
+      name="cleanup_relations"
+      for="loops.interfaces.ILoops"
+      class="loops.browser.manager.CleanupRelations"
+      attribute="cleanup"
+      permission="zope.ManageSite"
+      />
+
   <include package=".skin" />
 
 </configure>

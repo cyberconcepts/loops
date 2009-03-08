@@ -55,6 +55,7 @@ from loops.interfaces import IIndexAttributes
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
 from loops.security.common import canListObject
 from loops import util
+from loops.versioning.util import getMaster
 from loops.view import TargetRelation
 
 
@@ -245,6 +246,8 @@ class Concept(Contained, Persistent):
 
     def getResourceRelations(self, predicates=None, resource=None, sort='default',
                              noSecurityCheck=False):
+        #if resource is not None:
+        #    resource = getMaster(resource)
         predicates = predicates is None and ['*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
@@ -258,6 +261,7 @@ class Concept(Contained, Persistent):
                                                 noSecurityCheck=noSecurityCheck)]
 
     def assignResource(self, resource, predicate=None, order=0, relevance=1.0):
+        resource = getMaster(resource)
         if predicate is None:
             predicate = self.getConceptManager().getDefaultPredicate()
         registry = component.getUtility(IRelationRegistry)
@@ -271,6 +275,7 @@ class Concept(Contained, Persistent):
         notify(AssignmentEvent(self, rel))
 
     def deassignResource(self, resource, predicates=None, order=None):
+        resource = getMaster(resource)
         registry = component.getUtility(IRelationRegistry)
         for rel in self.getResourceRelations(predicates, resource):
             if order is None or rel.order == order:

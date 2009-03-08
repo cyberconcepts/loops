@@ -106,9 +106,6 @@ class TestSite(object):
         component.provideUtility(IntIdsStub())
         relations = RelationRegistry()
         relations.setupIndexes()
-        #for idx in ('_attrName', '_attrIdentifier'):
-        #    if idx not in relations:
-        #        relations[idx] = FieldIndex(idx, IIndexableRelation)
         component.provideUtility(relations, IRelationRegistry)
 
         component.provideUtility(PrincipalAnnotationUtility(), IPrincipalAnnotationUtility)
