@@ -33,8 +33,9 @@ ZCML setup):
   >>> person = concepts['person']
 
   >>> from loops.concept import Concept
-  >>> johnC = concepts['john'] = Concept(u'John')
-  >>> johnC.conceptType = person
+  >>> from loops.setup import addAndConfigureObject
+  >>> johnC = addAndConfigureObject(concepts, Concept, 'john', title=u'John',
+  ...                               conceptType=person)
 
 
 Organizations: Persons (and Users), Institutions, Addresses...
@@ -237,6 +238,18 @@ The person-based authenticator provides authentication without having to
 store a persistent (internal) principal object.
 
   >>> from loops.organize.auth import PersonBasedAuthenticator
+  >>> pbAuth = PersonBasedAuthenticator('persons.')
+  >>> pau['persons'] = pbAuth
+  >>> pau.authenticatorPlugins = ('loops', 'persons',)
+
+  >>> eddieC = addAndConfigureObject(concepts, Concept, 'eddie', title=u'Eddie',
+  ...                                conceptType=person)
+  >>> eddie = adapted(eddieC)
+  >>> eddie.userId = 'persons.eddie'
+
+  >>> pbAuth.setPassword('eddie', 'secret')
+  >>> pbAuth.authenticateCredentials(dict(login='eddie', password='secret'))
+  PrincipalInfo(u'persons.eddie')
 
 
 Security
@@ -332,7 +345,6 @@ Tasks and Events
 Task view with edit action
 --------------------------
 
-  >>> from loops.setup import addAndConfigureObject
   >>> from loops.organize.interfaces import ITask
   >>> task = addAndConfigureObject(concepts, Concept, 'task', title=u'Task',
   ...                              conceptType=type, typeInterface=ITask)
@@ -399,7 +411,7 @@ Send Email to Members
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.target95\n\n'
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.target97\n\n'
 
 
 Fin de partie

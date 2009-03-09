@@ -48,6 +48,14 @@
              interface="loops.organize.interfaces.IMemberRegistrationManager" />
   </zope:class>
 
+  <!-- authentication -->
+
+  <zope:localUtility class="loops.organize.auth.PersonBasedAuthenticator">
+    <require
+        permission="zope.ManageServices"
+        attributes="prefix" />
+  </zope:localUtility>
+
   <!-- other adapters -->
 
   <zope:adapter factory="loops.organize.schema.PersonSchemaFactory" />

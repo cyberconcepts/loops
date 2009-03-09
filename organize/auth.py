@@ -25,17 +25,34 @@ $Id$
 from persistent import Persistent
 from zope.app.container.contained import Contained
 from zope import component
-from zope.interface import implements
+from zope.interface import Interface, implements
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import PrincipalInfo
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.interfaces import IAuthentication
-from zope.cachedescriptors.property import Lazy
+from zope import schema
+from zope.traversing.api import getParent
+
+from loops.util import _
+
+
+class IPersonBasedAuthenticator(Interface):
+
+    prefix = schema.TextLine(
+        title=_("Prefix"),
+        description=_(
+        "Prefix to be added to all principal ids to assure "
+        "that all ids are unique within the authentication service"),
+        missing_value=u"",
+        default=u'',
+        readonly=True)
 
 
 class PersonBasedAuthenticator(Persistent, Contained):
 
-    implements(IAuthenticatorPlugin)
+    implements(IAuthenticatorPlugin, IPersonBasedAuthenticator)
+
+    passwordKey = 'loops.organize.password'
 
     def __init__(self, prefix=''):
         self.prefix = unicode(prefix)
@@ -45,11 +62,8 @@ class PersonBasedAuthenticator(Persistent, Contained):
             return None
         login = credentials.get('login')
         password = credentials.get('password')
-        if not login or not password :
-            return None
-        id = self.prefix + login
-        if self._checkPassword(id, password):
-            return PrincipalInfo(id, login, login, u'')
+        if self.checkPassword(login, password):
+            return PrincipalInfo(self.prefix + login, login, login, u'')
         return None
 
     def principalInfo(self, id):
@@ -58,19 +72,35 @@ class PersonBasedAuthenticator(Persistent, Contained):
             if login:
                 return PrincipalInfo(id, login, login, u'')
 
+    def checkPassword(self, login, password):
+        if login and password:
+            pa = self.getPrincipalAnnotations(
+                        getParent(self).prefix + self.prefix + login)
+            return pa.get(self.passwordKey) == password
+        return None
+
     def setPassword(self, login, password):
-        id = self.prefix + login
-        pa = self.getPrincipalAnnotations(id)
-        pa['loops.organize.password'] = password
+        pa = self.getPrincipalAnnotations(
+                        getParent(self).prefix + self.prefix + login)
+        pa[self.passwordKey] = password
 
-    @Lazy
-    def principalAnnotations(self):
-        return component.getUtility(IPrincipalAnnotationUtility)
+    def getPrincipalAnnotations(self, id):
+        utility = component.getUtility(IPrincipalAnnotationUtility)
+        return utility.getAnnotationsById(id)
 
-    def getPrincipalAnnotations(id):
-        return self.principalAnnotations.getAnnotationsById(id)
+    def get(self, login):
+        return InternalPrincipal(self, login)
 
-    def _checkPassword(self, id, password):
-        pa = self.getPrincipalAnnotations(id)
-        return pa.get('loops.organize.password') == password
+
+class InternalPrincipal(object):
+
+    def __init__(self, auth, login):
+        self.auth = auth
+        self.login = login
+
+    def checkPassword(self, password):
+        return self.auth.checkPassword(self.login, password)
+
+    def setPassword(self, passowrd):
+        self.auth.setPassword(self.login, password)
 

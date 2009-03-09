@@ -62,4 +62,30 @@
       class="loops.organize.browser.party.SendEmailForm"
       permission="zope.View" />
 
+  <!-- authentication -->
+
+  <browser:addform
+      schema="loops.organize.auth.IPersonBasedAuthenticator"
+      label="Add Person-based Authenticator"
+      content_factory="loops.organize.auth.PersonBasedAuthenticator"
+      keyword_arguments="prefix"
+      name="AddPersonBasedAuthenticator.html"
+      permission="zope.ManageServices"
+      />
+
+  <browser:addMenuItem
+      title="Person-based Authenticator"
+      description="An authentication plugin for loops Persons"
+      class="loops.organize.auth.PersonBasedAuthenticator"
+      permission="zope.ManageServices"
+      view="AddPersonBasedAuthenticator.html" />
+
+  <browser:schemadisplay
+      schema="loops.organize.auth.IPersonBasedAuthenticator"
+      label="Authenticator Prefix"
+      name="prefix.html"
+      fields="prefix"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Prefix" />
+
 </configure>
