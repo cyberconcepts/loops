@@ -68,10 +68,6 @@ class LoopsWiki(Wiki):
 
     def getPage(self, name):
         if name.startswith('.target'):
-            if '?' in name: # TODO: handle this on a general level
-                name, params = name.split('?', 1)
-            if '#' in name:
-                name, anchor = name.split('#', 1)
             return self.getManager().getObject(int(name[7:]))
         return super(LoopsWiki, self).getPage(name)
 
