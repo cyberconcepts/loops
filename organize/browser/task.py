@@ -40,6 +40,17 @@ actions.register('editTask', 'portlet', DialogAction,
         prerequisites=['registerDojoDateWidget'],
 )
 
+actions.register('createTask', 'portlet', DialogAction,
+        title=_(u'Create Task...'),
+        description=_(u'Create a new task.'),
+        viewName='create_concept.html',
+        dialogName='createTask',
+        typeToken='.loops/concepts/event',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
 
