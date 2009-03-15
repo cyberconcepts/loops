@@ -136,7 +136,7 @@ class ObjectForm(NodeView):
     def fields(self):
         return [f for f in self.schema.fields if not f.readonly]
 
-    #@Lazy
+    @Lazy
     def data(self):
         instance = self.instance
         data = instance.applyTemplate(mode='edit')
