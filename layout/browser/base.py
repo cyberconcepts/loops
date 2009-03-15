@@ -24,6 +24,7 @@ $Id$
 
 import re
 
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.proxy import removeAllProxies
@@ -60,6 +61,10 @@ class BaseView(object):
     def url(self):
         return '%s/.%s-%s' % (absoluteURL(self.menu, self.request),
                               self.context.uid, normalize(self.context.title))
+
+    @Lazy
+    def authenticated(self):
+        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
     def requireDojo(self, *packages):
         # TODO: make sure dojo and dojo_require are displayed in page.js

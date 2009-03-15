@@ -8,11 +8,15 @@ $Id$
 
 New features
 
+- new action: ``create task``
+- quick search field
+- external file/media asset type: options for hiding or showing fields on editing
 - tracking reports: period details
 - loops sites: a query view (``loops_sites.html``); add an option
   ``system.sites:/...,...`` with the paths to the sites that should be
   listed; only sites are listed to which the user has access
-- work items (work in progress): activate by adding option
+- TaskView with task work items listing
+- work items: activate by adding option
   ``action.portlet:createWorkitem`` to type; work items listing is shown
   automatically in standard concept view.
 - my work items: a query view (``userworkitems.html``); assign the query
@@ -20,6 +24,7 @@ New features
 
 Bug fixes
 
+- relations: store relation objects explicitly in relation registry
 - external collection: now works correctly (without creating empty files
   in the var directory); resource type of generated object controlled by
   mime type; automatically executes transformation steps on media assets

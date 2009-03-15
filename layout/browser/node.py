@@ -22,6 +22,7 @@ Layout node views.
 $Id$
 """
 
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.composer.layout.browser.view import Page
@@ -37,6 +38,14 @@ class LayoutNodeView(Page):
     @Lazy
     def defaultPredicate(self):
         return self.loopsRoot.getConceptManager().getDefaultPredicate()
+
+    @Lazy
+    def conceptManager(self):
+        return self.loopsRoot.getConceptManager()
+
+    @Lazy
+    def defaultPredicate(self):
+        return self.conceptManager.getDefaultPredicate()
 
     @Lazy
     def layoutName(self):
@@ -71,3 +80,6 @@ class LayoutNodeView(Page):
         else:
             return self.context.title
 
+    @Lazy
+    def authenticated(self):
+        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
