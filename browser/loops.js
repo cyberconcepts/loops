@@ -79,6 +79,7 @@ function submitReplacing(targetId, formId, url) {
         mimetype: "text/html",
         load: function(response, ioArgs) {
             replaceNode(response, targetId);
+            return resonse;
         }
     })
 }
@@ -90,6 +91,7 @@ function xhrSubmitPopup(formId, url) {
         mimetype: "text/html",
         load: function(response, ioArgs) {
             window.close();
+            return resonse;
         }
     });
 }
