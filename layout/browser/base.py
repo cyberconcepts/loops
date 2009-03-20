@@ -62,6 +62,9 @@ class BaseView(object):
         return '%s/.%s-%s' % (absoluteURL(self.menu, self.request),
                               self.context.uid, normalize(self.context.title))
 
+    def breadcrumbs(self):
+        return [dict(label=self.title, url=self.url)]
+
     @Lazy
     def authenticated(self):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)

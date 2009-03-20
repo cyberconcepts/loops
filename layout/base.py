@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -87,13 +87,13 @@ class TargetLayoutInstance(NodeLayoutInstance):
         """ Return sublayout instances specified by the target object.
         """
         target = self.target
-        pageName = self.viewAnnotations.get('pageName', u'')
         if region is None or target is None:
             return []
-        result = []
+        #result = []
+        result = super(TargetLayoutInstance, self).getLayouts(region)
         names = region.layouts.keys()
-        #tp = target.context.conceptType
         tp = target.context.getType()
+        pageName = self.viewAnnotations.get('pageName', u'')
         for n in tp.getClients():
             if n.nodeType == 'info' and n.viewName in names:
                 if pageName != n.pageName:
