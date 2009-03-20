@@ -311,13 +311,14 @@ class RelationSet(object):
 
     langInfo = None
 
-    def __init__(self, context, predicateName):
+    def __init__(self, context, predicateName, interface=None):
         self.adapted = context
         if isinstance(context, AdapterBase):
             self.context = context.context
         else:
             self.context = context
         self.predicateName = predicateName
+        self.interface = interface
 
     @Lazy
     def loopsRoot(self):
@@ -349,7 +350,20 @@ class ParentRelationSet(RelationSet):
         if self.adapted.__is_dummy__:
             return
         for c in self.context.getParents([self.predicate]):
-            yield adapted(c, langInfo=self.langInfo)
+            a = adapted(c, langInfo=self.langInfo)
+            if self.interface is None or self.interface.providedBy(a):
+                yield a
+
+    def getRelations(self, check=None):
+        if self.adapted.__is_dummy__:
+            return
+        for r in self.context.getParentRelations([self.predicate]):
+            if check is None or check(r):
+                yield r
+
+    def getRelated(self, check=None):
+        for r in self.getRelations(check):
+            yield adapted(r.first, langInfo=self.langInfo)
 
 
 class ChildRelationSet(RelationSet):
@@ -391,13 +405,14 @@ class TypeInstancesProperty(object):
 
 class RelationSetProperty(object):
 
-    def __init__(self, predicateName):
+    def __init__(self, predicateName, interface=None):
         self.predicateName = predicateName
+        self.interface = interface
 
     def __get__(self, inst, class_=None):
         if inst is None:
             return self
-        return self.factory(inst, self.predicateName)
+        return self.factory(inst, self.predicateName, self.interface)
 
     def __set__(self, inst, value):
         rs = self.factory(inst, self.predicateName)
