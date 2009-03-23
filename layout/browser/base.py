@@ -63,7 +63,13 @@ class BaseView(object):
                               self.context.uid, normalize(self.context.title))
 
     def breadcrumbs(self):
-        return [dict(label=self.title, url=self.url)]
+        result = [dict(label=self.title, url=self.url)]
+        viewAnnotations = self.request.annotations.setdefault('loops.view', {})
+        pageName = viewAnnotations.get('pageName')
+        if pageName:
+            result.append(dict(label=pageName.split('.')[0].title(),
+                               url='%s/%s' % (self.url, pageName)))
+        return result
 
     @Lazy
     def authenticated(self):
