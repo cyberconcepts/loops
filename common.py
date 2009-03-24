@@ -267,7 +267,7 @@ class TypeInstances(object):
 
     @Lazy
     def typeConcept(self):
-        return self.context[self.typeName]
+        return self.context.getLoopsRoot().getConceptManager()[self.typeName]
 
     @Lazy
     def typeToken(self):

@@ -24,6 +24,7 @@ $Id$
 
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
+from zope import component
 
 from cybertools.composer.layout.browser.view import Page
 from loops.common import adapted
@@ -34,7 +35,7 @@ class LayoutNodeView(Page):
     @Lazy
     def loopsRoot(self):
         return self.context.getLoopsRoot()
-        
+
     @Lazy
     def defaultPredicate(self):
         return self.loopsRoot.getConceptManager().getDefaultPredicate()
@@ -75,8 +76,10 @@ class LayoutNodeView(Page):
 
     @Lazy
     def headTitle(self):
-        if self.target:
-            return ' - '.join((self.context.title, self.target.title))
+        if self.target is not None:
+            targetView = component.getMultiAdapter((self.target, self.request),
+                                                   name='layout')
+            return ' - '.join((self.context.title, targetView.title))
         else:
             return self.context.title
 
