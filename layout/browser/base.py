@@ -28,6 +28,7 @@ from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope import component
 from zope.cachedescriptors.property import Lazy
 from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 
 from loops.common import adapted
@@ -38,8 +39,16 @@ from loops import util
 class BaseView(object):
 
     def __init__(self, context, request):
-        self.context = context  # this is the adapted concept!
+        self.context = removeSecurityProxy(context)  # this is the adapted concept!
         self.request = request
+
+    @Lazy
+    def viewAnnotations(self):
+        return self.request.annotations.get('loops.view', {})
+
+    @Lazy
+    def virtualTarget(self):
+        return self.viewAnnotations.get('target')
 
     @Lazy
     def title(self):
