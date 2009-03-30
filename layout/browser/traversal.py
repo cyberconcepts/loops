@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ $Id$
 
 from zope.app.container.traversal import ItemTraverser
 from zope.cachedescriptors.property import Lazy
+from zope import component
 from zope.component import adapts
 from zope.publisher.interfaces import NotFound
 
@@ -40,21 +41,26 @@ class NodeTraverser(ItemTraverser):
 
     def publishTraverse(self, request, name):
         viewAnnotations = request.annotations.setdefault('loops.view', {})
+        viewAnnotations['node'] = self.context
+        if name == '.loops':
+            return self.context.getLoopsRoot()
         if name.startswith('.'):
-            if len(name) > 1:
+            name = self.cleanUpTraversalStack(request, name)[1:]
+            if name:
+                if name.startswith('target'):
+                    name = name[6:]
                 if '-' in name:
                     name, ignore = name.split('-', 1)
-                uid = int(name[1:])
+                uid = int(name)
                 target = util.getObjectForUid(uid)
             else:
                 target = self.context.target
             if target is not None:
-                #viewAnnotations = request.annotations.setdefault('loops.view', {})
-                viewAnnotations['node'] = self.context
                 target = getVersion(target, request)
                 target = adapted(target, LanguageInfo(target, request))
                 viewAnnotations['target'] = target
-                #return target
+                tv = component.getMultiAdapter((target, request), name='layout')
+                viewAnnotations['targetView'] = tv
                 return self.context
         try:
             obj = super(NodeTraverser, self).publishTraverse(request, name)
@@ -62,3 +68,17 @@ class NodeTraverser(ItemTraverser):
             viewAnnotations['pageName'] = name
             return self.context
         return obj
+
+    def cleanUpTraversalStack(self, request, name):
+        traversalStack = request._traversal_stack
+        while traversalStack and traversalStack[0].startswith('.'):
+            # skip obsolete target references in the url
+            name = traversalStack.pop(0)
+        traversedNames = request._traversed_names
+        if traversedNames:
+            lastTraversed = traversedNames[-1]
+            if lastTraversed.startswith('.') and lastTraversed != name:
+                # let <base .../> tag show the current object
+                traversedNames[-1] = name
+        return name
+

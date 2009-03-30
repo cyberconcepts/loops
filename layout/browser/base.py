@@ -51,6 +51,14 @@ class BaseView(object):
         return self.viewAnnotations.get('target')
 
     @Lazy
+    def virtualTargetView(self):
+        return self.viewAnnotations.get('targetView')
+
+    @Lazy
+    def node(self):
+        return self.viewAnnotations.get('node')
+
+    @Lazy
     def title(self):
         return self.context.title
 

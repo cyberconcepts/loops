@@ -45,6 +45,10 @@ class LayoutNodeView(Page):
         return self.loopsRoot.getConceptManager()
 
     @Lazy
+    def resourceManager(self):
+        return self.loopsRoot.getResourceManager()
+
+    @Lazy
     def defaultPredicate(self):
         return self.conceptManager.getDefaultPredicate()
 
