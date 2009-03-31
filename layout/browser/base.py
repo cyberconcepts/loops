@@ -43,6 +43,26 @@ class BaseView(object):
         self.request = request
 
     @Lazy
+    def loopsRoot(self):
+        return self.context.getLoopsRoot()
+
+    @Lazy
+    def defaultPredicate(self):
+        return self.loopsRoot.getConceptManager().getDefaultPredicate()
+
+    @Lazy
+    def conceptManager(self):
+        return self.loopsRoot.getConceptManager()
+
+    @Lazy
+    def resourceManager(self):
+        return self.loopsRoot.getResourceManager()
+
+    @Lazy
+    def defaultPredicate(self):
+        return self.conceptManager.getDefaultPredicate()
+
+    @Lazy
     def viewAnnotations(self):
         return self.request.annotations.get('loops.view', {})
 

@@ -62,11 +62,16 @@ class NodeTraverser(ItemTraverser):
                 tv = component.getMultiAdapter((target, request), name='layout')
                 viewAnnotations['targetView'] = tv
                 return self.context
-        try:
-            obj = super(NodeTraverser, self).publishTraverse(request, name)
-        except NotFound, e:
-            viewAnnotations['pageName'] = name
-            return self.context
+        obj = None
+        # for name, tr in component.getAdapters(self.context, IPublishTraverse):
+        #     if name:
+        #         obj = tr.publishTraverse(request, name)
+        if obj is None:
+            try:
+                obj = super(NodeTraverser, self).publishTraverse(request, name)
+            except NotFound, e:
+                viewAnnotations['pageName'] = name
+                return self.context
         return obj
 
     def cleanUpTraversalStack(self, request, name):
