@@ -197,7 +197,7 @@ class ConceptView(BaseView):
         if (cont is not None and not IUnauthenticatedPrincipal.providedBy(
                                                     self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
-                         subMacro=self.template.macros['parents'],
+                         subMacro=concept_macros.macros['parents'],
                          priority=20, info=self)
 
     @Lazy

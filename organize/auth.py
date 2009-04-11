@@ -27,6 +27,7 @@ from zope.app.container.contained import Contained
 from zope import component
 from zope.interface import Interface, implements
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.principalfolder import PrincipalInfo
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.interfaces import IAuthentication

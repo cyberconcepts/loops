@@ -24,10 +24,13 @@ $Id$
 
 from zope import interface, component, schema
 from zope.app.component import queryNextUtility
+from zope.app.container.interfaces import INameChooser
+from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.interface import implements
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
@@ -35,10 +38,12 @@ from zope.event import notify
 from zope.i18nmessageid import MessageFactory
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.concept import Concept
 from loops.interfaces import ILoops
+from loops.organize.auth import IPersonBasedAuthenticator
 from loops.organize.interfaces import IMemberRegistrationManager
 from loops.organize.util import getPrincipalFolder, getGroupsFolder
 from loops.organize.util import getInternalPrincipal
@@ -51,54 +56,60 @@ class MemberRegistrationManager(object):
     implements(IMemberRegistrationManager)
     adapts(ILoops)
 
+    person_typeName = 'person'
+    default_principalfolder = 'loops'
+    principalfolder_key = u'registration.principalfolder'
+    groups_key = u'registration.groups'
+
     def __init__(self, context):
         self.context = context
 
     def register(self, userId, password, lastName, firstName=u'',
                  groups=[], useExisting=False, **kw):
+        concepts = self.context.getConceptManager()
+        personType = adapted(concepts[self.person_typeName])
+        options = IOptions(personType)
+        pfName = options(self.principalfolder_key,
+                         (self.default_principalfolder,))[0]
         # step 1: create an internal principal in the loops principal folder:
-        pFolder = getPrincipalFolder(self.context)
-        # if isinstance(pFolder, PersonBasedAuthenticator):
-        #     pFolder.setPassword(userId, password)
-        # else:
-        title = firstName and ' '.join((firstName, lastName)) or lastName
-        principal = InternalPrincipal(userId, password, title)
-        if useExisting:
-            if userId not in pFolder:
-                pFolder[userId] = principal
+        pFolder = getPrincipalFolder(self.context, pfName)
+        if IPersonBasedAuthenticator.providedBy(pFolder):
+             pFolder.setPassword(userId, password)
         else:
-            pFolder[userId] = principal
+            title = firstName and ' '.join((firstName, lastName)) or lastName
+            principal = InternalPrincipal(userId, password, title)
+            if useExisting:
+                if userId not in pFolder:
+                    pFolder[userId] = principal
+            else:
+                if userId in pFolder:
+                    return dict(fieldName='loginName', error='duplicate_loginname')
+                else:
+                    pFolder[userId] = principal
         # step 2 (optional): assign to group(s)
-        personType = self.context.getLoopsRoot().getConceptManager()['person']
-        od = getOptionsDict(adapted(personType).options)
-        groupInfo = od.get('group')
-        if groupInfo:
-            gfName, groupNames = groupInfo.split(':')
+        groups = options(self.groups_key, ())
+        for groupInfo in groups:
+            names = groupInfo.split(':')
+            if len(names) == 1:
+                gName, gfName = names[0], None
+            else:
+                gName, gfName = names
             gFolder = getGroupsFolder(gfName)
-            if not groups:
-                groups = groupNames.split(',')
-        else:
-            gFolder = getGroupsFolder()
-        if gFolder is not None:
-            for g in groups:
-                group = gFolder.get(g)
+            if gFolder is not None:
+                group = gFolder.get(gName)
                 if group is not None:
                     members = list(group.principals)
                     members.append(pFolder.prefix + userId)
                     group.principals = members
         # step 3: create a corresponding person concept:
-        cm = self.context.getConceptManager()
-        id = baseId = 'person.' + userId
-        # TODO: use NameChooser
-        if useExisting and id in cm:
-            person = cm[id]
+        name = baseId = 'person.' + userId
+        if useExisting and name in concepts:
+            person = concepts[name]
         else:
-            num = 0
-            while id in cm:
-                num +=1
-                id = baseId + str(num)
-            person = cm[id] = Concept(title)
-        person.conceptType = cm['person']
+            person = Concept(title)
+            name = INameChooser(concepts).chooseName(name, person)
+            concepts[name] = person
+        person.conceptType = personType.context
         personAdapter = adapted(person)
         personAdapter.firstName = firstName
         personAdapter.lastName = lastName
@@ -110,7 +121,7 @@ class MemberRegistrationManager(object):
         return personAdapter
 
     def changePassword(self, principal, oldPw, newPw):
-        if not isinstance(principal, InternalPrincipal):
+        if not IInternalPrincipal.providedBy(principal):
             principal = getInternalPrincipal(principal.id)
         if not principal.checkPassword(oldPw):
             return False

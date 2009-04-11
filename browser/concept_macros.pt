@@ -48,7 +48,7 @@
                         renderer field/displayRenderer"
             tal:condition="nocall:value">
           <td><b tal:content="field/title" i18n:translate="" />:</td>
-          <td><span metal:use-macro="item/template/macros/?renderer" /></td>
+          <td><span metal:use-macro="view/concept_macros/?renderer" /></td>
         </tr>
       </tal:row>
     </table>

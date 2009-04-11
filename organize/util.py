@@ -59,8 +59,9 @@ def getGroupsFolder(context=None, name='gloops'):
     return getPrincipalFolder(authPluginId=name, ignoreErrors=True)
 
 
-def getInternalPrincipal(id, context=None):
-    pau = component.getUtility(IAuthentication, context=context)
+def getInternalPrincipal(id, context=None, pau=None):
+    if pau is None:
+        pau = component.getUtility(IAuthentication, context=context)
     if not IPluggableAuthentication.providedBy(pau):
         raise ValueError(u'There is no pluggable authentication '
                           'utility available.')
@@ -68,7 +69,8 @@ def getInternalPrincipal(id, context=None):
         next = queryNextUtility(pau, IAuthentication)
         if next is None:
             raise PrincipalLookupError(id)
-        return next.getPrincipal(id)
+        #return next.getPrincipal(id)
+        return getInternalPrincipal(id, context, pau=next)
     id = id[len(pau.prefix):]
     for name, authplugin in pau.getAuthenticatorPlugins():
         if not id.startswith(authplugin.prefix):
@@ -79,7 +81,8 @@ def getInternalPrincipal(id, context=None):
         return principal
     next = queryNextUtility(pau, IAuthentication)
     if next is not None:
-        return next.getPrincipal(pau.prefix + id)
+        #return next.getPrincipal(pau.prefix + id)
+        return getInternalPrincipal(id, context, pau=next)
     raise PrincipalLookupError(id)
 
 

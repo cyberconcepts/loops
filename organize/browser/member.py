@@ -76,14 +76,19 @@ class PersonalInfo(ConceptView):
 class MemberRegistration(NodeView, CreateForm):
 
     interface = IMemberRegistration
-    message = _(u'You have been registered.')
+    message = _(u'The user account has been created.')
 
     formErrors = dict(
         confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
+        duplicate_loginname=FormError(_('Login name already taken.')),
     )
 
     label = _(u'Member Registration')
     label_submit = _(u'Register')
+
+    permissions_key = u'registration.permissions'
+    roles_key = u'registration.roles'
+    registration_adapter_key = u'registration.adapter'
 
     @Lazy
     def macro(self):
@@ -123,11 +128,20 @@ class MemberRegistration(NodeView, CreateForm):
             return True
         login = form.get('loginName')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
-        self.object = regMan.register(login, pw,
-                                      form.get('lastName'), form.get('firstName'))
+        result = regMan.register(login, pw,
+                                 form.get('lastName'), form.get('firstName'),
+                                 email=form.get('email'),
+                                 phoneNumbers=form.get('phoneNumbers'))
+        if isinstance(result, dict):
+            fi = formState.fieldInstances[result['fieldName']]
+            fi.setError(result['error'], self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
+            return True
+        self.object = result
         msg = self.message
-        self.request.response.redirect('%s/login.html?login=%s&message=%s'
-                            % (self.url, login, msg))
+        #self.request.response.redirect('%s/login.html?login=%s&message=%s'
+        #                    % (self.url, login, msg))
+        self.request.response.redirect('%s?message=%s' % (self.url, msg))
         return False
 
 

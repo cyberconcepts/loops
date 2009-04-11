@@ -8,6 +8,8 @@ $Id$
 
 New features
 
+- form for user registration (``register_user.html``), controlled by options:
+  ``registration_principalfolder``, ``registration_groups``
 - new action: ``create task``
 - quick search field
 - external file/media asset type: options for hiding or showing fields on editing

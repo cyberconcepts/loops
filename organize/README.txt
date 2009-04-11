@@ -407,7 +407,8 @@ Send Email to Members
   >>> from loops.organize.browser.party import SendEmailForm
   >>> form = SendEmailForm(menu, TestRequest())
   >>> form.members
-  [{'email': 'john@loopz.org', 'title': u'John'}]
+  [{'email': 'john@loopz.org', 'title': u'John'},
+   {'email': u'tommy@sawyer.com', 'title': u'Tom Sawyer'}]
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
