@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ def getInternalPrincipal(id, context=None, pau=None):
         pau = component.getUtility(IAuthentication, context=context)
     if not IPluggableAuthentication.providedBy(pau):
         raise ValueError(u'There is no pluggable authentication '
-                          'utility available.')
+                         u'utility available.')
     if not id.startswith(pau.prefix):
         next = queryNextUtility(pau, IAuthentication)
         if next is None:

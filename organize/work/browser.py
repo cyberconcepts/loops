@@ -26,8 +26,10 @@ from datetime import date
 import time
 from zope import component
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.cachedescriptors.property import Lazy
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
@@ -395,6 +397,7 @@ class CreateWorkItem(EditObject, BaseTrackView):
         else:
             wi = workItems.add(util.getUidForObject(self.object), self.personId)
         wi.doAction(action, self.personId, **data)
+        #notify(ObjectModifiedEvent(obj))
         url = self.view.virtualTargetUrl
         #url = self.request.URL
         self.request.response.redirect(url)
