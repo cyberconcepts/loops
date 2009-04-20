@@ -141,10 +141,9 @@ class BlogPostView(ConceptView):
             data['privateComment'] = u''
         return data
 
-    @Lazy
-    def description(self):
-        return self.renderText(self.context.description, 'text/restructured')
-
+    #@Lazy
+    #def description(self):
+    #    return self.renderText(self.context.description, 'text/restructured')
 
     def getActions(self, category='object', page=None, target=None):
         actions = []

@@ -3,7 +3,7 @@
 
 <metal:block define-macro="blog">
   <div>
-    <metal:title use-macro="item/conceptMacros/concepttitle" />
+    <metal:title use-macro="view/concept_macros/concepttitle" />
     <div tal:repeat="related item/blogPosts"
              class="blog">
       <tal:child define="data related/data">
@@ -31,8 +31,8 @@
         </div>
       </tal:child>
     </div>
-    <metal:resources use-macro="item/conceptMacros/conceptchildren" />
-    <metal:resources use-macro="item/conceptMacros/conceptresources" />
+    <metal:resources use-macro="view/concept_macros/conceptchildren" />
+    <metal:resources use-macro="view/concept_macros/conceptresources" />
   </div>
 </metal:block>
 
@@ -40,12 +40,7 @@
 <div metal:define-macro="blogpost"
      tal:define="data item/data"
      class="blogpost">
-  <tal:actions condition="view/showObjectActions">
-        <div metal:use-macro="views/node_macros/object_actions" />
-  </tal:actions>
-  <h1 tal:attributes="ondblclick item/openEditWindow">
-    <span tal:content="item/title">Title</span>
-  </h1>
+  <metal:block use-macro="view/concept_macros/concepttitle_only" />
   <div class="info"
        tal:define="url data/creatorUrl|nothing">
     <span tal:content="data/date">2008-01-02</span> /
@@ -57,7 +52,7 @@
     </span>
   </div>
   <div class="description"
-       tal:define="description description|item/description"
+       tal:define="description description|item/renderedDescription"
        tal:condition="description">
     <span tal:content="structure description">Description</span>
   </div>
@@ -69,6 +64,7 @@
     <h4 i18n:translate="" class="headline">Private Comment</h4>
     <div tal:content="structure python:
                 item.renderText(comment, 'text/restructured')">Comment</div></div>
-  <metal:resources use-macro="item/conceptMacros/conceptchildren" />
-  <metal:resources use-macro="item/conceptMacros/conceptresources" />
+  <metal:resources use-macro="view/concept_macros/conceptchildren" />
+  <metal:resources use-macro="view/concept_macros/conceptresources" />
+  <metal:block use-macro="view/comment_macros/comments" />
 </div>
