@@ -20,6 +20,7 @@
 
 
 <metal:title define-macro="concepttitle">
+  <metal:title define-macro="concepttitle_only">
     <tal:actions condition="view/showObjectActions">
         <div metal:use-macro="views/node_macros/object_actions" />
     </tal:actions>
@@ -29,9 +30,10 @@
          tal:attributes="href request/URL"
          tal:content="item/title">Title</a>
     </h1>
-    <p tal:define="description description|item/renderedDescription"
-       tal:condition="description">
-      <i tal:content="structure description">Description</i></p>
+  </metal:title>
+  <p tal:define="description description|item/renderedDescription"
+     tal:condition="description">
+    <i tal:content="structure description">Description</i></p>
 </metal:title>
 
 
