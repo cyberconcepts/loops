@@ -83,10 +83,11 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
         return self.context.contentType or ''
 
     def getDataPath(self):
-        storage = component.getUtility(IExternalStorage, name=self.storageName)
+        storage = component.queryUtility(IExternalStorage, name=self.storageName)
         #print '***', self.storageName, self.storageParams, self.options
-        return storage.getDir(self.externalAddress,
-                              self.storageParams['subdirectory'])
+        if storage is not None:
+            return storage.getDir(self.externalAddress,
+                                  self.storageParams['subdirectory'])
 
     def getOriginalData(self):
         return ExternalFileAdapter.getData(self)
@@ -94,7 +95,9 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     def getModified(self):
         d = getattr(self.context, '_modified', None)
         if not d:
-            return datetime.fromtimestamp(os.path.getmtime(self.getDataPath()))
+            dp = self.getDataPath()
+            if dp is not None:
+                return datetime.fromtimestamp(os.path.getmtime(dp))
         return d
     def setModified(self, value):
         self.context._modified = value
