@@ -128,7 +128,7 @@ class Search(BaseView):
         if not title:
             data.insert(0, {'label': '', 'name': '', 'id': ''})
         json = []
-        for item in data[:20]:
+        for item in data[:100]:
             json.append("{label: '%s', name: '%s', id: '%s'}" %
                           (item['label'], item['name'], item['id']))
         json = "{identifier: 'id', items: [%s]}" % ', '.join(json)
