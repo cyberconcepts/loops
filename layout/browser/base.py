@@ -31,6 +31,7 @@ from zope.proxy import removeAllProxies
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 
+from cybertools.util import format
 from loops.common import adapted
 from loops.i18n.browser import LanguageInfo
 from loops import util
@@ -129,6 +130,9 @@ class BaseView(object):
         source = component.createObject(typeKey, text)
         view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
+
+    def nl2br(self, text):
+        return format.nl2br(text)
 
 
 pattern = re.compile(r'[ /\?\+%]')
