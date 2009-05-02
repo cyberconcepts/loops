@@ -54,6 +54,7 @@ class PersonBasedAuthenticator(Persistent, Contained):
     implements(IAuthenticatorPlugin, IPersonBasedAuthenticator)
 
     passwordKey = 'loops.organize.password'
+    ignoreCase = True
 
     def __init__(self, prefix=''):
         self.prefix = unicode(prefix)
@@ -77,10 +78,14 @@ class PersonBasedAuthenticator(Persistent, Contained):
         if login and password:
             pa = self.getPrincipalAnnotations(
                         getParent(self).prefix + self.prefix + login)
+            if self.ignoreCase:
+                password = password.lower()
             return pa.get(self.passwordKey) == password
         return None
 
     def setPassword(self, login, password):
+        if self.ignoreCase:
+            password = password.lower()
         pa = self.getPrincipalAnnotations(
                         getParent(self).prefix + self.prefix + login)
         pa[self.passwordKey] = password
