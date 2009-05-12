@@ -92,5 +92,5 @@ class LayoutNodeView(Page):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
     def getMessage(self, id):
-        return self.request.form.get('loops.messages').get(id, {})
+        return self.request.form.get('loops.messages', {}).get(id, {})
 

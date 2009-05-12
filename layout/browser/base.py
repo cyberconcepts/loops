@@ -122,7 +122,7 @@ class BaseView(object):
             requirements.add(p)
 
     def getMessage(self, id):
-        return self.request.form.get('loops.messages').get(id, {})
+        return self.request.form.get('loops.messages', {}).get(id, {})
 
     def renderText(self, text, contentType):
         typeKey = util.renderingFactories.get(contentType, None)
