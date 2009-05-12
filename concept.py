@@ -409,7 +409,7 @@ class IndexAttributes(object):
     @Lazy
     def adaptedIndexAttributes(self):
         if self.adapted != self.context:
-            return component.queryAdapter(self.adapted, IIndexAttributes)
+            #return component.queryAdapter(self.adapted, IIndexAttributes)
             return IIndexAttributes(self.adapted, None)
 
     def text(self):
