@@ -90,3 +90,7 @@ class LayoutNodeView(Page):
     @Lazy
     def authenticated(self):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
+
+    def getMessage(self, id):
+        return self.request.form.get('loops.messages').get(id, {})
+
