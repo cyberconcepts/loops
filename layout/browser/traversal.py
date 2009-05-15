@@ -62,6 +62,16 @@ class NodeTraverser(ItemTraverser):
                 tv = component.getMultiAdapter((target, request), name='layout')
                 viewAnnotations['targetView'] = tv
                 return self.context
+        if self.context.target is not None:
+            # check for specialized traverser
+            traverser = IPublishTraverse(adapted(self.context.target), None)
+            if traverser is not None:
+                target = traverser.publishTraverse(self, request, name)
+                if target is not None:
+                    viewAnnotations['target'] = target
+                    tv = component.getMultiAdapter((target, request), name='layout')
+                    viewAnnotations['targetView'] = tv
+                    return self.context
         obj = None
         # for name, tr in component.getAdapters(self.context, IPublishTraverse):
         #     if name:
