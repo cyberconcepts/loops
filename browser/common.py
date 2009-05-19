@@ -623,6 +623,16 @@ class BaseView(GenericView, I18NView):
                     resourceName='ajax.dojo/dojox/grid/resources/tundraGrid.css',
                     media='all')
 
+
+class LoggedIn(object):
+
+    def __call__(self):
+        camefrom = self.request.form.get('camefrom')
+        if camefrom:
+            self.request.response.redirect(camefrom)
+        self.request.response.redirect(self.request.URL[-1])
+
+
 # vocabulary stuff
 
 class SimpleTerms(object):
