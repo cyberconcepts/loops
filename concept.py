@@ -232,14 +232,15 @@ class Concept(Contained, Persistent):
             if c not in existing:
                 self.assignParent(c, predicate)
 
-    def deassignChild(self, child, predicates=None, order=None):
+    def deassignChild(self, child, predicates=None, order=None, noSecurityCheck=False):
         registry = component.getUtility(IRelationRegistry)
-        for rel in self.getChildRelations(predicates, child):
+        for rel in self.getChildRelations(predicates, child,
+                                          noSecurityCheck=noSecurityCheck):
             if order is None or rel.order == order:
                 registry.unregister(rel)
                 notify(DeassignmentEvent(self, rel))
 
-    def deassignParent(self, parent, predicates=None):
+    def deassignParent(self, parent, predicates=None, noSecurityCheck=False):
         parent.deassignChild(self, predicates)
 
     # resource relations
