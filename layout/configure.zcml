@@ -17,16 +17,13 @@
   </zope:class>
 
   <zope:adapter
-        for="loops.layout.interfaces.ILayoutNode"
         factory="loops.layout.base.NodeLayoutInstance" />
 
   <zope:adapter
-        for="loops.layout.interfaces.ILayoutNode"
         name="subnodes"
         factory="loops.layout.base.SubnodesLayoutInstance" />
 
   <zope:adapter
-        for="loops.layout.interfaces.ILayoutNode"
         name="target"
         factory="loops.layout.base.TargetLayoutInstance" />
 

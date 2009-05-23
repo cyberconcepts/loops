@@ -23,6 +23,7 @@ $Id$
 """
 
 from zope import component
+from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 
@@ -44,6 +45,8 @@ class LayoutNode(Node):
 
 class NodeLayoutInstance(LayoutInstance):
 
+    adapts(ILayoutNode)
+
     @Lazy
     def viewAnnotations(self):
         return self.view.request.annotations.get('loops.view', {})
@@ -61,6 +64,8 @@ class NodeLayoutInstance(LayoutInstance):
 
 
 class SubnodesLayoutInstance(NodeLayoutInstance):
+
+    adapts(ILayoutNode)
 
     def getLayouts(self, region):
         """ Return sublayout instances specified via subnodes of the current menu node.
@@ -82,19 +87,24 @@ class SubnodesLayoutInstance(NodeLayoutInstance):
 
 
 class TargetLayoutInstance(NodeLayoutInstance):
+    """ Associates a layout with all objects of a certain type.
+    """
+
+    adapts(ILayoutNode)
 
     def getLayouts(self, region):
         """ Return sublayout instances specified by the target object.
         """
-        target = self.target
-        if region is None or target is None:
+        if region is None or self.target is None:
             return []
-        #result = []
         result = super(TargetLayoutInstance, self).getLayouts(region)
         names = region.layouts.keys()
-        tp = target.context.getType()
         pageName = self.viewAnnotations.get('pageName', u'')
-        for n in tp.getClients():
+        obj = self.target.context
+        tp = obj.getType()
+        for n in obj.getClients() + tp.getClients():
+            if not ILayoutNode.providedBy(n):
+                continue
             if n.nodeType == 'info' and n.viewName in names:
                 if pageName != n.pageName:
                     continue
@@ -113,4 +123,3 @@ class TargetLayoutInstance(NodeLayoutInstance):
         if target is None:
             target = adapted(self.context.target)
         return target
-

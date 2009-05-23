@@ -42,7 +42,8 @@ class ConceptView(BaseView):
     def children(self):
         for c in self.context.getChildren():
             a = adapted(c)
-            view = component.getMultiAdapter((c, self.request), name='layout')
+            #view = component.getMultiAdapter((c, self.request), name='layout')
+            view = component.getMultiAdapter((a, self.request), name='layout')
             view.node = self.node
             yield view
 
