@@ -31,6 +31,10 @@
       id="loops.EditRestricted"
       title="[loops-edit-restricted-permission] loops: Edit Restricted Information" />
 
+  <permission
+      id="loops.Execute"
+      title="[loops-execute-permission] loops: Execute" />
+
   <!-- roles and default permissions for roles -->
 
   <role id="loops.SiteManager"
