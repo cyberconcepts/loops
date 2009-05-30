@@ -23,6 +23,7 @@ $Id$
 """
 
 from cgi import parse_qs
+from urllib import urlencode
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
@@ -626,11 +627,27 @@ class BaseView(GenericView, I18NView):
 
 class LoggedIn(object):
 
+    messages = dict(success=_(u'You have been logged in.'),
+                    nosuccess=_(u'Login not successful.'),
+                    error=_(u'Try again later.'))
+
     def __call__(self):
-        camefrom = self.request.form.get('camefrom')
-        if camefrom:
-            self.request.response.redirect(camefrom)
-        self.request.response.redirect(self.request.URL[-1])
+        form = self.request.form
+        camefrom = form.get('camefrom')
+        code = 'success'
+        if IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            code = 'nosuccess'
+        info = form.get('message')
+        if info == 'error' and code == 'nosuccess':
+            code = 'error'
+        message = self.messages[code]
+        params = {}
+        url = camefrom or self.request.URL[-1]
+        if '?' in url:
+            base, qs = url.split('?', 1)
+            params = parse_qs(qs)
+        params['loops.messages.top:record'] = message
+        self.request.response.redirect('%s?%s' % (url, urlencode(params)))
 
 
 # vocabulary stuff
