@@ -633,7 +633,7 @@ class LoggedIn(object):
 
     def __call__(self):
         form = self.request.form
-        camefrom = form.get('camefrom')
+        camefrom = form.get('camefrom').strip('?')
         code = 'success'
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             code = 'nosuccess'
@@ -641,7 +641,7 @@ class LoggedIn(object):
         if info == 'error' and code == 'nosuccess':
             code = 'error'
         message = self.messages[code]
-        params = {}
+        params = []
         url = camefrom or self.request.URL[-1]
         if '?' in url:
             base, qs = url.split('?', 1)
