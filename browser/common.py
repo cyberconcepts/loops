@@ -22,7 +22,7 @@ Common base class for loops browser view classes.
 $Id$
 """
 
-from cgi import parse_qs
+from cgi import parse_qs, parse_qsl
 from urllib import urlencode
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
@@ -645,8 +645,8 @@ class LoggedIn(object):
         url = camefrom or self.request.URL[-1]
         if '?' in url:
             base, qs = url.split('?', 1)
-            params = parse_qs(qs)
-        params['loops.messages.top:record'] = message
+            params = parse_qsl(qs)
+        params.append(('loops.messages.top:record', message))
         self.request.response.redirect('%s?%s' % (url, urlencode(params)))
 
 
