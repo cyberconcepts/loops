@@ -30,13 +30,6 @@
         permission="zope.Public"
         />
 
-  <page for="*"
-        name="logged_in.html"
-        class="loops.browser.common.LoggedIn"
-        attribute="__call__"
-        permission="zope.Public"
-        />
-
   <!-- macros -->
 
   <page
