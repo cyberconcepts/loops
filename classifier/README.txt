@@ -131,13 +131,17 @@ that may be identified as being candidates for classification.
 So we are now ready to have the whole stuff run in one call.
 
   >>> classifier.process(r1)
-  Classifier fileclassifier: Assigning: ...
+  
+Classifier fileclassifier: Assigning: ...
+
   >>> list(sorted([c.title for c in r1.getConcepts()]))
   [u'Collection One', u'Contract', u'External File', u'Gerald Webb', u'im Editors']
 
   >>> for name in rnames[1:]:
   ...     classifier.process(resources[name])
-  Classifier fileclassifier: Assigning: ...
+
+Classifier fileclassifier: Assigning: ...
+
   >>> len(webbg.getResources())
   4
   >>> len(webbg.getResources((concepts['ownedby'],)))
@@ -147,7 +151,9 @@ We can repeat the process without getting additional assignments.
 
   >>> for name in rnames[1:]:
   ...     classifier.process(resources[name])
-  Classifier fileclassifier: Already assigned: ...
+
+Classifier fileclassifier: Already assigned: ...
+
   >>> len(webbg.getResources())
   4
 

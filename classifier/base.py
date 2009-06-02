@@ -23,6 +23,7 @@ $Id$
 """
 
 from itertools import tee
+from logging import getLogger
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -100,14 +101,16 @@ class Classifier(AdapterBase):
         resources = concept.getResources([predicate])
         if resource not in resources:
             concept.assignResource(resource, predicate)
-            message = 'Assigning: %s %s %s'
+            message = u'Assigning: %s %s %s'
         else:
-            message = 'Already assigned: %s %s %s'
+            message = u'Already assigned: %s %s %s'
         self.log(message % (resource.title, predicate.title, concept.title), 5)
 
     def log(self, message, level=5):
         if level >= self.logLevel:
-            print 'Classifier %s:' % getName(self.context), message
+            #print 'Classifier %s:' % getName(self.context), message
+            getLogger('Classifier').info(
+                u'%s: %s' % (getName(self.context), message))
 
 
 class Extractor(object):
