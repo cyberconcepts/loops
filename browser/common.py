@@ -632,8 +632,6 @@ class LoggedIn(object):
                     error=_(u'Try again later.'))
 
     def __call__(self):
-        #form = self.request.form
-        #camefrom = form.get('camefrom').strip('?')
         code = 'success'
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             code = 'nosuccess'
@@ -643,22 +641,15 @@ class LoggedIn(object):
         message = self.messages[code]
         return self.request.response.redirect(self.nextUrl(message, code))
 	
-        params = []
-        url = camefrom or self.request.URL[-1]
-        if '?' in url:
-            base, qs = url.split('?', 1)
-            params = parse_qsl(qs)
-        params.append(('loops.messages.top:record', message))
-        self.request.response.redirect('%s?%s' % (url, urlencode(params)))
-		
     def nextUrl(self, message, code):
         camefrom = self.request.form.get('camefrom').strip('?')
         url = camefrom or self.request.URL[-1]
         params = []
         if '?' in url:
-            base, qs = url.split('?', 1)
+            url, qs = url.split('?', 1)
             params = parse_qsl(qs)
-        params.append(('loops.messages.top:record', message))
+        params = [(k, v) for k, v in params if k != 'loops.messages.top:record']
+        params.append(('loops.messages.top:record', message.encode('UTF-8')))
         return '%s?%s' % (url, urlencode(params))
 
 # vocabulary stuff
