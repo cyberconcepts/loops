@@ -26,6 +26,7 @@ from zope.app.container.traversal import ItemTraverser
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
+from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import NotFound, IPublishTraverse
 
 from loops.common import adapted
@@ -67,15 +68,14 @@ class NodeTraverser(ItemTraverser):
             traverser = IPublishTraverse(adapted(self.context.target), None)
             if traverser is not None:
                 target = traverser.publishTraverse(request, name)
+                if isinstance(target, BrowserView):
+                    return target
                 if target is not None:
                     viewAnnotations['target'] = target
                     tv = component.getMultiAdapter((target, request), name='layout')
                     viewAnnotations['targetView'] = tv
                     return self.context
         obj = None
-        # for name, tr in component.getAdapters(self.context, IPublishTraverse):
-        #     if name:
-        #         obj = tr.publishTraverse(request, name)
         if obj is None:
             try:
                 obj = super(NodeTraverser, self).publishTraverse(request, name)

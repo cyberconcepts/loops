@@ -104,7 +104,7 @@ class Classifier(AdapterBase):
             message = u'Assigning: %s %s %s'
         else:
             message = u'Already assigned: %s %s %s'
-        self.log(message % (resource.title, predicate.title, concept.title), 5)
+        self.log(message % (resource.title, predicate.title, concept.title), 4)
 
     def log(self, message, level=5):
         if level >= self.logLevel:
