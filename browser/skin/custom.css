@@ -13,8 +13,9 @@ a {
     background-color: transparent;
 }
 
-.top {
+#global {
     border-bottom: 1px solid #d0d0d0;
+    margin-bottom: 2px;
     padding: 2px 0 2px 5px;
 }
 
