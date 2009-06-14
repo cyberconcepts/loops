@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -151,7 +151,10 @@ class ResourceElement(Element):
             and isinstance(content, unicode)):
             content = content.encode('UTF-8')
             fileFlags = 'wt'
-        dataPath = os.path.join(extractor.resourceDirectory, self['name'])
+        directory = extractor.resourceDirectory
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        dataPath = os.path.join(directory, self['name'])
         f = open(dataPath, fileFlags)
         f.write(content)
         f.close()
