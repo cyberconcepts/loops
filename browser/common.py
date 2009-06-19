@@ -642,7 +642,7 @@ class LoggedIn(object):
         return self.request.response.redirect(self.nextUrl(message, code))
 	
     def nextUrl(self, message, code):
-        camefrom = self.request.form.get('camefrom').strip('?')
+        camefrom = self.request.form.get('camefrom', '').strip('?')
         url = camefrom or self.request.URL[-1]
         params = []
         if '?' in url:
