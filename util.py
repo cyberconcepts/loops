@@ -117,3 +117,7 @@ def getVarDirectory(request=None):
 def getEtcDirectory(request=None):
     varDir = getVarDirectory(request)
     return os.path.join(os.path.dirname(varDir), 'etc')
+
+def getLogDirectory(request=None):
+    varDir = getVarDirectory(request)
+    return os.path.join(os.path.dirname(varDir), 'log')
