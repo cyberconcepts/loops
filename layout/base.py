@@ -22,16 +22,21 @@ Layout node + instance implementations.
 $Id$
 """
 
+from logging import getLogger
 from zope import component
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
+from zope.traversing.api import getName
 
 from cybertools.composer.layout.base import Layout, LayoutInstance
 from cybertools.composer.layout.interfaces import ILayoutInstance
 from loops.common import adapted
 from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.view import Node
+
+
+logger = getLogger('loops.layout')
 
 
 class LayoutNode(Node):
@@ -102,6 +107,7 @@ class TargetLayoutInstance(NodeLayoutInstance):
         pageName = self.viewAnnotations.get('pageName', u'')
         obj = self.target.context
         tp = obj.getType()
+        found = False
         for n in obj.getClients() + tp.getClients():
             if not ILayoutNode.providedBy(n):
                 continue
@@ -113,8 +119,18 @@ class TargetLayoutInstance(NodeLayoutInstance):
                                           name=layout.instanceName)
                 li.template = layout
                 result.append(li)
-        # TODO: if not result: provide error info with names, pageName,
-        #       info on client nodes
+                found = True
+        if not found:
+            if self.template.defaultSublayout is None:
+                logger.warn('No target layout found: pageName = %r, target = %r'
+                                % (pageName, getName(obj)))
+            else:
+                layout = region.layouts.get(self.template.defaultSublayout)
+                if layout is not None:
+                    li = component.getAdapter(self.context, ILayoutInstance,
+                                            name=layout.instanceName)
+                    li.template = layout
+                    result.append(li)
         return result
 
     @Lazy
