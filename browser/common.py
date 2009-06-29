@@ -340,11 +340,12 @@ class BaseView(GenericView, I18NView):
             yield view
 
     def renderText(self, text, contentType):
+        text = util.toUnicode(text)
         typeKey = util.renderingFactories.get(contentType, None)
         if typeKey is None:
             if contentType == u'text/html':
-                return util.toUnicode(text)
-            return u'<pre>%s</pre>' % util.html_quote(util.toUnicode(text))
+                return text
+            return u'<pre>%s</pre>' % util.html_quote(text)
         source = component.createObject(typeKey, text)
         view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
