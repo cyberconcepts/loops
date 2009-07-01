@@ -788,7 +788,8 @@ class NodeTraverser(ItemTraverser):
     def publishTraverse(self, request, name):
         viewAnnotations = request.annotations.setdefault('loops.view', {})
         viewAnnotations['node'] = self.context
-        context = removeSecurityProxy(self.context)
+        #context = removeSecurityProxy(self.context)
+        context = self.context
         if context.nodeType == 'menu':
             setViewConfiguration(context, request)
         if name == '.loops':
