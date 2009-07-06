@@ -188,7 +188,7 @@ class Extractor(Base):
         aObj = adapted(obj)
         schemaFactory = component.getAdapter(aObj, ISchemaFactory)
         ti = IType(obj).typeInterface or defaultInterface
-        schema = schemaFactory(ti, manager=self) #, request=self.request)
+        schema = schemaFactory(ti, manager=self, mode='export') #, request=self.request)
         instance = IInstance(aObj)
         instance.template = schema
         # TODO:  this should also convert object attributes like e.g. typeInterface

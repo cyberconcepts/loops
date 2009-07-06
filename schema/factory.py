@@ -50,6 +50,8 @@ class FileSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(FileSchemaFactory, self).__call__(interface, **kw)
+        if kw.get('mode') == 'export':
+            return schema
         options = IOptions(self.context.type)
         hide = options('hide_fields') or []
         show = options('show_fields') or []
