@@ -94,7 +94,7 @@ by calling the form controller's update method
   False
 
   >>> list(workItems)
-  [<WorkItem ['36', 1, '33', '2008-12-28 18:00', 'finished']:
+  [<WorkItem ['36', 1, '33', '2008-12-28 19:00', 'finished']:
    {'comment': u'Comment', 'end': 1230491700, 'description': u'Description',
     'created': ..., 'creator': '33', 'start': 1230487200,
     'duration': 4500, 'effort': 900}>]
@@ -171,7 +171,7 @@ So we use the PersonWorkItems view, assigning john to the query.
   >>> input = dict()
   >>> work = PersonWorkItems(query, TestRequest(form=input))
   >>> work.listWorkItems()
-  [<WorkItem ['36', 2, '33', '2009-01-19 08:00', 'planned']:
+  [<WorkItem ['36', 2, '33', '2009-01-19 09:00', 'planned']:
    {'start': 1232352000, 'created': ..., 'title': u'Install Zope',
     'creator': '33'}>]
 
