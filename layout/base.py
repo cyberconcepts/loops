@@ -112,7 +112,7 @@ class TargetLayoutInstance(NodeLayoutInstance):
             if not ILayoutNode.providedBy(n):
                 continue
             if n.nodeType == 'info' and n.viewName in names:
-                if pageName != n.pageName:
+                if pageName != (n.pageName or '').strip():
                     continue
                 layout = region.layouts[n.viewName]
                 li = component.getAdapter(n, ILayoutInstance,
