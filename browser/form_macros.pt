@@ -249,7 +249,8 @@
             <td colspan="5">
               <input value="Save" type="submit"
                      i18n:attributes="value"
-                     tal:attributes="onClick python: view.closeAction(True)">
+                     tal:attributes="onClick python: view.closeAction(True) or
+                            'return True'">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
