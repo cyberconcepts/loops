@@ -187,10 +187,12 @@ concepts) that are direct or indirect children of jim.
   >>> sorted(o.title for o in getObjects((qu & fltr.query()).apply()))
   [u'Doc 001', u'Doc 003']
 
-  >>> #fltr.check(concepts['d001.txt'])
-  >>> #fltr.check(concepts['d002.txt'])
-  >>> #objs = fltr.apply(objs)
-  >>> #sorted(o.title for o in objs.values())
+  >>> #fltr.check(resources['d001.txt'])
+  >>> #fltr.check(resources['d002.txt'])
+  >>> r1 = qu.apply()
+  >>> r2 = fltr.apply(dict(zip(r1, getObjects(r1))))
+  >>> sorted(o.title for o in r2.values())
+  [u'Doc 001', u'Doc 003']
 
 
 Organizing Queries and Filters with Query Instances

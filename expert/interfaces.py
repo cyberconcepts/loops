@@ -26,7 +26,7 @@ from zope.interface import Interface, Attribute
 
 
 class IQuery(Interface):
-    """ A query or
+    """ A query.
     """
 
     def apply():
@@ -68,7 +68,7 @@ class IFilter(Interface):
             intermediate results.
         """
 
-    def check(obj, queryInstance=None):
+    def check(uid, obj, queryInstance=None):
         """ Return True if the object given should be included in the
             filter's result set, False otherwise.
 
