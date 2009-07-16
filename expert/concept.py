@@ -114,12 +114,16 @@ class BaseQuery(object):
 class FullQuery(BaseQuery):
 
     def query(self, text=None, type=None, useTitle=True, useFull=False,
-                    conceptTitle=None, conceptUid=None, conceptType=None, **kw):
+                    conceptTitle=None, conceptUid=None, conceptType=None,
+                    withChildren=True, **kw):
         result = set()
         scores = {}
         intids = component.getUtility(IIntIds)
-        rc = self.queryConceptsWithChildren(title=conceptTitle, uid=conceptUid,
-                                            type=conceptType)
+        if withChildren:
+            rc = self.queryConceptsWithChildren(title=conceptTitle, uid=conceptUid,
+                                                type=conceptType)
+        else:
+            rc = self.queryConcepts(title=conceptTitle, type=type)
         if not rc and not text and '*' in type: # there should be some sort of selection...
             return ScoredSet(result, scores)
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!
