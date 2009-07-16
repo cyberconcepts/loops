@@ -222,7 +222,8 @@ class NodeView(BaseView):
     def targetUrl(self):
         t = self.targetObjectView
         if t is not None:
-            return '%s/.target%s' % (self.url, t.uniqueId)
+            #return '%s/.target%s' % (self.url, t.uniqueId)
+            return '%s/.%s' % (self.url, t.uniqueId)
         return ''
 
     def renderTarget(self):
@@ -388,7 +389,8 @@ class NodeView(BaseView):
     def virtualTargetUrl(self):
         targetId = self.targetId
         if targetId is not None:
-            return '%s/.target%s' % (self.url, targetId)
+            #return '%s/.target%s' % (self.url, targetId)
+            return '%s/.%s' % (self.url, targetId)
         else:
             return self.url
 
@@ -411,12 +413,14 @@ class NodeView(BaseView):
     # target viewing and editing support
 
     def getUrlForTarget(self, target):
-        """ Return URL of given target view given as .targetXXX URL.
+        """ Return URL of given target view given as .XXX URL.
         """
         if isinstance(target, BaseView):
-            return '%s/.target%s' % (self.url, target.uniqueId)
+            #return '%s/.target%s' % (self.url, target.uniqueId)
+            return '%s/.%s' % (self.url, target.uniqueId)
         else:
-            return ('%s/.target%s' %
+            #return ('%s/.target%s' %
+            return ('%s/.%s' %
                 (self.url, util.getUidForObject(target)))
 
     def getActions(self, category='object', target=None):
@@ -794,23 +798,24 @@ class NodeTraverser(ItemTraverser):
             setViewConfiguration(context, request)
         if name == '.loops':
             return self.context.getLoopsRoot()
-        if name.startswith('.target'):
-            traversalStack = request._traversal_stack
-            while traversalStack and traversalStack[0].startswith('.target'):
-                # skip obsolete target references in the url
-                name = traversalStack.pop(0)
-            traversedNames = request._traversed_names
-            if traversedNames:
-                lastTraversed = traversedNames[-1]
-                if lastTraversed.startswith('.target') and lastTraversed != name:
-                    # let <base .../> tag show the current object
-                    traversedNames[-1] = name
-            if len(name) > len('.target'):
-                uid = int(name[len('.target'):])
-                target = util.getObjectForUid(uid)
-                #target = component.getUtility(IIntIds).getObject(uid)
-            else:
-                target = self.context.target
+        if name.startswith('.'):
+            name = self.cleanUpTraversalStack(request, name)[1:]
+            #traversalStack = request._traversal_stack
+            #while traversalStack and traversalStack[0].startswith('.target'):
+            #    # skip obsolete target references in the url
+            #    name = traversalStack.pop(0)
+            #traversedNames = request._traversed_names
+            #if traversedNames:
+            #    lastTraversed = traversedNames[-1]
+            #    if lastTraversed.startswith('.target') and lastTraversed != name:
+            #        # let <base .../> tag show the current object
+            #        traversedNames[-1] = name
+            #if len(name) > len('.target'):
+            #    uid = int(name[len('.target'):])
+            #    target = util.getObjectForUid(uid)
+            #else:
+            #    target = self.context.target
+            target = self.getTarget(name)
             if target is not None:
                 # remember self.context in request
                 if request.method == 'PUT':
@@ -824,6 +829,28 @@ class NodeTraverser(ItemTraverser):
                     return self.context
         obj = super(NodeTraverser, self).publishTraverse(request, name)
         return obj
+
+    def cleanUpTraversalStack(self, request, name):
+        traversalStack = request._traversal_stack
+        while traversalStack and traversalStack[0].startswith('.'):
+            # skip obsolete target references in the url
+            name = traversalStack.pop(0)
+        traversedNames = request._traversed_names
+        if traversedNames:
+            lastTraversed = traversedNames[-1]
+            if lastTraversed.startswith('.') and lastTraversed != name:
+                # let <base .../> tag show the current object
+                traversedNames[-1] = name
+        return name
+
+    def getTarget(self, name):
+        if name.startswith('target'):
+            name = name[6:]
+        if '-' in name:
+            name, ignore = name.split('-', 1)
+        if name and name.isdigit():
+            return util.getObjectForUid(int(name))
+        return self.context.target
 
 
 def setViewConfiguration(context, request):

@@ -1,3 +1,6 @@
+<html i18n:domain="loops">
+
+
 <metal:block define-macro="render">
     <div metal:define-macro="render_base"
          tal:define="itemNum view/itemNum;
@@ -47,7 +50,7 @@
     <h1 tal:content="item/title">Title</h1><br />
     <img src="#"
          tal:attributes="src
-                string:${view/url}/.target${view/targetId}/view?version=this" />
+                string:${view/url}/.${view/targetId}/view?version=this" />
     <p><i tal:content="structure item/renderedDescription">Description</i></p>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
@@ -64,7 +67,7 @@
         <a href="#"
            i18n:translate=""
            tal:attributes="href
-                string:${view/url}/.target${view/targetId}/download.html?version=this">
+                string:${view/virtualTargetUrl}/download.html?version=this">
           Download
         </a>
       </span>
@@ -73,7 +76,7 @@
         <a href="#"
            i18n:translate=""
            tal:attributes="href
-                string:${view/url}/.target${view/targetId}/view?version=this">
+                string:${view/virtualTargetUrl}/view?version=this">
           View
         </a>
       </span>
@@ -81,7 +84,7 @@
             tal:condition="item/xeditable">
         <a href="#" title="Edit with External Editor"
            i18n:translate=""
-           tal:define="url string:${view/url}/.target${view/targetId}"
+           tal:define="url view/virtualTargetUrl"
            tal:attributes="href string:$url/external_edit?version=this">
          Open for editing
         </a>
@@ -112,9 +115,12 @@
 <metal:actions define-macro="related">
           <div tal:repeat="concept macro/info/relatedConcepts">
             <a href="#"
-               tal:attributes="href string:${view/url}/.target${concept/uniqueId}">
+               tal:attributes="href python: view.getUrlForTarget(concept)">
               <span i18n:translate="" tal:content="concept/title">Concept</span>
               (<i i18n:translate="" tal:content="concept/typeTitle">Type</i>)
             </a>
           </div>
 </metal:actions>
+
+
+</html>

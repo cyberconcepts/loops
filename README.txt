@@ -594,7 +594,7 @@ is ``NodeView.getUrlForTarget()`` that expects a ConceptView, ResourceView,
 or ConceptRelationView as its argument.
 
   >>> view.getUrlForTarget(childRels[0])
-  'http://127.0.0.1/loops/views/m1/m11/m112/.target37'
+  'http://127.0.0.1/loops/views/m1/m11/m112/.37'
 
 Actions
 -------

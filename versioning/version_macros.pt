@@ -1,3 +1,6 @@
+<html i18n:domain="loops">
+
+
 <metal:resources define-macro="versions">
       <div tal:attributes="class string:content-$level;
                            ondblclick python: item.openEditWindow('resources.html')"
@@ -19,7 +22,8 @@
               <tr tal:attributes="class class">
                 <td valign="top">
                   <a href="#"
-                     tal:attributes="href string:${view/url}/.target${related/uniqueId}?version=this;
+                     tal:define="url python: view.getUrlForTarget(related)"
+                     tal:attributes="href string:$url?version=this;
                                      title description">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
@@ -45,9 +49,11 @@
 <metal:versions define-macro="portlet_versions">
   <div>
     <a href="#"
-       tal:attributes="href string:${view/url}/.target${macro/info/uniqueId}?loops.viewName=listversions">
+       tal:attributes="href string:${view/url}/.${macro/info/uniqueId}?loops.viewName=listversions">
       <span i18n:translate="">All versions</span>
     </a>
   </div>
 </metal:versions>
 
+
+</html>

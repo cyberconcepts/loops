@@ -76,7 +76,7 @@
         <h2 i18n:translate="">Parents</h2>
         <div tal:repeat="related item/parents">
           <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId}"
+             tal:attributes="href python: view.getUrlForTarget(related)"
              tal:content="related/title">Concept Title</a>
         </div>
       </div>
@@ -104,7 +104,7 @@
               <tr tal:attributes="class class">
                 <td valign="top">
                   <a href="#"
-                     tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                     tal:attributes="href python: view.getUrlForTarget(related);
                                      title description">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
@@ -162,7 +162,7 @@
                          tal:attributes="value uid;" /></td>
                 <td valign="top">
                   <a href="#"
-                     tal:attributes="href string:${view/url}/.target${related/uniqueId};
+                     tal:attributes="href python: view.getUrlForTarget(related);
                                      title description">
                     <img tal:define="icon related/icon"
                          tal:condition="icon"
@@ -178,7 +178,8 @@
                     <a href="#"
                        tal:content="versionId"
                        tal:omit-tag="python: versionId=='1.1'"
-                       tal:attributes="href string:${view/url}/.target${related/uniqueId}?loops.viewName=listversions">1.1</a>
+                       tal:define="url python: view.getUrlForTarget(related)"
+                       tal:attributes="href string:${url}?loops.viewName=listversions">1.1</a>
                   </td>
                 </tal:version>
                 <td class="nowrap number">

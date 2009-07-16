@@ -412,7 +412,7 @@ Send Email to Members
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.target97\n\n'
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.97\n\n'
 
 
 Fin de partie

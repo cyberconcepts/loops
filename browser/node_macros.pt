@@ -228,7 +228,8 @@
 
 
 <metal:actions define-macro="personal">
-    <div><a href="logout.html" i18n:translate="">Log out</a></div>
+    <div><a href="logout.html?nextURL=login.html"
+            i18n:translate="">Log out</a></div>
     <tal:actions repeat="action python:view.getActions('personal')">
       <metal:action use-macro="action/macro" />
     </tal:actions>
