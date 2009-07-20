@@ -152,7 +152,7 @@ class SetupManager(object):
         self.log("Setting Attribute '%s' of '%s' to '%s'" %
                  (attr, getName(concept), repr(value)))
 
-    def assignChild(self, conceptName, childName, predicate=None):
+    def assignChild(self, conceptName, childName, predicate=None, **kw):
         if predicate is None:
             predicate = self.concepts.getDefaultPredicate()
         if isinstance(predicate, basestring):
@@ -163,7 +163,7 @@ class SetupManager(object):
             self.log("Concept '%s' is already a child of '%s' with predicate '%s'.'" %
                      (childName, conceptName, getName(predicate)))
         else:
-            concept.assignChild(child, predicate)
+            concept.assignChild(child, predicate, **kw)
             self.log("Concept '%s' assigned to '%s with predicate '%s'.'" %
                      (childName, conceptName, getName(predicate)))
 
@@ -181,7 +181,7 @@ class SetupManager(object):
             self.log("Resource '%s' ('%s') created." % (name, title))
         return c
 
-    def assignResource(self, conceptName, resourceName, predicate=None):
+    def assignResource(self, conceptName, resourceName, predicate=None, **kw):
         if predicate is None:
             predicate = self.concepts.getDefaultPredicate()
         if isinstance(predicate, basestring):
@@ -192,7 +192,7 @@ class SetupManager(object):
             self.log("Resource '%s' is already assigned to '%s with predicate '%s'.'" %
                      (resourceName, conceptName, getName(predicate)))
         else:
-            concept.assignResource(resource, predicate)
+            concept.assignResource(resource, predicate, **kw)
             self.log("Resource '%s' assigned to '%s with predicate '%s'.'" %
                      (resourceName, conceptName, getName(predicate)))
 

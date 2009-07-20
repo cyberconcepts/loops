@@ -142,7 +142,7 @@ class Extractor(Base):
             for r in c.getChildRelations():
                 if r.predicate != typePredicate:
                     args = [getName(r.first), getName(r.second), getName(r.predicate)]
-                    if r.order != 0:
+                    if r.order != 0 or r.relevance != 1.0:
                         args.append(r.order)
                     if r.relevance != 1.0:
                         args.append(r.relevance)
@@ -155,7 +155,7 @@ class Extractor(Base):
             for r in c.getResourceRelations():
                 if r.predicate != typePredicate:
                     args = [getName(r.first), getName(r.second), getName(r.predicate)]
-                    if r.order != 0:
+                    if r.order != 0 or r.relevance != 1.0:
                         args.append(r.order)
                     if r.relevance != 1.0:
                         args.append(r.relevance)

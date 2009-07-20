@@ -136,7 +136,9 @@ class ChildElement(Element):
             self[self.posArgs[idx]] = arg
 
     def execute(self, loader):
-        loader.assignChild(self['first'], self['second'], self['predicate'])
+        loader.assignChild(self['first'], self['second'], self['predicate'],
+                           order = self.get('order') or 0,
+                           relevance = self.get('relevance') or 1.0)
 
 
 class ResourceElement(Element):
@@ -181,7 +183,9 @@ class ResourceRelationElement(ChildElement):
     elementType = 'resourceRelation'
 
     def execute(self, loader):
-        loader.assignResource(self['first'], self['second'], self['predicate'])
+        loader.assignResource(self['first'], self['second'], self['predicate'],
+                           order = self.get('order') or 0,
+                           relevance = self.get('relevance') or 1.0)
 
 
 class NodeElement(Element):
