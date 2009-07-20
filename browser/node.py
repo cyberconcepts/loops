@@ -59,6 +59,7 @@ from loops import util
 from loops.util import _
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.organize.interfaces import IPresence
 from loops.organize.tracking import access
 from loops.versioning.util import getVersion
 
@@ -135,8 +136,20 @@ class NodeView(BaseView):
                         icon='cybertools.icons/user.png',
                         url=url,
                         priority=10)
+            if self.globalOptions('organize.showPresence'):
+                cm.register('portlet_right', 'presence', title=_(u'Presence'),
+                            subMacro=node_macros.macros['presence'],
+                            icon='cybertools.icons/group.png',
+                            priority=11)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
+
+    @Lazy
+    def usersPresent(self):
+        presence = component.getUtility(IPresence)
+        presence.update(self.request.principal.id)
+        data = presence.getPresentUsers()
+        return data
 
     @Lazy
     def view(self):

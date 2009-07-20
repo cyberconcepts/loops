@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -177,3 +177,34 @@ class IAllocated(IConceptSchema):
                 )),
             default='standard',
             required=True)
+
+
+# presence
+
+class IPresence(Interface):
+    """ Utility for getting information about active principals,
+        mapping principal.id to timestamp of last activity.
+    """
+
+    def update(self, principalId):
+        """ Update Dictionary of active users, by calling addPresentUser();
+            automaticly check for inactive users by calling
+            removeInactiveUsers().
+        """
+
+    def addPresentUser(self, principalId):
+        """Add a user to dictionary of active users.
+        """
+
+    def removeInactiveUsers(self):
+        """ Remove a user from dictionary of active users if user
+            didn't interact for last min_until_logout minutes.
+        """
+
+    def getPresentUsers(self):
+        """ Return list of titles of active users.
+        """
+
+    def removePresentUser(self, principalId):
+        """ Remove user from dictionary of active users, e.g. when user logs out.
+        """

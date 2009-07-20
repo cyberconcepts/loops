@@ -50,6 +50,11 @@
 
   <!-- authentication -->
 
+  <zope:utility
+      name="loops Session Credentials"
+      provides="zope.app.authentication.interfaces.ICredentialsPlugin"
+      factory="loops.organize.auth.LoopsSessionCredentialsPlugin" />
+
   <zope:localUtility class="loops.organize.auth.PersonBasedAuthenticator">
     <require
         permission="zope.ManageServices"
@@ -71,6 +76,8 @@
 
   <zope:adapter factory="loops.organize.setup.SetupManager"
                 name="organize" />
+
+  <zope:utility factory="loops.organize.presence.Presence" />
 
   <!-- include -->
 

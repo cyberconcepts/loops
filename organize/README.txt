@@ -415,6 +415,13 @@ Send Email to Members
   u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.97\n\n'
 
 
+Show Presence of Other Users
+============================
+
+  >>> from loops.organize.presence import Presence
+  >>> component.provideUtility(Presence())
+
+
 Fin de partie
 =============
 

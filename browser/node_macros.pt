@@ -236,6 +236,13 @@
 </metal:actions>
 
 
+<metal:actions define-macro="presence">
+    <tal:user repeat="user view/usersPresent">
+      <div tal:content="user" />
+    </tal:user>
+</metal:actions>
+
+
 <!-- inner HTML macros -->
 
 <div metal:define-macro="inline_edit"

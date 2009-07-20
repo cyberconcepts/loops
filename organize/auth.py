@@ -34,6 +34,9 @@ from zope.app.security.interfaces import IAuthentication
 from zope import schema
 from zope.traversing.api import getParent
 
+from cybertools.browser.loops.auth import LoopsSessionCredentialsPlugin \
+                            as BaseSessionCredentialsPlugin
+from loops.organize.interfaces import IPresence
 from loops.util import _
 
 
@@ -96,6 +99,14 @@ class PersonBasedAuthenticator(Persistent, Contained):
 
     def get(self, login):
         return InternalPrincipal(self, login)
+
+
+class LoopsSessionCredentialsPlugin(BaseSessionCredentialsPlugin):
+
+    def logout(self, request):
+        presence = component.getUtility(IPresence)
+        presence.removePresentUser(request.principal.id)
+        super(LoopsSessionCredentialsPlugin, self).logout(request)
 
 
 class InternalPrincipal(object):
