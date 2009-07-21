@@ -27,4 +27,9 @@
         class="loops.media.browser.admin.RegenerationView"
         permission="zope.View" />
 
+  <page for="loops.interfaces.ILoops"
+        name="media_assets_change_subdirectories.html"
+        class="loops.media.browser.admin.ChangeSubdirectories"
+        permission="zope.View" />
+
 </configure>

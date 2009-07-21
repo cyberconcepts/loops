@@ -27,6 +27,7 @@ $Id$
 from logging import getLogger
 import traceback
 from zope import component
+from zope.security.proxy import removeSecurityProxy
 
 from cybertools.media.interfaces import IMediaAsset
 
@@ -56,3 +57,22 @@ class RegenerationView(object):
         if errors:
             return 'Done - there were %i errors.' % errors
         return 'Done.'
+
+
+class ChangeSubdirectories(object):
+
+    search = '/home/Zope3/ctt'
+    replace = ''
+
+    def __call__(self):
+        found = changed = 0
+        context = removeSecurityProxy(self.context)
+        ma = context['concepts']['media_asset']
+        for obj in ma.getResources():
+            found += 1
+            subdir = obj._storageParams.get('subdirectory', '')
+            print subdir
+            if self.search in subdir:
+                changed += 1
+                obj._storageParams['subdirectory'] = subdir.replace(search, replace)
+        return 'Done, %i media asset objects found, %i changed' % (found, changed)
