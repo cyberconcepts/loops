@@ -97,7 +97,12 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
         if not d:
             dp = self.getDataPath()
             if dp is not None:
-                return datetime.fromtimestamp(os.path.getmtime(dp))
+                try:
+                    return datetime.fromtimestamp(os.path.getmtime(dp))
+                except OSError, e:
+                    getLogger('loops.media.asset.MediaAsset').warn(e)
+                    return None
+
         return d
     def setModified(self, value):
         self.context._modified = value
