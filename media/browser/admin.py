@@ -62,7 +62,7 @@ class RegenerationView(object):
 class ChangeSubdirectories(object):
 
     search = '/home/Zope3/ctt'
-    replace = ''
+    replace = '/home/33zope/ctt'
 
     def __call__(self):
         found = changed = 0
@@ -70,9 +70,11 @@ class ChangeSubdirectories(object):
         ma = context['concepts']['media_asset']
         for obj in ma.getResources():
             found += 1
-            subdir = obj._storageParams.get('subdirectory', '')
+            sp = obj._storageParams
+            subdir = sp.get('subdirectory', '')
             print subdir
             if self.search in subdir:
                 changed += 1
-                obj._storageParams['subdirectory'] = subdir.replace(search, replace)
+                sp['subdirectory'] = subdir.replace(self.search, self.replace)
+                obj._storageParams = sp
         return 'Done, %i media asset objects found, %i changed' % (found, changed)
