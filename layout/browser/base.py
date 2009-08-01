@@ -48,10 +48,6 @@ class BaseView(object):
         return self.context.getLoopsRoot()
 
     @Lazy
-    def defaultPredicate(self):
-        return self.loopsRoot.getConceptManager().getDefaultPredicate()
-
-    @Lazy
     def conceptManager(self):
         return self.loopsRoot.getConceptManager()
 
@@ -109,6 +105,16 @@ class BaseView(object):
             result.append(dict(label=pageName.split('.')[0].title(),
                                url='%s/%s' % (self.url, pageName)))
         return result
+
+    @Lazy
+    def filter(self):
+        fname = self.request.form.get('filter')
+        if fname is None:
+            li = getattr(self, 'layoutInstance', None)
+            if li is not None:
+                fname = getattr(li.template, 'filter', '')
+                self.request.form['filter'] = fname
+        return fname
 
     @Lazy
     def authenticated(self):

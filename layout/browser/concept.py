@@ -41,6 +41,7 @@ class ConceptView(BaseView):
     @property
     def children(self):
         for c in self.context.getChildren():
+        #for c in self.context.getChildren([self.defaultPredicate]):
             a = adapted(c)
             #view = component.getMultiAdapter((c, self.request), name='layout')
             view = component.getMultiAdapter((a, self.request), name='layout')
