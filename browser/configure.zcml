@@ -16,6 +16,9 @@
   <resource name="loops.css" file="loops.css" />
   <resource name="loops.js" file="loops.js" />
 
+  <!-- jocy JavaScript extension library -->
+  <include package="cybertools.ajax" file="configure-jocy.zcml" />
+
   <!-- node pages -->
 
   <page for="loops.interfaces.INode"
