@@ -109,11 +109,14 @@ class TargetLayoutInstance(NodeLayoutInstance):
         obj = self.target.context
         tp = obj.getType()
         found = False
+        topLevelLayout = self.context.getMenu()
         for n in obj.getClients() + tp.getClients():
             if not ILayoutNode.providedBy(n):
                 continue
             if n.nodeType == 'info' and n.viewName in names:
                 if pageName != (n.pageName or '').strip():
+                    continue
+                if n.getMenu() != topLevelLayout:
                     continue
                 layout = region.layouts[n.viewName]
                 li = component.getAdapter(n, ILayoutInstance,
