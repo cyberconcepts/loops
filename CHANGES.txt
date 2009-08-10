@@ -8,6 +8,10 @@ $Id$
 
 New features
 
+- presence: portlet showing other users logged-in and working within the
+  same loops site, controlled by global option ``organize.showPresence`,
+  using new LoopsSessionCredentialsPlugin;
+  (Changeset 3466; author: Hannes Plattner)
 - form for user registration (``register_user.html``), controlled by options:
   ``registration_principalfolder``, ``registration_groups``
 - new action: ``create task``
