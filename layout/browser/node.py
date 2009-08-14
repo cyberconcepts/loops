@@ -25,32 +25,19 @@ $Id$
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 from zope import component
+from zope.security.proxy import removeSecurityProxy
 
 from cybertools.composer.layout.browser.view import Page
 from loops.common import adapted
+from loops.layout.browser.base import BaseView
 
 
-class LayoutNodeView(Page):
+class LayoutNodeView(Page, BaseView):
 
-    @Lazy
-    def loopsRoot(self):
-        return self.context.getLoopsRoot()
-
-    @Lazy
-    def defaultPredicate(self):
-        return self.loopsRoot.getConceptManager().getDefaultPredicate()
-
-    @Lazy
-    def conceptManager(self):
-        return self.loopsRoot.getConceptManager()
-
-    @Lazy
-    def resourceManager(self):
-        return self.loopsRoot.getResourceManager()
-
-    @Lazy
-    def defaultPredicate(self):
-        return self.conceptManager.getDefaultPredicate()
+    def __init__(self, context, request):
+        super(LayoutNodeView, self).__init__(context, request)
+        #Page.__init__(self, context, request)
+        self.viewAnnotations.setdefault('node', removeSecurityProxy(context))
 
     @Lazy
     def layoutName(self):
@@ -68,10 +55,6 @@ class LayoutNodeView(Page):
         return result
 
     @Lazy
-    def viewAnnotations(self):
-        return self.request.annotations.get('loops.view', {})
-
-    @Lazy
     def target(self):
         target = self.viewAnnotations.get('target')
         if target is None:
@@ -86,11 +69,3 @@ class LayoutNodeView(Page):
             return ' - '.join((self.context.title, targetView.title))
         else:
             return self.context.title
-
-    @Lazy
-    def authenticated(self):
-        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
-
-    def getMessage(self, id):
-        return self.request.form.get('loops.messages', {}).get(id, {})
-

@@ -61,7 +61,7 @@ class BaseView(object):
 
     @Lazy
     def viewAnnotations(self):
-        return self.request.annotations.get('loops.view', {})
+        return self.request.annotations.setdefault('loops.view', {})
 
     @Lazy
     def virtualTarget(self):
@@ -99,8 +99,7 @@ class BaseView(object):
     def breadcrumbs(self):
         return []
         result = [dict(label=self.title, url=self.url)]
-        viewAnnotations = self.request.annotations.setdefault('loops.view', {})
-        pageName = viewAnnotations.get('pageName')
+        pageName = self.viewAnnotations.get('pageName')
         if pageName:
             result.append(dict(label=pageName.split('.')[0].title(),
                                url='%s/%s' % (self.url, pageName)))

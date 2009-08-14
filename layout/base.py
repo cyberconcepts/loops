@@ -64,7 +64,7 @@ class NodeLayoutInstance(LayoutInstance):
     def targetView(self):
         request = self.view.request
         view = component.getMultiAdapter((self.target, request), name='layout')
-        view.node = self.context
+        #view.node = self.context
         view.layoutInstance = self
         return view
 
