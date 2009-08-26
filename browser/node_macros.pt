@@ -164,7 +164,7 @@
        tal:condition="nocall:target">
     <div tal:repeat="related item/children">
           <a href="#"
-             tal:attributes="href string:${view/url}/.target${related/uniqueId};
+             tal:attributes="href string:${view/url}/.${related/uniqueId};
                              title related/description"
              tal:content="related/title">Resource Title</a>
     </div>
