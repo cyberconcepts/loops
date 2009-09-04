@@ -167,7 +167,7 @@ to the external system:
   >>> component.provideUtility(IMAPCollectionProvider(), name='imap')
 
   >>> aMailColl.update()
-  *** 1 blubb
+  *** 1 ...
 
 
 Uploading Resources with HTTP PUT Requests
