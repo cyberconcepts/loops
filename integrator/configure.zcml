@@ -3,8 +3,7 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="loops">
 
   <zope:adapter factory="loops.integrator.collection.ExternalCollectionAdapter"
                 trusted="True" />
@@ -55,5 +54,6 @@
         permission="zope.Public" />
 
   <include package=".content" />
+  <include package=".mail" />
 
 </configure>

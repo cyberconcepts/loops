@@ -34,6 +34,7 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.external.base import BaseLoader
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.external.interfaces import ILoader, IExtractor, ISubExtractor
@@ -70,24 +71,21 @@ class Base(object):
         return self.concepts.getTypePredicate()
 
 
-class Loader(Base, SetupManager):
+class Loader(Base, BaseLoader, SetupManager):
 
     implements(ILoader)
 
     def __init__(self, context, resourceDirectory=None):
-        super(Loader, self).__init__(context, resourceDirectory)
+        #super(Loader, self).__init__(context, resourceDirectory)
+        Base.__init__(self, context, resourceDirectory)
+        BaseLoader.__init__(self, context)
         self.logger = StringIO()
         #self.logger = sys.stdout
-
-    def load(self, elements):
-        for element in elements:
-            element.execute(self)
-            if element.subElements is not None:
-                self.load(element.subElements)
 
     # TODO: care for setting attributes via Instance (Editor)
     # instead of using SetupManager methods:
     # def addConcept(self, ...):
+
 
 class Extractor(Base):
 

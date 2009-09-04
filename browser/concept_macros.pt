@@ -63,6 +63,11 @@
 </metal:textline>
 
 
+<metal:textline define-macro="display_password">
+      <span>*****</span>
+</metal:textline>
+
+
 <metal:email define-macro="display_email">
       <a href="#"
          tal:attributes="href string:mailto:$value"

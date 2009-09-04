@@ -136,6 +136,39 @@ But if one of the referenced objects is not found any more it will be deleted.
   ('fullpath', {'subdirectory': '...zope'}, 'zope3.txt')
 
 
+Mail Collections
+================
+
+  >>> tType = concepts['type']
+  >>> from loops.integrator.mail.interfaces import IMailCollection, IMailResource
+  >>> tMailCollection = addObject(concepts, Concept, 'mailcollection',
+  ...                    title=u'Mail Collection', conceptType=tType,
+  ...                    typeInterface=IMailCollection)
+  >>> tMailResource = addObject(concepts, Concept, 'email',
+  ...                    title=u'Mail Resource', conceptType=tType,
+  ...                    typeInterface=IMailResource)
+
+  >>> mailColl = addObject(concepts, Concept, 'mails.user1',
+  ...                    title=u'My Mails (User1)', conceptType=tMailCollection)
+
+  >>> from loops.integrator.mail.collection import MailCollectionAdapter
+  >>> aMailColl = MailCollectionAdapter(mailColl)
+
+An external collection carries a set of attributes that control the access
+to the external system:
+
+  >>> (aMailColl.providerName, aMailColl.baseAddress,
+  ...  aMailColl.address, aMailColl.pattern)
+  (u'imap', None, None, None)
+
+  >>> from loops.integrator.mail import testing
+
+  >>> from loops.integrator.mail.imap import IMAPCollectionProvider
+  >>> component.provideUtility(IMAPCollectionProvider(), name='imap')
+  >>> aMailColl.update()
+  *** 1 blubb
+
+
 Uploading Resources with HTTP PUT Requests
 ==========================================
 

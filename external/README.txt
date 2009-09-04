@@ -57,14 +57,14 @@ Creating the corresponding objects
 Working with resources
 ----------------------
 
-  >>> import os
-  >>> from loops.external.tests import dataDirectory
-  >>> loader.resourceDirectory = os.path.join(dataDirectory, 'import')
-
   >>> input = ("resource('doc04.txt', u'Document 4', 'textdocument')\n"
   ...          "resourceRelation('myquery', 'doc04.txt', 'standard')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
+
+  >>> import os
+  >>> from loops.external.tests import dataDirectory
+  >>> loader = Loader(loopsRoot, os.path.join(dataDirectory, 'import'))
   >>> loader.load(elements)
 
   >>> sorted(resources)

@@ -1,0 +1,23 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops" >
+
+  <zope:adapter factory="loops.integrator.mail.collection.MailCollectionAdapter"
+                provides="loops.integrator.mail.interfaces.IMailCollection"
+                trusted="True" />
+
+  <zope:class class="loops.integrator.mail.collection.MailCollectionAdapter">
+    <require permission="zope.View"
+             interface="loops.integrator.mail.interfaces.IMailCollection" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.integrator.mail.interfaces.IMailCollection" />
+  </zope:class>
+
+  <zope:utility
+      factory="loops.integrator.mail.imap.IMAPCollectionProvider"
+      name="imap" />
+
+</configure>
