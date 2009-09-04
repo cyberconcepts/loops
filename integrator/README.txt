@@ -165,6 +165,7 @@ to the external system:
 
   >>> from loops.integrator.mail.imap import IMAPCollectionProvider
   >>> component.provideUtility(IMAPCollectionProvider(), name='imap')
+
   >>> aMailColl.update()
   *** 1 blubb
 
