@@ -20,4 +20,15 @@
       factory="loops.integrator.mail.imap.IMAPCollectionProvider"
       name="imap" />
 
+  <zope:adapter factory="loops.integrator.mail.resource.MailResource"
+                provides="loops.integrator.mail.interfaces.IMailResource"
+                trusted="True" />
+
+  <zope:class class="loops.integrator.mail.resource.MailResource">
+    <require permission="zope.View"
+             interface="loops.integrator.mail.interfaces.IMailResource" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.integrator.mail.interfaces.IMailResource" />
+  </zope:class>
+
 </configure>

@@ -84,7 +84,7 @@ class ExternalCollectionAdapter(AdapterBase):
                 # may be it would be better to return a file's hash
                 # for checking for changes...
                 oldFound.append(addr)
-                if mdate > self.lastUpdated:
+                if mdate and mdate > self.lastUpdated:
                     # force reindexing
                     notify(ObjectModifiedEvent(old[addr]))
             else:

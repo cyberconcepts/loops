@@ -38,7 +38,7 @@ of the 'extcollection' type. We use an adapter for providing the attributes
 and methods of the external collect object.
 
   >>> from loops.concept import Concept
-  >>> from loops.setup import addObject
+  >>> from loops.setup import addObject, addAndConfigureObject
   >>> from loops.integrator.collection import ExternalCollectionAdapter
   >>> tExternalCollection = concepts['extcollection']
   >>> coll01 = addObject(concepts, Concept, 'coll01',
@@ -141,10 +141,10 @@ Mail Collections
 
   >>> tType = concepts['type']
   >>> from loops.integrator.mail.interfaces import IMailCollection, IMailResource
-  >>> tMailCollection = addObject(concepts, Concept, 'mailcollection',
+  >>> tMailCollection = addAndConfigureObject(concepts, Concept, 'mailcollection',
   ...                    title=u'Mail Collection', conceptType=tType,
   ...                    typeInterface=IMailCollection)
-  >>> tMailResource = addObject(concepts, Concept, 'email',
+  >>> tMailResource = addAndConfigureObject(concepts, Concept, 'email',
   ...                    title=u'Mail Resource', conceptType=tType,
   ...                    typeInterface=IMailResource)
 
@@ -157,17 +157,28 @@ Mail Collections
 An external collection carries a set of attributes that control the access
 to the external system:
 
-  >>> (aMailColl.providerName, aMailColl.baseAddress,
-  ...  aMailColl.address, aMailColl.pattern)
-  (u'imap', None, None, None)
+  >>> aMailColl.userName = u'jim'
+  >>> (aMailColl.providerName, aMailColl.baseAddress, aMailColl.address,
+  ...  aMailColl.pattern, aMailColl.userName)
+  (u'imap', None, None, None, u'jim')
 
   >>> from loops.integrator.mail import testing
 
   >>> from loops.integrator.mail.imap import IMAPCollectionProvider
   >>> component.provideUtility(IMAPCollectionProvider(), name='imap')
+  >>> from loops.integrator.mail.resource import MailResource
+  >>> component.provideAdapter(MailResource, provides=IMailResource)
 
   >>> aMailColl.update()
-  *** 1 ...
+
+  >>> aMail = adapted(mailColl.getResources()[0])
+
+  >>> aMail.date, aMail.sender, aMail.receiver, aMail.title
+  (datetime.datetime(...), 'ceo@cy55.de', 'ceo@example.org', 'Blogging from Munich')
+  >>> aMail.data
+  '<p><b>Blogging from ...</b><br />\n'
+  >>> aMail.externalAddress
+  u'imap://jim@merz12/20081208171745.e4ce2xm96cco80cg@cy55.de'
 
 
 Uploading Resources with HTTP PUT Requests
