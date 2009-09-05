@@ -1,0 +1,26 @@
+<html i18n:domain="loops">
+
+
+<metal:block define-macro="email">
+  <metal:block tal:define="description nothing">
+    <metal:render use-macro="item/resource_macros/render_base">
+      <div metal:fill-slot="fields"><br />
+        <table>
+          <tr>
+            <td><b>From:</b></td><td tal:content="item/adapted/sender" />
+          </tr>
+          <tr>
+            <td><b>To:</b></td><td tal:content="item/adapted/receiver" />
+          </tr>
+          <tr>
+            <td><b>Date:</b></td><td tal:content="item/adapted/date" />
+          </tr>
+        </table><br />
+      </div>
+    </metal:render>
+  </metal:block>
+  <metal:fields use-macro="view/comment_macros/comments" />
+</metal:block>
+
+
+</html>

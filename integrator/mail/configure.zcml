@@ -31,4 +31,14 @@
              set_schema="loops.integrator.mail.interfaces.IMailResource" />
   </zope:class>
 
+  <!-- views -->
+
+  <zope:adapter
+        name="email.html"
+        for="loops.interfaces.IResource
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.integrator.mail.browser.MailView"
+        permission="zope.View" />
+
 </configure>

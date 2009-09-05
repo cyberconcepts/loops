@@ -113,13 +113,19 @@ class IMAPCollectionProvider(object):
             yield obj
 
     def getPayload(self, msg, parts):
+        def getCharset(ct):
+            if 'charset=' in ct:
+                cs = ct.split('charset=', 1)[1]
+                if ';' in cs:
+                    cs = cs.split(';', 1)[0]
+                return cs.replace('"', '')
         if msg.is_multipart():
             for part in msg.get_payload():
                 self.getPayload(part, parts)
         else:
             ct = msg['Content-Type']
             if ct and ct.startswith('text/html'):
-                parts['html'] = msg.get_payload()
-            if ct and ct.startswith('text/plain'):
-                parts['plain'] = msg.get_payload()
+                parts['html'] = msg.get_payload(decode=True).decode(getCharset(ct))
+            elif ct and ct.startswith('text/plain'):
+                parts['plain'] = msg.get_payload(decode=True).decode(getCharset(ct))
         return parts

@@ -176,7 +176,7 @@ to the external system:
   >>> aMail.date, aMail.sender, aMail.receiver, aMail.title
   (datetime.datetime(...), 'ceo@cy55.de', 'ceo@example.org', 'Blogging from Munich')
   >>> aMail.data
-  '<p><b>Blogging from ...</b><br />\n'
+  u'<p><b>Blogging from ...</b><br />\n'
   >>> aMail.externalAddress
   u'imap://jim@merz12/20081208171745.e4ce2xm96cco80cg@cy55.de'
 

@@ -15,6 +15,7 @@
       <p tal:define="description description|item/description"
          tal:condition="description">
         <i tal:content="description">Description</i></p>
+      <div metal:define-slot="fields" />
       <div class="content-1" id="1.body"
            tal:attributes="id id;"
            tal:content="structure item/render">

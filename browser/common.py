@@ -72,6 +72,7 @@ from loops.versioning.interfaces import IVersionable
 
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
 conceptMacrosTemplate = concept_macros      #
+resource_macros = ViewPageTemplateFile('resource_macros.pt')
 
 
 class NameField(schema.ASCIILine):
@@ -130,6 +131,10 @@ class BaseView(GenericView, I18NView):
         return concept_macros.macros
 
     concept_macros = conceptMacros
+
+    @Lazy
+    def resource_macros(self):
+        return resource_macros.macros
 
     @Lazy
     def name(self):
