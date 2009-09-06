@@ -90,12 +90,13 @@ class IMAPCollectionProvider(object):
             raw_date = msg['Date'].rsplit(' ', 1)[0]
             fmt = '%a,  %d %b %Y %H:%M:%S'
             date = datetime(*(time.strptime(raw_date, fmt)[0:6]))
-            parts = self.getPayload(msg, {})
+            parts = getPayload(msg)
             if 'html' in parts:
-                text = parts['html']
+                text = '<br /><br /><hr /><br /><br />'.join(parts['html'])
                 ct = 'text/html'
             else:
-                text = parts.get('plain') or u'No message found.'
+                textList = parts.get('plain') or [u'No message found.']
+                text = '\n\n-------\n\n'.join(textList)
                 ct = 'text/plain'
             obj = Resource(title)
             name = INameChooser(container).chooseName(None, obj)
@@ -112,20 +113,27 @@ class IMAPCollectionProvider(object):
             notify(ObjectModifiedEvent(obj))
             yield obj
 
-    def getPayload(self, msg, parts):
-        def getCharset(ct):
-            if 'charset=' in ct:
-                cs = ct.split('charset=', 1)[1]
-                if ';' in cs:
-                    cs = cs.split(';', 1)[0]
-                return cs.replace('"', '')
-        if msg.is_multipart():
-            for part in msg.get_payload():
-                self.getPayload(part, parts)
-        else:
-            ct = msg['Content-Type']
-            if ct and ct.startswith('text/html'):
-                parts['html'] = msg.get_payload(decode=True).decode(getCharset(ct))
-            elif ct and ct.startswith('text/plain'):
-                parts['plain'] = msg.get_payload(decode=True).decode(getCharset(ct))
-        return parts
+def getPayload(msg, parts=None):
+    if parts is None:
+        parts = {}
+    if msg.is_multipart():
+        for part in msg.get_payload():
+            getPayload(part, parts)
+    else:
+        ct = msg['Content-Type']
+        if ct:
+            if ct.startswith('text/html'):
+                parts.setdefault('html', []).append(getText(msg, ct))
+            elif ct.startswith('text/plain'):
+                parts.setdefault('plain', []).append(getText(msg, ct))
+    return parts
+
+def getText(msg, ct):
+    return msg.get_payload(decode=True).decode(getCharset(ct))
+
+def getCharset(ct):
+    if 'charset=' in ct:
+        cs = ct.split('charset=', 1)[1]
+        if ';' in cs:
+            cs = cs.split(';', 1)[0]
+        return cs.replace('"', '')
