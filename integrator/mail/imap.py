@@ -113,27 +113,19 @@ class IMAPCollectionProvider(object):
             notify(ObjectModifiedEvent(obj))
             yield obj
 
-def getPayload(msg, parts=None):
-    if parts is None:
-        parts = {}
-    if msg.is_multipart():
-        for part in msg.get_payload():
-            getPayload(part, parts)
-    else:
-        ct = msg['Content-Type']
-        if ct:
-            if ct.startswith('text/html'):
-                parts.setdefault('html', []).append(getText(msg, ct))
-            elif ct.startswith('text/plain'):
-                parts.setdefault('plain', []).append(getText(msg, ct))
+
+def getPayload(msg):
+    parts = {}
+    for msg in msg.walk():
+        ct = msg.get_content_type()
+        if ct == 'text/html':
+            parts.setdefault('html', []).append(getText(msg))
+        elif ct == 'text/plain':
+            parts.setdefault('plain', []).append(getText(msg))
     return parts
 
-def getText(msg, ct):
-    return msg.get_payload(decode=True).decode(getCharset(ct))
+def getText(msg):
+    return msg.get_payload(decode=True).decode(getCharset(msg))
 
-def getCharset(ct):
-    if 'charset=' in ct:
-        cs = ct.split('charset=', 1)[1]
-        if ';' in cs:
-            cs = cs.split(';', 1)[0]
-        return cs.replace('"', '')
+def getCharset(msg):
+    return dict(msg.get_params()).get('charset') or 'ISO8859-1'
