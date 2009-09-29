@@ -93,6 +93,11 @@ class PersonBasedAuthenticator(Persistent, Contained):
                         getParent(self).prefix + self.prefix + login)
         pa[self.passwordKey] = password
 
+    def getPassword(self, login):
+        pa = self.getPrincipalAnnotations(
+                        getParent(self).prefix + self.prefix + login)
+        return pa.get(self.passwordKey)
+
     def getPrincipalAnnotations(self, id):
         utility = component.getUtility(IPrincipalAnnotationUtility)
         return utility.getAnnotationsById(id)
