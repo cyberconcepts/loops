@@ -142,6 +142,9 @@ class BaseView(object):
     def nl2br(self, text):
         return format.nl2br(text)
 
+    def getUidForObject(self, obj):
+        return util.getUidForObject(obj)
+
 
 pattern = re.compile(r'[ /\?\+%]')
 
