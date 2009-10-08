@@ -62,6 +62,9 @@ def canListObject(obj, noCheck=False):
 def canWriteObject(obj):
     return canWrite(obj, 'title')
 
+def canEditRestricted(obj):
+    return checkPermission('loops.EditRestricted', obj)
+
 def checkPermission(permission, obj):
     return baseCheckPermission(permission, obj)
 
