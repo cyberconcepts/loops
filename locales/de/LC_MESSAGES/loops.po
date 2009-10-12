@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2009-09-17 12:00 CET\n"
+"PO-Revision-Date: 2009-10-11 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -97,6 +97,18 @@ msgstr "Glossareintrag anlegen..."
 
 msgid "Create Glossary Item"
 msgstr "Glossareintrag anlegen"
+
+msgid "Create Person..."
+msgstr "Person anlegen..."
+
+msgid "Create a new person."
+msgstr "Eine neue Person anlegen"
+
+msgid "Edit Person..."
+msgstr "Person bearbeiten..."
+
+msgid "Modify person."
+msgstr "Person bearbeiten"
 
 msgid "Create Resource, Type = "
 msgstr "Ressource anlegen, Typ = "

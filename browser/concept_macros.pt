@@ -93,7 +93,8 @@
                            ondblclick python: item.openEditWindow('configure.html')"
            tal:define="children python: list(item.children())"
            tal:condition="children">
-        <h2 i18n:translate="">Children</h2>
+        <h2 i18n:translate=""
+            tal:condition="show_headline|python:True">Children</h2>
         <table class="listing">
           <tr>
             <th i18n:translate="">Title</th>
@@ -214,6 +215,14 @@
       <metal:fields use-macro="item/template/macros/conceptchildren" />
       <metal:fields use-macro="item/template/macros/conceptresources" />
     </metal:listing>
+  </div>
+</metal:listing>
+
+
+<metal:listing define-macro="list_children">
+  <div tal:define="show_headline nothing">
+    <metal:fields use-macro="item/template/macros/concepttitle" /><br />
+    <metal:fields use-macro="item/template/macros/conceptchildren" />
   </div>
 </metal:listing>
 

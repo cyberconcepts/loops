@@ -30,6 +30,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.meta.interfaces import IOptions
 from cybertools.util.date import getTimeStamp
 from loops.organize.interfaces import IPresence
+from loops.organize.party import getPersonForUser
 from loops.organize import util
 
 
@@ -57,10 +58,12 @@ class Presence(object):
             if id in self.presentUsers:
                 del self.presentUsers[id]
 
-    def getPresentUsers(self):
+    def getPresentUsers(self, context=None):
         ret = []
         for id, timeStamp in self.presentUsers.iteritems():
-            ret.append(util.getPrincipalForUserId(id).title)
+            principal = util.getPrincipalForUserId(id)
+            person = getPersonForUser(context, principal=principal)
+            ret.append(person or principal)
         return ret
 
     def removePresentUser(self, principalId):

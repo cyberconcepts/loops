@@ -62,6 +62,13 @@
       class="loops.organize.browser.party.SendEmailForm"
       permission="zope.View" />
 
+  <zope:adapter
+      name="send_email"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.browser.party.SendEmail"
+      permission="zope.View" />
+
   <!-- authentication -->
 
   <browser:addform

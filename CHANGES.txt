@@ -8,6 +8,9 @@ $Id$
 
 New features
 
+- new view: ``list_children.html``
+- evaluate action settings also on queries
+- "send email" feature, controlled by global option ``organize.allowSendEmail``
 - presence: portlet showing other users logged-in and working within the
   same loops site, controlled by global option ``organize.showPresence`,
   using new LoopsSessionCredentialsPlugin;

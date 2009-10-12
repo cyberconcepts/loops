@@ -150,8 +150,13 @@ class NodeView(BaseView):
     def usersPresent(self):
         presence = component.getUtility(IPresence)
         presence.update(self.request.principal.id)
-        data = presence.getPresentUsers()
-        return data
+        data = presence.getPresentUsers(self.context)
+        for u in data:
+            if IConcept.providedBy(u):
+                url = self.getUrlForTarget(u)
+            else:
+                url = None
+            yield dict(title=u.title, url=url)
 
     @Lazy
     def view(self):

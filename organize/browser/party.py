@@ -23,16 +23,20 @@ loops.organize.party.
 $Id$
 """
 
+from email.MIMEText import MIMEText
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.sendmail.interfaces import IMailDelivery
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
+from cybertools.browser.form import FormController
 from loops.browser.action import DialogAction
 from loops.browser.node import NodeView
 from loops.common import adapted
+from loops.organize.party import getPersonForUser
 from loops.util import _
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
@@ -123,3 +127,22 @@ class SendEmailForm(NodeView):
         site = zdc.title or menu.title
         return _(u"loops Notification from '$site'",
                  mapping=dict(site=site))
+
+
+class SendEmail(FormController):
+
+    def update(self):
+        form = self.request.form
+        subject = form.get('subject') or u''
+        message = form.get('mailbody') or u''
+        recipients = form.get('recipients') or []
+        recipients += (form.get('addrRecipients') or u'').split('\n')
+        person = getPersonForUser(self.context, self.request)
+        sender = person and adapted(person).email or 'loops@unknown.com'
+        msg = MIMEText(message, 'plain', 'utf-8')
+        msg['Subject'] = subject
+        msg['From'] = sender
+        msg['To'] = ', '.join(r.strip() for r in recipients if r.strip())
+        mailhost = component.getUtility(IMailDelivery, 'Mail')
+        mailhost.send(sender, recipients, msg.as_string())
+        return True

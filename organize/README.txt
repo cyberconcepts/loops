@@ -364,6 +364,7 @@ OK, the action is not provided automatically any more by the TaskView
 but has to be entered as a type option.
 
   >>> adapted(task).options = ['action.portlet:editTask']
+  >>> view = TaskView(task01, TestRequest())
   >>> list(view.getActions('portlet'))
   [<loops.browser.action.DialogAction ...>]
 

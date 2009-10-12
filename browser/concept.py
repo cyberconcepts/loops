@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -352,9 +352,8 @@ class ConceptView(BaseView):
 
     def getActions(self, category='object', page=None, target=None):
         acts = []
-        t = IType(self.context)
-        actInfo = t.optionsDict.get('action.' + category, '')
-        actNames = [n.strip() for n in actInfo.split(',')]
+        optKey = 'action.' + category
+        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
         if actNames:
             acts = list(actions.get(category, actNames,
                                     view=self, page=page, target=target))
@@ -507,4 +506,12 @@ class ConceptConfigureView(ConceptView):
         for pred in preds:
             yield terms.getTerm(pred)
 
+
+# query views
+
+class ListChildren(ConceptView):
+
+    @Lazy
+    def macro(self):
+        return concept_macros.macros['list_children']
 

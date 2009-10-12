@@ -55,9 +55,9 @@
 
 
 <metal:block define-macro="send_email">
-    <form method="post" id="sendEmail_form" class="dialog"
+    <form method="post" id="sendEmail_form" name="sendEmail" class="dialog"
           dojoType="dijit.form.Form">
-      <input type="hidden" name="form.action" value="create_workitem" />
+      <input type="hidden" name="form.action" value="send_email" />
       <div class="heading">
         <span i18n:translate="">Send Link by Email</span> -
         <span tal:content="view/target/title"></span></div>
@@ -78,11 +78,16 @@
       <div>
         <label i18n:translate="">Recipients</label>
         <div tal:repeat="member view/members">
-          <input type="checkbox" checked name="recipients:list"
+          <input type="checkbox" name="recipients:list"
                  tal:attributes="value member/email" />
           <span tal:content="member/title">Johnny</span>
           (<span tal:content="member/email">Johnny</span>)
           </div>
+        <div style="color: grey">
+          <input type="checkbox"
+                 onClick="p = document.forms.sendEmail['recipients:list'];
+                          for (i in p) p[i].checked=this.checked;" />
+          <span i18n:translate="">Toggle all</span></div>
       <div>
         <label i18n:translate="" for="addrecipients">Additional recipients</label>
         <div>

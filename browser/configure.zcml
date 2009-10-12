@@ -531,6 +531,16 @@
 
   </pages>
 
+  <!-- query views -->
+
+  <zope:adapter
+      name="list_children.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.concept.ListChildren"
+      permission="zope.View" />
+
   <!-- dialogs/forms (end-user views) -->
 
   <page

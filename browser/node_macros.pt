@@ -238,7 +238,10 @@
 
 <metal:actions define-macro="presence">
     <tal:user repeat="user view/usersPresent">
-      <div tal:content="user" />
+      <div>
+        <a tal:omit-tag="not:user/url"
+           tal:attributes="href user/url"
+           tal:content="user/title" /></div>
     </tal:user>
 </metal:actions>
 

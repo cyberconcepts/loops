@@ -600,7 +600,8 @@ class IConceptRelation(IDyadicRelation):
     """
 
     predicate = Attribute("A concept of type 'predicate' that defines the "
-                    "type of the relation-")
+                    "type of the relation.")
+    relevance = Attribute("A float between 0 and 1.")
 
 
 # interfaces for catalog indexes
