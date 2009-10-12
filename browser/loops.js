@@ -13,6 +13,12 @@ function focusOpener() {
     }
 }
 
+function toggleCheckBoxes(toggle, fieldName) {
+    var w = toggle.form[fieldName];
+    if (w[0] == null) w = [w];
+    for (i in w) w[i].checked=toggle.checked;
+}
+
 function validate(nodeName, required) {
     // (work in progress) - may be used for onBlur event handler
     var w = dojo.byId(nodeName);

@@ -78,6 +78,23 @@ actions.register('editAddress', 'portlet', DialogAction,
         dialogName='editAddress',
 )
 
+actions.register('createInstitution', 'portlet', DialogAction,
+        title=_(u'Create Institution...'),
+        description=_(u'Create a new institution.'),
+        viewName='create_concept.html',
+        dialogName='createInstitution',
+        typeToken='.loops/concepts/institution',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+)
+
+actions.register('editInstitution', 'portlet', DialogAction,
+        title=_(u'Edit Institution...'),
+        description=_(u'Modify institution.'),
+        viewName='edit_concept.html',
+        dialogName='editInstitution',
+)
+
 actions.register('send_email', 'object', DialogAction,
         description=_(u'Send a link to this object by email.'),
         viewName='object_send_email.html',

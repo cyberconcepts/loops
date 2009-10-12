@@ -193,7 +193,7 @@ class IQueryConcept(ILoopsAdapter):
                        'to be used for the query and for presenting '
                        'the results'),
         default=u'',
-        required=True)
+        required=False)
 
     options = schema.List(
         title=_(u'Options'),

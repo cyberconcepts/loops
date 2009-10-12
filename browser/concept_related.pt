@@ -13,7 +13,8 @@
                          summary string:Currently assigned objects;
                          legend string:Parent Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Parents;"
+                         buttonText string:Remove Parents;
+                         formName string:parents;"
              style="float:left; padding-right:20px">
           <metal:parents use-macro="views/relation_macros/listing" />
       </div>
@@ -25,7 +26,8 @@
                          summary string:Currently assigned objects;
                          legend string:Child Concepts;
                          showPredicate string:yes;
-                         buttonText string:Remove Children;"
+                         buttonText string:Remove Children;
+                         formName string:children;"
              style="clear:left">
           <metal:children use-macro="views/relation_macros/listing" />
       </div>
@@ -41,7 +43,8 @@
                          summary string:Assignment candidates;
                          legend string:Search;
                          showPredicate nothing;
-                         buttonText string:Assign;">
+                         buttonText string:Assign;
+                         formName string:search;">
         <metal:assign use-macro="views/relation_macros/listing">
           <metal:search fill-slot="topActions">
             <metal:block use-macro="views/relation_macros/search" />

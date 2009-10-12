@@ -2,14 +2,23 @@
 
 
 <metal:assignments define-macro="listing">
+  <script type="text/javascript">
+    function toggleCheckBoxes(toggle, fieldName) {
+        var w = toggle.form[fieldName];
+        if (w[0] == null) w = [w];
+        for (i in w) w[i].checked=toggle.checked;
+    }
+  </script>
   <fieldset>
     <legend tal:content="legend"
             i18n:translate=""
             style="padding: 0 4px 0 4px">Listing</legend>
     <metal:top define-slot="topActions" />
     <form metal:define-macro="listing_form"
-          method="post" name="listing" action="."
-          tal:attributes="action request/URL"
+          method="post" action="."
+          tal:define="formName formName|string:listing"
+          tal:attributes="action request/URL;
+                          name formName"
           tal:condition="items">
       <input type="hidden" name="action" value="remove"
              tal:attributes="value action" />
@@ -21,7 +30,9 @@
              tal:attributes="summary summary">
         <thead>
           <tr>
-            <th>&nbsp;</th>
+            <th style="padding: 0">
+              <input type="checkbox"
+                     onclick="toggleCheckBoxes(this, 'tokens:list')" /></th>
             <th i18n:translate="label_title">Title</th>
             <th i18n:translate="label_type">Type</th>
             <tal:relation condition="showPredicate">
@@ -35,12 +46,12 @@
           <tr tal:repeat="item items">
             <td class="field">
               <input class="formSelection"
-                     type="checkbox" name="tokens:list" id="#" value=""
+                     type="checkbox" name="tokens:list" value=""
                      tal:condition="not:item/isProtected|nothing"
                      tal:attributes="value item/token" />
             </td>
             <td>
-              <a tal:content="item/title" href="#"
+              <a tal:content="item/title"
                  tal:attributes="href string:${item/url}/@@SelectedManagementView.html">
                 Title
               </a>
