@@ -262,7 +262,7 @@
 <!-- overridden field renderers -->
 
 <metal:html define-macro="input_html">
-    <textarea name="field" rows="3" style="width: 450px"
+    <textarea name="field" rows="3" style="width: 550px"
            dojoType="dijit.Editor"
            extraPlugins="['insertHorizontalRule','createLink']"
            tal:define="width field/width|nothing;
@@ -270,7 +270,7 @@
            tal:attributes="name name; id name;
                            rows python: height or 3;
                            style python:
-                                'width: %s' % (width and str(width)+'px' or '450px');"
+                                'width: %s' % (width and str(width)+'px' or '550px');"
            tal:content="data/?name|string:">
     </textarea>
 </metal:html>

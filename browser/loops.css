@@ -32,6 +32,10 @@ blockquote ul {
     margin: 0;
 }
 
+textarea {
+    font-size: 100%;
+}
+
 /* class-specific */
 
 .description {
