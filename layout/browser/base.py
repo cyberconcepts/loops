@@ -96,19 +96,28 @@ class BaseView(object):
         return '%s/.%s-%s' % (absoluteURL(self.menu, self.request),
                               self.context.uid, normalize(self.context.title))
 
+    @Lazy
+    def urlWithFilter(self):
+        param = ''
+        if self.filter:
+            param = '?filter=%s' % self.filter
+        return '%s/.%s-%s%s' % (absoluteURL(self.menu, self.request),
+                              self.context.uid, normalize(self.context.title), param)
+
     def breadcrumbs(self):
         return []
-        result = [dict(label=self.title, url=self.url)]
+        result = [dict(label=self.title, url=self.urlWithFilter)]
         pageName = self.viewAnnotations.get('pageName')
         if pageName:
             result.append(dict(label=pageName.split('.')[0].title(),
-                               url='%s/%s' % (self.url, pageName)))
+                               url='%s/%s' % (self.urlWithFilter, pageName)))
         return result
 
     @Lazy
     def filter(self):
         fname = self.request.form.get('filter')
-        if fname is None:
+        #if fname is None:
+        if not fname:
             li = getattr(self, 'layoutInstance', None)
             if li is not None:
                 fname = getattr(li.template, 'filter', '')
