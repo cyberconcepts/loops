@@ -194,11 +194,13 @@ class ConceptView(BaseView):
     def __init__(self, context, request):
         super(ConceptView, self).__init__(context, request)
         cont = self.controller
-        if (cont is not None and not IUnauthenticatedPrincipal.providedBy(
-                                                    self.request.principal)):
+        if cont is None:
+            return
+        if (self.globalOptions('showParentsForUnauthorized') or
+            not IUnauthenticatedPrincipal.providedBy(self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
-                         subMacro=concept_macros.macros['parents'],
-                         priority=20, info=self)
+                        subMacro=concept_macros.macros['parents'],
+                        priority=20, info=self)
 
     @Lazy
     def adapted(self):
