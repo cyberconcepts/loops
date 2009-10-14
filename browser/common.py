@@ -562,8 +562,12 @@ class BaseView(GenericView, I18NView):
                   'dojo.registerModulePath("jocy", "/@@/cybertools.jocy"); '
                   'dojo.require("jocy.data");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
+        cm.register('css', identifier='Lightbox.css', position=0,
+                    resourceName='ajax.dojo/dojox/image/resources/Lightbox.css',
+                    media='all')
         cm.register('css', identifier='tundra.css', position=0,
-                    resourceName='ajax.dojo/dijit/themes/tundra/tundra.css', media='all')
+                    resourceName='ajax.dojo/dijit/themes/tundra/tundra.css',
+                    media='all')
         #cm.register('css', identifier='dojo.css', position=1,
         #            resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
 
@@ -614,7 +618,8 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
-                  'dojo.require("dojox.data.QueryReadStore"); ')
+                  'dojo.require("dojox.data.QueryReadStore"); '
+                  'dojo.require("dojox.image.Lightbox"); ')
         cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
 
     def registerDojoFormAllGrid(self):

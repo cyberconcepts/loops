@@ -166,13 +166,16 @@
                     class="checkbox">
                   <input type="checkbox" name="selection:list" checked
                          tal:attributes="value uid;" /></td>
-                <td valign="top">
-                  <a href="#"
-                     tal:attributes="href python: view.getUrlForTarget(related);
+                <td valign="top"
+                    tal:define="icon related/icon">
+                  <a dojoType="dojox.image.Lightbox" group="mediasset"
+                     tal:condition="icon"
+                     tal:attributes="href related/fullImage/src|nothing;
+                                     title related/fullImage/title|related/title">
+                    <img tal:attributes="src icon/src" />
+                  </a>
+                  <a tal:attributes="href python: view.getUrlForTarget(related);
                                      title description">
-                    <img tal:define="icon related/icon"
-                         tal:condition="icon"
-                         tal:attributes="src icon/src" />
                     <div tal:content="related/title">Resource Title</div>
                   </a>
                 </td>

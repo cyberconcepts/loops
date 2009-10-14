@@ -114,9 +114,18 @@ class ResourceView(BaseView):
 
     @Lazy
     def icon(self):
-        if IMediaAsset.providedBy(self.adapted):
+        if (IMediaAsset.providedBy(self.adapted) and
+            'image/' in self.context.contentType):
             return dict(src='%s/mediaasset.html?v=minithumb' %
                         (self.nodeView.getUrlForTarget(self.context)))
+
+    @Lazy
+    def fullImage(self):
+        if (IMediaAsset.providedBy(self.adapted) and
+            'image/' in self.context.contentType):
+            return dict(src='%s/mediaasset.html?v=medium' %
+                                self.nodeView.getUrlForTarget(self.context),
+                        title=self.context.title)
 
     @property
     def macro(self):
