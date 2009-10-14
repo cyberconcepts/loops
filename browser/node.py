@@ -107,6 +107,7 @@ class NodeView(BaseView):
         cm.register('js', 'loops.js', resourceName='loops.js', priority=60)
         cm.register('top_actions', 'top_actions', name='multi_actions',
                     subMacros=[i18n_macros.macros['language_switch']])
+        self.registerDojoLightbox()
         if self.globalOptions('expert.quicksearch'):
             from loops.expert.browser.search import searchMacrosTemplate
             cm.register('top_actions', 'top_quicksearch', name='multi_actions',

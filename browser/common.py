@@ -610,6 +610,11 @@ class BaseView(GenericView, I18NView):
         jsCall = 'dojo.require("dijit._editor.plugins.LinkDialog");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
+    def registerDojoLightbox(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dojox.image.Lightbox");'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
     def registerDojoFormAll(self):
         self.registerDojo()
         cm = self.controller.macros
@@ -618,8 +623,7 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
-                  'dojo.require("dojox.data.QueryReadStore"); '
-                  'dojo.require("dojox.image.Lightbox"); ')
+                  'dojo.require("dojox.data.QueryReadStore"); ')
         cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
 
     def registerDojoFormAllGrid(self):
