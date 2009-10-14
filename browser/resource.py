@@ -116,6 +116,7 @@ class ResourceView(BaseView):
     def icon(self):
         if (IMediaAsset.providedBy(self.adapted) and
             'image/' in self.context.contentType):
+            self.registerDojoLightbox()
             return dict(src='%s/mediaasset.html?v=minithumb' %
                         (self.nodeView.getUrlForTarget(self.context)))
 
