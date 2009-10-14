@@ -196,7 +196,7 @@ class ConceptView(BaseView):
         cont = self.controller
         if cont is None:
             return
-        if (self.globalOptions('showParentsForUnauthorized') or
+        if (self.globalOptions('showParentsForAnonymous') or
             not IUnauthenticatedPrincipal.providedBy(self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
                         subMacro=concept_macros.macros['parents'],

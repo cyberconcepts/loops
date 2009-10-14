@@ -140,7 +140,7 @@ class ResourceView(BaseView):
         cont = self.controller
         if cont is None:
             return
-        if (self.globalOptions('showParentsForUnauthorized') or
+        if (self.globalOptions('showParentsForAnonymous') or
             not IUnauthenticatedPrincipal.providedBy(self.request.principal)):
             if list(self.relatedConcepts()):
                 cont.macros.register('portlet_right', 'related',
