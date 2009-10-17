@@ -156,6 +156,7 @@ class ObjectForm(NodeView):
 
     def __call__(self):
         if self.isInnerHtml:
+            self.checkLanguage()
             response = self.request.response
             #response.setHeader('Content-Type', 'text/html; charset=UTF-8')
             response.setHeader('Expires', 'Sat, 1 Jan 2000 00:00:00 GMT')
