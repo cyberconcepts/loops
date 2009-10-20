@@ -139,8 +139,8 @@ work item, the form will be pre-filled with some of the item's data.
   >>> form.actions
   [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
    {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
-   {'name': 'finish', 'title': 'finish'}, {'name': 'cancel', 'title': 'cancel'},
-   {'name': 'modify', 'title': 'modify'}]
+   {'name': 'finish', 'title': 'finish'}, {'name': 'delegate', 'title': 'delegate'},
+   {'name': 'cancel', 'title': 'cancel'}, {'name': 'modify', 'title': 'modify'}]
 
 
 Work Item Queries

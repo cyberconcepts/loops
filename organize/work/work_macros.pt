@@ -88,12 +88,22 @@
                     tal:content="view/description"></textarea></div>
       </div>
       <div>
-            <label i18n:translate="" for="action">Action</label>
-            <select name="workitem.action" id="action">
-              <option tal:repeat="action view/actions"
-                      tal:attributes="value action/name"
-                      tal:content="action/title" />
-            </select>
+        <label i18n:translate="" for="action">Action</label>
+        <select name="workitem.action" id="action"
+                onChange="showIf(this, 'delegate', 'party')">
+          <option tal:repeat="action view/actions"
+                  tal:attributes="value action/name"
+                  tal:content="action/title" />
+        </select>
+        <span id="party" style="display: none">&nbsp;
+          <label i18n:translate="" for="input_party"
+                 style="display: inline">to</label>
+          <select name="party" id="input_party">
+            <option tal:repeat="cand view/candidates"
+                    tal:attributes="value cand/name"
+                    tal:content="cand/title" />
+          </select>
+        </span>
       </div>
       <div>
             <label i18n:translate="" for="start-end">Start - End</label>

@@ -214,7 +214,8 @@ class BaseWorkItemsView(object):
         state = form.get('wi_state') or self.options.wi_state
         if not state:
             result['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
-                               'finished', 'delegated']
+                               'finished', 'delegated',
+                               'cancelled']
         elif state != 'all':
             result['state'] = state
         return result
@@ -326,6 +327,13 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
                     for t in self.track.getAvailableTransitions()]
 
     @Lazy
+    def candidates(self):
+        ptype = self.conceptManager['person']
+        persons = ptype.getChildren([self.typePredicate])
+        return [dict(name=util.getUidForObject(p), title=p.title)
+                    for p in persons]
+
+    @Lazy
     def duration(self):
         if self.state == 'running':
             return u''
@@ -374,6 +382,8 @@ class CreateWorkItem(EditObject, BaseTrackView):
                 result[k] = v
         for k in ('title', 'description', 'comment'):
             setValue(k)
+        if action == 'delegate':
+            setValue('party')
         startDate = form.get('start_date', '').strip()
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
         endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'

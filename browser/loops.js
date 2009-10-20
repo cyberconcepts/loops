@@ -29,6 +29,11 @@ function validate(nodeName, required) {
     }
 }
 
+function showIf(node, value, targetName) {
+    var display = (node.value == value) ? 'inline' : 'none';
+    dojo.byId(targetName).style.display = display;
+}
+
 function destroyWidgets(node) {
     dojo.forEach(dojo.query('[widgetId]', node), function(n) {
         w = dijit.byNode(n);

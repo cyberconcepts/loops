@@ -8,8 +8,13 @@ $Id$
 
 New features
 
+- delegation of work items basically working
+- show "parents" portlet for anonymous, controlled by global option
+  ``showParentsForAnonymous``
+- use Lighbox view for media asset listings
 - new view: ``list_children.html``
 - evaluate action settings also on queries
+- new action: ``create institution``
 - "send email" feature, controlled by global option ``organize.allowSendEmail``
 - presence: portlet showing other users logged-in and working within the
   same loops site, controlled by global option ``organize.showPresence`,
@@ -33,6 +38,9 @@ New features
 
 Bug fixes
 
+- use correct target view for identifying target concept upon editing
+  (problem with personal_info query: query was updated instead of person)
+- check/evaluate language settings in dialogs
 - relations: store relation objects explicitly in relation registry
 - external collection: now works correctly (without creating empty files
   in the var directory); resource type of generated object controlled by
