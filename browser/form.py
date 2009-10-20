@@ -650,7 +650,8 @@ class EditConcept(EditObject):
         obj.deassignParent(concept, predicates)
 
     def update(self):
-        self.object = self.view.virtualTargetObject
+        #self.object = self.view.virtualTargetObject
+        self.object = self.view.item.context
         formState = self.updateFields()
         self.view.formState = formState
         # TODO: error handling
