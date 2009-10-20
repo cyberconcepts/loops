@@ -121,6 +121,16 @@ class Extractor(Base):
                 self.provideSubElements(obj, element)
                 yield element
 
+    def extractConceptsForType(self, typeName):
+        conceptElement = elementTypes['concept']
+        typeObject = self.concepts[typeName]
+        for obj in typeObject.getChildren([self.typePredicate]):
+            data = self.getObjectData(obj)
+            tp = getName(obj.conceptType)
+            element = conceptElement(name, obj.title, tp, **data)
+            #self.provideSubElements(obj, element)
+            yield element
+
     def extractResources(self):
         elementClass = elementTypes['resource']
         for name, obj in self.resources.items():
