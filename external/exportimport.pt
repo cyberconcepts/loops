@@ -25,6 +25,36 @@
       <h4>Export Site</h4>
       <div>&nbsp;</div>
       <div class="row">
+        <table>
+          <tr>
+            <td>
+              <label for="parents">Parent concepts</label><br />
+              <textarea name="parents" id="parents"
+                        rows="8" class="pretty"></textarea>
+            </td>
+            <td>
+              <label for="predicates">Predicates</label><br />
+              <select multiple name="predicates" id="predicates"
+                      size="9">
+                <option tal:repeat="pred view/predicates"
+                        tal:attributes="value pred/name"
+                        tal:content="pred/title">subobject</option></select>
+            </td><td>&nbsp;</td>
+            <td>
+              <br />
+              <input type="checkbox" name="include_subconcepts"
+                     id="include_subconcepts" />
+              <label for="include_subconcepts">Include Subconcepts</label>
+              <br />
+              <input type="checkbox" name="include_resources"
+                     id="include_resources" />
+              <label for="include_resources">Include Resources</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div>&nbsp;</div>
+      <div class="row">
         <div class="controls">
           <input type="submit" name="loops.export" value="Export" />
         </div>

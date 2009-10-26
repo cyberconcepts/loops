@@ -40,6 +40,7 @@ from loops.common import adapted
 from loops.external.interfaces import ILoader, IExtractor, ISubExtractor
 from loops.external.element import elementTypes
 from loops.interfaces import IConceptSchema, IResourceSchema
+from loops.layout.base import LayoutNode
 from loops.resource import Document, MediaAsset
 from loops.setup import SetupManager
 
@@ -109,79 +110,38 @@ class Extractor(Base):
             yield element
 
     def extractConcepts(self):
-        conceptElement = elementTypes['concept']
-        typeConcept = self.typeConcept
         for name, obj in self.concepts.items():
-            if obj.conceptType is None:
-                raise ValueError('Concept type is None for %s.' % getName(obj))
-            if obj.conceptType != typeConcept:
-                data = self.getObjectData(obj)
-                tp = getName(obj.conceptType)
-                element = conceptElement(name, obj.title, tp, **data)
-                self.provideSubElements(obj, element)
-                yield element
-
-    def extractConceptsForType(self, typeName):
-        conceptElement = elementTypes['concept']
-        typeObject = self.concepts[typeName]
-        for obj in typeObject.getChildren([self.typePredicate]):
-            data = self.getObjectData(obj)
-            tp = getName(obj.conceptType)
-            element = conceptElement(name, obj.title, tp, **data)
-            #self.provideSubElements(obj, element)
-            yield element
+            if obj.conceptType != self.typeConcept:
+                yield self.getConceptElement(name, obj)
 
     def extractResources(self):
-        elementClass = elementTypes['resource']
         for name, obj in self.resources.items():
-            data = self.getObjectData(obj, IResourceSchema)
-            tp = getName(obj.resourceType)
-            if isinstance(obj, Document):   # backward compatibility
-                tp = 'textdocument'
-            element = elementClass(name, obj.title, tp, **data)
-            element.processExport(self)
-            self.provideSubElements(obj, element)
-            yield element
+            yield self.getResourceElement(name, obj)
 
     def extractChildren(self):
-        childElement = elementTypes['child']
-        typePredicate = self.typePredicate
         for c in self.concepts.values():
-            for r in c.getChildRelations():
-                if r.predicate != typePredicate:
-                    args = [getName(r.first), getName(r.second), getName(r.predicate)]
-                    if r.order != 0 or r.relevance != 1.0:
-                        args.append(r.order)
-                    if r.relevance != 1.0:
-                        args.append(r.relevance)
-                    yield childElement(*args)
+            for r in self.getChildRelations(c):
+                yield r
 
     def extractResourceRelations(self):
-        elementClass = elementTypes['resourceRelation']
-        typePredicate = self.typePredicate
         for c in self.concepts.values():
-            for r in c.getResourceRelations():
-                if r.predicate != typePredicate:
-                    args = [getName(r.first), getName(r.second), getName(r.predicate)]
-                    if r.order != 0 or r.relevance != 1.0:
-                        args.append(r.order)
-                    if r.relevance != 1.0:
-                        args.append(r.relevance)
-                    yield elementClass(*args)
+            for r in self.getResourceRelations(c):
+                yield r
 
     def extractNodes(self, parent=None, path=''):
         if parent is None:
             parent = self.views
-        elementClass = elementTypes['node']
         for name, obj in parent.items():
             data = {}
-            for attr in ('description', 'body', 'viewName'):
-                value = getattr(obj, attr)
+            for attr in ('description', 'body', 'viewName', 'pageName'):
+                value = getattr(obj, attr, None)
                 if value:
                     data[attr] = value
             target = obj.target
             if target is not None:
                 data['target'] = '/'.join((getName(getParent(target)), getName(target)))
+            elementClass = (isinstance(obj, LayoutNode) and elementTypes['layoutNode']
+                                or elementTypes['node'])
             elem = elementClass(name, obj.title, path, obj.nodeType, **data)
             self.provideSubElements(obj, elem)
             yield elem
@@ -190,7 +150,105 @@ class Extractor(Base):
                 #self.provideSubElements(obj, elem)
                 yield elem
 
+    def extractForParents(self, parents, predicates=None,
+                          includeSubconcepts=False, includeResources=False):
+        checked = set()
+        children = set()
+        resources = set()
+        for p in parents:
+            yield self.getConceptElement(getName(p), p)
+        for elem in self._extractForParents(parents, predicates,
+                                includeSubconcepts, includeResources,
+                                checked, children, resources):
+            yield elem
+        allConcepts = checked.union(children)
+        for c in allConcepts:
+            for r in c.getChildRelations(predicates):
+                if r.predicate != self.typePredicate and r.second in children:
+                    yield self.getChildElement(r)
+        for c in allConcepts:
+            for r in c.getResourceRelations(predicates):
+                if r.predicate != self.typePredicate and r.second in resources:
+                    yield self.getResourceRelationElement(r)
+
+    def _extractForParents(self, parents, predicates,
+                                 includeSubconcepts, includeResources,
+                                 checked, children, resources):
+        for p in parents:
+            if p in checked:
+                continue
+            checked.add(p)
+            ch = p.getChildren(predicates)
+            for obj in ch:
+                if obj not in children:
+                    children.add(obj)
+                    yield self.getConceptElement(getName(obj), obj)
+            if includeSubconcepts:
+                for elem in self._extractForParents(ch, predicates,
+                                    includeSubconcepts, includeResources,
+                                    checked, children, resources):
+                    yield elem
+            if includeResources:
+                for obj in p.getResources(predicates):
+                    if obj not in resources:
+                        resources.add(obj)
+                        yield self.getResourceElement(getName(obj), obj)
+
     # helper methods
+
+    def getConceptElement(self, name, obj):
+        if obj.conceptType is None:
+            raise ValueError('Concept type is None for %s.' % getName(obj))
+        data = self.getObjectData(obj)
+        type = obj.conceptType
+        if type == self.typeConcept:
+            element = elementTypes['type'](getName(obj), obj.title, **data)
+        else:
+            tp = getName(type)
+            element = elementTypes['concept'](name, obj.title, tp, **data)
+        self.provideSubElements(obj, element)
+        return element
+
+    def getResourceElement(self, name, obj):
+        data = self.getObjectData(obj, IResourceSchema)
+        tp = getName(obj.resourceType)
+        if isinstance(obj, Document):   # backward compatibility
+            tp = 'textdocument'
+        element = elementTypes['resource'](name, obj.title, tp, **data)
+        element.processExport(self)
+        self.provideSubElements(obj, element)
+        return element
+
+    def provideSubElements(self, obj, element):
+        for name, extractor in component.getAdapters((obj,), ISubExtractor):
+            for sub in extractor.extract():
+                element.add(sub)
+
+    def getChildRelations(self, c, predicates=None):
+        for r in c.getChildRelations(predicates):
+            if r.predicate != self.typePredicate:
+                yield self.getChildElement(r)
+
+    def getChildElement(self, r):
+        args = [getName(r.first), getName(r.second), getName(r.predicate)]
+        if r.order != 0 or r.relevance != 1.0:
+            args.append(r.order)
+        if r.relevance != 1.0:
+            args.append(r.relevance)
+        return elementTypes['child'](*args)
+
+    def getResourceRelations(self, c, predicates=None):
+        for r in c.getResourceRelations(predicates):
+            if r.predicate != self.typePredicate:
+                yield self.getResourceRelationElement(r)
+
+    def getResourceRelationElement(self, r):
+        args = [getName(r.first), getName(r.second), getName(r.predicate)]
+        if r.order != 0 or r.relevance != 1.0:
+            args.append(r.order)
+        if r.relevance != 1.0:
+            args.append(r.relevance)
+        return elementTypes['resourceRelation'](*args)
 
     def getObjectData(self, obj, defaultInterface=IConceptSchema):
         aObj = adapted(obj)
@@ -210,9 +268,3 @@ class Extractor(Base):
         if not data['description']:
             del data['description']
         return data
-
-    def provideSubElements(self, obj, element):
-        for name, extractor in component.getAdapters((obj,), ISubExtractor):
-            for sub in extractor.extract():
-                element.add(sub)
-

@@ -177,6 +177,29 @@ corresponding extractor adapter.
           viewName=u'mystuff.html')[
               annotations(creators=(u'john',))]...
 
+Extracting selected parts of the concept map
+--------------------------------------------
+
+  >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
+  >>> elements = list(extractor.extractForParents([concepts['customer']],
+  ...                       includeSubconcepts=True, includeResources=True))
+  >>> len(elements)
+  10
+
+  >>> output = StringIO()
+  >>> writer.write(elements, output)
+  >>> print output.getvalue()
+  type(u'customer', u'Customer', options=u'', typeInterface=u'', viewName=u'')
+  concept(u'cust1', u'Customer 1', u'customer')
+  concept(u'cust2', u'Customer 2', u'customer')
+  concept(u'cust3', u'Customer 3', u'customer')
+  resource(u'd001.txt', u'Doc 001', u'textdocument', contentType='text/restructured')
+  resource(u'd003.txt', u'Doc 003', u'textdocument', contentType='text/restructured')
+  resource(u'd002.txt', u'Doc 002', u'textdocument', contentType='text/restructured')
+  resourceRelation(u'cust1', u'd001.txt', u'standard')
+  resourceRelation(u'cust1', u'd003.txt', u'standard')
+  resourceRelation(u'cust3', u'd002.txt', u'standard')
+
 
 The Export/Import View
 ======================

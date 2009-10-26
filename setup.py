@@ -197,7 +197,7 @@ class SetupManager(object):
                      (resourceName, conceptName, getName(predicate)))
 
     def addNode(self, name, title, container=None, nodeType='page',
-                description=u'', body=u'', target=None, **kw):
+                description=u'', body=u'', target=None, factory=Node, **kw):
         if container is None:
             container = self.views
             nodeType = 'menu'
@@ -209,7 +209,7 @@ class SetupManager(object):
                 self.log("Wrong node type for '%s': '%s' instead of '%s'." %
                          (name, n.nodeType, nodeType))
         else:
-            n = addAndConfigureObject(container, Node, name, title=title,
+            n = addAndConfigureObject(container, factory, name, title=title,
                               description=description, body=body,
                               nodeType=nodeType, **kw)
             self.log("Node '%s' ('%s') created." % (name, title))

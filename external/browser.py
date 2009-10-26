@@ -30,7 +30,7 @@ from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import getPath
+from zope.traversing.api import getName, getPath
 
 from loops.external.base import Loader, Extractor
 from loops.external.interfaces import IReader, IWriter
@@ -73,13 +73,41 @@ class ExportImport(object):
     def export(self):
         f = StringIO()
         extractor = Extractor(self.context, self.resourceExportDirectory)
-        elements = extractor.extract()
+        parentIds = self.request.form.get('parents')
+        if parentIds:
+            elements = self.extractForParents(extractor, parentIds)
+        else:
+            elements = extractor.extract()
         writer = component.getUtility(IWriter)
         writer.write(elements, f)
         text = f.getvalue()
         f.close()
         self.setDownloadHeader(self.request, text)
         return text
+
+    def extractForParents(self, extractor, parentIds):
+        form = self.request.form
+        parentIds = [id for id in parentIds.splitlines() if id]
+        parents = [self.conceptManager.get(id) for id in parentIds]
+        parents = [p for p in parents if p is not None]
+        predicateIds = form.get('predicates')
+        predicates = (predicateIds and [self.conceptManager[id]
+                            for id in parentIds] or None)
+        includeSubconcepts = form.get('include_subconcepts')
+        includeResources = form.get('include_resources')
+        return extractor.extractForParents(parents, predicates,
+                                           includeSubconcepts, includeResources)
+
+    @Lazy
+    def conceptManager(self):
+        return  self.context.getConceptManager()
+
+    @Lazy
+    def predicates(self):
+        ptype = self.conceptManager['predicate']
+        hasType = self.conceptManager['hasType']
+        return [dict(name=getName(p), title=p.title)
+                for p in ptype.getChildren([hasType])]
 
     def upload(self):
         data = self.request.get('field.data', None)

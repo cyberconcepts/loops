@@ -37,6 +37,8 @@ from loops.common import adapted
 from loops.interfaces import IConceptSchema
 from loops.external.interfaces import IElement
 from loops.i18n.common import I18NValue
+from loops.layout.base import LayoutNode
+from loops.view import Node
 
 
 class Element(dict):
@@ -192,6 +194,7 @@ class NodeElement(Element):
 
     elementType = 'node'
     posArgs = ('name', 'title', 'path', 'type')
+    factory = Node
 
     def __init__(self, *args, **kw):
         for idx, arg in enumerate(args):
@@ -205,11 +208,18 @@ class NodeElement(Element):
         #target = self.pop('target', None)
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
-        node = loader.addNode(self['name'], self['title'], cont, type, **kw)
+        node = loader.addNode(self['name'], self['title'], cont, type,
+                              factory=self.factory, **kw)
         #if target is not None:
         #    targetObject = traverse(loader.context, target, None)
         #    node.target = targetObject
         #self.object = node
+
+
+class LayoutNodeElement(NodeElement):
+
+    elementType = 'layoutNode'
+    factory = LayoutNode
 
 
 # element registry
@@ -221,6 +231,7 @@ elementTypes = dict(
     resource=ResourceElement,
     resourceRelation=ResourceRelationElement,
     node=NodeElement,
+    layoutNode=LayoutNodeElement,
     I18NValue=I18NValue,
 )
 
