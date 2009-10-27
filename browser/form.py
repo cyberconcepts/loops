@@ -651,7 +651,8 @@ class EditConcept(EditObject):
 
     def update(self):
         #self.object = self.view.virtualTargetObject
-        self.object = self.view.item.context
+        #self.object = self.view.item.context
+        self.object = self.view.item.target
         formState = self.updateFields()
         self.view.formState = formState
         # TODO: error handling
