@@ -152,47 +152,36 @@ class Extractor(Base):
 
     def extractForParents(self, parents, predicates=None,
                           includeSubconcepts=False, includeResources=False):
-        checked = set()
-        children = set()
-        resources = set()
+        concepts = set(parents)
         for p in parents:
-            yield self.getConceptElement(getName(p), p)
-        for elem in self._extractForParents(parents, predicates,
-                                includeSubconcepts, includeResources,
-                                checked, children, resources):
-            yield elem
-        allConcepts = checked.union(children)
-        for c in allConcepts:
+            self.collectConcepts(p, predicates, includeSubconcepts, concepts)
+        conceptList = sorted(concepts, key=lambda x:
+                                (x.conceptType != self.typeConcept, getName(x)))
+        for c in conceptList:
+            yield self.getConceptElement(getName(c), c)
+        for c in conceptList:
             for r in c.getChildRelations(predicates):
-                if r.predicate != self.typePredicate and r.second in children:
+                if r.predicate != self.typePredicate and r.second in concepts:
                     yield self.getChildElement(r)
-        for c in allConcepts:
-            for r in c.getResourceRelations(predicates):
-                if r.predicate != self.typePredicate and r.second in resources:
-                    yield self.getResourceRelationElement(r)
-
-    def _extractForParents(self, parents, predicates,
-                                 includeSubconcepts, includeResources,
-                                 checked, children, resources):
-        for p in parents:
-            if p in checked:
-                continue
-            checked.add(p)
-            ch = p.getChildren(predicates)
-            for obj in ch:
-                if obj not in children:
-                    children.add(obj)
-                    yield self.getConceptElement(getName(obj), obj)
-            if includeSubconcepts:
-                for elem in self._extractForParents(ch, predicates,
-                                    includeSubconcepts, includeResources,
-                                    checked, children, resources):
-                    yield elem
-            if includeResources:
-                for obj in p.getResources(predicates):
+        if includeResources:
+            resources = set()
+            for c in conceptList:
+                for obj in c.getResources(predicates):
                     if obj not in resources:
                         resources.add(obj)
                         yield self.getResourceElement(getName(obj), obj)
+            for c in conceptList:
+                for r in c.getResourceRelations(predicates):
+                    if r.predicate != self.typePredicate and r.second in resources:
+                        yield self.getResourceRelationElement(r)
+
+    def collectConcepts(self, concept, predicates, includeSubconcepts, concepts):
+        for obj in concept.getChildren(predicates):
+            if obj not in concepts:
+                concepts.add(obj)
+                if includeSubconcepts:
+                    self.collectConcepts(obj, predicates, includeSubconcepts,
+                                         concepts)
 
     # helper methods
 
