@@ -26,12 +26,16 @@ from zope import component
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.app.security.interfaces import IPermission
+from zope.app.securitypolicy.browser.granting import Granting
 from zope.app.securitypolicy.browser.rolepermissionview import RolePermissionView
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, IRolePermissionMap
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager, \
                                                IPrincipalPermissionMap
 from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParents
+
+from loops.security.common import WorkspaceInformation
 
 
 class PermissionView(object):
@@ -135,3 +139,16 @@ class PermissionView(object):
     def getPermissions(self):
         return sorted(name for name, perm in component.getUtilitiesFor(IPermission))
 
+
+class GrantChildrenView(Granting, PermissionView):
+    """ View for editing grants for children of workspace objects.
+    """
+
+    def __init__(self, context, request):
+        context = removeSecurityProxy(context)
+        wi = context.workspaceInformation
+        if wi is None:
+            wi = context.workspaceInformation = WorkspaceInformation(context)
+        #self.context = wi
+        #self.request = request
+        PermissionView.__init__(self, wi, request)

@@ -104,6 +104,13 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
         source="loops.conceptTypeSource",
         required=True)
 
+    isWorkspace = Attribute('Marks a concept as responsible for providing '
+                    'special permission settings (children grants) '
+                    'for its sub-objects (children or resources).')
+
+    workspaceInformation = Attribute('An object with additional '
+                    'workspace-related information, e.g. children grants.')
+
     def getType():
         """ Return a concept that provides the object's type.
         """
@@ -675,6 +682,13 @@ class IPredicate(IConceptSchema):
                     'predicate.'),
         default=None,
         source='loops.PredicateInterfaceSource',
+        required=False)
+
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
         required=False)
 
 

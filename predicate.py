@@ -48,6 +48,12 @@ class Predicate(AdapterBase):
 
     _contextAttributes = list(IPredicate) # + list(IConcept)
 
+    def getOptions(self):
+        return getattr(self.context, '_options', [])
+    def setOptions(self, value):
+        self.context._options = value
+    options = property(getOptions, setOptions)
+
 
 class PredicateInterfaceSourceList(TypeInterfaceSourceList):
     """ Collects type interfaces for predicates, i.e. interfaces that

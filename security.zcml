@@ -57,6 +57,10 @@
         title="[loops-master-role] loops: Master" />
   <grant role="loops.Master" permission="zope.ManageContent" />
 
+  <role id="loops.Member"
+        title="[loops-member-role] loops: Member" />
+  <grant role="loops.Member" permission="zope.View" />
+
   <role id="loops.xmlrpc.ConceptManager"
         title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
   <grant role="loops.xmlrpc.ConceptManager" permission="loops.xmlrpc.ManageConcepts" />

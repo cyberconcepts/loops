@@ -1,19 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zope">
-<head>
-  <style metal:fill-slot="headers" type="text/css">
-    <!--
-    .row-normal {
-      background-color: #ffffff;
-      border: none;
-    }
-    .row-hilite {
-      background-color: #efefef;
-      border: none;
-    }
-    -->
-  </style>
-</head>
+      i18n:domain="zope">
 
 <body>
 <div metal:fill-slot="body">

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@ Common functions and other stuff for working with permissions and roles.
 $Id$
 """
 
+from persistent import Persistent
 from zope import component
+from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
@@ -32,6 +34,7 @@ from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from loops.common import adapted
 from loops.interfaces import ILoopsObject, IConcept
@@ -44,7 +47,7 @@ allRolesExceptOwner = (
         'zope.Anonymous', 'zope.Member', 'zope.ContentManager', 'loops.Staff',
         'loops.xmlrpc.ConceptManager', # relevant for local security?
         #'loops.SiteManager',
-        'loops.Master',)
+         'loops.Member', 'loops.Master',)
 allRolesExceptOwnerAndMaster = tuple(allRolesExceptOwner[:-1])
 minorPrivilegedRoles = ('zope.Anonymous', 'zope.Member',)
 
@@ -137,3 +140,21 @@ def revokeAcquiredSecurity(obj, event):
     setter = ISecuritySetter(aObj)
     setter.setAcquiredRolePermissions(event.relation, revert=True)
     setter.setAcquiredPrincipalRoles(event.relation, revert=True)
+
+
+# helper stuff
+
+class WorkspaceInformation(Persistent):
+    """ For storing security-related stuff pertaining to
+        children and resources of the context (=parent) object.
+    """
+
+    implements(IPhysicallyLocatable)
+
+    __name__ = u'workspace_information'
+
+    def __init__(self, parent):
+        self.__parent__ = parent
+
+    def getName(self):
+        return self.__name__

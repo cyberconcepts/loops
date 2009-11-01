@@ -39,6 +39,7 @@ from zope.security.proxy import removeSecurityProxy, isinstance
 from zope.traversing.api import getName, getParent
 from persistent import Persistent
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.relation import DyadicRelation
 from cybertools.relation.registry import getRelations
 from cybertools.relation.interfaces import IRelationRegistry, IRelatable
@@ -104,6 +105,8 @@ class Concept(Contained, Persistent):
 
     proxyInterface = IConceptView
 
+    workspaceInformation = None
+
     def __init__(self, title=u''):
         self.title = title
 
@@ -161,6 +164,16 @@ class Concept(Contained, Persistent):
             elif rel not in pi.relations:
                 pi.relations.append(rel)
         return result
+
+    @property
+    def isWorkspace(self):
+        ct = self.conceptType
+        if ct != self.getConceptManager().getTypeConcept():
+            from loops.config.base import DummyOptions
+            options = component.queryAdapter(adapted(self), IOptions) or DummyOptions()
+            if options('security.isWorkspace'):
+                return True
+        return IOptions(adapted(ct))('security.isWorkspace')
 
     # concept relations
 
