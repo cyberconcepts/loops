@@ -66,6 +66,10 @@ class LoopsWikiManager(WikiManager):
 
 class LoopsWiki(Wiki):
 
+    def __init__(self, name):
+        self.name = name
+        self.pages = {}
+
     def getPage(self, name):
         if name.startswith('.target'):
             return self.getManager().getObject(int(name[7:]))

@@ -196,6 +196,7 @@ class ResourceView(BaseView):
         if contentType == 'text/restructured' and wikiLinksActive(self.loopsRoot):
             # TODO: make this more flexible/configurable
             wm = LoopsWikiManager(self.loopsRoot)
+            wm.setup()
             wiki = LoopsWiki('loops')
             wiki.__parent__ = self.loopsRoot
             wiki.__name__ = 'wiki'
