@@ -1,0 +1,14 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<body>
+<div metal:fill-slot="body" i18n:domain="zope">
+  <h2 i18n:translate="">Assign Permissions to Roles for Children of this Object</h2>
+  <p tal:define="status view/update"
+     tal:condition="status"
+     tal:content="status" i18n:translate=""/><br />
+
+  <metal:permissions use-macro="view/permission_macros/permission_form" />
+
+</div>
+</body>
+</html>

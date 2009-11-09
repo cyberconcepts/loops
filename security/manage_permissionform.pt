@@ -5,9 +5,11 @@
 <div metal:fill-slot="body">
   <p tal:define="status view/update"
      tal:condition="status"
-     tal:content="status" />
+     tal:content="status"
+     i18n:translate="" />
 
-  <div tal:define="permId view/permissionId;
+  <div metal:define-macro="permission_form"
+       tal:define="permId view/permissionId;
                    perm view/permission;">
     <form>
       <select name="permission_to_manage"

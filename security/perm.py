@@ -35,8 +35,6 @@ from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParents
 
-from loops.security.common import WorkspaceInformation
-
 
 class PermissionView(object):
     """ View for permission editing.
@@ -139,16 +137,3 @@ class PermissionView(object):
     def getPermissions(self):
         return sorted(name for name, perm in component.getUtilitiesFor(IPermission))
 
-
-class GrantChildrenView(Granting, PermissionView):
-    """ View for editing grants for children of workspace objects.
-    """
-
-    def __init__(self, context, request):
-        context = removeSecurityProxy(context)
-        wi = context.workspaceInformation
-        if wi is None:
-            wi = context.workspaceInformation = WorkspaceInformation(context)
-        #self.context = wi
-        #self.request = request
-        PermissionView.__init__(self, wi, request)

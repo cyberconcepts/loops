@@ -33,21 +33,15 @@
         name="permissions.html"
         permission="zope.Security"
         template="manage_permissionform.pt"
-        class=".perm.PermissionView"
+        class="loops.security.perm.PermissionView"
         menu="zmi_actions" title="Edit Permissions" />
 
   <browser:page
         for="loops.interfaces.IConcept"
-        name="grantchildren.html"
+        name="manage_workspace.html"
         permission="zope.Security"
-        template="manage_grantchildrenform.pt"
-        class=".perm.GrantChildrenView" />
-
-  <browser:menuItem
-        for="loops.interfaces.IConcept"
-        action="@@grantchildren.html"
-        permission="zope.Security"
-        menu="zmi_actions" title="Grant Children"
-        filter="python: context.isWorkspace" />
+        template="manage_workspace.pt"
+        class="loops.security.browser.ManageWorkspaceView"
+        menu="zmi_actions" title="Manage Workspace" />
 
 </configure>
