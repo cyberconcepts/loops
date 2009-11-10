@@ -165,16 +165,6 @@ class Concept(Contained, Persistent):
                 pi.relations.append(rel)
         return result
 
-    @property
-    def isWorkspace(self):
-        ct = self.conceptType
-        if ct != self.getConceptManager().getTypeConcept():
-            from loops.config.base import DummyOptions
-            options = component.queryAdapter(adapted(self), IOptions) or DummyOptions()
-            if options('security.isWorkspace'):
-                return True
-        return IOptions(adapted(ct))('security.isWorkspace')
-
     # concept relations
 
     def getClients(self, relationships=None):

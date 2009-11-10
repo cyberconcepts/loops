@@ -25,7 +25,7 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
 
 
@@ -41,7 +41,7 @@ class IExternalSourceInfo(Interface):
 
 # external collections
 
-class IExternalCollection(IConceptSchema):
+class IExternalCollection(IConceptSchema, ILoopsAdapter):
     """ A concept representing a collection of resources that may be
         actively retrieved from an external system using the parameters
         given.

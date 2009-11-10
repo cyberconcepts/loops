@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,18 @@ methods for setting role permissions and other security-related stuff.
 $Id$
 """
 
+from zope.app.security.settings import Allow, Deny, Unset
+from zope.app.securitypolicy.interfaces import IRolePermissionMap
+from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope import component
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements, Interface
+from zope.security.proxy import isinstance
 
+from loops.common import adapted, AdapterBase
+from loops.security.common import overrides, setRolePermission
+from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.security.interfaces import ISecuritySetter
 
 
@@ -45,8 +52,95 @@ class BaseSecuritySetter(object):
     def setDefaultPrincipalRoles(self):
         pass
 
-    def setAcquiredRolePermissions(self, relation, revert=False):
+    def acquireRolePermissions(self):
         pass
 
-    def setAcquiredPrincipalRoles(self, relation, revert=False):
+    def setAcquiredRolePermissions(self, relation, revert=False, updated=None):
         pass
+
+    def setAcquiredPrincipalRoles(self, relation, revert=False, updated=None):
+        pass
+
+    def propagateRolePermissions(self, updated=None):
+        pass
+
+    def propagatePrincipalRoles(self, updated=None):
+        pass
+
+
+class LoopsObjectSecuritySetter(BaseSecuritySetter):
+
+    @Lazy
+    def baseObject(self):
+        obj = self.context
+        if isinstance(obj, AdapterBase):
+            obj = obj.context
+        return obj
+
+    def acquireRolePermissions(self):
+        obj = self.baseObject
+        if isinstance(obj, AdapterBase):
+            obj = obj.context
+        settings = {}
+        for p in self.parents:
+            if p == obj:
+                continue
+            secProvider = p
+            wi = p.workspaceInformation
+            if wi:
+                if wi.propagateRolePermissions == 'none':
+                    continue
+                if wi.propagateRolePermissions == 'workspace':
+                    secProvider = wi
+            rpm = IRolePermissionMap(secProvider)
+            for p, r, s in rpm.getRolesAndPermissions():
+                current = settings.get((p, r))
+                if current is None or overrides(s, current):
+                    settings[(p, r)] = s
+        rpm = IRolePermissionManager(obj)
+        for p, r, s in rpm.getRolesAndPermissions():
+            # clear previous settings
+            setRolePermission(rpm, p, r, Unset)
+        for (p, r), s in settings.items():
+            setRolePermission(rpm, p, r, s)
+
+
+class ConceptSecuritySetter(LoopsObjectSecuritySetter):
+
+    adapts(IConceptSchema)
+
+    def setAcquiredRolePermissions(self, relation, revert=False, updated=None):
+        if updated and relation.second in updated:
+            return
+        setter = ISecuritySetter(adapted(relation.second), None)
+        if setter is not None:
+            setter.acquireRolePermissions()
+            setter.propagateRolePermissions(updated)
+
+    def setAcquiredPrincipalRoles(self, relation, revert=False, updated=None):
+        pass
+
+    def propagateRolePermissions(self, updated=None):
+        if updated is None:
+            updated = set()
+        obj = self.baseObject
+        updated.add(obj)
+        for r in obj.getChildRelations():
+            self.setAcquiredRolePermissions(r, updated=updated)
+
+    def propagatePrincipalRoles(self, updated=None):
+        pass
+
+    @Lazy
+    def parents(self):
+        return self.baseObject.getParents()
+
+
+class ResourceSecuritySetter(LoopsObjectSecuritySetter):
+
+    adapts(IBaseResourceSchema)
+
+    @Lazy
+    def parents(self):
+        return self.baseObject.getConcepts()
+

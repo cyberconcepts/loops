@@ -9,6 +9,9 @@
 
   <zope:class class="loops.security.common.WorkspaceInformation">
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <allow interface="loops.security.interfaces.IWorkspaceInformation" />
+    <require set_schema="loops.security.interfaces.IWorkspaceInformation"
+             permission="zope.Security"/>
   </zope:class>
 
   <zope:adapter
@@ -24,6 +27,9 @@
         factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
         trusted="true" />
 
+  <zope:adapter factory="loops.security.setter.ConceptSecuritySetter" />
+  <zope:adapter factory="loops.security.setter.ResourceSecuritySetter" />
+
   <zope:subscriber handler="loops.security.common.setDefaultSecurity" />
   <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
   <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
@@ -33,8 +39,16 @@
         name="permissions.html"
         permission="zope.Security"
         template="manage_permissionform.pt"
-        class="loops.security.perm.PermissionView"
+        class="loops.security.browser.PermissionView"
         menu="zmi_actions" title="Edit Permissions" />
+
+  <browser:page
+        for="loops.interfaces.IConcept"
+        name="grant.html"
+        permission="zope.Security"
+        template="granting.pt"
+        class="loops.security.browser.Granting"
+        menu="zmi_actions" title="Grant" />
 
   <browser:page
         for="loops.interfaces.IConcept"

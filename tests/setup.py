@@ -26,6 +26,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import Interface, implements
 from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserView
 from zope.security.checker import Checker, defineChecker
+from zope.security.management import setSecurityPolicy
 
 from cybertools.browser.controller import Controller
 from cybertools.catalog.keyword import KeywordIndex
@@ -71,9 +72,9 @@ from loops.schema.factory import ResourceSchemaFactory, FileSchemaFactory, \
                                  NoteSchemaFactory
 from loops.schema.field import RelationSetFieldInstance
 from loops.security.common import grantAcquiredSecurity, revokeAcquiredSecurity
-from zope.security.management import setSecurityPolicy
 from loops.security.policy import LoopsSecurityPolicy
 from loops.security.setter import BaseSecuritySetter
+from loops.security.setter import ConceptSecuritySetter, ResourceSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 from loops.view import Node, NodeAdapter
@@ -135,6 +136,8 @@ class TestSite(object):
         component.provideHandler(grantAcquiredSecurity)
         component.provideHandler(revokeAcquiredSecurity)
         component.provideAdapter(BaseSecuritySetter)
+        component.provideAdapter(ConceptSecuritySetter)
+        component.provideAdapter(ResourceSecuritySetter)
         component.provideAdapter(LoopsOptions)
         component.provideAdapter(QueryOptions)
         component.provideAdapter(TypeOptions)

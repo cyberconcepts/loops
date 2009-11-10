@@ -23,9 +23,11 @@ $Id$
 """
 
 from persistent import Persistent
+from persistent.list import PersistentList
 from zope import component
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.cachedescriptors.property import Lazy
@@ -39,7 +41,7 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from loops.common import adapted
 from loops.interfaces import ILoopsObject, IConcept
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
-from loops.security.interfaces import ISecuritySetter
+from loops.security.interfaces import ISecuritySetter, IWorkspaceInformation
 
 
 allRolesExceptOwner = (
@@ -81,7 +83,20 @@ def getCurrentPrincipal():
     return None
 
 
-# functions for setting security properties
+# functions for checking and setting security properties
+
+def overrides(s1, s2):
+    settings = [Allow, Deny, Unset]
+    return settings.index(s1) < settings.index(s2)
+
+def setRolePermission(rpm, p, r, setting):
+    if setting == Allow:
+        rpm.grantPermissionToRole(p, r)
+    elif setting == Deny:
+        rpm.denyPermissionToRole(p, r)
+    else:
+        rpm.unsetPermissionFromRole(p, r)
+
 
 def assignOwner(obj, principalId):
     prm = IPrincipalRoleManager(obj)
@@ -149,12 +164,16 @@ class WorkspaceInformation(Persistent):
         children and resources of the context (=parent) object.
     """
 
-    implements(IPhysicallyLocatable)
+    implements(IPhysicallyLocatable, IWorkspaceInformation)
 
     __name__ = u'workspace_information'
 
+    propagatePrincipalRoles = False
+    propagateRolePermissions = 'workspace'
+
     def __init__(self, parent):
         self.__parent__ = parent
+        self.workspaceGroups = PersistentList()
 
     def getName(self):
         return self.__name__

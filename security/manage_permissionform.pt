@@ -3,10 +3,9 @@
 
 <body>
 <div metal:fill-slot="body">
+  <h2 i18n:translate="">Assign Permissions to Roles</h2>
   <p tal:define="status view/update"
-     tal:condition="status"
-     tal:content="status"
-     i18n:translate="" />
+     tal:content="status" i18n:translate="" />
 
   <div metal:define-macro="permission_form"
        tal:define="permId view/permissionId;

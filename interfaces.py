@@ -104,12 +104,8 @@ class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
         source="loops.conceptTypeSource",
         required=True)
 
-    isWorkspace = Attribute('Marks a concept as responsible for providing '
-                    'special permission settings (children grants) '
-                    'for its sub-objects (children or resources).')
-
     workspaceInformation = Attribute('An object with additional '
-                    'workspace-related information, e.g. children grants.')
+                        'workspace-related information.')
 
     def getType():
         """ Return a concept that provides the object's type.

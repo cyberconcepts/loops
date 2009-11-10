@@ -34,6 +34,7 @@ from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
 from loops.interfaces import IConceptSchema
 from loops.organize.util import getPrincipalFolder
+from loops.interfaces import ILoopsAdapter
 from loops import util
 from loops.util import _
 
@@ -87,7 +88,7 @@ class LoginName(schema.TextLine):
                   mapping=dict(userId=userId)))
 
 
-class IPerson(IConceptSchema, IBasePerson):
+class IPerson(IConceptSchema, IBasePerson, ILoopsAdapter):
     """ Resembles a human being with a name (first and last name),
         a birth date, and a set of addresses. This interface only
         lists fields used in addition to those provided by the
@@ -101,7 +102,7 @@ class IPerson(IConceptSchema, IBasePerson):
                     required=False,)
 
 
-class IAddress(IConceptSchema, IBaseAddress):
+class IAddress(IConceptSchema, IBaseAddress, ILoopsAdapter):
     """ See cybertools.organize.
     """
 
@@ -158,7 +159,7 @@ class IMemberRegistrationManager(Interface):
 
 # task
 
-class ITask(IConceptSchema, ITask):
+class ITask(IConceptSchema, ITask, ILoopsAdapter):
 
     pass
 
