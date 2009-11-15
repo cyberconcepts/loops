@@ -82,8 +82,8 @@ class BlogPost(Compound):
             res = addAndConfigureObject(self.resourceManager, Resource, name,
                     title=self.title, contentType=self.defaultTextContentType,
                     resourceType=tTextDocument)
+            #notify(ObjectCreatedEvent(res))
             self.add(res, position=0)
-            notify(ObjectCreatedEvent(res))
             res = adapted(res)
         res.data = value
         notify(ObjectModifiedEvent(res.context))

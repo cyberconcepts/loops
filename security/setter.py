@@ -70,6 +70,8 @@ class BaseSecuritySetter(object):
 
 class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
+    parents = []
+
     @Lazy
     def baseObject(self):
         obj = self.context
@@ -77,13 +79,19 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
             obj = obj.context
         return obj
 
+    @Lazy
+    def rolePermissionManager(self):
+        return IRolePermissionManager(self.baseObject)
+
+    def setDefaultRolePermissions(self):
+        rpm = self.rolePermissionManager
+        for p, r, s in rpm.getRolesAndPermissions():
+            setRolePermission(rpm, p, r, Unset)
+
     def acquireRolePermissions(self):
-        obj = self.baseObject
-        if isinstance(obj, AdapterBase):
-            obj = obj.context
         settings = {}
         for p in self.parents:
-            if p == obj:
+            if p == self.baseObject:
                 continue
             secProvider = p
             wi = p.workspaceInformation
@@ -97,12 +105,9 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
                 current = settings.get((p, r))
                 if current is None or overrides(s, current):
                     settings[(p, r)] = s
-        rpm = IRolePermissionManager(obj)
-        for p, r, s in rpm.getRolesAndPermissions():
-            # clear previous settings
-            setRolePermission(rpm, p, r, Unset)
+        self.setDefaultRolePermissions()
         for (p, r), s in settings.items():
-            setRolePermission(rpm, p, r, s)
+            setRolePermission(self.rolePermissionManager, p, r, s)
 
 
 class ConceptSecuritySetter(LoopsObjectSecuritySetter):
@@ -126,6 +131,8 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
         obj = self.baseObject
         updated.add(obj)
         for r in obj.getChildRelations():
+            self.setAcquiredRolePermissions(r, updated=updated)
+        for r in obj.getResourceRelations():
             self.setAcquiredRolePermissions(r, updated=updated)
 
     def propagatePrincipalRoles(self, updated=None):

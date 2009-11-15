@@ -416,6 +416,9 @@ class BaseView(GenericView, I18NView):
     def typeOptions(self):
         return IOptions(adapted(self.typeProvider))
 
+    def getPredicateOptions(self, relation):
+        return IOptions(adapted(relation.predicate), None) or DummyOptions()
+
     # versioning
 
     @Lazy

@@ -33,7 +33,7 @@ from cybertools.meta.config import GlobalOptions as BaseGlobalOptions
 from cybertools.meta.interfaces import IOptions
 from cybertools.meta.namespace import Executor, ExecutionError
 from cybertools.typology.interfaces import IType
-from loops.interfaces import ILoops, ILoopsObject, ITypeConcept
+from loops.interfaces import ILoops, ILoopsObject, ITypeConcept, IPredicate
 #from loops.query import IQueryConcept
 from loops.expert.concept import IQueryConcept
 from loops import util
@@ -99,6 +99,11 @@ class TypeOptions(LoopsOptions):
 class QueryOptions(LoopsOptions):
 
     adapts(IQueryConcept)
+
+
+class PredicateOptions(LoopsOptions):
+
+    adapts(IPredicate)
 
 
 class DummyOptions(Options):
