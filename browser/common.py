@@ -389,18 +389,21 @@ class BaseView(GenericView, I18NView):
         general = [('loops:resource:*', 'Any Resource'),
                    ('loops:concept:*', 'Any Concept'),]
         return util.KeywordVocabulary(general
-                            + self.listTypesForSearch(exclude=('system', 'hidden',))
-                            + [('loops:*', 'Any')])
+                        + self.listTypesForSearch(exclude=('system', 'hidden',))
+                        + [('loops:*', 'Any')])
 
     def conceptTypesForSearch(self):
         general = [('loops:concept:*', 'Any Concept'),]
         return util.KeywordVocabulary(general
-                            + self.listTypesForSearch(('concept',), ('system', 'hidden',),))
+                        + self.listTypesForSearch(('concept',),
+                                                  ('hidden',),))
+                                                  #('system', 'hidden',),))
 
     def resourceTypesForSearch(self):
         general = [('loops:resource:*', 'Any Resource'),]
         return util.KeywordVocabulary(general
-                            + self.listTypesForSearch(('resource',), ('system', 'hidden'),))
+                        + self.listTypesForSearch(('resource',),
+                                                  ('system', 'hidden',),))
 
     # options/settings
 
@@ -423,7 +426,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def useVersioning(self):
-        if 'useVersioning' in self.loopsRoot.options:
+        if self.globalOptions('useVersioning'):
             return True
         options = getattr(self.controller, 'options', None)
         if options:

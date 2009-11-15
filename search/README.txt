@@ -72,7 +72,7 @@ zcml in real life:
 
   >>> t = searchView.conceptTypesForSearch()
   >>> len(t)
-  9
+  11
   >>> t.getTermByToken('loops:concept:*').title
   'Any Concept'
 

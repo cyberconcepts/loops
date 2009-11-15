@@ -109,7 +109,7 @@ class Search(BaseView):
                 types = [types]
             for type in types:
                 result = self.executeQuery(title=title or None, type=type,
-                                                 exclude=('system',))
+                                                 exclude=('hidden',))
                 for o in result:
                     if o.getLoopsRoot() == self.loopsRoot:
                         adObj = adapted(o, self.languageInfo)

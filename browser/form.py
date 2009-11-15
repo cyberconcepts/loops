@@ -317,9 +317,11 @@ class CreateObjectForm(ObjectForm):
     def maybeAssignedAsParent(self, obj):
         if not IConcept.providedBy(obj):
             return False
-        if obj.conceptType == self.loopsRoot.getConceptManager().getTypeConcept():
+        qualifiers = IType(obj).qualifiers
+        if (obj.conceptType == self.conceptManager.getTypeConcept()
+                and not 'assign' in qualifiers):
             return False
-        if 'noassign' in IType(obj).qualifiers:
+        if 'noassign' in qualifiers:
             return False
         adap = adapted(obj)
         if 'noassign' in getattr(adap, 'options', []):
