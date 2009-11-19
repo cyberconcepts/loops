@@ -59,7 +59,7 @@
 
 
 <metal:textline define-macro="display_textline">
-      <span tal:content="nocall:value"></span>
+      <span tal:content="structure nocall:value"></span>
 </metal:textline>
 
 
