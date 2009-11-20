@@ -46,6 +46,8 @@ from loops import util
 def adapted(obj, langInfo=None):
     """ Return adapter based on the object type's type interface.
     """
+    if isinstance(obj, AdapterBase):
+        return obj
     t = IType(obj, None)
     if t is not None:
         ti = t.typeInterface
@@ -56,6 +58,11 @@ def adapted(obj, langInfo=None):
                 adapted.languageInfo = langInfo
             if adapted is not None:
                 return adapted
+    return obj
+
+def baseObject(obj):
+    if isinstance(obj, AdapterBase):
+        return obj.context
     return obj
 
 

@@ -76,10 +76,8 @@ class NodeView(BaseView):
 
     def __init__(self, context, request):
         super(NodeView, self).__init__(context, request)
-        viewAnnotations = request.annotations.setdefault('loops.view', {})
-        viewAnnotations['nodeView'] = self
-        if viewAnnotations.get('node') is None:
-            viewAnnotations['node'] = self.context
+        self.viewAnnotations.setdefault('nodeView', self)
+        self.viewAnnotations.setdefault('node', self.context)
         viewConfig = getViewConfiguration(context, request)
         self.setSkin(viewConfig.get('skinName'))
 
