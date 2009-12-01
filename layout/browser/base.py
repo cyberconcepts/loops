@@ -154,6 +154,15 @@ class BaseView(object):
     def getUidForObject(self, obj):
         return util.getUidForObject(obj)
 
+    @Lazy
+    def meta_content(self):
+        keywords = ['loops']
+        if self.virtualTargetView:
+            keywords.append(self.virtualTargetView.getKeywords())
+        return dict(keywords=', '.join(keywords))
+
+    def getKeywords(self):
+        return self.context.title.split()
 
 pattern = re.compile(r'[ /\?\+%]')
 
