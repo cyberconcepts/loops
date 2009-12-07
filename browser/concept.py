@@ -46,6 +46,7 @@ from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
 from cybertools.composer.interfaces import IInstance
+from cybertools.composer.schema.grid.interfaces import Grid
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
@@ -54,6 +55,7 @@ from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.i18n.browser import I18NView
 from loops.interfaces import IConcept, IConceptSchema, ITypeConcept, IResource
+from loops.schema.base import RelationSet, Relation
 from loops import util
 from loops.util import _
 from loops.versioning.util import getVersion
@@ -62,6 +64,8 @@ from loops.versioning.util import getVersion
 class ConceptEditForm(EditForm, I18NView):
     """ Classic-style (zope.formlib-based) form for editing concepts.
     """
+
+    ignoredFieldTypes = (Grid, Relation, RelationSet,)
 
     #@Lazy  # zope.formlib does not issue a redirect after changes, so that
             # it tries to redisplay the old form even after a type change that
@@ -85,7 +89,8 @@ class ConceptEditForm(EditForm, I18NView):
             fields = FormFields(typeInterface, f1)
         else:
             fields = FormFields(IConcept, typeInterface)
-        return fields
+        return [f for f in fields
+                  if not isinstance(f.field, self.ignoredFieldTypes)]
 
     def setUpWidgets(self, ignore_request=False):
         # TODO: get rid of removeSecurityProxy(): use ConceptSchema in interfaces

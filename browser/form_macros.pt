@@ -16,12 +16,18 @@
              tal:attributes="value view/form_action" />
       <input type="hidden" name="version"
              tal:attributes="value request/version | nothing" />
+      <tal:title condition="not:view/isInnerHtml">
+        <h1 tal:content="request/view_title|view/title"
+            i18n:translate="">Edit Information Object</h1>
+        <br />
+      </tal:title>
+
       <table cellpadding="3" class="form">
         <tbody>
-          <tr>
+          <tr tal:condition="view/isInnerHtml">
             <th colspan="5" class="headline"
                 tal:attributes="colspan python: useI18N and 4 or 5">
-              <span tal:replace="request/view_title|view/title"
+              <span tal:content="request/view_title|view/title"
                     i18n:translate="">Edit Information Object</span>
             </th>
           <th tal:condition="useI18N"

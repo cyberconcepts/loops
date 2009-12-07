@@ -23,6 +23,7 @@ $Id$
 """
 
 from cgi import parse_qs, parse_qsl
+import re
 from urllib import urlencode
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
@@ -357,6 +358,9 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def renderedDescription(self):
+        htmlPattern = re.compile(r'<(.+)>.+</\1>')
+        if htmlPattern.search(self.description):
+            return self.description
         return self.renderText(self.description, 'text/restructured')
 
     # type listings
