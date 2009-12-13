@@ -12,6 +12,8 @@
   <zope:class class="loops.compound.blog.post.BlogPost">
     <require permission="zope.View"
         interface="loops.compound.blog.interfaces.IBlogPost" />
+    <require permission="zope.View"
+        attributes="context" />
     <require permission="zope.ManageContent"
         set_schema="loops.compound.blog.interfaces.IBlogPost" />
   </zope:class>

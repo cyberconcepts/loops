@@ -43,18 +43,21 @@ class BlogPostSecuritySetter(BaseSecuritySetter):
     def setDefaultPrincipalRoles(self):
         assignOwner(self.context.context, self.principalId)
 
-    def setAcquiredRolePermissions(self, relation, revert=False):
-        if isAcquiring(relation.predicate):
+    def setAcquiredSecurity(self, relation, revert=False):
+        #if self.isAcquiring(relation.predicate):
+        if relation.predicate in self.acquiringPredicates:
             allowEditingForOwner(relation.second, revert=revert)
             if self.context.private:
                 restrictView(relation.second, revert=revert)
-
-    def setAcquiredPrincipalRoles(self, relation, revert=False):
-        if isAcquiring(relation.predicate):
             if revert:
                 removeOwner(relation.second, self.principalId)
             else:
                 assignOwner(relation.second, self.principalId)
+
+    @Lazy
+    def acquiringPredicates(self):
+        names = ('ispartof',)
+        return [self.conceptManager.get(n) for n in names]
 
     @Lazy
     def principalId(self):
@@ -62,5 +65,5 @@ class BlogPostSecuritySetter(BaseSecuritySetter):
 
 
 def isAcquiring(predicate):
-    # TODO: use a predicate property for this.
+    # TODO: use a predicate option for this.
     return getName(predicate) in ('ispartof',)

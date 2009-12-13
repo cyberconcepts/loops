@@ -50,9 +50,8 @@ class Granting(granting.Granting):
     def status(self):
         value = super(Granting, self).status()
         if value:
-            setter = ISecuritySetter(adapted(self.context), None)
-            if setter is not None:
-                setter.propagatePrincipalRoles()
+            setter = ISecuritySetter(adapted(self.context))
+            setter.propagateSecurity()
         return value
 
 
@@ -99,9 +98,8 @@ class PermissionView(object):
     def update(self, testing=None):
         value = self.delegate.update(testing)
         if value:
-            setter = ISecuritySetter(self.adapted, None)
-            if setter is not None:
-                setter.propagateRolePermissions()
+            setter = ISecuritySetter(self.adapted)
+            setter.propagateSecurity()
         return value
 
     @Lazy

@@ -30,6 +30,11 @@ from loops.util import _
 
 class ISecuritySetter(Interface):
 
+    def setDefaultSecurity():
+        """ Set some default role permission assignments (grants) on the
+            context object.
+        """
+
     def setDefaultRolePermissions():
         """ Set some default role permission assignments (grants) on the
             context object.
@@ -40,34 +45,20 @@ class ISecuritySetter(Interface):
             (e.g. the user that created the object).
         """
 
-    def acquireRolePermissions():
+    def acquireRolePermissions(revert=False):
         """ Check (immediate) parents's settings and set role permission
             assignments on the context object accordingly.
         """
 
-    def setAcquiredRolePermissions(relation, revert=False, updated=None):
+    def setAcquiredSecurity(relation, revert=False, updated=None):
         """ Grant role permissions on children/resources for the relation given.
 
             If the ``revert`` argument is true unset the corresponding settings.
             Do not update objects in the ``updated`` collection if present.
         """
 
-    def setAcquiredPrincipalRoles(relation, revert=False, updated=None):
-        """ Assign roles on children/resources for the relation given.
-
-            If the ``revert`` argument is true unset the corresponding settings.
-            Do not update objects in the ``updated`` collection if present.
-        """
-
-    def propagateRolePermissions(updated=None):
+    def propagateSecurity(revert=False, updated=None):
         """ Update role permissions on all sub-objects according to the
-            current setting of the context object.
-
-            Ignore objects in the ``updated`` collection if present.
-        """
-
-    def propagatePrincipalRoles(updated=None):
-        """ Update roles on all sub-objects according to the
             current setting of the context object.
 
             Ignore objects in the ``updated`` collection if present.
@@ -79,7 +70,6 @@ class IWorkspaceInformation(Interface):
         security-related stuff for sub-objects.
     """
 
-    propagatePrincipalRoles = Attribute('Should acquired principal roles be '
-                    'propagated to children?')
     propagateRolePermissions = Attribute('Which role permissions should be '
                     'propagated to children?')
+

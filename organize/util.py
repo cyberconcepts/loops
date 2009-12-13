@@ -59,6 +59,11 @@ def getGroupsFolder(context=None, name='gloops'):
     return getPrincipalFolder(authPluginId=name, ignoreErrors=True)
 
 
+def getGroupId(group):
+    gf = group.__parent__
+    return ''.join((gf.__parent__.prefix, gf._groupid(group)))
+
+
 def getInternalPrincipal(id, context=None, pau=None):
     if pau is None:
         pau = component.getUtility(IAuthentication, context=context)

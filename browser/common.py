@@ -60,7 +60,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
-from loops.interfaces import IResource, IView, INode
+from loops.interfaces import IResource, IView, INode, ITypeConcept
 from loops.organize.tracking import access
 from loops.resource import Resource
 from loops.security.common import canAccessObject, canListObject, canWriteObject
@@ -413,6 +413,8 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def options(self):
+        if ITypeConcept.providedBy(self.adapted):
+            return DummyOptions()
         return component.queryAdapter(self.adapted, IOptions) or DummyOptions()
 
     @Lazy

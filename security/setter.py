@@ -24,16 +24,18 @@ $Id$
 """
 
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IRolePermissionMap
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
+from zope.app.securitypolicy.interfaces import \
+                    IRolePermissionMap, IRolePermissionManager, \
+                    IPrincipalRoleMap, IPrincipalRoleManager
 from zope import component
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements, Interface
 from zope.security.proxy import isinstance
 
-from loops.common import adapted, AdapterBase
-from loops.security.common import overrides, setRolePermission
+from loops.common import adapted, AdapterBase, baseObject
+from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
+from loops.security.common import overrides, setRolePermission, setPrincipalRole
 from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.security.interfaces import ISecuritySetter
 
@@ -46,25 +48,39 @@ class BaseSecuritySetter(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def baseObject(self):
+        return baseObject(self.context)
+
+    @Lazy
+    def conceptManager(self):
+        return self.baseObject.getLoopsRoot().getConceptManager()
+
+    @Lazy
+    def acquiringPredicates(self):
+        names = ('hasType', 'standard',)
+        return [self.conceptManager.get(n) for n in names]
+
     def setDefaultRolePermissions(self):
         pass
 
     def setDefaultPrincipalRoles(self):
         pass
 
+    def setDefaultSecurity(self):
+        self.setDefaultRolePermissions()
+        self.setDefaultPrincipalRoles()
+
+    def setAcquiredSecurity(self, relation, revert=False, updated=None):
+        pass
+
+    def propagateSecurity(self, revert=False, updated=None):
+        pass
+
     def acquireRolePermissions(self):
         pass
 
-    def setAcquiredRolePermissions(self, relation, revert=False, updated=None):
-        pass
-
-    def setAcquiredPrincipalRoles(self, relation, revert=False, updated=None):
-        pass
-
-    def propagateRolePermissions(self, updated=None):
-        pass
-
-    def propagatePrincipalRoles(self, updated=None):
+    def copyPrincipalRoles(self, source, revert=False):
         pass
 
 
@@ -73,15 +89,19 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
     parents = []
 
     @Lazy
-    def baseObject(self):
-        obj = self.context
-        if isinstance(obj, AdapterBase):
-            obj = obj.context
-        return obj
-
-    @Lazy
     def rolePermissionManager(self):
         return IRolePermissionManager(self.baseObject)
+
+    @Lazy
+    def principalRoleManager(self):
+        return IPrincipalRoleManager(self.baseObject)
+
+    @Lazy
+    def workspacePrincipals(self):
+        gFolder = getGroupsFolder(self.baseObject, 'gloops_ws')
+        if gFolder is None:
+            return []
+        return [getGroupId(g) for g in gFolder.values()]
 
     def setDefaultRolePermissions(self):
         rpm = self.rolePermissionManager
@@ -109,38 +129,44 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         for (p, r), s in settings.items():
             setRolePermission(self.rolePermissionManager, p, r, s)
 
+    def copyPrincipalRoles(self, source, revert=False):
+        prm = IPrincipalRoleMap(baseObject(source.context))
+        for r, p, s in prm.getPrincipalsAndRoles():
+            if p in self.workspacePrincipals:
+                if revert:
+                    setPrincipalRole(self.principalRoleManager, r, p, Unset)
+                else:
+                    setPrincipalRole(self.principalRoleManager, r, p, s)
+
 
 class ConceptSecuritySetter(LoopsObjectSecuritySetter):
 
     adapts(IConceptSchema)
 
-    def setAcquiredRolePermissions(self, relation, revert=False, updated=None):
+    def setAcquiredSecurity(self, relation, revert=False, updated=None):
         if updated and relation.second in updated:
             return
-        setter = ISecuritySetter(adapted(relation.second), None)
-        if setter is not None:
-            setter.acquireRolePermissions()
-            setter.propagateRolePermissions(updated)
+        if relation.predicate not in self.acquiringPredicates:
+            return
+        setter = ISecuritySetter(adapted(relation.second))
+        setter.setDefaultRolePermissions()
+        setter.acquireRolePermissions()
+        setter.copyPrincipalRoles(self, revert)
+        setter.propagateSecurity(revert, updated)
 
-    def setAcquiredPrincipalRoles(self, relation, revert=False, updated=None):
-        pass
-
-    def propagateRolePermissions(self, updated=None):
+    def propagateSecurity(self, revert=False, updated=None):
         if updated is None:
             updated = set()
         obj = self.baseObject
         updated.add(obj)
-        for r in obj.getChildRelations():
-            self.setAcquiredRolePermissions(r, updated=updated)
-        for r in obj.getResourceRelations():
-            self.setAcquiredRolePermissions(r, updated=updated)
-
-    def propagatePrincipalRoles(self, updated=None):
-        pass
+        for r in obj.getChildRelations(self.acquiringPredicates):
+            self.setAcquiredSecurity(r, revert, updated)
+        for r in obj.getResourceRelations(self.acquiringPredicates):
+            self.setAcquiredSecurity(r, revert, updated)
 
     @Lazy
     def parents(self):
-        return self.baseObject.getParents()
+        return self.baseObject.getParents(self.acquiringPredicates)
 
 
 class ResourceSecuritySetter(LoopsObjectSecuritySetter):
@@ -149,5 +175,5 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
 
     @Lazy
     def parents(self):
-        return self.baseObject.getConcepts()
+        return self.baseObject.getConcepts(self.acquiringPredicates)
 

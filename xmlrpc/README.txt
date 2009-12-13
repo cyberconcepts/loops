@@ -52,13 +52,13 @@ domain concept (if present, otherwise the top-level type concept):
   ['children', 'description', 'id', 'name', 'parents', 'resources',
    'title', 'type', 'viewName']
   >>> startObj['id'], startObj['name'], startObj['title'], startObj['type']
-  ('3', u'domain', u'Domain', '0')
+  ('4', u'domain', u'Domain', '0')
 
 There are a few standard objects we can retrieve directly:
 
   >>> defaultPred = xrf.getDefaultPredicate()
   >>> defaultPred['id'], defaultPred['name']
-  ('14', u'standard')
+  ('3', u'standard')
   >>> typePred = xrf.getTypePredicate()
   >>> typePred['id'], typePred['name']
   ('1', u'hasType')
@@ -78,12 +78,12 @@ applied in an explicit assignment.
 
 We can also retrieve a certain object by its id or its name:
 
-  >>> obj2 = xrf.getObjectById('5')
+  >>> obj2 = xrf.getObjectById('4')
   >>> obj2['id'], obj2['name']
-  ('5', u'note')
+  ('4', u'domain')
   >>> textdoc = xrf.getObjectByName(u'textdocument')
   >>> textdoc['id'], textdoc['name']
-  ('9', u'textdocument')
+  ('10', u'textdocument')
 
 All methods that retrieve one object also returns its children and parents:
 
@@ -115,7 +115,7 @@ We can also retrieve children and parents explicitely:
   [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
    u'task', u'textdocument', u'topic', u'type']
 
-  >>> pa = xrf.getParents('7')
+  >>> pa = xrf.getParents('6')
   >>> len(pa)
   1
   >>> pa[0]['name']

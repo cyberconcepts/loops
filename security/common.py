@@ -97,6 +97,14 @@ def setRolePermission(rpm, p, r, setting):
     else:
         rpm.unsetPermissionFromRole(p, r)
 
+def setPrincipalRole(prm, r, p, setting):
+    if setting == Allow:
+        prm.assignRoleToPrincipal(r, p)
+    elif setting == Deny:
+        prm.removeRoleFromPrincipal(r, p)
+    else:
+        prm.unsetRoleForPrincipal(r, p)
+
 
 def assignOwner(obj, principalId):
     prm = IPrincipalRoleManager(obj)
@@ -137,24 +145,21 @@ def restrictView(obj, roles=allRolesExceptOwnerAndMaster, revert=False):
 def setDefaultSecurity(obj, event):
     aObj = adapted(obj)
     setter = ISecuritySetter(aObj)
-    setter.setDefaultRolePermissions()
-    setter.setDefaultPrincipalRoles()
+    setter.setDefaultSecurity()
 
 
 @component.adapter(IConcept, IAssignmentEvent)
 def grantAcquiredSecurity(obj, event):
     aObj = adapted(obj)
     setter = ISecuritySetter(aObj)
-    setter.setAcquiredRolePermissions(event.relation)
-    setter.setAcquiredPrincipalRoles(event.relation)
+    setter.setAcquiredSecurity(event.relation)
 
 
 @component.adapter(IConcept, IDeassignmentEvent)
 def revokeAcquiredSecurity(obj, event):
     aObj = adapted(obj)
     setter = ISecuritySetter(aObj)
-    setter.setAcquiredRolePermissions(event.relation, revert=True)
-    setter.setAcquiredPrincipalRoles(event.relation, revert=True)
+    setter.setAcquiredSecurity(event.relation, revert=True)
 
 
 # helper stuff
@@ -168,12 +173,12 @@ class WorkspaceInformation(Persistent):
 
     __name__ = u'workspace_information'
 
-    propagatePrincipalRoles = False
     propagateRolePermissions = 'workspace'
 
     def __init__(self, parent):
         self.__parent__ = parent
-        self.workspaceGroups = PersistentList()
+        self.workspaceGroupNames = PersistentList()
 
     def getName(self):
         return self.__name__
+

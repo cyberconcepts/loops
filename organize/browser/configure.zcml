@@ -25,13 +25,13 @@
       for="loops.interfaces.INode"
       name="register_user.html"
       class="loops.organize.browser.member.MemberRegistration"
-      permission="zope.Public" />
+      permission="zope.View" />
 
   <browser:page
       for="loops.interfaces.INode"
       name="change_password.html"
       class="loops.organize.browser.member.PasswordChange"
-      permission="zope.Public" />
+      permission="zope.View" />
 
   <zope:adapter
       name="task.html"
