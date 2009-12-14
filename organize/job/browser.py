@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -48,9 +48,18 @@ class Executor(object):
         return getLogger('loops.organize.job')
 
     def processJobs(self):
-        for name in self.options('organize.job.managers', []):
+        output = []
+        names = [n for n in self.request.get('job_managers', '').split(',') if n]
+        if not names:
+            names = self.options('organize.job.managers', [])
+        for name in names:
             manager = component.queryAdapter(self.context, IJobManager, name=name)
             if manager is None:
-                self.logger.warn("Job manager '%s' not found." % name)
+                msg = "Job manager '%s' not found." % name
+                self.logger.warn(msg)
+                output.append(msg)
             else:
-                manager.process()
+                output.append(manager.process())
+        if not output:
+            return 'No job managers available.'
+        return '\n'.join(m for m in output if m)

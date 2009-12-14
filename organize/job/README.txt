@@ -40,6 +40,7 @@ method. As we haven't yet defined any job managers nothing happens.
 
   >>> executor = Executor(loopsRoot, TestRequest())
   >>> executor.processJobs()
+  'No job managers available.'
 
 We now register a job manager via an options setting on the loops root object.
 As the corresponding job manager is not yet defined an registered a
@@ -47,7 +48,7 @@ warning is issued.
 
   >>> loopsRoot.options = ['organize.job.managers:loops_notifier']
   >>> executor = Executor(loopsRoot, TestRequest())
-  >>> executor.processJobs()
+  >>> r = executor.processJobs()
   Job manager 'loops_notifier' not found.
 
 So let's now define a job manager class and register it as an adapter for

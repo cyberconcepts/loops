@@ -35,6 +35,7 @@ from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
 from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
 from cybertools.composer.schema.field import EmailFieldInstance, ListFieldInstance
 from cybertools.composer.schema.field import FileUploadFieldInstance
+from cybertools.composer.schema.grid.field import RecordsFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry, IIndexableRelation
@@ -70,7 +71,7 @@ from loops.resource import Document, MediaAsset
 from loops.resource import IndexAttributes as ResourceIndexAttributes
 from loops.schema.factory import ResourceSchemaFactory, FileSchemaFactory, \
                                  NoteSchemaFactory
-from loops.schema.field import RelationSetFieldInstance
+from loops.schema.field import RelationFieldInstance, RelationSetFieldInstance
 from loops.security.common import grantAcquiredSecurity, revokeAcquiredSecurity
 from loops.security.policy import LoopsSecurityPolicy
 from loops.security.setter import BaseSecuritySetter
@@ -152,6 +153,8 @@ class TestSite(object):
         component.provideAdapter(BooleanFieldInstance, name='boolean')
         component.provideAdapter(ListFieldInstance, name='list')
         component.provideAdapter(FileUploadFieldInstance, name='fileupload')
+        component.provideAdapter(RecordsFieldInstance, name='records')
+        component.provideAdapter(RelationFieldInstance, name='relation')
         component.provideAdapter(RelationSetFieldInstance, name='relationset')
         component.provideAdapter(SchemaFactory)
         component.provideAdapter(ResourceSchemaFactory)

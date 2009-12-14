@@ -92,6 +92,8 @@ class Extractor(Base):
 
     implements(IExtractor)
 
+    count = 0
+
     def extract(self):
         return itertools.chain(self.extractTypes(),
                                self.extractConcepts(),
@@ -107,25 +109,30 @@ class Extractor(Base):
             data = self.getObjectData(obj)
             element = typeElement(getName(obj), obj.title, **data)
             self.provideSubElements(obj, element)
+            self.count += 1
             yield element
 
     def extractConcepts(self):
         for name, obj in self.concepts.items():
             if obj.conceptType != self.typeConcept:
+                self.count += 1
                 yield self.getConceptElement(name, obj)
 
     def extractResources(self):
         for name, obj in self.resources.items():
+            self.count += 1
             yield self.getResourceElement(name, obj)
 
     def extractChildren(self):
         for c in self.concepts.values():
             for r in self.getChildRelations(c):
+                self.count += 1
                 yield r
 
     def extractResourceRelations(self):
         for c in self.concepts.values():
             for r in self.getResourceRelations(c):
+                self.count += 1
                 yield r
 
     def extractNodes(self, parent=None, path=''):
@@ -144,10 +151,12 @@ class Extractor(Base):
                                 or elementTypes['node'])
             elem = elementClass(name, obj.title, path, obj.nodeType, **data)
             self.provideSubElements(obj, elem)
+            self.count += 1
             yield elem
             childPath = path and '/'.join((path, name)) or name
             for elem in self.extractNodes(obj, childPath):
                 #self.provideSubElements(obj, elem)
+                self.count += 1
                 yield elem
 
     def extractForParents(self, parents, predicates=None,
@@ -158,10 +167,12 @@ class Extractor(Base):
         conceptList = sorted(concepts, key=lambda x:
                                 (x.conceptType != self.typeConcept, getName(x)))
         for c in conceptList:
+            self.count += 1
             yield self.getConceptElement(getName(c), c)
         for c in conceptList:
             for r in c.getChildRelations(predicates):
                 if r.predicate != self.typePredicate and r.second in concepts:
+                    self.count += 1
                     yield self.getChildElement(r)
         if includeResources:
             resources = set()
@@ -169,10 +180,12 @@ class Extractor(Base):
                 for obj in c.getResources(predicates):
                     if obj not in resources:
                         resources.add(obj)
+                        self.count += 1
                         yield self.getResourceElement(getName(obj), obj)
             for c in conceptList:
                 for r in c.getResourceRelations(predicates):
                     if r.predicate != self.typePredicate and r.second in resources:
+                        self.count += 1
                         yield self.getResourceRelationElement(r)
 
     def collectConcepts(self, concept, predicates, includeSubconcepts, concepts):
@@ -216,6 +229,7 @@ class Extractor(Base):
     def getChildRelations(self, c, predicates=None):
         for r in c.getChildRelations(predicates):
             if r.predicate != self.typePredicate:
+                self.count += 1
                 yield self.getChildElement(r)
 
     def getChildElement(self, r):
@@ -229,6 +243,7 @@ class Extractor(Base):
     def getResourceRelations(self, c, predicates=None):
         for r in c.getResourceRelations(predicates):
             if r.predicate != self.typePredicate:
+                self.count += 1
                 yield self.getResourceRelationElement(r)
 
     def getResourceRelationElement(self, r):

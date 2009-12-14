@@ -126,6 +126,7 @@ of job control.
   >>> rm = AccessRecordManager(loopsRoot)
   >>> rm.baseDir = testDir
   >>> rm.loadRecordsFromLog()
+  'AccessRecordManager: 2 records loaded.'
   >>> len(access)
   2
 
