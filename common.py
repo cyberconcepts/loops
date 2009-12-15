@@ -160,6 +160,9 @@ class AdapterBase(object):
     def getChildren(self):
         for c in self.context.getChildren():
             yield adapted(c, self.languageInfo)
+            
+    def getLongTitle(self):
+        return self.title
 
 
 class ResourceAdapterBase(AdapterBase):

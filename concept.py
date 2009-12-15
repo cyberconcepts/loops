@@ -164,6 +164,9 @@ class Concept(Contained, Persistent):
             elif rel not in pi.relations:
                 pi.relations.append(rel)
         return result
+        
+    def getLongTitle(self):
+        return self.title
 
     # concept relations
 

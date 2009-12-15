@@ -139,7 +139,7 @@ class Search(BaseView):
         return ConceptQuery(self).query(**kw)
 
     def getRowName(self, obj):
-        return obj.title
+        return obj.getLongTitle()
 
     def getRowLabel(self, obj, name):
         if isinstance(obj, AdapterBase):
