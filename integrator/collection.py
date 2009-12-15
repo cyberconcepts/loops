@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -73,7 +73,6 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def update(self):
         existing = self.context.getResources()
-        #old = dict((adapted(obj).uniqueAddress, obj) for obj in existing)
         old = dict((adapted(obj).externalAddress, obj) for obj in existing)
         new = []
         oldFound = []
@@ -85,8 +84,11 @@ class ExternalCollectionAdapter(AdapterBase):
                 # for checking for changes...
                 oldFound.append(addr)
                 if mdate and mdate > self.lastUpdated:
+                    obj = old[addr]
+                    # regenerate scale variant for media asset
+                    adapted(obj).externalAddress = addr
                     # force reindexing
-                    notify(ObjectModifiedEvent(old[addr]))
+                    notify(ObjectModifiedEvent(obj))
             else:
                 new.append(addr)
         if new:
