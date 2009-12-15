@@ -150,7 +150,7 @@
                  tal:condition="relation/other" />
           <input type="checkbox" checked name="form.assignments.selected:list"
                  tal:attributes="value relation/uidToken;" />
-          <span tal:content="relation/title">Something</span>
+          <span tal:content="relation/adapted/getLongTitle">Something</span>
           (<span i18n:translate="" tal:content="relation/typeTitle">Topic</span>)
         </td>
       </tr>
