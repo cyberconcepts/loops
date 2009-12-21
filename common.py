@@ -136,7 +136,8 @@ class AdapterBase(object):
 
     def __eq__(self, other):
         if not isinstance(other, AdapterBase):
-            return False
+            return self.context == other
+            #return False
         return self.context == other.context
 
     def getLoopsRoot(self):
@@ -160,7 +161,7 @@ class AdapterBase(object):
     def getChildren(self):
         for c in self.context.getChildren():
             yield adapted(c, self.languageInfo)
-            
+
     def getLongTitle(self):
         return self.title
 
@@ -323,10 +324,11 @@ class RelationSet(object):
 
     def __init__(self, context, predicateName, interface=None, noSecurityCheck=False):
         self.adapted = context
-        if isinstance(context, AdapterBase):
-            self.context = context.context
-        else:
-            self.context = context
+        self.context = baseObject(context)
+        #if isinstance(context, AdapterBase):
+        #    self.context = context.context
+        #else:
+        #    self.context = context
         self.predicateName = predicateName
         self.interface = interface
         self.noSecurityCheck = noSecurityCheck
@@ -347,16 +349,17 @@ class RelationSet(object):
 class ParentRelationSet(RelationSet):
 
     def add(self, related, order=0, relevance=1.0):
-        if isinstance(related, AdapterBase):
-            related = related.context
+        #if isinstance(related, AdapterBase):
+        #    related = related.context
+        related = baseObject(related)
         self.context.deassignParent(related, [self.predicate],  # avoid duplicates
                                     noSecurityCheck=self.noSecurityCheck)
         self.context.assignParent(related, self.predicate, order, relevance)
 
     def remove(self, related):
-        if isinstance(related, AdapterBase):
-            related = related.context
-        self.context.deassignParent(related, [self.predicate])
+        #if isinstance(related, AdapterBase):
+        #    related = related.context
+        self.context.deassignParent(baseObject(related), [self.predicate])
 
     def __iter__(self):
         if self.adapted.__is_dummy__:
