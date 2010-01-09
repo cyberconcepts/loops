@@ -516,6 +516,8 @@ class BaseView(GenericView, I18NView):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
     def checkAction(self, name, category, target):
+        if name in ('create_resource',):
+            return not self.globalOptions('hideCreateResource')
         return True
 
     def openEditWindow(self, viewName='edit.html'):

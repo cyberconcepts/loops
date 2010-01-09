@@ -474,7 +474,7 @@ class NodeView(BaseView):
     def checkAction(self, name, category, target):
         if name in ('create_resource',) and target is not None:
             return target.checkAction(name, category, target)
-        return True
+        return super(NodeView, self).checkAction(name, category, target)
 
     @Lazy
     def popupCreateObjectForm(self):

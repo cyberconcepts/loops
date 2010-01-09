@@ -380,7 +380,7 @@ class ConceptView(BaseView):
     def checkAction(self, name, category, target):
         if name in (self.typeOptions('hide_action.' + category) or []):
             return False
-        return True
+        return super(ConceptView, self).checkAction(name, category, target)
 
 
 class ConceptRelationView(ConceptView, BaseRelationView):
