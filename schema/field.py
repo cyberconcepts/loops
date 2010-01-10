@@ -36,6 +36,7 @@ from cybertools.composer.schema.interfaces import IField, IFieldInstance
 from cybertools.composer.schema.interfaces import fieldTypes, undefined
 from cybertools.util.format import toStr, toUnicode
 from cybertools.util import json
+from loops.common import baseObject
 from loops import util
 
 
@@ -70,7 +71,7 @@ class BaseRelationFieldInstance(object):
 class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
 
     def marshall(self, value):
-        return [dict(title=v.title, uid=util.getUidForObject(v.context))
+        return [dict(title=v.title, uid=util.getUidForObject(baseObject(v)))
                 for v in value]
 
     def display(self, value):
