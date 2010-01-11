@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2009-10-12 12:00 CET\n"
+"PO-Revision-Date: 2010-01-11 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -142,6 +142,9 @@ msgstr "Ressource bearbeiten"
 
 msgid "Edit Resource..."
 msgstr "Ressource bearbeiten..."
+
+msgid "Modify resource object."
+msgstr "Diese Ressource bearbeiten."
 
 msgid "Edit Concept"
 msgstr "Begriff bearbeiten"
@@ -392,8 +395,20 @@ msgstr "Altes Passwort"
 msgid "Password"
 msgstr "Passwort"
 
+msgid "Enter password."
+msgstr "Passwort eingeben."
+
 msgid "Confirm password"
 msgstr "Passwort wiederholen"
+
+msgid "Please repeat the password."
+msgstr "Bitte das Passwort erneut eingeben."
+
+msgid "Member Registration"
+msgstr "Teilnehmerregistrierung"
+
+msgid "Register"
+msgstr "Benutzer registrieren"
 
 msgid "Your old password was not entered correctly."
 msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
@@ -442,6 +457,9 @@ msgstr "Status ($definition): $title"
 
 msgid "User ID"
 msgstr "Benutzerkennung"
+
+msgid "Enter a user id."
+msgstr "Bitte die gewünschte Benutzerkennung eingeben."
 
 msgid "Period"
 msgstr "Periode"
