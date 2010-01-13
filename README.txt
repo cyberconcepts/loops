@@ -542,7 +542,7 @@ view for rendering.)
 
   >>> from loops.wiki.base import wikiLinksActive
   >>> wikiLinksActive(loopsRoot)
-  True
+  False
 
   >>> view.renderTarget()
   u'<p>Test data</p>\n<p>Another <a class="reference" href="para">paragraph</a></p>\n'

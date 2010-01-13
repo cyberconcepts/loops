@@ -50,7 +50,7 @@ from cybertools.wiki.base.config import WikiConfiguration
 from cybertools.wiki.dcu.html import Writer as DocutilsHTMLWriter
 from cybertools.wiki.dcu import process
 from cybertools.wiki.dcu.rstx import Parser as DocutilsRstxParser
-from cybertools.wiki.tracking.link import LinkManager
+#from cybertools.wiki.tracking.link import LinkManager
 
 from loops.base import Loops
 from loops import util
@@ -186,7 +186,7 @@ class TestSite(object):
 
         component.provideAdapter(WikiSetupManager, name='wiki')
         component.provideUtility(WikiConfiguration())
-        component.provideAdapter(LinkManager)
+        #component.provideAdapter(LinkManager)
         component.provideUtility(DocutilsHTMLWriter(), name='docutils.html')
         component.provideUtility(DocutilsRstxParser(), name='docutils.rstx')
         #component.provideAdapter(LoopsLinkProcessor, name='loops')

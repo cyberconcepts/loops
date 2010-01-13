@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@ Automatic setup of a loops site for the wiki package.
 $Id$
 """
 
-from cybertools.tracking.btree import TrackingStorage
-from cybertools.wiki.tracking.link import Link
+from cybertools.link.base import LinkManager
 from loops.setup import SetupManager as BaseSetupManager
 
 
 class SetupManager(BaseSetupManager):
 
     def setup(self):
+        return
         records = self.context.getRecordManager()
         if 'links' not in records:
             records['links'] = TrackingStorage(trackFactory=Link)

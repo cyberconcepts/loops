@@ -13,8 +13,6 @@
   <zope:utility factory="cybertools.wiki.dcu.rstx.Parser"
                 name="docutils.rstx" />
 
-  <zope:adapter factory="cybertools.wiki.tracking.link.LinkManager" />
-
   <!--<zope:adapter factory="loops.wiki.link.LoopsLinkProcessor"
                 name="loops" />-->
 
