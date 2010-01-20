@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -159,8 +159,22 @@ class Extractor(Base):
                 self.count += 1
                 yield elem
 
+    def extractChanged(self, changedSince, parents=None, predicates=None,
+                          includeSubconcepts=False, includeResources=False,):
+        rm = self.context.getRecordManager()
+        if rm is not None:
+            changes = rm.get('changes')
+        if not changes:
+            return []
+        tracks = changes.query(timeFrom=changedSince)
+        # work in progress: TODO:
+        #   select objects,
+        #   check parents using predicates given,
+        #   include children and resources if corresponding flags are set.
+        return []
+
     def extractForParents(self, parents, predicates=None,
-                          includeSubconcepts=False, includeResources=False):
+                          includeSubconcepts=False, includeResources=False,):
         concepts = set(parents)
         for p in parents:
             self.collectConcepts(p, predicates, includeSubconcepts, concepts)

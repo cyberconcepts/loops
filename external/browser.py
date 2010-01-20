@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ $Id$
 
 from cStringIO import StringIO
 import os
+import time
 from zope import component
 from zope.interface import Interface, implements
 from zope.app import zapi
@@ -71,32 +72,51 @@ class ExportImport(object):
         return False
 
     def export(self):
-        f = StringIO()
-        extractor = Extractor(self.context, self.resourceExportDirectory)
-        parentIds = self.request.form.get('parents')
+        form = self.request.form
+        parents = predicates = None
+        parentIds = form.get('parents')
         if parentIds:
-            elements = self.extractForParents(extractor, parentIds)
+            parentIds = [id for id in parentIds.splitlines() if id]
+            parents = [self.conceptManager.get(id) for id in parentIds]
+            parents = [p for p in parents if p is not None]
+        predicateIds = form.get('predicates')
+        if predicateIds:
+            predicates = (predicateIds and [self.conceptManager[id]
+                                for id in predicateIds] or None)
+        changed = form.get('changed')
+        includeSubconcepts = form.get('include_subconcepts')
+        includeResources = form.get('include_resources')
+        extractor = Extractor(self.context, self.resourceExportDirectory)
+        if changed:
+            changed = self.parseDate(changed)
+            if changed:
+                elements = extractor.extractChanged(changed, parents, predicates,
+                                        includeSubconcepts, includeResources)
+        elif parents:
+            elements = extractor.extractForParents(parents, predicates,
+                                    includeSubconcepts, includeResources)
         else:
             elements = extractor.extract()
+        return self.download(elements)
+
+    def download(self, elements):
         writer = component.getUtility(IWriter)
+        f = StringIO()
         writer.write(elements, f)
         text = f.getvalue()
         f.close()
         self.setDownloadHeader(self.request, text)
         return text
 
-    def extractForParents(self, extractor, parentIds):
-        form = self.request.form
-        parentIds = [id for id in parentIds.splitlines() if id]
-        parents = [self.conceptManager.get(id) for id in parentIds]
-        parents = [p for p in parents if p is not None]
-        predicateIds = form.get('predicates')
-        predicates = (predicateIds and [self.conceptManager[id]
-                            for id in parentIds] or None)
-        includeSubconcepts = form.get('include_subconcepts')
-        includeResources = form.get('include_resources')
-        return extractor.extractForParents(parents, predicates,
-                                           includeSubconcepts, includeResources)
+    def parseDate(self, s):
+        try:
+            t = time.strptime(s, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            try:
+                t = time.strptime(s, '%Y-%m-%d %H:%M')
+            except ValueError:
+                t = time.strptime(s, '%Y-%m-%d')
+        return int(time.mktime(t))
 
     @Lazy
     def conceptManager(self):
@@ -128,5 +148,4 @@ class ExportImport(object):
                            'attachment; filename=loopscontent.dmp')
         response.setHeader('Content-Type', 'text/plain')
         response.setHeader('Content-Length', len(text))
-
 

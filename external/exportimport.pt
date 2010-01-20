@@ -26,6 +26,14 @@
       <div>&nbsp;</div>
       <div class="row">
         <table>
+          <tr tal:condition="nothing">
+            <td>
+              <label for="changed">Export only objects changed since:<br />
+                  (YYYY-MM-DD[ HH:MM[:SS]])</label></td>
+            <td colspan="3">
+              <input type="text" name="changed" id="changed" />
+            </td>
+          </tr>
           <tr>
             <td>
               <label for="parents">Parent concepts</label><br />
