@@ -47,7 +47,8 @@ class BaseRelationFieldInstance(object):
 
     @Lazy
     def selection_view(self):
-        return getattr(self.context, 'selection_view', 'listConceptsForComboBox.js')
+        return (getattr(self.context, 'selection_view', None) or
+                                            'listConceptsForComboBox.js')
 
     @Lazy
     def typesParams(self):

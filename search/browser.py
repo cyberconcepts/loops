@@ -89,7 +89,7 @@ class Search(BaseView):
                   'dojo.require("dojox.data.QueryReadStore");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
 
-    def listConcepts(self):
+    def listConcepts(self, filterMethod=None):
         """ Used for dijit.FilteringSelect.
         """
         request = self.request
@@ -113,6 +113,8 @@ class Search(BaseView):
                 for o in result:
                     if o.getLoopsRoot() == self.loopsRoot:
                         adObj = adapted(o, self.languageInfo)
+                        if filterMethod is not None and not filterMethod(adObj):
+                            continue
                         name = self.getRowName(adObj)
                         if title and title.endswith('*'):
                             title = title[:-1]

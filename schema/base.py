@@ -48,6 +48,8 @@ class IRelationSet(IList):
     target_types = Attribute('A list of names that denote types of '
                 'loops objects (typically concept types) that may be used as '
                 'targets for the relations.')
+    selection_view = Attribute('The name of a view that provides a collection '
+                'of candidates to select from, in JSON format.')
 
 
 class Relation(Field):
@@ -75,5 +77,6 @@ class RelationSet(List):
 
     def __init__(self, *args, **kw):
         self.target_types = kw.pop('target_types')
+        self.selection_view = kw.pop('selection_view', None)
         super(RelationSet, self).__init__(*args, **kw)
 
