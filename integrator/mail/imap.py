@@ -129,4 +129,7 @@ def getText(msg):
     return msg.get_payload(decode=True).decode(getCharset(msg))
 
 def getCharset(msg):
-    return dict(msg.get_params()).get('charset') or 'ISO8859-1'
+    params = msg.get_params()
+    if params:
+        return dict(params).get('charset') or 'ISO8859-1'
+    return 'ISO8859-1'
