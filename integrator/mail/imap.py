@@ -89,7 +89,8 @@ class IMAPCollectionProvider(object):
             receiver = msg['To']
             raw_date = msg['Date'].rsplit(' ', 1)[0]
             fmt = '%a,  %d %b %Y %H:%M:%S'
-            date = datetime(*(time.strptime(raw_date, fmt)[0:6]))
+            #date = datetime(*(time.strptime(raw_date, fmt)[0:6]))
+            date = datetime(*(email.Utils.parsedate(raw_date)[0:6]))
             parts = getPayload(msg)
             if 'html' in parts:
                 text = '<br /><br /><hr /><br /><br />'.join(parts['html'])
