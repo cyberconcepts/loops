@@ -50,7 +50,8 @@ from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from loops.common import adapted
 from loops.concept import Concept, ConceptRelation, ResourceRelation
-from loops.interfaces import IConcept, IConceptSchema, IResourceManager, IDocument
+from loops.interfaces import IConcept, IConceptSchema
+from loops.interfaces import IResource, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
@@ -312,6 +313,10 @@ class CreateObjectForm(ObjectForm):
         if self.maybeAssignedAsParent(target):
             rv = ConceptRelationView(ResourceRelation(target, None), self.request)
             return (rv,)
+        if IResource.providedBy(target):
+            return tuple(ConceptRelationView(ResourceRelation(p, None), self.request)
+                            for p in target.getConcepts()
+                            if self.maybeAssignedAsParent(p))
         return ()
 
     def maybeAssignedAsParent(self, obj):
