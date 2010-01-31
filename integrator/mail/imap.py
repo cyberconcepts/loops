@@ -24,7 +24,7 @@ $Id$
 """
 
 from datetime import datetime
-import email
+import email, email.Header
 from logging import getLogger
 import os
 import time
@@ -84,13 +84,13 @@ class IMAPCollectionProvider(object):
         resourceType = loopsRoot.getConceptManager()['email']
         for addr in addresses:
             msg = client._collectedObjects[addr]
-            title = msg['Subject']
-            sender = msg['From']
-            receiver = msg['To']
-            raw_date = msg['Date'].rsplit(' ', 1)[0]
-            fmt = '%a,  %d %b %Y %H:%M:%S'
+            title = decodeHeader(msg['Subject'])
+            sender = decodeHeader(msg['From'])
+            receiver = decodeHeader(msg['To'])
+            #raw_date = msg['Date'].rsplit(' ', 1)[0]
+            #fmt = '%a,  %d %b %Y %H:%M:%S'
             #date = datetime(*(time.strptime(raw_date, fmt)[0:6]))
-            date = datetime(*(email.Utils.parsedate(raw_date)[0:6]))
+            date = datetime(*(email.Utils.parsedate(msg['Date'])[0:6]))
             parts = getPayload(msg)
             if 'html' in parts:
                 text = '<br /><br /><hr /><br /><br />'.join(parts['html'])
@@ -113,6 +113,15 @@ class IMAPCollectionProvider(object):
             notify(ObjectCreatedEvent(obj))
             notify(ObjectModifiedEvent(obj))
             yield obj
+
+
+def decodeHeader(h):
+    result = []
+    for v, dec in email.Header.decode_header(h):
+        if dec:
+            v = v.decode(dec)
+        result.append(v)
+    return ''.join(result)
 
 
 def getPayload(msg):
