@@ -156,8 +156,8 @@ class SendEmail(FormController):
         recipients += (form.get('addrRecipients') or u'').split('\n')
         person = getPersonForUser(self.context, self.request)
         sender = person and adapted(person).email or 'loops@unknown.com'
-        msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = subject
+        msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
+        msg['Subject'] = subject.encode('utf-8')
         msg['From'] = sender
         msg['To'] = ', '.join(r.strip() for r in recipients if r.strip())
         mailhost = component.getUtility(IMailDelivery, 'Mail')
