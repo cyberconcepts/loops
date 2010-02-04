@@ -48,14 +48,16 @@ class Favorites(object):
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
             yield item.taskId
 
-    def add(self, obj, person):
+    def add(self, obj, person, data=None):
         if None in (obj, person):
             return False
         uid = util.getUidForObject(obj)
         personUid = util.getUidForObject(person)
         if self.context.query(userName=personUid, taskId=uid):
             return False
-        return self.context.saveUserTrack(uid, 0, personUid, {})
+        if data is None:
+            data = {}
+        return self.context.saveUserTrack(uid, 0, personUid, data)
 
     def remove(self, obj, person):
         if None in (obj, person):
