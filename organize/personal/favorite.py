@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,13 +40,17 @@ class Favorites(object):
         self.context = context
 
     def list(self, person, sortKey=None):
+        for item in self.listTracks(person, sortKey):
+            yield item.taskId
+
+    def listTracks(self, person, sortKey=None):
         if person is None:
             return
         personUid = util.getUidForObject(person)
         if sortKey is None:
             sortKey = lambda x: -x.timeStamp
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
-            yield item.taskId
+            yield item
 
     def add(self, obj, person, data=None):
         if None in (obj, person):
