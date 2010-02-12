@@ -258,7 +258,7 @@ class Extractor(Base):
         return self.getConceptElement(name, obj)
 
     def getAssignmentElement(self, obj, child, predicate):
-        if IResource.providedBy(obj):
+        if IResource.providedBy(child):
             for r in obj.getResourceRelations([predicate], child):
                 return self.getResourceRelationElement(r)
         else:
