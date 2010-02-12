@@ -81,8 +81,7 @@ class ExportImport(object):
             parents = [p for p in parents if p is not None]
         predicateIds = form.get('predicates')
         if predicateIds:
-            predicates = (predicateIds and [self.conceptManager[id]
-                                for id in predicateIds] or None)
+            predicates = ([self.conceptManager[id] for id in predicateIds])
         changed = form.get('changed')
         includeSubconcepts = form.get('include_subconcepts')
         includeResources = form.get('include_resources')
@@ -90,7 +89,7 @@ class ExportImport(object):
         if changed:
             changed = self.parseDate(changed)
             if changed:
-                elements = extractor.extractChanged(changed, parents, predicates,
+                elements = extractor.extractChanges(changed, parents, predicates,
                                         includeSubconcepts, includeResources)
         elif parents:
             elements = extractor.extractForParents(parents, predicates,

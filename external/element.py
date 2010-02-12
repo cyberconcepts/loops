@@ -190,6 +190,19 @@ class ResourceRelationElement(ChildElement):
                            relevance = self.get('relevance') or 1.0)
 
 
+class DeassignmentElement(Element):
+
+    elementType = 'deassign'
+    posArgs = ('first', 'second', 'predicate')
+
+    def __init__(self, *args):
+        for idx, arg in enumerate(args):
+            self[self.posArgs[idx]] = arg
+
+    def execute(self, loader):
+        loader.deassignResource(self['first'], self['second'], self['predicate'])
+
+
 class NodeElement(Element):
 
     elementType = 'node'
@@ -230,6 +243,7 @@ elementTypes = dict(
     child=ChildElement,
     resource=ResourceElement,
     resourceRelation=ResourceRelationElement,
+    deassign=DeassignmentElement,
     node=NodeElement,
     layoutNode=LayoutNodeElement,
     I18NValue=I18NValue,

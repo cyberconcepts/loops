@@ -26,7 +26,7 @@
       <div>&nbsp;</div>
       <div class="row">
         <table>
-          <tr tal:condition="nothing">
+          <tr tal:condition="string:nothing">
             <td>
               <label for="changed">Export only objects changed since:<br />
                   (YYYY-MM-DD[ HH:MM[:SS]])</label></td>
@@ -42,7 +42,7 @@
             </td>
             <td>
               <label for="predicates">Predicates</label><br />
-              <select multiple name="predicates" id="predicates"
+              <select multiple name="predicates:list" id="predicates"
                       size="9">
                 <option tal:repeat="pred view/predicates"
                         tal:attributes="value pred/name"
@@ -52,11 +52,11 @@
               <br />
               <input type="checkbox" name="include_subconcepts"
                      id="include_subconcepts" />
-              <label for="include_subconcepts">Include Subconcepts</label>
+              <label for="include_subconcepts">Include Assigned Subconcepts</label>
               <br />
               <input type="checkbox" name="include_resources"
                      id="include_resources" />
-              <label for="include_resources">Include Resources</label>
+              <label for="include_resources">Include Assigned Resources</label>
             </td>
           </tr>
         </table>

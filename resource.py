@@ -201,13 +201,14 @@ class Resource(Image, Contained):
                   if canListObject(r.first, noSecurityCheck))
         return sorted(rels, key=sort)
 
-    # simplify common access for concepts and resources:
-    getParentRelations = getConceptRelations
-
     def getConcepts(self, predicates=None, noSecurityCheck=False):
         obj = getMaster(self)
         return [r.first for r in obj.getConceptRelations(predicates,
                                                 noSecurityCheck=noSecurityCheck)]
+
+    # simplify common access for concepts and resources:
+    getParentRelations = getConceptRelations
+    getParents = getConcepts
 
     def assignConcept(self, concept, predicate=None, order=0, relevance=1.0):
         obj = getMaster(self)

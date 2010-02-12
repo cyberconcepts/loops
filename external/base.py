@@ -39,10 +39,11 @@ from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.external.interfaces import ILoader, IExtractor, ISubExtractor
 from loops.external.element import elementTypes
-from loops.interfaces import IConceptSchema, IResourceSchema
+from loops.interfaces import IConceptSchema, IResourceSchema, IResource
 from loops.layout.base import LayoutNode
 from loops.resource import Document, MediaAsset
 from loops.setup import SetupManager
+from loops import util
 
 
 class Base(object):
@@ -159,19 +160,44 @@ class Extractor(Base):
                 self.count += 1
                 yield elem
 
-    def extractChanged(self, changedSince, parents=None, predicates=None,
+    def extractChanges(self, changedSince, parents=None, predicates=None,
                           includeSubconcepts=False, includeResources=False,):
-        rm = self.context.getRecordManager()
-        if rm is not None:
-            changes = rm.get('changes')
+        changes = self.getChangeRecords()
         if not changes:
-            return []
+            return
+        objects = []
+        assignments = []
+        deassignments = []
         tracks = changes.query(timeFrom=changedSince)
-        # work in progress: TODO:
-        #   select objects,
-        #   check parents using predicates given,
-        #   include children and resources if corresponding flags are set.
-        return []
+        for tr in tracks:
+            obj = util.getObjectForUid(tr.taskId)
+            action = tr.data.get('action')
+            if action in ('add', 'modify'):
+                if not self.checkParents(obj, parents, predicates):
+                    continue
+                if obj not in objects:
+                    objects.append(obj)
+                    name = getName(obj)
+                    yield self.getConceptOrResourceElement(name, obj)
+            elif action in ('assign', 'deassign'):
+                child = util.getObjectForUid(tr.data['second'])
+                pred = util.getObjectForUid(tr.data['predicate'])
+                if child is None or pred is None:
+                    # may have been deleted already - can be ignored
+                    continue
+                if (not self.checkParents(obj, parents, predicates) and
+                    not self.checkParents(child, parents, predicates)):
+                    continue
+                if action == 'assign':
+                    element = self.getAssignmentElement(obj, child, pred)
+                else:
+                    element = self.getDeassignmentElement(obj, child, pred)
+                if element is not None:
+                    yield element
+        # TODO: include new parent and child relations
+        # TODO: include statements for removal of relations if necessary
+        #       (or remove relations not in import file upon import)
+        # TODO: include children and resources if corresponding flags are set.
 
     def extractForParents(self, parents, predicates=None,
                           includeSubconcepts=False, includeResources=False,):
@@ -211,6 +237,37 @@ class Extractor(Base):
                                          concepts)
 
     # helper methods
+
+    def getChangeRecords(self):
+        rm = self.context.getRecordManager()
+        if rm is not None:
+            return rm.get('changes')
+
+    def checkParents(self, obj, parents, predicates):
+        if not parents:
+            return True
+        objParents = obj.getParents(predicates)
+        for p in parents:
+            if p in objParents:
+                return True
+        return False
+
+    def getConceptOrResourceElement(self, name, obj):
+        if IResource.providedBy(obj):
+            return self.getResourceElement(name, obj)
+        return self.getConceptElement(name, obj)
+
+    def getAssignmentElement(self, obj, child, predicate):
+        if IResource.providedBy(obj):
+            for r in obj.getResourceRelations([predicate], child):
+                return self.getResourceRelationElement(r)
+        else:
+            for r in obj.getChildRelations([predicate], child):
+                return self.getChildElement(r)
+
+    def getDeassignmentElement(self, obj, child, predicate):
+        args = getName(obj), getName(child), getName(predicate)
+        return elementTypes['deassign'](*args)
 
     def getConceptElement(self, name, obj):
         if obj.conceptType is None:
