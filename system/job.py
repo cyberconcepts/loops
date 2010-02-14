@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,24 +17,35 @@
 #
 
 """
-Base class(es) for job management.
+Recording changes to loops objects.
 
 $Id$
 """
 
-from zope import component, interface
+from zope.interface import implements
+from zope.cachedescriptors.property import Lazy
+from zope.component import adapter
 
-from cybertools.organize.interfaces import IJobManager
-from loops.interfaces import ILoops
+from cybertools.meta.interfaces import IOptions
+from cybertools.tracking.btree import Track, getTimeStamp
+from loops.organize.tracking.base import BaseRecordManager
+from loops.system.interfaces import IJobRecord, IJobRecords
+from loops import util
 
 
-class JobManager(object):
+class JobRecords(BaseRecordManager):
 
-    interface.implements(IJobManager)
-    component.adapts(ILoops)
+    implements(IJobRecords)
+
+    storageName = 'jobs'
 
     def __init__(self, context):
         self.context = context
 
-    def process(self):
-        raise NotImplementedError("Method 'process' has to be implemented by subclass.")
+
+class JobRecord(Track):
+
+    implements(IJobRecord)
+
+    typeName = 'JobRecord'
+

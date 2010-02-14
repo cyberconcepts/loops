@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,24 +17,26 @@
 #
 
 """
-Base class(es) for job management.
+Views for loops system management.
 
 $Id$
 """
 
-from zope import component, interface
-
-from cybertools.organize.interfaces import IJobManager
-from loops.interfaces import ILoops
+from cybertools.tracking.btree import TrackingStorage
+from loops.system.job import JobRecord
 
 
-class JobManager(object):
+class SetupActions(object):
+    """ Collection of methods for manually setting up  system objects
+        within a loops site.
+    """
 
-    interface.implements(IJobManager)
-    component.adapts(ILoops)
-
-    def __init__(self, context):
+    def __init__(self, context, request):
         self.context = context
+        self.request = request
 
-    def process(self):
-        raise NotImplementedError("Method 'process' has to be implemented by subclass.")
+    def setupJobRecords(self):
+        records = self.context.getRecordManager()
+        if 'jobs' not in records:
+            records['jobs'] = TrackingStorage(trackFactory=JobRecord)
+        return 'Done'

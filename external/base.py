@@ -194,9 +194,6 @@ class Extractor(Base):
                     element = self.getDeassignmentElement(obj, child, pred)
                 if element is not None:
                     yield element
-        # TODO: include new parent and child relations
-        # TODO: include statements for removal of relations if necessary
-        #       (or remove relations not in import file upon import)
         # TODO: include children and resources if corresponding flags are set.
 
     def extractForParents(self, parents, predicates=None,

@@ -42,6 +42,9 @@ In addition to the application site we need a loops system management site.
   [u'domain', u'file', u'hasType', u'job', u'note', u'predicate',
    u'standard', u'textdocument', u'type']
 
+  >>> list(systemRoot.getRecordManager().keys())
+  [u'jobs']
+
 
 Agents and Jobs
 ===============

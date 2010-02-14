@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,24 +17,33 @@
 #
 
 """
-Base class(es) for job management.
+view class(es) for import/export.
 
 $Id$
 """
 
-from zope import component, interface
+from cStringIO import StringIO
+import os
+import time
+from zope import component
+from zope.interface import Interface, implements
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName, getPath
 
-from cybertools.organize.interfaces import IJobManager
-from loops.interfaces import ILoops
+from loops.organize.tracking.report import RecentChanges
+from loops import util
 
 
-class JobManager(object):
+control_macros = ViewPageTemplateFile('control.pt')
 
-    interface.implements(IJobManager)
-    component.adapts(ILoops)
 
-    def __init__(self, context):
-        self.context = context
+class SyncChanges(RecentChanges):
+    """ View for controlling the transfer of changes from a loops site
+        to another one.
+    """
 
-    def process(self):
-        raise NotImplementedError("Method 'process' has to be implemented by subclass.")
+    @Lazy
+    def macro(self):
+        return control_macros.macros['main']
+

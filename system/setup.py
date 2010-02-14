@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,11 @@ $Id$
 from zope.component import adapts
 from zope.interface import implements, Interface
 
+from cybertools.tracking.btree import TrackingStorage
 from loops.concept import Concept
 from loops.interfaces import ITypeConcept
 from loops.setup import SetupManager as BaseSetupManager
+from loops.system.job import JobRecord
 
 
 class SetupManager(BaseSetupManager):
@@ -39,4 +41,8 @@ class SetupManager(BaseSetupManager):
         # type concepts:
         job = self.addAndConfigureObject(concepts, Concept, 'job', title=u'Job',
                         conceptType=type)
+        # job records:
+        records = self.context.getRecordManager()
+        if 'jobs' not in records:
+            records['jobs'] = TrackingStorage(trackFactory=JobRecord)
 

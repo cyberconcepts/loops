@@ -1,0 +1,10 @@
+<!-- $Id$ -->
+
+
+<metal:main define-macro="main"
+              tal:define="info item/getData">
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <br />
+  <metal:listing use-macro="info/macro" />
+  <input type="submit" value="Synchronize Changes" />
+</metal:main>

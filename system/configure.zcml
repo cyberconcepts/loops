@@ -3,11 +3,19 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope">
+   i18n_domain="loops">
 
-  <zope:adapter factory="loops.system.setup.SetupManager"
-                name="system" />
+  <!--<zope:adapter factory="loops.system.setup.SetupManager"
+                name="system" />-->
+
+  <browser:page
+      name="setup_jobrecords.html"
+      for="loops.interfaces.ILoops"
+      class="loops.system.browser.SetupActions"
+      attribute="setupJobRecords"
+      permission="loops.ManageSite" />
 
   <include package=".site" />
+  <include package=".sync" />
 
 </configure>

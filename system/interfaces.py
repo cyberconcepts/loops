@@ -25,9 +25,22 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from cybertools.tracking.interfaces import ITrack
 from loops.interfaces import IConceptSchema
 from loops.util import _
 
+
+class IJobRecords(Interface):
+
+    pass
+
+
+class IJobRecord(ITrack):
+
+    pass
+
+
+# agent-based job control - not used at the moment.
 
 class IJob(IConceptSchema):
     """ Specifies/represents a job to be executed by a cybertools.agent
@@ -43,7 +56,8 @@ class IJob(IConceptSchema):
                     title=_(u'Agent Identifier'),
                     description=_(u'The identifier of the agent that will '
                         'execute the job; this identifies also the type '
-                        'of job, e.g. a crawling or transport job.')
+                        'of job, e.g. a crawling or transport job.'),
+                    required=False,)
     startTime = schema.Date(
                     title=_(u'Start Date/Time'),
                     description=_(u'Date/time at which the job should be '
@@ -63,3 +77,4 @@ class IJobManager(IConceptSchema):
     """ A container/manager for jobs to be executed by a cybertools.agent
         instance.
     """
+
