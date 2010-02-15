@@ -39,7 +39,7 @@ from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.external.interfaces import ILoader, IExtractor, ISubExtractor
 from loops.external.element import elementTypes
-from loops.interfaces import IConceptSchema, IResourceSchema, IResource
+from loops.interfaces import IConceptSchema, IResourceSchema, IResource, IConcept
 from loops.layout.base import LayoutNode
 from loops.resource import Document, MediaAsset
 from loops.setup import SetupManager
@@ -113,11 +113,12 @@ class Extractor(Base):
             self.count += 1
             yield element
 
-    def extractConcepts(self):
+    def extractConcepts(self, types=None):
         for name, obj in self.concepts.items():
             if obj.conceptType != self.typeConcept:
-                self.count += 1
-                yield self.getConceptElement(name, obj)
+                if self.checkTypes(obj, types):
+                    self.count += 1
+                    yield self.getConceptElement(name, obj)
 
     def extractResources(self):
         for name, obj in self.resources.items():
@@ -161,7 +162,8 @@ class Extractor(Base):
                 yield elem
 
     def extractChanges(self, changedSince, parents=None, predicates=None,
-                          includeSubconcepts=False, includeResources=False,):
+                       types=None,):
+                       #includeSubconcepts=False, includeResources=False,):
         changes = self.getChangeRecords()
         if not changes:
             return
@@ -173,6 +175,8 @@ class Extractor(Base):
             obj = util.getObjectForUid(tr.taskId)
             action = tr.data.get('action')
             if action in ('add', 'modify'):
+                if not self.checkTypes(obj, types):
+                    continue
                 if not self.checkParents(obj, parents, predicates):
                     continue
                 if obj not in objects:
@@ -188,6 +192,9 @@ class Extractor(Base):
                 if (not self.checkParents(obj, parents, predicates) and
                     not self.checkParents(child, parents, predicates)):
                     continue
+                if (not self.checkTypes(obj, types) and
+                    not self.checkTypes(child, types)):
+                    continue
                 if action == 'assign':
                     element = self.getAssignmentElement(obj, child, pred)
                 else:
@@ -196,7 +203,7 @@ class Extractor(Base):
                     yield element
         # TODO: include children and resources if corresponding flags are set.
 
-    def extractForParents(self, parents, predicates=None,
+    def extractForParents(self, parents, predicates=None, types=None,
                           includeSubconcepts=False, includeResources=False,):
         concepts = set(parents)
         for p in parents:
@@ -204,8 +211,9 @@ class Extractor(Base):
         conceptList = sorted(concepts, key=lambda x:
                                 (x.conceptType != self.typeConcept, getName(x)))
         for c in conceptList:
-            self.count += 1
-            yield self.getConceptElement(getName(c), c)
+            if self.checkTypes(c, types):
+                self.count += 1
+                yield self.getConceptElement(getName(c), c)
         for c in conceptList:
             for r in c.getChildRelations(predicates):
                 if r.predicate != self.typePredicate and r.second in concepts:
@@ -216,9 +224,10 @@ class Extractor(Base):
             for c in conceptList:
                 for obj in c.getResources(predicates):
                     if obj not in resources:
-                        resources.add(obj)
-                        self.count += 1
-                        yield self.getResourceElement(getName(obj), obj)
+                        if self.checkTypes(obj, types):
+                            resources.add(obj)
+                            self.count += 1
+                            yield self.getResourceElement(getName(obj), obj)
             for c in conceptList:
                 for r in c.getResourceRelations(predicates):
                     if r.predicate != self.typePredicate and r.second in resources:
@@ -243,11 +252,20 @@ class Extractor(Base):
     def checkParents(self, obj, parents, predicates):
         if not parents:
             return True
+        if (not IResource.providedBy(obj) and not IConcept.providedBy(obj)):
+            return False
         objParents = obj.getParents(predicates)
         for p in parents:
             if p in objParents:
                 return True
         return False
+
+    def checkTypes(self, obj, types):
+        if not types:
+            return True
+        if (not IResource.providedBy(obj) and not IConcept.providedBy(obj)):
+            return False
+        return obj.getType() in types
 
     def getConceptOrResourceElement(self, name, obj):
         if IResource.providedBy(obj):

@@ -8,9 +8,21 @@
   <!-- views -->
 
   <browser:page
-      name="sync_changes.html"
-      for="loops.interfaces.IConcept"
-      class="loops.system.sync.browser.SyncChanges"
-      permission="zope.ManageContent" />
+        name="sync_changes.html"
+        for="loops.interfaces.IConcept"
+        class="loops.system.sync.browser.SyncChanges"
+        permission="zope.ManageContent" />
+
+  <zope:adapter name="changes_save"
+        for="loops.browser.node.NodeView
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        factory="loops.system.sync.browser.ChangesSave"
+        permission="zope.ManageContent" />
+
+  <zope:adapter name="changes_sync"
+        for="loops.browser.node.NodeView
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        factory="loops.system.sync.browser.ChangesSync"
+        permission="zope.ManageContent" />
 
 </configure>

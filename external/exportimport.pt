@@ -59,9 +59,17 @@
               <label for="include_resources">Include Assigned Resources</label>
             </td>
           </tr>
+          <tr>
+            <td colspan="4">
+              <label for="types">Restrict Type</label><br />
+              <select multiple name="types:list" id="types"
+                      size="4">
+                <option tal:repeat="type view/types"
+                        tal:attributes="value type/name"
+                        tal:content="type/title">type</option></select>
+          </tr>
         </table>
       </div>
-      <div>&nbsp;</div>
       <div class="row">
         <div class="controls">
           <input type="submit" name="loops.export" value="Export" />

@@ -33,6 +33,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getPath
 
+from cybertools.util.date import str2timeStamp
 from loops.external.base import Loader, Extractor
 from loops.external.interfaces import IReader, IWriter
 from loops import util
@@ -73,7 +74,7 @@ class ExportImport(object):
 
     def export(self):
         form = self.request.form
-        parents = predicates = None
+        parents = predicates = types = None
         parentIds = form.get('parents')
         if parentIds:
             parentIds = [id for id in parentIds.splitlines() if id]
@@ -82,6 +83,9 @@ class ExportImport(object):
         predicateIds = form.get('predicates')
         if predicateIds:
             predicates = ([self.conceptManager[id] for id in predicateIds])
+        typeIds = form.get('types')
+        if typeIds:
+            types = ([self.conceptManager[id] for id in typeIds])
         changed = form.get('changed')
         includeSubconcepts = form.get('include_subconcepts')
         includeResources = form.get('include_resources')
@@ -89,13 +93,13 @@ class ExportImport(object):
         if changed:
             changed = self.parseDate(changed)
             if changed:
-                elements = extractor.extractChanges(changed, parents, predicates,
-                                        includeSubconcepts, includeResources)
+                elements = extractor.extractChanges(changed, parents,
+                                    predicates, types)
         elif parents:
-            elements = extractor.extractForParents(parents, predicates,
+            elements = extractor.extractForParents(parents, predicates, types,
                                     includeSubconcepts, includeResources)
         else:
-            elements = extractor.extract()
+            elements = extractor.extract(types)
         return self.download(elements)
 
     def download(self, elements):
@@ -107,26 +111,25 @@ class ExportImport(object):
         self.setDownloadHeader(self.request, text)
         return text
 
-    def parseDate(self, s):
-        try:
-            t = time.strptime(s, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            try:
-                t = time.strptime(s, '%Y-%m-%d %H:%M')
-            except ValueError:
-                t = time.strptime(s, '%Y-%m-%d')
-        return int(time.mktime(t))
-
     @Lazy
     def conceptManager(self):
         return  self.context.getConceptManager()
 
     @Lazy
+    def typePredicate(self):
+        return self.conceptManager.getTypePredicate()
+
+    @Lazy
+    def types(self):
+        ttype = self.conceptManager['type']
+        return [dict(name=getName(p), title=p.title)
+                for p in ttype.getChildren([self.typePredicate])]
+
+    @Lazy
     def predicates(self):
         ptype = self.conceptManager['predicate']
-        hasType = self.conceptManager['hasType']
         return [dict(name=getName(p), title=p.title)
-                for p in ptype.getChildren([hasType])]
+                for p in ptype.getChildren([self.typePredicate])]
 
     def upload(self):
         data = self.request.get('field.data', None)
@@ -148,3 +151,5 @@ class ExportImport(object):
         response.setHeader('Content-Type', 'text/plain')
         response.setHeader('Content-Length', len(text))
 
+    def parseDate(self, s):
+        return str2timeStamp(s)

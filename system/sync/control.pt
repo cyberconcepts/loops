@@ -1,10 +1,29 @@
 <!-- $Id$ -->
 
 
-<metal:main define-macro="main"
-              tal:define="info item/getData">
-  <metal:title use-macro="item/conceptMacros/concepttitle" />
-  <br />
-  <metal:listing use-macro="info/macro" />
-  <input type="submit" value="Synchronize Changes" />
+<metal:main define-macro="main">
+  <form method="post"
+        tal:define="action request/form.action|string:changes_save">
+    <metal:title use-macro="item/conceptMacros/concepttitle" />
+    <br />
+    <label for="changed_since" i18n:translate="">Select changes since:</label>
+    <input type="text" name="changed_since" id="changed_since" size="14"
+           tal:attributes="value item/changed" />&nbsp;
+    (<span i18n:translate="">Last synchronization:</span>
+    <span tal:content="item/lastSyncTime" />)
+    <br />&nbsp;
+    <div>
+      <label i18n:translate="">Action:</label>
+      <input type="radio" name="form.action" value="changes_save"
+             id="action_save"
+             tal:attributes="checked python:action == 'changes_save'" />
+      <label for="action_save" i18n:translate="">Save changes only</label>
+      <input type="radio" name="form.action" value="changes_sync"
+             id="action_sync"
+             tal:attributes="checked python:action == 'changes_sync'" />
+      <label for="action_sync" i18n:translate="">Synchronize changes</label>
+    </div>
+    <br />
+    <input type="submit" name="submit" value="Submit" i18n:translate="" />
+  </form>
 </metal:main>
