@@ -22,6 +22,8 @@ view class(es) for import/export.
 $Id$
 """
 
+from cStringIO import StringIO
+from logging import getLogger
 import os
 import time
 from zope import component
@@ -32,6 +34,7 @@ from zope.traversing.api import getName, getPath
 
 from cybertools.browser.form import FormController
 from cybertools.util.date import str2timeStamp, formatTimeStamp
+from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.external.base import Extractor
 from loops.external.interfaces import IWriter
@@ -74,30 +77,82 @@ class ChangesSave(FormController):
 
     @Lazy
     def sitePath(self):
-        return getPath(self.view.virtualTargetObject)[1:].replace('/', '_')
+        return getPath(self.view.loopsRoot)[1:].replace('/', '_')
 
     @Lazy
     def exportDirectory(self):
-        return os.path.join(self.baseDirectory, 'export', self.sitePath)
+        directory = os.path.join(self.baseDirectory, 'export',
+                                 '_'.join((self.sitePath,
+                                           getName(self.targetView.context))))
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        return directory
 
     @Lazy
     def targetView(self):
         return self.view.virtualTarget
 
-    def update(self):
+    @Lazy
+    def types(self):
         typeIds = self.targetView.options('types')
-        types = [self.view.conceptManager[t] for t in typeIds]
+        return [self.view.conceptManager[t] for t in typeIds]
+
+    @Lazy
+    def changed(self):
         since = self.request.get('changed_since')
-        changed = since and str2timeStamp(since) or self.targetView.lastSyncTimeStamp
+        return since and str2timeStamp(since) or self.targetView.lastSyncTimeStamp
+
+    @Lazy
+    def transcript(self):
+        return StringIO()
+
+    def update(self):
+        self.export()
+        return True
+
+    def export(self):
+        self.clearExportDirectory()
         extractor = Extractor(self.view.loopsRoot, self.exportDirectory)
-        elements = extractor.extractChanges(changed, types)
+        elements = extractor.extractChanges(self.changed, self.types)
         writer = component.getUtility(IWriter)
         f = open(os.path.join(self.exportDirectory, '_changes.dmp'), 'w')
         writer.write(elements, f)
         f.close()
-        return True
+
+    def clearExportDirectory(self):
+        for fn in os.listdir(self.exportDirectory):
+            os.unlink(os.path.join(self.exportDirectory, fn))
 
 
 class ChangesSync(ChangesSave):
 
-    pass
+    def update(self):
+        self.export()
+        self.transfer()
+        self.triggerImport()
+        #self.recordExecution()
+        return True
+
+    def transfer(self):
+        targetPath = self.targetView.options('target')[0]
+        cmd = os.popen('scp -r %s %s' % (self.exportDirectory, targetPath))
+        info = cmd.read()
+        result = cmd.close()
+        if result:
+            message = '*** scp output: %s, return code: %s' % (info, result)
+            log = getLogger('loops.system.sync')
+            log.warn(message)
+            self.transcript.write(message + '\n')
+
+    def triggerImport(self):
+        pass
+
+    def recordExecution(self):
+        jobs = self.view.loopsRoot.getRecordManager()['jobs']
+        jobs.saveUserTrack()
+
+
+class SyncImport(BaseView):
+
+    def importData(self):
+        pass

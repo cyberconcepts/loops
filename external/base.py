@@ -184,8 +184,10 @@ class Extractor(Base):
                     name = getName(obj)
                     yield self.getConceptOrResourceElement(name, obj)
             elif action in ('assign', 'deassign'):
-                child = util.getObjectForUid(tr.data['second'])
                 pred = util.getObjectForUid(tr.data['predicate'])
+                if pred == self.typePredicate:
+                    continue
+                child = util.getObjectForUid(tr.data['second'])
                 if child is None or pred is None:
                     # may have been deleted already - can be ignored
                     continue

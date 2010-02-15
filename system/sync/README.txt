@@ -6,6 +6,7 @@ loops - Linked Objects for Organization and Processing Services
 
   >>> from zope import component
   >>> from zope.traversing.api import getName
+  >>> from zope.publisher.browser import TestRequest
 
 Let's set up a loops site with basic and example concepts and resources.
 
@@ -19,11 +20,18 @@ Let's set up a loops site with basic and example concepts and resources.
   >>> len(concepts), len(resources), len(views)
   (30, 3, 1)
 
+  >>> from cybertools.tracking.btree import TrackingStorage
+  >>> from loops.system.job import JobRecord
+  >>> records = loopsRoot.getRecordManager()
+  >>> records['jobs'] = TrackingStorage(trackFactory=JobRecord)
+
 
 Synchronize: Transfer Changes from one loops Site to Another
 ============================================================
 
-  >>> from loops.system.sync.browser import SyncChanges
+  >>> from loops.system.sync.browser import SyncChanges, ChangesSync
+  >>> req = TestRequest()
+  >>> #view = SyncChanges()
 
 
 Fin de Partie
