@@ -25,4 +25,10 @@
         factory="loops.system.sync.browser.ChangesSync"
         permission="zope.ManageContent" />
 
+  <browser:page
+        name="sync_import"
+        for="loops.interfaces.ILoops"
+        class="loops.system.sync.browser.SyncImport"
+        permission="zope.Public" />
+
 </configure>

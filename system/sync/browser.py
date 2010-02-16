@@ -26,6 +26,7 @@ from cStringIO import StringIO
 from logging import getLogger
 import os
 import time
+from urllib import urlopen, urlencode
 from zope import component
 from zope.interface import Interface, implements
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -133,6 +134,10 @@ class ChangesSync(ChangesSave):
 
     state = 'ok'
 
+    @Lazy
+    def targetPath(self):
+        return self.targetView.options('target_dir')[0]
+
     def update(self):
         self.export()
         self.transfer()
@@ -141,8 +146,7 @@ class ChangesSync(ChangesSave):
         return True
 
     def transfer(self):
-        targetPath = self.targetView.options('target')[0]
-        cmd = os.popen('scp -r %s %s' % (self.exportDirectory, targetPath))
+        cmd = os.popen('scp -r %s %s' % (self.exportDirectory, self.targetPath))
         info = cmd.read()
         result = cmd.close()
         if result:
@@ -152,7 +156,16 @@ class ChangesSync(ChangesSave):
             self.transcript.write(message + '\n')
 
     def triggerImport(self):
-        pass
+        targetUrl = self.targetView.options('target_url')[0]
+        p = self.targetPath.split(':', 1)
+        if len(p) > 1:
+            path = p[1]
+        else:
+            path = p[0]
+        f = urlopen(targetUrl, data=urlencode(dict(path=path)))
+        result = f.read()
+        self.transcript.write('trigger import: %s\n' % result)
+        return result
 
     def recordExecution(self):
         jobs = JobRecords(self.view.loopsRoot)
@@ -163,4 +176,5 @@ class ChangesSync(ChangesSave):
 class SyncImport(BaseView):
 
     def importData(self):
-        pass
+        print '***', self.request.get('path', '???')
+        return 'Done'
