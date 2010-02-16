@@ -173,7 +173,11 @@ class ChangesSync(ChangesSave):
                              self.state, self.transcript.getvalue())
 
 
-class SyncImport(BaseView):
+class SyncImport(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
     def importData(self):
         print '***', self.request.get('path', '???')
