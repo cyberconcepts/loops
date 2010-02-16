@@ -29,6 +29,7 @@
         name="sync_import"
         for="loops.interfaces.ILoops"
         class="loops.system.sync.browser.SyncImport"
+        attribute="importData"
         permission="zope.Public" />
 
 </configure>
