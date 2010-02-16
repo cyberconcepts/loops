@@ -38,6 +38,7 @@ from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.external.base import Extractor
 from loops.external.interfaces import IWriter
+from loops.system.job import JobRecords
 from loops import util
 
 
@@ -66,6 +67,10 @@ class SyncChanges(ConceptView):
 
     @Lazy
     def lastSyncTimeStamp(self):
+        jobs = JobRecords(self.view.loopsRoot)
+        rec = jobs.getLastRecordFor(self.nodeView.virtualTargetObject)
+        if rec is not None:
+            return rec.timeStamp
         return None
 
 
@@ -126,11 +131,13 @@ class ChangesSave(FormController):
 
 class ChangesSync(ChangesSave):
 
+    state = 'ok'
+
     def update(self):
         self.export()
         self.transfer()
         self.triggerImport()
-        #self.recordExecution()
+        self.recordExecution()
         return True
 
     def transfer(self):
@@ -148,8 +155,9 @@ class ChangesSync(ChangesSave):
         pass
 
     def recordExecution(self):
-        jobs = self.view.loopsRoot.getRecordManager()['jobs']
-        jobs.saveUserTrack()
+        jobs = JobRecords(self.view.loopsRoot)
+        jobs.recordExecution(self.view.virtualTargetObject,
+                             self.state, self.transcript.getvalue())
 
 
 class SyncImport(BaseView):

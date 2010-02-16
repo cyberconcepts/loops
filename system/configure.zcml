@@ -8,6 +8,15 @@
   <!--<zope:adapter factory="loops.system.setup.SetupManager"
                 name="system" />-->
 
+  <zope:class class="loops.system.job.JobRecord">
+    <require permission="zope.View"
+             interface="loops.system.interfaces.IJobRecord" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.system.interfaces.IJobRecord" />
+  </zope:class>
+
+  <!-- views -->
+
   <browser:page
       name="setup_jobrecords.html"
       for="loops.interfaces.ILoops"

@@ -42,6 +42,19 @@ class JobRecords(BaseRecordManager):
     def __init__(self, context):
         self.context = context
 
+    def recordExecution(self, job, state, transcript, **kw):
+        taskId = util.getUidForObject(job)
+        kw['state'] = state
+        kw['transcript'] = transcript
+        self.storage.saveUserTrack(taskId, 0, self.personId, kw)
+
+    def getLastRecordFor(self, job):
+        taskId = util.getUidForObject(job)
+        recs = self.storage.query(taskId=taskId)
+        if recs:
+            return sorted(recs, key=lambda x: x.timeStamp)[-1]
+        return None
+
 
 class JobRecord(Track):
 

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,15 @@ from loops.util import _
 
 class IJobRecords(Interface):
 
-    pass
+    def recordExecution(job, state, transcript, data=None):
+        """ Record the execution of a job (which may be a query or some other
+            kind of concept).
+        """
+
+    def getLastRecordFor(job):
+        """ Use this for finding out when the job given has been run
+            most recently.
+        """
 
 
 class IJobRecord(ITrack):
