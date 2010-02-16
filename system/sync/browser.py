@@ -37,8 +37,8 @@ from cybertools.browser.form import FormController
 from cybertools.util.date import str2timeStamp, formatTimeStamp
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
-from loops.external.base import Extractor
-from loops.external.interfaces import IWriter
+from loops.external.base import Extractor, Loader
+from loops.external.interfaces import IReader, IWriter
 from loops.system.job import JobRecords
 from loops import util
 
@@ -86,10 +86,12 @@ class ChangesSave(FormController):
         return getPath(self.view.loopsRoot)[1:].replace('/', '_')
 
     @Lazy
+    def subDirectory(self):
+        return '_'.join((self.sitePath, getName(self.targetView.context)))
+
+    @Lazy
     def exportDirectory(self):
-        directory = os.path.join(self.baseDirectory, 'export',
-                                 '_'.join((self.sitePath,
-                                           getName(self.targetView.context))))
+        directory = os.path.join(self.baseDirectory, 'export', self.subDirectory)
         if not os.path.exists(directory):
             os.makedirs(directory)
         return directory
@@ -162,6 +164,7 @@ class ChangesSync(ChangesSave):
             path = p[1]
         else:
             path = p[0]
+        path = os.path.join(path, self.subDirectory)
         f = urlopen(targetUrl, data=urlencode(dict(path=path)))
         result = f.read()
         self.transcript.write('trigger import: %s\n' % result)
@@ -180,5 +183,13 @@ class SyncImport(object):
         self.request = request
 
     def importData(self):
-        print '***', self.request.get('path', '???')
+        path = self.request.get('path', '???')
+        f = open(os.path.join(path, '_changes.dmp'))
+        data = f.read()
+        f.close()
+        reader = component.getUtility(IReader)
+        elements = reader.read(data)
+        loader = Loader(self.context, path)
+        loader.load(elements)
+        return loader.logger.getvalue() + '\n' + loader.transcript.getvalue()
         return 'Done'

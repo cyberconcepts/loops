@@ -284,7 +284,10 @@ class Extractor(Base):
 
     def getDeassignmentElement(self, obj, child, predicate):
         args = getName(obj), getName(child), getName(predicate)
-        return elementTypes['deassign'](*args)
+        kw = {}
+        if IConcept.providedBy(child):
+            kw['type'] = 'concept'
+        return elementTypes['deassign'](*args, **kw)
 
     def getConceptElement(self, name, obj):
         if obj.conceptType is None:

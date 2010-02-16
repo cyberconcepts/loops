@@ -149,7 +149,7 @@ class SetupManager(object):
 
     def setConceptAttribute(self, concept, attr, value):
         setattr(adapted(concept), attr, value)
-        self.log("Setting Attribute '%s' of '%s' to '%s'" %
+        self.log("Setting Attribute '%s' of '%s' to '%s'." %
                  (attr, getName(concept), repr(value)))
 
     def assignChild(self, conceptName, childName, predicate=None, **kw):
@@ -160,12 +160,23 @@ class SetupManager(object):
         concept = self.concepts[conceptName]
         child = self.concepts[childName]
         if child in concept.getChildren([predicate]):
-            self.log("Concept '%s' is already a child of '%s' with predicate '%s'.'" %
+            self.log("Concept '%s' is already a child of '%s' with predicate '%s'." %
                      (childName, conceptName, getName(predicate)))
         else:
             concept.assignChild(child, predicate, **kw)
-            self.log("Concept '%s' assigned to '%s with predicate '%s'.'" %
+            self.log("Concept '%s' assigned to '%s' with predicate '%s'." %
                      (childName, conceptName, getName(predicate)))
+
+    def deassignChild(self, conceptName, childName, predicate=None):
+        if predicate is None:
+            predicate = self.concepts.getDefaultPredicate()
+        if isinstance(predicate, basestring):
+            predicate = self.concepts[predicate]
+        concept = self.concepts[conceptName]
+        child = self.concepts[childName]
+        concept.deassignChild(child, [predicate])
+        self.log("Concept '%s' deassigned from '%s' using predicate '%s'." %
+                    (childName, conceptName, getName(predicate)))
 
     def addResource(self, name, title, resourceType, description=u'', **kw):
         if name in self.resources:
@@ -189,12 +200,23 @@ class SetupManager(object):
         concept = self.concepts[conceptName]
         resource = self.resources[resourceName]
         if resource in concept.getResources([predicate]):
-            self.log("Resource '%s' is already assigned to '%s with predicate '%s'.'" %
+            self.log("Resource '%s' is already assigned to '%s' with predicate '%s'.'" %
                      (resourceName, conceptName, getName(predicate)))
         else:
             concept.assignResource(resource, predicate, **kw)
-            self.log("Resource '%s' assigned to '%s with predicate '%s'.'" %
+            self.log("Resource '%s' assigned to '%s' with predicate '%s'." %
                      (resourceName, conceptName, getName(predicate)))
+
+    def deassignResource(self, conceptName, resourceName, predicate=None):
+        if predicate is None:
+            predicate = self.concepts.getDefaultPredicate()
+        if isinstance(predicate, basestring):
+            predicate = self.concepts[predicate]
+        concept = self.concepts[conceptName]
+        resource = self.resources[resourceName]
+        concept.deassignResource(resource, [predicate])
+        self.log("Resource '%s' deassigned from '%s' using predicate '%s'." %
+                    (resourceName, conceptName, getName(predicate)))
 
     def addNode(self, name, title, container=None, nodeType='page',
                 description=u'', body=u'', target=None, factory=Node, **kw):

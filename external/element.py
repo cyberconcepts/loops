@@ -195,12 +195,17 @@ class DeassignmentElement(Element):
     elementType = 'deassign'
     posArgs = ('first', 'second', 'predicate')
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kw):
         for idx, arg in enumerate(args):
             self[self.posArgs[idx]] = arg
+        for k, v in kw.items():
+            self[k] = v
 
     def execute(self, loader):
-        loader.deassignResource(self['first'], self['second'], self['predicate'])
+        if self.get('type') == 'child':
+            loader.deassignChild(self['first'], self['second'], self['predicate'])
+        else:
+            loader.deassignResource(self['first'], self['second'], self['predicate'])
 
 
 class NodeElement(Element):
@@ -250,4 +255,4 @@ elementTypes = dict(
 )
 
 toplevelElements = ('type', 'concept', 'resource',
-                    'child', 'resourceRelation', 'node')
+                    'child', 'resourceRelation', 'node', 'deassign')
