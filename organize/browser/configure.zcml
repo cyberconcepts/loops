@@ -69,6 +69,12 @@
       factory="loops.organize.browser.party.SendEmail"
       permission="zope.View" />
 
+  <browser:page
+      name="calendar_info"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.organize.browser.event.CalendarInfo"
+      permission="zope.View" />
+
   <!-- authentication -->
 
   <browser:addform

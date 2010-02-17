@@ -1,0 +1,54 @@
+<!-- $Id$ -->
+
+<metal:calendar define-macro="main"
+                tal:define="calendar nocall:context/@@calendar_info;
+                            year calendar/selectedYear;
+                            month calendar/selectedMonth">
+  <table width="100%">
+    <tr>
+      <td>
+        <a tal:attributes="href
+            string:?cal_year=${calendar/previousYear}&cal_month=$month">&lt;&lt;</a>
+        <a tal:define="m calendar/previousMonth"
+           tal:attributes="href
+            string:?cal_year=${m/year}&cal_month=${m/month}">&lt;</a>
+      </td>
+      <td align="center">
+        <span i18n:translate=""
+              tal:content="python:calendar.monthNames[month-1]">February</span>
+        <span tal:content="year">2010</span></td>
+      <td>
+        <a tal:define="m calendar/nextMonth"
+           tal:attributes="href
+            string:?cal_year=${m/year}&cal_month=${m/month}">&gt;</a>
+        <a tal:attributes="href
+            string:?cal_year=${calendar/nextYear}&cal_month=$month">&gt;&gt;</a>
+      </td>
+    </tr>
+  </table>
+  <table width="100%"
+         tal:define="mc calendar/monthCalendar">
+    <tr>
+      <td>&nbsp;</td>
+      <td align="center"
+          tal:repeat="weekday calendar/weekDays">
+        <span i18n:translate=""
+              tal:content="weekday" />
+      </td>
+    </tr>
+    <tr tal:repeat="week mc">
+      <td align="center"
+          tal:content="python:calendar.getWeekNumber(week)"></td>
+      <td align="center"
+          tal:attributes="style python:calendar.isToday(day) and
+                            'border: 1px solid red'"
+          tal:repeat="day week">
+        <span tal:define="events python:calendar.getEvents(day)">
+          <a tal:omit-tag="not:events"
+             tal:attributes="href string:#;
+                             style string:font-weight:bold"
+             tal:content="python: day or u''" /></span>
+      </td>
+    </tr>
+  </table>
+</metal:calendar>

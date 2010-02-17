@@ -423,6 +423,24 @@ Show Presence of Other Users
   >>> component.provideUtility(Presence())
 
 
+Calendar
+========
+
+  >>> from loops.organize.browser.event import CalendarInfo
+  >>> calendar = CalendarInfo(menu, TestRequest(cal_year=2009, cal_month=2))
+  >>> mc = calendar.monthCalendar
+  >>> mc
+  [[0, 0, 0, 0, 0, 0, 1],
+   [2, 3, 4, 5, 6, 7, 8],
+   [9, 10, 11, 12, 13, 14, 15],
+   [16, 17, 18, 19, 20, 21, 22],
+   [23, 24, 25, 26, 27, 28, 0]]
+  >>> calendar.getWeekNumber(mc[0])
+  5
+  >>> calendar.isToday(18)
+  False
+
+
 Fin de partie
 =============
 

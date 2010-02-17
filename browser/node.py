@@ -66,6 +66,7 @@ from loops.versioning.util import getVersion
 
 node_macros = ViewPageTemplateFile('node_macros.pt')
 info_macros = ViewPageTemplateFile('info.pt')
+calendar_macros = ViewPageTemplateFile('calendar.pt')
 
 
 class NodeView(BaseView):
@@ -141,6 +142,10 @@ class NodeView(BaseView):
                             subMacro=node_macros.macros['presence'],
                             icon='cybertools.icons/group.png',
                             priority=11)
+            if self.globalOptions('organize.showCalendar'):
+                cm.register('portlet_left', 'calendar', title=_(u'Calendar'),
+                            subMacro=calendar_macros.macros['main'],
+                            priority=90)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
 
