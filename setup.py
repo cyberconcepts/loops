@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -153,10 +153,7 @@ class SetupManager(object):
                  (attr, getName(concept), repr(value)))
 
     def assignChild(self, conceptName, childName, predicate=None, **kw):
-        if predicate is None:
-            predicate = self.concepts.getDefaultPredicate()
-        if isinstance(predicate, basestring):
-            predicate = self.concepts[predicate]
+        predicate = self.getPredicate(predicate)
         concept = self.concepts[conceptName]
         child = self.concepts[childName]
         if child in concept.getChildren([predicate]):
@@ -168,14 +165,11 @@ class SetupManager(object):
                      (childName, conceptName, getName(predicate)))
 
     def deassignChild(self, conceptName, childName, predicate=None):
-        if predicate is None:
-            predicate = self.concepts.getDefaultPredicate()
-        if isinstance(predicate, basestring):
-            predicate = self.concepts[predicate]
+        predicate = self.getPredicate(predicate)
         concept = self.concepts[conceptName]
         child = self.concepts[childName]
         concept.deassignChild(child, [predicate])
-        self.log("Concept '%s' deassigned from '%s' using predicate '%s'." %
+        self.log("Concept '%s' deassigned from '%s' for predicate '%s'." %
                     (childName, conceptName, getName(predicate)))
 
     def addResource(self, name, title, resourceType, description=u'', **kw):
@@ -193,10 +187,7 @@ class SetupManager(object):
         return c
 
     def assignResource(self, conceptName, resourceName, predicate=None, **kw):
-        if predicate is None:
-            predicate = self.concepts.getDefaultPredicate()
-        if isinstance(predicate, basestring):
-            predicate = self.concepts[predicate]
+        predicate = self.getPredicate(predicate)
         concept = self.concepts[conceptName]
         resource = self.resources[resourceName]
         if resource in concept.getResources([predicate]):
@@ -208,14 +199,11 @@ class SetupManager(object):
                      (resourceName, conceptName, getName(predicate)))
 
     def deassignResource(self, conceptName, resourceName, predicate=None):
-        if predicate is None:
-            predicate = self.concepts.getDefaultPredicate()
-        if isinstance(predicate, basestring):
-            predicate = self.concepts[predicate]
+        predicate = self.getPredicate(predicate)
         concept = self.concepts[conceptName]
         resource = self.resources[resourceName]
         concept.deassignResource(resource, [predicate])
-        self.log("Resource '%s' deassigned from '%s' using predicate '%s'." %
+        self.log("Resource '%s' deassigned from '%s' for predicate '%s'." %
                     (resourceName, conceptName, getName(predicate)))
 
     def addNode(self, name, title, container=None, nodeType='page',
@@ -249,6 +237,13 @@ class SetupManager(object):
                 self.log("Target '%s' for '%s' does not exist." %
                          (target, name))
         return n
+
+    def getPredicate(self, predicate):
+        if predicate is None:
+            return self.concepts.getDefaultPredicate()
+        if isinstance(predicate, basestring):
+            return self.concepts[predicate]
+        return predicate
 
     def log(self, message):
         if isinstance(message, unicode):
@@ -302,7 +297,6 @@ class SetupView(object):
         self.manager = ISetupManager(context)
 
     def setupLoopsSite(self):
-        #self.manager.setupManagers()
         self.manager.setup()
         return 'Done'
 
