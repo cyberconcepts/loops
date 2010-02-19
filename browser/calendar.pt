@@ -3,30 +3,31 @@
 <metal:calendar define-macro="main"
                 tal:define="calendar nocall:context/@@calendar_info;
                             year calendar/selectedYear;
-                            month calendar/selectedMonth">
-  <table width="100%">
+                            month calendar/selectedMonth;
+                            events calendar/events">
+  <table width="100%" class="calendar">
     <tr>
-      <td>
+      <td class="arrows">
         <a tal:attributes="href
-            string:?cal_year=${calendar/previousYear}&cal_month=$month">&lt;&lt;</a>
+            string:?cal_year=${calendar/previousYear}&cal_month=$month">&laquo;</a>
         <a tal:define="m calendar/previousMonth"
            tal:attributes="href
-            string:?cal_year=${m/year}&cal_month=${m/month}">&lt;</a>
+            string:?cal_year=${m/year}&cal_month=${m/month}">&lsaquo;</a>
       </td>
       <td align="center">
         <span i18n:translate=""
               tal:content="python:calendar.monthNames[month-1]">February</span>
         <span tal:content="year">2010</span></td>
-      <td>
+      <td  class="arrows" align="right">
         <a tal:define="m calendar/nextMonth"
            tal:attributes="href
-            string:?cal_year=${m/year}&cal_month=${m/month}">&gt;</a>
+            string:?cal_year=${m/year}&cal_month=${m/month}">&rsaquo;</a>
         <a tal:attributes="href
-            string:?cal_year=${calendar/nextYear}&cal_month=$month">&gt;&gt;</a>
+            string:?cal_year=${calendar/nextYear}&cal_month=$month">&raquo;</a>
       </td>
     </tr>
   </table>
-  <table width="100%"
+  <table width="100%" class="calendar"
          tal:define="mc calendar/monthCalendar">
     <tr>
       <td>&nbsp;</td>
@@ -37,16 +38,16 @@
       </td>
     </tr>
     <tr tal:repeat="week mc">
-      <td align="center"
+      <td align="center" class="week_number"
           tal:content="python:calendar.getWeekNumber(week)"></td>
       <td align="center"
-          tal:attributes="style python:calendar.isToday(day) and
-                            'border: 1px solid red'"
+          tal:attributes="class python:'day ' + calendar.getCssClass(day)"
           tal:repeat="day week">
-        <span tal:define="events python:calendar.getEvents(day)">
-          <a tal:omit-tag="not:events"
-             tal:attributes="href string:#;
-                             style string:font-weight:bold"
+        <span tal:define="dayEvents python:day and events[day-1]">
+          <a class="has_events"
+             tal:omit-tag="not:dayEvents"
+             tal:attributes="href python:calendar.getEventsUrl(day);
+                             title python:calendar.getEventTitles(day)"
              tal:content="python: day or u''" /></span>
       </td>
     </tr>

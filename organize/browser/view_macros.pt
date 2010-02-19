@@ -35,9 +35,10 @@
   <div tal:repeat="related item/events">
     <tal:child define="data related/data">
       <h2 class="headline">
-        <a href="#"
+        <a tal:define="start related/adapted/start"
            tal:content="related/title"
-           tal:attributes="href python: view.getUrlForTarget(related);">Event</a>
+           tal:attributes="href python: '%s?cal_year=%s&cal_month=%s' %
+                    (view.getUrlForTarget(related), start.year, start.month);" />
       </h2>
       <div class="description"
            tal:define="description data/description"

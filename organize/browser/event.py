@@ -24,6 +24,7 @@ $Id$
 
 import calendar
 from datetime import date, datetime, timedelta
+from urllib import urlencode
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -31,6 +32,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.meta.interfaces import IOptions
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
+from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.util import _
 
@@ -38,25 +40,7 @@ from loops.util import _
 organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 
-class BaseEvents(object):
-
-    def events(self):
-        cm = self.loopsRoot.getConceptManager()
-        tEvent = cm['event']
-        hasType = cm.getTypePredicate()
-        now = datetime.today()
-        delta = int(self.request.get('delta',
-                        IOptions(adapted(self.context))('delta', [0])[0]))
-        sort = lambda x: x.adapted.start or now
-        relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
-                        for r in tEvent.getChildRelations([hasType], sort=None))
-        return sorted((rv for rv in relViews
-                          if not rv.adapted.end or
-                             rv.adapted.end >= now - timedelta(delta)),
-                      key=sort)
-
-
-class Events(ConceptView, BaseEvents):
+class Events(ConceptView):
 
     @Lazy
     def macro(self):
@@ -77,8 +61,39 @@ class Events(ConceptView, BaseEvents):
             self.registerDojoDateWidget()
         return actions
 
+    @Lazy
+    def selectedDate(self):
+        year = int(self.request.get('cal_year') or 0)
+        month = int(self.request.get('cal_month') or 0)
+        day = int(self.request.get('cal_day') or 0)
+        if year and month and day:
+            return datetime(year, month, day)
+        return None
 
-class CalendarInfo(BaseEvents):
+    def events(self):
+        cm = self.loopsRoot.getConceptManager()
+        tEvent = cm['event']
+        hasType = cm.getTypePredicate()
+        now = datetime.today()
+        delta = int(self.request.get('delta',
+                        IOptions(adapted(self.context))('delta', [0])[0]))
+        sort = lambda x: x.adapted.start or now
+        relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
+                        for r in tEvent.getChildRelations([hasType], sort=None))
+        if self.selectedDate:
+            end = self.selectedDate + timedelta(1)
+            return sorted((rv for rv in relViews
+                                if rv.adapted.start >= self.selectedDate and
+                                   rv.adapted.start < end),
+                        key=sort)
+        else:
+            return sorted((rv for rv in relViews
+                            if not rv.adapted.end or
+                                rv.adapted.end >= now - timedelta(delta)),
+                        key=sort)
+
+
+class CalendarInfo(NodeView):
 
     monthNames = ('January', 'February', 'March', 'April', 'May', 'June',
                   'July', 'August', 'September', 'October', 'November', 'December')
@@ -144,9 +159,48 @@ class CalendarInfo(BaseEvents):
                 break
         return datetime(self.selectedYear, self.selectedMonth, day).isocalendar()[1]
 
-    def getEvents(self, day):
-        if not day:
-            return False
-        d = datetime(self.selectedYear, self.selectedMonth, day)
-        return []
+    @Lazy
+    def eventListQuery(self):
+        calOption = self.globalOptions('organize.showCalendar')
+        if isinstance(calOption, list):
+            qu = self.conceptManager.get(calOption[0])
+            return Events(qu, self.request)
+        return None
 
+    @Lazy
+    def events(self):
+        eventList = [[] for i in range(31)]
+        cm = self.loopsRoot.getConceptManager()
+        tEvent = cm['event']
+        hasType = cm.getTypePredicate()
+        start = datetime(self.selectedYear, self.selectedMonth, 1)
+        end = start + timedelta(31)
+        view = self.eventListQuery
+        if view is not None:
+            relViews = (view.childViewFactory(r, self.request, contextIsSecond=True)
+                            for r in tEvent.getChildRelations([hasType], sort=None))
+            events = sorted((rv for rv in relViews
+                            if rv.adapted.start >= start and rv.adapted.start < end),
+                        key=lambda x: (x.adapted.start, x.adapted.end))
+            for ev in events:
+                day = ev.adapted.start.day
+                eventList[day-1].append(ev)
+        return eventList
+
+    def getEventsUrl(self, day):
+        v = self.eventListQuery
+        if v is not None:
+            baseUrl = self.getUrlForTarget(v)
+            params = dict(cal_year=self.selectedYear, cal_month=self.selectedMonth,
+                          cal_day=day)
+            return '?'.join((baseUrl, urlencode(params)))
+
+    def getCssClass(self, day, tag='td'):
+        if tag == 'td':
+            if self.isToday(day):
+                return 'today'
+        return ''
+
+    def getEventTitles(self, day):
+        events = self.events[day-1]
+        return '; '.join(ev.title for ev in events)

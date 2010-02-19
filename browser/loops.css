@@ -460,6 +460,27 @@ div.comment {
     font-weight: bold;
 }
 
+.calendar td.arrows {
+    font-size: 130%;
+}
+
+.calendar td.week_number {
+    color: grey;
+}
+
+.calendar td.day {
+    width: 12%;
+}
+
+.calendar td.today {
+    border: 1px solid red;
+    font-weight: normal;
+}
+
+.calendar a.has_events {
+    font-weight: bold;
+}
+
 /* dojo stuff */
 
 .dijitDialog {
