@@ -99,7 +99,8 @@ class ExportImport(object):
             elements = extractor.extractForParents(parents, predicates, types,
                                     includeSubconcepts, includeResources)
         else:
-            elements = extractor.extract(types)
+            #elements = extractor.extract(types)
+            elements = extractor.extract()
         return self.download(elements)
 
     def download(self, elements):
