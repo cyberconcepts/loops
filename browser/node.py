@@ -142,10 +142,10 @@ class NodeView(BaseView):
                             subMacro=node_macros.macros['presence'],
                             icon='cybertools.icons/group.png',
                             priority=11)
-            if self.globalOptions('organize.showCalendar'):
-                cm.register('portlet_left', 'calendar', title=_(u'Calendar'),
-                            subMacro=calendar_macros.macros['main'],
-                            priority=90)
+        if self.globalOptions('organize.showCalendar'):
+            cm.register('portlet_left', 'calendar', title=_(u'Calendar'),
+                        subMacro=calendar_macros.macros['main'],
+                        priority=90)
         # force early portlet registrations by target by setting up target view
         self.virtualTarget
 
