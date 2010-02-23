@@ -108,8 +108,10 @@ class TargetLayoutInstance(NodeLayoutInstance):
         pageName = self.viewAnnotations.get('pageName', u'')
         obj = self.target.context
         tp = obj.getType()
-        found = False
+        #found = False
         currentRoot = self.context.getMenu()
+        specifics = []
+        defaults = []
         for n in obj.getClients() + tp.getClients():
             if not ILayoutNode.providedBy(n):
                 continue
@@ -117,15 +119,25 @@ class TargetLayoutInstance(NodeLayoutInstance):
                 if pageName != (n.pageName or '').strip():
                     continue
                 layoutRoot = n.getMenu()
-                if getName(layoutRoot) != 'default' and layoutRoot != currentRoot:
+                rootName = getName(layoutRoot)
+                if rootName != 'default' and layoutRoot != currentRoot:
                     continue
                 layout = region.layouts[n.viewName]
                 li = component.getAdapter(n, ILayoutInstance,
                                           name=layout.instanceName)
                 li.template = layout
-                result.append(li)
-                found = True
-        if not found:
+                #result.append(li)
+                #found = True
+                if rootName == 'default':
+                    defaults.append(li)
+                else:
+                    specifics.append(li)
+        if specifics:
+            result.extend(specifics)
+        elif defaults:
+            result.extend(defaults)
+        #if not found:
+        else:
             if self.template.defaultSublayout is None:
                 logger.warn('No target layout found: pageName = %r, target = %r'
                                 % (pageName, getName(obj)))
