@@ -206,14 +206,15 @@
           <span i18n:translate="">Version</span>:
           <span tal:content="versionInfo">1.1 (current, released)</span>
         </td>
-        <td title="Select if you want to create a new version"
+        <td colspan="3"
+            title="Select if you want to create a new version"
             i18n:attributes="title">
           <input type="checkbox"
                  name="version.create" id="version.create"
                  value="create" />
-          <label for="version.create"><span i18n:translate="">New version</span>:</label>
-        </td>
-        <td colspan="2">
+          <label style="display: inline"
+                 for="version.create"><span i18n:translate="">
+            New version</span>:</label>
           <select name="version.level">
               <option value="1" i18n:translate="">minor</option>
               <option value="0" i18n:translate="">major</option>
