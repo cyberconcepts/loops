@@ -85,6 +85,16 @@ class BaseTrackView(TrackView):
         if user is not None and not isinstance(user, basestring):
             return '%s/@@introspector.html' % absoluteURL(user, self.request)
 
+    def getMetadataTarget(self, key):
+        value = self.metadata.get(key)
+        if value.isdigit():
+            obj = util.getObjectForUid(value)
+            if obj is not None:
+                url = ('%s/@@SelectedManagementView.html' %
+                                        absoluteURL(obj, self.request))
+                return dict(title=obj.title, url=url, obj=obj)
+        return dict(title=value, url=None, obj=None)
+
 
 class ChangeView(BaseTrackView):
 
