@@ -343,7 +343,8 @@ class RelationSet(object):
 
     @Lazy
     def predicate(self):
-        return self.conceptManager[self.predicateName]
+        #return self.conceptManager[self.predicateName]
+        return self.conceptManager.get(self.predicateName)
 
 
 class ParentRelationSet(RelationSet):
