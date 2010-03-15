@@ -46,6 +46,13 @@ In addition to the application site we need a loops system management site.
   [u'jobs']
 
 
+Portal Links
+============
+
+  >>> from loops.system.site.link import Link
+  >>> from loops.system.site.browser import PortalPage
+
+
 Agents and Jobs
 ===============
 

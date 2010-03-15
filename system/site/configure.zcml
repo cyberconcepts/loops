@@ -5,6 +5,24 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <zope:adapter factory="loops.system.site.link.Link" trusted="True" />
+  <zope:class class="loops.system.site.link.Link">
+    <require permission="zope.View"
+             interface="loops.system.site.interfaces.ILink" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.system.site.interfaces.ILink" />
+  </zope:class>
+
+  <!-- views -->
+
+  <zope:adapter
+        name="portal_page.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.system.site.browser.PortalPage"
+        permission="zope.View" />
+
   <zope:adapter
         name="loops_sites.html"
         for="loops.interfaces.IConcept

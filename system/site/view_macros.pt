@@ -4,14 +4,29 @@
 
 <!-- listings -->
 
+<metal:work define-macro="portal_page">
+  <metal:title use-macro="view/concept_macros/concepttitle" />
+  <ul>
+      <tal:site tal:repeat="row item/portalLinks">
+        <li><a tal:attributes="href row/url"
+                 tal:content="row/title">My Site</a>
+          <tal:description condition="row/description"><br />
+            <i tal:content="structure row/renderedDescription" />
+          </tal:description>
+        </li>
+      </tal:site>
+  </ul>
+</metal:work>
+
+
 <metal:work define-macro="sites_listing">
   <h2 i18n:translate="">loops Sites</h2>
-    <ul>
+  <ul>
       <tal:site tal:repeat="row item/sites">
         <li><a tal:attributes="href row/url"
                  tal:content="row/dcTitle">My Site</a></li>
       </tal:site>
-    </ul>
+  </ul>
 </metal:work>
 
 

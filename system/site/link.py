@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,15 +17,25 @@
 #
 
 """
-loops version specifications.
+Interfaces for linking to other pages on a portal page.
+
+$Id$
 """
 
-revision = '$Id$'
-version = '1.1'
-package = 'loops'
+from zope.interface import implements
+from zope import interface, component, schema
 
-from cybertools.util.version import versions
+from loops.common import AdapterBase
+from loops.system.site.interfaces import ILink
+from loops.type import TypeInterfaceSourceList
+from loops.util import _
 
-versions.add(package, version, revision)
 
-# ...
+TypeInterfaceSourceList.typeInterfaces += (ILink,)
+
+
+class Link(AdapterBase):
+
+    implements(ILink)
+
+    _contextAttributes = list(ILink)

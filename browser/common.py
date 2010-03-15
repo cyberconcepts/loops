@@ -277,10 +277,18 @@ class BaseView(GenericView, I18NView):
         return self.adapted.description
 
     @Lazy
-    def dcTitle(self):
+    def dublincore(self):
         zdc = IZopeDublinCore(self.context)
         zdc.languageInfo = self.languageInfo
-        return zdc.title or self.title
+        return zdc
+
+    @Lazy
+    def dcTitle(self):
+        return self.dublincore.title or self.title
+
+    @Lazy
+    def dcDescription(self):
+        return self.dublincore.description or self.description
 
     @Lazy
     def headTitle(self):

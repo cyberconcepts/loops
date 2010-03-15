@@ -3,6 +3,12 @@ Change Log
 
 $Id$
 
+1.1
+---
+
+- portal page with - now fully editable - portal links
+- calendar portlet
+
 1.0
 ---
 
