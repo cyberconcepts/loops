@@ -477,8 +477,9 @@ div.comment {
     font-weight: normal;
 }
 
-.calendar a.has_events {
+.calendar .has_events {
     font-weight: bold;
+    background-color: #eeeeff;
 }
 
 /* dojo stuff */

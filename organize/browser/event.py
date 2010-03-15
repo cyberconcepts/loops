@@ -196,10 +196,13 @@ class CalendarInfo(NodeView):
             return '?'.join((baseUrl, urlencode(params)))
 
     def getCssClass(self, day, tag='td'):
+        classes = []
         if tag == 'td':
             if self.isToday(day):
-                return 'today'
-        return ''
+                classes.append('today')
+            if self.events[day-1]:
+                classes.append('has_events')
+        return ' '.join(classes)
 
     def getEventTitles(self, day):
         events = self.events[day-1]
