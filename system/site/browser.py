@@ -57,62 +57,77 @@ actions.register('editPortalLink', 'portlet', DialogAction,
         dialogName='editPortalLink',
 )
 
-class PortalPage(ConceptView):
-    """ A query view linking to pages on other loops sites.
-    """
+
+class Base(ConceptView):
 
     @Lazy
     def site_macros(self):
         return site_macros.macros
+
+    @Lazy
+    def root(self):
+        return getRoot(self.context)
+
+
+class PortalPage(Base):
+    """ A query view linking to pages on other loops sites.
+    """
 
     @property
     def macro(self):
         return self.site_macros['portal_page']
 
     @Lazy
-    def root(self):
-        return getRoot(self.context)
-
-    @Lazy
     def portalLinks(self):
         result = []
         for c in self.context.getChildren():
-            link = adapted(c)
-            if ILink.providedBy(link):
-                site = traverse(self.root, link.site)
-                path = link.path or 'home'
-                target = traverse(site, 'views/' + path)
-                if canAccess(target, 'title'):
-                    siteInfo = SiteDetails(target, self.request)
-                    siteInfo.title = link.title
-                    if link.description:
-                        siteInfo.description = link.description
-                    if link.url:
-                        siteInfo.url = link.url
-                    result.append(siteInfo)
+            info = PortalLink(c, self.request).targetInfo
+            if info is not None:
+                result.append(info)
         return result
 
 
-class SiteDetails(BaseView):
+class LinkInfo(Base):
 
     pass
 
 
-# old loops_sites.html view
+class PortalLink(Base):
 
-class SitesListing(ConceptView):
+    @property
+    def macro(self):
+        return self.site_macros['portal_link']
 
     @Lazy
-    def site_macros(self):
-        return site_macros.macros
+    def targetInfo(self):
+        link = self.adapted
+        if not ILink.providedBy(link):
+            return None
+        site = traverse(self.root, link.site, None)
+        if site is None:
+            return None
+        path = link.path or 'home'
+        target = traverse(site, 'views/' + path, None)
+        if target is None:
+            return None
+        if not canAccess(target, 'title'):
+            return None
+        info = LinkInfo(target, self.request)
+        info.title = link.title
+        if link.description:
+            info.description = link.description
+        if link.url:
+            info.url = link.url
+        return info
+
+
+# old loops_sites.html view
+
+class SitesListing(Base):
 
     @property
     def macro(self):
         return self.site_macros['sites_listing']
-
-    @Lazy
-    def root(self):
-        return getRoot(self.context)
 
     @Lazy
     def sites(self):
@@ -121,6 +136,6 @@ class SitesListing(ConceptView):
         for p in paths:
             s = traverse(self.root, p)
             if canAccess(s, 'title'):
-                result.append(SiteDetails(s, self.request))
+                result.append(LinkInfo(s, self.request))
         return result
 

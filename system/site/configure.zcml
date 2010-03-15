@@ -24,6 +24,14 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="portal_link.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.system.site.browser.PortalLink"
+        permission="zope.View" />
+
+  <zope:adapter
         name="loops_sites.html"
         for="loops.interfaces.IConcept
              zope.publisher.interfaces.browser.IBrowserRequest"

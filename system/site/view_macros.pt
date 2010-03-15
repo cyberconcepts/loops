@@ -19,6 +19,23 @@
 </metal:work>
 
 
+<metal:work define-macro="portal_link"
+            tal:define="info nocall:item/targetInfo">
+  <metal:title use-macro="view/concept_macros/concepttitle" />
+  <metal:block use-macro="view/concept_macros/conceptfields" />
+  <tal:target condition="nocall:info">
+    <h3 i18n:translate="">Link Target</h3>
+    <div>
+      <a tal:attributes="href info/url"
+         tal:content="info/title" /></div>
+    <div tal:condition="info/description"
+         tal:content="structure info/renderedDescription" />
+  </tal:target>
+</metal:work>
+
+
+<!-- obsolete, replaced by portal_page -->
+
 <metal:work define-macro="sites_listing">
   <h2 i18n:translate="">loops Sites</h2>
   <ul>
