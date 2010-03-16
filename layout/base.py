@@ -52,6 +52,8 @@ class NodeLayoutInstance(LayoutInstance):
 
     adapts(ILayoutNode)
 
+    targetViewName = 'layout'
+
     @Lazy
     def viewAnnotations(self):
         return self.view.request.annotations.get('loops.view', {})
@@ -63,7 +65,8 @@ class NodeLayoutInstance(LayoutInstance):
     @Lazy
     def targetView(self):
         request = self.view.request
-        view = component.getMultiAdapter((self.target, request), name='layout')
+        view = component.getMultiAdapter((self.target, request),
+                                         name=self.targetViewName)
         #view.node = self.context
         view.layoutInstance = self
         return view
