@@ -164,6 +164,8 @@ class FullQuery(BaseQuery):
                 result = result.intersection(rc)
             else:
                 result = rc
+        if kw.get('ignoreChecks'):
+            return ScoredSet(result, scores)
         result = set(r for r in result
                             if r.getLoopsRoot() == self.loopsRoot
                                and canListObject(r)
