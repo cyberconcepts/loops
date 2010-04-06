@@ -60,6 +60,10 @@ class BaseView(object):
         return self.conceptManager.getDefaultPredicate()
 
     @Lazy
+    def typePredicate(self):
+        return self.conceptManager.getTypePredicate()
+
+    @Lazy
     def viewAnnotations(self):
         return self.request.annotations.setdefault('loops.view', {})
 
