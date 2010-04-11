@@ -43,6 +43,7 @@ textIndex = ('', 'loops_text')
 typeIndex = ('', 'loops_type')
 identifierIndex = ('', 'loops_identifier')
 stateIndex = ('', 'loops_state')
+keywordsIndex = ('', 'loops_keywords')
 
 
 # standard text/field/keyword index queries
@@ -72,6 +73,18 @@ def State(statesDefinition, value):
     if not isinstance(value, (list, tuple)):
         value = [value]
     return AnyOf(stateIndex, [':'.join((statesDefinition, v)) for v in value])
+
+@implementer(IQuery)
+def KeywordsAllOff(statesDefinition, value):
+    if not isinstance(value, (list, tuple)):
+        value = [value]
+    return AllOf(keywordsIndex, [':'.join((statesDefinition, v)) for v in value])
+
+@implementer(IQuery)
+def KeywordsAnyOff(statesDefinition, value):
+    if not isinstance(value, (list, tuple)):
+        value = [value]
+    return AnyOf(keywordsIndex, [':'.join((statesDefinition, v)) for v in value])
 
 
 # concept map queries

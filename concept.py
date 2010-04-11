@@ -461,6 +461,9 @@ class IndexAttributes(object):
             return getName(self.context)
         return id
 
+    def keywords(self):
+        if self.adaptedIndexAttributes is not None:
+            return self.adaptedIndexAttributes.keywords()
 
 # events
 
