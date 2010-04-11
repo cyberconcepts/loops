@@ -33,7 +33,7 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.catalog.query import Term, Eq, Between, And, Or
 from cybertools.catalog.query import Text as BaseText
-from cybertools.catalog.query import AnyOf
+from cybertools.catalog.query import AllOf, AnyOf
 from loops.expert.interfaces import IQuery
 from loops.security.common import canListObject
 from loops import util
@@ -75,16 +75,16 @@ def State(statesDefinition, value):
     return AnyOf(stateIndex, [':'.join((statesDefinition, v)) for v in value])
 
 @implementer(IQuery)
-def KeywordsAllOff(statesDefinition, value):
+def AllKeywords(value):
     if not isinstance(value, (list, tuple)):
         value = [value]
-    return AllOf(keywordsIndex, [':'.join((statesDefinition, v)) for v in value])
+    return AllOf(keywordsIndex, value)
 
 @implementer(IQuery)
-def KeywordsAnyOff(statesDefinition, value):
+def AnyKeyword(value):
     if not isinstance(value, (list, tuple)):
         value = [value]
-    return AnyOf(keywordsIndex, [':'.join((statesDefinition, v)) for v in value])
+    return AnyOf(keywordsIndex, value)
 
 
 # concept map queries
