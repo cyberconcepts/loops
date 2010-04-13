@@ -31,7 +31,7 @@ from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import getName, getPath
+from zope.traversing.api import getName, getPath, traverse
 
 from cybertools.util.date import str2timeStamp
 from loops.external.base import Loader, Extractor
@@ -74,7 +74,12 @@ class ExportImport(object):
 
     def export(self):
         form = self.request.form
-        parents = predicates = types = None
+        nodes = parents = predicates = types = None
+        nodePaths = form.get('nodes')
+        if nodePaths:
+            nodePaths = [p for p in nodePaths.splitlines() if p]
+            nodes = [traverse(self.context.getViewManager(), p) for p in nodePaths]
+            nodes = [p for p in nodes if p is not None]
         parentIds = form.get('parents')
         if parentIds:
             parentIds = [id for id in parentIds.splitlines() if id]
@@ -87,6 +92,7 @@ class ExportImport(object):
         if typeIds:
             types = ([self.conceptManager[id] for id in typeIds])
         changed = form.get('changed')
+        includeNodeTargets = form.get('include_node_targets')
         includeSubconcepts = form.get('include_subconcepts')
         includeResources = form.get('include_resources')
         extractor = Extractor(self.context, self.resourceExportDirectory)
@@ -95,6 +101,9 @@ class ExportImport(object):
             if changed:
                 elements = extractor.extractChanges(changed, parents,
                                     predicates, types)
+        elif nodes:
+            elements = extractor.extractNodes(topNodes=nodes,
+                                              includeTargets=includeNodeTargets)
         elif parents:
             elements = extractor.extractForParents(parents, predicates, types,
                                     includeSubconcepts, includeResources)

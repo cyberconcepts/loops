@@ -137,10 +137,25 @@ class Extractor(Base):
                 self.count += 1
                 yield r
 
-    def extractNodes(self, parent=None, path=''):
-        if parent is None:
-            parent = self.views
-        for name, obj in parent.items():
+    def getNodePath(self, node):
+        result = []
+        node = getParent(node)
+        while node != self.views:
+            result.append(getName(node))
+            node = getParent(node)
+        return '/'.join(reversed(result))
+
+    def extractNodes(self, parent=None, path='',
+                     topNodes=[], includeTargets=False):
+        if topNodes:
+            startingSet = [(getName(n), n) for n in topNodes]
+        elif parent is None:
+            startingSet = self.views.items()
+        else:
+            startingSet = parent.items()
+        for name, obj in startingSet:
+            if topNodes:
+                path = self.getNodePath(obj)
             data = {}
             for attr in ('description', 'body', 'viewName', 'pageName'):
                 value = getattr(obj, attr, None)
@@ -148,7 +163,13 @@ class Extractor(Base):
                     data[attr] = value
             target = obj.target
             if target is not None:
-                data['target'] = '/'.join((getName(getParent(target)), getName(target)))
+                tname = getName(target)
+                if includeTargets:
+                    if IResource.providedBy(target):
+                        yield self.getResourceElement(tname, target)
+                    else:
+                        yield self.getConceptElement(tname, target)
+                data['target'] = '/'.join((getName(getParent(target)), tname))
             elementClass = (isinstance(obj, LayoutNode) and elementTypes['layoutNode']
                                 or elementTypes['node'])
             elem = elementClass(name, obj.title, path, obj.nodeType, **data)
@@ -156,7 +177,8 @@ class Extractor(Base):
             self.count += 1
             yield elem
             childPath = path and '/'.join((path, name)) or name
-            for elem in self.extractNodes(obj, childPath):
+            for elem in self.extractNodes(obj, childPath,
+                                          includeTargets=includeTargets):
                 #self.provideSubElements(obj, elem)
                 self.count += 1
                 yield elem
