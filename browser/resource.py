@@ -186,7 +186,7 @@ class ResourceView(BaseView):
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         response.setHeader('Content-Length', len(data))
-        if ct.startswith('text/'):
+        if ct.startswith('text/') and not useAttachment:
             response.setHeader('Content-Type', 'text/html')
             return self.renderText(data, ct)
         response.setHeader('Content-Type', ct)
