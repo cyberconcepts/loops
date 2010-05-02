@@ -26,6 +26,9 @@ from zope import interface, component, schema
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.app.security.settings import Allow, Deny, Unset
+from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.traversing.api import getParents
 from loops.common import adapted
 from loops.type import getOptionsDict
 
@@ -97,6 +100,28 @@ def getPrincipalForUserId(id, context=None):
         return auth.getPrincipal(id)
     except PrincipalLookupError:
         return None
+
+
+def getRolesForPrincipal(id, context):
+    prinrole = IPrincipalRoleManager(context, None)
+    if prinrole is None:
+        return []
+    result = []
+    denied = []
+    for role, setting in prinrole.getRolesForPrincipal(id):
+        if setting == Allow:
+            result.append(role)
+        elif setting == Deny:
+            denied.append(role)
+    for obj in getParents(context):
+        prinrole = IPrincipalRoleManager(obj, None)
+        if prinrole is not None:
+            for role, setting in prinrole.getRolesForPrincipal(id):
+                if setting == Allow and role not in denied and role not in result:
+                    result.append(role)
+                elif setting == Deny and role not in denied:
+                    denied.append(role)
+    return result
 
 
 def getTrackingStorage(obj, name):

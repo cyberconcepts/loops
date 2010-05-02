@@ -48,6 +48,7 @@ from cybertools.browser.action import actions
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.grid.interfaces import Grid
 from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 from loops.browser.common import EditForm, BaseView, LoopsTerms, concept_macros
@@ -55,6 +56,7 @@ from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.i18n.browser import I18NView
 from loops.interfaces import IConcept, IConceptSchema, ITypeConcept, IResource
+from loops.organize.util import getRolesForPrincipal
 from loops.schema.base import RelationSet, Relation
 from loops import util
 from loops.util import _
@@ -308,8 +310,18 @@ class ConceptView(BaseView):
             result[typeName] = list(group)
         return result
 
+    def isHidden(self, pr):
+        hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
+        if hideRoles is not None:
+            roles = getRolesForPrincipal(self.request.principal.id, self.context)
+            for r in roles:
+                if r in hideRoles:
+                    return True
+        return False
+
     def parents(self):
-        rels = sorted(self.context.getParentRelations(),
+        rels = sorted((pr for pr in self.context.getParentRelations()
+                          if not self.isHidden(pr)),
                       key=(lambda x: x.first.title.lower()))
         for r in rels:
             yield self.childViewFactory(r, self.request)
