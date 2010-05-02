@@ -87,7 +87,7 @@ class PortalPage(Base):
         return result
 
 
-class LinkInfo(Base):
+class LinkInfo(BaseView):
 
     pass
 
