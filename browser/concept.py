@@ -203,7 +203,7 @@ class ConceptView(BaseView):
         cont = self.controller
         if cont is None:
             return
-        if (self.globalOptions('showParentsForAnonymous') or
+        if self.parents and (self.globalOptions('showParentsForAnonymous') or
             not IUnauthenticatedPrincipal.providedBy(self.request.principal)):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
                         subMacro=concept_macros.macros['parents'],
@@ -323,12 +323,15 @@ class ConceptView(BaseView):
                     return True
         return False
 
+    @Lazy
     def parents(self):
+        result = []
         rels = sorted((pr for pr in self.context.getParentRelations()
                           if not self.isHidden(pr)),
                       key=(lambda x: x.first.title.lower()))
         for r in rels:
-            yield self.childViewFactory(r, self.request)
+            result.append(self.childViewFactory(r, self.request))
+        return result
 
     def resources(self):
         rels = self.context.getResourceRelations()
