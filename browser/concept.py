@@ -313,7 +313,11 @@ class ConceptView(BaseView):
     def isHidden(self, pr):
         hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
         if hideRoles is not None:
-            roles = getRolesForPrincipal(self.request.principal.id, self.context)
+            principal = self.request.principal
+            if (IUnauthenticatedPrincipal.providedBy(principal) and
+                'zope.Anonymous' in hideRoles):
+                return True
+            roles = getRolesForPrincipal(principal.id, self.context)
             for r in roles:
                 if r in hideRoles:
                     return True
