@@ -233,8 +233,8 @@
 <!-- portlets -->
 
 <metal:actions define-macro="parents">
-          <div tal:repeat="
-                    concept macro/info/view/parents|macro/info/parentsForPortlet">
+          <div tal:repeat="concept
+                    macro/info/view/parentsForPortlet|macro/info/parentsForPortlet">
             <a href="#"
                tal:attributes="href python: view.getUrlForTarget(concept)">
               <span i18n:translate=""

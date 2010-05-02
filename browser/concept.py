@@ -326,7 +326,7 @@ class ConceptView(BaseView):
 
     @Lazy
     def parentsForPortlet(self):
-        return [p for p in self.parents() if  not self.isHidden(p.relation)]
+        return [p for p in self.parents() if not self.isHidden(p.relation)]
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
