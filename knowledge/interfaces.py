@@ -29,7 +29,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.knowledge.interfaces import IKnowing, IRequirementProfile
 from cybertools.knowledge.interfaces import IKnowledgeElement
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.organize.interfaces import IPerson as IBasePerson
 from loops.organize.interfaces import ITask as IBaseTask
 
@@ -38,17 +38,17 @@ _ = MessageFactory('zope')
 # TODO: separate interfaces for viewing and changing methods!
 
 
-class IPerson(IBasePerson, IKnowing):
+class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
     """ A person, including knowledge/learning management features.
     """
 
 
-class ITask(IBaseTask, IRequirementProfile):
+class ITask(IBaseTask, IRequirementProfile, ILoopsAdapter):
     """ A task, also acting as a knowledge requirement profile.
     """
 
 
-class ITopic(IConceptSchema, IKnowledgeElement):
+class ITopic(IConceptSchema, IKnowledgeElement, ILoopsAdapter):
     """ Just a topic, some general classification concept.
     """
 
