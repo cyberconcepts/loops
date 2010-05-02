@@ -635,7 +635,7 @@ class IIndexAttributes(Interface):
 
 # types stuff
 
-class ITypeConcept(IConceptSchema):
+class ITypeConcept(IConceptSchema, ILoopsAdapter):
     """ Concepts of type 'type' should be adaptable to this interface.
     """
 
