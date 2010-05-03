@@ -20,7 +20,7 @@
              tal:attributes="href url">Will Smith</a>
         </div>
         <div class="description"
-             tal:define="description data/description"
+             tal:define="description related/renderedDescription"
              tal:condition="description">
           <span tal:content="structure description">Description</span></div>
         <div class="text"
@@ -29,6 +29,10 @@
           <span tal:content="structure python:
                   item.renderText(data['text'], related.adapted.textContentType)"></span>
         </div>
+        <div class="text"
+             tal:condition="data/text">
+            <a tal:attributes="href python: view.getUrlForTarget(related);"
+               i18n:translate="">more...</a></div>
       </tal:child>
     </div>
     <metal:resources use-macro="view/concept_macros/conceptchildren" />
