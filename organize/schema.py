@@ -41,6 +41,7 @@ class PersonSchemaFactory(SchemaFactory):
         #    schema.fields.phoneNumbers.instance_name ='simplelist'
         if 'birthDate' in schema.fields.keys():
             schema.fields.birthDate.display_format = ('date', 'long')
+        del schema.fields['userId']
         return schema
 
 
