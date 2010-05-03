@@ -31,8 +31,8 @@
         </div>
         <div class="text"
              tal:condition="data/text">
-            <a tal:attributes="href python: view.getUrlForTarget(related);"
-               i18n:translate="">more...</a></div>
+          <a tal:attributes="href python: view.getUrlForTarget(related);">
+            <b i18n:translate="">more...</b></a></div>
       </tal:child>
     </div>
     <metal:resources use-macro="view/concept_macros/conceptchildren" />
