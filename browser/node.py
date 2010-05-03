@@ -302,7 +302,8 @@ class NodeView(BaseView):
     @Lazy
     def headTitle(self):
         menuObject = self.menuObject
-        if menuObject is not None and menuObject != self.context:
+        if menuObject is not None and (menuObject != self.context or
+                                       self.virtualTarget):
             prefix = super(NodeView, self.menu).headTitle + ' - '
         else:
             prefix = ''
