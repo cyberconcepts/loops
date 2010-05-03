@@ -19,7 +19,7 @@
              tal:content="data/creator"
              tal:attributes="href url">Will Smith</a>
         </div>
-        <div class="description"
+        <div class="text"
              tal:define="description related/renderedDescription"
              tal:condition="description">
           <span tal:content="structure description">Description</span></div>
