@@ -249,6 +249,10 @@ class BaseView(GenericView, I18NView):
         return self.conceptManager.getDefaultPredicate()
 
     @Lazy
+    def isPartOfPredicate(self):
+        return self.conceptManager.get('ispartof')
+
+    @Lazy
     def url(self):
         return absoluteURL(self.context, self.request)
 
@@ -416,6 +420,17 @@ class BaseView(GenericView, I18NView):
         return util.KeywordVocabulary(general
                         + self.listTypesForSearch(('resource',),
                                                   ('system', 'hidden',),))
+
+    def isPartOnlyResource(self, obj):
+        if not IResource.providedBy(obj):
+            return False
+        isPart = False
+        for r in obj.getConceptRelations():
+            if r.predicate == self.isPartOfPredicate:
+                isPart = True
+            elif r.predicate != self.typePredicate:
+                return False
+        return isPart
 
     # options/settings
 

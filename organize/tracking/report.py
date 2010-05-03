@@ -106,6 +106,8 @@ class TrackingStats(BaseView):
     def checkType(self, obj):
         if not IResource.providedBy(obj) and not IConcept.providedBy(obj):
             return False
+        if self.isPartOnlyResource(obj):
+            return False
         for t in self.typeObjects:
             if isinstance(t, InterfaceClass):
                 if t.providedBy(obj):
