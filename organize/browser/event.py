@@ -183,8 +183,14 @@ class CalendarInfo(NodeView):
                             if rv.adapted.start >= start and rv.adapted.start < end),
                         key=lambda x: (x.adapted.start, x.adapted.end))
             for ev in events:
-                day = ev.adapted.start.day
-                eventList[day-1].append(ev)
+                startDay = ev.adapted.start.day
+                if ev.adapted.start < start:
+                    startDay = 1
+                endDay = ev.adapted.end.day
+                if ev.adapted.end > end:
+                    endDay = 31
+                for d in range(startDay, endDay+1):
+                    eventList[d-1].append(ev)
         return eventList
 
     def getEventsUrl(self, day):
