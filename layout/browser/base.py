@@ -167,6 +167,9 @@ class BaseView(object):
 
     def getKeywords(self):
         return self.context.title.split()
+        
+    def getMetaDescription(self):
+        return self.context.title
 
 pattern = re.compile(r'[ /\?\+%]')
 

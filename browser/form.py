@@ -30,7 +30,6 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import ObjectAddedEvent
-#from zope.app.container.contained import NameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.contenttype import guess_content_type
