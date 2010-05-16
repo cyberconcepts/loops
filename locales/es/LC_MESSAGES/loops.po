@@ -1,0 +1,644 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: $Id$\n"
+"POT-Creation-Date: 2007-05-22 12:00 CET\n"
+"PO-Revision-Date: 2010-05-16 12:00 CET\n"
+"Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
+"Language-Team: loops developers <helmutm@cy55.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: kwrite\n"
+
+msgid "Concept"
+msgstr "Begriff"
+
+msgid "Resource"
+msgstr "Ressource"
+
+msgid "Folder"
+msgstr "Ordner"
+
+msgid "Log out"
+msgstr "Abmelden"
+
+msgid "Create"
+msgstr "Anlegen"
+
+msgid "Edit Concept Map"
+msgstr "Concept Map bearbeiten"
+
+msgid "Create Resource..."
+msgstr "Ressource anlegen..."
+
+msgid "Create %s"
+msgstr "%s anlegen"
+
+msgid "Create a new resource object."
+msgstr "Eine neue Ressource erzeugen"
+
+msgid "Create Folder..."
+msgstr "Ordner anlegen..."
+
+msgid "Create a new folder."
+msgstr "Einen neuen Ordner anlegen"
+
+msgid "Edit Folder..."
+msgstr "Ordner bearbeiten..."
+
+msgid "Modify folder."
+msgstr "Ordner ändern"
+
+msgid "Create Topic..."
+msgstr "Thema anlegen..."
+
+msgid "Create a new topic."
+msgstr "Ein neues Thema anlegen"
+
+msgid "Edit Topic..."
+msgstr "Thema bearbeiten..."
+
+msgid "Modify topic."
+msgstr "Thema ändern"
+
+msgid "Edit Blog Post..."
+msgstr "Eintrag bearbeiten..."
+
+msgid "Edit Blog Post"
+msgstr "Tagebucheintrag bearbeiten"
+
+msgid "Modify blog post."
+msgstr "Tagebucheintrag ändern."
+
+msgid "Create Blog Post..."
+msgstr "Tagebucheintrag anlegen..."
+
+msgid "Create a new blog post."
+msgstr "Einen neuen Tagebucheintrag erzeugen"
+
+msgid "Create Blog Post"
+msgstr "Tagebucheintrag anlegen"
+
+msgid "Export Blog"
+msgstr "Tagebuch exportieren"
+
+msgid "Glossary Item"
+msgstr "Glossareintrag"
+
+msgid "Edit Glossary Item..."
+msgstr "Glossareintrag bearbeiten..."
+
+msgid "Edit Glossary Item"
+msgstr "Glossareintrag bearbeiten"
+
+msgid "Create Glossary Item..."
+msgstr "Glossareintrag anlegen..."
+
+msgid "Create Glossary Item"
+msgstr "Glossareintrag anlegen"
+
+msgid "Create Person..."
+msgstr "Person anlegen..."
+
+msgid "Create a new person."
+msgstr "Eine neue Person anlegen"
+
+msgid "Edit Person..."
+msgstr "Person bearbeiten..."
+
+msgid "Modify person."
+msgstr "Person bearbeiten"
+
+msgid "Create Institution..."
+msgstr "Institution anlegen..."
+
+msgid "Create a new institution."
+msgstr "Eine neue Institution anlegen"
+
+msgid "Edit Institution..."
+msgstr "Institution bearbeiten..."
+
+msgid "Modify institution."
+msgstr "Institution bearbeiten"
+
+msgid "Create Address..."
+msgstr "Adresse anlegen..."
+
+msgid "Create a new address."
+msgstr "Eine neue Adresse anlegen"
+
+msgid "Edit Address..."
+msgstr "Adresse bearbeiten..."
+
+msgid "Modify address."
+msgstr "Adresse bearbeiten"
+
+msgid "Create Resource, Type = "
+msgstr "Ressource anlegen, Typ = "
+
+msgid "Edit Resource"
+msgstr "Ressource bearbeiten"
+
+msgid "Edit Resource..."
+msgstr "Ressource bearbeiten..."
+
+msgid "Modify resource object."
+msgstr "Diese Ressource bearbeiten."
+
+msgid "Edit Concept"
+msgstr "Begriff bearbeiten"
+
+msgid "Edit Concept..."
+msgstr "Begriff bearbeiten..."
+
+msgid "Create Event..."
+msgstr "Termin anlegen..."
+
+msgid "Create a new event"
+msgstr "Einen neuen Termin anlegen"
+
+msgid "Create Task..."
+msgstr "Aufgabe anlegen..."
+
+msgid "Create a new task"
+msgstr "Eine neue Aufgabe anlegen"
+
+msgid "Edit Task..."
+msgstr "Aufgabe bearbeiten..."
+
+msgid "Modify task"
+msgstr "Aufgabe bearbeiten"
+
+msgid "Create Work Item..."
+msgstr "Aktivität anlegen..."
+
+msgid "Edit Video..."
+msgstr "Video bearbeiten..."
+
+msgid "Edit Video"
+msgstr "Video bearbeiten"
+
+msgid "Modify video information"
+msgstr "Daten des Video-Objekts bearbeiten"
+
+msgid "Play Movie"
+msgstr "Video abspielen"
+
+msgid "Favorites"
+msgstr "Lesezeichen"
+
+msgid "Add to Favorites"
+msgstr "Lesezeichen hinzufügen"
+
+msgid "Add current object to favorites"
+msgstr "Lesezeichen für aktuelles Objekt hinzufügen"
+
+msgid "Remove from favorites"
+msgstr "Lesezeichen entfernen"
+
+msgid "Presence"
+msgstr "Presencia"
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Modification Date"
+msgstr "Änderungsdatum"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Author(s)"
+msgstr "Autor(en)"
+
+msgid "Parents"
+msgstr "Oberbegriffe"
+
+msgid "Children"
+msgstr "Unterbegriffe"
+
+msgid "Resources"
+msgstr "Ressourcen"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Title of the concept"
+msgstr "Überschrift, sprechende Bezeichnung des Begriffs"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "A medium-length description describing the content and the purpose of the object"
+msgstr "Eine ausführlichere Beschreibung des Inhalts und Zwecks des Objekts"
+
+msgid "Related Items"
+msgstr "Verwandte Begriffe"
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Task"
+msgstr "Aufgabe"
+
+msgid "Domain"
+msgstr "Bereich"
+
+msgid "Note"
+msgstr "Notiz"
+
+msgid "File"
+msgstr "Datei"
+
+msgid "Data"
+msgstr "Inhalt"
+
+msgid "Event"
+msgstr "Termin"
+
+msgid "Content Type"
+msgstr "Format"
+
+msgid "Link URL"
+msgstr "URL"
+
+msgid "Link text"
+msgstr "Link Text"
+
+msgid "Assign Parent Concepts"
+msgstr "Oberbegriffe zuordnen"
+
+msgid "Assign Child Concepts"
+msgstr "Unterbegriffe zuordnen"
+
+msgid "State"
+msgstr "Status"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Select"
+msgstr "Übernehmen"
+
+msgid "Select concept"
+msgstr "Begriff auswählen"
+
+msgid "Select/search text"
+msgstr "Begriff suchen/auswählen"
+
+msgid "not selected"
+msgstr "nicht ausgewählt"
+
+msgid "Type(s) to search for"
+msgstr "Suche nach Objekten vom Typ"
+
+msgid "Search via related concepts"
+msgstr "Über Begriffe suchen"
+
+msgid "Search"
+msgstr "buscar"
+
+msgid "Any Resource"
+msgstr "Beliebige Ressource"
+
+msgid "Any Concept"
+msgstr "Beliebiger Begriff"
+
+msgid "Any"
+msgstr "Beliebig"
+
+msgid "Concept for Search"
+msgstr "Suchbegriff"
+
+msgid "Select if you want to create a new version"
+msgstr "Bitte markieren, wenn Sie eine neue Version anlegen möchten"
+
+msgid "Search text"
+msgstr "Suchtext"
+
+msgid "Text-based search"
+msgstr "Textbasierte Suche"
+
+msgid "Full text"
+msgstr "Volltext"
+
+msgid "Unknown Type"
+msgstr "Unbekannter Typ"
+
+msgid "Query"
+msgstr "Abfrage"
+
+msgid "Open concept map editor in new window"
+msgstr "Concept-Map-Editor in neuem Fenster öffnen"
+
+msgid "Versions"
+msgstr "Versionen"
+
+msgid "All versions"
+msgstr "Alle Versionen"
+
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+msgid "Download"
+msgstr "Herunterladen"
+
+msgid "Open for editing"
+msgstr "Zum Bearbeiten öffnen"
+
+msgid "View"
+msgstr "Ansehen"
+
+msgid "Concept Assignments"
+msgstr "Zugeordnete Begriffe"
+
+msgid "more..."
+msgstr "Mehr..."
+
+msgid "Versioning"
+msgstr "Versionierung"
+
+msgid "current"
+msgstr "aktuell"
+
+msgid "released"
+msgstr "freigegeben"
+
+msgid "New version"
+msgstr "Neue Version"
+
+msgid "major"
+msgstr "major"
+
+msgid "minor"
+msgstr "minor"
+
+msgid "See also"
+msgstr "Siehe auch"
+
+msgid "Translations"
+msgstr "Übersetzungen"
+
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+msgid "Old password"
+msgstr "Altes Passwort"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Enter password."
+msgstr "Passwort eingeben."
+
+msgid "Confirm password"
+msgstr "Passwort wiederholen"
+
+msgid "Please repeat the password."
+msgstr "Bitte das Passwort erneut eingeben."
+
+msgid "Member Registration"
+msgstr "Teilnehmerregistrierung"
+
+msgid "Register"
+msgstr "Benutzer registrieren"
+
+msgid "Your old password was not entered correctly."
+msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
+
+msgid "Password and password confirmation do not match."
+msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort überein."
+
+msgid "Your password has been changed."
+msgstr "Ihr Passwort wurde geändert."
+
+msgid "Date/Time"
+msgstr "Datum/Uhrzeit"
+
+msgid "The date and time the information was posted."
+msgstr "Datum und Uhrzeit der Bereitstellung der Information"
+
+msgid "Private"
+msgstr "privat"
+
+msgid "Check this field if the blog post should be accessible only for a limited audience."
+msgstr "Markieren Sie dieses Feld, wenn der Tagebucheintrag nicht für alle Benutzer sichtbar sein soll"
+
+msgid "The text of your blog entry"
+msgstr "Der eigentliche Text des Tagebucheintrags"
+
+msgid "Private Comment"
+msgstr "Privater Kommentar"
+
+msgid "A text that is not visible for other users."
+msgstr "Ein Text, der für andere Benutzer nicht sichtbar sein soll"
+
+msgid "For quick creation of notes/links bookmark this link"
+msgstr "Für Notizen diesen Link zu Favoriten/Lesezeichen hinzufügen"
+
+msgid "Start date"
+msgstr "Beginn"
+
+msgid "End date"
+msgstr "Ende"
+
+msgid "Create loops Note"
+msgstr "loops-Notiz anlegen"
+
+msgid "State information for $definition: $title"
+msgstr "Status ($definition): $title"
+
+msgid "User ID"
+msgstr "Benutzerkennung"
+
+msgid "Enter a user id."
+msgstr "Bitte die gewünschte Benutzerkennung eingeben."
+
+msgid "Period"
+msgstr "Periode"
+
+msgid "Access"
+msgstr "Lesezugriffe"
+
+msgid "Changes"
+msgstr "Änderungen"
+
+msgid "Additions"
+msgstr "Neu"
+
+msgid "Total"
+msgstr "Gesamtzahl"
+
+msgid "Tracking Statistics"
+msgstr "Zugriffsstatistik"
+
+msgid "Recent Changes"
+msgstr "Neue und geänderte Dokumente"
+
+msgid "User"
+msgstr "Benutzer"
+
+msgid "Change"
+msgstr "Änderung"
+
+msgid "New"
+msgstr "Neu"
+
+msgid "add"
+msgstr "hinzufügen"
+
+msgid "modify"
+msgstr "ändern"
+
+msgid "Comments"
+msgstr "Kommentare"
+
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
+
+# management interface
+
+msgid "label_type"
+msgstr "Typ"
+
+msgid "Node"
+msgstr "Navigationsknoten"
+
+msgid "Contents"
+msgstr "Inhalt"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Edit Node"
+msgstr "Knoten bearbeiten"
+
+msgid "Edit Layout Node"
+msgstr "Layout-Knoten bearbeiten"
+
+msgid "Configure"
+msgstr "Konfigurieren"
+
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Edit Permissions"
+msgstr "Berechtigungen"
+
+msgid "Top"
+msgstr "Ganz nach oben"
+
+msgid "Up"
+msgstr "Nach oben"
+
+msgid "Down"
+msgstr "Nach unten"
+
+msgid "Bottom"
+msgstr "Ganz nach unten"
+
+msgid "Options"
+msgstr "Optionen"
+
+msgid "Currently assigned target"
+msgstr "Derzeit zugeordnetes Zielobjekt"
+
+msgid "Create Target"
+msgstr "Zielobjekt anlegen"
+
+msgid "Assign Target"
+msgstr "Zielobjekt zuordnen"
+
+msgid "Search Term"
+msgstr "Suchbegriff"
+
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Day"
+msgstr "Tag"
+
+msgid "Start"
+msgstr "Beginn"
+
+msgid "End"
+msgstr "Ende"
+
+msgid "Duration"
+msgstr "Dauer"
+
+msgid "Effort"
+msgstr "Aufwand"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
+
+msgid "Tu"
+msgstr "Di"
+
+msgid "We"
+msgstr "Mi"
+
+msgid "Th"
+msgstr "Do"
+
+msgid "Su"
+msgstr "So"
+
+msgid "January"
+msgstr "Januar"
+
+msgid "February"
+msgstr "Februar"
+
+msgid "March"
+msgstr "März"
+
+msgid "May"
+msgstr "Mai"
+
+msgid "June"
+msgstr "Juni"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "October"
+msgstr "Oktober"
+
+msgid "December"
+msgstr "Dezember"
+
+msgid "Customer"
+msgstr "Kunde"
+
+msgid "Time range"
+msgstr "Zeitraum"
+
+msgid "Technology"
+msgstr "Technik"
