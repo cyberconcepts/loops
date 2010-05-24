@@ -85,6 +85,10 @@ Type- and object-based settings
 -------------------------------
 
 
+Configurator User Interface
+===========================
+
+
 Fin de partie
 =============
 

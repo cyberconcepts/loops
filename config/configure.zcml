@@ -31,4 +31,15 @@
   <zope:adapter factory="loops.config.base.QueryOptions" trusted="True"
                 for="loops.query.IQueryConcept" />
 
+  <!-- query views -->
+
+  <zope:adapter
+        name="configurator.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.config.browser.ConfiguratorView"
+        permission="zope.View" />
+
+
 </configure>

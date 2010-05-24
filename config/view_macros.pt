@@ -1,0 +1,18 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<!-- listings -->
+
+<metal:config define-macro="config">
+  <metal:title use-macro="view/concept_macros/concepttitle" />
+  <table tal:define="loopsOptions item/getLoopsOptions">
+    <tr tal:repeat="setting loopsOptions">
+      <td tal:content="setting/name" />
+      <td tal:content="setting/value" />
+    </tr>
+  </table>
+</metal:config>
+
+
+</html>
