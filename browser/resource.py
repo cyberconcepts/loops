@@ -135,8 +135,10 @@ class ResourceView(BaseView):
         else:
             return self.template.macros['download']
 
-    def __init__(self, context, request):
-        super(ResourceView, self).__init__(context, request)
+    #def __init__(self, context, request):
+    #    super(ResourceView, self).__init__(context, request)
+
+    def setupController(self):
         cont = self.controller
         if cont is None:
             return

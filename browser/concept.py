@@ -198,8 +198,10 @@ class ConceptView(BaseView):
     def macro(self):
         return self.template.macros['conceptdata']
 
-    def __init__(self, context, request):
-        super(ConceptView, self).__init__(context, request)
+    #def __init__(self, context, request):
+    #    super(ConceptView, self).__init__(context, request)
+
+    def setupController(self):
         cont = self.controller
         if cont is None:
             return

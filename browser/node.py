@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -186,6 +186,7 @@ class NodeView(BaseView):
             basicView = component.getMultiAdapter((target, self.request), name=viewName)
             # xxx: obsolete when self.targetObject is virtual target:
             if hasattr(basicView, 'view'):
+                #basicView.setupController()
                 return basicView.view
         return self.page
 
@@ -239,6 +240,8 @@ class NodeView(BaseView):
         if obj is not None:
             basicView = component.getMultiAdapter((obj, self.request))
             basicView._viewName = self.context.viewName
+            if self.context.nodeType != 'text':
+                basicView.setupController()
             return basicView.view
 
     @Lazy
@@ -400,6 +403,8 @@ class NodeView(BaseView):
             basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
                 basicView._viewName = self.context.viewName
+            #if self.context.nodeType != 'text':
+            basicView.setupController()
             if hasattr(basicView, 'view'):
                 return basicView.view
 
