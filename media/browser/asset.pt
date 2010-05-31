@@ -8,7 +8,7 @@
             tal:attributes="src
                     string:${url}/@@mediaasset.html?version=this&v=medium" /></a>
     </p>
-    <p><i tal:content="item/description">Description</i></p>
+    <p><i tal:content="structure item/renderedDescription">Description</i></p>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
