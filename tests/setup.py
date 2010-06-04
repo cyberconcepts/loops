@@ -177,6 +177,7 @@ class TestSite(object):
         catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
         catalog['loops_identifier'] = FieldIndex('identifier', IIndexAttributes, True)
         catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
+        catalog['loops_keywords'] = KeywordIndex('keywords', IIndexAttributes, True)
         catalog['loops_state'] = KeywordIndex('tokens', IStatefulIndexInfo, False)
         component.provideAdapter(ConceptIndexAttributes)
         component.provideAdapter(ResourceIndexAttributes)
