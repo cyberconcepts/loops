@@ -330,10 +330,12 @@ div.menu-1, div.menu-2 {
 
 .flow-left {
     float: left;
+    padding: 0.8em 0.8em 0.8em 0;
 }
 
 .flow-right {
     float: right;
+    padding: 0.8em 0.8em 0.8em 0;
 }
 
 div.image {
