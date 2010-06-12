@@ -554,7 +554,7 @@
       name="create_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateObjectForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
@@ -568,49 +568,49 @@
       name="edit_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditObjectForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="create_concept.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateConceptForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="edit_concept.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditConceptForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="edit_concept_page.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditConceptPage"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="inner_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="inner_concept_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerConceptForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <page
       name="inner_concept_edit_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerConceptEditForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <zope:adapter
@@ -618,7 +618,7 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.CreateObject"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <zope:adapter
@@ -626,7 +626,7 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.EditObject"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <zope:adapter
@@ -634,14 +634,14 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.CreateConcept"
-      permission="zope.ManageContent" />
+      permission="zope.View" />
 
   <zope:adapter
       name="edit_concept"
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.browser.form.EditConcept"
-      permission="zope.ManageContent" />
+      permission="zope.View" />
 
   <!-- inner HTML views -->
 

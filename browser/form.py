@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,9 @@ from zope.cachedescriptors.property import Lazy
 from zope.contenttype import guess_content_type
 from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
+from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import isinstance, removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
@@ -58,6 +60,7 @@ from loops.i18n.browser import I18NView
 from loops.query import ConceptQuery, IQueryConcept
 from loops.resource import Resource
 from loops.schema.field import relation_macros
+from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
 from loops.util import _
@@ -77,12 +80,20 @@ class ObjectForm(NodeView):
     isPopup = False
     showAssignments = True
 
-    def __init__(self, context, request):
-        super(ObjectForm, self).__init__(context, request)
-        # target is the object the view acts upon - this is not necessarily
-        # the same object as the context (the object the view was created for)
-        self.target = context
-        #self.registerDojoForm()
+    def checkPermissions(self):
+        obj = self.target
+        if obj is None:
+            obj = self.context
+        return canWriteObject(obj)
+
+    @Lazy
+    def target(self):
+        return self.virtualTargetObject or self.context
+
+    @Lazy
+    def contextInfo(self):
+        return dict(view=self, context=getName(self.context),
+                               target=getName(self.target))
 
     def closeAction(self, submit=False):
         if self.isPopup:
@@ -196,18 +207,13 @@ class ObjectForm(NodeView):
 
 class EditObjectForm(ObjectForm):
 
-    @Lazy
-    def macro(self):
-        return self.template.macros['edit']
-
     title = _(u'Edit Resource')
     form_action = 'edit_resource'
     dialog_name = 'edit'
 
-    def __init__(self, context, request):
-        super(EditObjectForm, self).__init__(context, request)
-        #self.url = self.url # keep virtual target URL (???)
-        self.target = self.virtualTargetObject
+    @Lazy
+    def macro(self):
+        return self.template.macros['edit']
 
     @property
     def assignments(self):
@@ -251,12 +257,12 @@ class EditConceptPage(EditConceptForm):
 
 class CreateObjectForm(ObjectForm):
 
-    @property
-    def macro(self): return self.template.macros['create']
-
     defaultTitle = u'Create Resource, Type = '
     form_action = 'create_resource'
     dialog_name = 'create'
+
+    @property
+    def macro(self): return self.template.macros['create']
 
     @Lazy
     def fixedType(self):
@@ -445,6 +451,25 @@ class EditObject(FormController, I18NView):
     prefix = 'form.'
     conceptPrefix = 'assignments.'
 
+    def __init__(self, context, request):
+        super(EditObject, self).__init__(context, request)
+        try:
+            if not self.checkPermissions():
+                raise Unauthorized(str(self.contextInfo))
+        except ForbiddenAttribute:  # ignore when testing
+            pass
+
+    def checkPermissions(self):
+        return canWriteObject(self.target)
+
+    @Lazy
+    def contextInfo(self):
+        return dict(formcontroller=self, view=self.view, target=getName(self.target))
+
+    @Lazy
+    def target(self):
+        return self.view.virtualTargetObject or self.context
+
     @Lazy
     def adapted(self):
         return adapted(self.object, self.languageInfoForUpdate)
@@ -476,7 +501,7 @@ class EditObject(FormController, I18NView):
 
     def update(self):
         # create new version if necessary
-        target = self.view.virtualTargetObject
+        target = self.target
         obj = self.checkCreateVersion(target)
         if obj != target:
             # make sure new version is used by the view

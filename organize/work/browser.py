@@ -47,6 +47,7 @@ from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.browser import BaseTrackView
 from loops.organize.tracking.report import TrackDetails
 from loops.organize.work.base import WorkItem
+from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops import util
 from loops.util import _
 
@@ -277,9 +278,18 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     template = work_macros
 
+    def checkPermissions(self):
+        return canAccessObject(self.task or self.target)
+
     @Lazy
     def macro(self):
         return self.template.macros['create_workitem']
+
+    @Lazy
+    def task(self):
+        uid = self.track.taskId
+        if uid:
+            return util.getObjectForUid(uid)
 
     @Lazy
     def track(self):
@@ -352,6 +362,17 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
 class CreateWorkItem(EditObject, BaseTrackView):
 
+    def checkPermissions(self):
+        return canAccessObject(self.task or self.target)
+
+    @Lazy
+    def task(self):
+        if self.track is None:
+            return None
+        uid = self.track.taskId
+        if uid:
+            return util.getObjectForUid(uid)
+
     @Lazy
     def track(self):
         id = self.request.form.get('id')
@@ -368,7 +389,8 @@ class CreateWorkItem(EditObject, BaseTrackView):
 
     @Lazy
     def object(self):
-        return self.view.virtualTargetObject
+        return self.target
+        #return self.view.virtualTargetObject
 
     def processForm(self):
         form = self.request.form

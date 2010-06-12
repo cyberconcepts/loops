@@ -176,12 +176,15 @@ standard checker defined in the test setup.
 The automatic assignment of the blog post is done in the form controller
 used for creating the blog post.
 
+  >>> home = views['home']
+  >>> home.target = myBlog
+
   >>> from loops.compound.blog.browser import CreateBlogPostForm, CreateBlogPost
   >>> input = {'title': u'John\'s first post', 'text': u'Text of John\'s post',
   ...          'date': '2008-02-02T15:54:11',
   ...          'privateComment': u'John\'s private comment',
   ...          'form.type': '.loops/concepts/blogpost'}
-  >>> cbpForm = CreateBlogPostForm(myBlog, TestRequest(form=input))
+  >>> cbpForm = CreateBlogPostForm(home, TestRequest(form=input))
   >>> cbpController = CreateBlogPost(cbpForm, cbpForm.request)
   >>> cbpController.update()
   False

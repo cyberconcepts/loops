@@ -58,8 +58,15 @@ def getPrincipalFolder(context=None, authPluginId=None, ignoreErrors=False):
             return plugin
 
 
-def getGroupsFolder(context=None, name='gloops'):
-    return getPrincipalFolder(authPluginId=name, ignoreErrors=True)
+def getGroupsFolder(context=None, name='gloops', create=False):
+    gf = getPrincipalFolder(authPluginId=name, ignoreErrors=True)
+    if gf is None and create:
+        pau = component.getUtility(IAuthentication, context=context)
+        gf = pau[name] = PrincipalFolder()
+        gf.prefix = name + '.'
+        pau.authenticatorPlugins = tuple(
+                        list(pau.authenticatorPlugins) + ['name'])
+    return gf
 
 
 def getGroupId(group):

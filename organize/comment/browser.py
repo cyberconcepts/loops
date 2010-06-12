@@ -35,6 +35,7 @@ from loops.browser.node import NodeView
 from loops.organize.comment.base import Comment
 from loops.organize.party import getPersonForUser
 from loops.organize.tracking.report import TrackDetails
+from loops.security.common import canAccessObject
 from loops.setup import addObject
 from loops import util
 from loops.util import _
@@ -91,12 +92,18 @@ class CreateCommentForm(ObjectForm):
 
     template = comment_macros
 
+    def checkPermissions(self):
+        return canAccessObject(self.target)
+
     @Lazy
     def macro(self):
         return self.template.macros['create_comment']
 
 
 class CreateComment(EditObject):
+
+    def checkPermissions(self):
+        return canAccessObject(self.target)
 
     @Lazy
     def personId(self):

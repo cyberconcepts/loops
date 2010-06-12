@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2010-05-16 12:00 CET\n"
+"PO-Revision-Date: 2010-06-11 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -159,16 +159,16 @@ msgid "Create a new event"
 msgstr "Einen neuen Termin anlegen"
 
 msgid "Create Task..."
-msgstr "Aufgabe anlegen..."
+msgstr "Crear tarea..."
 
 msgid "Create a new task"
-msgstr "Eine neue Aufgabe anlegen"
+msgstr "Crear una nueva tarea"
 
 msgid "Edit Task..."
-msgstr "Aufgabe bearbeiten..."
+msgstr "Editar tarea..."
 
 msgid "Modify task"
-msgstr "Aufgabe bearbeiten"
+msgstr "Modificar la tarea"
 
 msgid "Create Work Item..."
 msgstr "Aktivität anlegen..."
@@ -243,7 +243,7 @@ msgid "Topic"
 msgstr "Thema"
 
 msgid "Task"
-msgstr "Aufgabe"
+msgstr "Tarea"
 
 msgid "Domain"
 msgstr "Bereich"

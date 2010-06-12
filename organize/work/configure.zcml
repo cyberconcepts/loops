@@ -50,7 +50,7 @@
       name="create_workitem.html"
       for="loops.interfaces.INode"
       class="loops.organize.work.browser.CreateWorkItemForm"
-      permission="zope.ManageContent" />
+      permission="zope.View" />
 
   <zope:adapter
       name="create_workitem"

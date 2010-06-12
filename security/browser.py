@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,10 @@ Security-related views.
 $Id$
 """
 
+from zope.app.authentication.groupfolder import GroupInformation
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IPermission
+from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.browser import granting
 from zope.app.securitypolicy.browser.rolepermissionview import RolePermissionView
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, \
@@ -32,13 +34,17 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager, \
                                                IPrincipalPermissionMap
 from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
 from zope import component
+from zope.event import notify
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import getParent, getParents
+from zope.traversing.api import getName, getParent, getParents
 
 from loops.common import adapted
+from loops.organize.util import getGroupsFolder
 from loops.security.common import WorkspaceInformation
+from loops.security.common import localPermissions, localRoles, setPrincipalRole
 from loops.security.interfaces import ISecuritySetter
 
 
@@ -162,7 +168,11 @@ class PermissionView(object):
         return result
 
     def getPermissions(self):
-        return sorted(name for name, perm in component.getUtilitiesFor(IPermission))
+        return sorted(name for name, perm in component.getUtilitiesFor(IPermission)
+                           if name in localPermissions)
+
+    def hideRole(self, role):
+        return role not in localRoles
 
 
 class ManageWorkspaceView(PermissionView):
@@ -176,12 +186,86 @@ class ManageWorkspaceView(PermissionView):
             wi = context.workspaceInformation = WorkspaceInformation(context)
         PermissionView.__init__(self, wi, request)
 
+    def update(self, testing=None):
+        if 'SUBMIT_PERMS' in self.request.form:
+            super(ManageWorkspaceView, self).update(testing)
+        elif 'save_wsinfo'  in self.request.form:
+            self.saveWSInfo()
+
+    def saveWSInfo(self):
+        gn = {}
+        form = self.request.form
+        gfName = self.context.workspaceGroupsFolderName
+        gf = getGroupsFolder(self.context, gfName, create=True)
+        parentRM = IPrincipalRoleManager(self.parent)
+        wsiRM = IPrincipalRoleManager(self.context)
+        for pn in form.get('predicate_name', []):
+            groupName = form.get('group_name_' + pn)
+            gn[pn] = groupName
+            if groupName and groupName not in gf:
+                group = GroupInformation(groupName)
+                notify(ObjectCreatedEvent(group))
+                gf[groupName] = group
+                notify(ObjectModifiedEvent(group))
+            roleParent = bool(form.get('role_parent_' + pn))
+            roleWSI = bool(form.get('role_wsi_' + pn))
+            roleName = 'loops.' + pn.lstrip('is').title()
+            gid = '.'.join((gfName, groupName))
+            setPrincipalRole(parentRM, roleName, gid,
+                             roleParent and Allow or None)
+            setPrincipalRole(wsiRM, roleName, gid,
+                             roleWSI and Allow or None)
+        self.context.workspaceGroupNames = gn
+
     @Lazy
     def permission_macros(self):
         return permission_template.macros
 
     @Lazy
+    def parent(self):
+        return self.context.getParent()
+
+    @Lazy
     def adapted(self):
-        return adapted(getParent(self.context))
+        return adapted(self.parent)
+
+    def getGroupsInfo(self):
+        root = self.parent.getLoopsRoot()
+        conceptManager = root.getConceptManager()
+        def getDefaultGroupName(predicateName):
+            rootName = '_'.join([getName(obj) for obj in
+                            reversed(getParents(conceptManager)[:-1])])
+            objName = getName(self.parent)
+            return '.'.join((rootName, objName, predicateName.strip('is')))
+        apn = [pn for pn in self.context.allocationPredicateNames
+                  if pn in conceptManager]
+        gn = self.context.workspaceGroupNames
+        if not isinstance(gn, dict):    # backwards compatibility
+            gn = {}
+        result = [dict(predicateName=pn,
+                       predicateTitle=conceptManager[pn].title,
+                       groupName='', groupExists=False,
+                       roleParent=False, roleWSI=False)
+                    for pn in apn]
+        gfName = self.context.workspaceGroupsFolderName
+        gf = getGroupsFolder(self.context, gfName)
+        if gf is None:
+            return result
+        parentRMget = IPrincipalRoleManager(self.parent).getPrincipalsForRole
+        wsiRMget = IPrincipalRoleManager(self.context).getPrincipalsForRole
+        for item in result:
+            pn = item['predicateName']
+            groupName = item['groupName'] = gn.get(pn, getDefaultGroupName(pn))
+            roleName = 'loops.' + pn.lstrip('is').title()
+            if gf is not None and groupName in gf:
+                item['groupExists'] = True
+            gid = '.'.join((gfName, groupName))
+            item['roleParent'] = isSet(parentRMget(roleName), gid)
+            item['roleWSI'] = isSet(wsiRMget(roleName), gid)
+        return result
 
 
+def isSet(entry, id):
+    for name, setting in entry:
+        if name == id:
+            return SettingAsBoolean[setting]

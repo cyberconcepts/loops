@@ -37,37 +37,32 @@
              tal:attributes="value permId" />
       <div class="form-element">
 
-          <table width="100%" cellspacing="0" cellpadding="2" border="0"
-              nowrap="nowrap">
+        <table class="listing" cellspacing="0" cellpadding="2" border="0"
+               nowrap="nowrap">
 
-            <tr class="list-header">
-              <td><strong i18n:translate="">Role</strong></td>
-              <td><strong i18n:translate="">Users/Groups</strong></td>
-              <td><strong i18n:translate="">Acquired Setting</strong></td>
-              <td><strong i18n:translate="">Setting</strong></td>
-            </tr>
+          <tr class="list-header">
+              <th i18n:translate="">Role</th>
+              <th i18n:translate="">Users/Groups</th>
+              <th i18n:translate="">Acquired Setting</th>
+              <th i18n:translate="">Setting</th>
+          </tr>
 
+          <tal:role tal:repeat="setting perm/roleSettings">
             <tr class="row-normal"
-                tal:repeat="setting perm/roleSettings"
-                tal:attributes="class python:
-                    path('repeat/setting/even') and 'row-normal' or 'row-hilite'">
-              <tal:role define="ir repeat/setting/index;
-                                roleId python:path('view/roles')[ir].id">
+                tal:define="ir repeat/setting/index;
+                            roleId python:path('view/roles')[ir].id"
+                tal:attributes="style python:view.hideRole(roleId) and
+                                    'visibility: collapse' or ''">
               <td align="left" valign="top"
-                  tal:content="roleId">
-                Manager
-              </td>
+                  tal:content="roleId" />
               <td>
                 <span tal:define="users python: view.listUsersForRole(roleId)"
-                      tal:replace="structure users">
-                  User xy
-                </span>
-              </td>
-              <td>
+                      tal:replace="structure users" /></td>
+              <td class="center">
                 <span tal:replace="python:
                         view.getAcquiredPermissionSetting(roleId, permId)" />
               </td>
-              <td>
+              <td class="center">
                 <select name="settings:list">
                     <option value="Unset"
                        tal:repeat="option view/availableSettings"
@@ -77,16 +72,16 @@
                        i18n:translate="">+</option>
                 </select>
               </td>
-              </tal:role>
             </tr>
-            <tr tal:define="principals view/getPrincipalPermissions"
+          </tal:role>
+          <tr tal:define="principals view/getPrincipalPermissions"
                 tal:condition="principals">
               <td>
                 <strong i18n:translate="">Direct Settings</strong>
               </td>
               <td colspan="3" tal:content="structure principals">+xyz</td>
-            </tr>
-          </table>
+          </tr>
+        </table>
 
       </div>
 

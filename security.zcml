@@ -32,6 +32,10 @@
       title="[loops-edit-restricted-permission] loops: Edit Restricted Information" />
 
   <permission
+      id="loops.AssignAsParent"
+      title="[loops-assign-as-parent-permission] loops: Assign as Parent" />
+
+  <permission
       id="loops.Execute"
       title="[loops-execute-permission] loops: Execute" />
 
@@ -42,13 +46,19 @@
   <grant role="loops.SiteManager" permission="loops.ManageSite" />
   <grant role="loops.SiteManager" permission="loops.ManageTypes" />
   <grant role="loops.SiteManager" permission="loops.ManageWorkspaces" />
+  <grant role="loops.SiteManager" permission="loops.AssignAsParent" />
   <grant role="loops.SiteManager" permission="loops.xmlrpc.ManageConcepts" />
   <grant role="loops.SiteManager" permission="zope.ManageContent" />
   <grant role="loops.SiteManager" permission="zope.View" />
 
+  <role id="loops.xmlrpc.ConceptManager"
+        title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
+  <grant role="loops.xmlrpc.ConceptManager" permission="loops.xmlrpc.ManageConcepts" />
+
   <role id="loops.Staff"
         title="[loops-staff-role] loops: Staff" />
   <grant role="loops.Staff" permission="loops.ManageWorkspaces" />
+  <grant role="loops.Staff" permission="loops.AssignAsParent" />
   <grant role="loops.Staff" permission="loops.EditRestricted" />
   <grant role="loops.Staff" permission="zope.ManageContent" />
   <grant role="loops.Staff" permission="zope.View" />
@@ -56,19 +66,19 @@
   <role id="loops.Master"
         title="[loops-master-role] loops: Master" />
   <grant role="loops.Master" permission="zope.ManageContent" />
+  <grant role="loops.Master" permission="loops.AssignAsParent" />
 
   <role id="loops.Member"
         title="[loops-member-role] loops: Member" />
   <grant role="loops.Member" permission="zope.View" />
-
-  <role id="loops.xmlrpc.ConceptManager"
-        title="[xmlrpc-manage-concepts-role] loops: Concept Manager (XML-RPC)" />
-  <grant role="loops.xmlrpc.ConceptManager" permission="loops.xmlrpc.ManageConcepts" />
 
   <role id="loops.Owner"
         title="[loops-owner-role] Owner" />
   <grant role="loops.Owner" permission="zope.ManageContent" />
   <grant role="loops.Owner" permission="loops.ViewRestricted" />
   <grant role="loops.Owner" permission="zope.View" />
+
+  <!-- moved to etc/securitypolicy.zcml: -->
+  <!--<grant role="zope.ContentManager" permission="loops.AssignAsParent" />-->
 
 </configure>

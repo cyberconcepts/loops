@@ -120,12 +120,16 @@ class BaseView(GenericView, I18NView):
         self.context = removeSecurityProxy(context)
         try:
             if not self.checkPermissions():
-                raise Unauthorized('%r: title' % (self.context))
+                raise Unauthorized(str(self.contextInfo))
         except ForbiddenAttribute:  # ignore when testing
             pass
 
     def checkPermissions(self):
         return canAccessObject(self.context)
+
+    @Lazy
+    def contextInfo(self):
+        return dict(view=self, context=getName(self.context))
 
     @Lazy
     def conceptMacros(self):

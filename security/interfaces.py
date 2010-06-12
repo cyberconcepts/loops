@@ -70,6 +70,6 @@ class IWorkspaceInformation(Interface):
         security-related stuff for sub-objects.
     """
 
-    propagateRolePermissions = Attribute('Which role permissions should be '
-                    'propagated to children?')
+    propagateRolePermissions = Attribute('Whose role permissions should be '
+                    'propagated to children (workspace_informaton or parent)?')
 

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ $Id$
 """
 
 from persistent import Persistent
-from persistent.list import PersistentList
 from zope import component
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IObjectAddedEvent
@@ -52,6 +51,15 @@ allRolesExceptOwner = (
          'loops.Member', 'loops.Master',)
 allRolesExceptOwnerAndMaster = tuple(allRolesExceptOwner[:-1])
 minorPrivilegedRoles = ('zope.Anonymous', 'zope.Member',)
+localRoles = ('zope.Anonymous', 'zope.Member', 'zope.ContentManager',
+        'loops.Staff', 'loops.Member', 'loops.Master', 'loops.Owner')
+
+localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
+        'loops.ViewRestricted', 'loops.EditRestricted', 'loops.AssignAsParent',)
+
+allocationPredicateNames = ('ismaster', 'ismember')
+
+workspaceGroupsFolderName = 'gloops_ws'
 
 
 # checking and querying functions
@@ -69,6 +77,9 @@ def canWriteObject(obj):
 
 def canEditRestricted(obj):
     return checkPermission('loops.EditRestricted', obj)
+
+def canAssignAsParent(obj):
+    return checkPermission('loops.AssignAsParent', obj)
 
 def checkPermission(permission, obj):
     return baseCheckPermission(permission, obj)
@@ -174,11 +185,15 @@ class WorkspaceInformation(Persistent):
     __name__ = u'workspace_information'
 
     propagateRolePermissions = 'workspace'
+    allocationPredicateNames = allocationPredicateNames
+    workspaceGroupsFolderName = workspaceGroupsFolderName
 
     def __init__(self, parent):
         self.__parent__ = parent
-        self.workspaceGroupNames = PersistentList()
+        self.workspaceGroupNames = {}
 
     def getName(self):
         return self.__name__
 
+    def getParent(self):
+        return self.__parent__

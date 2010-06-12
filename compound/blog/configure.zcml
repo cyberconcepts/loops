@@ -46,14 +46,14 @@
       name="create_blogpost.html"
       for="loops.interfaces.INode"
       class="loops.compound.blog.browser.CreateBlogPostForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <browser:page
       name="edit_blogpost.html"
       for="loops.interfaces.INode"
       class="loops.compound.blog.browser.EditBlogPostForm"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <zope:adapter
@@ -62,7 +62,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.compound.blog.browser.CreateBlogPost"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
   <zope:adapter
@@ -70,7 +70,7 @@
       for="loops.browser.node.NodeView
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.compound.blog.browser.EditBlogPost"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
 </configure>

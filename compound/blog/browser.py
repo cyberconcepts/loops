@@ -36,7 +36,7 @@ from loops.browser.form import CreateConceptForm, EditConceptForm
 from loops.browser.form import CreateConcept, EditConcept
 from loops.common import adapted
 from loops.organize.party import getPersonForUser
-from loops.security.common import checkPermission
+from loops.security.common import checkPermission, canAccessObject
 from loops import util
 from loops.util import _
 
@@ -175,19 +175,29 @@ class EditBlogPostForm(EditConceptForm):
     title = _(u'Edit Blog Post')
     form_action = 'edit_blogpost'
 
+    def checkPermissions(self):
+        return canAccessObject(self.target)
+
 
 class CreateBlogPostForm(CreateConceptForm):
 
     title = _(u'Create Blog Post')
     form_action = 'create_blogpost'
 
+    def checkPermissions(self):
+        return canAccessObject(self.target)
+
 
 class EditBlogPost(EditConcept):
 
-    pass
+    def checkPermissions(self):
+        return canAccessObject(self.target)
 
 
 class CreateBlogPost(CreateConcept):
+
+    def checkPermissions(self):
+        return canAccessObject(self.target)
 
     def collectAutoConcepts(self):
         #super(CreateBlogPost, self).collectConcepts(fieldName, value)
