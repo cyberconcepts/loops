@@ -35,6 +35,7 @@ from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
+from zope.traversing.api import getName
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from loops.common import adapted
@@ -173,7 +174,7 @@ def revokeAcquiredSecurity(obj, event):
     setter.setAcquiredSecurity(event.relation, revert=True)
 
 
-# helper stuff
+# workspace handling
 
 class WorkspaceInformation(Persistent):
     """ For storing security-related stuff pertaining to
@@ -197,3 +198,54 @@ class WorkspaceInformation(Persistent):
 
     def getParent(self):
         return self.__parent__
+
+
+def getWorkspaceGroup(obj, predicate):
+    wsi = obj.workspaceInformation
+    if wsi is None:
+        return None
+    pn = getName(predicate)
+    if pn in wsi.allocationPredicateNames:
+        gn = wsi.workspaceGroupNames
+        if not isinstance(gn, dict):    # backwards compatibility
+            return None
+        groupName = gn.get(pn)
+        if groupName:
+            gfName = wsi.workspaceGroupsFolderName
+            if gfName:
+                from loops.organize.util import getGroupsFolder
+                gf = getGroupsFolder(wsi, gfName)
+                if gf is not None:
+                    return gf.get(groupName)
+    return None
+
+
+@component.adapter(ILoopsObject, IAssignmentEvent)
+def addGroupMembershipOnAssignment(obj, event):
+    group = getWorkspaceGroup(obj, event.relation.predicate)
+    if group is not None:
+        person = adapted(event.relation.second)
+        from loops.organize.interfaces import IPerson
+        if IPerson.providedBy(person):
+            userId = person.getUserId()
+            if userId:
+                members = list(group.principals)
+                if userId not in members:
+                    members.append(userId)
+                    group.principals = tuple(members)
+                #print '*** assign', group.__name__, userId, group.principals
+
+@component.adapter(ILoopsObject, IDeassignmentEvent)
+def removeGroupMembershipOnDeassignment(obj, event):
+    group = getWorkspaceGroup(obj, event.relation.predicate)
+    if group is not None:
+        person = adapted(event.relation.second)
+        from loops.organize.interfaces import IPerson
+        if IPerson.providedBy(person):
+            userId = person.getUserId()
+            if userId:
+                members = list(group.principals)
+                if userId in members:
+                    members.remove(userId)
+                    group.principals = tuple(members)
+                #print '*** remove', group.__name__, userId, group.principals

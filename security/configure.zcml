@@ -34,6 +34,9 @@
   <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
   <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
 
+  <zope:subscriber handler="loops.security.common.addGroupMembershipOnAssignment" />
+  <zope:subscriber handler="loops.security.common.removeGroupMembershipOnDeassignment" />
+
   <browser:page
         for="zope.annotation.interfaces.IAnnotatable"
         name="permissions.html"
