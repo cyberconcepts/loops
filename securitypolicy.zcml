@@ -1,0 +1,31 @@
+<!-- copy this file to the etc subdirectory of your Zope instance -->
+
+<!-- security policy settings -->
+
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <include package="zope.app.securitypolicy" />
+
+  <securityPolicy
+    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
+  <role id="zope.ContentManager" title="Content Manager" />
+
+  <grant role="zope.Anonymous" permission="zope.app.dublincore.view" />
+  <grant role="zope.Member" permission="zope.View" />
+
+  <grant role="zope.ContentManager" permission="zope.ManageContent" />
+  <grant role="zope.ContentManager" permission="zope.View" />
+
+  <!-- loops-specific grant added in 2010-06 -->
+  <grant role="zope.ContentManager" permission="loops.AssignAsParent" />
+
+  <grantAll role="zope.Manager" />
+
+</configure>
