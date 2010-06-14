@@ -244,7 +244,7 @@ class ManageWorkspaceView(PermissionView):
             gn = {}
         result = [dict(predicateName=pn,
                        predicateTitle=conceptManager[pn].title,
-                       groupName='', groupExists=False,
+                       groupName=None, groupExists=False,
                        roleParent=False, roleWSI=False)
                     for pn in apn]
         gfName = self.context.workspaceGroupsFolderName
@@ -255,7 +255,10 @@ class ManageWorkspaceView(PermissionView):
         wsiRMget = IPrincipalRoleManager(self.context).getPrincipalsForRole
         for item in result:
             pn = item['predicateName']
-            groupName = item['groupName'] = gn.get(pn, getDefaultGroupName(pn))
+            groupName = gn.get(pn)
+            if groupName is None:
+                groupName = getDefaultGroupName(pn)
+            item['groupName'] = groupName
             roleName = 'loops.' + pn.lstrip('is').title()
             if gf is not None and groupName in gf:
                 item['groupExists'] = True
