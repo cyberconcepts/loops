@@ -79,7 +79,8 @@
               <td>
                 <strong i18n:translate="">Direct Settings</strong>
               </td>
-              <td colspan="3" tal:content="structure principals">+xyz</td>
+              <td tal:content="structure principals">+xyz</td>
+              <td /><td />
           </tr>
         </table>
 

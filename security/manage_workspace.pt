@@ -1,12 +1,14 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zope">
 <body>
-<div metal:fill-slot="body" i18n:domain="zope">
+<div metal:fill-slot="body" i18n:domain="zope"
+     tal:define="groups_info view/getGroupsInfo">
   <h1 i18n:translate="">Define Workspace Properties</h1>
   <p tal:define="status view/update"
      tal:content="status" i18n:translate=""/>
   <form method="post">
-    <table class="listing">
+    <table class="listing"
+           tal:condition="groups_info">
       <tr>
         <th colspan="3"></th>
         <th colspan="2">Assign role in</th>
@@ -41,8 +43,12 @@
                                  checked gi/roleWSI" /></td>
       </tr>
     </table>
+    <p tal:condition="not:groups_info">
+      Please create "ismember" and "ismaster" predicates in order to use
+      the workspace-based group creation and granting functionality.</p>
     <br />
-    <input type="submit" name="save_wsinfo" value="Save Settings" />
+    <input type="submit" name="save_wsinfo" value="Save Settings"
+           tal:condition="groups_info"/>
   </form>
   <br />
   <h2 i18n:translate="">Assign Permissions to Roles for Children of this Object</h2>
