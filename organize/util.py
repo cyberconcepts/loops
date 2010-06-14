@@ -65,7 +65,7 @@ def getGroupsFolder(context=None, name='gloops', create=False):
         pau = component.getUtility(IAuthentication, context=context)
         gf = pau[name] = GroupFolder(name + '.')
         pau.authenticatorPlugins = tuple(
-                        list(pau.authenticatorPlugins) + ['name'])
+                        list(pau.authenticatorPlugins) + [name])
     return gf
 
 
