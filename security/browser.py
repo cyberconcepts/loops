@@ -249,8 +249,8 @@ class ManageWorkspaceView(PermissionView):
                     for pn in apn]
         gfName = self.context.workspaceGroupsFolderName
         gf = getGroupsFolder(self.context, gfName)
-        if gf is None:
-            return result
+        #if gf is None:
+        #    return result
         parentRMget = IPrincipalRoleManager(self.parent).getPrincipalsForRole
         wsiRMget = IPrincipalRoleManager(self.context).getPrincipalsForRole
         for item in result:
