@@ -106,12 +106,15 @@
           </tr>
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
-                              description related/description">
+                              description related/description;
+                              predicate related/predicate/title|string:;
+                              info python: ' | '.join(
+                                    t for t in (description, predicate) if t)">
               <tr tal:attributes="class class">
                 <td valign="top">
                   <a href="#"
                      tal:attributes="href python: view.getUrlForTarget(related);
-                                     title description">
+                                     title info">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
                 </td>
