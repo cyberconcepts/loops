@@ -216,6 +216,10 @@ class ManageWorkspaceView(PermissionView):
             setPrincipalRole(wsiRM, roleName, gid,
                              roleWSI and Allow or None)
         self.context.workspaceGroupNames = gn
+        setter = ISecuritySetter(adapted(self.parent))
+        setter.propagateSecurity()
+        #setter = ISecuritySetter(adapted(self.context))
+        #setter.propagateSecurity()
 
     @Lazy
     def permission_macros(self):
