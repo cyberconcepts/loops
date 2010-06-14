@@ -25,6 +25,7 @@ $Id$
 from zope import interface, component, schema
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.groupfolder import GroupFolder
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
@@ -62,8 +63,7 @@ def getGroupsFolder(context=None, name='gloops', create=False):
     gf = getPrincipalFolder(authPluginId=name, ignoreErrors=True)
     if gf is None and create:
         pau = component.getUtility(IAuthentication, context=context)
-        gf = pau[name] = PrincipalFolder()
-        gf.prefix = name + '.'
+        gf = pau[name] = Groupfolder(name + '.')
         pau.authenticatorPlugins = tuple(
                         list(pau.authenticatorPlugins) + ['name'])
     return gf

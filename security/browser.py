@@ -236,7 +236,7 @@ class ManageWorkspaceView(PermissionView):
             rootName = '_'.join([getName(obj) for obj in
                             reversed(getParents(conceptManager)[:-1])])
             objName = getName(self.parent)
-            return '.'.join((rootName, objName, predicateName.strip('is')))
+            return '.'.join((rootName, objName, predicateName.lstrip('is')))
         apn = [pn for pn in self.context.allocationPredicateNames
                   if pn in conceptManager]
         gn = self.context.workspaceGroupNames
