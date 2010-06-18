@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2005 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ class PersonSchemaFactory(SchemaFactory):
         #    schema.fields.phoneNumbers.instance_name ='simplelist'
         if 'birthDate' in schema.fields.keys():
             schema.fields.birthDate.display_format = ('date', 'long')
-        del schema.fields['userId']
+        if 'userId' in schema.fields.keys():
+            del schema.fields['userId']
         return schema
 
 
