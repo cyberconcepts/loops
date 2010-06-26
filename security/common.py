@@ -58,6 +58,8 @@ localRoles = ('zope.Anonymous', 'zope.Member', 'zope.ContentManager',
 localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
         'loops.ViewRestricted', 'loops.EditRestricted', 'loops.AssignAsParent',)
 
+acquiringPredicateNames = ('hasType', 'standard', 'ownedby', 'ispartof')
+
 allocationPredicateNames = ('ismaster', 'ismember')
 
 workspaceGroupsFolderName = 'gloops_ws'

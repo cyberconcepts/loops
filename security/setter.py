@@ -36,6 +36,7 @@ from zope.security.proxy import isinstance
 from loops.common import adapted, AdapterBase, baseObject
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
+from loops.security.common import acquiringPredicateNames
 from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.security.interfaces import ISecuritySetter
 
@@ -58,8 +59,7 @@ class BaseSecuritySetter(object):
 
     @Lazy
     def acquiringPredicates(self):
-        names = ('hasType', 'standard',)
-        return [self.conceptManager.get(n) for n in names]
+        return [self.conceptManager.get(n) for n in acquiringPredicateNames]
 
     def setDefaultRolePermissions(self):
         pass

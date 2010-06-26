@@ -547,6 +547,10 @@ class BaseView(GenericView, I18NView):
             return not self.globalOptions('hideCreateResource')
         return True
 
+    @Lazy
+    def canAccessRestricted(self):
+        return checkPermission('loops.ViewRestricted', self.context)
+
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
             if checkPermission('loops.ManageSite', self.context):
