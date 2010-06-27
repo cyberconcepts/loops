@@ -117,10 +117,19 @@ class NodeView(BaseView):
                 # TODO: is this useful in any case?
                 self.virtualTargetObject is not None and
                     canWrite(self.virtualTargetObject, 'title')):
-            cm.register('portlet_right', 'actions', title=_(u'Actions'),
-                        subMacro=node_macros.macros['actions'],
-                        priority=100)
-        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            # check if there are any available actions;
+            # store list of actions in macro object (evaluate only once)
+            actions = [act for act in self.getActions('portlet') if act.condition]
+            if actions:
+                cm.register('portlet_right', 'actions', title=_(u'Actions'),
+                            subMacro=node_macros.macros['actions'],
+                            priority=100, actions=actions)
+        if self.isAnonymous and self.globalOptions('provideLogin'):
+            cm.register('portlet_right', 'login', title=_(u'Not logged in'),
+                        subMacro=node_macros.macros['login'],
+                        icon='cybertools.icons/user.png',
+                        priority=10)
+        if not self.isAnonymous:
             mi = self.controller.memberInfo
             title = mi.title.value or _(u'Personal Informations')
             url=None

@@ -53,7 +53,8 @@ allRolesExceptOwner = (
 allRolesExceptOwnerAndMaster = tuple(allRolesExceptOwner[:-1])
 minorPrivilegedRoles = ('zope.Anonymous', 'zope.Member',)
 localRoles = ('zope.Anonymous', 'zope.Member', 'zope.ContentManager',
-        'loops.Staff', 'loops.Member', 'loops.Master', 'loops.Owner')
+        'loops.SiteManager', 'loops.Staff', 'loops.Member', 'loops.Master',
+        'loops.Owner')
 
 localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
         'loops.ViewRestricted', 'loops.EditRestricted', 'loops.AssignAsParent',)

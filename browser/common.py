@@ -28,7 +28,7 @@ from urllib import urlencode
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication, IUnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.security.interfaces import PrincipalLookupError
@@ -149,6 +149,10 @@ class BaseView(GenericView, I18NView):
     def principalId(self):
         principal = self.request.principal
         return principal and principal.id or ''
+
+    @Lazy
+    def isAnonymous(self):
+        return IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
     def recordAccess(self, viewName, **kw):
         access.record(self.request, principal=self.principalId, view=viewName, **kw)
