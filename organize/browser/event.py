@@ -67,7 +67,7 @@ class Events(ConceptView):
         month = int(self.request.get('cal_month') or 0)
         day = int(self.request.get('cal_day') or 0)
         if year and month and day:
-            return datetime(year, month, day)
+            return date(year, month, day)
         return None
 
     def events(self):
@@ -81,10 +81,10 @@ class Events(ConceptView):
         relViews = (self.childViewFactory(r, self.request, contextIsSecond=True)
                         for r in tEvent.getChildRelations([hasType], sort=None))
         if self.selectedDate:
-            end = self.selectedDate + timedelta(1)
+            #end = self.selectedDate + timedelta(1)
             return sorted((rv for rv in relViews
-                                if rv.adapted.start >= self.selectedDate and
-                                   rv.adapted.start < end),
+                                if rv.adapted.start.date() <= self.selectedDate and
+                                   rv.adapted.end.date() >= self.selectedDate),
                         key=sort)
         else:
             return sorted((rv for rv in relViews
