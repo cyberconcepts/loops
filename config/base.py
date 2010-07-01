@@ -93,18 +93,23 @@ class LoopsOptions(Options):
     def set(self, key, value):
         options = getattr(self.context, 'options', [])
         new_opt = []
+        found = False
+        def createItem(k, v):
+            if v is True:
+                return k
+            if isinstance(v, (list, tuple)):
+                v = ','.join(v)
+            return '%s:%s' % (k, v)
         for item in options:
             parts = item.split(':', 1)
             if parts[0] == key:
+                found = True
                 if not value:
                     continue
-                if value is True:
-                    item = key
-                    continue
-                elif isinstance(value, (list, tuple)):
-                    value = ','.join(value)
-                item = '%s:%s' % (key, value)
+                item = createItem(key, value)
             new_opt.append(item)
+        if not found:
+            new_opt.append(createItem(key, value))
         self.context.options = new_opt
 
 
