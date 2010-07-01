@@ -90,6 +90,23 @@ class LoopsOptions(Options):
         if rc:
             raise ExecutionError('\n' + rc)
 
+    def set(self, key, value):
+        options = getattr(self.context, 'options', [])
+        new_opt = []
+        for item in options:
+            parts = item.split(':', 1)
+            if parts[0] == key:
+                if not value:
+                    continue
+                if value is True:
+                    item = key
+                    continue
+                elif isinstance(value, (list, tuple)):
+                    value = ','.join(value)
+                item = '%s:%s' % (key, value)
+            new_opt.append(item)
+        self.context.options = new_opt
+
 
 class TypeOptions(LoopsOptions):
 
