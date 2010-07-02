@@ -202,7 +202,7 @@ class DeassignmentElement(Element):
             self[k] = v
 
     def execute(self, loader):
-        if self.get('type') == 'child':
+        if self.get('type') in ('child', 'concept'):
             loader.deassignChild(self['first'], self['second'], self['predicate'])
         else:
             loader.deassignResource(self['first'], self['second'], self['predicate'])
