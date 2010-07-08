@@ -16,6 +16,8 @@ from loops.interfaces import IFile, IExternalFile
 from loops.concept import Concept
 from loops.resource import Resource, FileAdapter, ExternalFileAdapter
 from loops.integrator.interfaces import IExternalSourceInfo, IExternalCollection
+from loops.integrator.interfaces import IOfficeFile
+from loops.integrator.office.base import OfficeFile
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
@@ -34,6 +36,7 @@ class TestSite(BaseTestSite):
 
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)
+        component.provideAdapter(OfficeFile, provides=IOfficeFile)
 
         component.provideUtility(fullPathStorage(), IExternalStorage, name='fullpath')
 
@@ -48,6 +51,10 @@ class TestSite(BaseTestSite):
         tExtCollection = addAndConfigureObject(concepts, Concept, 'extcollection',
                                 title=u'External Collection', conceptType=tType,
                                 typeInterface=IExternalCollection)
+        tOfficeFile = addAndConfigureObject(concepts, Concept, 'officefile',
+                                title=u'MS Office File', conceptType=tType,
+                                typeInterface=IOfficeFile,
+                                options=['storage:fullpath'])
 
         self.indexAll(concepts, resources)
         return concepts, resources, views

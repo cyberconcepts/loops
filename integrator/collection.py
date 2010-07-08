@@ -167,11 +167,11 @@ class DirectoryCollectionProvider(object):
                             container, Resource, name,
                             title=title,
                             resourceType=extFileType,
-                            externalAddress=addr,
                             storageName='fullpath',
                             storageParams=dict(subdirectory=directory),
                             contentType=contentType,
             )
+            adapted(obj).externalAddress = addr     # must be set lasst
             yield obj
 
     def getDirectory(self, client):

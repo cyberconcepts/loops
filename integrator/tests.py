@@ -6,7 +6,7 @@ from zope.interface.verify import verifyClass
 #from loops.versioning import versionable
 
 class Test(unittest.TestCase):
-    "Basic tests for the expert sub-package."
+    "Basic tests for the integrator sub-package."
 
     def testSomething(self):
         pass

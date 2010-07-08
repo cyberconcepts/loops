@@ -25,7 +25,7 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
-from loops.interfaces import IConceptSchema, ILoopsAdapter
+from loops.interfaces import IConceptSchema, ILoopsAdapter, IExternalFile
 from loops.util import _
 
 
@@ -113,4 +113,9 @@ class IExternalCollectionProvider(Interface):
             names of concept types. The MIME types may contain wildcards,
             e.g. 'image/*', '*/*'.
         """
+
+class IOfficeFile(IExternalFile):
+    """ An external file that references a MS Office (2007/2010) file.
+        It provides access to the document content and properties.
+    """
 

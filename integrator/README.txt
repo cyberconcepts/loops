@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  17
+  18
 
 
 External Collections
@@ -209,6 +209,23 @@ Uploading Resources with HTTP PUT Requests
   u'local_user_filesystem_testing_data_file1.txt'
   >>> resource.title
   u'file1'
+
+
+Extracting Document Properties from MS Office Files
+===================================================
+
+  >>> from loops.resource import Resource
+  >>> tOfficeFile = concepts['officefile']
+  >>> path = os.path.join(dataDir, 'office')
+  >>> officeFile = addAndConfigureObject(resources, Resource, 'test.docx',
+  ...                    title=u'Example Word File', resourceType=tOfficeFile,
+  ...                    storageParams=dict(subdirectory=path))
+  >>> aOfficeFile = adapted(officeFile)
+  >>> aOfficeFile.externalAddress = 'example.docx'
+
+  >>> content = aOfficeFile.data
+  >>> len(content)
+  195808
 
 
 Fin de partie
