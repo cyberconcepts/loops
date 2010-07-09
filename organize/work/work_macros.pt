@@ -93,7 +93,8 @@
                 onChange="showIf(this, 'delegate', 'party')">
           <option tal:repeat="action view/actions"
                   tal:attributes="value action/name"
-                  tal:content="action/title" />
+                  tal:content="action/title"
+                  i18n:translate="" />
         </select>
         <span id="party" style="display: none">&nbsp;
           <label i18n:translate="" for="input_party"
@@ -187,7 +188,8 @@
     </tr>
     <tr tal:define="state item/track/getStateObject">
       <td><span i18n:translate="">State</span>:</td>
-      <td tal:content="state/title"></td>
+      <td i18n:translate=""
+          tal:content="state/title"></td>
     </tr>
     <tr>
       <td><span i18n:translate="">Created</span>:</td>

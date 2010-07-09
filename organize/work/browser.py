@@ -131,7 +131,7 @@ class WorkItemDetails(TrackDetails):
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()
             actions.append(DialogAction(self.view,
-                      description=_(u'Create a work item.'),
+                      description=_(u'Edit work item.'),
                       viewName='create_workitem.html',
                       dialogName='',
                       icon='edit.gif',

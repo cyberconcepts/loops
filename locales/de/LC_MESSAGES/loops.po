@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2010-06-27 12:00 CET\n"
+"PO-Revision-Date: 2010-07-09 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -211,6 +211,18 @@ msgstr "Anwesenheit"
 
 msgid "Actions"
 msgstr "Aktionen"
+
+msgid "Print this page"
+msgstr "Diese Seite ausdrucken"
+
+msgid "Information about this object."
+msgstr "Informationen über dieses Objekt."
+
+msgid "Send a link to this object by email."
+msgstr "Einen Link zu diesem Objekt per E-Mail versenden."
+
+msgid "Edit with external editor."
+msgstr "Mit 'External Editor' bearbeiten."
 
 msgid "Type"
 msgstr "Typ"
@@ -571,6 +583,9 @@ msgstr "Suchbegriff"
 msgid "Calendar"
 msgstr "Kalender"
 
+msgid "Work Items"
+msgstr "Aktivitäten"
+
 msgid "Day"
 msgstr "Tag"
 
@@ -585,6 +600,93 @@ msgstr "Dauer"
 
 msgid "Effort"
 msgstr "Aufwand"
+
+msgid "Party"
+msgstr "Teilnehmer"
+
+msgid "Start - End"
+msgstr "Beginn - Ende"
+
+msgid "Duration/Effort"
+msgstr "Dauer/Aufwand"
+
+msgid "Duration / Effort (hh:mm)"
+msgstr "Dauer / Aufwand (hh:mm)"
+
+msgid "Action"
+msgstr "Aktion"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+msgid "Created"
+msgstr "Angelegt"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Work Item Information"
+msgstr "Aktivität"
+
+msgid "Information about this work item."
+msgstr "Informationen über diese Aktivität."
+
+msgid "Edit work item."
+msgstr "Aktivität bearbeiten."
+
+msgid "new"
+msgstr "neu"
+
+msgid "planned"
+msgstr "geplant"
+
+msgid "accepted"
+msgstr "angenommen"
+
+msgid "delegated"
+msgstr "delegiert"
+
+msgid "running"
+msgstr "in Arbeit"
+
+msgid "done"
+msgstr "bearbeitet"
+
+msgid "finished"
+msgstr "beendet"
+
+msgid "closed"
+msgstr "abgeschlossen"
+
+msgid "cancelled"
+msgstr "abgebrochen"
+
+msgid "replaced"
+msgstr "ersetzt"
+
+msgid "plan"
+msgstr "planen"
+
+msgid "accept"
+msgstr "annehmen"
+
+msgid "start working"
+msgstr "Arbeit beginnen"
+
+msgid "work"
+msgstr "bearbeiten"
+
+msgid "finish"
+msgstr "beenden"
+
+msgid "cancel"
+msgstr "abbrechen"
+
+msgid "delegate"
+msgstr "delegieren"
+
+msgid "close"
+msgstr "abschließen"
 
 msgid "Monday"
 msgstr "Montag"

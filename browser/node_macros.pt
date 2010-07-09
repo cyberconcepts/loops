@@ -205,6 +205,18 @@
 </metal:actions>
 
 
+<metal:actions define-macro="page_actions">
+  <div class="page-actions"
+       title="Print this page"
+       i18n:attributes="title">
+    <a href="javascript:print()">
+      <img tal:attributes="src string:$resourceBase/cybertools.icons/printer.png"
+           i18n:attributes="alt"
+           alt="Print" />
+    </a></div>
+</metal:actions>
+
+
 <metal:actions define-macro="object_actions">
   <div class="object-actions"
        tal:define="target nocall:target|nothing;">
