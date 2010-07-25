@@ -224,38 +224,41 @@ class NameChooser(BaseNameChooser):
         return self.normalizeName(title)
 
     def normalizeName(self, baseName):
-        result = []
-        for c in baseName:
-            try:
-                c = c.encode('ISO8859-15')
-            except UnicodeEncodeError:
-                # skip all characters not representable in ISO encoding
-                continue
-            if c in '._':
-                # separator and special characters to keep
-                result.append(c)
-                continue
-            if c in self.specialCharacters:
-                # transform umlauts and other special characters
-                result.append(self.specialCharacters[c].lower())
-                continue
-            if ord(c) > 127:
-                # map to ASCII characters
-                c = chr(ord(c) & 127)
-            if c in ':,/\\ ':
-                # replace separator characters with _
-                result.append('_')
-                # skip all other characters
-            elif not c.isalpha() and not c.isdigit():
-                continue
-            else:
-                result.append(c.lower())
-        name = unicode(''.join(result))
-        return name
+        return normalizeName(baseName)
 
+
+def normalizeName(baseName):
     specialCharacters = {
         '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
         '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
+    result = []
+    for c in baseName:
+        try:
+            c = c.encode('ISO8859-15')
+        except UnicodeEncodeError:
+            # skip all characters not representable in ISO encoding
+            continue
+        if c in '._':
+            # separator and special characters to keep
+            result.append(c)
+            continue
+        if c in specialCharacters:
+            # transform umlauts and other special characters
+            result.append(specialCharacters[c].lower())
+            continue
+        if ord(c) > 127:
+            # map to ASCII characters
+            c = chr(ord(c) & 127)
+        if c in ':,/\\ ':
+            # replace separator characters with _
+            result.append('_')
+            # skip all other characters
+        elif not c.isalpha() and not c.isdigit():
+            continue
+        else:
+            result.append(c.lower())
+    name = unicode(''.join(result))
+    return name
 
 
 # virtual attributes/properties
