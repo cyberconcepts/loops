@@ -214,9 +214,15 @@ Uploading Resources with HTTP PUT Requests
 Extracting Document Properties from MS Office Files
 ===================================================
 
+  >>> import shutil
   >>> from loops.resource import Resource
   >>> tOfficeFile = concepts['officefile']
   >>> path = os.path.join(dataDir, 'office')
+  >>> fn = os.path.join(path, 'example.docx')
+  >>> shutil.copy(fn + '.sav', fn)
+  >>> os.path.getsize(fn)
+  195808L
+
   >>> officeFile = addAndConfigureObject(resources, Resource, 'test.docx',
   ...                    title=u'Example Word File', resourceType=tOfficeFile,
   ...                    storageParams=dict(subdirectory=path))
@@ -225,7 +231,7 @@ Extracting Document Properties from MS Office Files
 
   >>> content = aOfficeFile.data
   >>> len(content)
-  195808
+  192925
 
 
 Fin de partie

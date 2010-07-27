@@ -21,6 +21,7 @@ from loops.integrator.office.base import OfficeFile
 from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
+from loops.versioning.versionable import VersionableResource
 
 dataDir = os.path.join(os.path.dirname(__file__), 'testdata')
 
@@ -37,6 +38,7 @@ class TestSite(BaseTestSite):
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(ExternalFileAdapter, provides=IExternalFile)
         component.provideAdapter(OfficeFile, provides=IOfficeFile)
+        component.provideAdapter(VersionableResource)
 
         component.provideUtility(fullPathStorage(), IExternalStorage, name='fullpath')
 

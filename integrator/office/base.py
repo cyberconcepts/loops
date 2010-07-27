@@ -22,8 +22,9 @@ Resource adapter(s) for MS Office files.
 $Id$
 """
 
-from xml.dom.minidom import parseString
+from lxml import etree
 from zipfile import ZipFile
+import shutil
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -36,6 +37,7 @@ from loops.integrator.interfaces import IOfficeFile
 from loops.interfaces import IResource, IExternalFile
 from loops.resource import ExternalFileAdapter
 from loops.type import TypeInterfaceSourceList
+from loops.versioning.interfaces import IVersionable
 
 
 TypeInterfaceSourceList.typeInterfaces += (IOfficeFile,)
@@ -48,7 +50,8 @@ class OfficeFile(ExternalFileAdapter):
 
     implements(IOfficeFile)
 
-    propertyMap = dict(version=u'Revision:')
+    propertyMap = {u'Revision:': 'version'}
+    propFileName = 'docProps/custom.xml'
 
     def setExternalAddress(self, addr):
         super(OfficeFile, self).setExternalAddress(addr)
@@ -60,13 +63,46 @@ class OfficeFile(ExternalFileAdapter):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         subDir = self.storageParams.get('subdirectory')
         fn = storage.getDir(self.externalAddress, subDir)
+        # TODO: check if suitable file type (.docx, .xlsm)
         # open ZIP file, process properties, set version property in file
-        zf = ZipFile(fn, 'a')
+        zf = ZipFile(fn, 'r')
         #print '***', zf.namelist()
-        propsXml = zf.read('docProps/custom.xml')
-        dom = parseString(propsXml)
-        props = dom.getElementsByTagName('property')
-        for p in props:
-            pass
-            #print '***', p.getAttribute('name'), p.childNodes[0].childNodes[0].data
+        propsXml = zf.read(self.propFileName)
+        dom = etree.fromstring(propsXml)
+        changed = False
+        docVersion = None
+        version = IVersionable(self.context).versionId
+        strType = ('{http://schemas.openxmlformats.org/'
+                   'officeDocument/2006/docPropsVTypes}lpwstr')
+        attributes = {}
+        for p in dom:
+            name = p.attrib.get('name')
+            value = p[0].text
+            #print '***', name, value, p[0].tag
+            attr = self.propertyMap.get(name)
+            if attr == 'version':
+                docVersion = value
+                if docVersion and docVersion != version:
+                    # update XML
+                    p[0] = etree.Element(strType)
+                    p[0].text = version
+                    changed = True
+            elif attr is not None:
+                attributes[attr] = value
         zf.close()
+        if changed:
+            newFn = fn + '.new'
+            zf = ZipFile(fn, 'r')
+            newZf = ZipFile(newFn, 'w')
+            for info in zf.infolist():
+                name = info.filename
+                if name != self.propFileName:
+                    newZf.writestr(info, zf.read(name))
+            newZf.writestr(self.propFileName, etree.tostring(dom))
+            newZf.close()
+            shutil.move(newFn, fn)
+        self.update(attributes)
+
+    def update(self, attributes):
+        # to be implemented by subclass
+        pass
