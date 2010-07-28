@@ -22,9 +22,11 @@ Resource adapter(s) for MS Office files.
 $Id$
 """
 
+from datetime import date
+from time import strptime
 from lxml import etree
-from zipfile import ZipFile
 import shutil
+from zipfile import ZipFile
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -65,7 +67,12 @@ class OfficeFile(ExternalFileAdapter):
         fn = storage.getDir(self.externalAddress, subDir)
         # TODO: check if suitable file type (.docx, .xlsm)
         # open ZIP file, process properties, set version property in file
-        zf = ZipFile(fn, 'r')
+        try:
+            zf = ZipFile(fn, 'r')
+        except IOError, e:
+            from logging import getLogger
+            getLogger('loops.integrator.office.base.OfficeFile').warn(e)
+            return
         #print '***', zf.namelist()
         propsXml = zf.read(self.propFileName)
         dom = etree.fromstring(propsXml)
@@ -106,3 +113,8 @@ class OfficeFile(ExternalFileAdapter):
     def update(self, attributes):
         # to be implemented by subclass
         pass
+
+
+def parseDate(s):
+    return date(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:3])
+
