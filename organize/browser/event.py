@@ -202,6 +202,8 @@ class CalendarInfo(NodeView):
             return '?'.join((baseUrl, urlencode(params)))
 
     def getCssClass(self, day, tag='td'):
+        if not day:
+            return ''
         classes = []
         if tag == 'td':
             if self.isToday(day):
