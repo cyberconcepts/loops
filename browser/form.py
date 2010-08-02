@@ -525,6 +525,7 @@ class EditObject(FormController, I18NView):
         instance = self.instance
         formState = instance.applyTemplate(data=form, fieldHandlers=self.fieldHandlers)
         self.selected = []
+        self.predicates = []
         self.old = []
         stateKeys = []
         for k in form.keys():
@@ -578,6 +579,8 @@ class EditObject(FormController, I18NView):
                 self.old.append(v)
             elif fieldName == 'selected' and v not in self.selected:
                 self.selected.append(v)
+            elif fieldName == 'predicates' and v not in self.predicates:
+                self.predicates.append(v)
 
     def collectAutoConcepts(self):
         pass
@@ -589,11 +592,14 @@ class EditObject(FormController, I18NView):
                 concept = util.getObjectForUid(c)
                 predicate = util.getObjectForUid(p)
                 self.deassignConcept(obj, concept, [predicate])
-        for v in self.selected:
+        for idx, v in enumerate(self.selected):
             if v != 'none' and v not in self.old:
                 c, p = v.split(':')
                 concept = util.getObjectForUid(c)
-                predicate = util.getObjectForUid(p)
+                if len(self.predicates) > idx:  # predefined types + predicates
+                    predicate = self.view.conceptManager[self.predicates[idx]]
+                else:
+                    predicate = util.getObjectForUid(p)
                 exists = self.getConceptRelations(obj, [p], concept)
                 if not exists:
                     self.assignConcept(obj, concept, predicate)

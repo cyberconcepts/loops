@@ -75,6 +75,14 @@
       class="loops.organize.browser.event.CalendarInfo"
       permission="zope.View" />
 
+  <!-- specialized forms -->
+
+  <browser:page
+      name="edit_person.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.browser.party.EditPersonForm"
+      permission="zope.View" />
+
   <!-- authentication -->
 
   <browser:addform
@@ -83,8 +91,7 @@
       content_factory="loops.organize.auth.PersonBasedAuthenticator"
       keyword_arguments="prefix"
       name="AddPersonBasedAuthenticator.html"
-      permission="zope.ManageServices"
-      />
+      permission="zope.ManageServices" />
 
   <browser:addMenuItem
       title="Person-based Authenticator"

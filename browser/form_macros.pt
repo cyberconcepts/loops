@@ -133,7 +133,8 @@
         <td><span i18n:translate="">Type</span>: </td>
         <td><b i18n:translate="" tal:content="type/title" /></td>
         <td><span i18n:translate="">Concept</span>: </td>
-        <td colspan="2">
+        <td colspan="2"
+            tal:define="predicates type/predicates|nothing">
           <select name="form.assignments.selected:list">
             <tal:concepts repeat="concept python: view.conceptsForType(type['token'])">
               <option tal:attributes="value concept/token"
@@ -141,6 +142,18 @@
                       tal:content="concept/title">Zope Corp</option>
             </tal:concepts>
           </select>
+          <tal:predicates condition="predicates">
+            <span i18n:translate="">Predicate:</span>
+            <select name="form.assignments.predicates:list">
+              <option tal:repeat="pred predicates"
+                      tal:attributes="value pred"
+                      i18n:translate=""
+                      tal:content="python:view.conceptManager[pred].title" />
+            </select>
+          </tal:predicates>
+          <input type="hidden"
+                 name="form.assignments.predicates:list" value="standard"
+                 tal:condition="not:predicates" />
         </td>
       </tr>
       <tr tal:repeat="relation view/assignments">
@@ -152,6 +165,9 @@
                  tal:attributes="value relation/uidToken;" />
           <span tal:content="relation/adapted/getLongTitle">Something</span>
           (<span i18n:translate="" tal:content="relation/typeTitle">Topic</span>)
+          <tal:predicate condition="python:relation.predicate != view.defaultPredicate">
+            [<i i18n:translate="" tal:content="relation/predicate/title" />]
+          </tal:predicate>
         </td>
       </tr>
     </tbody>

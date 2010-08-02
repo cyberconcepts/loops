@@ -34,6 +34,7 @@ from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from cybertools.browser.form import FormController
 from loops.browser.action import DialogAction
+from loops.browser.form import EditConceptForm
 from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.organize.party import getPersonForUser
@@ -56,7 +57,7 @@ actions.register('createPerson', 'portlet', DialogAction,
 actions.register('editPerson', 'portlet', DialogAction,
         title=_(u'Edit Person...'),
         description=_(u'Modify person.'),
-        viewName='edit_concept.html',
+        viewName='edit_person.html',
         dialogName='editPerson',
         prerequisites=['registerDojoDateWidget'],
 )
@@ -104,6 +105,18 @@ actions.register('send_email', 'object', DialogAction,
         prerequisites=['registerDojoTextWidget', 'registerDojoTextarea'],
         addParams=dict(version='this'),
 )
+
+
+class EditPersonForm(EditConceptForm):
+
+    @Lazy
+    def presetTypesForAssignment(self):
+        types = list(self.typeManager.listTypes(include=('workspace',)))
+        #assigned = [r.context for r in self.assignments]
+        #types = [t for t in types if t.typeProvider not in assigned]
+        return [dict(title=t.title, token=t.tokenForSearch,
+                     predicates=['standard', 'ismember', 'ismaster']) for t in types]
+
 
 
 class SendEmailForm(NodeView):
