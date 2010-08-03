@@ -632,6 +632,10 @@ class IIndexAttributes(Interface):
             a restricted range, e.g. the instances of a type.
         """
 
+    def keywords():
+        """ Returns a list of values to be indexed by a keyword index.
+        """
+
 
 # types stuff
 
