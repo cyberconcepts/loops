@@ -15,12 +15,12 @@
                tal:attributes="src string:${resourceBase}logo.png" /></a>
         <hr />
       </div>
-      <div class="pull-2"
+      <!--<div class="pull-2"
            metal:define-slot="top-actions">
           <tal:action repeat="macro controller/macros/top_actions">
             <metal:action use-macro="macro" />
           </tal:action>
-      </div>
+      </div>-->
     </div>
 
     <div id="content" class="span-6"
