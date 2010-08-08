@@ -19,3 +19,15 @@ a {
     padding: 2px 0 20px 5px;
 }
 
+.language-switch {
+    position: absolute;
+    left: 83%;
+    top: 2.4em;
+}
+
+.page-actions {
+    position: absolute;
+    right: 2em;
+    top: 2.4em;
+}
+
