@@ -29,3 +29,8 @@ class View(object):
 
     bodyTemplate = UnboundTemplateFile('body.pt')
 
+
+class LoboView(object):
+
+    bodyTemplate = UnboundTemplateFile('lobo.pt')
+

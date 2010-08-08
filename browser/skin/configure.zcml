@@ -3,14 +3,14 @@
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="loops">
+
+  <!-- Loopz skin -->
 
   <zope:interface
       interface="loops.browser.skin.Loopz"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="Loopz"
-      />
+      name="Loopz" />
 
   <page for="*"
         name="body.html"
@@ -24,5 +24,27 @@
             layer="loops.browser.skin.Loopz" />
   <resource name="logo.png" file="loops_logo.png"
             layer="loops.browser.skin.Loopz" />
+
+  <!-- Lobo skin -->
+
+  <zope:interface
+      interface="loops.browser.skin.Lobo"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Lobo" />
+
+  <page for="*"
+        name="body.html"
+        class="loops.browser.skin.browser.LoboView"
+        permission="zope.View"
+        layer="loops.browser.skin.Lobo" />
+
+  <resource name="loops.css" file="lobo.css"
+            layer="loops.browser.skin.Lobo" />
+  <resource name="custom.css" file="custom.css"
+            layer="loops.browser.skin.Lobo" />
+  <resource name="favicon.png" file="loops_favicon.png"
+            layer="loops.browser.skin.Lobo" />
+  <resource name="logo.png" file="loops_logo.png"
+            layer="loops.browser.skin.Lobo" />
 
 </configure>
