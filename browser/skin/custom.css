@@ -22,12 +22,12 @@ a {
 .language-switch {
     position: absolute;
     left: 83%;
-    top: 2.4em;
+    top: 42px;
 }
 
 .page-actions {
     position: absolute;
-    right: 2em;
-    top: 2.4em;
+    right: 25px;
+    top: 42px;
 }
 
