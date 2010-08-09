@@ -36,6 +36,7 @@ from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
 from loops.browser.common import BaseView
 from loops.interfaces import IConcept, IResource
+from loops.security.common import canAccessObject
 from loops import util
 from loops.util import _
 from loops.versioning.interfaces import IVersionable
@@ -267,7 +268,8 @@ class TrackDetails(BaseView):
         versionable = IVersionable(self.object, None)
         version = versionable is not None and versionable.versionId or ''
         return dict(object=obj, title=obj.title,
-                    type=self.longTypeTitle, url=url, version=version)
+                    type=self.longTypeTitle, url=url, version=version,
+                    canAccess=canAccessObject(obj))
 
     @Lazy
     def user(self):

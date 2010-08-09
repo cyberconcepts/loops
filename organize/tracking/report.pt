@@ -70,7 +70,8 @@
     <tr tal:repeat="row info/data"
         tal:attributes="class python: repeat['row'].odd() and 'even' or 'odd'">
       <tal:row define="object row/objectData;
-                       url object/url">
+                       url object/url"
+               condition="object/canAccess">
         <td tal:attributes="title object/object/description">
           <a tal:omit-tag="not:url"
              tal:attributes="href string:$url?version=this"
