@@ -40,7 +40,7 @@
 
   <resource name="loops.css" file="lobo.css"
             layer="loops.browser.skin.Lobo" />
-  <resource name="custom.css" file="custom.css"
+  <resource name="custom.css" file="custom_lobo.css"
             layer="loops.browser.skin.Lobo" />
   <resource name="favicon.png" file="loops_favicon.png"
             layer="loops.browser.skin.Lobo" />
