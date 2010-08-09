@@ -207,7 +207,8 @@
 
 <metal:actions define-macro="page_actions">
   <div class="page-actions"
-       tal:condition="python: 'print' in view.globalOptions('action.page')"
+       tal:define="pageActions python:view.globalOptions('action.page') or []"
+       tal:condition="python: 'print' in pageActions"
        title="Print this page"
        i18n:attributes="title">
     <a href="javascript:print()">
