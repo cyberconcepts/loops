@@ -171,7 +171,8 @@ class DirectoryCollectionProvider(object):
                             storageParams=dict(subdirectory=directory),
                             contentType=contentType,
             )
-            adapted(obj).externalAddress = addr     # must be set lasst
+            adobj = adapted(obj)
+            adobj.externalAddress = addr     # must be set last
             yield obj
 
     def getDirectory(self, client):

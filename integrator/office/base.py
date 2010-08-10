@@ -25,6 +25,7 @@ $Id$
 from datetime import date
 from time import strptime
 from lxml import etree
+import os
 import shutil
 from zipfile import ZipFile
 from zope.cachedescriptors.property import Lazy
@@ -57,7 +58,9 @@ class OfficeFile(ExternalFileAdapter):
 
     def setExternalAddress(self, addr):
         super(OfficeFile, self).setExternalAddress(addr)
-        self.processDocument()
+        root, ext = os.path.splitext(self.externalAddress)
+        if ext.lower() in ('.docx', '.xlsm'):
+            self.processDocument()
     externalAddress = property(ExternalFileAdapter.getExternalAddress,
                                setExternalAddress)
 
@@ -65,7 +68,6 @@ class OfficeFile(ExternalFileAdapter):
         storage = component.getUtility(IExternalStorage, name=self.storageName)
         subDir = self.storageParams.get('subdirectory')
         fn = storage.getDir(self.externalAddress, subDir)
-        # TODO: check if suitable file type (.docx, .xlsm)
         # open ZIP file, process properties, set version property in file
         try:
             zf = ZipFile(fn, 'r')
@@ -85,7 +87,7 @@ class OfficeFile(ExternalFileAdapter):
         for p in dom:
             name = p.attrib.get('name')
             value = p[0].text
-            #print '***', name, value, p[0].tag
+            #print '***', self.externalAddress, name, value, p[0].tag
             attr = self.propertyMap.get(name)
             if attr == 'version':
                 docVersion = value

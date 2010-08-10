@@ -31,7 +31,7 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.text.mimetypes import extensions
 from cybertools.typology.interfaces import IType
-from loops.interfaces import IResource
+from loops.interfaces import IResource, IExternalFile
 from loops.versioning.interfaces import IVersionable
 
 
@@ -141,8 +141,23 @@ class VersionableResource(object):
                     + ['title', 'description', 'data', 'contentType'])
         adaptedContext = ti and ti(context) or context
         adaptedObj = ti and ti(obj) or obj
+        if 'context' in attrs:
+            attrs.remove('context')
+        if IExternalFile.providedBy(adaptedObj):
+            for name in ('data', 'externalAddress',):
+                attrs.remove(name)
         for attr in attrs:
             setattr(adaptedObj, attr, getattr(adaptedContext, attr))
+        if IExternalFile.providedBy(adaptedObj):
+            adaptedObj.storageParams = adaptedContext.storageParams
+            adaptedObj.storageName = adaptedContext.storageName
+            extAddr = adaptedContext.externalAddress
+            newExtAddr = self.generateName(extAddr,
+                                 extensions.get(context.contentType, ''),
+                                 versionId)
+            adaptedObj.externalAddress = newExtAddr
+            adaptedObj.data = adaptedContext.data
+            adaptedObj.externalAddress = newExtAddr # trigger post-processing
         return obj
 
     def createVersion(self, level=1, comment=u''):
@@ -162,12 +177,17 @@ class VersionableResource(object):
 
     def generateName(self, name, ext, versionId):
         if ext:
-            ext = '.' + ext
             if ext and name.endswith(ext):
                 name = name[:-len(ext)]
-        elif len(name) > 3 and name[-4] == '.':
-            ext = name[-4:]
-            name = name[:-4]
+        else:
+            parts = name.rsplit('.', 1)
+            if len(parts) == 2 and len(parts[1]) <= 4:
+                name, ext = parts
+        #elif len(name) > 3 and name[-4] == '.':
+        #    ext = name[-4:]
+        #    name = name[:-4]
+        if not ext.startswith('.'):
+            ext = '.' + ext
         return name + '_' + versionId + ext
 
 
