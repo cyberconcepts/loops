@@ -658,6 +658,8 @@ class BaseView(GenericView, I18NView):
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
         jsCall = 'dojo.require("dijit._editor.plugins.LinkDialog");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+        jsCall = 'dojo.require("dijit._editor.plugins.ViewSource")'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
     def registerDojoLightbox(self):
         self.registerDojo()
