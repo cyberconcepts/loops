@@ -56,6 +56,10 @@ class OfficeFile(ExternalFileAdapter):
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
 
+    @Lazy
+    def logger(self):
+        return getLogger('loops.integrator.office.base.OfficeFile')
+
     def setExternalAddress(self, addr):
         super(OfficeFile, self).setExternalAddress(addr)
         root, ext = os.path.splitext(self.externalAddress)
@@ -65,17 +69,19 @@ class OfficeFile(ExternalFileAdapter):
                                setExternalAddress)
 
     def processDocument(self):
-        storage = component.getUtility(IExternalStorage, name=self.storageName)
         subDir = self.storageParams.get('subdirectory')
-        fn = storage.getDir(self.externalAddress, subDir)
+        fn = self.storage.getDir(self.externalAddress, subDir)
         # open ZIP file, process properties, set version property in file
         try:
             zf = ZipFile(fn, 'r')
         except IOError, e:
             from logging import getLogger
-            getLogger('loops.integrator.office.base.OfficeFile').warn(e)
+            self.logger.warn(e)
             return
         #print '***', zf.namelist()
+        if self.propFileName not in zf.namelist():
+            self.logger.warn('Custom properties not found in file %s.' %
+                             self.externalAddress)
         propsXml = zf.read(self.propFileName)
         dom = etree.fromstring(propsXml)
         changed = False
