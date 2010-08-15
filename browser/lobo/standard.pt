@@ -1,0 +1,21 @@
+<html i18n:domain="loops">
+
+
+<metal:block define-macro="basic-image">
+
+  <h1 tal:content="item/title" />
+  <tal:cell repeat="cell item/content">
+    <div tal:attributes="class cell/cssClass;
+                         style cell/style">
+      <a tal:attributes="href cell/url">
+        <img tal:condition="cell/img"
+             tal:attributes="src cell/img/src"/>
+        <span tal:content="cell/text" />
+      </a>
+    </div>
+  </tal:cell>
+
+</metal:block>
+
+
+</html>

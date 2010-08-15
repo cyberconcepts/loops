@@ -1,0 +1,18 @@
+<!-- $Id$ -->
+
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <!-- Views for the Lobo skin / grid-based layout -->
+
+  <zope:adapter
+        name="lobo.page.3columns-basic"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Basic3Columns"
+        permission="zope.View" />
+
+</configure>
