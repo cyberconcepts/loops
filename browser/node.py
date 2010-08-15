@@ -573,9 +573,13 @@ class ObjectInfo(NodeView):
 
     __call__ = innerHtml
 
-    @property
+    @Lazy
+    def macros(self):
+        return self.controller.getTemplateMacros('info', info_macros)
+
+    @Lazy
     def macro(self):
-        return info_macros.macros['object_info']
+        return self.macros['object_info']
 
     @Lazy
     def dialog_name(self):

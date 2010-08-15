@@ -51,6 +51,7 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent
 
 from cybertools.ajax.dojo import dojoMacroTemplate
+#from cybertools.browser.macro import MacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
 from cybertools.relation.interfaces import IRelationRegistry
@@ -71,8 +72,10 @@ from loops import version
 from loops.versioning.interfaces import IVersionable
 
 
+#concept_macros = MacroTemplate(ViewPageTemplateFile('concept_macros.pt'))
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
 conceptMacrosTemplate = concept_macros      #
+#resource_macros = MacroTemplate(ViewPageTemplateFile('resource_macros.pt'))
 resource_macros = ViewPageTemplateFile('resource_macros.pt')
 
 
@@ -133,13 +136,15 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def conceptMacros(self):
-        return concept_macros.macros
+        return self.controller.getTemplateMacros('concept', concept_macros)
+        #return concept_macros.macros
 
     concept_macros = conceptMacros
 
     @Lazy
     def resource_macros(self):
-        return resource_macros.macros
+        return self.controller.getTemplateMacros('resource', resource_macros)
+        #return resource_macros.macros
 
     @Lazy
     def name(self):
@@ -287,6 +292,10 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def description(self):
         return self.adapted.description
+
+    @Lazy
+    def additionalInfos(self):
+        return []
 
     @Lazy
     def dublincore(self):
