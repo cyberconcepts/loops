@@ -277,10 +277,10 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
         tokens = request.get('tokens', [])
         for token in tokens:
             parts = token.split(':')
-            token = parts[0]
+            cToken = parts[0]
             if len(parts) > 1:
                 relToken = parts[1]
-            concept = self.loopsRoot.loopsTraverse(token)
+            concept = self.loopsRoot.loopsTraverse(cToken)
             if action == 'assign':
                 predicate = request.get('predicate') or None
                 order = int(request.get('order') or 0)
@@ -290,9 +290,17 @@ class ResourceConfigureView(ResourceView, ConceptConfigureView):
                                     self.loopsRoot.loopsTraverse(predicate))
                 self.context.assignConcept(removeSecurityProxy(concept), predicate,
                                            order, relevance)
-            elif action == 'remove':
+            elif action in ('remove',):
                 predicate = self.loopsRoot.loopsTraverse(relToken)
-                self.context.deassignConcept(concept, [predicate])
+                if 'form.button.submit' in request:
+                    if predicate != self.typePredicate:
+                        self.context.deassignConcept(concept, [predicate])
+                elif 'form.button.change_relations' in request:
+                    order = request.get('order.' + token)
+                    relevance = request.get('relevance.' + token)
+                    for r in self.context.getConceptRelations([predicate], concept):
+                        r.order = int(order or 0)
+                        r.relevance = float(relevance or 1.0)
         return True
 
     def search(self):

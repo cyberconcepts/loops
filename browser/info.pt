@@ -36,6 +36,11 @@
       <td><span i18n:translate="">Creators</span>:</td>
       <td tal:content="item/creators"></td>
     </tr>
+    <tr tal:repeat="info item/additionalInfos">
+      <td><span i18n:translate=""
+                tal:content="info/label">Creators</span>:</td>
+      <td tal:content="info/value"></td>
+    </tr>
     <tr>
       <td colspan="2"><br />
         <input type="button" value="Close" onclick="closeDialog()"

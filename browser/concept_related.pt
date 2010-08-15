@@ -5,7 +5,10 @@
 
     <div metal:fill-slot="body">
 
-      <h1 tal:content="context/title">Concept Title</h1><br />
+      <h1 tal:content="context/title">Concept Title</h1>
+      <div tal:condition="not:request/edit_relations|nothing">
+        [<a href="?edit_relations=yes"
+            i18n:translate="">Edit Relations</a>]</div><br />
 
       <div   tal:define="items view/parents;
                          action string:remove;

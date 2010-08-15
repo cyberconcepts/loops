@@ -425,10 +425,10 @@ class ConceptConfigureView(ConceptView):
         tokens = request.get('tokens', [])
         for token in tokens:
             parts = token.split(':')
-            token = parts[0]
+            cToken = parts[0]
             if len(parts) > 1:
                 relToken = parts[1]
-            concept = self.loopsRoot.loopsTraverse(token)
+            concept = self.loopsRoot.loopsTraverse(cToken)
             if action == 'assign':
                 assignAs = request.get('assignAs', 'child')
                 predicate = request.get('predicate') or None
@@ -448,22 +448,39 @@ class ConceptConfigureView(ConceptView):
                                              order, relevance)
                 else:
                     raise(BadRequest, 'Illegal assignAs parameter: %s.' % assignAs)
-            elif action == 'remove':
+            elif action in( 'remove',):
                 predicate = self.loopsRoot.loopsTraverse(relToken)
                 qualifier = request.get('qualifier')
-                if qualifier == 'parents':
-                    self.context.deassignParent(concept, [predicate])
-                elif qualifier == 'children':
-                    self.context.deassignChild(concept, [predicate])
-                elif qualifier == 'resources':
-                    self.context.deassignResource(concept, [predicate])
-                elif qualifier == 'concepts':
-                    self.context.deassignConcept(concept, [predicate])
-                else:
-                    raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
+                if 'form.button.submit' in request:
+                    if predicate == self.typePredicate:
+                        continue
+                    if qualifier == 'parents':
+                        self.context.deassignParent(concept, [predicate])
+                    elif qualifier == 'children':
+                        self.context.deassignChild(concept, [predicate])
+                    elif qualifier == 'resources':
+                        self.context.deassignResource(concept, [predicate])
+                    elif qualifier == 'concepts':
+                        self.context.deassignConcept(concept, [predicate])
+                    else:
+                        raise(BadRequest, 'Illegal qualifier: %s.' % qualifier)
+                elif 'form.button.change_relations' in request:
+                    self.changeRelation(concept, predicate, qualifier,
+                                        request.get('order.' + token),
+                                        request.get('relevance.' + token))
             else:
                     raise(BadRequest, 'Illegal action: %s.' % action)
         return True
+
+    def changeRelation(self, target, predicate, qualifier, order, relevance):
+        methodNames = dict(parents='getParentRelations',
+                           children='getChildRelations',
+                           resources='getResourceRelations',
+                           concepts='getConceptRelations')
+        method = getattr(self.context, methodNames[qualifier])
+        for r in method([predicate], target):
+            r.order = int(order or 0)
+            r.relevance = float(relevance or 1.0)
 
     def createAndAssign(self):
         request = self.request
