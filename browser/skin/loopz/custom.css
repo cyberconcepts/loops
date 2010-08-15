@@ -1,0 +1,33 @@
+/*
+ $Id$
+
+*/
+
+body {
+    color: #242424;
+}
+
+a {
+    text-decoration: none;
+    color: #344080;
+    background-color: transparent;
+}
+
+#global {
+    border-bottom: 1px solid #d0d0d0;
+    margin-bottom: 2px;
+    padding: 2px 0 20px 5px;
+}
+
+.language-switch {
+    position: absolute;
+    left: 83%;
+    top: 42px;
+}
+
+.page-actions {
+    position: absolute;
+    right: 25px;
+    top: 42px;
+}
+

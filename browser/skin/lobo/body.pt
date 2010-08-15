@@ -1,0 +1,66 @@
+<tal:block i18n:domain="loops">
+<div class="body container"
+     metal:define-macro="body"
+     tal:define="controller nocall:view/controller;
+                 resourceBase controller/resourceBase;"
+     tal:attributes="class python:
+            'body container' + (view.request.get('showgrid') and ' showgrid' or '')">
+
+    <div metal:define-macro="global">
+      <div class="span-8"
+           metal:define-slot="top">
+        <a name="top" metal:define-slot="logo"
+           tal:attributes="href view/topMenu/url"><img class="logo"
+               border="0" alt="Home"
+               tal:attributes="src string:${resourceBase}logo.png" /></a>
+        <hr />
+      </div>
+      <div class="pull-2"
+           metal:define-slot="top-actions">
+          <tal:action repeat="macro controller/macros/top_actions">
+            <metal:action use-macro="macro" />
+          </tal:action>
+      </div>
+    </div>
+
+    <div id="content" class="span-6"
+         metal:define-macro="content">
+      <div metal:define-slot="actions"></div>
+      <div metal:define-slot="message"></div>
+      <metal:content define-slot="content">
+        <tal:content define="item nocall:view/item;
+                             level level|python: 1;
+                             macro item/macro;"
+                     condition="macro">
+          <metal:block use-macro="macro" />
+        </tal:content>
+      </metal:content>
+    </div>
+
+    <div class="span-2 last">
+      <tal:portlet repeat="macro controller/macros/portlet_left">
+        <metal:portlet use-macro="macro" />
+      </tal:portlet>
+      <tal:portlet repeat="macro controller/macros/portlet_right">
+        <metal:portlet use-macro="macro" />
+      </tal:portlet>
+    </div>
+
+    <div id="footer" class="footer clear"
+         metal:define-macro="footer">
+      <metal:footer define-slot="footer">
+        <div tal:condition="nothing" xtal:condition="view/editable">
+          <span i18n:translate="">For quick creation of notes/links bookmark this link</span>:
+          <a href="#"
+             tal:attributes="href view/popupCreateObjectForm">Create loops Note</a>
+        </div>
+        Powered by
+        <b><a href="http://loops.cy55.de">loops</a></b> &middot;
+        <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
+        <b><a href="http://www.python.org">Python</a></b> &middot;
+        <b><a href="http://www.dojotoolkit.org">Dojo</a></b>.
+      </metal:footer>
+    </div>
+
+</div>
+</tal:block>

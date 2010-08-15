@@ -1,0 +1,537 @@
+/*
+ $Id$
+
+ settings specific for view / node objects
+
+*/
+
+/* general */
+
+a[href]:hover {
+    text-decoration: none;
+    color: #803000;
+}
+
+pre {
+    font-size: 100%;
+    background-color: #f4f4f4;
+    overflow: scroll;
+    max-height: 35em;
+}
+
+ol, ul, p {
+    margin-top: 0.4em;
+    margin-bottom: 0.5em;
+}
+
+ol li, ul li {
+    line-height: 1.5em;
+}
+
+blockquote ul {
+    margin: 0;
+}
+
+textarea {
+    font-size: 100%;
+}
+
+/* class-specific */
+
+.description {
+    font-style: italic;
+    /* margin-top: 0.5em;*/
+    margin-bottom: 0.3em;
+}
+
+.dialog div.heading {
+    font-weight: bold;
+    font-size: 140%;
+    margin: 0.5em 0 0.3em 0;
+}
+
+.dialog label {
+    display: block;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+
+.dialog div.buttons {
+    margin-top: 0.5em;
+}
+
+table.listing {
+    margin: 1px;
+    margin-top: 6px;
+}
+
+table.listing th {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    color: #000040;
+    padding: 0 2px 0 2px;
+}
+
+table.listing td {
+    padding: 0 2px 0 2px;
+    white-space: normal;
+    vertical-align: middle;
+}
+
+fieldset.box table.listing td {
+    padding: 0 1px 0 1px;
+}
+
+table.listing td.number {
+    text-align: right;
+}
+
+table.listing td.center {
+    text-align: center;
+}
+
+table.listing td.nowrap {
+    white-space: nowrap;
+}
+
+table.listing td.checkbox {
+    text-align: center;
+    width: 10px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+table.listing td.headline {
+    font-weight: bold;
+    border: 1px solid lightgrey;
+}
+
+table.listing-details td {
+    white-space: normal;
+    border: 1px solid lightgrey;
+}
+
+table.listing-details tr.heading td {
+    border: none;
+}
+
+table.listing-details tr.heading td h3 {
+    font-weight: bold;
+    border: none;
+}
+
+table.listing th span.ascending {
+    background-image: url(/++resource++cybertools.icons/arrowdown.gif);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+table.listing th span.descending {
+    background-image: url(/++resource++cybertools.icons/arrowup.gif);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+table.records input, table.records textarea {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: auto;
+}
+
+table.records th {
+    background-color: lightgrey;
+}
+
+table.records th, table.records td {
+    padding: 0;
+    margin: 0;
+    border: 1px solid black;
+}
+
+dl.docutils dt {
+    font-weight: bold;
+    margin-top: 0.3em;
+}
+
+dl.docutils dd {
+    margin-left: 2em;
+}
+
+dl.docutils dd ul li {
+    margin-left: -1em;
+}
+
+fieldset.box {
+    margin: 1em 0 0.5em 0;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}
+
+fieldset.box td {
+    padding: 0.2em 0.2em 0.2em 0;
+}
+
+#body {
+    margin-left: 5px;
+}
+
+.top-actions {
+    position: absolute;
+    right: 2em;
+    top: 1em;
+}
+
+.quicksearch {
+    position: absolute;
+    right: 2em;
+    top: 0.8em;
+}
+
+.quicksearch input {
+    font-size: 80%;
+}
+
+.language-switch {
+    position: absolute;
+    right: 2em;
+    top: 2.4em;
+}
+
+.page-actions {
+    margin-top: 15px;
+    margin-left: 20px;
+}
+
+.top image {
+    margin-top: -1px;
+}
+
+.content-1 h1, h1 {
+    font-size: 180%;
+}
+
+.content-2 h1, .content-1 h2, h2 {
+    font-size: 160%;
+    font-weight: normal;
+    padding-top: 0.5em;
+}
+
+.content-3 h1, .content-2 h2, .content-1 h3, h3 {
+    font-size: 140%;
+    font-weight: normal;
+    padding-top: 0.4em;
+}
+
+.content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4, h4 {
+    font-size: 130%;
+    font-weight: normal;
+    padding-top: 0.3em;
+}
+
+.content-5 h1, .content-4 h2, .content-3 h3, content-2 h4, h5 {
+    font-size: 120%;
+    /* border: none; */
+    padding-top: 0.2em;
+}
+
+.box {
+    /*margin: 5px;*/
+    padding: 0;
+    padding-top: 0;
+    background: none;
+}
+
+div.box {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+div.box h4 {
+    font: 110% Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #000040;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 4px;
+    padding-top: 1px;
+    padding-bottom: 3px;
+    background-color: #eee;
+    height: auto;
+    margin-bottom: 0;
+}
+
+.box h1, .box h2, .box h3 {
+    border-bottom: None;
+}
+
+.box div.body div.even {
+    background-color: #f8f8f8;
+}
+
+.box div.body div {
+    padding: 0.2em 0.2em 0.2em 0.3em;
+}
+
+div.action {
+    border-top: 1px solid #eeeeee;
+}
+
+div.menu-1, div.menu-2 {
+    border-top: 1px solid #eeeeee;
+    font-weight: bold;
+}
+
+.box div.body div.menu-3 {
+    border-top: none;
+    padding: 0.1em 0 0.2em 1.5em;
+}
+
+.box div.body div.menu-4 {
+    padding-left: 3em;
+    font-size: 90%
+}
+
+.delete-item a[href] {
+    color: #ff7777;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.subcolumn {
+    display: inline;
+    float: left;
+}
+
+.footer {
+    text-align: center;
+    border-top: 1px solid #ccc;
+    border-bottom: none;
+    margin-top: 12px;
+    padding-top: 6px;
+}
+
+.object-actions {
+    float: right;
+    margin: 0;
+}
+
+.object-actions {
+    padding: 0.5em 0 0 0;
+}
+
+.content-2 .object-actions {
+    padding: 1em 0 0 0;
+}
+
+.listing .object-actions {
+    float: none;
+    padding: 0;
+    text-align: center;
+}
+
+.icon-action {
+    display: inline;
+}
+
+.flow-left {
+    float: left;
+    padding: 0.4em 0.8em 0.8em 0;
+}
+
+.flow-right {
+    float: right;
+    padding: 0.4em 0.8em 0.8em 0;
+}
+
+div.image {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+img.selected {
+    border: 2px solid #d6dcf6;
+}
+
+img.notselected {
+    border: 2px solid #eff8ff;
+}
+
+.navlink {
+    font-size: 130%;
+    margin-bottom: 1em;
+}
+
+.navlink a {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.subtitle {
+    font-size: 140%;
+    font-weight: bold;
+    margin: 1em 0 0.5em 0;
+}
+
+.button {
+    margin: 1em 0 1em 0;
+}
+
+.button a:link, .button a:visited {
+    padding: 2px 4px 2px 4px;
+    background-color: #e8e8e8;
+    text-decoration: None;
+    color: Black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #f4f4f4 #989898 #989898 #f4f4f4;
+}
+
+.button a:active {
+    border-color: #989898 #f4f4f4 #f4f4f4 #989898;
+}
+
+.itemViews {
+    border-bottom-width: 2px;
+}
+
+.dialog .headline {
+    font-size: 140%;
+    font-weight: bold;
+    padding: 1em 0 1em 0;
+}
+
+.error {
+    background-color: #ffbb00;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+.error-heading {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* comments */
+
+div.comment {
+    padding: 0.5em;
+    background-color: #eeeeff;
+    border: 1px solid #aaaaff;
+}
+
+.comment h3 {
+    margin-top: 0;
+}
+
+.comment .info {
+    font-style: italic;
+    padding-top: 3px;
+    padding-bottom: 0;
+}
+
+/* search stuff */
+
+.searchForm input.button, input.submit {
+    padding: 2px;
+}
+
+.searchForm input.submit {
+    font-weight: bold;
+}
+
+/* blog */
+
+.blog .description {
+    font-size: 90%;
+    color: #666666;
+}
+
+.blogpost .description {
+    font-weight: bold;
+    font-size: 90%;
+    color: #666666;
+    padding-top: 0.4em;
+}
+
+.blog .info, .blogpost .info {
+    font-style: italic;
+    font-size: 90%;
+    color: #666666;
+    padding-top: 0.4em;
+}
+
+/* calendar, work items */
+
+.today {
+    color: #444488;
+    font-weight: bold;
+}
+
+.calendar td.arrows {
+    font-size: 130%;
+}
+
+.calendar td.week_number {
+    color: grey;
+}
+
+.calendar td.day {
+    width: 12%;
+}
+
+.calendar td.today {
+    border: 1px solid red;
+    font-weight: normal;
+}
+
+.calendar .has_events {
+    font-weight: bold;
+    background-color: #eeeeff;
+}
+
+/* dojo stuff */
+
+.dijitDialog {
+    background-color: #aaaaaa;
+    border: 1px solid #999;
+    padding: 5px;
+}
+
+.dijitDialogPaneContent {
+    background-color: #aaaaaa;
+}
+
+.dijitDialog th {
+    font-size: 120%;
+    font-weight: bold;
+    text-align: center;
+    padding: 0 5px 8px 5px;
+}
+
+.dijitDialog td {
+    padding: 2px;
+}
+
+.dijitDialog .headline {
+    font-weight: bold;
+}
+
+.dijitDialog input.text {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.dijitDialog input.submit {
+    font-weight: bold;
+}
+
+.dijitDialogUnderlay {
+    background-color: Lightgrey;
+}
+
+div.RichTextEditable {
+    border-top: 2px solid grey;
+    border-left: 2px solid grey;
+    border-right: 2px solid #eeeeee;
+    border-bottom: 2px solid #eeeeee;
+}

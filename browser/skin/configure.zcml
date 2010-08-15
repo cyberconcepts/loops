@@ -14,11 +14,11 @@
 
   <page for="*"
         name="body.html"
-        class="loops.browser.skin.browser.View"
+        class="loops.browser.skin.loopz.browser.View"
         permission="zope.View"
         layer="loops.browser.skin.Loopz" />
 
-  <resource name="custom.css" file="custom.css"
+  <resource name="custom.css" file="loopz/custom.css"
             layer="loops.browser.skin.Loopz" />
   <resource name="favicon.png" file="loops_favicon.png"
             layer="loops.browser.skin.Loopz" />
@@ -34,13 +34,13 @@
 
   <page for="*"
         name="body.html"
-        class="loops.browser.skin.browser.LoboView"
+        class="loops.browser.skin.lobo.browser.View"
         permission="zope.View"
         layer="loops.browser.skin.Lobo" />
 
-  <resource name="loops.css" file="lobo.css"
+  <resource name="loops.css" file="lobo/lobo.css"
             layer="loops.browser.skin.Lobo" />
-  <resource name="custom.css" file="custom_lobo.css"
+  <resource name="custom.css" file="lobo/custom.css"
             layer="loops.browser.skin.Lobo" />
   <resource name="favicon.png" file="loops_favicon.png"
             layer="loops.browser.skin.Lobo" />
