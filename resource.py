@@ -388,8 +388,7 @@ class ExternalFileAdapter(FileAdapter):
     def getData(self):
         if self.storageName in ('unknown', None):    # object not set up yet
             return ''
-        storage = component.getUtility(IExternalStorage, name=self.storageName)
-        return storage.getData(self.externalAddress, params=self.storageParams)
+        return self.storage.getData(self.externalAddress, params=self.storageParams)
 
     data = property(getData, setData)
 
@@ -397,9 +396,18 @@ class ExternalFileAdapter(FileAdapter):
     def size(self):
         if self.storageName in ('unknown', None):    # object not set up yet
             return ''
-        storage = component.getUtility(IExternalStorage, name=self.storageName)
-        return storage.getSize(self.externalAddress, params=self.storageParams)
+        return self.storage.getSize(self.externalAddress, params=self.storageParams)
 
+    @Lazy
+    def storage(self):
+        return component.getUtility(IExternalStorage, name=self.storageName)
+
+    def copyDataFile(self, targetParams, targetAddress=None):
+        storageParams = self.storageParams
+        externalAddress = self.externalAddress
+        self.storage.copyDataFile(self.externalAddress, self.storageParams,
+                                  targetAddress or self.externalAddress,
+                                  targetParams)
 
 class DocumentAdapter(ResourceAdapterBase):
     """ Common base class for all resource types with a text-like

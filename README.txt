@@ -165,9 +165,10 @@ underlying context object:
   >>> sorted(c.title for c in cc1.getChildren())
   [u'Zope 3', u'loops for Zope 3']
 
-  >>> view = ConceptConfigureView(cc1,
-  ...           TestRequest(action='remove', qualifier='children',
-  ...               tokens=['.loops/concepts/cc2:.loops/concepts/standard']))
+  >>> input = {'action': 'remove', 'qualifier': 'children',
+  ...          'form.button.submit': 'Remove Chiildren',
+  ...           'tokens': ['.loops/concepts/cc2:.loops/concepts/standard']}
+  >>> view = ConceptConfigureView(cc1, TestRequest(form=input))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
@@ -278,8 +279,9 @@ from concepts to resources:
 
   >>> len(cc1.getResources())
   1
-  >>> form = dict(action='remove', qualifier='resources',
-  ...               tokens=['.loops/resources/doc1:.loops/concepts/standard'])
+  >>> form = {'action': 'remove', 'qualifier': 'resources',
+  ...         'form.button.submit': 'Remove Resources',
+  ...         'tokens': ['.loops/resources/doc1:.loops/concepts/standard']}
   >>> view = ConceptConfigureView(cc1, TestRequest(form=form))
   >>> [getName(r.context) for r in view.resources()]
   [u'doc1']

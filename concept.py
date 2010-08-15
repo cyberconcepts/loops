@@ -253,8 +253,8 @@ class Concept(Contained, Persistent):
 
     def getResourceRelations(self, predicates=None, resource=None, sort='default',
                              noSecurityCheck=False):
-        #if resource is not None:
-        #    resource = getMaster(resource)
+        if resource is not None:
+            resource = getMaster(resource)
         predicates = predicates is None and ['*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
