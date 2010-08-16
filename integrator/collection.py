@@ -38,6 +38,7 @@ from zope.interface import implements, Attribute
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase, adapted
@@ -47,6 +48,7 @@ from loops.integrator.interfaces import IExternalCollectionProvider
 from loops.resource import Resource
 from loops.setup import addAndConfigureObject
 from loops.type import TypeInterfaceSourceList
+from loops.versioning.interfaces import IVersionable
 
 
 TypeInterfaceSourceList.typeInterfaces += (IExternalCollection,)
@@ -74,11 +76,21 @@ class ExternalCollectionAdapter(AdapterBase):
     def update(self):
         existing = self.context.getResources()
         old = dict((adapted(obj).externalAddress, obj) for obj in existing)
+        versions = set()
+        if self.useVersioning:
+            for obj in old.values():
+                for vaddr, vobj, vid in self.getVersions(obj):
+                    print '###', vaddr, vobj, vid
+                    versions.add(vaddr)
         new = []
         oldFound = []
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
+        #print '*** old', old, versions, self.lastUpdated
         for addr, mdate in provider.collect(self):
+            #print '***', addr, mdate
+            if addr in versions:
+                continue
             if addr in old:
                 # may be it would be better to return a file's hash
                 # for checking for changes...
@@ -91,6 +103,7 @@ class ExternalCollectionAdapter(AdapterBase):
                     notify(ObjectModifiedEvent(obj))
             else:
                 new.append(addr)
+        #print '*** new', new
         if new:
             self.newResources = provider.createExtFileObjects(self, new)
             for r in self.newResources:
@@ -112,6 +125,16 @@ class ExternalCollectionAdapter(AdapterBase):
     @Lazy
     def resourceManager(self):
         return self.context.getLoopsRoot().getResourceManager()
+
+    @Lazy
+    def useVersioning(self):
+        if IOptions(self.context.getLoopsRoot())('useVersioning'):
+            return True
+
+    def getVersions(self, obj):
+        versionable = IVersionable(obj)
+        return [(adapted(v).externalAddress, v, vid)
+                    for vid, v in versionable.versions.items() if vid != '1.1']
 
 
 class DirectoryCollectionProvider(object):

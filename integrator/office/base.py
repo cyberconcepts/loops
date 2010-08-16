@@ -23,10 +23,11 @@ $Id$
 """
 
 from datetime import date
-from time import strptime
+from logging import getLogger
 from lxml import etree
 import os
 import shutil
+from time import strptime
 from zipfile import ZipFile
 from zope.cachedescriptors.property import Lazy
 from zope import component

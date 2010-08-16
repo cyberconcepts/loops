@@ -158,6 +158,7 @@ class VersionableResource(object):
             adaptedObj.externalAddress = newExtAddr
             adaptedObj.data = adaptedContext.data
             adaptedObj.externalAddress = newExtAddr # trigger post-processing
+            #print '***', adaptedObj.externalAddress, obj.__name__
         return obj
 
     def createVersion(self, level=1, comment=u''):
