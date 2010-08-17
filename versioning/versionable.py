@@ -31,6 +31,7 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.text.mimetypes import extensions
 from cybertools.typology.interfaces import IType
+from loops.common import adapted
 from loops.interfaces import IResource, IExternalFile
 from loops.versioning.interfaces import IVersionable
 
@@ -152,7 +153,7 @@ class VersionableResource(object):
             adaptedObj.storageParams = adaptedContext.storageParams
             adaptedObj.storageName = adaptedContext.storageName
             extAddr = adaptedContext.externalAddress
-            newExtAddr = self.generateName(extAddr,
+            newExtAddr = self.generateName(adapted(self.master).externalAddress,
                                  extensions.get(context.contentType, ''),
                                  versionId)
             adaptedObj.externalAddress = newExtAddr
