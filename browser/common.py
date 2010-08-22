@@ -23,6 +23,7 @@ $Id$
 """
 
 from cgi import parse_qs, parse_qsl
+#import mimetypes
 import re
 from urllib import urlencode
 from zope import component
@@ -352,9 +353,10 @@ class BaseView(GenericView, I18NView):
         ct = getattr(self.context, 'contentType', None)
         if ct:
             ext = mimetypes.extensions.get(ct)
+            #ext = mimetypes.guess_extension(ct)
             if ext:
                 #return '%s (%s)' % (t, ext.upper())
-                return ext.upper()
+                return ext.upper()  #.lstrip('.')
         return self.typeTitle
 
     @Lazy

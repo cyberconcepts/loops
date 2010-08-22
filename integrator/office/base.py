@@ -56,6 +56,8 @@ class OfficeFile(ExternalFileAdapter):
 
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
+    fileExtensions = ('.docm', '.docx', 'dotm', 'dotx',
+                      '.xlsm', '.xlsx', '.xltm', '.xltx')
 
     @Lazy
     def logger(self):
@@ -64,7 +66,7 @@ class OfficeFile(ExternalFileAdapter):
     def setExternalAddress(self, addr):
         super(OfficeFile, self).setExternalAddress(addr)
         root, ext = os.path.splitext(self.externalAddress)
-        if ext.lower() in ('.docx', '.xlsm'):
+        if ext.lower() in self.fileExtensions:
             self.processDocument()
     externalAddress = property(ExternalFileAdapter.getExternalAddress,
                                setExternalAddress)
