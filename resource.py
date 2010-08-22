@@ -402,6 +402,10 @@ class ExternalFileAdapter(FileAdapter):
     def storage(self):
         return component.getUtility(IExternalStorage, name=self.storageName)
 
+    @Lazy
+    def modified(self):
+        return self.storage.getMTime(self.externalAddress, self.storageParams)
+
     def copyDataFile(self, targetParams, targetAddress=None):
         storageParams = self.storageParams
         externalAddress = self.externalAddress

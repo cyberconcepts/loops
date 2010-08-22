@@ -786,9 +786,12 @@ class IExternalFile(IFile):
                missing_value='',
                required=False)
 
-    def copyDataFile(self, targetAddress):
-        """ Copy the external file object with all data to the target address
-            given.
+    def copyDataFile(self, targetParams, targetAddress=None):
+        """ Copy the external file object with all data to the destination
+            specified by target params and target address.
+
+            If no target address is given the external address of the
+            object is used.
         """
 
 
