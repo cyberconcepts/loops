@@ -786,6 +786,11 @@ class IExternalFile(IFile):
                missing_value='',
                required=False)
 
+    def copyDataFile(self, targetAddress):
+        """ Copy the external file object with all data to the target address
+            given.
+        """
+
 
 class IImage(IResourceAdapter):
     """ A media asset that may be embedded in a (web) page as an image.

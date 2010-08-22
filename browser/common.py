@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ $Id$
 """
 
 from cgi import parse_qs, parse_qsl
-#import mimetypes
+#import mimetypes   # use more specific assignments from cybertools.text
 import re
 from urllib import urlencode
 from zope import component
@@ -52,7 +52,6 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent
 
 from cybertools.ajax.dojo import dojoMacroTemplate
-#from cybertools.browser.macro import MacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
 from cybertools.relation.interfaces import IRelationRegistry
@@ -73,10 +72,8 @@ from loops import version
 from loops.versioning.interfaces import IVersionable
 
 
-#concept_macros = MacroTemplate(ViewPageTemplateFile('concept_macros.pt'))
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
 conceptMacrosTemplate = concept_macros      #
-#resource_macros = MacroTemplate(ViewPageTemplateFile('resource_macros.pt'))
 resource_macros = ViewPageTemplateFile('resource_macros.pt')
 
 
