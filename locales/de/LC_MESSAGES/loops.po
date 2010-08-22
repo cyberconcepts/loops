@@ -362,6 +362,12 @@ msgstr "Abfrage"
 msgid "Open concept map editor in new window"
 msgstr "Concept-Map-Editor in neuem Fenster öffnen"
 
+msgid "Version"
+msgstr "Version"
+
+msgid "Version ${versionId}"
+msgstr "Version ${versionId}"
+
 msgid "Versions"
 msgstr "Versionen"
 
