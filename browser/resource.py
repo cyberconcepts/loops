@@ -152,7 +152,9 @@ class ResourceView(BaseView):
             versionable = IVersionable(self.context, None)
             if versionable is not None and len(versionable.versions) > 1:
                     cont.macros.register('portlet_right', 'versions',
-                            title=' '. join((_('Version'), versionable.versionId)),
+                            #title=' '. join((_('Version'), versionable.versionId)),
+                            title=_(u'Version ${versionId}',
+                                    mapping=dict(versionId=versionable.versionId)),
                             subMacro=version_macros.macros['portlet_versions'],
                             priority=25, info=self)
 
