@@ -55,7 +55,7 @@
                                     'visibility: collapse' or ''">
               <td align="left" valign="top"
                   tal:content="roleId" />
-              <td>
+              <td style="white-space: normal">
                 <span tal:define="users python: view.listUsersForRole(roleId)"
                       tal:replace="structure users" /></td>
               <td class="center">
