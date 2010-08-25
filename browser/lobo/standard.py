@@ -52,13 +52,14 @@ class Basic3Columns(ConceptView):
             cssClass = 'span-2'
             if idx % 3 == 2:
                 cssClass += ' last'
-            style = 'height: 200px'
+            style = 'height: 260px'
             result.append(dict(text=text, url=url, cssClass=cssClass,
-                               style=style, img=self.getImageData(c)))
+                               style=style, img=self.getImageData(c),
+                               object=adapted(c)))
         return result
 
     def getImageData(self, concept):
         for r in concept.getResources([self.defaultPredicate]):
             if r.contentType.startswith('image/'):
-                src = '%s/mediaasset.html?v=medium' % self.nodeView.getUrlForTarget(r)
+                src = '%s/mediaasset.html?v=small' % self.nodeView.getUrlForTarget(r)
                 return dict(src=src)

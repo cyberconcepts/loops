@@ -3,14 +3,17 @@
 
 <metal:block define-macro="basic-image">
 
-  <h1 tal:content="item/title" />
+  <h1 tal:attributes="ondblclick item/openEditWindow"
+      tal:content="item/title" />
   <tal:cell repeat="cell item/content">
     <div tal:attributes="class cell/cssClass;
                          style cell/style">
-      <a tal:attributes="href cell/url">
+      <a tal:attributes="href cell/url;
+                         title cell/object/description">
         <img tal:condition="cell/img"
              tal:attributes="src cell/img/src"/>
-        <span tal:content="cell/text" />
+        <b tal:content="cell/text" /><br />
+        <i tal:content="cell/object/description" />
       </a>
     </div>
   </tal:cell>
