@@ -314,15 +314,22 @@ class NodeView(BaseView):
 
     @Lazy
     def headTitle(self):
+        parts = []
         menuObject = self.menuObject
         if menuObject is not None and (menuObject != self.context or
                                        self.virtualTarget):
-            prefix = super(NodeView, self.menu).headTitle + ' - '
-        else:
-            prefix = ''
+            #prefix = super(NodeView, self.menu).headTitle + ' - '
+            parts.append(super(NodeView, self.menu).headTitle)
+        #else:
+        #    prefix = ''
         if self.virtualTarget:
-            return prefix + self.virtualTarget.headTitle
-        return prefix + super(NodeView, self).headTitle
+            ht = self.virtualTarget.headTitle
+            if ht not in parts:
+                parts.append(ht)
+            #return prefix + self.virtualTarget.headTitle
+        if not parts:
+            parts = [super(NodeView, self).headTitle]
+        return ' - ' .join(parts)
 
     @Lazy
     def menuItems(self):
