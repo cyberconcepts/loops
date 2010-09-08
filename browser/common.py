@@ -58,7 +58,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
@@ -284,6 +284,10 @@ class BaseView(GenericView, I18NView):
         return adapted(self.context, self.languageInfo)
 
     @Lazy
+    def baseObject(self):
+        return baseObject(self.context)
+
+    @Lazy
     def title(self):
         return self.adapted.title or getName(self.context)
 
@@ -325,7 +329,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def type(self):
-        return IType(self.context)
+        return IType(self.baseObject)
 
     @Lazy
     def typeProvider(self):

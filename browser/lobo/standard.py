@@ -49,6 +49,7 @@ class Basic3Columns(ConceptView):
         for idx, c in enumerate(self.context.getChildren([self.defaultPredicate])):
             text = c.title
             url = self.nodeView.getUrlForTarget(c)
+            # TODO: use layout settings of c for display
             cssClass = 'span-2'
             if idx % 3 == 2:
                 cssClass += ' last'

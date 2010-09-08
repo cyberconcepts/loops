@@ -30,6 +30,8 @@ from zope.traversing.api import getName
 from cybertools.stateful.definition import StatesDefinition
 from cybertools.stateful.definition import State, Transition
 from cybertools.stateful.interfaces import IStatesDefinition, IStateful
+from loops.common import adapted
+from loops.integrator.interfaces import IExternalCollection
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
 from loops.interfaces import ILoopsObject, IResource
 from loops.organize.stateful.base import StatefulLoopsObject
@@ -82,7 +84,8 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
         versionable = IVersionable(self.context, None)
         if self.state in ('new', 'classified', 'verified'):
             parents = [r for r in self.context.getParentRelations()
-                         if r.predicate != self.typePredicate]
+                         if self.isRelevant(r)]
+                         #if r.predicate != self.typePredicate]
             if len(parents) > 0:
                 self.doTransitionWithVersions('change_classification', versionable)
             else:
@@ -105,6 +108,9 @@ class ClassificationQualityCheckable(StatefulLoopsObject):
         """ Return True if the relation given is relevant for changing
             the quality state.
         """
+        #adParent = adapted(relation.first)
+        #if IExternalCollection.providedBy(adParent):
+        #    return False
         return (IResource.providedBy(self.context) and
                 getName(relation.predicate) != 'hasType')
 
