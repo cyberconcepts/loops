@@ -24,7 +24,9 @@ $Id$
 
 from cgi import parse_qs, parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
+from datetime import datetime
 import re
+from time import strptime
 from urllib import urlencode
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
@@ -222,6 +224,8 @@ class BaseView(GenericView, I18NView):
         if not d:
             dc = IZopeDublinCore(self.context)
             d = dc.modified or dc.created
+        if isinstance(d, str):
+            d = datetime(*(strptime(d, '%Y-%m-%dT%H:%M')[:6]))
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
     @Lazy
