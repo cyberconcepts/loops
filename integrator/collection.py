@@ -95,10 +95,13 @@ class ExternalCollectionAdapter(AdapterBase):
                 # may be it would be better to return a file's hash
                 # for checking for changes...
                 oldFound.append(addr)
-                if mdate and mdate > self.lastUpdated:
+                if self.lastUpdated is None or (mdate and mdate > self.lastUpdated):
                     obj = old[addr]
-                    # regenerate scale variant for media asset
-                    adapted(obj).externalAddress = addr
+                    # update settings and regenerate scale variant for media asset
+                    adobj = adapted(obj)
+                    directory = provider.getDirectory(self)
+                    adobj.storageParams=dict(subdirectory=directory)
+                    adobj.externalAddress = addr
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
             else:
