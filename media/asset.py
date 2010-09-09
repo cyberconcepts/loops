@@ -99,7 +99,7 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
             if dp is not None:
                 try:
                     return datetime.fromtimestamp(os.path.getmtime(dp))
-                except OSError, e:
+                except Exception, e:
                     getLogger('loops.media.asset.MediaAsset').warn(e)
                     return None
 
