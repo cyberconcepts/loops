@@ -1,7 +1,7 @@
 <html i18n:domain="loops">
 
 
-<metal:block define-macro="basic-image">
+<metal:block define-macro="basic">
 
   <h1 tal:attributes="ondblclick item/openEditWindow"
       tal:content="item/title" />

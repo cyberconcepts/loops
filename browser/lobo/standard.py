@@ -34,33 +34,56 @@ from loops.common import adapted
 standard_template = ViewPageTemplateFile('standard.pt')
 
 
-class Basic3Columns(ConceptView):
+class Base(ConceptView):
+
+    template = standard_template
+    templateName = 'lobo.standard'
+    macroName = 'basic'
+    imageSize = 'small'
+    height = 260
+    gridPattern = ['span-2', 'span-2', 'span-2 last']
 
     @Lazy
-    def standard_macros(self):
-        return self.controller.getTemplateMacros('lobo.standard', standard_template)
+    def macros(self):
+        return self.controller.getTemplateMacros(self.templateName, self.template)
 
     @property
     def macro(self):
-        return self.standard_macros['basic-image']
+        return self.macros[self.macroName]
 
     def content(self):
         result = []
         for idx, c in enumerate(self.context.getChildren([self.defaultPredicate])):
-            text = c.title
-            url = self.nodeView.getUrlForTarget(c)
-            # TODO: use layout settings of c for display
-            cssClass = 'span-2'
-            if idx % 3 == 2:
-                cssClass += ' last'
-            style = 'height: 260px'
-            result.append(dict(text=text, url=url, cssClass=cssClass,
-                               style=style, img=self.getImageData(c),
-                               object=adapted(c)))
+            result.append(self.setupItem(idx, c))
         return result
 
-    def getImageData(self, concept):
+    def setupItem(self, idx, obj):
+        text = obj.title
+        url = self.nodeView.getUrlForTarget(obj)
+        # TODO: use layout settings of context and c for display
+        style = 'height: %ipx' % self.height
+        return dict(text=text, url=url, cssClass=self.getCssClass(idx, obj),
+                    style=style, img=self.getImageData(idx, obj),
+                    object=adapted(obj))
+
+    def getCssClass(self, idx, obj):
+        pattern = self.gridPattern
+        return pattern[idx % len(pattern)]
+
+    def getImageData(self, idx, concept):
         for r in concept.getResources([self.defaultPredicate]):
             if r.contentType.startswith('image/'):
-                src = '%s/mediaasset.html?v=small' % self.nodeView.getUrlForTarget(r)
+                src = ('%s/mediaasset.html?v=%s' %
+                            (self.nodeView.getUrlForTarget(r), self.imageSize))
                 return dict(src=src)
+
+
+class Grid3(Base):
+
+    pass
+
+
+class Single1(Base):
+
+    pass
+

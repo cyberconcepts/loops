@@ -8,11 +8,19 @@
   <!-- Views for the Lobo skin / grid-based layout -->
 
   <zope:adapter
-        name="lobo.page.3columns-basic"
+        name="page.grid.3"
         for="loops.interfaces.IConcept
-             zope.publisher.interfaces.browser.IBrowserRequest"
+             loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
-        factory="loops.browser.lobo.standard.Basic3Columns"
+        factory="loops.browser.lobo.standard.Grid3"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="page.single.1"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Single1"
         permission="zope.View" />
 
 </configure>
