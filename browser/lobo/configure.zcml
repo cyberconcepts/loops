@@ -8,7 +8,15 @@
   <!-- Views for the Lobo skin / grid-based layout -->
 
   <zope:adapter
-        name="page.grid.3"
+        name="lobo_layout"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Layout"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_g3"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
@@ -16,11 +24,27 @@
         permission="zope.View" />
 
   <zope:adapter
-        name="page.single.1"
+        name="lobo_l1"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
-        factory="loops.browser.lobo.standard.Single1"
+        factory="loops.browser.lobo.standard.List1"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_h1"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Header1"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_h2"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Header2"
         permission="zope.View" />
 
 </configure>

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,11 +17,12 @@
 #
 
 """
-View class(es) for integrating external objects.
+View classes for lobo (blueprint-based) layouts.
 
 $Id$
 """
 
+from cgi import parse_qs
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -38,10 +39,7 @@ class Base(ConceptView):
 
     template = standard_template
     templateName = 'lobo.standard'
-    macroName = 'basic'
-    imageSize = 'small'
-    height = 260
-    gridPattern = ['span-2', 'span-2', 'span-2 last']
+    macroName = None
 
     @Lazy
     def macros(self):
@@ -51,16 +49,42 @@ class Base(ConceptView):
     def macro(self):
         return self.macros[self.macroName]
 
-    def content(self):
+
+class Layout(Base):
+
+    macroName = 'layout'
+
+    def getParts(self):
         result = []
-        for idx, c in enumerate(self.context.getChildren([self.defaultPredicate])):
-            result.append(self.setupItem(idx, c))
+        ann = self.request.annotations.get('loops.view', {})
+        params = parse_qs(ann.get('params') or '')
+        parts = (params.get('parts') or ['h1,g3'])[0].split(',')
+        for p in parts:
+            viewName = 'lobo_' + p
+            view = component.queryMultiAdapter((self.context, self.request),
+                                               name=viewName)
+            if view is not None:
+                result.append(view)
         return result
 
-    def setupItem(self, idx, obj):
+
+class BasePart(Base):
+
+    imageSize = 'small'
+    height = 260
+    gridPattern = []
+
+    def getChildren(self):
+        result = []
+        for idx, c in enumerate(self.context.getChildren([self.defaultPredicate])):
+            result.append(self.setupConcept(idx, c))
+        return result
+
+    def setupConcept(self, idx=0, obj=None):
+        if obj is None:
+            obj = self.context
         text = obj.title
         url = self.nodeView.getUrlForTarget(obj)
-        # TODO: use layout settings of context and c for display
         style = 'height: %ipx' % self.height
         return dict(text=text, url=url, cssClass=self.getCssClass(idx, obj),
                     style=style, img=self.getImageData(idx, obj),
@@ -68,7 +92,8 @@ class Base(ConceptView):
 
     def getCssClass(self, idx, obj):
         pattern = self.gridPattern
-        return pattern[idx % len(pattern)]
+        if pattern:
+            return pattern[idx % len(pattern)]
 
     def getImageData(self, idx, concept):
         for r in concept.getResources([self.defaultPredicate]):
@@ -78,12 +103,27 @@ class Base(ConceptView):
                 return dict(src=src)
 
 
-class Grid3(Base):
+class Grid3(BasePart):
 
-    pass
+    macroName = 'grid'
+    imageSize = 'small'
+    height = 260
+    gridPattern = ['span-2', 'span-2', 'span-2 last']
 
 
-class Single1(Base):
+class List1(BasePart):
 
-    pass
+    macroName = 'list1'
+
+
+class Header1(BasePart):
+
+    macroName = 'header1'
+
+
+class Header2(BasePart):
+
+    macroName = 'header2'
+    imageSize = 'medium'
+
 

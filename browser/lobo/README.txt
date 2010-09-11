@@ -23,7 +23,7 @@ ZCML setup):
 Using the Lobo Blueprint-based Layout Views
 ===========================================
 
-  >>> from loops.browser.lobo.standard import Grid3, Single1
+  >>> from loops.browser.lobo.standard import Layout
 
 
 Fin de partie

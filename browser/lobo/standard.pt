@@ -1,23 +1,64 @@
 <html i18n:domain="loops">
 
 
-<metal:block define-macro="basic">
+<metal:block define-macro="layout">
+  <tal:part repeat="part item/getParts">
+    <metal:part use-macro="part/macro" />
+  </tal:part>
+</metal:block>
 
-  <h1 tal:attributes="ondblclick item/openEditWindow"
-      tal:content="item/title" />
-  <tal:cell repeat="cell item/content">
+
+<metal:block define-macro="grid">
+  <tal:cell repeat="cell part/getChildren">
     <div tal:attributes="class cell/cssClass;
                          style cell/style">
       <a tal:attributes="href cell/url;
                          title cell/object/description">
-        <img tal:condition="cell/img"
-             tal:attributes="src cell/img/src"/>
+        <metal:image use-macro="item/macros/image" />
         <b tal:content="cell/text" /><br />
         <i tal:content="cell/object/description" />
       </a>
     </div>
   </tal:cell>
+</metal:block>
 
+
+<metal:block define-macro="list1">
+    <div>List1</div>
+</metal:block>
+
+
+<metal:block define-macro="header1">
+  <metal:headline use-macro="item/macros/headline" />
+  <div tal:define="cell part/setupConcept">
+    <metal:image use-macro="item/macros/image" />
+    <br />&nbsp;
+  </div>
+</metal:block>
+
+
+<metal:block define-macro="header2">
+  <metal:headline use-macro="item/macros/headline" />
+  <div tal:define="cell part/setupConcept">
+    <metal:image use-macro="item/macros/image" />
+    <br />&nbsp;
+  </div>
+</metal:block>
+
+
+<!-- basic component macros -->
+
+<metal:image define-macro="image">
+    <img tal:condition="cell/img"
+         tal:attributes="src cell/img/src" />
+</metal:image>
+
+
+<metal:block define-macro="headline">
+  <h1 tal:attributes="ondblclick item/openEditWindow"
+      tal:content="item/title" />
+  <div tal:condition="item/description">
+    <i tal:content="item/description" /><br />&nbsp;</div>
 </metal:block>
 
 
