@@ -101,6 +101,14 @@ def getUidForObject(obj, intIds=None):
         intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
 
+def getObjectsForUids(uids, adapt=True):
+    intIds = component.getUtility(IIntIds)
+    result = [getObjectForUid(uid, intIds) for uid in uids]
+    if adapt:
+        from loops.common import adapted
+        return [adapted(obj) for obj in result if obj is not None]
+    return [obj for obj in result if obj is not None]
+
 
 def getVarDirectory(request=None):
     varDir = None
@@ -121,3 +129,5 @@ def getEtcDirectory(request=None):
 def getLogDirectory(request=None):
     varDir = getVarDirectory(request)
     return os.path.join(os.path.dirname(varDir), 'log')
+
+
