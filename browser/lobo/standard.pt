@@ -52,10 +52,10 @@
 
 
 <metal:block define-macro="header2">
-  <metal:headline use-macro="item/macros/headline" />
   <div tal:define="cell part/getView">
+    <metal:headline use-macro="item/macros/headline" />
     <metal:image use-macro="item/macros/image" />
-    <br />&nbsp;
+    <metal:text use-macro="item/macros/text" />
   </div>
 </metal:block>
 

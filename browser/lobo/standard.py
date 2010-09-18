@@ -30,7 +30,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView as BaseConceptView
 from loops.browser.concept import ConceptRelationView as BaseConceptRelationView
-from loops.common import adapted
+from loops.common import adapted, baseObject
 
 
 standard_template = ViewPageTemplateFile('standard.pt')
@@ -53,17 +53,29 @@ class Base(BaseConceptView):
 
 class ConceptView(BaseConceptView):
 
-    def __init__(self, context, request, parent=None, idx=0):
-        super(ConceptView, self).__init__(context, request)
-        self.parentView = parent
-        self.idx = idx
+    idx = 0
+
+    def __init__(self, context, request):
+        super(ConceptView, self).__init__(baseObject(context), request)
+        self.adapted = context
+
+    @Lazy
+    def resources(self):
+        result = dict(texts=[], images=[], files=[])
+        for r in self.context.getResources([self.defaultPredicate]):
+            if r.contentType.startswith('text/'):
+                result['texts'].append(r)
+            if r.contentType.startswith('image/'):
+                result['images'].append(r)
+            else:
+                result['files'].append(r)
+        return result
 
     # properties from base class: title, description, renderedDescription
 
     @Lazy
     def renderedText(self):
-        for r in self.context.getResources([self.defaultPredicate]):
-            if r.contentType.startswith('text/'):
+        for r in self.resources['texts']:
                 return self.renderText(r.data, r.contentType)
 
     @Lazy
@@ -82,8 +94,7 @@ class ConceptView(BaseConceptView):
 
     @Lazy
     def img(self):
-        for r in self.context.getResources([self.defaultPredicate]):
-            if r.contentType.startswith('image/'):
+        for r in self.resources['images']:
                 src = ('%s/mediaasset.html?v=%s' %
                             (self.nodeView.getUrlForTarget(r),
                              self.parentView.imageSize))
@@ -133,7 +144,10 @@ class BasePart(Base):
         return result
 
     def getView(self):
-        return ConceptView(self.context, self.request, parent=self)
+        view = component.getMultiAdapter((self.adapted, self.request),
+                                         name='lobo_cell')
+        view.parentView = self
+        return view
 
 
 class Grid3(BasePart):
@@ -162,5 +176,6 @@ class Header2(BasePart):
 
     macroName = 'header2'
     imageSize = 'medium'
+    imageCssClass = 'flow-left'
 
 
