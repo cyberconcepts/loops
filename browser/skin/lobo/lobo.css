@@ -9,7 +9,7 @@
 
 a[href]:hover {
     text-decoration: none;
-    color: #803000;
+    color: #6060c0;
 }
 
 pre {
@@ -335,12 +335,12 @@ div.menu-1, div.menu-2 {
 
 .flow-left {
     float: left;
-    padding: 0.4em 0.8em 0.8em 0;
+    padding: 0 20px 5px 0;
 }
 
 .flow-right {
     float: right;
-    padding: 0.4em 0.8em 0.8em 0;
+    padding: 0 0 5px 20px;
 }
 
 div.image {
@@ -409,6 +409,12 @@ img.notselected {
 .error-heading {
     margin-bottom: 8px;
     font-weight: bold;
+}
+
+/* lobo layout-specific classes */
+
+.legend {
+    margin-top: 3px;
 }
 
 /* comments */

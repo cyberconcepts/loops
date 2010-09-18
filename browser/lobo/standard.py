@@ -28,14 +28,15 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from loops.browser.concept import ConceptView
+from loops.browser.concept import ConceptView as BaseConceptView
+from loops.browser.concept import ConceptRelationView as BaseConceptRelationView
 from loops.common import adapted
 
 
 standard_template = ViewPageTemplateFile('standard.pt')
 
 
-class Base(ConceptView):
+class Base(BaseConceptView):
 
     template = standard_template
     templateName = 'lobo.standard'
@@ -48,6 +49,54 @@ class Base(ConceptView):
     @property
     def macro(self):
         return self.macros[self.macroName]
+
+
+class ConceptView(BaseConceptView):
+
+    def __init__(self, context, request, parent=None, idx=0):
+        super(ConceptView, self).__init__(context, request)
+        self.parentView = parent
+        self.idx = idx
+
+    # properties from base class: title, description, renderedDescription
+
+    @Lazy
+    def renderedText(self):
+        for r in self.context.getResources([self.defaultPredicate]):
+            if r.contentType.startswith('text/'):
+                return self.renderText(r.data, r.contentType)
+
+    @Lazy
+    def targetUrl(self):
+        return self.nodeView.getUrlForTarget(self.context)
+
+    @Lazy
+    def cssClass(self):
+        pattern = self.parentView.gridPattern
+        if pattern:
+            return pattern[self.idx % len(pattern)]
+
+    @Lazy
+    def style(self):
+        return 'height: %ipx' % self.parentView.height
+
+    @Lazy
+    def img(self):
+        for r in self.context.getResources([self.defaultPredicate]):
+            if r.contentType.startswith('image/'):
+                src = ('%s/mediaasset.html?v=%s' %
+                            (self.nodeView.getUrlForTarget(r),
+                             self.parentView.imageSize))
+                return dict(src=src, cssClass=self.parentView.imageCssClass)
+
+
+class ConceptRelationView(BaseConceptRelationView, ConceptView):
+
+    def __init__(self, relation, request, contextIsSecond=False,
+                 parent=None, idx=0):
+        BaseConceptRelationView.__init__(self, relation, request, contextIsSecond)
+        self.parentView = parent
+        self.idx = idx
 
 
 class Layout(Base):
@@ -71,36 +120,20 @@ class Layout(Base):
 class BasePart(Base):
 
     imageSize = 'small'
+    imageCssClass = ''
     height = 260
     gridPattern = []
 
     def getChildren(self):
         result = []
-        for idx, c in enumerate(self.context.getChildren([self.defaultPredicate])):
-            result.append(self.setupConcept(idx, c))
+        for idx, r in enumerate(
+                self.context.getChildRelations([self.defaultPredicate])):
+            result.append(ConceptRelationView(r, self.request,
+                                contextIsSecond=True, parent=self, idx=idx))
         return result
 
-    def setupConcept(self, idx=0, obj=None):
-        if obj is None:
-            obj = self.context
-        text = obj.title
-        url = self.nodeView.getUrlForTarget(obj)
-        style = 'height: %ipx' % self.height
-        return dict(text=text, url=url, cssClass=self.getCssClass(idx, obj),
-                    style=style, img=self.getImageData(idx, obj),
-                    object=adapted(obj))
-
-    def getCssClass(self, idx, obj):
-        pattern = self.gridPattern
-        if pattern:
-            return pattern[idx % len(pattern)]
-
-    def getImageData(self, idx, concept):
-        for r in concept.getResources([self.defaultPredicate]):
-            if r.contentType.startswith('image/'):
-                src = ('%s/mediaasset.html?v=%s' %
-                            (self.nodeView.getUrlForTarget(r), self.imageSize))
-                return dict(src=src)
+    def getView(self):
+        return ConceptView(self.context, self.request, parent=self)
 
 
 class Grid3(BasePart):
@@ -114,11 +147,15 @@ class Grid3(BasePart):
 class List1(BasePart):
 
     macroName = 'list1'
+    imageSize = 'small'
+    gridPattern = [['span-2', 'span-4 last']]
 
 
 class Header1(BasePart):
 
     macroName = 'header1'
+    imageSize = 'small'
+    imageCssClass = 'flow-left'
 
 
 class Header2(BasePart):
