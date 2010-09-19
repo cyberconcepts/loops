@@ -34,8 +34,10 @@
       </a>
     </div>
     <div tal:attributes="class python:cell.cssClass[1]">
+      <a tal:attributes="href cell/targetUrl">
         <b tal:content="cell/title" /><br />
         <i tal:content="cell/description" />
+      </a>
     </div>
   </tal:cell>
 </metal:block>
@@ -46,7 +48,8 @@
     <metal:headline use-macro="item/macros/headline" />
     <metal:image use-macro="item/macros/image" />
     <metal:text use-macro="item/macros/text" />
-    <br style="clear: both" />&nbsp;
+    <tal:break condition="cell/img">
+      <br style="clear: both" />&nbsp;</tal:break>
   </div>
 </metal:block>
 

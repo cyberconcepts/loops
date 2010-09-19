@@ -162,7 +162,7 @@ class List1(BasePart):
 
     macroName = 'list1'
     imageSize = 'small'
-    gridPattern = [['span-2', 'span-4 last']]
+    gridPattern = [['span-2 clear', 'span-4 last']]
 
 
 class Header1(BasePart):
