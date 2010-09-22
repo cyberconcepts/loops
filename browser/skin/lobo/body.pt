@@ -49,11 +49,10 @@
     <div id="footer" class="footer clear"
          metal:define-macro="footer">
       <metal:footer define-slot="footer">
-        <div tal:condition="nothing" xtal:condition="view/editable">
-          <span i18n:translate="">For quick creation of notes/links bookmark this link</span>:
-          <a href="#"
-             tal:attributes="href view/popupCreateObjectForm">Create loops Note</a>
-        </div>
+        &copy; Copyright 2010, cyberconcepts IT-Consulting Dr. Helmut Merz
+        (<a href="#"
+          tal:attributes="href string:${view/topMenu/url}/impressum">Impressum</a>)
+        <br />
         Powered by
         <b><a href="http://loops.cy55.de">loops</a></b> &middot;
         <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
