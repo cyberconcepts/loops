@@ -79,6 +79,11 @@ class ConceptView(BaseConceptView):
                 return self.renderText(r.data, r.contentType)
 
     @Lazy
+    def textDescription(self):
+        for r in self.resources['texts']:
+                return r.description
+
+    @Lazy
     def targetUrl(self):
         return self.nodeView.getUrlForTarget(self.context)
 
@@ -169,7 +174,8 @@ class Header1(BasePart):
 
     macroName = 'header1'
     imageSize = 'small'
-    imageCssClass = 'flow-left'
+    #imageCssClass = 'flow-right'
+    cssClass = ['span-2', 'span-4 last', 'clear']
 
 
 class Header2(BasePart):

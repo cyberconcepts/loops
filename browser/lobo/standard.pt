@@ -46,8 +46,16 @@
 <metal:block define-macro="header1">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
-    <metal:image use-macro="item/macros/image" />
-    <metal:text use-macro="item/macros/text" />
+    <div tal:attributes="class python:part.cssClass[0]">
+      <metal:image use-macro="item/macros/image" />
+    </div>
+    <div tal:attributes="class python:part.cssClass[1]">
+      <span tal:content="cell/textDescription" />
+    </div>
+    <div tal:attributes="class python:part.cssClass[2]">
+      <br />
+      <metal:text use-macro="item/macros/text" />
+    </div>
     <tal:break condition="cell/img">
       <br style="clear: both" />&nbsp;</tal:break>
   </div>
