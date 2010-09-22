@@ -28,8 +28,8 @@ ol, ul, p {
     margin-bottom: 0.5em;
 }
 
-ol, ul {
-    padding-left: 2.5em;
+ol, ul, ol.first, ul.first {
+    padding-left: 2em;
 }
 
 ol li, ul li {
