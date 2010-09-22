@@ -52,7 +52,8 @@
     <div tal:attributes="class python:part.cssClass[1]">
       <span tal:content="cell/textDescription" />
     </div>
-    <div tal:attributes="class python:part.cssClass[2]">
+    <div tal:condition="cell/renderedText"
+         tal:attributes="class python:part.cssClass[2]">
       <br />
       <metal:text use-macro="item/macros/text" />
     </div>
