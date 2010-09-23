@@ -54,7 +54,7 @@
     </div>
     <div tal:condition="cell/renderedText"
          tal:attributes="class python:part.cssClass[2]">
-      <br />
+      <br tal:condition="cell/img" />
       <metal:text use-macro="item/macros/text" />
       <br />
     </div>
