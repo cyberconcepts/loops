@@ -3,7 +3,7 @@
     <div metal:use-macro="views/node_macros/object_actions" />
     <h1 tal:content="item/title">Title</h1><br />
     <p tal:define="url python: view.getUrlForTarget(item)">
-      <a href="#"
+      <a tal:omit-tag="view/isAnonymous"
          tal:attributes="href string:${url}/view?version=this"><img
             tal:attributes="src
                     string:${url}/@@mediaasset.html?version=this&v=medium" /></a>
