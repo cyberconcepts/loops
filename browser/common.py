@@ -217,7 +217,7 @@ class BaseView(GenericView, I18NView):
         self.skin = skin
 
     @Lazy
-    def modified(self):
+    def modifiedRaw(self):
         """ get date/time of last modification
         """
         d = getattr(self.adapted, 'modified', None)
@@ -226,6 +226,11 @@ class BaseView(GenericView, I18NView):
             d = dc.modified or dc.created
         if isinstance(d, str):
             d = datetime(*(strptime(d, '%Y-%m-%dT%H:%M')[:6]))
+        return d
+
+    @Lazy
+    def modified(self):
+        d = self.modifiedRaw
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
     @Lazy

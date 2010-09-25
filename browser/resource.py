@@ -176,6 +176,9 @@ class ResourceView(BaseView):
 
     def show(self, useAttachment=False):
         """ show means: "download"..."""
+        # TODO: control access, e.g. to protected images
+        # if self.adapted.isProtected():
+        #     raise Unauthorized()
         context = self.context
         self.recordAccess('show', target=self.uniqueId)
         ti = IType(context).typeInterface
@@ -194,6 +197,13 @@ class ResourceView(BaseView):
             response.setHeader('Content-Type', 'text/html')
             return self.renderText(data, ct)
         response.setHeader('Content-Type', ct)
+        # set Last-Modified header
+        modified = self.modifiedRaw
+        if modified:
+            format = '%a, %d %b %Y %H:%M:%S %Z'
+            if modified.tzinfo is None:
+                format = format[:-3] + ' GMT'
+            response.setHeader('Last-Modified', modified.strftime(format))
         return data
 
     def renderText(self, text, contentType):
