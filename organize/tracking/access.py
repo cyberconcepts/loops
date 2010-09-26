@@ -74,6 +74,7 @@ def logAccess(event, baseDir=None):
     data = event.request.annotations.get(request_key)
     if not data:
         return
+    context = removeSecurityProxy(context)
     options = IOptions(context.getLoopsRoot())
     logfileOption = options(logfile_option)
     if not logfileOption:
