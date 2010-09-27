@@ -52,13 +52,12 @@
     <div tal:attributes="class python:part.cssClass[1]">
       <span tal:content="cell/textDescription" />
     </div>
-    <div tal:condition="cell/renderedText"
-         tal:attributes="class python:part.cssClass[2]">
-      <br tal:condition="cell/img" />
-      <metal:text use-macro="item/macros/text" />
-    </div>
     <tal:break condition="cell/img">
       <br style="clear: both" />&nbsp;</tal:break>
+    <div tal:condition="cell/renderedText"
+         tal:attributes="class python:part.cssClass[2]">
+      <metal:text use-macro="item/macros/text" />
+    </div>
   </div>
 </metal:block>
 
