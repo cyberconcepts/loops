@@ -56,7 +56,6 @@
          tal:attributes="class python:part.cssClass[2]">
       <br tal:condition="cell/img" />
       <metal:text use-macro="item/macros/text" />
-      <br />
     </div>
     <tal:break condition="cell/img">
       <br style="clear: both" />&nbsp;</tal:break>
@@ -82,8 +81,11 @@
 </metal:image>
 
 
-<metal:block define-macro="text">
-    <span tal:content="structure cell/renderedText" />
+<metal:block define-macro="text"
+             tal:define="text cell/renderedText"
+             tal:condition="text">
+    <span tal:content="structure text" />
+    <br />
 </metal:block>
 
 
