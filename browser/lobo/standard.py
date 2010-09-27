@@ -84,6 +84,10 @@ class ConceptView(BaseConceptView):
                 return r.description
 
     @Lazy
+    def renderedTextDescription(self):
+        return self.renderDescription(self.textDescription)
+
+    @Lazy
     def targetUrl(self):
         return self.nodeView.getUrlForTarget(self.context)
 

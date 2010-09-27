@@ -397,12 +397,17 @@ class BaseView(GenericView, I18NView):
         view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
+    def renderDescription(self, text=None):
+        if text is None:
+            text = self.description
+        htmlPattern = re.compile(r'<(.+)>.+</\1>')
+        if htmlPattern.search(text):
+            return text
+        return self.renderText(text, 'text/restructured')
+
     @Lazy
     def renderedDescription(self):
-        htmlPattern = re.compile(r'<(.+)>.+</\1>')
-        if htmlPattern.search(self.description):
-            return self.description
-        return self.renderText(self.description, 'text/restructured')
+        return self.renderDescription()
 
     # type listings
 
