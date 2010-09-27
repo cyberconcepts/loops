@@ -50,7 +50,7 @@
       <metal:image use-macro="item/macros/image" />
     </div>
     <div tal:attributes="class python:part.cssClass[1]">
-      <span tal:content="cell/renderedTextDescription" />
+      <span tal:content="structure cell/renderedTextDescription" />
     </div>
     <tal:break condition="cell/img">
       <br style="clear: both" />&nbsp;</tal:break>
