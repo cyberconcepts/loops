@@ -22,7 +22,7 @@ Resource adapter(s) for MS Office files.
 $Id$
 """
 
-from datetime import date
+from datetime import date, datetime, timedelta
 from logging import getLogger
 from lxml import etree
 import os
@@ -127,5 +127,7 @@ class OfficeFile(ExternalFileAdapter):
 
 
 def parseDate(s):
-    return date(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:3])
+    dt = datetime(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:6]) + timedelta(hours=2)
+    return date(dt.year, dt.month, dt.day)
+    #return date(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:3])
 
