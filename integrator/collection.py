@@ -41,7 +41,7 @@ from zope.traversing.api import getName, getParent
 from cybertools.meta.interfaces import IOptions
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType
-from loops.common import AdapterBase, adapted
+from loops.common import AdapterBase, adapted, normalizeName
 from loops.interfaces import IResource, IConcept
 from loops.integrator.interfaces import IExternalCollection
 from loops.integrator.interfaces import IExternalCollectionProvider
@@ -112,7 +112,7 @@ class ExternalCollectionAdapter(AdapterBase):
             for r in self.newResources:
                 self.context.assignResource(r)
         for addr in old:
-            if addr not in oldFound:
+            if str(addr) not in oldFound:
                 # not part of the collection any more
                 # TODO: only remove from collection but keep object?
                 self.remove(old[addr])
@@ -204,7 +204,7 @@ class DirectoryCollectionProvider(object):
     def getDirectory(self, client):
         baseAddress = client.baseAddress or ''
         address = client.address or ''
-        return os.path.join(baseAddress, address)
+        return str(os.path.join(baseAddress, address))
 
     def generateName(self, container, name):
         name = INameChooser(container).chooseName(name, None)
@@ -217,5 +217,8 @@ class DirectoryCollectionProvider(object):
             if ext.lower() in mimetypes.extensions.values():
                 title = base
         if not isinstance(title, unicode):
-            title = title.decode('UTF-8')
+            try:
+                title = title.decode('UTF-8')
+            except UnicodeDecodeError:
+                title = title.decode('CP852')
         return title

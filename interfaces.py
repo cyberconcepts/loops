@@ -361,6 +361,14 @@ class IResource(ILoopsObject, IPotentialTarget):
         available via a view or a concept.
     """
 
+    resourceType = schema.Choice(
+        title=_(u'Resource Type'),
+        description=_(u"The type of the resource, specified by a relation to "
+                       "a concept of type 'type'."),
+        default=None,
+        source="loops.resourceTypeSource",
+        required=False)
+
 
 class IDocumentSchema(IResourceSchema):
 

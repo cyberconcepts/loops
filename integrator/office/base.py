@@ -127,6 +127,8 @@ class OfficeFile(ExternalFileAdapter):
 
 
 def parseDate(s):
+    if not s:
+        return None
     dt = datetime(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:6]) + timedelta(hours=2)
     return date(dt.year, dt.month, dt.day)
     #return date(*strptime(s, '%Y-%m-%dT%H:%M:%SZ')[:3])

@@ -236,7 +236,11 @@ def normalizeName(baseName):
         try:
             c = c.encode('ISO8859-15')
         except UnicodeEncodeError:
-            # skip all characters not representable in ISO encoding
+            # replace all characters not representable in ISO encoding
+            result.append('_')
+            continue
+        except UnicodeDecodeError:
+            result.append('_')
             continue
         if c in '._':
             # separator and special characters to keep
