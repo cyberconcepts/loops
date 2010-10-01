@@ -7,7 +7,8 @@
   <metal:block use-macro="view/concept_macros/conceptdata">
     <metal:fill fill-slot="fields">
       <metal:block use-macro="view/concept_macros/conceptfields" />
-      <form action="." method="post">
+      <form action="." method="post"
+            tal:condition="item/editable">
         <input type="submit" name="update" value="Update Collection" />
       </form>
     </metal:fill>
