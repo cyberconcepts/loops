@@ -85,6 +85,8 @@ class ConceptView(BaseConceptView):
 
     @Lazy
     def renderedTextDescription(self):
+        if self.textDescription is None:
+            return u''
         return self.renderDescription(self.textDescription)
 
     @Lazy
