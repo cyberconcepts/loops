@@ -544,6 +544,7 @@ class ConceptConfigureView(ConceptView):
             result = self.loopsRoot.getConceptManager().values()
         if searchType == 'none':
             result = [r for r in result if r.conceptType is None]
+        result = sorted(result, key=lambda x: x.title)
         return self.viewIterator(result)
 
     def predicates(self):
