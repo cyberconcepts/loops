@@ -74,7 +74,8 @@ textarea {
 
 table.listing {
     margin: 1px;
-    margin-top: 6px;
+    /*margin-top: 0.5em; */
+    margin-bottom: 1em;
 }
 
 table.listing th {

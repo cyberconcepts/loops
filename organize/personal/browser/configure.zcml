@@ -20,4 +20,13 @@
     <page name="removeFavorite.html" attribute="remove" />
   </browser:pages>
 
+  <browser:pages
+        class="loops.organize.personal.browser.filter.FilterView"
+        for="loops.interfaces.INode"
+        permission="zope.View">
+    <page name="filters_view" />
+    <page name="addFilter.html" attribute="add" />
+    <page name="deactivateFilter.html" attribute="deactivate" />
+  </browser:pages>
+
 </configure>

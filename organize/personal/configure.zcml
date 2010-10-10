@@ -17,6 +17,19 @@
              interface="loops.organize.personal.interfaces.IFavorites" />
   </class>
 
+  <class class="loops.organize.personal.filter.Filter">
+    <require permission="zope.View"
+             interface="loops.organize.personal.interfaces.IFilter" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.personal.interfaces.IFilter" />
+  </class>
+
+  <adapter factory="loops.organize.personal.filter.Filters" trusted="True" />
+  <class class="loops.organize.personal.filter.Filters">
+    <require permission="zope.View"
+             interface="loops.organize.personal.interfaces.IFilters" />
+  </class>
+
   <adapter factory="loops.organize.personal.setup.SetupManager"
            name="organize.personal" />
 

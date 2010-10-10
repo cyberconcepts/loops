@@ -12,9 +12,9 @@
       <h1><a tal:omit-tag="python: level > 1"
              tal:attributes="href request/URL"
              tal:content="item/title">Title</a></h1>
-      <p tal:define="description description|item/description"
+      <p tal:define="description description|item/renderedDescription"
          tal:condition="description">
-        <i tal:content="description">Description</i></p>
+        <i tal:content="structure description">Description</i></p>
       <metal:fields define-slot="fields" />
       <div class="content-1" id="1.body"
            tal:attributes="id id;"

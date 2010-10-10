@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
+from cybertools.meta.interfaces import IOptions
 from loops.organize.party import getPersonForUser
 from loops.util import _
 
@@ -44,17 +45,32 @@ class PortletConfigurator(ViewConfigurator):
         self.context = context
         self.request = request
 
+    @property
+    def viewProperties(self):
+        return self.favorites + self.filters
+
+    @Lazy
+    def records(self):
+        return self.context.getLoopsRoot().getRecordManager()
+
+    @Lazy
+    def person(self):
+        return getPersonForUser(self.context, self.request)
+
     def hasFavorites(self):
-        records = self.context.getLoopsRoot().getRecordManager()
-        if records is not None:
-            return 'favorites' in records
+        if self.records is not None:
+            return 'favorites' in self.records
+        return False
+
+    def hasFilters(self):
+        if (IOptions(self.context.getLoopsRoot()).organize.useFilters and
+                self.records is not None):
+            return 'filters' in self.records
         return False
 
     @property
-    def viewProperties(self):
-        if (not self.hasFavorites()
-            or getPersonForUser(self.context, self.request) is None):
-        #if IUnauthenticatedPrincipal.providedBy(self.request.principal):
+    def favorites(self):
+        if (not self.hasFavorites() or self.person is None):
             return []
         favorites = MacroViewProperty(self.context, self.request)
         favorites.setParams(dict(
@@ -67,3 +83,17 @@ class PortletConfigurator(ViewConfigurator):
         ))
         return [favorites]
 
+    @property
+    def filters(self):
+        if (not self.hasFilters() or self.person is None):
+            return []
+        filters = MacroViewProperty(self.context, self.request)
+        filters.setParams(dict(
+                    slot='portlet_right',
+                    identifier='loops.organize.filters',
+                    title=_(u'Filters'),
+                    subMacro=personal_macros.macros['filters_portlet'],
+                    priority=195,
+                    url=absoluteURL(self.context, self.request) + '/@@filters.html',
+        ))
+        return [filters]

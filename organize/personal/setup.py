@@ -27,6 +27,7 @@ from zope.interface import implements, Interface
 
 from cybertools.tracking.btree import TrackingStorage
 from loops.organize.personal.favorite import Favorite
+from loops.organize.personal.filter import Filter
 from loops.setup import SetupManager as BaseSetupManager
 
 
@@ -36,3 +37,5 @@ class SetupManager(BaseSetupManager):
         records = self.context.getRecordManager()
         favorites = self.addObject(records, TrackingStorage, 'favorites',
                                    trackFactory=Favorite)
+        filters = self.addObject(records, TrackingStorage, 'filters',
+                                   trackFactory=Filter)

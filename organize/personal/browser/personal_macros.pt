@@ -22,3 +22,29 @@
          i18n:attributes="title">Add to Favorites</a>
     </div>
 </metal:actions>
+
+
+<metal:actions define-macro="filters_portlet"
+               tal:define="view nocall:context/@@filters_view;
+                           targetUid view/targetUid">
+    <div tal:repeat="item view/listFilters">
+      <span style="float:right" class="delete-item">&nbsp;<a href="removeFilter.html"
+          tal:attributes="href
+                string:${view/url}/deactivateFilter.html?id=${item/uid};
+                          title string:Deactivate filter"
+          i18n:attributes="title">X</a>&nbsp;</span>
+      <a href=""
+         tal:attributes="href item/url;
+                         title item/description"
+         tal:content="item/title">Some object</a>
+    </div>
+    <div id="addFilter" class="action"
+         tal:condition="targetUid">
+      <a href="addFilter.html"
+         i18n:translate=""
+         tal:attributes="href
+                string:${view/virtualTargetUrl}/addFilter.html?id=$targetUid;
+                         title string:Use current object as filter"
+         i18n:attributes="title">Add Filter</a>
+    </div>
+</metal:actions>

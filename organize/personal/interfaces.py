@@ -51,3 +51,39 @@ class IFavorite(ITrack):
         the user/person for which the favorite is to be stored.
         The tracking storage's run management is not used.
     """
+
+
+class IFilters(Interface):
+    """ A collection of filters.
+    """
+
+    def add(title, filter, person):
+        """ Add a filter specification (a mapping) to the person's
+            filters collection using the title given.
+        """
+
+    def activate(id):
+        """ Activate the filter specified by its ID.
+        """
+
+    def deactivate(id):
+        """ Deactivate the filter specified by its ID.
+        """
+
+    def remove(id):
+        """ Remove the filter specified by its ID from the person's
+            favorites collection.
+        """
+
+    def list(person, activeOnly=True, sortKey=None):
+        """ Return a list of filters for the person given.
+        """
+
+
+class IFilter(ITrack):
+    """ A filter is a stored query that will be used for restricting the result
+        set of child and resource listings as well as explicit searches.
+        It usually references a parent concept via the task id attribute.
+        The user/person for which the filter is to be stored.
+        The tracking storage's run management is not used.
+    """
