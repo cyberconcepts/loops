@@ -636,7 +636,7 @@ class BaseView(GenericView, I18NView):
         jsCall = ('dojo.require("dojo.parser"); '
                   'dojo.registerModulePath("jocy", "/@@/cybertools.jocy"); '
                   'dojo.require("jocy.data");')
-        cm.register('js-execute', jsCall, jsCall=jsCall)
+        cm.register('js-execute', 'dojo_registration', jsCall=jsCall)
         cm.register('css', identifier='Lightbox.css', position=0,
                     resourceName='ajax.dojo/dojox/image/resources/Lightbox.css',
                     media='all')

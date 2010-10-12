@@ -114,8 +114,10 @@ class EditPersonForm(EditConceptForm):
         types = list(self.typeManager.listTypes(include=('workspace',)))
         #assigned = [r.context for r in self.assignments]
         #types = [t for t in types if t.typeProvider not in assigned]
-        return [dict(title=t.title, token=t.tokenForSearch,
-                     predicates=['standard', 'ismember', 'ismaster']) for t in types]
+        predicates = [n for n in ['standard', 'ismember', 'ismaster', 'iswoner']
+                        if n in self.conceptManager]
+        return [dict(title=t.title, token=t.tokenForSearch, predicates=predicates)
+                        for t in types]
 
 
 

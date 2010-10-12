@@ -61,7 +61,7 @@ localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
 
 acquiringPredicateNames = ('hasType', 'standard', 'ownedby', 'ispartof')
 
-allocationPredicateNames = ('ismaster', 'ismember')
+allocationPredicateNames = ('isowner', 'ismaster', 'ismember',)
 
 workspaceGroupsFolderName = 'gloops_ws'
 
