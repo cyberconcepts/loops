@@ -201,6 +201,18 @@ class NodeView(BaseView):
         return self.page
 
     @Lazy
+    def targetItem(self):
+        viewName = self.request.get('loops.viewName') or ''
+        target = self.virtualTargetObject
+        if target is not None:
+            basicView = component.getMultiAdapter((target, self.request), name=viewName)
+            # xxx: obsolete when self.targetObject is virtual target:
+            if hasattr(basicView, 'view'):
+                #basicView.setupController()
+                return basicView.view
+        return self.page
+
+    @Lazy
     def page(self):
         page = self.context.getPage()
         return page is not None and NodeView(page, self.request).view or None
