@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.i18nmessageid import MessageFactory
 from zope import schema
+from zope.schema._bootstrapinterfaces import StopValidation
 from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
@@ -33,6 +34,7 @@ from zope.size.interfaces import ISized
 
 from cybertools.relation.interfaces import IDyadicRelation
 from cybertools.tracking.interfaces import ITrackingStorage
+from cybertools.util.format import toStr, toUnicode
 from loops import util
 from loops.util import _
 
@@ -747,6 +749,27 @@ class IFile(IResourceAdapter, IResourceSchema):
     localFilename = Attribute('Filename provided during upload.')
 
 
+# external file stuff
+
+
+class ExternalAddressField(schema.TextLine):
+
+    def __init__(self, *args, **kw):
+        self.encoding = kw.pop('encoding', 'UTF-8')
+        super(ExternalAddressField, self).__init__(*args, **kw)
+
+    def get(self, obj):
+        value = super(ExternalAddressField, self).get(obj)
+        return toUnicode(value, self.encoding)
+
+    def set(self, obj, value):
+        value = toStr(value, self.encoding)
+        super(ExternalAddressField, self).set(obj, value)
+
+    def fromUnicode(self, value):
+        return toStr(value, self.encoding)
+
+
 class IStorageInfo(Interface):
 
     storageName = schema.BytesLine(
@@ -765,11 +788,11 @@ class IStorageInfo(Interface):
                 missing_value='',
                 required=False)
 
-    externalAddress = schema.BytesLine(
+    externalAddress = ExternalAddressField(
                 title=_(u'External Address'),
                 description=_(u'The full address for accessing the object '
                         'on the external storage, e.g. a filename or path.'),
-                default='',
+                default=u'',
                 missing_value='',
                 required=False)
 
@@ -786,11 +809,11 @@ class IExternalFile(IFile):
                 missing_value='',
                 required=False)
 
-    externalAddress = schema.BytesLine(
+    externalAddress = ExternalAddressField(
                title=_(u'External Address'),
                description=_(u'The full address for accessing the object '
                        'on the external storage, e.g. a filename or path.'),
-               default='',
+               default=u'',
                missing_value='',
                required=False)
 
@@ -801,6 +824,9 @@ class IExternalFile(IFile):
             If no target address is given the external address of the
             object is used.
         """
+
+
+# specialized resources
 
 
 class IImage(IResourceAdapter):
