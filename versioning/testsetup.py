@@ -29,6 +29,7 @@ from loops.interfaces import IResource, IIndexAttributes
 from loops.common import LoopsDCAdapter
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
+from loops.config.base import LoopsOptions
 from loops.interfaces import ILoopsObject, IConcept
 from loops.resource import Resource
 from loops.resource import IndexAttributes as ResourceIndexAttributes
@@ -55,6 +56,7 @@ class TestSite(object):
         component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
         component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
         component.provideAdapter(LoopsDCAdapter, (IConcept,), IZopeDublinCore)
+        component.provideAdapter(LoopsOptions)
 
         component.provideAdapter(ConceptType)
         component.provideAdapter(ResourceType)

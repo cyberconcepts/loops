@@ -31,6 +31,9 @@ configuration):
   >>> len(concepts) + len(resources)
   23
 
+  >>> loopsRoot = site['loops']
+  >>> loopsRoot.options = ['useVersioning']
+
 
 Version Information
 ===================
@@ -46,6 +49,8 @@ adapter on the object.
   >>> d001.title
   u'Doc 001'
   >>> vD001 = IVersionable(d001)
+  >>> vD001.versionLevels
+  ['major', 'minor']
 
 If there aren't any versions associated with the object we get the default
 values:

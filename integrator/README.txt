@@ -29,6 +29,10 @@ configuration):
   >>> len(concepts) + len(resources)
   18
 
+  >>> loopsRoot = site['loops']
+  >>> #loopsRoot.options = ['useVersioning:rev']
+  >>> loopsRoot.options = ['useVersioning']
+
 
 External Collections
 ====================

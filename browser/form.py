@@ -617,7 +617,8 @@ class EditObject(FormController, I18NView):
         form = self.request.form
         if form.get('version.create'):
             versionable = IVersionable(obj)
-            level = int(form.get('version.level', 1))
+            #level = int(form.get('version.level', 1))
+            level = int(form.get('version.level', 0))
             version = versionable.createVersion(level)
             notify(ObjectCreatedEvent(version))
             return version

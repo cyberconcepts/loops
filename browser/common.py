@@ -488,12 +488,23 @@ class BaseView(GenericView, I18NView):
     # versioning
 
     @Lazy
+    def versionable(self):
+        return IVersionable(self.target, None)
+
+    @Lazy
     def useVersioning(self):
         if self.globalOptions('useVersioning'):
             return True
         options = getattr(self.controller, 'options', None)
         if options:
             return 'useVersioning' in options.value
+
+    @Lazy
+    def versionLevels(self):
+        if self.versionable is not None:
+            return reversed([dict(token=idx, label=label)
+                        for idx, label in enumerate(self.versionable.versionLevels)])
+        return []
 
     @Lazy
     def versionId(self):

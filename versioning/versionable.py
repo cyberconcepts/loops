@@ -29,9 +29,10 @@ from zope.cachedescriptors.property import Lazy
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.text.mimetypes import extensions
 from cybertools.typology.interfaces import IType
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.interfaces import IResource, IExternalFile
 from loops.versioning.interfaces import IVersionable
 
@@ -67,13 +68,25 @@ class VersionableResource(object):
         value = getattr(self.context, attrName, _not_found)
         if value is _not_found:
             versions = OOBTree()
-            versions['1.1'] = self.context
+            versionId = '.'.join('1' for x in self.versionLevels)
+            #versions['1.1'] = self.context
+            versions[versionId] = self.context
             setattr(self.context, attrName, versions)
-        #self.versions['1.1'] = self.context
+
+    @Lazy
+    def versionLevels(self):
+        options = IOptions(self.master.getLoopsRoot()).useVersioning
+        if options:
+            if isinstance(options, list):
+                return options
+            return ['major', 'minor']
+        return []
 
     @Lazy
     def versionNumbers(self):
-        return self.getVersioningAttribute('versionNumbers', (1, 1))
+        #return self.getVersioningAttribute('versionNumbers', (1, 1))
+        return self.getVersioningAttribute('versionNumbers',
+                                    tuple(1 for x in self.versionLevels))
 
     @Lazy
     def variantIds(self):

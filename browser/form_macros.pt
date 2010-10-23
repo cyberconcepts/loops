@@ -231,9 +231,12 @@
           <label style="display: inline"
                  for="version.create"><span i18n:translate="">
             New version</span>:</label>
-          <select name="version.level">
-              <option value="1" i18n:translate="">minor</option>
-              <option value="0" i18n:translate="">major</option>
+          <select name="version.level"
+                  tal:condition="python: len(view.versionLevels) > 1">
+              <option tal:repeat="level view/versionLevels"
+                      i18n:translate=""
+                      tal:attributes="value level/token"
+                      tal:content="level/label" />
           </select>
         </td>
       </tr>
