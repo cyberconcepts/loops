@@ -482,6 +482,11 @@ div.comment {
     font-weight: bold;
 }
 
+.calendar td {
+    padding: 0;
+    text-align: center;
+}
+
 .calendar td.arrows {
     font-size: 130%;
 }
