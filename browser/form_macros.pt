@@ -230,14 +230,15 @@
                  value="create" />
           <label style="display: inline"
                  for="version.create"><span i18n:translate="">
-            New version</span>:</label>
-          <select name="version.level"
-                  tal:condition="python: len(view.versionLevels) > 1">
+            New version</span></label>
+          <tal:level condition="python: len(view.versionLevels) > 1">:
+            <select name="version.level">
               <option tal:repeat="level view/versionLevels"
                       i18n:translate=""
                       tal:attributes="value level/token"
                       tal:content="level/label" />
-          </select>
+            </select>
+          </tal:level>
         </td>
       </tr>
 </metal:versioning>
