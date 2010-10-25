@@ -186,6 +186,12 @@ class BaseRelationView(BaseView):
     def order(self):
         return self.relation.order
 
+    @Lazy
+    def relationInfo(self):
+        if self.predicate == self.defaultPredicate:
+            return u''
+        return self.predicateTitle
+
 
 class ConceptView(BaseView):
 
