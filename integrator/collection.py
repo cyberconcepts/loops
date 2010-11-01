@@ -137,7 +137,9 @@ class ExternalCollectionAdapter(AdapterBase):
     def getVersions(self, obj):
         versionable = IVersionable(obj)
         return [(adapted(v).externalAddress, v, vid)
-                    for vid, v in versionable.versions.items() if vid != '1.1']
+                    #for vid, v in versionable.versions.items() if vid != '1.1']
+                    for vid, v in versionable.versions.items()
+                    if v.parent is not None]
 
 
 class DirectoryCollectionProvider(object):
