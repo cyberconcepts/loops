@@ -366,6 +366,8 @@ class ExternalFileAdapter(FileAdapter):
                 self.contentType = contentType[0]
     externalAddress = property(getExternalAddress, setExternalAddress)
 
+    localFilename = externalAddress
+
     @property
     def uniqueAddress(self):
         storageParams = self.storageParams
