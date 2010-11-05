@@ -47,9 +47,8 @@
 <!-- portlets -->
 
 <metal:versions define-macro="portlet_versions">
-  <div>
-    <a href="#"
-       tal:attributes="href string:${view/url}/.${macro/info/uniqueId}?loops.viewName=listversions">
+  <div tal:condition="view/showVersions|python:True">
+    <a tal:attributes="href string:${view/url}/.${macro/info/uniqueId}?loops.viewName=listversions">
       <span i18n:translate="">All versions</span>
     </a>
   </div>

@@ -500,6 +500,17 @@ class BaseView(GenericView, I18NView):
             return 'useVersioning' in options.value
 
     @Lazy
+    def showVersions(self):
+        permissions = self.globalOptions('showVersionsPermissions')
+        if permissions:
+            for p in permissions:
+                if checkPermission(p, self.target):
+                    return True
+            else:
+                return False
+        return True
+
+    @Lazy
     def versionLevels(self):
         if self.versionable is not None:
             return reversed([dict(token=idx, label=label)
