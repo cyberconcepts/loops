@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -41,18 +41,20 @@ from loops import util
 from loops.util import _
 
 
-template = ViewPageTemplateFile('search.pt')
+search_template = ViewPageTemplateFile('search.pt')
 
 
 class Search(BaseView):
 
     maxRowNum = 0
 
-    template = template
+    @Lazy
+    def search_macros(self):
+        return self.controller.getTemplateMacros('search', search_template)
 
     @Lazy
     def macro(self):
-        return template.macros['search']
+        return self.search_macros['search']
 
     @property
     def rowNum(self):
@@ -160,8 +162,12 @@ class SearchResults(NodeView):
     """ Provides results as inner HTML """
 
     @Lazy
+    def search_macros(self):
+        return self.controller.getTemplateMacros('search', search_template)
+
+    @Lazy
     def macro(self):
-        return template.macros['search_results']
+        return self.search_macros['search_results']
 
     def __call__(self):
         return innerHtml(self)

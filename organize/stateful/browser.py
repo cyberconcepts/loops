@@ -31,7 +31,7 @@ from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.expert.query import And, Or, State, Type, getObjects
-from loops.search.browser import template as search_template
+from loops.search.browser import search_template
 from loops.util import _
 
 

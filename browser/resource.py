@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,6 @@ class MediaAssetEditForm(EditForm):
 
 class ResourceView(BaseView):
 
-    #template = ViewPageTemplateFile('resource_macros.pt')
     template = resource_macros
 
     @Lazy

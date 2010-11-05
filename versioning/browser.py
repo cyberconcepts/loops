@@ -28,6 +28,7 @@ from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 
 from loops.browser.common import BaseView
+from loops.resource import Resource
 from loops.versioning.interfaces import IVersionable
 from loops.versioning.util import getVersion
 
@@ -40,12 +41,20 @@ class ListVersions(BaseView):
     template = version_macros
 
     @Lazy
+    def version_macros(self):
+        return self.controller.getTemplateMacros('versions', version_macros)
+
+    @Lazy
     def macro(self):
-        return self.template.macros['versions']
+        return self.version_macros['versions']
 
     def versions(self):
         versionable = IVersionable(self.context)
         versions = versionable.versions
         for v in sorted(versions):
-            yield BaseView(versions[v], self.request)
+            if isinstance(versions[v], Resource):
+                from loops.browser.resource import ResourceView
+                yield ResourceView(versions[v], self.request)
+            else:
+                yield BaseView(versions[v], self.request)
 

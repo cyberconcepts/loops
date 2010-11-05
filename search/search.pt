@@ -1,6 +1,6 @@
 <metal:search define-macro="search">
   <div id="search"
-       tal:define="macros item/template/macros;
+       tal:define="macros item/search_macros;
                    idPrefix string:${view/itemNum}.search;
                    formId string:$idPrefix.form;
                    resultsId string:$idPrefix.results">
