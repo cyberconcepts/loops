@@ -10,7 +10,8 @@
 
 
     <metal:footer fill-slot="footer">
-      <div tal:condition="view/editable">
+      <div xtal:condition="view/editable"
+           tal:condition="nothing">
         <span i18n:translate="">For quick creation of notes/links bookmark this link</span>:
         <a href="#"
            tal:attributes="href view/popupCreateObjectForm">Create loops Note</a>
