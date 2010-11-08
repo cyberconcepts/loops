@@ -30,15 +30,18 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
 from zope.cachedescriptors.property import Lazy
 from zope.i18nmessageid import MessageFactory
+from zope.security import checkPermission
 
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.browser.common import schema_macros
 from cybertools.composer.schema.browser.form import Form, CreateForm
 from cybertools.composer.schema.schema import FormState, FormError
+from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
 from loops.browser.common import concept_macros
 from loops.browser.concept import ConceptView, ConceptRelationView
 from loops.browser.node import NodeView
+from loops.common import adapted
 from loops.concept import Concept
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
 from loops.organize.interfaces import IMemberRegistration, IPasswordChange
@@ -93,6 +96,13 @@ class MemberRegistration(NodeView, CreateForm):
     @Lazy
     def macro(self):
         return schema_macros.macros['form']
+
+    def checkPermissions(self):
+        personType = adapted(self.conceptManager['person'])
+        perms = IOptions(personType)('registration.permission')
+        if perms:
+            return checkPermission(perms[0], self.context)
+        return checkPermission('loops.ManageSite', self.context)
 
     @Lazy
     def item(self):
