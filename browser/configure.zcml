@@ -27,11 +27,11 @@
         permission="zope.Public"
         />
 
-  <page for="loops.interfaces.INode"
+  <!--<page for="loops.interfaces.INode"
         name="main.html"
         class="loops.browser.node.NodeView"
         permission="zope.Public"
-        />
+        />-->
 
   <!-- macros -->
 
