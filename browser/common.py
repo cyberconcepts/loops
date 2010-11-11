@@ -722,6 +722,8 @@ class BaseView(GenericView, I18NView):
                   'dojo.require("dijit.form.TimeTextBox"); '
                   'dojo.require("dijit.form.SimpleTextarea"); '
                   'dojo.require("dijit.form.FilteringSelect"); '
+                  'dojo.require("dijit.layout.BorderContainer"); '
+                  'dojo.require("dijit.layout.ContentPane"); '
                   'dojo.require("dojox.data.QueryReadStore"); ')
         cm.register('js-execute', 'dojo.form.all', jsCall=jsCall)
 

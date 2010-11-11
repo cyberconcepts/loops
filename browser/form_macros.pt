@@ -3,15 +3,18 @@
      $Id$ -->
 
 
-<metal:block define-macro="edit" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data"
-          id="dialog_form" class="dialog"
-          dojoType="dijit.form.Form"
-          tal:define="langInfo view/languageInfo;
-                      languages langInfo/availableLanguages;
-                      language langInfo/language;
-                      useI18N view/useI18NForEditing;
-                      innerForm request/inner_form | string:inner_concept_edit_form.html;">
+<form metal:define-macro="edit" i18n:domain="loops"
+      method="post" enctype="multipart/form-data"
+      id="dialog_form" class="dialog"
+      dojoType="dijit.form.Form"
+      tal:define="langInfo view/languageInfo;
+                  languages langInfo/availableLanguages;
+                  language langInfo/language;
+                  useI18N view/useI18NForEditing;
+                  innerForm request/inner_form | string:inner_concept_edit_form.html;">
+  <div dojoType="dijit.layout.BorderContainer"
+       style="width: 60em; height: 600px">
+    <div dojoType="dijit.layout.ContentPane" region="center">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="version"
@@ -59,20 +62,24 @@
           </tal:custom>
           <tr metal:use-macro="view/template/macros/versioning" />
           <tr metal:use-macro="view/template/macros/states" />
-          <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
       </table>
-    </form>
-</metal:block>
+    </div>
+    <div metal:use-macro="view/template/macros/buttons" />
+  </div>
+</form>
 
 
-<metal:block define-macro="create" i18n:domain="loops">
-    <form method="post" enctype="multipart/form-data"
-          id="dialog_form" class="dialog"
-          tal:define="qualifier request/qualifier | string:resource;
-                      innerForm request/inner_form | string:inner_form.html;
-                      typeToken view/typeToken;
-                      fixedType view/fixedType">
+<div metal:define-macro="create" i18n:domain="loops"
+     dojoType="dijit.layout.BorderContainer"
+     style="width: 60em; height: 600px">
+  <form method="post" enctype="multipart/form-data"
+        id="dialog_form" class="dialog"
+        tal:define="qualifier request/qualifier | string:resource;
+                    innerForm request/inner_form | string:inner_form.html;
+                    typeToken view/typeToken;
+                    fixedType view/fixedType">
+    <div dojoType="dijit.layout.ContentPane" region="center">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="fixed_type"
@@ -115,11 +122,12 @@
                       condition="customMacro">
             <tr metal:use-macro="customMacro" />
           </tal:custom>
-          <tr metal:use-macro="view/template/macros/buttons" />
         </tbody>
       </table>
-    </form>
-</metal:block>
+    </div>
+    <div metal:use-macro="view/template/macros/buttons" />
+  </form>
+</div>
 
 
 <metal:assignments define-macro="assignments"
@@ -272,8 +280,8 @@
 </metal:states>
 
 
-<tr metal:define-macro="buttons" i18n:domain="" class="buttons">
-            <td colspan="5">
+<div metal:define-macro="buttons" i18n:domain="" class="buttons"
+     dojoType="dijit.layout.ContentPane" region="bottom">
               <input value="Save" type="submit"
                      i18n:attributes="value"
                      tal:attributes="onClick python: view.closeAction(True) or
@@ -282,8 +290,7 @@
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
                      tal:attributes="onClick view/closeAction">
-            </td>
-</tr>
+</div>
 
 
 <!-- overridden field renderers -->

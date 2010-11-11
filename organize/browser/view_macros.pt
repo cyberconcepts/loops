@@ -58,9 +58,12 @@
 </metal:block>
 
 
-<metal:block define-macro="send_email">
-    <form method="post" id="sendEmail_form" name="sendEmail" class="dialog"
-          dojoType="dijit.form.Form">
+<form metal:define-macro="send_email"
+      method="post" id="sendEmail_form" name="sendEmail" class="dialog"
+      dojoType="dijit.form.Form">
+  <div dojoType="dijit.layout.BorderContainer"
+       style="width: 65em; height: 600px">
+    <div dojoType="dijit.layout.ContentPane" region="center">
       <input type="hidden" name="form.action" value="send_email" />
       <div class="heading">
         <span i18n:translate="">Send Link by Email</span> -
@@ -92,6 +95,7 @@
                  onClick="p = document.forms.sendEmail['recipients:list'];
                           for (i in p) p[i].checked=this.checked;" />
           <span i18n:translate="">Toggle all</span></div>
+      </div>
       <div>
         <label i18n:translate="" for="addrecipients">Additional recipients</label>
         <div>
@@ -99,6 +103,8 @@
                     dojoType="dijit.form.SimpleTextarea"
                     style="width: 60em"></textarea></div>
       </div>
+    </div>
+    <div dojoType="dijit.layout.ContentPane" region="bottom">
       <div class="buttons">
         <input value="Send email" type="submit"
                onClick="return closeDialog(true)"
@@ -106,5 +112,6 @@
         <input type="button" value="Cancel"
                onClick="return closeDialog(false)"
                i18n:attributes="value"></div>
-    </form>
-</metal:block>
+    </div>
+  </div>
+</form>
