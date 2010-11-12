@@ -13,7 +13,7 @@
                   useI18N view/useI18NForEditing;
                   innerForm request/inner_form | string:inner_concept_edit_form.html;">
   <div dojoType="dijit.layout.BorderContainer"
-       style="width: 60em; height: 600px">
+       style="width: 70em; height: 600px">
     <div dojoType="dijit.layout.ContentPane" region="center">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
@@ -72,7 +72,7 @@
 
 <div metal:define-macro="create" i18n:domain="loops"
      dojoType="dijit.layout.BorderContainer"
-     style="width: 60em; height: 600px">
+     style="width: 70em; height: 600px">
   <form method="post" enctype="multipart/form-data"
         id="dialog_form" class="dialog"
         tal:define="qualifier request/qualifier | string:resource;
