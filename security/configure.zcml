@@ -37,28 +37,48 @@
   <zope:subscriber handler="loops.security.common.addGroupMembershipOnAssignment" />
   <zope:subscriber handler="loops.security.common.removeGroupMembershipOnDeassignment" />
 
+  <!-- views -->
+
   <browser:page
         for="zope.annotation.interfaces.IAnnotatable"
         name="permissions.html"
         permission="zope.Security"
-        template="manage_permissionform.pt"
-        class="loops.security.browser.PermissionView"
+        template="browser/manage_permissionform.pt"
+        class="loops.security.browser.admin.PermissionView"
         menu="zmi_actions" title="Edit Permissions" />
 
   <browser:page
         for="loops.interfaces.IConcept"
         name="grant.html"
         permission="zope.Security"
-        template="granting.pt"
-        class="loops.security.browser.Granting"
+        template="browser/granting.pt"
+        class="loops.security.browser.admin.Granting"
         menu="zmi_actions" title="Grant" />
 
   <browser:page
         for="loops.interfaces.IConcept"
         name="manage_workspace.html"
         permission="zope.Security"
-        template="manage_workspace.pt"
-        class="loops.security.browser.ManageWorkspaceView"
+        template="browser/manage_workspace.pt"
+        class="loops.security.browser.admin.ManageWorkspaceView"
         menu="zmi_actions" title="Manage Workspace" />
+
+  <!-- end user (audit) views -->
+
+  <zope:adapter
+      name="role_permission_by_type.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.security.browser.audit.RolePermissionsByType"
+      permission="loops.ManageSite" />
+
+  <zope:adapter
+      name="workspace_assignments.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.security.browser.audit.WorkspaceAssignments"
+      permission="loops.ManageSite" />
 
 </configure>

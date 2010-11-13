@@ -81,15 +81,15 @@ fieldset.box table.listing td {
     padding: 0 1px 0 1px;
 }
 
-table.listing td.number {
+table.listing .number {
     text-align: right;
 }
 
-table.listing td.center {
+table.listing .center {
     text-align: center;
 }
 
-table.listing td.nowrap {
+table.listing .nowrap {
     white-space: nowrap;
 }
 

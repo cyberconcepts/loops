@@ -1,0 +1,58 @@
+<html i18n:domain="loops">
+<!-- $Id$ -->
+
+
+<metal:macro define-macro="role_permissions">
+    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    <div>
+      <form>
+        <b>Type:</b>
+        <span tal:condition="python:len(item.types) <= 1">
+          <span tal:content="item/selectedType/label" />&nbsp;&nbsp;&nbsp;</span>
+        <span tal:condition="python:len(item.types) > 1">
+          <select name="selected_type"
+                  onchange="submit()">
+            <option tal:repeat="type item/types"
+                    tal:content="type/label"
+                    tal:attributes="value type/token;
+                                    selected python:
+                            type['token'] == item.selectedType['token']">View</option>
+          </select>&nbsp;&nbsp;&nbsp;</span>
+        <b>Permission:</b>
+        <span tal:condition="python:len(item.permissions) <= 1"
+              tal:content="item/selectedPermission" />
+        <select name="selected_permission"
+                tal:condition="python:len(item.permissions) > 1"
+                onchange="submit()">
+            <option tal:repeat="perm item/permissions"
+                    tal:content="perm"
+                    tal:attributes="value perm;
+                                    selected python:
+                            perm == item.selectedPermission">View</option>
+        </select>
+      </form>
+    </div>
+    <table class="listing">
+      <tr>
+        <th>Object</th>
+        <th class="center"
+            tal:repeat="role item/roles"
+            tal:content="role" />
+      </tr>
+      <tr tal:repeat="obj item/objects">
+        <td tal:content="obj/title" />
+        <td class="center"
+            tal:repeat="setting obj/settings"
+            tal:content="setting" />
+      </tr>
+    </table>
+</metal:macro>
+
+
+<metal:macro define-macro="workspace_assignments">
+    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    blubb
+</metal:macro>
+
+
+</html>
