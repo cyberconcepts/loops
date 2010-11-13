@@ -39,8 +39,11 @@
             tal:repeat="role item/roles"
             tal:content="role" />
       </tr>
-      <tr tal:repeat="obj item/objects">
-        <td tal:content="obj/title" />
+      <tr tal:repeat="obj item/objects"
+          tal:attributes="class python: repeat['obj'].odd() and 'even' or 'odd';">
+        <td>
+          <a tal:attributes="href python:view.getUrlForTarget(obj['object'])"
+             tal:content="obj/title" /></td>
         <td class="center"
             tal:repeat="setting obj/settings"
             tal:content="setting" />
@@ -59,7 +62,8 @@
           <a tal:attributes="href python:view.getUrlForTarget(ws)"
              tal:content="ws/title" /></th>
       </tr>
-      <tr tal:repeat="person item/persons">
+      <tr tal:repeat="person item/persons"
+          tal:attributes="class python: repeat['person'].odd() and 'even' or 'odd';">
         <td>
           <a tal:attributes="href python:view.getUrlForTarget(person)"
              tal:content="person/title" /></td>

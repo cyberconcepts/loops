@@ -66,7 +66,8 @@ class RolePermissionsByType(BaseSecurityView):
         if not self.selectedType:
             return []
         result = self.selectedType['object'].getChildren([self.typePredicate])
-        return [dict(title=o.title, settings=self.getPermissionSettings(o))
+        return [dict(title=o.title, object=o,
+                     settings=self.getPermissionSettings(o),)
                         for o in result]
 
     def getPermissionSettings(self, obj):
