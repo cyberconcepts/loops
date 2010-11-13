@@ -51,7 +51,23 @@
 
 <metal:macro define-macro="workspace_assignments">
     <metal:headline use-macro="view/concept_macros/concepttitle" />
-    blubb
+    <table class="listing">
+      <tr>
+        <th>Person</th>
+        <th class="center"
+            tal:repeat="ws item/workspaces">
+          <a tal:attributes="href python:view.getUrlForTarget(ws)"
+             tal:content="ws/title" /></th>
+      </tr>
+      <tr tal:repeat="person item/persons">
+        <td>
+          <a tal:attributes="href python:view.getUrlForTarget(person)"
+             tal:content="person/title" /></td>
+        <td class="center"
+            tal:repeat="assignment python:item.getAssignments(person)"
+            tal:content="assignment" />
+      </tr>
+    </table>
 </metal:macro>
 
 
