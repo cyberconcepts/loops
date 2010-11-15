@@ -2,9 +2,10 @@
 <!-- $Id$ -->
 
 
-<metal:comments define-macro="comments"
-                tal:define="comments nocall:view/comments"
-                tal:condition="comments/allowed">
+<div id="comments"
+     metal:define-macro="comments"
+     tal:define="comments nocall:view/comments"
+     tal:condition="comments/allowed">
   <br />
   <h2 i18n:translate="">Comments</h2>
   <metal:comments define-macro="comments_listing"
@@ -24,14 +25,15 @@
       </div>
     </tal:comment>
   </metal:comments>
-  <div metal:define-macro="comments_button_add"
+  <div id="comments-button-add"
+       metal:define-macro="comments_button_add"
        tal:define="comments nocall:comments|nocall:view/comments"
        class="button">
     <a i18n:translate=""
        tal:attributes="href comments/addUrl;
                        onClick comments/addOnClick">Add Comment</a>
   </div>
-</metal:comments>
+</div>
 
 
 <metal:block define-macro="create_comment">

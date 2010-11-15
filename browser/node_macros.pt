@@ -220,7 +220,7 @@
 
 
 <metal:actions define-macro="object_actions">
-  <div class="object-actions"
+  <div id="object-actions" class="object-actions"
        tal:define="target nocall:target|nothing;">
     <tal:actions repeat="action python:view.getActions('object', target=target)">
       <metal:action use-macro="action/macro" />

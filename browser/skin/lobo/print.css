@@ -1,0 +1,17 @@
+/*
+ $Id$
+
+*/
+
+body {
+    font-size: 12px;
+}
+
+#top, #portlets, #footer, #comments, #object-actions {
+    display: none;
+}
+
+#content {
+    width: 100%;
+    color: Black;
+}

@@ -6,7 +6,8 @@
      tal:attributes="class python:
             'body container' + (view.request.get('showgrid') and ' showgrid' or '')">
 
-    <div metal:define-macro="global">
+    <div id="top"
+         metal:define-macro="global">
       <div class="span-8 last"
            metal:define-slot="top">
         <a name="top" metal:define-slot="logo"
@@ -15,7 +16,7 @@
                tal:attributes="src string:${resourceBase}logo.png" /></a>
         <hr />
       </div>
-      <div class="prepend-4 span-4 last"
+      <div id="top-actions" class="prepend-4 span-4 last"
            metal:define-slot="top-actions">
           <tal:action repeat="macro controller/macros/top_actions">
             <metal:action use-macro="macro" />
@@ -37,7 +38,7 @@
       </metal:content>
     </div>
 
-    <div class="span-2 last">
+    <div id="portlets" class="span-2 last">
       <tal:portlet repeat="macro controller/macros/portlet_left">
         <metal:portlet use-macro="macro" />
       </tal:portlet>
