@@ -882,6 +882,12 @@ To be done...
   [u'Note', u'Type']
 
 
+Security
+========
+
+  >>> from loops.security.browser import admin, audit
+
+
 Import/Export
 =============
 

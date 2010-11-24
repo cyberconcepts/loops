@@ -109,7 +109,7 @@ class WorkspaceAssignments(BaseSecurityView):
         return self.template.macros['workspace_assignments']
 
     @Lazy
-    def workspacePrediactes(self):
+    def workspacePredicates(self):
         result = [self.conceptManager.get(p)
                     for p in ('isowner', 'ismaster', 'ismember')]
         return [p for p in result if p is not None]
@@ -122,6 +122,19 @@ class WorkspaceAssignments(BaseSecurityView):
             return type.getChildren([self.typePredicate])
         return []
 
+    def getAssignments(self, workspace):
+        rels = []
+        for wsp in self.workspacePredicates:
+            rels.append(workspace.getChildRelations([wsp]))
+        return rels
+
+
+class PersonWorkspaceAssignments(WorkspaceAssignments):
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['person_workspace_assignments']
+
     @Lazy
     def persons(self):
         tPerson = self.conceptManager['person']
@@ -130,5 +143,5 @@ class WorkspaceAssignments(BaseSecurityView):
     def getAssignments(self, person):
         rels = []
         for ws in self.workspaces:
-            rels.append(ws.getChildRelations(self.workspacePrediactes, person))
+            rels.append(ws.getChildRelations(self.workspacePredicates, person))
         return [', '.join([r.predicate.title for r in prels]) for prels in rels]

@@ -56,6 +56,30 @@
     <metal:headline use-macro="view/concept_macros/concepttitle" />
     <table class="listing">
       <tr>
+        <th></th>
+        <th class="center"
+            tal:repeat="pred item/workspacePredicates"
+            tal:content="pred/title" />
+      </tr>
+      <tr tal:repeat="ws item/workspaces"
+          tal:attributes="class python: repeat['ws'].odd() and 'even' or 'odd';">
+        <td>
+          <a tal:attributes="href python:view.getUrlForTarget(ws)"
+             tal:content="ws/title" /></td>
+        <td class="center"
+            tal:repeat="rels python:item.getAssignments(ws)">
+          <div tal:repeat="rel rels">
+            <a tal:attributes="href python:view.getUrlForTarget(rel.second)"
+               tal:content="rel/second/title" /></div></td>
+      </tr>
+    </table>
+</metal:macro>
+
+
+<metal:macro define-macro="person_workspace_assignments">
+    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    <table class="listing">
+      <tr>
         <th>Person</th>
         <th class="center"
             tal:repeat="ws item/workspaces">
