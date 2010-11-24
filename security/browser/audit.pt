@@ -3,7 +3,7 @@
 
 
 <metal:macro define-macro="role_permissions">
-    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    <metal:headline use-macro="view/concept_macros/concepttitle" /><br />
     <div>
       <form>
         <b>Type:</b>
@@ -53,7 +53,7 @@
 
 
 <metal:macro define-macro="workspace_assignments">
-    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    <metal:headline use-macro="view/concept_macros/concepttitle" /><br />
     <table class="listing">
       <tr>
         <th></th>
@@ -77,7 +77,7 @@
 
 
 <metal:macro define-macro="person_workspace_assignments">
-    <metal:headline use-macro="view/concept_macros/concepttitle" />
+    <metal:headline use-macro="view/concept_macros/concepttitle" /><br />
     <table class="listing">
       <tr>
         <th>Person</th>
