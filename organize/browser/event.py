@@ -180,7 +180,8 @@ class CalendarInfo(NodeView):
             relViews = (view.childViewFactory(r, self.request, contextIsSecond=True)
                             for r in tEvent.getChildRelations([hasType], sort=None))
             events = sorted((rv for rv in relViews
-                            if rv.adapted.start >= start and rv.adapted.start < end),
+                            #if rv.adapted.start >= start and rv.adapted.start < end),
+                            if rv.adapted.end >= start and rv.adapted.start <= end),
                         key=lambda x: (x.adapted.start, x.adapted.end))
             for ev in events:
                 startDay = ev.adapted.start.day
