@@ -208,8 +208,8 @@ fieldset.box td {
 
 .page-actions {
     position: absolute;
-    top: 1em;
-    left: 880px;
+    top: 0.8em;
+    margin-left: 18.5em;
 }
 
 .top image {
