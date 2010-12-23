@@ -79,6 +79,9 @@ class OfficeFile(ExternalFileAdapter):
     @Lazy
     def docPropertyDom(self):
         fn = self.docFilename
+        root, ext = os.path.splitext(fn)
+        if not ext.lower() in self.fileExtensions:
+            return []
         try:
             zf = ZipFile(fn, 'r')
         except IOError, e:
