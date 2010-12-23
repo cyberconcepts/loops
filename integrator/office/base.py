@@ -71,28 +71,42 @@ class OfficeFile(ExternalFileAdapter):
     externalAddress = property(ExternalFileAdapter.getExternalAddress,
                                setExternalAddress)
 
-    def processDocument(self):
+    @Lazy
+    def docFilename(self):
         subDir = self.storageParams.get('subdirectory')
-        fn = self.storage.getDir(self.externalAddress, subDir)
-        # open ZIP file, process properties, set version property in file
+        return self.storage.getDir(self.externalAddress, subDir)
+
+    @Lazy
+    def docPropertyDom(self):
+        fn = self.docFilename
         try:
             zf = ZipFile(fn, 'r')
         except IOError, e:
             from logging import getLogger
             self.logger.warn(e)
             return
-        #print '***', zf.namelist()
         if self.propFileName not in zf.namelist():
             self.logger.warn('Custom properties not found in file %s.' %
                              self.externalAddress)
         propsXml = zf.read(self.propFileName)
-        dom = etree.fromstring(propsXml)
+        zf.close()
+        return etree.fromstring(propsXml)
+
+    def getDocProperty(self, pname):
+        for p in self.docPropertyDom:
+            name = p.attrib.get('name')
+            if name == pname:
+                return p[0].text
+        return None
+
+    def processDocument(self):
         changed = False
         docVersion = None
         version = IVersionable(self.context).versionId
         strType = ('{http://schemas.openxmlformats.org/'
                    'officeDocument/2006/docPropsVTypes}lpwstr')
         attributes = {}
+        dom = self.docPropertyDom
         for p in dom:
             name = p.attrib.get('name')
             value = p[0].text
@@ -107,7 +121,7 @@ class OfficeFile(ExternalFileAdapter):
                     changed = True
             elif attr is not None:
                 attributes[attr] = value
-        zf.close()
+        fn = self.docFilename
         if changed:
             newFn = fn + '.new'
             zf = ZipFile(fn, 'r')
