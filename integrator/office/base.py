@@ -87,7 +87,7 @@ class OfficeFile(ExternalFileAdapter):
         except IOError, e:
             from logging import getLogger
             self.logger.warn(e)
-            return
+            return []
         if self.propFileName not in zf.namelist():
             self.logger.warn('Custom properties not found in file %s.' %
                              self.externalAddress)
