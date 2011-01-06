@@ -42,7 +42,7 @@ class SearchResults(NodeView):
 
     @Lazy
     def search_macros(self):
-        return searchMacrosTemplate.macros
+        return self.controller.getTemplateMacros('search', searchMacrosTemplate)
 
     @Lazy
     def macro(self):
