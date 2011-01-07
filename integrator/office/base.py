@@ -56,7 +56,7 @@ class OfficeFile(ExternalFileAdapter):
 
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
-    fileExtensions = ('.docm', '.docx', 'dotm', 'dotx',
+    fileExtensions = ('.docm', '.docx', 'dotm', 'dotx', 'pptx', 'potx', 'ppsx',
                       '.xlsm', '.xlsx', '.xltm', '.xltx')
 
     @Lazy
