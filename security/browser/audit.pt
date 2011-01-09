@@ -36,6 +36,7 @@
       <tr>
         <th>Object</th>
         <th class="center"
+            i18n:translate=""
             tal:repeat="role item/roles"
             tal:content="role" />
       </tr>
