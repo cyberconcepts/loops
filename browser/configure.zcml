@@ -750,5 +750,6 @@
 
   <include package=".skin" />
   <include package=".lobo" />
+  <include package=".mobile" />
 
 </configure>

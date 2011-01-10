@@ -1,0 +1,9 @@
+<!-- $Id$ -->
+
+<configure xmlns:zope="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="loops">
+
+  <zope:module module="loops.browser.mobile.default" />
+
+</configure>

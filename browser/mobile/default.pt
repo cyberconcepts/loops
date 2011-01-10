@@ -1,0 +1,25 @@
+<body metal:define-macro="body">
+    <div id="content">
+        <tal:sub repeat="view view/layouts/center">
+          <metal:sub use-macro="view/renderer" />
+        </tal:sub>
+    </div>
+</body>
+
+
+<metal:content define-macro="center">
+    <tal:sub repeat="view view/layouts/content">
+      <metal:sub use-macro="view/renderer" />
+    </tal:sub>
+</metal:content>
+
+
+<metal:content define-macro="homepage">
+    <h1>loops mobile</h1>
+</metal:content>
+
+
+<metal:content define-macro="notfound">
+  <tal:status define="dummy python: request.response.setStatus(404)" />
+  <h1 i18n:translate="">Page not found</h1>
+</metal:content>
