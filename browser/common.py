@@ -218,8 +218,6 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def modifiedRaw(self):
-        """ get date/time of last modification
-        """
         d = getattr(self.adapted, 'modified', None)
         if not d:
             dc = IZopeDublinCore(self.context)
@@ -234,7 +232,7 @@ class BaseView(GenericView, I18NView):
         return d and d.strftime('%Y-%m-%d %H:%M') or ''
 
     @Lazy
-    def creators(self):
+    def creatorsRaw(self):
         # TODO: use an IAuthorInfo (or similar) adapter
         creators = getattr(self.adapted, 'authors', None) or []
         if not creators:
@@ -246,7 +244,15 @@ class BaseView(GenericView, I18NView):
                     creators.append(principal.title)
                 except PrincipalLookupError:
                     creators.append(c)
-        return ', '.join(creators)
+        return creators
+
+    @Lazy
+    def creators(self):
+        return ', '.join(self.creatorsRaw)
+
+    @Lazy
+    def lastCreator(self):
+        return self.creatorsRaw and self.creatorsRaw[-1] or u''
 
     @Lazy
     def loopsRoot(self):

@@ -121,8 +121,14 @@ class BaseRelationView(BaseView):
             self.other = relation.second
         self.context = getVersion(self.context, request)
         self.predicate = relation.predicate
+        self.predicates = [self.predicate]  # allow for more than one relation
         self.relation = relation
+        self.relations = [relation]
         self.request = request
+
+    @Lazy
+    def hash(self):
+        return '%s:%s' % (id(self.relation.first), id(self.relation.second))
 
     @Lazy
     def adapted(self):
@@ -172,7 +178,7 @@ class BaseRelationView(BaseView):
 
     @Lazy
     def predicateTitle(self):
-        return self.predicate.title
+        return ', ' .join(p.title for p in self.predicates)
 
     @Lazy
     def predicateUrl(self):
@@ -263,7 +269,7 @@ class ConceptView(BaseView):
         instance.view = self
         return instance
 
-    def getChildren(self, topLevelOnly=True, sort=True):
+    def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True):
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         params = self.params
@@ -348,6 +354,17 @@ class ConceptView(BaseView):
             #yield self.childViewFactory(r, self.request, contextIsSecond=True)
             from loops.browser.resource import ResourceRelationView
             yield ResourceRelationView(r, self.request, contextIsSecond=True)
+
+    def unique(self, rels):
+        result = Jeep()
+        for r in rels:
+            existing = result.get(r.hash)
+            if existing is not None:
+                existing.relations.append(r)
+                existing.predicates.append(r.predicate)
+            else:
+                result[r.hash] = r
+        return result.values()
 
     @Lazy
     def view(self):
