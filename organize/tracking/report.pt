@@ -4,7 +4,6 @@
 <metal:report define-macro="report"
               tal:define="info item/getData">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
-  <br />
   <metal:listing use-macro="info/macro" />
 </metal:report>
 

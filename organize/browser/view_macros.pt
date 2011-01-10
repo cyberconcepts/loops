@@ -17,11 +17,12 @@
         <metal:fields use-macro="view/concept_macros/conceptfields" />
         <h2 i18n:translate="">Actions</h2>
         <ul>
-          <li><a href="change_password.html"
-                 i18n:translate="">Change Password</a></li>
-          <li><a href="change_password.html"
-                 tal:condition="python:item.globalOptions('organize.useFilters')"
-                 i18n:translate="">Edit Filters</a></li>
+          <li>
+            <a href="change_password.html"
+               i18n:translate="">Change Password</a></li>
+          <li tal:condition="python:item.globalOptions('organize.useFilters')">
+            <a href="edit_filters.html"
+               i18n:translate="">Edit Filters</a></li>
         </ul>
       </metal:block>
     </metal:block>
