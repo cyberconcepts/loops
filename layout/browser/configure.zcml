@@ -55,6 +55,13 @@
 
   <zope:adapter
       name="layout"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.layout.browser.concept.ConceptView" />
+
+  <zope:adapter
+      name="layout"
       for="loops.interfaces.ITextDocument
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"

@@ -31,7 +31,7 @@ from zope.traversing.api import getName
 
 from cybertools.composer.layout.base import Layout, LayoutInstance
 from cybertools.composer.layout.interfaces import ILayoutInstance
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.layout.interfaces import ILayoutNode, ILayoutNodeContained
 from loops.view import Node
 
@@ -109,7 +109,7 @@ class TargetLayoutInstance(NodeLayoutInstance):
         result = super(TargetLayoutInstance, self).getLayouts(region)
         names = region.layouts.keys()
         pageName = self.viewAnnotations.get('pageName', u'')
-        obj = self.target.context
+        obj = baseObject(self.target)
         tp = obj.getType()
         #found = False
         currentRoot = self.context.getMenu()
