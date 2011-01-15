@@ -34,6 +34,7 @@ from zope.interface import implements
 
 from cybertools.media.asset import MediaAssetFile
 from cybertools.storage.interfaces import IExternalStorage
+import cybertools.util.date
 from loops.media.interfaces import IMediaAsset
 from loops.resource import ExternalFileAdapter
 from loops.type import TypeInterfaceSourceList
@@ -97,6 +98,13 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
         if not d:
             dp = self.getDataPath()
             if dp is not None:
+                name, ext = os.path.splitext(os.path.basename(dp))
+                if len(name) == 14 and name.isdigit():
+                    # filename representing EXIF date as produced by renrot
+                    try:
+                        return cybertools.util.date.strptime(name, '%Y%m%d%H%M%S')
+                    except:
+                        pass
                 try:
                     return datetime.fromtimestamp(os.path.getmtime(dp))
                 except Exception, e:
