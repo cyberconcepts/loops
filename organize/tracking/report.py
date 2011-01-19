@@ -208,7 +208,7 @@ class RecentChanges(TrackingStats):
                 sameChanged = changed.get(track.taskId)
                 if sameChanged and sameChanged.timeStamp < track.timeStamp + 60:
                     # skip change immediate after creation
-                    if result[-1].taskId == track.taskId:
+                    if result and result[-1].taskId == track.taskId:
                         result.pop()
                 new[track.taskId] = track
                 result.append(track)
