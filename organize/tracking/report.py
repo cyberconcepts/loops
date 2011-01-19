@@ -197,6 +197,7 @@ class RecentChanges(TrackingStats):
         sizeOption = self.options('size')
         size = int(self.request.form.get('size') or
                    (sizeOption and sizeOption[0]) or 15)
+        newOnly = self.options.new_only
         new = {}
         changed = {}
         result = []
@@ -214,11 +215,12 @@ class RecentChanges(TrackingStats):
                 continue
             if track.data['action'] == 'modify' and track.taskId not in changed:
                 changed[track.taskId] = track
-                result.append(track)
+                if not newOnly:
+                    result.append(track)
                 continue
         return dict(data=[TrackDetails(self, tr) for tr in result],
                     macro=self.macros['recent_changes'],
-                    showNewColumn=True)
+                    showNewColumn=not newOnly)
 
 
 class TrackDetails(BaseView):
