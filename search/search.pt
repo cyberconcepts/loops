@@ -1,4 +1,5 @@
-<metal:search define-macro="search">
+<metal:search define-macro="search"
+              i18n:domain="loops">
   <div id="search"
        tal:define="macros item/search_macros;
                    idPrefix string:${view/itemNum}.search;
