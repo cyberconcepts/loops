@@ -73,3 +73,6 @@ class IWorkspaceInformation(Interface):
     propagateRolePermissions = Attribute('Whose role permissions should be '
                     'propagated to children (workspace_informaton or parent)?')
 
+    propagateParentSecurity = Attribute('Should the security settings of '
+                    'the workspace parent be propagated to children?')
+

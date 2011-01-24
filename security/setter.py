@@ -151,9 +151,11 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
         setter = ISecuritySetter(adapted(relation.second))
         setter.setDefaultRolePermissions()
         setter.acquireRolePermissions()
-        setter.copyPrincipalRoles(self, revert)
         wi = baseObject(self.context).workspaceInformation
-        if wi:
+        if wi and not wi.propagateParentSecurity:
+             return
+        setter.copyPrincipalRoles(self, revert)
+        if wi: 
             setter.copyPrincipalRoles(ISecuritySetter(wi), revert)
         setter.propagateSecurity(revert, updated)
 
