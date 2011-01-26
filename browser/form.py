@@ -219,7 +219,8 @@ class EditObjectForm(ObjectForm):
     def assignments(self):
         for c in self.target.getConceptRelations():
             r = ConceptRelationView(c, self.request)
-            if r.isProtected: continue
+            if r.isProtected:
+                continue
             yield r
 
 
@@ -242,7 +243,9 @@ class EditConceptForm(EditObjectForm):
     def assignments(self):
         for c in self.target.getParentRelations():
             r = ConceptRelationView(c, self.request)
-            if not r.isProtected and r.context != self.target:
+            if r.isProtected or r.isHidden(r.relation):
+                continue
+            if r.context != self.target:
                 yield r
 
 

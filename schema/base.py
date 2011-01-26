@@ -62,7 +62,7 @@ class Relation(Field):
                               instanceName='relation'))
 
     def __init__(self, *args, **kw):
-        self.target_types = kw.pop('target_types')
+        self.target_types = kw.pop('target_types', ())
         super(Relation, self).__init__(*args, **kw)
 
 
@@ -73,10 +73,11 @@ class RelationSet(List):
     __typeInfo__ = ('relationset',
                     FieldType('relationset', 'relationset',
                               u'A field representing a sequence of related objects.',
-                              instanceName='relationset'))
+                              instanceName='relationset',
+                              displayRenderer='display_relationset'))
 
     def __init__(self, *args, **kw):
-        self.target_types = kw.pop('target_types')
+        self.target_types = kw.pop('target_types', ())
         self.selection_view = kw.pop('selection_view', None)
         super(RelationSet, self).__init__(*args, **kw)
 

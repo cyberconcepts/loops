@@ -32,6 +32,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.typology.interfaces import IType
 from cybertools.knowledge.interfaces import IKnowledgeElement, IKnowledgeProvider
 from cybertools.knowledge.knowing import Knowing
+from loops.common import ParentRelationSetProperty, ChildRelationSetProperty
 from loops.interfaces import IConcept, IResource
 from loops.i18n.common import I18NAdapterBase
 from loops.knowledge.interfaces import IPerson, ITask, ITopic
@@ -81,6 +82,11 @@ class Person(BasePerson, Knowing, KnowledgeAdapterMixin):
     """ A typeInterface adapter for concepts of type 'person', including
         knowledge/learning management features.
     """
+
+    _adapterAttributes = BasePerson._adapterAttributes + ('knowledge',)
+    _noexportAttributes = ('knowledge',)
+
+    knowledge = ParentRelationSetProperty('knows')
 
     implements(IPerson)
 

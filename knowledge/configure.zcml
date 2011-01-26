@@ -79,6 +79,8 @@
 
   <!-- other adapters -->
 
+  <zope:adapter factory="loops.knowledge.schema.PersonSchemaFactory" />
+
   <zope:adapter factory="loops.knowledge.setup.SetupManager"
                 name="knowledge" />
 

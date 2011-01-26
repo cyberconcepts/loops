@@ -130,6 +130,10 @@ fulfill the position offered:
   >>> [list(d)[0].title for k, d in prov]
   ['Objectorienting Programming', 'oopython.pdf']
 
+Controlling knowledge-related form fields via a schema factory
+--------------------------------------------------------------
+
+  >>> from loops.knowledge.schema import PersonSchemaFactory
 
 Views that make use of the knowledge management modules
 -------------------------------------------------------

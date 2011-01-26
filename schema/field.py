@@ -76,7 +76,10 @@ class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
                 for v in value]
 
     def display(self, value):
-        return ' | '.join([v.title for v in value])
+        nodeView = self.clientInstance.view.nodeView
+        return [dict(url=nodeView.getUrlForTarget(baseObject(v)),
+                     label=v.title) for v in value]
+        #return ' | '.join([v.title for v in value])
 
     def unmarshall(self, value):
         return [util.getObjectForUid(v) for v in value]

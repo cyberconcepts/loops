@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -32,8 +32,9 @@ from cybertools.knowledge.interfaces import IKnowledgeElement
 from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.organize.interfaces import IPerson as IBasePerson
 from loops.organize.interfaces import ITask as IBaseTask
+from loops.schema.base import Relation, RelationSet
 
-_ = MessageFactory('zope')
+_ = MessageFactory('loops')
 
 # TODO: separate interfaces for viewing and changing methods!
 
@@ -41,6 +42,12 @@ _ = MessageFactory('zope')
 class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
     """ A person, including knowledge/learning management features.
     """
+
+    knowledge = RelationSet(
+            title=_(u'Knowledge'),
+            description=_(u'The knowledge elements for this person.'),
+            #target_types=('topic',),   # set via global option knowledge.element
+            required=False)
 
 
 class ITask(IBaseTask, IRequirementProfile, ILoopsAdapter):

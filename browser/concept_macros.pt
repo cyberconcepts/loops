@@ -69,9 +69,17 @@
 
 
 <metal:email define-macro="display_email">
-      <a href="#"
-         tal:attributes="href string:mailto:$value"
+      <a tal:attributes="href string:mailto:$value"
          tal:content="value"></a>
+</metal:email>
+
+
+<metal:email define-macro="display_relationset">
+    <span tal:repeat="elem value">
+      <a tal:attributes="href elem/url"
+         tal:content="elem/label"></a>
+      <tal:separator condition="not:repeat/elem/end"> | </tal:separator>
+    </span>
 </metal:email>
 
 
@@ -107,7 +115,6 @@
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description;
-                              xx_predicate related/predicate/title|string:;
                               predicate related/predicateTitle;
                               info python: ' | '.join(
                                     t for t in (description, predicate) if t)">
