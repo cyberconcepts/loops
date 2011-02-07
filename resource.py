@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ $Id$
 from cStringIO import StringIO
 from persistent import Persistent
 from zope import component, schema
-from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.file.image import Image
@@ -74,7 +73,10 @@ class ResourceManager(BTreeContainer):
     implements(IResourceManager, ILoopsContained)
 
     def getLoopsRoot(self):
-        return zapi.getParent(self)
+        return getParent(self)
+
+    def getConceptManager(self):
+        return self.getLoopsRoot().getConceptManager()
 
     def getViewManager(self):
         return self.getLoopsRoot().getViewManager()
@@ -166,17 +168,23 @@ class Resource(Image, Contained):
     contentType = property(getContentType, setContentType)
 
     def getLoopsRoot(self):
-        return zapi.getParent(self).getLoopsRoot()
+        return getParent(self).getLoopsRoot()
 
-    def getAllParents(self, collectGrants=False):
+    def getConceptManager(self):
+        return self.getLoopsRoot().getConceptManager()
+
+    def getAllParents(self, collectGrants=False, ignoreTypes=False):
         result = Jeep()
         for rel in self.getConceptRelations():
+            if (ignoreTypes and
+                    rel.predicate == self.getConceptManager().getTypePredicate()):
+                continue
             obj = rel.first
             uid = util.getUidForObject(obj)
             pi = result.setdefault(uid, ParentInfo(obj))
             if rel not in pi.relations:
                 pi.relations.append(rel)
-            obj.getAllParents(collectGrants, result)
+            obj.getAllParents(collectGrants, result, ignoreTypes)
         return result
 
     # concept relations

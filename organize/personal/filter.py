@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -63,8 +63,9 @@ class Filters(object):
             data = {}
         return self.context.saveUserTrack(uid, 0, personUid, data)
 
-    def remove(self, id):
+    def remove(self, uid, person):
         changed = False
+        personUid = util.getUidForObject(person)
         for t in self.context.query(userName=personUid, taskId=uid):
             changed = True
             self.context.removeTrack(t)

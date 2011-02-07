@@ -49,14 +49,15 @@ from cybertools.composer.schema.browser.common import schema_macros, schema_edit
 from cybertools.composer.schema.schema import FormState
 from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
+from loops.browser.node import NodeView
+from loops.browser.concept import ConceptRelationView
 from loops.common import adapted
 from loops.concept import Concept, ConceptRelation, ResourceRelation
 from loops.interfaces import IConcept, IConceptSchema
 from loops.interfaces import IResource, IResourceManager, IDocument
 from loops.interfaces import IFile, IExternalFile, INote, ITextDocument
-from loops.browser.node import NodeView
-from loops.browser.concept import ConceptRelationView
 from loops.i18n.browser import I18NView
+from loops.organize.personal.browser.filter import FilterView
 from loops.query import ConceptQuery, IQueryConcept
 from loops.resource import Resource
 from loops.schema.field import relation_macros
@@ -196,8 +197,11 @@ class ObjectForm(NodeView):
         return [dict(title=t.title, token=t.tokenForSearch) for t in types]
 
     def conceptsForType(self, token):
+        result = ConceptQuery(self).query(type=token)
+        fv = FilterView(self.context, self.request)
+        result = fv.apply(result)
+        result.sort(key=lambda x: x.title)
         noSelection = dict(token='none', title=u'not selected')
-        result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
         predicateUid = self.defaultPredicateUid
         return ([noSelection] +
                 [dict(title=o.title,

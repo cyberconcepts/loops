@@ -28,6 +28,7 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
 from loops.browser.node import NodeView
+from loops.concept import Concept
 from loops.organize.party import getPersonForUser
 from loops.organize.personal.interfaces import IFilters
 from loops import util
@@ -47,6 +48,16 @@ class FilterView(NodeView):
         return getPersonForUser(self.context, self.request)
 
     @Lazy
+    def targetUid(self):
+        target = self.virtualTargetObject
+        if (target and isinstance(target, Concept) and
+                target.conceptType != self.conceptManager.getTypeConcept()):
+            return util.getUidForObject(target)
+        else:
+            return None
+
+
+    @Lazy
     def filters(self):
         records = self.loopsRoot.getRecordManager()
         if records is not None:
@@ -64,6 +75,7 @@ class FilterView(NodeView):
                 yield dict(url=self.getUrlForTarget(obj),
                            uid=uid,
                            title=obj.title,
+                           typeTitle=obj.getType().title,
                            description=obj.description,
                            object=obj)
 
@@ -83,5 +95,40 @@ class FilterView(NodeView):
         id = self.request.get('id')
         if not id:
             return
-        self.filters.deactivate(id)
+        #self.filters.deactivate(id)
+        self.filters.remove(id, self.person)
         self.request.response.redirect(self.virtualTargetUrl)
+
+    @Lazy
+    def filterStructure(self):
+        result = {}
+        for item in self.listFilters():
+            obj = item['object']
+            result.setdefault(obj.getType(), set([])).add(obj)
+        return result
+
+    def check(self, obj):
+        fs = self.filterStructure
+        if not fs:
+            return True
+        for objs in fs.values():
+            if obj in objs:     # the filtered object itself is always shown
+                return True
+        checked = {}
+        parents = [pi.object for pi in obj.getAllParents(ignoreTypes=True)]
+        if isinstance(obj, Concept):
+            parents.insert(0, obj)
+        for p in parents:
+            for t, v in fs.items():
+                if checked.get(t):  # type already present and set to True
+                    continue
+                if p.conceptType == t:  # type has to be checked
+                    checked[t] = (p in v)
+        for x in checked.values():
+            if not x:
+                return False
+        return True
+
+    def apply(self, seq):
+        return [obj for obj in seq if self.check(obj)]
+

@@ -59,7 +59,7 @@ class Loops(Folder):
     def getLoopsRoot(self):
         return self
 
-    def getAllParents(self, collectGrants=False):
+    def getAllParents(self, collectGrants=False, ignoreTypes=False):
         return Jeep()
 
     def getConceptManager(self):

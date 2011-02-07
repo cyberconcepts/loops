@@ -94,6 +94,6 @@ class PortletConfigurator(ViewConfigurator):
                     title=_(u'Filters'),
                     subMacro=personal_macros.macros['filters_portlet'],
                     priority=195,
-                    url=absoluteURL(self.context, self.request) + '/@@filters.html',
+                    #url=absoluteURL(self.context, self.request) + '/@@filters.html',
         ))
         return [filters]

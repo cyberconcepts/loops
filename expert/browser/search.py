@@ -30,6 +30,7 @@ from zope.traversing.api import getName, getParent
 
 from loops.browser.node import NodeView
 from loops.expert.concept import ConceptQuery, FullQuery
+from loops.organize.personal.browser.filter import FilterView
 from loops import util
 from loops.util import _
 
@@ -59,4 +60,7 @@ class SearchResults(NodeView):
         type = self.globalOptions('expert.quicksearch')
         result = FullQuery(self).query(text=text, type=type,
                            useTitle=True, useFull=True,)
+        fv = FilterView(self.context, self.request)
+        result = fv.apply(result)
+        result.sort(key=lambda x: x.title)
         return self.viewIterator(result)

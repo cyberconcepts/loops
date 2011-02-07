@@ -281,6 +281,8 @@ class ConceptView(BaseView):
                 for r in self.context.getChildRelations(sort=None))
         if sort:
             rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
+        from loops.organize.personal.browser.filter import FilterView
+        fv = FilterView(self.context, self.request)
         for r in rels:
             if criteria:
                 if not self.checkCriteria(r, criteria):
@@ -294,7 +296,8 @@ class ConceptView(BaseView):
                         break
                 if skip:
                     continue
-            yield r
+            if fv.check(r.context):
+                yield r
 
     def checkCriteria(self, relation, criteria):
         result = True
@@ -352,11 +355,14 @@ class ConceptView(BaseView):
             yield self.childViewFactory(r, self.request)
 
     def resources(self):
+        from loops.browser.resource import ResourceRelationView
+        from loops.organize.personal.browser.filter import FilterView
+        fv = FilterView(self.context, self.request)
         rels = self.context.getResourceRelations()
         for r in rels:
             #yield self.childViewFactory(r, self.request, contextIsSecond=True)
-            from loops.browser.resource import ResourceRelationView
-            yield ResourceRelationView(r, self.request, contextIsSecond=True)
+            if fv.check(r.first):
+                yield ResourceRelationView(r, self.request, contextIsSecond=True)
 
     def unique(self, rels):
         result = Jeep()

@@ -14,6 +14,9 @@ and set up a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
+  >>> from loops.concept import Concept
+  >>> from loops.setup import addAndConfigureObject
+
   >>> from loops.organize.setup import SetupManager
   >>> component.provideAdapter(SetupManager, name='organize')
   >>> from loops.organize.personal.setup import SetupManager
@@ -112,6 +115,46 @@ Let's now trigger the saving of a favorite.
 
   >>> len(list(favorites.query(userName=johnCId)))
   1
+
+
+Filters - Show only Certain Parts of the Concept Map
+====================================================
+
+  >>> baseFilters = records['filters']
+  >>> from loops.organize.personal.filter import Filters
+  >>> component.provideAdapter(Filters)
+
+Let's prepare some concepts and assignments to be used for filtering.
+
+  >>> dGeneral = addAndConfigureObject(concepts, Concept, 'general',
+  ...                                  conceptType=concepts['domain'])
+  >>> dProjects = concepts['projects']  # created in global setup
+
+  >>> dGeneral.assignResource(resources['d001.txt'])
+  >>> dProjects.assignResource(resources['d002.txt'])
+
+Now we can define a simple filter that blocks certain concepts and resources.
+
+  >>> from loops.organize.personal.interfaces import IFilters
+  >>> filters = IFilters(baseFilters)
+  >>> filters.add(dProjects, johnC)
+  '0000001'
+
+We access the filters via a filter view.
+
+  >>> from loops.organize.personal.browser.filter import FilterView
+  >>> fv = FilterView(home, TestRequest())
+  >>> fv.person = johnC
+
+  >>> fv.check(resources['d001.txt'])
+  False
+  >>> fv.check(resources['d002.txt'])
+  True
+  >>> fv.check(resources['d003.txt'])
+  True
+
+  >>> [r.__name__ for r in fv.apply(resources.values())]
+  [u'd002.txt', u'd003.txt']
 
 
 Fin de partie

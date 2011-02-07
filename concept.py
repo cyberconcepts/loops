@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -151,16 +151,19 @@ class Concept(Contained, Persistent):
     def getConceptManager(self):
         return self.getLoopsRoot().getConceptManager()
 
-    def getAllParents(self, collectGrants=False, result=None):
+    def getAllParents(self, collectGrants=False, result=None, ignoreTypes=False):
         if result is None:
             result = Jeep()
         for rel in self.getParentRelations():
+            if (ignoreTypes and
+                    rel.predicate == self.getConceptManager().getTypePredicate()):
+                continue
             obj = rel.first
             uid = util.getUidForObject(obj)
             pi = result.get(uid)
             if pi is None:
                 result[uid] = ParentInfo(obj, [rel])
-                obj.getAllParents(collectGrants, result)
+                obj.getAllParents(collectGrants, result, ignoreTypes)
             elif rel not in pi.relations:
                 pi.relations.append(rel)
         return result

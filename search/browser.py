@@ -37,6 +37,7 @@ from loops.browser.common import BaseView
 from loops.browser.node import NodeView
 from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
+from loops.organize.personal.browser.filter import FilterView
 from loops import util
 from loops.util import _
 
@@ -77,8 +78,11 @@ class Search(BaseView):
         return self.listTypesForSearch(include=('search',))
 
     def conceptsForType(self, token):
+        result = ConceptQuery(self).query(type=token)
+        fv = FilterView(self.context, self.request)
+        result = fv.apply(result)
+        result.sort(key=lambda x: x.title)
         noSelection = dict(token='none', title=u'not selected')
-        result = sorted(ConceptQuery(self).query(type=token), key=lambda x: x.title)
         return [noSelection] + [dict(title=adapted(o, self.languageInfo).title,
                                      token=util.getUidForObject(o))
                                     for o in result]
@@ -112,6 +116,8 @@ class Search(BaseView):
             for type in types:
                 result = self.executeQuery(title=title or None, type=type,
                                                  exclude=('hidden',))
+                fv = FilterView(self.context, self.request)
+                result = fv.apply(result)
                 for o in result:
                     if o.getLoopsRoot() == self.loopsRoot:
                         adObj = adapted(o, self.languageInfo)
@@ -206,6 +212,8 @@ class SearchResults(NodeView):
                 result = [r for r in result if r in addSelection]
             else:
                 result = addSelection
+        fv = FilterView(self.context, self.request)
+        result = fv.apply(result)
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
 

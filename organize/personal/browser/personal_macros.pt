@@ -7,15 +7,13 @@
                 string:${view/virtualTargetUrl}/removeFavorite.html?id=${item/uid};
                           title string:Remove from favorites"
           i18n:attributes="title">X</a>&nbsp;</span>
-      <a href=""
-         tal:attributes="href item/url;
+      <a tal:attributes="href item/url;
                          title item/description"
          tal:content="item/title">Some object</a>
     </div>
     <div id="addFavorite" class="action"
          tal:condition="targetUid">
-      <a href="addFavorite.html"
-         i18n:translate=""
+      <a i18n:translate=""
          tal:attributes="href
                 string:${view/virtualTargetUrl}/addFavorite.html?id=$targetUid;
                          title string:Add current object to favorites"
@@ -30,18 +28,17 @@
     <div tal:repeat="item view/listFilters">
       <span style="float:right" class="delete-item">&nbsp;<a href="removeFilter.html"
           tal:attributes="href
-                string:${view/url}/deactivateFilter.html?id=${item/uid};
+                string:${view/virtualTargetUrl}/deactivateFilter.html?id=${item/uid};
                           title string:Deactivate filter"
           i18n:attributes="title">X</a>&nbsp;</span>
-      <a href=""
-         tal:attributes="href item/url;
-                         title item/description"
-         tal:content="item/title">Some object</a>
+      <a tal:attributes="href item/url;
+                         title item/description">
+        <span tal:content="item/title">Some object</span>
+        (<i i18n:translate="" tal:content="item/typeTitle">Type</i>)</a>
     </div>
     <div id="addFilter" class="action"
          tal:condition="targetUid">
-      <a href="addFilter.html"
-         i18n:translate=""
+      <a i18n:translate=""
          tal:attributes="href
                 string:${view/virtualTargetUrl}/addFilter.html?id=$targetUid;
                          title string:Use current object as filter"
