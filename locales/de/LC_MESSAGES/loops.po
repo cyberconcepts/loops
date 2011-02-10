@@ -53,7 +53,7 @@ msgstr "Einen neuen Ordner anlegen"
 msgid "Edit Concept..."
 msgstr "Begriff bearbeiten..."
 
-msgid "Modify concept."
+msgid "Modify concept object."
 msgstr "Begriff ändern."
 
 msgid "Edit Folder..."
