@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-02-09 12:00 CET\n"
+"PO-Revision-Date: 2011-02-10 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -64,6 +64,9 @@ msgstr "Ordner ändern"
 
 msgid "Create Topic..."
 msgstr "Thema anlegen..."
+
+msgid "Create Topic"
+msgstr "Thema anlegen"
 
 msgid "Create a new topic."
 msgstr "Ein neues Thema anlegen"
