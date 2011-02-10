@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2010-08-22 12:00 CET\n"
+"PO-Revision-Date: 2011-02-09 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -29,6 +29,12 @@ msgstr "Anlegen"
 msgid "Edit Concept Map"
 msgstr "Concept Map bearbeiten"
 
+msgid "Create Concept..."
+msgstr "Begriff anlegen..."
+
+msgid "Create a new concept."
+msgstr "Einen neuen Begriff erzeugen."
+
 msgid "Create Resource..."
 msgstr "Ressource anlegen..."
 
@@ -43,6 +49,12 @@ msgstr "Ordner anlegen..."
 
 msgid "Create a new folder."
 msgstr "Einen neuen Ordner anlegen"
+
+msgid "Edit Concept..."
+msgstr "Begriff bearbeiten..."
+
+msgid "Modify concept."
+msgstr "Begriff ändern."
 
 msgid "Edit Folder..."
 msgstr "Ordner bearbeiten..."
@@ -134,6 +146,9 @@ msgstr "Adresse bearbeiten..."
 msgid "Modify address."
 msgstr "Adresse bearbeiten"
 
+msgid "Create Concept, Type = "
+msgstr "Begriff anlegen, Typ = "
+
 msgid "Create Resource, Type = "
 msgstr "Ressource anlegen, Typ = "
 
@@ -148,9 +163,6 @@ msgstr "Diese Ressource bearbeiten."
 
 msgid "Edit Concept"
 msgstr "Begriff bearbeiten"
-
-msgid "Edit Concept..."
-msgstr "Begriff bearbeiten..."
 
 msgid "Create Event..."
 msgstr "Termin anlegen..."
@@ -478,6 +490,12 @@ msgstr "Beginn"
 
 msgid "End date"
 msgstr "Ende"
+
+msgid "Knowledge"
+msgstr "Wissen"
+
+msgid "The knowledge elements for this person."
+msgstr "Die Wissenselemente für diese Person."
 
 msgid "Create loops Note"
 msgstr "loops-Notiz anlegen"

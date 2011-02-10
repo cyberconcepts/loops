@@ -9,7 +9,7 @@
   <!-- process/workflow management stuff -->
 
   <zope:adapter factory="loops.organize.process.definition.Process"
-                provides="cybertools.process.interfaces.IProcess"
+                provides="loops.organize.process.interfaces.IProcess"
                 trusted="True" />
   <zope:class class="loops.organize.process.definition.Process">
     <require permission="zope.View"

@@ -19,7 +19,7 @@
 """
 Base classes (sort of views) for action portlet items.
 
-$Id: action.py 2313 2008-01-15 13:00:34Z helmutm $
+$Id$
 """
 
 from urllib import urlencode
@@ -144,4 +144,24 @@ actions.register('edit_concept', 'portlet', DialogAction,
         viewName='edit_concept.html',
         dialogName='edit',
         prerequisites=['registerDojoEditor'],
+)
+
+actions.register('create_concept', 'portlet', DialogAction,
+        title=_(u'Create Concept...'),
+        description=_(u'Create a new concept.'),
+        viewName='create_concept.html',
+        dialogName='createConcept',
+        qualifier='create_concept',
+        #typeToken='.loops/concepts/topic',
+        #fixedType=True,
+        innerForm='inner_concept_form.html',
+)
+
+actions.register('create_subtype', 'portlet', DialogAction,
+        title=_(u'Create Concept...'),
+        description=_(u'Create a new concept.'),
+        viewName='create_concept.html',
+        dialogName='createConcept',
+        qualifier='subtype',
+        innerForm='inner_concept_form.html',
 )

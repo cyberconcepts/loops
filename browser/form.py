@@ -62,7 +62,7 @@ from loops.query import ConceptQuery, IQueryConcept
 from loops.resource import Resource
 from loops.schema.field import relation_macros
 from loops.security.common import canAccessObject, canListObject, canWriteObject
-from loops.type import ITypeConcept
+from loops.type import ITypeConcept, ConceptTypeInfo
 from loops import util
 from loops.util import _
 from loops.versioning.interfaces import IVersionable
@@ -374,6 +374,23 @@ class CreateConceptForm(CreateObjectForm):
 
     defaultTitle = u'Create Concept, Type = '
     form_action = 'create_concept'
+
+    @Lazy
+    def defaultTypeToken(self):
+        return None
+
+    def getTypesVocabulary(self, include=None):
+        types = []
+        if 'subtype' in include:
+            include = list(include)
+            include.remove('subtype')
+            parentType = self.target.conceptType
+            subtypePred = self.conceptManager['issubtype']
+            types = [dict(token=ConceptTypeInfo(t).token, title=t.title)
+                        for t in parentType.getChildren([subtypePred])]
+        if include:
+            return util.KeywordVocabulary(types + self.listTypes(include, ('hidden',)))
+        return util.KeywordVocabulary(types)
 
     @Lazy
     def dialog_name(self):
