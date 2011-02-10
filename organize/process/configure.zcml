@@ -13,9 +13,9 @@
                 trusted="True" />
   <zope:class class="loops.organize.process.definition.Process">
     <require permission="zope.View"
-             interface="cybertools.process.interfaces.IProcess" />
+             interface="loops.organize.process.interfaces.IProcess" />
     <require permission="zope.ManageContent"
-             set_schema="cybertools.process.interfaces.IProcess" />
+             set_schema="loops.organize.process.interfaces.IProcess" />
   </zope:class>
 
   <!-- setup -->
