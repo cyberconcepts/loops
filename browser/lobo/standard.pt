@@ -31,7 +31,7 @@
       <a tal:attributes="href cell/targetUrl;
                          title cell/description">
         <metal:image use-macro="item/macros/image" />
-      </a><br />
+      </a><br />&nbsp;
     </div>
     <div tal:attributes="class python:cell.cssClass[1]">
       <a tal:attributes="href cell/targetUrl">
