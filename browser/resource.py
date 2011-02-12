@@ -200,7 +200,7 @@ class ResourceView(BaseView):
         modified = self.modifiedRaw
         if modified:
             format = '%a, %d %b %Y %H:%M:%S %Z'
-            if modified.tzinfo is None:
+            if getattr(modified.tzinfo, None) is None:
                 format = format[:-3] + ' GMT'
             response.setHeader('Last-Modified', modified.strftime(format))
         return data
