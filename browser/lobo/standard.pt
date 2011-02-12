@@ -37,8 +37,8 @@
     <div tal:attributes="class python:cell.cssClass[1]">
       <a tal:attributes="href cell/targetUrl">
         <b tal:content="cell/title" /><br />
-        <i tal:content="cell/description" />
-      </a>
+        <i tal:content="structure cell/description" />
+      </a><br />
     </div>
   </tal:cell>
 </metal:block>
