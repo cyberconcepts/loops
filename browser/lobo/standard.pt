@@ -92,7 +92,14 @@
 <metal:block define-macro="headline">
   <h1 tal:attributes="ondblclick cell/openEditWindow">
     <a tal:attributes="href cell/targetUrl"
-       tal:content="cell/title" /></h1>
+       tal:content="cell/title" />
+    <a title="Show tabular view"
+       i18n:attributes="title"
+       tal:condition="cell/editable"
+       tal:attributes="href string:${cell/targetUrl}?loops.viewName=index.html">
+      <img tal:attributes="src string:$resourceBase/cybertools.icons/table.png" />
+    </a>
+  </h1>
   <div tal:condition="cell/description">
     <i tal:content="structure cell/renderedDescription" />
     &nbsp;</div>
