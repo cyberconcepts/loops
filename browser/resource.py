@@ -229,7 +229,8 @@ class ResourceView(BaseView):
     def viewable(self):
         return True
         ct = self.context.contentType
-        return ct.startswith('image/') or ct == 'application/pdf'
+        return (ct.startswith('image/') or
+                    ct in ('application/pdf', 'application/x-pdf'))
 
     # actions
 
