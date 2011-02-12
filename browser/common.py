@@ -634,7 +634,7 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def xeditable(self):
         ct = getattr(self.context, 'contentType', '')
-        if not ct or ct == 'application/pdf':
+        if not ct or ct in ('application/pdf', 'application/x-pdf'):
             return False
         if ct.startswith('text/') and ct != 'text/rtf':
             return checkPermission('loops.ManageSite', self.context)
