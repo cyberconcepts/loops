@@ -23,9 +23,11 @@ $Id$
 """
 
 
+from copy import copy
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
 
+from cybertools.browser.action import actions
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.browser.form import CreateConceptForm, EditConceptForm
@@ -33,6 +35,17 @@ from loops.browser.form import CreateConcept, EditConcept
 from loops.common import adapted
 from loops import util
 from loops.util import _
+
+
+actions.register('createGlossaryItem', 'portlet', DialogAction,
+        title='Create Glossary Item...',
+        description='Create a new glossary item.',
+        viewName='create_glossaryitem.html',
+        dialogName='createGlossaryItem',
+        #qualifier='concept',
+        typeToken='.loops/concepts/glossaryitem',
+        fixedType=True,
+        innerForm='inner_concept_form.html')
 
 
 view_macros = ViewPageTemplateFile('view_macros.pt')
@@ -45,18 +58,22 @@ class GlossaryView(ConceptView):
         return view_macros.macros['glossary']
 
     def getActions(self, category='object', page=None, target=None):
-        actions = []
+        result = []
         if category == 'portlet':
-            actions.append(DialogAction(self, title='Create Glossary Item...',
-                  description='Create a new glossary item.',
-                  viewName='create_glossaryitem.html',
-                  dialogName='createGlossaryItem',
-                  #qualifier='concept',
-                  typeToken='.loops/concepts/glossaryitem',
-                  fixedType=True,
-                  innerForm='inner_concept_form.html',
-                  page=page, target=target))
-        return actions
+            act = copy(actions.getAction('createGlossaryItem', 'portlet'))
+            act.page = page
+            act.target = target
+            result.append(act)
+            #result.append(DialogAction(self, title='Create Glossary Item...',
+            #      description='Create a new glossary item.',
+            #      viewName='create_glossaryitem.html',
+            #      dialogName='createGlossaryItem',
+            #      #qualifier='concept',
+            #      typeToken='.loops/concepts/glossaryitem',
+            #      fixedType=True,
+            #      innerForm='inner_concept_form.html',
+            #      page=page, target=target))
+        return result
 
 
 class GlossaryItemView(ConceptView):

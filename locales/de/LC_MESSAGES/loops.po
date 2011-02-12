@@ -54,7 +54,7 @@ msgid "Edit Concept..."
 msgstr "Begriff bearbeiten..."
 
 msgid "Modify concept object."
-msgstr "Begriff ändern."
+msgstr "Diesen Begriff ändern."
 
 msgid "Edit Folder..."
 msgstr "Ordner bearbeiten..."
