@@ -27,12 +27,12 @@
 
 <metal:block define-macro="list1">
   <tal:cell repeat="cell part/getChildren">
-    <div tal:attributes="class python:cell.cssClass[0]">
+    <div tal:condition="cell/img"
+         tal:attributes="class python:cell.cssClass[0]">
       <a tal:attributes="href cell/targetUrl;
                          title cell/description">
         <metal:image use-macro="item/macros/image" />
-      </a>
-      <tal:break condition="cell/img"><br />&nbsp;</tal:break>
+      </a><br />&nbsp;
     </div>
     <div tal:attributes="class python:cell.cssClass[1]">
       <a tal:attributes="href cell/targetUrl">
