@@ -38,7 +38,8 @@
       <a tal:attributes="href cell/targetUrl">
         <b tal:content="cell/title" /></a><br />
       <tal:desc condition="cell/description">
-        <i tal:content="structure cell/renderedDescription" /><br /></tal:desc>
+        <i tal:content="structure cell/renderedDescription" /></tal:desc>
+      <br />
     </div>
   </tal:cell>
 </metal:block>
