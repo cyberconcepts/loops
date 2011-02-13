@@ -97,12 +97,14 @@
 
 
 <metal:children define-macro="conceptchildren">
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('configure.html')"
-           tal:define="children python: list(item.unique(item.children()))"
-           tal:condition="children">
-        <h2 i18n:translate=""
-            tal:condition="show_headline|python:True">Children</h2>
+    <div tal:attributes="class string:content-$level;
+                         ondblclick python: item.openEditWindow('configure.html')"
+         tal:define="children python: list(item.unique(item.children()))"
+         tal:condition="children">
+      <h2 i18n:translate=""
+          tal:condition="show_headline|python:True">Children</h2>
+      <form method="post"
+            tal:omit-tag="not:item/editable">
         <table class="listing">
           <tr>
             <th i18n:translate="">Title</th>
@@ -112,16 +114,18 @@
             <th i18n:translate=""
                 tal:condition="view/showObjectActions">Info</th>
           </tr>
+          <tbody withHandles="true" id="children_list"
+                 tal:attributes="dojoType python:item.editable and 'dojo.dnd.Source'">
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description;
                               predicate related/predicateTitle;
                               info python: ' | '.join(
                                     t for t in (description, predicate) if t)">
-              <tr tal:attributes="class class">
+              <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
+                                  id related/uniqueId">
                 <td valign="top">
-                  <a href="#"
-                     tal:attributes="href python: view.getUrlForTarget(related);
+                  <a tal:attributes="href python: view.getUrlForTarget(related);
                                      title info">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
@@ -136,12 +140,26 @@
                                 style nothing"
                     tal:condition="view/showObjectActions">
                   <div metal:use-macro="views/node_macros/object_actions" />
+                  <input type="hidden" name="child_tokens:list"
+                         tal:attributes="value related/uidToken" />
                 </td>
               </tr>
             </tal:item>
           </tal:items>
+          </tbody>
         </table>
-      </div>
+        <input type="submit" style="display: none"
+               name="children_change_order" id="children_change_order"
+               value="Save Changes"
+               i18n:attributes="value" />
+        <input type="hidden" name="loops.viewName" value="index.html" />
+        <script language="javascript">
+          dojo.subscribe('/dnd/drop', function(data) {
+              if (data.node.id == 'children_list') {
+                dojo.byId('children_change_order').style.display = ''}});
+        </script>
+      </form>
+    </div>
 </metal:children>
 
 

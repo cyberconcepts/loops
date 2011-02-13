@@ -690,6 +690,11 @@ class BaseView(GenericView, I18NView):
         #cm.register('css', identifier='dojo.css', position=1,
         #            resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
 
+    def registerDojoDnd(self):
+        self.registerDojo()
+        jsCall = 'dojo.require("dojo.dnd.Source")'
+        self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
     def registerDojoDialog(self):
         self.registerDojo()
         jsCall = 'dojo.require("dijit.Dialog")'

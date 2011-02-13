@@ -269,7 +269,23 @@ class ConceptView(BaseView):
         instance.view = self
         return instance
 
+    def reorderChildren(self, tokens):
+        for r in self.context.getChildRelations(sort=None):
+            token = ':'.join((util.getUidForObject(r.second),
+                              util.getUidForObject(r.predicate)))
+            if token in tokens:
+                pos = tokens.index(token) + 1
+                if r.order != pos:
+                    r.order = pos
+
     def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True):
+        form = self.request.form
+        if form.get('loops.viewName') == 'index.html' and self.editable:
+            self.registerDojoDnd()
+            if 'children_change_order' in form:
+                tokens = form.get('child_tokens')
+                if tokens:
+                    self.reorderChildren(tokens)
         cm = self.loopsRoot.getConceptManager()
         hasType = cm.getTypePredicate()
         params = self.params
