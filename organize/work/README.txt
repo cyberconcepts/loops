@@ -136,10 +136,13 @@ work item, the form will be pre-filled with some of the item's data.
   >>> form.title
   u'Install Zope'
 
+The 'delegate' transition is omitted from the actions list because it is
+only available for privileged users.
+
   >>> form.actions
   [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
    {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
-   {'name': 'finish', 'title': 'finish'}, {'name': 'delegate', 'title': 'delegate'},
+   {'name': 'finish', 'title': 'finish'},
    {'name': 'cancel', 'title': 'cancel'}, {'name': 'modify', 'title': 'modify'}]
 
 

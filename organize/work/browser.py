@@ -48,6 +48,7 @@ from loops.organize.tracking.browser import BaseTrackView
 from loops.organize.tracking.report import TrackDetails
 from loops.organize.work.base import WorkItem
 from loops.security.common import canAccessObject, canListObject, canWriteObject
+from loops.security.common import checkPermission
 from loops import util
 from loops.util import _
 
@@ -333,8 +334,11 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def actions(self):
-        return [dict(name=t.name, title=t.title)
-                    for t in self.track.getAvailableTransitions()]
+        result = [dict(name=t.name, title=t.title)
+                    for t in self.track.getAvailableTransitions()
+                    if t.name != 'delegate' or
+                        checkPermission('loops.ManageSite', self.context)]
+        return result
 
     @Lazy
     def candidates(self):
