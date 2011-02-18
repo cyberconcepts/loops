@@ -105,8 +105,10 @@
           tal:condition="show_headline|python:True">Children</h2>
       <form method="post"
             tal:omit-tag="not:item/editable">
-        <table class="listing">
+        <table class="listing"
+               metal:define-macro="children">
           <tr>
+            <th tal:condition="item/showCheckboxes|nothing">&nbsp;</th>
             <th i18n:translate="">Title</th>
             <th i18n:translate="">Type</th>
             <th i18n:translate="">Modification Date</th>
@@ -124,6 +126,11 @@
                                     t for t in (description, predicate) if t)">
               <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
                                   id related/uniqueId">
+                <td tal:condition="item/showCheckboxes|nothing"
+                    tal:define="uid related/uniqueId"
+                    class="checkbox">
+                  <input type="checkbox" name="selection:list" checked
+                         tal:attributes="value uid;" /></td>
                 <td valign="top">
                   <a tal:attributes="href python: view.getUrlForTarget(related);
                                      title info">

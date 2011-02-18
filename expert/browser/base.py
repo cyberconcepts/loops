@@ -30,7 +30,7 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.browser.form import FormController
 from loops.browser.common import BaseView, concept_macros
-from loops.browser.concept import ConceptView
+from loops.browser.concept import ConceptView, ConceptRelationView
 from loops.browser.resource import ResourceView, ResourceRelationView
 from loops.common import adapted
 from loops import util
@@ -44,7 +44,8 @@ queryTemplate = ViewPageTemplateFile('query.pt')
 class BaseQueryView(BaseView):
 
     template = queryTemplate
-    childViewFactory = ResourceRelationView
+    childViewFactory = ConceptRelationView
+    resourceViewFactory = ResourceRelationView
     showCheckboxes = True
     form_action = 'execute_query_action'
 
@@ -77,10 +78,15 @@ class BaseQueryView(BaseView):
         return _(u'Selection using: $targets',
                  mapping=dict(targets=targetNames))
 
-    def results(self):
+    def resources(self):
         for t in self.targets:
             for r in t.getResourceRelations([self.defaultPredicate]):
-                yield self.childViewFactory(r, self.request, contextIsSecond=True)
+                yield self.resourceViewFactory(r, self.request, contextIsSecond=True)
+
+    def children(self):
+        for t in self.targets:
+            for c in t.getChildRelations([self.defaultPredicate]):
+                yield self.childViewFactory(c, self.request, contextIsSecond=True)
 
 
 class ActionExecutor(FormController):
@@ -92,7 +98,7 @@ class ActionExecutor(FormController):
             uids = form.get('selection', [])
             action = actions[0]
             if action == 'action.delete':
-                print '*** delete', uids
+                #print '*** delete', uids
                 for uid in uids:
                     obj = util.getObjectForUid(uid)
                     parent = getParent(obj)
