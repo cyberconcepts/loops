@@ -127,7 +127,8 @@ class WorkItemDetails(TrackDetails):
                       target=self.object,
                       addParams=dict(id=self.track.__name__))
         actions = [info, WorkItemStateAction(self)]
-        if self.isLastInRun:
+        if (self.isLastInRun and
+                self.user['object'] == getPersonForUser(self.object, self.view.request)):
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()
