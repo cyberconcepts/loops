@@ -24,14 +24,19 @@
   <page for="loops.interfaces.INode"
         name="index.html"
         class="loops.browser.node.NodeView"
-        permission="zope.Public"
-        />
+        permission="zope.Public" />
 
-  <!--<page for="loops.interfaces.INode"
-        name="main.html"
-        class="loops.browser.node.NodeView"
-        permission="zope.Public"
-        />-->
+  <!-- login/logout -->
+
+  <page for="loops.interfaces.ILoopsObject"
+        name="login.html"
+        class="loops.browser.auth.LoginForm"
+        permission="zope.View" />
+
+  <page for="loops.interfaces.ILoopsObject"
+        name="logout.html"
+        class="loops.browser.auth.Logout"
+        permission="zope.View" />
 
   <!-- macros -->
 
@@ -40,43 +45,37 @@
       name="loops_macros"
       permission="zope.View"
       class=".macros.Macros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping"
-      />
+      allowed_interface="zope.interface.common.mapping.IItemMapping" />
 
   <page
       for="*"
       name="node_macros"
       template="node_macros.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       for="*"
       name="concept_macros"
       template="concept_macros.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       for="*"
       name="relation_macros"
       template="relation_macros.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       for="*"
       name="target_macros"
       template="target_macros.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       for="*"
       name="resource_macros"
       template="resource_macros.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <!-- named templates - forms and macro templates -->
 
@@ -181,14 +180,12 @@
     <page
         name="configure.html"
         template="concept_related.pt"
-        menu="zmi_views" title="Related Concepts"
-        />
+        menu="zmi_views" title="Related Concepts" />
 
     <page
         name="resources.html"
         template="concept_resources.pt"
-        menu="zmi_views" title="Resources"
-        />
+        menu="zmi_views" title="Resources" />
 
   </pages>
 
@@ -197,8 +194,7 @@
       for="loops.interfaces.IConcept"
       class="loops.browser.concept.ConceptEditForm"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />
+      menu="zmi_views" title="Edit" />
 
   <page
       name="concept.html"
@@ -206,29 +202,25 @@
       class=".concept.ConceptView"
       template="concept.pt"
       permission="zope.View"
-      menu="zmi_views" title="View"
-      />
+      menu="zmi_views" title="View" />
 
   <page
       name="index.html"
       for="loops.interfaces.IConcept"
       class=".concept.ConceptView"
       template="concept.pt"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <defaultView
       for="loops.interfaces.IConcept"
-      name="concept.html"
-      />
+      name="concept.html" />
 
   <zope:adapter
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.concept.ConceptView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="folder.html"
@@ -236,8 +228,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.folder.FolderView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <!-- resource manager -->
 
@@ -283,8 +274,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.resource.ResourceView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <pages
       for="loops.interfaces.IResource"
@@ -294,8 +284,7 @@
     <page
         name="configure.html"
         template="resource_configure.pt"
-        menu="zmi_views" title="Configure"
-        />
+        menu="zmi_views" title="Configure" />
 
   </pages>
 
@@ -304,15 +293,13 @@
       for="loops.interfaces.IResource"
       class="loops.browser.resource.ResourceEditForm"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />
+      menu="zmi_views" title="Edit" />
 
   <!-- suppress the upload menu item: -->
   <menuItem
       for="loops.interfaces.IResource"
       menu="zmi_views" action="upload.html" title="Upload"
-      filter="nothing"
-      />
+      filter="nothing" />
 
   <!-- document -->
 
@@ -328,8 +315,7 @@
       for="loops.interfaces.IDocument"
       class="loops.browser.resource.DocumentEditForm"
       permission="zope.ManageContent"
-      menu="zmi_views" title="Edit"
-      />
+      menu="zmi_views" title="Edit" />
 
   <page
       for="loops.interfaces.IResource"
@@ -342,16 +328,14 @@
       for="loops.interfaces.IDocument"
       action="document.html"
       permission="zope.View"
-      menu="zmi_views" title="View"
-      />
+      menu="zmi_views" title="View" />
 
   <zope:adapter
       for="loops.interfaces.IDocument
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.resource.DocumentView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="note.html"
@@ -359,8 +343,7 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.resource.NoteView"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <!-- view manager -->
 
@@ -547,71 +530,61 @@
       name="object_info.html"
       for="loops.interfaces.INode"
       class="loops.browser.node.ObjectInfo"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="create_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateObjectForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="create_object_popup.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateObjectPopup"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <page
       name="edit_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditObjectForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="create_concept.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateConceptForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="edit_concept.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditConceptForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="edit_concept_page.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.EditConceptPage"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="inner_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="inner_concept_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerConceptForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="inner_concept_edit_form.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.InnerConceptEditForm"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <zope:adapter
       name="create_resource"
@@ -649,16 +622,14 @@
       name="inline_edit.html"
       for="loops.interfaces.INode"
       class="loops.browser.node.InlineEdit"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
   <page
       name="inline_save"
       for="loops.interfaces.INode"
       class="loops.browser.node.InlineEdit"
       attribute="save"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <!-- render file or image assigned to a node as target -->
 
@@ -712,23 +683,20 @@
       schema="loops.interfaces.IViewConfiguratorSchema"
       for="loops.interfaces.INode"
       template="edit.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <menuItem
       for="loops.interfaces.INode"
       action="viewconfigure.html"
       permission="zope.ManageContent"
       menu="zmi_views" title="View Properties"
-      filter="python: context.nodeType == 'menu'"
-      />
+      filter="python: context.nodeType == 'menu'" />
 
   <zope:adapter
       factory="loops.browser.node.NodeViewConfigurator"
       for="loops.interfaces.INode
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="cybertools.browser.configurator.IViewConfigurator"
-      />
+      provides="cybertools.browser.configurator.IViewConfigurator" />
 
   <!-- manual setup action(s) -->
 
@@ -737,16 +705,14 @@
       for="loops.interfaces.ILoops"
       class="loops.setup.SetupView"
       attribute="setupLoopsSite"
-      permission="zope.ManageSite"
-      />
+      permission="zope.ManageSite" />
 
   <page
       name="cleanup_relations"
       for="loops.interfaces.ILoops"
       class="loops.browser.manager.CleanupRelations"
       attribute="cleanup"
-      permission="zope.ManageSite"
-      />
+      permission="zope.ManageSite" />
 
   <include package=".skin" />
   <include package=".lobo" />
