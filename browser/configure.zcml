@@ -28,12 +28,12 @@
 
   <!-- login/logout -->
 
-  <page for="loops.interfaces.ILoopsObject"
+  <page for="loops.interfaces.INode"
         name="login.html"
         class="loops.browser.auth.LoginForm"
         permission="zope.View" />
 
-  <page for="loops.interfaces.ILoopsObject"
+  <page for="loops.interfaces.INode"
         name="logout.html"
         class="loops.browser.auth.Logout"
         permission="zope.View" />
