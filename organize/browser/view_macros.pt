@@ -3,9 +3,6 @@
 
 <metal:task define-macro="task">
   <metal:data use-macro="view/concept_macros/conceptdata">
-    <metal:fill fill-slot="querydata">
-      <metal:workitems use-macro="view/work_macros/workitems" />
-    </metal:fill>
   </metal:data>
 </metal:task>
 

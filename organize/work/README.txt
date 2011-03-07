@@ -142,7 +142,7 @@ only available for privileged users.
   >>> form.actions
   [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
    {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
-   {'name': 'finish', 'title': 'finish'},
+   {'name': 'finish', 'title': 'finish'}, {'name': 'move', 'title': 'move'},
    {'name': 'cancel', 'title': 'cancel'}, {'name': 'modify', 'title': 'modify'}]
 
 

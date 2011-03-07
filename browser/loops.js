@@ -34,6 +34,13 @@ function showIf(node, value, targetName) {
     dojo.byId(targetName).style.display = display;
 }
 
+function showIfIn(node, conditions) {
+    dojo.forEach(conditions, function(cond) {
+        var display = (node.value == cond[0]) ? 'inline' : 'none';
+        dojo.byId(cond[1]).style.display = display;
+    })
+}
+
 function destroyWidgets(node) {
     dojo.forEach(dojo.query('[widgetId]', node), function(n) {
         w = dijit.byNode(n);

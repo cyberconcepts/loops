@@ -452,6 +452,11 @@ class ConceptView(BaseView):
             return False
         return super(ConceptView, self).checkAction(name, category, target)
 
+    @Lazy
+    def workItems(self):
+        return component.getMultiAdapter((self.context, self.request),
+                                         name='taskworkitems.html')
+
 
 class ConceptRelationView(ConceptView, BaseRelationView):
 

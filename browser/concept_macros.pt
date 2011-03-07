@@ -13,6 +13,9 @@
       <metal:slot define-slot="resources">
         <metal:block use-macro="view/concept_macros/conceptresources" />
       </metal:slot>
+      <metal:slot define-slot="workitems">
+        <metal:block use-macro="view/work_macros/workitems" />
+      </metal:slot>
       <metal:slot define-slot="querydata" />
       <metal:block use-macro="view/comment_macros/comments" />
   </div>

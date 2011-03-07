@@ -90,17 +90,28 @@
       <div>
         <label i18n:translate="" for="action">Action</label>
         <select name="workitem.action" id="action"
-                onChange="showIf(this, 'delegate', 'party')">
+                xonChange="showIf(this, 'delegate', 'party')"
+                onChange="showIfIn(this, [['move', 'target_task'],
+                                          ['delegate', 'target_party']])">
           <option tal:repeat="action view/actions"
                   tal:attributes="value action/name"
                   tal:content="action/title"
                   i18n:translate="" />
         </select>
-        <span id="party" style="display: none">&nbsp;
-          <label i18n:translate="" for="input_party"
+        <span id="target_party" style="display: none">&nbsp;
+          <label i18n:translate="delegate_to_party" for="input_party"
                  style="display: inline">to</label>
           <select name="party" id="input_party">
             <option tal:repeat="cand view/candidates"
+                    tal:attributes="value cand/name"
+                    tal:content="cand/title" />
+          </select>
+        </span>
+        <span id="target_task" style="display: none">&nbsp;
+          <label i18n:translate="move_to_task" for="input_task"
+                 style="display: inline">to</label>
+          <select name="task" id="input_task">
+            <option tal:repeat="cand view/tasks"
                     tal:attributes="value cand/name"
                     tal:content="cand/title" />
           </select>

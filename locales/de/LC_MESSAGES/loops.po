@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-02-18 12:00 CET\n"
+"PO-Revision-Date: 2011-03-07 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -676,6 +676,12 @@ msgstr "Informationen über diese Aktivität."
 msgid "Edit work item."
 msgstr "Aktivität bearbeiten."
 
+msgid "delegate_to_party"
+msgstr "an"
+
+msgid "move_to_task"
+msgstr "nach"
+
 msgid "new"
 msgstr "neu"
 
@@ -703,6 +709,9 @@ msgstr "abgeschlossen"
 msgid "cancelled"
 msgstr "abgebrochen"
 
+msgid "moved"
+msgstr "verschoben"
+
 msgid "replaced"
 msgstr "ersetzt"
 
@@ -726,6 +735,9 @@ msgstr "abbrechen"
 
 msgid "delegate"
 msgstr "delegieren"
+
+msgid "move"
+msgstr "verschieben"
 
 msgid "close"
 msgstr "abschließen"

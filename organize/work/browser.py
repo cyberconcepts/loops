@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -217,7 +217,7 @@ class BaseWorkItemsView(object):
         state = form.get('wi_state') or self.options.wi_state
         if not state:
             result['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
-                               'finished', 'delegated',
+                               'finished', 'delegated', 'moved',
                                'cancelled']
         elif state != 'all':
             result['state'] = state
@@ -349,6 +349,17 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
                     for p in persons]
 
     @Lazy
+    def tasks(self):
+        tasks = []
+        tnames = ['task', 'event']
+        ttypes = [self.conceptManager.get(tname) for tname in tnames]
+        for ttype in ttypes:
+            if ttype is not None:
+                tasks.extend(ttype.getChildren([self.typePredicate]))
+        return [dict(name=util.getUidForObject(t), title=t.title)
+                    for t in tasks]
+
+    @Lazy
     def duration(self):
         if self.state == 'running':
             return u''
@@ -411,6 +422,8 @@ class CreateWorkItem(EditObject, BaseTrackView):
             setValue(k)
         if action == 'delegate':
             setValue('party')
+        if action == 'move':
+            setValue('task')
         startDate = form.get('start_date', '').strip()
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
         endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'
