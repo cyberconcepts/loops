@@ -336,22 +336,32 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def actions(self):
         result = [dict(name=t.name, title=t.title)
-                    for t in self.track.getAvailableTransitions()
-                    if t.name != 'delegate' or
-                        checkPermission('loops.ManageSite', self.context)]
+                    for t in self.track.getAvailableTransitions()]
+                    #if t.name != 'delegate' or
+                    #    checkPermission('loops.ManageSite', self.context)]
         return result
 
+    def getTypesParamsForFilteringSelect(self, types=['person']):
+        result = []
+        for t in types:
+            result.append('searchType=loops:concept:%s' % t)
+        if result:
+            return '?' + '&'.join(result)
+        return ''
+
     @Lazy
-    def candidates(self):
+    def x_candidates(self):
         ptype = self.conceptManager['person']
         persons = ptype.getChildren([self.typePredicate])
         return [dict(name=util.getUidForObject(p), title=p.title)
                     for p in persons]
 
+    taskTypes = ['task', 'event']
+
     @Lazy
-    def tasks(self):
+    def x_tasks(self):
         tasks = []
-        tnames = ['task', 'event']
+        tnames = self.taskTypes
         ttypes = [self.conceptManager.get(tname) for tname in tnames]
         for ttype in ttypes:
             if ttype is not None:
