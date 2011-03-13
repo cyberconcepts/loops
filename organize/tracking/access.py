@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,21 +27,26 @@ import os
 import time
 
 import transaction
-from zope.app.publication.interfaces import IEndRequestEvent
-from zope.interface import Interface, implements
+from zope.app.session.interfaces import ISession
 from zope.cachedescriptors.property import Lazy
+from zope import component
 from zope.component import adapter
+from zope.interface import Interface, implements
 from zope.security.proxy import removeSecurityProxy
 
+from cybertools.browser.view import IBodyRenderedEvent
 from cybertools.meta.interfaces import IOptions
-from cybertools.tracking.btree import Track, getTimeStamp
+from cybertools.tracking.btree import Track
 from cybertools.tracking.interfaces import ITrack
 from cybertools.tracking.logfile import Logger, loggers
+from cybertools.util.date import getTimeStamp
 from loops.interfaces import ILoopsObject
 from loops.organize.job.base import JobManager
 from loops.organize.tracking.base import BaseRecordManager
 from loops import util
 
+
+packageId = 'loops.organize.tracking.access'
 
 # logging
 
@@ -52,29 +57,29 @@ fields = {
     '001': ('principal', 'node', 'target', 'view', 'params'),
 }
 
+version = '001'
+
+accessTrailSize = 50
+
 
 def record(request, **kw):
     data = request.annotations.setdefault(request_key, {})
     for k, v in kw.items():
         data[k] = v
-    # ???: better to collect data in a list of dictionaries?
 
 
-@adapter(IEndRequestEvent)
+
+@adapter(IBodyRenderedEvent)
 def logAccess(event, baseDir=None):
-    object = removeSecurityProxy(event.object)
-    context = getattr(object, 'context', None)
-    if context is None:
-        object = getattr(object, 'im_self', None)
-        context = getattr(object, 'context', None)
-        if context is None:
-            return
+    context = event.context
     if not ILoopsObject.providedBy(context):
         return
     data = event.request.annotations.get(request_key)
     if not data:
         return
     context = removeSecurityProxy(context)
+    if 'principal' in data:
+        storeAccessTrail(context, event.request, data)
     options = IOptions(context.getLoopsRoot())
     logfileOption = options(logfile_option)
     if not logfileOption:
@@ -86,9 +91,17 @@ def logAccess(event, baseDir=None):
         logger = loggers[fn] = Logger(fn, path)
     logger.log(marshall(data))
 
+def storeAccessTrail(context, request, data):
+    """ Keep records in Session for access history"""
+    session = ISession(request)[packageId]
+    item = session.setdefault('accessTrail', [])[:accessTrailSize]
+    record = dict((key, data.get(key) or '') for key in fields[version])
+    record['timeStamp'] = getTimeStamp()
+    record['version'] = version
+    item.insert(0, record)
+    session['accessTrail'] = item
 
 def marshall(data):
-    version = '001'
     values = [version]
     for key in fields[version]:
         values.append(data.get(key) or '')

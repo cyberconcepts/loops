@@ -6,6 +6,7 @@ $Id$
 1.1
 ---
 
+- keep access trail (history) in session
 - work items: provide "move" action for assigning a work item to
   another task
 - show work items (if present) for arbitrary concepts

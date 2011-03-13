@@ -95,8 +95,8 @@ EndRequestEvent.
   >>> from loops.browser.node import NodeView
   >>> from loops.browser.resource import ResourceView
   >>> from loops import util
-  >>> from zope.app.publication.interfaces import EndRequestEvent
   >>> from zope.publisher.browser import TestRequest
+  >>> from cybertools.browser.view import BodyRenderedEvent
 
   >>> loopsRoot.options = [logfile_option + ':test.log']
 
@@ -106,13 +106,13 @@ EndRequestEvent.
   ...                 node=util.getUidForObject(home),
   ...                 target=util.getUidForObject(resources['d001.txt']),
   ...       )
-  >>> logAccess(EndRequestEvent(NodeView(home, request), request), testDir)
+  >>> logAccess(BodyRenderedEvent(home, request), testDir)
 
   >>> record(request, principal='users.john', view='render',
   ...                 node=util.getUidForObject(home),
   ...                 target=util.getUidForObject(resources['d002.txt']),
   ...       )
-  >>> logAccess(EndRequestEvent(NodeView(home, request), request), testDir)
+  >>> logAccess(BodyRenderedEvent(home, request), testDir)
 
 The access log can then be read in via an AccessRecordManager object, i.e. a view
 that may be called via ``wget`` using a crontab entry or some other kind
