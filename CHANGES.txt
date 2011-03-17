@@ -6,8 +6,10 @@ $Id$
 1.1
 ---
 
+- improve 'move' and 'delegate' actions: create new run, store source and
+  target work items, keep state when moving
 - keep access trail (history) in session
-- work items: provide "move" action for assigning a work item to
+- work items: provide 'move' action for assigning a work item to
   another task
 - show work items (if present) for arbitrary concepts
 - portal page with - now fully editable - portal links
