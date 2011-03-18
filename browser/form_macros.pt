@@ -13,8 +13,10 @@
                   useI18N view/useI18NForEditing;
                   innerForm request/inner_form | string:inner_concept_edit_form.html;">
   <div dojoType="dijit.layout.BorderContainer"
-       style="width: 70em; height: 600px">
-    <div dojoType="dijit.layout.ContentPane" region="center">
+       style="width: 70em; height: 600px"
+       tal:omit-tag="not:view/isInnerHtml">
+    <div dojoType="dijit.layout.ContentPane" region="center"
+         tal:omit-tag="not:view/isInnerHtml">
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="version"
@@ -70,16 +72,18 @@
 </form>
 
 
-<div metal:define-macro="create" i18n:domain="loops"
-     dojoType="dijit.layout.BorderContainer"
-     style="width: 70em; height: 600px">
+<metal:block define-macro="create" i18n:domain="loops">
+ <div dojoType="dijit.layout.BorderContainer"
+       style="width: 70em; height: 600px"
+       tal:omit-tag="not:view/isInnerHtml">
   <form method="post" enctype="multipart/form-data"
         id="dialog_form" class="dialog"
         tal:define="qualifier request/qualifier | string:resource;
                     innerForm request/inner_form | string:inner_form.html;
                     typeToken view/typeToken;
                     fixedType view/fixedType">
-    <div dojoType="dijit.layout.ContentPane" region="center">
+    <div dojoType="dijit.layout.ContentPane" region="center"
+         tal:omit-tag="not:view/isInnerHtml">
       <input type="hidden" name="form.action" value="create"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="fixed_type"
@@ -127,8 +131,8 @@
     </div>
     <div metal:use-macro="view/template/macros/buttons" />
   </form>
-</div>
-
+ </div>
+</metal:block>
 
 <metal:assignments define-macro="assignments"
                    tal:condition="view/showAssignments">
@@ -280,8 +284,9 @@
 </metal:states>
 
 
-<div metal:define-macro="buttons" i18n:domain="" class="buttons"
-     dojoType="dijit.layout.ContentPane" region="bottom">
+<div metal:define-macro="buttons" class="buttons">
+  <div dojoType="dijit.layout.ContentPane" region="bottom"
+       tal:omit-tag="not:view/isInnerHtml">
               <input value="Save" type="submit"
                      i18n:attributes="value"
                      tal:attributes="onClick python: view.closeAction(True) or
@@ -290,6 +295,7 @@
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
                      tal:attributes="onClick view/closeAction">
+  </div>
 </div>
 
 
