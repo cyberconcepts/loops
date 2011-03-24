@@ -78,6 +78,7 @@ from loops.security.setter import BaseSecuritySetter
 from loops.security.setter import ConceptSecuritySetter, ResourceSecuritySetter
 from loops.setup import SetupManager, addObject
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
+from loops.versioning.versionable import VersionableResource
 from loops.view import Node, NodeAdapter
 #from loops.wiki.link import LoopsLinkProcessor
 from loops.wiki.setup import SetupManager as WikiSetupManager
@@ -143,6 +144,7 @@ class TestSite(object):
         component.provideAdapter(QueryOptions)
         component.provideAdapter(TypeOptions)
         component.provideUtility(GlobalOptions())
+        component.provideAdapter(VersionableResource)
 
         component.provideAdapter(Instance)
         component.provideAdapter(Editor, name='editor')

@@ -190,8 +190,8 @@ class WorkspaceInformation(Persistent):
 
     #propagateRolePermissions = 'object'   # or 'none'
     propagateRolePermissions = 'workspace'
-    #propagateParentSecurity = True  # False
-    propagateParentSecurity = False
+    propagateParentSecurity = True  # False
+    #propagateParentSecurity = False
     allocationPredicateNames = allocationPredicateNames
     workspaceGroupsFolderName = workspaceGroupsFolderName
 

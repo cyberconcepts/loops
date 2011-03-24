@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,11 +34,12 @@ from zope.interface import implements, Interface
 from zope.security.proxy import isinstance
 
 from loops.common import adapted, AdapterBase, baseObject
+from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
 from loops.security.common import acquiringPredicateNames
-from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.security.interfaces import ISecuritySetter
+from loops.versioning.interfaces import IVersionable
 
 
 class BaseSecuritySetter(object):
@@ -126,6 +127,9 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
                 if current is None or overrides(s, current):
                     settings[(p, r)] = s
         self.setDefaultRolePermissions()
+        self.setRolePermissions(settings)
+
+    def setRolePermissions(self, settings):
         for (p, r), s in settings.items():
             setRolePermission(self.rolePermissionManager, p, r, s)
 
@@ -181,4 +185,29 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
     @Lazy
     def parents(self):
         return self.baseObject.getConcepts(self.acquiringPredicates)
+
+    def setRolePermissions(self, settings):
+        vSetters = [self]
+        vr = IVersionable(baseObject(self.context))
+        versions = list(vr.versions.values())
+        if versions:
+            vSetters = [ISecuritySetter(adapted(v)) for v in versions]
+        for v in vSetters:
+            for (p, r), s in settings.items():
+                setRolePermission(v.rolePermissionManager, p, r, s)
+
+    def copyPrincipalRoles(self, source, revert=False):
+        vSetters = [self]
+        vr = IVersionable(baseObject(self.context))
+        versions = list(vr.versions.values())
+        if versions:
+            vSetters = [ISecuritySetter(adapted(v)) for v in versions]
+        prm = IPrincipalRoleMap(baseObject(source.context))
+        for r, p, s in prm.getPrincipalsAndRoles():
+            if p in self.workspacePrincipals:
+                for v in vSetters:
+                    if revert:
+                        setPrincipalRole(v.principalRoleManager, r, p, Unset)
+                    else:
+                        setPrincipalRole(v.principalRoleManager, r, p, s)
 
