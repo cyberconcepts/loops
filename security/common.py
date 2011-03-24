@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -188,8 +188,10 @@ class WorkspaceInformation(Persistent):
 
     __name__ = u'workspace_information'
 
-    propagateRolePermissions = 'object'   # or 'workspace', 'none'
-    propagateParentSecurity = True  # False
+    #propagateRolePermissions = 'object'   # or 'none'
+    propagateRolePermissions = 'workspace'
+    #propagateParentSecurity = True  # False
+    propagateParentSecurity = False
     allocationPredicateNames = allocationPredicateNames
     workspaceGroupsFolderName = workspaceGroupsFolderName
 
