@@ -188,8 +188,8 @@ class WorkspaceInformation(Persistent):
 
     __name__ = u'workspace_information'
 
-    propagateRolePermissions = 'workspace'
-    propagateParentSecurity = False
+    propagateRolePermissions = 'object'   # or 'workspace', 'none'
+    propagateParentSecurity = True  # False
     allocationPredicateNames = allocationPredicateNames
     workspaceGroupsFolderName = workspaceGroupsFolderName
 
