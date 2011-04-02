@@ -431,6 +431,9 @@ class BaseView(GenericView, I18NView):
     def renderedDescription(self):
         return self.renderDescription()
 
+    def getObjectForUid(self, uid):
+        return util.getObjectForUid(uid)
+
     # type listings
 
     def listTypes(self, include=None, exclude=None, sortOn='title'):

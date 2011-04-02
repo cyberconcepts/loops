@@ -336,7 +336,9 @@ class NodeView(BaseView):
             if ht not in parts:
                 parts.append(ht)
         if len(parts) < 2:
-            parts.append(super(NodeView, self).headTitle)
+            ht = super(NodeView, self).headTitle
+            if ht not in parts:
+                parts.append(ht)
         return ' - ' .join(parts)
 
     @Lazy

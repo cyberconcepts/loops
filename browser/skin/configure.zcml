@@ -38,6 +38,11 @@
         permission="zope.View"
         layer="loops.browser.skin.Lobo" />
 
+  <page for="*"
+        name="lobo.body_macros"
+        template="lobo/body.pt"
+        permission="zope.Public" />
+
   <resource name="loops.css" file="lobo/lobo.css"
             layer="loops.browser.skin.Lobo" />
   <resource name="print.css" file="lobo/print.css"
