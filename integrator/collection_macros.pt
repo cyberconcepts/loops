@@ -5,9 +5,9 @@
              tal:define="dummy item/update">
 
   <metal:block use-macro="view/concept_macros/conceptdata">
-    <metal:fill fill-slot="fields">
-      <metal:block tal:condition="item/editable"
-                   use-macro="view/concept_macros/conceptfields" />
+    <metal:fill tal:condition="item/editable"
+                fill-slot="fields">
+      <metal:block use-macro="view/concept_macros/conceptfields" />
       <form action="." method="post"
             tal:condition="item/editable">
         <input type="submit" name="update" value="Update Collection" />
