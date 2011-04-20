@@ -287,6 +287,7 @@
 <div metal:define-macro="buttons" class="buttons">
   <div dojoType="dijit.layout.ContentPane" region="bottom"
        tal:omit-tag="not:view/isInnerHtml">
+    <metal:buttons define-slot="buttons">
               <input value="Save" type="submit"
                      i18n:attributes="value"
                      tal:attributes="onClick python: view.closeAction(True) or
@@ -295,6 +296,7 @@
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
                      tal:attributes="onClick view/closeAction">
+    </metal:buttons>
   </div>
 </div>
 
