@@ -4,7 +4,8 @@
        tal:define="macros item/search_macros;
                    idPrefix string:${view/itemNum}.search;
                    formId string:$idPrefix.form;
-                   resultsId string:$idPrefix.results">
+                   resultsId string:$idPrefix.results;
+                   submitted request/search.submitted|nothing">
     <h1 tal:attributes="class string:content-$level;
                         ondblclick item/openEditWindow"
       tal:content="item/title">
@@ -19,7 +20,8 @@
           <input type="hidden" name="search.resultsId" value="1.results"
                  tal:attributes="value resultsId" />
           <table cellpadding="3">
-            <tal:block repeat="search_param python: ['type', 'text', 'concept']">
+            <tal:block repeat="search_param python:
+                            ['type', 'text', 'concept', 'state']">
               <metal:row use-macro="macros/search_row" />
             </tal:block>
             <tr tal:condition="nothing">
@@ -30,10 +32,10 @@
             </tr>
             <tr>
               <td></td>
-              <td colspan="3">
+              <td colspan="3"><br />
                 <input type="submit" name="button.search" value="Search" class="submit"
                        i18n:attributes="value"
-                       tal:attributes="onclick python:
+                       tal:attributes="xx_onclick python:
                                 item.submitReplacing(resultsId, formId, view)" />
               </td>
             </tr>
@@ -45,7 +47,7 @@
     <div metal:define-macro="search_results" id="1.search.results"
          tal:attributes="id resultsId | request/search.resultsId"
          i18n:domain="loops"
-         tal:define="item nocall:view;
+         xtal:define="item nocall:view;
                      controller nocall:view/@@controller;
                      resourceBase controller/resourceBase;">
       <fieldset class="box"
@@ -140,12 +142,15 @@
              tal:attributes="for string:$idPrefix.text">
         <span i18n:translate="">Type</span>:</label>
       <select name="text"
-              tal:attributes="name string:$namePrefix.text;
-                            id string:$idPrefix.text;">
+              tal:define="name string:$namePrefix.text;
+                          value request/?name|nothing"
+              tal:attributes="name name;
+                              id string:$idPrefix.text;">
         <tal:types repeat="type item/typesForSearch">
           <option value="loops:*"
                   i18n:translate=""
-                  tal:attributes="value type/token"
+                  tal:attributes="value type/token;
+                                  selected python: value == type.token"
                   tal:content="type/title">Topic</option>
         </tal:types>
       </select>
@@ -167,17 +172,19 @@
   <tr>
     <td></td>
     <td>
-      <input type="checkbox" checked
-             name="title" id="title" value="yes"
-             tal:attributes="name string:$namePrefix.title;
-                             id string:$idPrefix.title;" />
+      <input type="checkbox" value="yes"
+             tal:define="name string:$namePrefix.title"
+             tal:attributes="name name;
+                             id string:$idPrefix.title;
+                             checked request/?name|not:submitted|string:yes" />
       <label for="title"
              i18n:translate=""
              tal:attributes="for string:$idPrefix.title">Title</label>
-      <input type="checkbox"
-             name="full" id="full" value="yes"
-             tal:attributes="name string:$namePrefix.full;
-                             id string:$idPrefix.full;" />
+      <input type="checkbox" value="yes"
+             tal:define="name string:$namePrefix.full"
+             tal:attributes="name name;
+                             id string:$idPrefix.full;
+                             checked request/?name|nothing" />
       <label for="full"
              i18n:translate=""
              tal:attributes="for string:$idPrefix.full">Full text</label>&nbsp;&nbsp;
@@ -188,9 +195,11 @@
         <span i18n:translate="">Search text</span>:</label>
     </td>
     <td>
-      <input type="text" name="text"
-             tal:attributes="name string:$namePrefix.text;
-                             id string:$idPrefix.text;" />
+      <input type="text"
+             tal:define="name string:$namePrefix.text"
+             tal:attributes="name name;
+                             id string:$idPrefix.text;
+                             value request/?name|nothing" />
       <input type="button" value="+"
              title="Add search word"
              tal:condition="nothing" />&nbsp;
@@ -224,10 +233,13 @@
       </td>
       <td>
         <select name="text_selected"
-                tal:attributes="name string:$namePrefix.text_selected;
+                tal:define="name string:$namePrefix.text_selected;
+                            value request/?name|nothing"
+                tal:attributes="name name;
                                 id string:$idPrefix.text;">
           <tal:concepts repeat="concept python: item.conceptsForType(type['token'])">
-            <option tal:attributes="value concept/token"
+            <option tal:attributes="value concept/token;
+                                    selected python: value == concept['token']"
                     i18n:translate=""
                     tal:content="concept/title">Zope Corp</option>
           </tal:concepts>
@@ -242,13 +254,17 @@
              tal:attributes="for string:$idPrefix.type">
         <span i18n:translate="">Type</span>:</label>
       <select name="type"
-              tal:attributes="name string:$namePrefix.type;
+              tal:define="name string:$namePrefix.type;
+                          global conceptTypeValue request/?name|string:"
+              tal:attributes="name name;
                               id string:$idPrefix.type;
+                              value conceptTypeValue;
                               onChange string:setConceptTypeForComboBox('$idPrefix.type', '$idPrefix.text')">
         <tal:types repeat="type item/conceptTypesForSearch">
           <option value="loops:*"
                   i18n:translate=""
-                  tal:attributes="value type/token"
+                  tal:attributes="value type/token;
+                                  selected python: conceptTypeValue == type.token"
                   tal:content="type/title">Topic</option>
         </tal:types>
       </select>&nbsp;&nbsp;
@@ -266,16 +282,66 @@
              tal:condition="nothing" />&nbsp;
     </td>
     <td>
-      <tal:combo tal:define="dummy item/initDojo">
+      <tal:combo tal:define="dummy item/initDojo;
+                             name string:$namePrefix.text;
+                             value request/?name|nothing;
+                             concept python:
+                                value and view.getObjectForUid(value);
+                             displayValue python:
+                                concept and concept.title or u''">
         <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
-             url="listConceptsForComboBox.js?searchType=" >
+             url="listConceptsForComboBox.js?searchType="
+             tal:attributes="url
+                    string:listConceptsForComboBox.js?searchType=$conceptTypeValue">
         </div>
         <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
                autoComplete="False" labelAttr="label" style="height: 16px"
                name="concept.search.text" id="concept.search.text"
-               tal:attributes="name string:$namePrefix.text;
-                               id string:$idPrefix.text" />
+               tal:attributes="name name;
+                               id string:$idPrefix.text;
+                               displayedValue displayValue" />
       </tal:combo>
+    </td>
+  </tr>
+</metal:text>
+
+
+<metal:text define-macro="state"
+            tal:define="stateDefs item/statesDefinitions;
+                        deftype string:resource"
+            tal:condition="stateDefs">
+  <tr>
+    <td metal:use-macro="macros/minus"/>
+    <td colspan="3">
+      <h2 i18n:translate="">Restrict to objects with certain states</h2>
+    </td>
+  <tr>
+    <td></td>
+    <th i18n:translate="">Workflow</th>
+    <th colspan="2"
+        i18n:translate="">States</th>
+  </tr>
+  <tr tal:repeat="def stateDefs">
+    <td></td>
+    <td valign="top"
+        tal:content="def/name"
+        i18n:translate=""></td>
+    <td colspan="2">
+      <tal:states repeat="state def/states">
+        <tal:state define="name string:state.$deftype.${def/name};
+                           value state/name">
+            <input type="checkbox"
+                   tal:attributes="name string:$name:list;
+                                   value value;
+                                   checked python:
+                                       value in item.selectedStates.get(name, ());
+                                   id string:$name.$value"
+                />&nbsp;<label tal:content="state/title"
+                               i18n:translate=""
+                               tal:attributes="for string:$name.$value" />
+            &nbsp;
+        </tal:state>
+      </tal:states>
     </td>
   </tr>
 </metal:text>
@@ -284,5 +350,6 @@
 <td metal:define-macro="minus">
       <input type="button" value="&minus;"
              title="Remove search parameter"
-             tal:condition="python: param not in ['type', 'text', 'concept']" />&nbsp;
+             tal:condition="python:
+                    param not in ['type', 'text', 'concept', 'state']" />&nbsp;
 </td>

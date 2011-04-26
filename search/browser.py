@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 Definition of basic view classes and other browser related stuff for the
 loops.search package.
 
-$Id$
+$Id: browser.py 4160 2011-02-07 16:53:08Z helmutm $
 """
 
 from zope import interface, component
@@ -32,11 +32,13 @@ from zope.i18nmessageid import MessageFactory
 
 from cybertools.ajax import innerHtml
 from cybertools.relation.interfaces import IRelationRegistry
+from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
 from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
+from loops.interfaces import IResource
 from loops.organize.personal.browser.filter import FilterView
 from loops import util
 from loops.util import _
@@ -151,16 +153,89 @@ class Search(BaseView):
     def getRowName(self, obj):
         return obj.getLongTitle()
 
-    def getRowLabel(self, obj, name):
+    def getRowLabel(self, obj, name=None):
         if isinstance(obj, AdapterBase):
             obj = obj.context
+        if name is None:
+            name = obj.title
         return '%s (%s)' % (name, obj.conceptType.title)
+
+    @Lazy
+    def statesDefinitions(self):
+        return [component.getUtility(IStatesDefinition, name=n)
+                    for n in self.globalOptions('organize.stateful.resource', ())]
+
+    @Lazy
+    def selectedStates(self):
+        result = {}
+        for k, v in self.request.form.items():
+            if k.startswith('state.') and v:
+                result[k] = v
+        return result
 
     def submitReplacing(self, targetId, formId, view):
         self.registerDojo()
         return 'submitReplacing("%s", "%s", "%s"); return false;' % (
                     targetId, formId,
                     '%s/.target%s/@@searchresults.html' % (view.url, self.uniqueId))
+
+    @Lazy
+    def results(self):
+        form = self.request.form
+        type = form.get('search.1.text', 'loops:*')
+        text = form.get('search.2.text')
+        if text is not None:
+            text = util.toUnicode(text, encoding='ISO8859-15') # IE hack!!!
+        useTitle = form.get('search.2.title')
+        useFull = form.get('search.2.full')
+        conceptType = form.get('search.3.type', 'loops:concept:*')
+        #conceptTitle = form.get('search.3.text')
+        #if conceptTitle is not None:
+        #    conceptTitle = util.toUnicode(conceptTitle, encoding='ISO8859-15')
+        conceptUid = form.get('search.3.text')
+        result = FullQuery(self).query(text=text, type=type,
+                           useTitle=useTitle, useFull=useFull,
+                           #conceptTitle=conceptTitle,
+                           conceptUid=conceptUid,
+                           conceptType=conceptType)
+        rowNum = 4
+        while rowNum < 10:
+            addCriteria = form.get('search.%i.text_selected' % rowNum)
+            rowNum += 1
+            if not addCriteria:
+                break
+            if addCriteria == 'none':
+                continue
+            addSelection = FullQuery(self).query(text=text, type=type,
+                                useTitle=useTitle, useFull=useFull,
+                                conceptUid=addCriteria)
+            if result:
+                result = [r for r in result if r in addSelection]
+            else:
+                result = addSelection
+        result = [r for r in result if self.checkStates(r)]
+        fv = FilterView(self.context, self.request)
+        result = fv.apply(result)
+        result = sorted(result, key=lambda x: x.title.lower())
+        return self.viewIterator(result)
+
+    def checkStates(self, obj):
+        if not IResource.providedBy(obj):
+            return True
+        for std, states in self.selectedStates.items():
+            if std.startswith('state.resource.'):
+                std = std[len('state.resource.'):]
+            else:
+                continue
+            stf = component.queryAdapter(obj, IStateful, name=std)
+            if stf is None:
+                continue
+            for state in states:
+                if stf.state == state:
+                    break
+                else:
+                    return False
+        return True
 
 
 #class SearchResults(BaseView):
