@@ -1,31 +1,78 @@
-type(u'classifier', u'Classifier', options=u'', typeInterface='loops.classifier.interfaces.IClassifier', viewName=u'classifier.html')
-type(u'documenttype', u'Document Type', options=u'', typeInterface=u'', viewName=u'')
-type(u'domain', u'Domain', options=u'', typeInterface=u'', viewName=u'')
-type(u'extcollection', u'External Collection', options=u'', typeInterface='loops.integrator.interfaces.IExternalCollection', viewName=u'collection.html')
-type(u'extfile', u'Externe Datei', options=u'', typeInterface='loops.interfaces.IExternalFile', viewName=u'')
-type(u'file', u'Datei', options=u'', typeInterface='loops.interfaces.IFile', viewName=u'')
-type(u'glossaryitem', u'Glossareintrag', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'glossaryitem.html')
-type(u'note', u'Notiz', options=u'', typeInterface='loops.interfaces.INote', viewName='note.html')
-type(u'person', u'Person', options=u'', typeInterface='loops.knowledge.interfaces.IPerson', viewName=u'')
-type(u'predicate', u'Prädikat', options=u'', typeInterface=u'', viewName=u'')
-type(u'process', u'Prozess', options=u'', typeInterface=u'', viewName=u'')
-type(u'query', u'Abfrage', options=u'', typeInterface='loops.expert.concept.IQueryConcept', viewName=u'')
-type(u'textdocument', u'Text', options=u'', typeInterface='loops.interfaces.ITextDocument', viewName=u'')
-type(u'topic', u'Thema', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
-type(u'type', u'Typ', options=u'', typeInterface='loops.interfaces.ITypeConcept', viewName=u'')
-concept(u'hasType', u'has Type', u'predicate')
-concept(u'ispartof', u'is Part of', u'predicate')
-concept(u'ownedby', u'owned by', u'predicate')
-concept(u'glossary', u'Glossar', u'query', options=u'', viewName=u'glossary.html')
-concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')
-concept(u'standard', u'subobject', u'predicate')
-concept(u'general', u'Allgemein', u'domain')
-concept(u'system', u'System', u'domain')
+type(u'query', u'Abfrage', options=u'', typeInterface='loops.expert.concept.IQueryConcept', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:03', created='2011-04-25T17:01')]
+type(u'task', u'Aufgabe', options=u'', typeInterface='loops.knowledge.interfaces.ITask', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:02', created='2011-04-25T17:01')]
+type(u'domain', u'Bereich', options=u'', typeInterface=u'', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:02', created='2011-04-25T17:01')]
+type(u'classifier', u'Classifier', options=u'', typeInterface='loops.classifier.interfaces.IClassifier', viewName=u'classifier.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'documenttype', u'Document Type', options=u'', typeInterface=u'', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'extcollection', u'External Collection', options=u'', typeInterface='loops.integrator.interfaces.IExternalCollection', viewName=u'collection.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'glossaryitem', u'Glossareintrag', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'glossaryitem.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'media_asset', u'Media Asset', options=u'storage:varsubdir\nstorage_parameters:extfiles/sites_prg\nasset_transform.minithumb: size(105)\nasset_transform.small: size(230)\nasset_transform.medium: size(480)', typeInterface='loops.media.interfaces.IMediaAsset', viewName=u'image_medium.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:10', created='2011-04-25T17:08')]
+type(u'note', u'Note', options=u'', typeInterface='loops.interfaces.INote', viewName='note.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'person', u'Person', options=u'', typeInterface='loops.knowledge.interfaces.IPerson', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'predicate', u'Predicate', options=u'', typeInterface=u'', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'event', u'Termin', options=u'', typeInterface='loops.organize.interfaces.ITask', viewName=u'task.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:12', created='2011-04-25T17:11')]
+type(u'textdocument', u'Text', options=u'', typeInterface='loops.interfaces.ITextDocument', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+type(u'topic', u'Thema', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:03', created='2011-04-25T17:01')]
+type(u'type', u'Type', options=u'', typeInterface='loops.interfaces.ITypeConcept', viewName=u'')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'depends', u'depends', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'follows', u'follows', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'general', u'Allgemein', u'domain')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'glossary', u'Glossar', u'query', options=u'', viewName=u'glossary.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'hasType', u'has Type', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'ispartof', u'is Part of', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'knows', u'knows', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'ownedby', u'owned by', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'personal_info', u'Pers\xf6nliche Information', u'query', options=u'', viewName=u'personal_info.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:07', created='2011-04-25T17:07')]
+concept(u'prg', u'PRG', u'domain')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:02', created='2011-04-25T17:02')]
+concept(u'provides', u'provides', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'querytarget', u'is Query Target', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'requires', u'requires', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'standard', u'subobject', u'predicate')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+concept(u'system', u'System', u'domain')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
 child(u'general', u'documenttype', u'standard')
+child(u'general', u'event', u'standard')
 child(u'system', u'classifier', u'standard')
 child(u'system', u'extcollection', u'standard')
-node(u'home', u'Startseite', '', 'menu', body=u'Willkommen\n==========')
-node(u'participants', u'Teilnehmer', u'home', 'page', body=u'Teilnehmer\n==========', target=u'concepts/person', viewName=u'listchildren')
-node(u'topics', u'Themen', u'home', 'page', body=u'Themen\n======', target=u'concepts/topic', viewName=u'listchildren')
-node(u'glossary', u'Glossar', u'home', 'page', target=u'concepts/glossary')
-node(u'search', u'Suche', u'home', 'page', target=u'concepts/search')
+child(u'system', u'media_asset', u'standard')
+child(u'system', u'personal_info', u'standard')
+node(u'home', u'Startseite', '', 'menu', body=u'Willkommen\n==========')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+node(u'participants', u'Teilnehmer', u'home', 'page', body=u'Teilnehmer\n==========', target=u'concepts/person', viewName=u'listchildren')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+node(u'topics', u'Themen', u'home', 'page', body=u'Themen\n======', target=u'concepts/topic', viewName=u'listchildren')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+node(u'glossary', u'Glossar', u'home', 'page', target=u'concepts/glossary')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
+node(u'search', u'Suche', u'home', 'page', target=u'concepts/search')[
+    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]

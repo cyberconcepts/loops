@@ -225,7 +225,7 @@ Extracting Document Properties from MS Office Files
   >>> fn = os.path.join(path, 'example.docx')
   >>> shutil.copy(fn + '.sav', fn)
   >>> os.path.getsize(fn)
-  195808L
+  20337L
 
   >>> officeFile = addAndConfigureObject(resources, Resource, 'test.docx',
   ...                    title=u'Example Word File', resourceType=tOfficeFile,
@@ -235,7 +235,7 @@ Extracting Document Properties from MS Office Files
 
   >>> content = aOfficeFile.data
   >>> len(content)
-  192925
+  17409
 
 
 Fin de partie
