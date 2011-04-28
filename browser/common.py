@@ -312,7 +312,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def adapted(self):
-        return adapted(self.context, self.languageInfo)
+        return adapted(self.context, self.languageInfo, self.request)
 
     @Lazy
     def baseObject(self):

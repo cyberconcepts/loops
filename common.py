@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -43,10 +43,11 @@ from loops import util
 
 # convenience functions
 
-def adapted(obj, langInfo=None):
+def adapted(obj, langInfo=None, request=None):
     """ Return adapter based on the object type's type interface.
     """
     if isinstance(obj, AdapterBase):
+        obj.request = request
         return obj
     t = IType(obj, None)
     if t is not None:
@@ -57,6 +58,7 @@ def adapted(obj, langInfo=None):
             if isinstance(adapted, I18NAdapterBase):
                 adapted.languageInfo = langInfo
             if adapted is not None:
+                adapted.request = request
                 return adapted
     return obj
 
@@ -98,7 +100,7 @@ class AdapterBase(object):
 
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__',)
+    _adapterAttributes = ('context', '__parent__', 'request')
     _contextAttributes = list(IConcept)
     _noexportAttributes = ()
     _textIndexAttributes = ()
