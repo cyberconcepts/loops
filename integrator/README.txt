@@ -223,7 +223,6 @@ Extracting Document Properties from MS Office Files
   >>> tOfficeFile = concepts['officefile']
   >>> path = os.path.join(dataDir, 'office')
   >>> fn = os.path.join(path, 'example.docx')
-  >>> shutil.copy(fn + '.sav', fn)
   >>> os.path.getsize(fn)
   20337L
 
@@ -236,6 +235,9 @@ Extracting Document Properties from MS Office Files
   >>> content = aOfficeFile.data
   >>> len(content)
   17409
+
+  Clean up:
+  >>> shutil.copy(fn + '.sav', fn)
 
 
 Fin de partie
