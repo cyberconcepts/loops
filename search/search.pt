@@ -295,7 +295,7 @@
                     string:listConceptsForComboBox.js?searchType=$conceptTypeValue">
         </div>
         <input dojoType="dijit.form.FilteringSelect" store="conceptSearch"
-               autoComplete="False" labelAttr="label" style="height: 16px"
+               autoComplete="False" labelAttr="name" style="height: 16px"
                name="concept.search.text" id="concept.search.text"
                tal:attributes="name name;
                                id string:$idPrefix.text;
