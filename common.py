@@ -43,11 +43,10 @@ from loops import util
 
 # convenience functions
 
-def adapted(obj, langInfo=None, request=None):
+def adapted(obj, langInfo=None):
     """ Return adapter based on the object type's type interface.
     """
     if isinstance(obj, AdapterBase):
-        obj.request = request
         return obj
     t = IType(obj, None)
     if t is not None:
@@ -58,7 +57,6 @@ def adapted(obj, langInfo=None, request=None):
             if isinstance(adapted, I18NAdapterBase):
                 adapted.languageInfo = langInfo
             if adapted is not None:
-                adapted.request = request
                 return adapted
     return obj
 
@@ -100,7 +98,7 @@ class AdapterBase(object):
 
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__', 'request')
+    _adapterAttributes = ('context', '__parent__')
     _contextAttributes = list(IConcept)
     _noexportAttributes = ()
     _textIndexAttributes = ()

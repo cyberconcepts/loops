@@ -200,7 +200,6 @@ class ILoopsAdapter(IConceptSchema):
 
     context = Attribute('The underlying persistent object.')
     uid = Attribute('Unique id of the context object.')
-    request = Attribute('A a mapping with current settings, optional.')
 
     def getChildren():
         """ Return a collection of child objects provided by the context
