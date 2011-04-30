@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -58,14 +58,13 @@ actions.register('editTopic', 'portlet', DialogAction,
 )
 
 
-class MyKnowledge(BaseView):
+class MyKnowledge(ConceptView):
 
-    #template = NamedTemplate('loops.knowledge_macros')
     template = ViewPageTemplateFile('knowledge_macros.pt')
 
     @Lazy
     def macro(self):
-        return self.template.macros['requirements']
+        return self.template.macros['requirement_providers']
 
     @Lazy
     def person(self):
@@ -90,4 +89,13 @@ class MyKnowledge(BaseView):
         return ({'required': BaseView(req.context, request),
                  'providers': (BaseView(p.context, request) for p in prov)}
                     for req, prov in providers)
+
+
+class Candidates(ConceptView):
+
+    template = ViewPageTemplateFile('knowledge_macros.pt')
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['requirement_candidates']
 

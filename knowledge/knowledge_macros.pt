@@ -1,14 +1,11 @@
-<metal:listing define-macro="requirements">
+<html i18n:domain="loops">
+
+
+<metal:providers define-macro="requirement_providers">
+  <metal:block use-macro="view/concept_macros/conceptdata" />
   <div>
-    <h3 tal:attributes="class string:content-$level;
-                        ondblclick item/openEditWindow">
-      <span i18n:translate="">Concept</span>:
-      <span tal:content="item/title">Title</span>
-    </h3>
     <metal:listing define-macro="requirementslisting2">
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('configure.html')">
-        <h4>Requirements</h4>
+        <h3>Requirements</h3>
         <table class="listing">
           <tr>
            <th i18n:translate="">Requirement</th>
@@ -16,20 +13,48 @@
           </tr>
           <tr tal:repeat="related item/myKnowledgeProvidersForTask">
             <td>
-              <a href="#"
-                  tal:attributes="href string:${view/url}/.target${related/required/uniqueId}"
-                  tal:content="related/required/title">Concept Title</a>
+              <a tal:attributes="href
+                        string:${view/url}/.target${related/required/uniqueId}"
+                 tal:content="related/required/title">Concept Title</a>
             </td>
             <td>
               <tal:provider repeat="prov related/providers">
-                <a href="#"
-                   tal:attributes="href string:${view/url}/.target${prov/uniqueId}"
-                    tal:content="prov/title">Provider Title</a>
+                <a tal:attributes="href string:${view/url}/.target${prov/uniqueId}"
+                   tal:content="prov/title">Provider Title</a>
               </tal:provider>
             </td>
           </tr>
         </table>
-      </div>
     </metal:listing>
   </div>
-</metal:listing>
+</metal:providers>
+
+
+<metal:candidates define-macro="requirement_candidates">
+  <metal:block use-macro="view/concept_macros/conceptdata" />
+  <h3 i18n:translate="">Candidates for Task</h3>
+  <table class="listing">
+    <tr>
+      <th i18n:translate="">Candidate</th>
+      <th i18n:translate=""
+          title="coverage"
+          i18n:attributes="title description_fit">Fit</th>
+      <th i18n:translate="">Knowledge</th>
+    </tr>
+    <tr tal:repeat="candidate item/adapted/getCandidates">
+      <td tal:define="person candidate/person">
+        <b tal:omit-tag="python:candidate['fit'] < 1.0">
+          <a tal:attributes="href python:view.getUrlForTarget(person.context)"
+             tal:content="person/title" /></b></td>
+      <td tal:content="candidate/fit" />
+      <td>
+        <tal:knowledge tal:repeat="ke candidate/required">
+          <a tal:attributes="href python:view.getUrlForTarget(ke.context)"
+             tal:content="ke/title" /><tal:sep condition="not:repeat/ke/end">, </tal:sep>
+        </tal:knowledge></td>
+    </tr>
+  </table>
+</metal:candidates>
+
+
+</html>

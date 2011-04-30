@@ -36,8 +36,6 @@ from loops.schema.base import Relation, RelationSet
 
 _ = MessageFactory('loops')
 
-# TODO: separate interfaces for viewing and changing methods!
-
 
 class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
     """ A person, including knowledge/learning management features.
@@ -53,6 +51,12 @@ class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
 class ITask(IBaseTask, IRequirementProfile, ILoopsAdapter):
     """ A task, also acting as a knowledge requirement profile.
     """
+
+    requirements = RelationSet(
+            title=_(u'Requirements'),
+            description=_(u'The knowledge required for this task.'),
+            #target_types=('topic',),   # set via global option knowledge.element
+            required=False)
 
 
 class ITopic(IConceptSchema, IKnowledgeElement, ILoopsAdapter):

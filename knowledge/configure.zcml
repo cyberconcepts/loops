@@ -74,8 +74,15 @@
              zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.knowledge.browser.MyKnowledge"
-        permission="zope.View"
-        />
+        permission="zope.View" />
+
+  <zope:adapter
+        name="task_candidates"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.knowledge.browser.Candidates"
+        permission="zope.View" />
 
   <!-- other adapters -->
 

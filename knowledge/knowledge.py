@@ -150,6 +150,11 @@ class Task(BaseTask, KnowledgeAdapterMixin):
 
     implements(ITask)
 
+    _adapterAttributes = BasePerson._adapterAttributes + ('requirements',)
+    _noexportAttributes = ('requirements',)
+
+    requirements = ParentRelationSetProperty('requires')
+
     def getRequirements(self):
         return (IKnowledgeElement(c)
                 for c in self.context.getParents((self.requiresPred,)))
@@ -159,6 +164,26 @@ class Task(BaseTask, KnowledgeAdapterMixin):
 
     def removeRequirement(self, obj):
         self.context.deassignParent(obj.context, (self.requiresPred,))
+
+    def getCandidates(self):
+        result = []
+        candidates = []
+        reqs = list(self.requirements)
+        for req in reqs:
+            for p in req.getKnowers():
+                if p not in candidates:
+                    candidates.append(p)
+                    item = dict(person=p, required=[], other=[], fit=0.0)
+                    for k in p.knowledge:
+                        if k in reqs:
+                            item['required'].append(k)
+                            item['fit'] += 1.0
+                        else:
+                            item['other'].append(k)
+                    result.append(item)
+        for item in result:
+            item['fit'] /= len(reqs)
+        return sorted(result, key=lambda x: (-x['fit'], x['person'].title))
 
 
 class ConceptKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):

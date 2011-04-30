@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-03-07 12:00 CET\n"
+"PO-Revision-Date: 2011-04-30 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -498,10 +498,25 @@ msgid "End date"
 msgstr "Ende"
 
 msgid "Knowledge"
-msgstr "Wissen"
+msgstr "Kompetenzen"
+
+msgid "Requirements"
+msgstr "Anforderungen"
 
 msgid "The knowledge elements for this person."
-msgstr "Die Wissenselemente für diese Person."
+msgstr "Die Kompetenzen dieser Person."
+
+msgid "Candidates for Task"
+msgstr "Kandidaten für Aufgabe"
+
+msgid "Candidate"
+msgstr "Kandidat"
+
+msgid "Fit"
+msgstr "DG"
+
+msgid "description_fit"
+msgstr "Deckungsgrad"
 
 msgid "Create loops Note"
 msgstr "loops-Notiz anlegen"
