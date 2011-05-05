@@ -101,7 +101,7 @@ class ConceptView(BaseConceptView):
 
     @Lazy
     def style(self):
-        return 'height: %ipx' % self.parentView.height
+        return 'height: %s' % self.parentView.height
 
     @Lazy
     def img(self):
@@ -165,7 +165,8 @@ class Grid3(BasePart):
 
     macroName = 'grid'
     imageSize = 'small'
-    height = 260
+    #height = '260px'
+    height = 'auto; padding-bottom: 10px'
     gridPattern = ['span-2', 'span-2', 'span-2 last']
 
 
