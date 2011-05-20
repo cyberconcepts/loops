@@ -66,13 +66,13 @@
       </fieldset>
     </div>
     <tal:results condition="request/search.submitted|nothing">
-      <metal:results use-macro="item/search_macros/results" />
+      <metal:results use-macro="item/search_macros/search_results" />
     </tal:results>
   </div>
 </metal:search>
 
 <div metal:define-macro="search_results" id="search.results"
-     tal:define="item nocall:view">
+     tal:define="item nocall:item|nocall:view">
     <fieldset class="box">
       <h2 i18n:translate="">Search results</h2>
       <metal:results define-macro="results">
