@@ -6,7 +6,7 @@
     i18n_domain="zope"
     >
 
-  <zope:adapter
+  <!--<zope:adapter
       name="search"
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -28,6 +28,6 @@
       for="loops.interfaces.ILoopsObject"
       class="loops.search.browser.SearchResults"
       permission="zope.View"
-      />
+      />-->
 
 </configure>

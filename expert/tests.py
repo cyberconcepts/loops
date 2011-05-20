@@ -24,6 +24,7 @@ def test_suite():
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
                 DocFileSuite('README.txt', optionflags=flags),
+                DocFileSuite('search.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

@@ -16,7 +16,31 @@
   <browser:page
       name="search.html"
       for="loops.interfaces.INode"
-      class="loops.expert.browser.search.SearchResults"
+      class="loops.expert.browser.search.QuickSearchResults"
       permission="zope.View" />
+
+  <zope:adapter
+      name="search"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.expert.browser.search.Search"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="listConceptsForComboBox.js"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.expert.browser.search.Search"
+      attribute="listConcepts"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="searchresults.html"
+      for="loops.interfaces.ILoopsObject"
+      class="loops.expert.browser.search.SearchResults"
+      permission="zope.View"
+      />
 
 </configure>

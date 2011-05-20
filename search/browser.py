@@ -37,6 +37,7 @@ from cybertools.typology.interfaces import ITypeManager
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
 from loops.common import adapted, AdapterBase
+#from loops.expert.browser.search import searchMacrosTemplate as search_template
 from loops.expert.concept import ConceptQuery, FullQuery
 from loops.interfaces import IResource
 from loops.organize.personal.browser.filter import FilterView
@@ -44,7 +45,7 @@ from loops import util
 from loops.util import _
 
 
-search_template = ViewPageTemplateFile('search.pt')
+#search_template = ViewPageTemplateFile('search.pt')
 
 
 class Search(BaseView):

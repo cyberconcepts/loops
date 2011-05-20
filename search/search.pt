@@ -43,6 +43,9 @@
         </form>
       </fieldset>
     </div>
+    <tal:results condition="request/search.submitted|nothing">
+      <metal:results use-macro="item/search_macros/results" />
+    </tal:results>
 
     <div metal:define-macro="search_results" id="1.search.results"
          tal:attributes="id resultsId | request/search.resultsId"

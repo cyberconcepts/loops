@@ -108,9 +108,9 @@ class NodeView(BaseView):
                     subMacros=[node_macros.macros['page_actions'],
                                i18n_macros.macros['language_switch']])
         if self.globalOptions('expert.quicksearch'):
-            from loops.expert.browser.search import searchMacrosTemplate
+            from loops.expert.browser.search import search_template
             cm.register('top_actions', 'top_quicksearch', name='multi_actions',
-                        subMacros=[searchMacrosTemplate.macros['quicksearch']],
+                        subMacros=[search_template.macros['quicksearch']],
                         priority=20)
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
