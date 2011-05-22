@@ -28,6 +28,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.api import getName, getParent
 
+from cybertools.browser.form import FormController
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
@@ -35,6 +36,7 @@ from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
 from loops.interfaces import IResource
 from loops.organize.personal.browser.filter import FilterView
+from loops.security.common import canWriteObject
 from loops import util
 from loops.util import _
 
@@ -44,6 +46,8 @@ search_template = ViewPageTemplateFile('search.pt')
 
 class QuickSearchResults(NodeView):
     """ Provides results listing """
+
+    showActions = False
 
     @Lazy
     def search_macros(self):
@@ -72,6 +76,7 @@ class QuickSearchResults(NodeView):
 
 class Search(BaseView):
 
+    form_action = 'execute_search_action'
     maxRowNum = 0
 
     @Lazy
@@ -81,6 +86,10 @@ class Search(BaseView):
     @Lazy
     def macro(self):
         return self.search_macros['search']
+
+    @Lazy
+    def showActions(self):
+        return canWriteObject(self.context)
 
     @property
     def rowNum(self):
@@ -315,3 +324,20 @@ class SearchResults(NodeView):
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
 
+
+class ActionExecutor(FormController):
+
+    def update(self):
+        form = self.request.form
+        actions = [k for k in form.keys() if k.startswith('action.')]
+        if actions:
+            uids = form.get('selection', [])
+            action = actions[0]
+            if action == 'action.delete':
+                print '*** delete', uids
+                return True
+                for uid in uids:
+                    obj = util.getObjectForUid(uid)
+                    parent = getParent(obj)
+                    del parent[getName(obj)]
+        return True

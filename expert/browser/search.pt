@@ -71,8 +71,12 @@
   </div>
 </metal:search>
 
+
 <div metal:define-macro="search_results" id="search.results"
      tal:define="item nocall:item|nocall:view">
+  <form method="post">
+    <input type="hidden" name="form.action"
+           tal:attributes="value item/form_action" />
     <fieldset class="box">
       <h2 i18n:translate="">Search results</h2>
       <metal:results define-macro="results">
@@ -80,6 +84,12 @@
                i18n:attributes="summary">
           <thead>
             <tr>
+              <th tal:condition="item/showActions"
+                  class="checkbox">
+                <input type="checkbox"
+                       onchange="checked = this.checked;
+                           dojo.query('.select_item').forEach(function(n) {
+                                n.checked = checked;});" /></th>
               <th i18n:translate="">Title</th>
               <th i18n:translate="">Type</th>
               <th i18n:translate=""
@@ -97,6 +107,11 @@
                                 description row/description;
                                 targetUrl python:view.getUrlForTarget(row)">
                 <tr tal:attributes="class class">
+                  <td tal:condition="item/showActions|nothing"
+                      tal:define="uid row/uniqueId"
+                      class="checkbox">
+                  <input type="checkbox" name="selection:list" class="select_item"
+                         tal:attributes="value uid;" /></td>
                   <td>
                     <a tal:attributes="href string:$targetUrl?version=this;
                                        title description">
@@ -134,7 +149,13 @@
           </tbody>
         </table>
       </metal:results>
+      <div class="buttons">
+          <input type="submit" name="action.delete"
+                 value="Delete objects" class="submit"
+                 onClick="confirm('Do you really want to delete the selected objects?')"
+                 i18n:attributes="value; onclick" /></div>
     </fieldset>
+  </form>
 </div>
 
 
