@@ -66,7 +66,7 @@ class QuickSearchResults(NodeView):
                            useTitle=True, useFull=True,)
         fv = FilterView(self.context, self.request)
         result = fv.apply(result)
-        result.sort(key=lambda x: x.title)
+        result.sort(key=lambda x: x.title.lower())
         return self.viewIterator(result)
 
 
