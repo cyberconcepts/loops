@@ -33,11 +33,15 @@
       tal:content="item/title">
       Search
     </h1>
+    <div class="message"
+         tal:define="message request/message|nothing"
+         tal:condition="message"
+         tal:content="message" />
 
-    <div metal:define-macro="search_form" class="searchForm">
-      <fieldset class="box">
-        <form action="." method="post" id="1.search.form"
-              tal:attributes="id formId">
+    <form action="." method="post" id="1.search.form"
+          tal:attributes="id formId">
+      <div metal:define-macro="search_form" class="searchForm">
+        <fieldset class="box">
           <input type="hidden" name="search.submitted" value="yes" />
           <input type="hidden" name="search.resultsId" value="1.results"
                  tal:attributes="value resultsId" />
@@ -56,25 +60,22 @@
               <td></td>
               <td colspan="3"><br />
                 <input type="submit" name="button.search" value="Search" class="submit"
-                       i18n:attributes="value"
-                       tal:attributes="xx_onclick python:
-                                item.submitReplacing(resultsId, formId, view)" />
+                       i18n:attributes="value" />
               </td>
             </tr>
           </table>
-        </form>
-      </fieldset>
-    </div>
-    <tal:results condition="request/search.submitted|nothing">
-      <metal:results use-macro="item/search_macros/search_results" />
-    </tal:results>
+        </fieldset>
+      </div>
+      <tal:results condition="request/search.submitted|nothing">
+        <metal:results use-macro="item/search_macros/search_results" />
+      </tal:results>
+    </form>
   </div>
 </metal:search>
 
 
 <div metal:define-macro="search_results" id="search.results"
      tal:define="item nocall:item|nocall:view">
-  <form method="post">
     <input type="hidden" name="form.action"
            tal:attributes="value item/form_action" />
     <fieldset class="box">
@@ -105,13 +106,16 @@
             <tal:items tal:repeat="row item/results">
               <tal:item define="class python: repeat['row'].odd() and 'even' or 'odd';
                                 description row/description;
-                                targetUrl python:view.getUrlForTarget(row)">
+                                targetUrl python:view.getUrlForTarget(row);
+                                selected_uids request/selection|python:[]">
                 <tr tal:attributes="class class">
                   <td tal:condition="item/showActions|nothing"
                       tal:define="uid row/uniqueId"
                       class="checkbox">
                   <input type="checkbox" name="selection:list" class="select_item"
-                         tal:attributes="value uid;" /></td>
+                         tal:attributes="value uid;
+                                         checked python:
+                                uid in selected_uids" /></td>
                   <td>
                     <a tal:attributes="href string:$targetUrl?version=this;
                                        title description">
@@ -149,13 +153,8 @@
           </tbody>
         </table>
       </metal:results>
-      <div class="buttons">
-          <input type="submit" name="action.delete"
-                 value="Delete objects" class="submit"
-                 onClick="confirm('Do you really want to delete the selected objects?')"
-                 i18n:attributes="value; onclick" /></div>
+      <metal:actions use-macro="item/search_macros/actions" />
     </fieldset>
-  </form>
 </div>
 
 
@@ -394,5 +393,50 @@
              tal:condition="python:
                     param not in ['type', 'text', 'concept', 'state']" />&nbsp;
 </td>
+
+
+<div metal:define-macro="actions"
+     tal:condition="item/showActions">
+  <div id="search_actions_plus"
+       onclick="dojo.query('#search_actions').style('display', 'block');
+                dojo.query('#search_actions_plus').style('display', 'none')" >
+    <img src="/++resource++cybertools.icons/plus.gif" />Show Actions</div>
+  <div id="search_actions" style="display: none">
+    <h4 onclick="dojo.query('#search_actions_plus').style('display', 'block');
+                 dojo.query('#search_actions').style('display', 'none')">
+      <img src="/++resource++cybertools.icons/minus.gif" />Actions for Selected Objects</h4>
+    <div class="buttons">
+      <div tal:define="stateDefs item/statesDefinitions;"
+           tal:condition="stateDefs">
+        <table>
+          <tr tal:repeat="def stateDefs">
+            <td>
+              <input type="submit" name="action.change_state"
+                     value="Change state" class="submit"
+                     tal:condition="repeat/def/start"
+                     i18n:attributes="value" /></td>
+            <td valign="top"
+                tal:content="def/name"
+                i18n:translate=""></td>
+            <td tal:define="transitions def/transitions">
+              <select tal:attributes="name string:trans.${def/name}">
+                <option i18n:translate="" value="-">No change</option>
+                <option tal:repeat="trans transitions"
+                        tal:attributes="value trans/name"
+                        tal:content="trans/title">publish</option>
+              </select>
+            </td>
+          </tr>
+        </table><br />
+      </div>
+      <div>
+          <input type="submit" name="action.delete"
+                 value="Delete objects" class="submit"
+                 onClick="confirm('Do you really want to ... the selected objects?')"
+                 i18n:attributes="value; onclick" /></div>
+    </div>
+  </div>
+</div>
+
 
 </html>

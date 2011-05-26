@@ -13,18 +13,6 @@
              set_schema="loops.expert.concept.IQueryConcept" />
   </class>
 
-  <adapter name="execute_query_action"
-           for="loops.browser.node.NodeView
-                zope.publisher.interfaces.browser.IBrowserRequest"
-           factory="loops.expert.browser.base.ActionExecutor"
-           permission="zope.ManageContent" />
-
-  <adapter name="execute_search_action"
-           for="loops.browser.node.NodeView
-                zope.publisher.interfaces.browser.IBrowserRequest"
-           factory="loops.expert.browser.search.ActionExecutor"
-           permission="zope.ManageContent" />
-
   <adapter factory="loops.expert.setup.SetupManager"
            name="expert" />
 
