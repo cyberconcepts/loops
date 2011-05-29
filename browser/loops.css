@@ -416,6 +416,13 @@ img.notselected {
     font-weight: bold;
 }
 
+.message {
+    font-weight: bold;
+    background-color: #c3d9ff;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
 /* comments */
 
 div.comment {
@@ -438,10 +445,6 @@ div.comment {
 
 .searchForm input.button, input.submit {
     padding: 2px;
-}
-
-.searchForm input.submit {
-    font-weight: bold;
 }
 
 /* blog */

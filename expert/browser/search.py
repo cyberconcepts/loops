@@ -28,6 +28,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.api import getName, getParent
 
+from cybertools.browser.form import FormController
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.node import NodeView
@@ -35,6 +36,7 @@ from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
 from loops.interfaces import IResource
 from loops.organize.personal.browser.filter import FilterView
+from loops.security.common import canWriteObject, checkPermission
 from loops import util
 from loops.util import _
 
@@ -44,6 +46,8 @@ search_template = ViewPageTemplateFile('search.pt')
 
 class QuickSearchResults(NodeView):
     """ Provides results listing """
+
+    showActions = False
 
     @Lazy
     def search_macros(self):
@@ -72,6 +76,7 @@ class QuickSearchResults(NodeView):
 
 class Search(BaseView):
 
+    form_action = 'execute_search_action'
     maxRowNum = 0
 
     @Lazy
@@ -81,6 +86,11 @@ class Search(BaseView):
     @Lazy
     def macro(self):
         return self.search_macros['search']
+
+    @Lazy
+    def showActions(self):
+        return checkPermission('loops.ManageSite', self.context)
+        #return canWriteObject(self.context)
 
     @property
     def rowNum(self):
@@ -261,9 +271,8 @@ class Search(BaseView):
         return True
 
 
-#class SearchResults(BaseView):
 class SearchResults(NodeView):
-    """ Provides results as inner HTML """
+    """ Provides results as inner HTML - not used any more (?)"""
 
     @Lazy
     def search_macros(self):
@@ -315,3 +324,46 @@ class SearchResults(NodeView):
         result = sorted(result, key=lambda x: x.title.lower())
         return self.viewIterator(result)
 
+
+class ActionExecutor(FormController):
+
+    def update(self):
+        form = self.request.form
+        actions = [k for k in form.keys() if k.startswith('action.')]
+        if actions:
+            action = actions[0].split('.', 1)[1]
+            uids = form.get('selection', [])
+            if uids:
+                method = self.actions.get(action)
+                if method:
+                    method(self, uids)
+        return True
+
+    def delete(self, uids):
+        self.request.form['message'] = _(
+                u'The objects selected have been deleted.')
+        for uid in uids:
+            obj = util.getObjectForUid(uid)
+            if not canWriteObject(obj):
+                continue
+            parent = getParent(obj)
+            del parent[getName(obj)]
+
+    def change_state(self, uids):
+        stdefs = dict([(k.split('.', 1)[1], v)
+                        for k, v in self.request.form.items()
+                        if k.startswith('trans.') and self.request.form[k] != '-'])
+        if not stdefs:
+            return
+        for uid in uids:
+            obj = util.getObjectForUid(uid)
+            if not canWriteObject(obj):
+                continue
+            for stdef, trans in stdefs.items():
+                stf = component.getAdapter(obj, IStateful, name=stdef)
+                if trans in [t.name for t in stf.getAvailableTransitions()]:
+                    stf.doTransition(trans)
+        self.request.form['message'] = _(
+                u'The state of the objects selected has been changed.')
+
+    actions = dict(delete=delete, change_state=change_state)

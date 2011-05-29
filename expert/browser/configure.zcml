@@ -6,41 +6,52 @@
     i18n_domain="loops">
 
   <zope:adapter
-      name="action_query.html"
-      for="loops.interfaces.IConcept
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.expert.browser.base.BaseQueryView"
-      permission="zope.View" />
+        name="action_query.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.base.BaseQueryView"
+        permission="zope.View" />
 
   <browser:page
-      name="search.html"
-      for="loops.interfaces.INode"
-      class="loops.expert.browser.search.QuickSearchResults"
-      permission="zope.View" />
+        name="search.html"
+        for="loops.interfaces.INode"
+        class="loops.expert.browser.search.QuickSearchResults"
+        permission="zope.View" />
 
   <zope:adapter
-      name="search"
-      for="loops.interfaces.IConcept
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.interface.Interface"
-      factory="loops.expert.browser.search.Search"
-      permission="zope.View"
-      />
+        name="search"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.search.Search"
+        permission="zope.View" />
 
   <browser:page
-      name="listConceptsForComboBox.js"
-      for="loops.interfaces.ILoopsObject"
-      class="loops.expert.browser.search.Search"
-      attribute="listConcepts"
-      permission="zope.View"
-      />
+        name="listConceptsForComboBox.js"
+        for="loops.interfaces.ILoopsObject"
+        class="loops.expert.browser.search.Search"
+        attribute="listConcepts"
+        permission="zope.View" />
 
   <browser:page
-      name="searchresults.html"
-      for="loops.interfaces.ILoopsObject"
-      class="loops.expert.browser.search.SearchResults"
-      permission="zope.View"
-      />
+        name="searchresults.html"
+        for="loops.interfaces.ILoopsObject"
+        class="loops.expert.browser.search.SearchResults"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="execute_query_action"
+        for="loops.browser.node.NodeView
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        factory="loops.expert.browser.base.ActionExecutor"
+        permission="zope.ManageContent" />
+
+  <zope:adapter
+        name="execute_search_action"
+        for="loops.browser.node.NodeView
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        factory="loops.expert.browser.search.ActionExecutor"
+        permission="zope.ManageContent" />
 
 </configure>
