@@ -432,7 +432,7 @@
       <div>
           <input type="submit" name="action.delete"
                  value="Delete objects" class="submit"
-                 onClick="confirm('Do you really want to ... the selected objects?')"
+                 onClick="confirm('Do you really want to delete the selected objects?')"
                  i18n:attributes="value; onclick" /></div>
     </div>
   </div>
