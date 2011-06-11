@@ -39,7 +39,7 @@ ol.first, ul.first {
 ol li, ul li {
     line-height: 1.5em;
 }
-
+ſ
 blockquote ul {
     margin: 0;
 }
@@ -72,21 +72,28 @@ textarea {
     margin-top: 0.5em;
 }
 
+tr.even td {
+    background-color: transparent;
+}
+
 table.listing {
     margin: 1px;
     /*margin-top: 0.5em; */
     margin-bottom: 1em;
+    border-collapse: collapse;
 }
 
 table.listing th {
     color: #000040;
     padding: 0 2px 0 2px;
+    border-bottom: 1px solid lightgrey;
 }
 
 table.listing td {
     padding: 0 2px 0 2px;
     white-space: normal;
     vertical-align: middle;
+    border-bottom: 1px dotted #dddddd;
 }
 
 fieldset.box table.listing td {
