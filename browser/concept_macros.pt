@@ -174,11 +174,13 @@
 
 
 <metal:resources define-macro="conceptresources">
-      <div tal:attributes="class string:content-$level;
-                           ondblclick python: item.openEditWindow('resources.html')"
-           tal:define="resources python: list(item.resources())"
-           tal:condition="resources">
-        <h2 i18n:translate="">Resources</h2>
+    <div tal:attributes="class string:content-$level;
+                         ondblclick python: item.openEditWindow('resources.html')"
+         tal:define="resources python: list(item.resources())"
+         tal:condition="resources">
+      <h2 i18n:translate="">Resources</h2>
+      <form method="post"
+            tal:omit-tag="not:item/editable">
         <table class="listing"
                metal:define-macro="resources">
           <tr tal:define="sortcol request/resources_sortcol|nothing;
@@ -197,10 +199,13 @@
             <th i18n:translate=""
                 tal:condition="view/showObjectActions">Info</th>
           </tr>
+          <tbody withHandles="true" id="resources_list"
+                 tal:attributes="dojoType python:item.editable and 'dojo.dnd.Source'">
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description">
-              <tr tal:attributes="class class">
+              <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
+                                  id related/uniqueId">
                 <td tal:condition="item/showCheckboxes|nothing"
                     tal:define="uid related/uniqueId"
                     class="checkbox">
@@ -242,12 +247,26 @@
                                 style nothing"
                     tal:condition="view/showObjectActions">
                   <div metal:use-macro="views/node_macros/object_actions" />
+                  <input type="hidden" name="resources_tokens:list"
+                         tal:attributes="value related/uidToken" />
                 </td>
               </tr>
             </tal:item>
           </tal:items>
+          </tbody>
         </table>
-      </div>
+        <input type="submit" style="display: none"
+               name="resources_change_order" id="resources_change_order"
+               value="Save Changes"
+               i18n:attributes="value" />
+        <input type="hidden" name="loops.viewName" value="index.html" />
+        <script language="javascript">
+          dojo.subscribe('/dnd/drop', function(data) {
+              if (data.node.id == 'resources_list') {
+                dojo.byId('resources_change_order').style.display = ''}});
+        </script>
+      </form>
+    </div>
 </metal:resources>
 
 

@@ -203,7 +203,8 @@ class Resource(Image, Contained):
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
         if sort == 'default':
-            sort = lambda x: (x.order, x.first.title.lower())
+            #sort = lambda x: (x.order, x.first.title.lower())
+            sort = lambda x: (x.first.title.lower())
         rels = (r for r in getRelations(first=concept, second=obj,
                                         relationships=relationships)
                   if canListObject(r.first, noSecurityCheck))

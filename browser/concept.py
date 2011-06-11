@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -280,7 +280,8 @@ class ConceptView(BaseView):
 
     def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True):
         form = self.request.form
-        if form.get('loops.viewName') == 'index.html' and self.editable:
+        #if form.get('loops.viewName') == 'index.html' and self.editable:
+        if self.editable:
             self.registerDojoDnd()
             if 'children_change_order' in form:
                 tokens = form.get('child_tokens')
@@ -370,7 +371,24 @@ class ConceptView(BaseView):
         for r in rels:
             yield self.childViewFactory(r, self.request)
 
+    def reorderResources(self, tokens):
+        for r in self.context.getResourceRelations(sort=None):
+            token = ':'.join((util.getUidForObject(r.second),
+                              util.getUidForObject(r.predicate)))
+            if token in tokens:
+                pos = tokens.index(token) + 1
+                if r.order != pos:
+                    r.order = pos
+
     def resources(self):
+        form = self.request.form
+        #if form.get('loops.viewName') == 'index.html' and self.editable:
+        if self.editable:
+            self.registerDojoDnd()
+            if 'resources_change_order' in form:
+                tokens = form.get('resources_tokens')
+                if tokens:
+                    self.reorderResources(tokens)
         from loops.browser.resource import ResourceRelationView
         from loops.organize.personal.browser.filter import FilterView
         fv = FilterView(self.context, self.request)
