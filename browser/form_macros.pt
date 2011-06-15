@@ -134,6 +134,7 @@
  </div>
 </metal:block>
 
+
 <metal:assignments define-macro="assignments"
                    tal:condition="view/showAssignments">
     <tr>

@@ -24,11 +24,8 @@ $Id$
 """
 
 from zope import interface, component
-from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-#from zope.formlib.namedtemplate import NamedTemplate
-from zope.i18nmessageid import MessageFactory
 
 from cybertools.browser.action import actions
 from cybertools.typology.interfaces import IType

@@ -166,7 +166,8 @@
 
 <metal:info define-macro="workitem_info"
             tal:define="item nocall:view/track">
-  <table class="object_info" width="400">
+  <table class="object_info" width="400"
+         tal:define="state item/track/getStateObject">
     <tr>
       <td colspan="2"><h2 i18n:translate="">Work Item Information</h2><br /></td>
     </tr>
@@ -201,7 +202,7 @@
       <td valign="top"><span i18n:translate="">Comment</span>:</td>
       <td tal:content="item/track/comment"></td>
     </tr>
-    <tr tal:define="state item/track/getStateObject">
+    <tr>
       <td><span i18n:translate="">State</span>:</td>
       <td i18n:translate=""
           tal:content="state/title"></td>
@@ -211,6 +212,32 @@
       <td><span tal:content="item/created" />
           (<span tal:content="python:
                    item.getUserForUserName(item.track.creator)['title']" />)</td>
+    </tr>
+    <tr tal:condition="python:state.name == 'delegated'">
+      <td><span i18n:translate="">Delegated to</span>:</td>
+      <td><a tal:define="party python:view.getObjectForUid(item.targetWorkItem.party)"
+             tal:attributes="href python:view.getUrlForTarget(party)"
+             tal:content="party/title" /></td>
+    </tr>
+    <tr tal:condition="python:state.name == 'moved'">
+      <td><span i18n:translate="">Moved To</span>:</td>
+      <td><a tal:define="task python:view.getObjectForUid(item.targetWorkItem.taskId)"
+             tal:attributes="href python:view.getUrlForTarget(task)"
+             tal:content="task/title" /></td>
+    </tr>
+    <tr tal:define="source item/sourceWorkItem;
+                    isDelegated python:source and source.state == 'delegated'"
+        tal:condition="source">
+      <td>
+        <span tal:condition="isDelegated"
+              i18n:translate="">Delegated by</span>
+        <span tal:condition="not:isDelegated"
+              i18n:translate="">Moved From</span>:
+      </td>
+      <td><a tal:define="objId python:isDelegated and source.party or source.taskId;
+                         obj python:view.getObjectForUid(objId)"
+             tal:attributes="href python:view.getUrlForTarget(obj)"
+             tal:content="obj/title" /></td>
     </tr>
     <tr>
       <td colspan="2"><br />

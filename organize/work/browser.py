@@ -31,7 +31,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.traversing.browser import absoluteURL
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
@@ -115,6 +115,18 @@ class WorkItemDetails(TrackDetails):
         value = date.fromtimestamp(self.track.timeStamp)
         if value is not None:
             return weekDays[value.weekday()].title()
+
+    @Lazy
+    def sourceWorkItem(self):
+        sourceId = self.track.data.get('source')
+        if sourceId:
+            return getParent(self.track)[sourceId]
+
+    @Lazy
+    def targetWorkItem(self):
+        targetId = self.track.data.get('target')
+        if targetId:
+            return getParent(self.track)[targetId]
 
     def actions(self):
         info = DialogAction(self.view,
