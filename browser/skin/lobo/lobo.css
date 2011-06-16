@@ -48,6 +48,10 @@ textarea {
     font-size: 100%;
 }
 
+thead th {
+    background: none;
+}
+
 /* class-specific */
 
 .description {
