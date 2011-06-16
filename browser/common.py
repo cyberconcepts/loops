@@ -674,6 +674,8 @@ class BaseView(GenericView, I18NView):
         return 'return inlineEdit("%s", "")' % id
 
     def registerDojo(self):
+        if self.controller is None:
+            return
         cm = self.controller.macros
         cm.register('js', 'dojo.js', template=dojoMacroTemplate, name='main',
                     position=0,
@@ -694,6 +696,8 @@ class BaseView(GenericView, I18NView):
         #            resourceName='ajax.dojo/dojo/resources/dojo.css', media='all')
 
     def registerDojoDnd(self):
+        if self.controller is None:
+            return
         self.registerDojo()
         jsCall = 'dojo.require("dojo.dnd.Source")'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
