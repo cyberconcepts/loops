@@ -36,7 +36,12 @@ class PersonSchemaFactory(BasePersonSchemaFactory):
     def __call__(self, interface, **kw):
         schema = super(PersonSchemaFactory, self).__call__(interface, **kw)
         if 'knowledge' in schema.fields.keys():
-            kelements = IOptions(self.context.getLoopsRoot())('knowledge.element')
+            kelements = []
+            request = kw.get('request')
+            if request is not None:
+                v = request.annotations.get('loops.view', {}).get('nodeView')
+                if v is not None:
+                    kelements = IOptions(v.loopsRoot)('knowledge.element')
             if kelements:
                 schema.fields['knowledge'].target_types = kelements
             else:
