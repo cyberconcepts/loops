@@ -104,14 +104,18 @@
                             view.getTypesVocabulary((qualifier,))"
                         tal:content="type/title"
                         tal:attributes="value type/token;
-                                        selected python:
-                               type.token == typeToken">
+                                        selected python:type.token == typeToken">
                   Note
                 </option>
               </select>
               <input type="hidden" name="form.type"
                      tal:condition="fixedType"
                      tal:attributes="value typeToken" />
+              <script type="text/javascript"
+                      tal:content="string:replaceFieldsNode(
+                                    'form.fields', 'form.type',
+                                    '${view/url}/$innerForm')">
+              </script>
         </th></tr></tbody>
 
         <tbody><tr><td colspan="5">
