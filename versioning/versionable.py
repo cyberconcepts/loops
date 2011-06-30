@@ -209,7 +209,6 @@ class VersionableResource(object):
 def cleanupVersions(context, event):
     """ Called upon deletion of a resource.
     """
-    #print 'cleaning up'
     vContext = IVersionable(context, None)
     if vContext is None:
         return
@@ -225,3 +224,7 @@ def cleanupVersions(context, event):
         vId = vContext.versionId
         vMaster = IVersionable(vContext.master)
         del vMaster.versions[vId]
+        if vMaster.getVersioningAttribute('currentVersion', None) == context:
+            newCurrent = sorted(vMaster.versions.items())[-1][1]
+            vMaster.setVersioningAttribute('currentVersion', newCurrent)
+
