@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -145,7 +145,17 @@ class SendEmailForm(NodeView):
     def members(self):
         persons = self.conceptManager['person'].getChildren([self.typePredicate])
         persons = [adapted(p) for p in persons]
-        return [dict(title=p.title, email=p.email) for p in persons if p.email]
+        # TODO: check if user has access to target
+        #       see zope.app.securitypolicy.zopepolicy.settingsForObject
+        return [dict(title=p.title, email=p.email, object=p)
+                    for p in persons if p.email]
+
+    @Lazy
+    def membersByGroups(self):
+        groups = {}
+        pdata = self.members
+        # TODO: see security.audit.PersonWorkSpaceAssignments
+        return sorted([])
 
     @Lazy
     def mailBody(self):
@@ -169,6 +179,7 @@ class SendEmail(FormController):
         message = form.get('mailbody') or u''
         recipients = form.get('recipients') or []
         recipients += (form.get('addrRecipients') or u'').split('\n')
+        # TODO: remove duplicates
         person = getPersonForUser(self.context, self.request)
         sender = person and adapted(person).email or 'loops@unknown.com'
         msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
