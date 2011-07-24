@@ -339,6 +339,8 @@
            name="boolean" />
   <adapter factory="cybertools.composer.schema.field.ListFieldInstance"
            name="list" />
+  <adapter factory="cybertools.composer.schema.field.DropdownFieldInstance"
+           name="dropdown" />
   <adapter factory="cybertools.composer.schema.field.FileUploadFieldInstance"
            name="fileupload" />
   <adapter factory="cybertools.composer.schema.grid.field.GridFieldInstance"
