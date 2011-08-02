@@ -12,8 +12,8 @@ type(u'extcollection', u'External Collection', options=u'', typeInterface='loops
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
 type(u'glossaryitem', u'Glossareintrag', options=u'', typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'glossaryitem.html')[
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
-type(u'media_asset', u'Media Asset', options=u'storage:varsubdir\nstorage_parameters:extfiles/sites_prg\nasset_transform.minithumb: size(105)\nasset_transform.small: size(230)\nasset_transform.medium: size(480)', typeInterface='loops.media.interfaces.IMediaAsset', viewName=u'image_medium.html')[
-    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:10', created='2011-04-25T17:08')]
+type(u'media_asset', u'Media Asset', options=u'storage:varsubdir\nstorage_parameters:extfiles/sites_zzz\nasset_transform.minithumb: size(105)\nasset_transform.small: size(230)\nasset_transform.medium: size(480)', typeInterface='loops.media.interfaces.IMediaAsset', viewName=u'image_medium.html')[
+    annotations(creators=(u'loops.admin',), modified='2011-07-27T12:00', created='2011-04-25T17:08')]
 type(u'note', u'Note', options=u'', typeInterface='loops.interfaces.INote', viewName='note.html')[
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
 type(u'person', u'Person', options=u'', typeInterface='loops.knowledge.interfaces.IPerson', viewName=u'')[
@@ -46,8 +46,6 @@ concept(u'ownedby', u'owned by', u'predicate')[
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
 concept(u'personal_info', u'Pers\xf6nliche Information', u'query', options=u'', viewName=u'personal_info.html')[
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:07', created='2011-04-25T17:07')]
-concept(u'prg', u'PRG', u'domain')[
-    annotations(creators=(u'loops.admin',), modified='2011-04-25T17:02', created='2011-04-25T17:02')]
 concept(u'provides', u'provides', u'predicate')[
     annotations(creators=(u'loops.admin',), modified='2011-04-25T17:01', created='2011-04-25T17:01')]
 concept(u'querytarget', u'is Query Target', u'predicate')[
