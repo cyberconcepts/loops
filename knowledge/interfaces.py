@@ -37,7 +37,7 @@ from loops.schema.base import Relation, RelationSet
 _ = MessageFactory('loops')
 
 
-class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
+class IPerson(IBasePerson, IKnowing):
     """ A person, including knowledge/learning management features.
     """
 
@@ -48,7 +48,7 @@ class IPerson(IBasePerson, IKnowing, ILoopsAdapter):
             required=False)
 
 
-class ITask(IBaseTask, IRequirementProfile, ILoopsAdapter):
+class ITask(IBaseTask, IRequirementProfile):
     """ A task, also acting as a knowledge requirement profile.
     """
 

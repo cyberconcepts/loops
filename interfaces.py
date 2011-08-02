@@ -90,6 +90,10 @@ class IConceptSchema(Interface):
         missing_value=u'',
         required=False)
 
+# let these fields always appear on top:
+IConceptSchema['title'].order = 1
+IConceptSchema['description'].order = 2
+
 
 class IConcept(IConceptSchema, ILoopsObject, IPotentialTarget):
     """ The concept is the central element of the loops framework.

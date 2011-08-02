@@ -6,6 +6,7 @@ $Id$
 1.1
 ---
 
+- field order: make sure title and description are always on top
 - yellow pages: view task_candidates for selecting persons with required
   knowledge for task
 - improve 'move' and 'delegate' actions: create new run, store source and
