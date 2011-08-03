@@ -6,6 +6,8 @@ $Id$
 1.1
 ---
 
+- allow editing/creation of work items by others (creator, admin),
+  take party/userName from previous work item instead of current user
 - field order: make sure title and description are always on top
 - yellow pages: view task_candidates for selecting persons with required
   knowledge for task

@@ -139,8 +139,7 @@ class WorkItemDetails(TrackDetails):
                       target=self.object,
                       addParams=dict(id=self.track.__name__))
         actions = [info, WorkItemStateAction(self)]
-        if (self.isLastInRun and
-                self.user['object'] == getPersonForUser(self.object, self.view.request)):
+        if self.isLastInRun and self.allowedToEditWorkItem:
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()
@@ -154,6 +153,14 @@ class WorkItemDetails(TrackDetails):
                       target=self.object,
                       addParams=dict(id=self.track.__name__)))
         return actions
+
+    @Lazy
+    def allowedToEditWorkItem(self):
+        if checkPermission('loops.ManageSite', self.object):
+            return True
+        if self.track.data.get('creator') == self.personId:
+            return True
+        return self.user['object'] == getPersonForUser(self.object, self.view.request)
 
 
 class WorkItemInfo(NodeView):
@@ -417,13 +424,6 @@ class CreateWorkItem(EditObject, BaseTrackView):
         if id is not None:
             workItems = self.loopsRoot.getRecordManager()['work']
             return workItems.get(id)
-
-    @Lazy
-    def personId(self):
-        p = getPersonForUser(self.context, self.request)
-        if p is not None:
-            return util.getUidForObject(p)
-        return self.request.principal.id
 
     @Lazy
     def object(self):

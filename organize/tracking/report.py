@@ -36,6 +36,7 @@ from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
 from loops.browser.common import BaseView
 from loops.interfaces import IConcept, IResource
+from loops.organize.party import getPersonForUser
 from loops.security.common import canAccessObject
 from loops import util
 from loops.util import _
@@ -288,6 +289,14 @@ class TrackDetails(BaseView):
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         return dict(object=obj, title=obj.title, url=url)
+
+    @Lazy
+    def personId(self):
+        request = self.view.request
+        p = getPersonForUser(self.object, request)
+        if p is not None:
+            return util.getUidForObject(p)
+        return request.principal.id
 
     @Lazy
     def action(self):

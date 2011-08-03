@@ -33,6 +33,7 @@ from cybertools.browser.action import actions
 from cybertools.tracking.browser import TrackView
 from loops.browser.action import DialogAction
 from loops.browser.form import ObjectForm, EditObject
+from loops.organize.party import getPersonForUser
 from loops import util
 
 
@@ -94,6 +95,13 @@ class BaseTrackView(TrackView):
                                         absoluteURL(obj, self.request))
                 return dict(title=obj.title, url=url, obj=obj)
         return dict(title=value, url=None, obj=None)
+
+    @Lazy
+    def personId(self):
+        p = getPersonForUser(self.context, self.request)
+        if p is not None:
+            return util.getUidForObject(p)
+        return self.request.principal.id
 
 
 class ChangeView(BaseTrackView):
