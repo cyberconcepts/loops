@@ -21,7 +21,7 @@
           enctype="multipart/form-data">
 
       <input type="hidden" name="form_submitted" value="true" />
-      <tal:control condition="request/form_submitted|nothing">
+      <tal:control condition="nothing">
         <script language="JavaScript">
             focusOpener();
         </script>
