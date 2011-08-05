@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 """
 Automatic setup of a loops site.
 
-$Id$
 """
 
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
@@ -79,8 +78,10 @@ class SetupManager(object):
     def setupCoreConcepts(self, conceptManager):
         typeConcept = self.addObject(conceptManager, Concept, 'type', title=u'Type')
         hasType = self.addObject(conceptManager, Concept, 'hasType', title=u'has Type')
-        predicate = self.addObject(conceptManager, Concept, 'predicate', title=u'Predicate')
-        standard = self.addObject(conceptManager, Concept, 'standard', title=u'subobject')
+        predicate = self.addObject(conceptManager, Concept, 'predicate',
+                                    title=u'Predicate')
+        standard = self.addObject(conceptManager, Concept, 'standard',
+                                    title=u'subobject')
         domain = self.addObject(conceptManager, Concept, 'domain', title=u'Domain')
         #query = self.addObject(conceptManager, Concept, 'query', title=u'Query')
         file = self.addObject(conceptManager, Concept, 'file', title=u'File')
@@ -258,15 +259,20 @@ class SetupManager(object):
 
 
 def addObject(container, class_, name, **kw):
+    created = False
     if name in container:
-        return container[name]
-    obj = container[name] = class_()
+        obj = container[name]
+        #return obj
+    else:
+        obj = container[name] = class_()
+        created = True
     for attr, value in kw.items():
         if attr == 'type':
             obj.setType(value)
         else:
             setattr(obj, attr, value)
-    notify(ObjectCreatedEvent(obj))
+    if created:
+        notify(ObjectCreatedEvent(obj))
     notify(ObjectModifiedEvent(obj))
     return obj
 
