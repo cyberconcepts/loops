@@ -21,6 +21,7 @@ Automatic setup of a loops site.
 
 """
 
+import os
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
 from zope import component
@@ -293,6 +294,20 @@ def addAndConfigureObject(container, class_, name, **kw):
     return obj
 
 
+def importData(root, importPath, importFileName):
+    from loops.external.annotation import AnnotationsExtractor
+    from loops.external.base import Loader
+    from loops.external.pyfunc import PyReader
+    component.provideAdapter(AnnotationsExtractor)
+    dmpFile = open(os.path.join(importPath, importFileName))
+    data = dmpFile.read()
+    dmpFile.close()
+    reader = PyReader()
+    elements = reader.read(data)
+    loader = Loader(root, os.path.join(importPath, 'resources'))
+    loader.load(elements)
+
+
 class SetupView(object):
     """ Allows to carry out setup actions manually.
     """
@@ -305,4 +320,5 @@ class SetupView(object):
     def setupLoopsSite(self):
         self.manager.setup()
         return 'Done'
+
 
