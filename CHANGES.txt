@@ -6,6 +6,7 @@ $Id$
 1.1
 ---
 
+- overwrite also basic attributes via addObject(), e.g. when importing loops data
 - allow editing/creation of work items by others (creator, admin),
   take party/userName from previous work item instead of current user
 - field order: make sure title and description are always on top
