@@ -77,7 +77,10 @@ def nl2br(text):
 
 def toUnicode(value, encoding='UTF-8'):
     if type(value) is not unicode:
-        return value.decode(encoding)
+        try:
+            return value.decode(encoding)
+        except UnicodeDecodeError:
+            return value.decode('ISO8859-15')
     else:
         return value
 
