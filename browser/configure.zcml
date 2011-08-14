@@ -502,16 +502,23 @@
       permission="zope.ManageContent">
   </page>
 
+  <page
+      name="saveasnewversion"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.NodeView"
+      attribute="externalEditorSaveAsNewVersion"
+      permission="zope.ManageContent">
+  </page>
+
+  <!-- not used -->
   <pages for="loops.interfaces.IResource"
          class="loops.browser.resource.ExternalEditorView"
          permission="zope.ManageContent">
-
     <page name="external_edit" attribute="load" />
     <!--
     <page name="save" attribute="save" />
     <page name="lock" attribute="lock" />
     <page name="unlock" attribute="unlock" />-->
-
   </pages>
 
   <!-- query views -->

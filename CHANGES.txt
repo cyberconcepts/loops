@@ -9,7 +9,8 @@ $Id$
 - media assets: allow for access restriction for viewing larger than a
   given maximum size (via option ``media.unauthorized_max_size``)
 - external editor functionality: include title field in data in order to
-  make it work correctly with the current version of the client module
+  make it work correctly with the current version of the client module;
+  ignore versioning requests (saveasnewversion)
 - suppress node view reload when node has been modified in management interface
 - overwrite also basic attributes via addObject(), e.g. when importing loops data
 - allow editing/creation of work items by others (creator, admin),

@@ -563,6 +563,10 @@ class NodeView(BaseView):
         self.recordAccess('external_edit')
         return ExternalEditorView(target, self.request).load(url=url)
 
+    def externalEditorSaveAsNewVersion(self):
+        # ignore versioning requests issued by external editor client
+        pass
+
     # work items
 
     @Lazy

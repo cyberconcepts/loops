@@ -370,6 +370,7 @@ class DocumentView(ResourceView):
 
 
 class ExternalEditorView(ExternalEditorView, BaseView):
+    # obsolete, base class is used immediately
 
     def load(self, url=None):
         #context = removeSecurityProxy(self.context)
