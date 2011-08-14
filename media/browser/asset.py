@@ -26,6 +26,7 @@ $Id$
 
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.security.interfaces import Unauthorized
 
 from loops.browser.node import NodeView
 from loops.browser.resource import ResourceView, resource_macros
@@ -49,6 +50,8 @@ class MediaAssetView(ResourceView):
         versionId = self.request.get('v')
         obj = self.adapted
         data = obj.getData(versionId)
+        if not self.hasImagePermission(data):
+            raise Unauthorized(str(self.contextInfo))
         contentType = obj.getContentType(versionId)
         response = self.request.response
         response.setHeader('Content-Type', contentType)
@@ -62,6 +65,21 @@ class MediaAssetView(ResourceView):
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         return data
+
+    def hasImagePermission(self, data):
+        if not 'image/' in self.context.contentType:
+            return True
+        if not self.isAnonymous:
+            # TODO: replace with real permission (loops.ViewRestrictedMedia) check
+            return True
+        maxSize = self.typeOptions('media.unauthorized_max_size')
+        if maxSize:
+            (w, h) = self.adapted.getImageSize(data=data)
+            if w > int(maxSize[0]):
+                return False
+            if len(maxSize) > 1 and h > int(maxSize[1]):
+                return False
+        return True
 
 
 class MediaAssetNodeView(NodeView):
