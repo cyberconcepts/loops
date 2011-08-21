@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-04-30 12:00 CET\n"
+"PO-Revision-Date: 2011-08-21 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -233,6 +233,9 @@ msgstr "Aktionen"
 msgid "Print this page"
 msgstr "Diese Seite ausdrucken"
 
+msgid "Object Information"
+msgstr "Informationen über dieses Objekt"
+
 msgid "Information about this object."
 msgstr "Informationen über dieses Objekt."
 
@@ -245,6 +248,9 @@ msgstr "Mit 'External Editor' bearbeiten."
 msgid "Type"
 msgstr "Typ"
 
+msgid "modified"
+msgstr "Änderungsdatum"
+
 msgid "Modification Date"
 msgstr "Änderungsdatum"
 
@@ -253,6 +259,12 @@ msgstr "Größe"
 
 msgid "Author(s)"
 msgstr "Autor(en)"
+
+msgid "Creators"
+msgstr "Bearbeiter"
+
+msgid "Meta Information"
+msgstr "Meta-Informationen"
 
 msgid "Parents"
 msgstr "Oberbegriffe"

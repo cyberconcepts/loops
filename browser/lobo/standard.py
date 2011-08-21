@@ -50,6 +50,11 @@ class Base(BaseConceptView):
     def macro(self):
         return self.macros[self.macroName]
 
+    @Lazy
+    def params(self):
+        ann = self.request.annotations.get('loops.view', {})
+        return parse_qs(ann.get('params') or '')
+
 
 class ConceptView(BaseConceptView):
 
@@ -106,10 +111,10 @@ class ConceptView(BaseConceptView):
     @Lazy
     def img(self):
         for r in self.resources['images']:
-                src = ('%s/mediaasset.html?v=%s' %
-                            (self.nodeView.getUrlForTarget(r),
-                             self.parentView.imageSize))
-                return dict(src=src, cssClass=self.parentView.imageCssClass)
+                url = self.nodeView.getUrlForTarget(r)
+                src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
+                return dict(src=src, url=url,
+                            cssClass=self.parentView.imageCssClass)
 
 
 class ConceptRelationView(BaseConceptRelationView, ConceptView):
@@ -127,9 +132,7 @@ class Layout(Base):
 
     def getParts(self):
         result = []
-        ann = self.request.annotations.get('loops.view', {})
-        params = parse_qs(ann.get('params') or '')
-        parts = (params.get('parts') or ['h1,g3'])[0].split(',')
+        parts = (self.params.get('parts') or ['h1,g3'])[0].split(',')
         for p in parts:
             viewName = 'lobo_' + p
             view = component.queryMultiAdapter((self.context, self.request),
@@ -147,9 +150,14 @@ class BasePart(Base):
     gridPattern = []
 
     def getChildren(self):
+        subtypeNames =  (self.params.get('subtypes') or [''])[0].split(',')
+        subtypes = [self.conceptManager[st] for st in subtypeNames if st]
         result = []
-        for idx, r in enumerate(
-                self.context.getChildRelations([self.defaultPredicate])):
+        childRels = self.context.getChildRelations([self.defaultPredicate])
+        if subtypes:
+            childRels = [r for r in childRels
+                           if r.second.conceptType in subtypes]
+        for idx, r in enumerate(childRels):
             result.append(ConceptRelationView(r, self.request,
                                 contextIsSecond=True, parent=self, idx=idx))
         return result

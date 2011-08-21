@@ -107,6 +107,8 @@ class Concept(Contained, Persistent):
 
     workspaceInformation = None
 
+    metaInfo = u''
+
     def __init__(self, title=u''):
         self.title = title
 

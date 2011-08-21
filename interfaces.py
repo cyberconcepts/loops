@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -89,6 +89,9 @@ class IConceptSchema(Interface):
         default=u'',
         missing_value=u'',
         required=False)
+
+    metaInfo = Attribute('Optional additional information about the concept '
+                    'provided as text.')
 
 # let these fields always appear on top:
 IConceptSchema['title'].order = 1
@@ -291,6 +294,9 @@ class IBaseResource(ILoopsObject):
                 missing_value='',
                 required=False)
 
+    metaInfo = Attribute('Optional additional information about the resource '
+                    'provided as text.')
+
     def getType():
         """ Return a concept that provides the object's type, i.e. the
             resourceType attribute.
@@ -361,6 +367,9 @@ class IResourceSchema(Interface):
                 missing_value='',
                 required=False)
 
+    metaInfo = Attribute('Optional additional information about the resource '
+                    'provided as text.')
+
 
 class IResource(ILoopsObject, IPotentialTarget):
     """ A resource is an atomic information element that is made
@@ -404,7 +413,7 @@ class IDocument(IDocumentSchema, IResource):
 
 
 # media asset is obsolete - replaced by plain Resource with
-# resourceType = file.
+# resourceType = file or the new media asset stuff in loops.media.
 
 class IMediaAssetView(IResourceSchema):
     """ Used for accessing a media asset via a node's target attribute"""

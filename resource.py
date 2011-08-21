@@ -96,6 +96,8 @@ class Resource(Image, Contained):
 
     storageName = None
 
+    metaInfo = u''
+
     _size = _width = _height = 0
 
     def __init__(self, title=u''):

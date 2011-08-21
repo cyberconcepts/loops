@@ -6,6 +6,10 @@ $Id$
 1.1
 ---
 
+- provide additional ``metaInfo`` field, e.g. for storing source and rights
+  information for media assets; show this in info popup;
+  link image to info popup in Lobo skin standard views
+- Lobo listings: allow for restriction of children listed to certain types
 - media assets: allow for access restriction for viewing larger than a
   given maximum size (via option ``media.unauthorized_max_size``)
 - external editor functionality: include title field in data in order to

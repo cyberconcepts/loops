@@ -39,7 +39,7 @@
     <tr tal:repeat="info item/additionalInfos">
       <td><span i18n:translate=""
                 tal:content="info/label">Creators</span>:</td>
-      <td tal:content="info/value"></td>
+      <td tal:content="structure info/value"></td>
     </tr>
     <tr>
       <td colspan="2"><br />

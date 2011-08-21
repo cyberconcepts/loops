@@ -52,6 +52,7 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     implements(IMediaAsset)
 
     _adapterAttributes = ExternalFileAdapter._adapterAttributes + ('modified',)
+    _contextAttributes = list(IMediaAsset)
 
     isMediaAsset = True
 

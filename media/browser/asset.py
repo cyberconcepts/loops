@@ -31,6 +31,7 @@ from zope.security.interfaces import Unauthorized
 from loops.browser.node import NodeView
 from loops.browser.resource import ResourceView, resource_macros
 from loops.common import adapted
+from loops.util import _
 from loops import util
 
 template = ViewPageTemplateFile('asset.pt')
@@ -80,6 +81,14 @@ class MediaAssetView(ResourceView):
             if len(maxSize) > 1 and h > int(maxSize[1]):
                 return False
         return True
+
+    @Lazy
+    def additionalInfos(self):
+        mi = self.adapted.metaInfo
+        if not mi:
+            return []
+        return [dict(label=_(u'Meta Information'),
+                     value=self.renderDescription(mi))]
 
 
 class MediaAssetNodeView(NodeView):

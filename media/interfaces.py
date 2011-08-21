@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,11 +22,20 @@ Media asset management interface definitions.
 $Id$
 """
 
+from zope import schema
+
 from cybertools.media.interfaces import IMediaAsset
 from loops.interfaces import IExternalFile
+from loops.util import _
 
 
 class IMediaAsset(IMediaAsset, IExternalFile):
 
-    pass
+    metaInfo = schema.Text(
+                title=_(u'Meta Information'),
+                description=_(u'A text giving some background information '
+                        u'about a media asset, like source, rights, etc.'),
+                default=u'',
+                missing_value=u'',
+                required=False)
 

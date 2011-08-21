@@ -48,7 +48,8 @@
 <metal:block define-macro="header1">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
-    <div tal:attributes="class python:part.cssClass[0]">
+    <div tal:define="showImageLink python:True"
+         tal:attributes="class python:part.cssClass[0]">
       <metal:image use-macro="item/macros/image" />
     </div>
     <div tal:attributes="class python:part.cssClass[1]">
@@ -65,7 +66,8 @@
 
 
 <metal:block define-macro="header2">
-  <div tal:define="cell part/getView">
+  <div tal:define="cell part/getView;
+                   showImageLink python:True">
     <metal:headline use-macro="item/macros/headline" />
     <metal:image use-macro="item/macros/image" />
     <metal:text use-macro="item/macros/text" />
@@ -76,9 +78,18 @@
 <!-- basic component macros -->
 
 <metal:image define-macro="image">
-    <img tal:condition="cell/img"
-         tal:attributes="src cell/img/src;
-                         class cell/img/cssClass" />
+  <tal:img condition="cell/img">
+    <a title="Information about this object."
+       tal:omit-tag="not:showImageLink|python:False"
+       i18n:attributes="title"
+       tal:define="url string:${cell/img/url}/object_info.html"
+       tal:attributes="href url;
+                       onclick string:objectDialog('', '$url?dialog=');; return false">
+      <img tal:condition="cell/img"
+           tal:attributes="src cell/img/src;
+                           class cell/img/cssClass" />
+    </a>
+  </tal:img>
 </metal:image>
 
 
