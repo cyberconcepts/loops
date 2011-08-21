@@ -110,6 +110,7 @@ class ConceptView(BaseConceptView):
 
     @Lazy
     def img(self):
+        self.registerDojoLightbox() # also provides access to info popup
         for r in self.resources['images']:
                 url = self.nodeView.getUrlForTarget(r)
                 src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
