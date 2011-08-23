@@ -120,7 +120,8 @@
                 tal:condition="view/showObjectActions">Info</th>
           </tr>
           <tbody withHandles="true" id="children_list"
-                 tal:attributes="dojoType python:item.editable and 'dojo.dnd.Source'">
+                 tal:attributes="dojoType python:
+                        item.editable and 'dojo.dnd.Source' or ''">
           <tal:items repeat="related children">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description;
@@ -158,16 +159,18 @@
           </tal:items>
           </tbody>
         </table>
-        <input type="submit" style="display: none"
-               name="children_change_order" id="children_change_order"
-               value="Save Changes"
-               i18n:attributes="value" />
         <input type="hidden" name="loops.viewName" value="index.html" />
-        <script language="javascript">
-          dojo.subscribe('/dnd/drop', function(data) {
-              if (data.node.id == 'children_list') {
-                dojo.byId('children_change_order').style.display = ''}});
-        </script>
+        <tal:changeorder condition="item/editable">
+            <input type="submit" style="display: none"
+                name="children_change_order" id="children_change_order"
+                value="Save Changes"
+                i18n:attributes="value" />
+            <script language="javascript">
+            dojo.subscribe('/dnd/drop', function(data) {
+                if (data.node.id == 'children_list') {
+                    dojo.byId('children_change_order').style.display = ''}});
+            </script>
+        </tal:changeorder>
       </form>
     </div>
 </metal:children>
@@ -200,7 +203,8 @@
                 tal:condition="view/showObjectActions">Info</th>
           </tr>
           <tbody withHandles="true" id="resources_list"
-                 tal:attributes="dojoType python:item.editable and 'dojo.dnd.Source'">
+                 tal:attributes="dojoType python:
+                        item.editable and 'dojo.dnd.Source' or ''">
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
                               description related/description">
@@ -255,16 +259,18 @@
           </tal:items>
           </tbody>
         </table>
-        <input type="submit" style="display: none"
-               name="resources_change_order" id="resources_change_order"
-               value="Save Changes"
-               i18n:attributes="value" />
         <input type="hidden" name="loops.viewName" value="index.html" />
-        <script language="javascript">
-          dojo.subscribe('/dnd/drop', function(data) {
-              if (data.node.id == 'resources_list') {
-                dojo.byId('resources_change_order').style.display = ''}});
-        </script>
+        <tal:changeorder condition="item/editable">
+            <input type="submit" style="display: none"
+                name="resources_change_order" id="resources_change_order"
+                value="Save Changes"
+                i18n:attributes="value" />
+            <script language="javascript">
+            dojo.subscribe('/dnd/drop', function(data) {
+                if (data.node.id == 'resources_list') {
+                    dojo.byId('resources_change_order').style.display = ''}});
+            </script>
+        </tal:changeorder>
       </form>
     </div>
 </metal:resources>
