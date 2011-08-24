@@ -6,6 +6,7 @@ $Id$
 1.1
 ---
 
+- new query for retrieving work items independently of task or user
 - provide additional ``metaInfo`` field, e.g. for storing source and rights
   information for media assets; show this in info popup;
   link image to info popup in Lobo skin standard views
