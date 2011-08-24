@@ -249,6 +249,17 @@ class BaseWorkItemsView(object):
                 for wi in self.workItems.query(**criteria)]
 
 
+class AllWorkItems(BaseWorkItemsView, ConceptView):
+    """ Standard view for showing work items independently of task and user.
+    """
+
+    columns = set(['Task', 'User', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
+
+    def listWorkItems(self):
+        criteria = self.baseCriteria
+        return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
+
+
 class TaskWorkItems(BaseWorkItemsView, ConceptView):
     """ Standard view for showing work items for a node's target.
     """

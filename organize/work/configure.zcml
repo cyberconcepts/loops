@@ -23,6 +23,14 @@
   <!-- application views -->
 
   <zope:adapter
+        name="allworkitems.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.organize.work.browser.AllWorkItems"
+        permission="zope.View" />
+
+  <zope:adapter
         name="taskworkitems.html"
         for="loops.interfaces.IConcept
              zope.publisher.interfaces.browser.IBrowserRequest"
