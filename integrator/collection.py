@@ -116,6 +116,11 @@ class ExternalCollectionAdapter(AdapterBase):
                 # not part of the collection any more
                 # TODO: only remove from collection but keep object?
                 self.remove(old[addr])
+        for r in self.context.getResources():
+            adobj = adapted(r)
+            if self.metaInfo != adobj.metaInfo and (
+                                    not adobj.metaInfo or self.overwriteMetaInfo):
+                    adobj.metaInfo = self.metaInfo
         self.lastUpdated = datetime.today()
 
     def clear(self):

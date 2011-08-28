@@ -51,26 +51,26 @@ class IExternalCollection(IConceptSchema, ILoopsAdapter):
             title=_(u'Provider name'),
             description=_(u'The name of a utility that provides the '
                           u'external objects; default is a directory '
-                          u'collection provider'),
+                          u'collection provider.'),
             required=False)
     baseAddress = schema.TextLine(
             title=_(u'Base address'),
             description=_(u'A base path or URL for accessing this collection '
-                          u'on the external system'),
+                          u'on the external system.'),
             required=True)
     address = schema.TextLine(
             title=_(u'Relative address'),
             description=_(u'Optional second (local) part of the '
-                          u'collection\'s address'),
+                          u'collection\'s address.'),
             required=False)
     pattern = schema.TextLine(
             title=_(u'Selection pattern'),
             description=_(u'A regular expression for selecting external objects '
-                          u'that should belong to this collection'),
+                          u'that should belong to this collection.'),
             required=False)
     excludeDirectories = schema.Bool(
             title=_(u'Exclude directories'),
-            description=_(u'Check this if only object directly at the specified '
+            description=_(u'Check this if only objects directly at the specified '
                           u'address should be included in the collection.'),
             default=False,
             required=False)
@@ -79,6 +79,20 @@ class IExternalCollection(IConceptSchema, ILoopsAdapter):
             description=_(u'Names of objects (directories and files) that should not '
                           u'be included.'),
             value_type=schema.TextLine(),
+            required=False)
+    metaInfo = schema.Text(
+            title=_(u'Meta Information'),
+            description=_(u'A text giving some background information '
+                          u'about a media asset, like source, rights, etc.'
+                          u'This text will be applied to all resources '
+                          u'belonging to this collection.'),
+            default=u'',
+            required=True)
+    overwriteMetaInfo = schema.Bool(
+            title=_(u'Overwrite Meta Information'),
+            description=_(u'Check this if meta information already present '
+                          u'should be overwritten by the new text given above.'),
+            default=False,
             required=False)
     lastUpdated = Attribute('Date and time of last update.')
 

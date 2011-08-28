@@ -6,6 +6,8 @@ $Id$
 1.1
 ---
 
+- external collection: provide functionality for automatically populate
+  meta information of media assets
 - new query for retrieving work items independently of task or user
 - provide additional ``metaInfo`` field, e.g. for storing source and rights
   information for media assets; show this in info popup;

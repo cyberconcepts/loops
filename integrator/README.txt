@@ -58,6 +58,10 @@ to the external system:
   >>> aColl01.baseAddress = dataDir
   >>> aColl01.address = 'topics'
 
+  >>> aColl01.metaInfo = u'Photograph taken by...'
+  >>> aColl01.overwriteMetaInfo is None
+  True
+
 Directory Collection Provider
 -----------------------------
 
@@ -127,6 +131,9 @@ can be found.
   >>> aXf1 = adapted(res[0])
   >>> aXf1.storageName, aXf1.storageParams, aXf1.externalAddress
   ('fullpath', {'subdirectory': '...programming'}, 'BeautifulProgram.pdf')
+
+  >>> aXf1.metaInfo
+  u'Photograph taken by...'
 
 But if one of the referenced objects is not found any more it will be deleted.
 
