@@ -171,7 +171,7 @@ Querying objects by state
   >>> from loops.organize.stateful.browser import StateQuery
   >>> view = StateQuery(stateQuery, TestRequest())
 
-  >>> view.statesDefinitions
+  >>> view.rcStatesDefinitions
   {'concept': [], 'resource': [...StatesDefinition..., ...StatesDefinition...]}
 
   >>> input = {'state.resource.classification_quality': ['verified']}

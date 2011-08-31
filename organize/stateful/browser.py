@@ -32,6 +32,7 @@ from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
+from loops.security.common import checkPermission
 from loops.util import _
 
 
@@ -77,6 +78,8 @@ class StateQuery(BaseView):
 
     template = ViewPageTemplateFile('view_macros.pt')
 
+    form_action = 'execute_search_action'
+
     @Lazy
     def search_macros(self):
         return search_template.macros
@@ -86,7 +89,7 @@ class StateQuery(BaseView):
         return self.template.macros['query']
 
     @Lazy
-    def statesDefinitions(self):
+    def rcStatesDefinitions(self):
         result = {}
         result['resource'] = [component.getUtility(IStatesDefinition, name=n)
                 for n in self.globalOptions('organize.stateful.resource', ())]
@@ -95,12 +98,22 @@ class StateQuery(BaseView):
         return result
 
     @Lazy
+    def statesDefinitions(self):
+        # TODO: extend to handle concept states as well
+        return [component.getUtility(IStatesDefinition, name=n)
+                    for n in self.globalOptions('organize.stateful.resource', ())]
+
+    @Lazy
     def selectedStates(self):
         result = {}
         for k, v in self.request.form.items():
             if k.startswith('state.') and v:
                 result[k] = v
         return result
+
+    @Lazy
+    def showActions(self):
+        return checkPermission('loops.ManageSite', self.context)
 
     @Lazy
     def results(self):

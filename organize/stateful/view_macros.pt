@@ -8,7 +8,7 @@
       <h1 i18n:translate="">Select Objects by State</h1>
       <br />
       <table class="listing"
-             tal:define="defs item/statesDefinitions">
+             tal:define="defs item/rcStatesDefinitions">
         <tr>
           <th i18n:translate="">Object Type</th>
           <th i18n:translate="">Workflow</th>
@@ -46,9 +46,13 @@
       </table>
       <input type="submit" name="button.search" value="Search" class="submit"
              i18n:attributes="value" />
+      <tal:results condition="request/search_submitted|nothing">
+        <input type="hidden" name="form.action"
+           tal:attributes="value item/form_action" />
+        <h2 i18n:translate="">Search results</h2>
+        <metal:results use-macro="item/search_macros/results" />
+        <metal:actions use-macro="item/search_macros/actions" />
+      </tal:results>
     </form>
   </div>
-  <tal:results condition="request/search_submitted|nothing">
-    <metal:results use-macro="item/search_macros/results" />
-  </tal:results>
 </metal:query>
