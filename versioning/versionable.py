@@ -23,6 +23,7 @@ $Id$
 """
 
 from BTrees.OOBTree import OOBTree
+from zope import component
 from zope.component import adapts
 from zope.interface import implements, Attribute
 from zope.cachedescriptors.property import Lazy
@@ -30,6 +31,7 @@ from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
 from cybertools.meta.interfaces import IOptions
+from cybertools.stateful.interfaces import IStateful
 from cybertools.text.mimetypes import extensions
 from cybertools.typology.interfaces import IType
 from loops.common import adapted, baseObject
@@ -172,7 +174,7 @@ class VersionableResource(object):
             adaptedObj.externalAddress = newExtAddr
             adaptedObj.data = adaptedContext.data
             adaptedObj.externalAddress = newExtAddr # trigger post-processing
-            #print '***', adaptedObj.externalAddress, obj.__name__
+        self.setStates(obj)
         return obj
 
     def createVersion(self, level=1, comment=u''):
@@ -204,6 +206,14 @@ class VersionableResource(object):
         if not ext.startswith('.'):
             ext = '.' + ext
         return name + '_' + versionId + ext
+
+    def setStates(self, obj):
+        options = IOptions(self.master.getLoopsRoot()).organize.stateful.resource
+        if options:
+            for name in options:
+                stf = component.getAdapter(self.context, IStateful, name=name)
+                stfn = component.getAdapter(obj, IStateful, name=name)
+                stfn.state = stf.state
 
 
 def cleanupVersions(context, event):
