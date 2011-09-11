@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ class IExternalCollection(IConceptSchema, ILoopsAdapter):
                           u'This text will be applied to all resources '
                           u'belonging to this collection.'),
             default=u'',
-            required=True)
+            required=False)
     overwriteMetaInfo = schema.Bool(
             title=_(u'Overwrite Meta Information'),
             description=_(u'Check this if meta information already present '
