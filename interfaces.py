@@ -674,6 +674,20 @@ class ITypeConcept(IConceptSchema, ILoopsAdapter):
         source='loops.TypeInterfaceSource',
         required=False)
 
+    conceptManager = schema.BytesLine(
+        title=_(u'Concept Manager Name'),
+        description=_(u'Name of the concept manager in which objects of this '
+                      u'type should be created.'),
+        default='',     #determined at runtime: 'concepts' or 'resources'
+        required=False)
+
+    namePrefix = schema.BytesLine(
+        title=_(u'Name Prefix'),
+        description=_(u'String that will be prepended to the (generated) name '
+                      u'of a newly created object of this type.'),
+        default='',
+        required=False)
+
     viewName = schema.TextLine(
         title=_(u'View Name'),
         description=_(u'Name of a special view be used for presenting '
