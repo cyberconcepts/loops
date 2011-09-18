@@ -66,6 +66,11 @@
 
 
 <metal:block define-macro="header2">
+  <metal:text use-macro="item/macros/header1" />
+</metal:block>
+
+
+<metal:block define-macro="header2_xxx">
   <div tal:define="cell part/getView;
                    showImageLink python:True">
     <metal:headline use-macro="item/macros/headline" />

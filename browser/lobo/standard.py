@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -198,6 +198,6 @@ class Header2(BasePart):
 
     macroName = 'header2'
     imageSize = 'medium'
-    imageCssClass = 'flow-left'
-
+    #imageCssClass = 'flow-left'
+    cssClass = ['span-4', 'span-2 last', 'clear']
 
