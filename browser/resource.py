@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -195,6 +195,9 @@ class ResourceView(BaseView):
         if ct.startswith('text/') and not useAttachment:
             response.setHeader('Content-Type', 'text/html')
             return self.renderText(data, ct)
+        if ct.startswith('image/') and not useAttachment:
+            #response.setHeader('Cache-Control', 'public,max-age=86400')
+            response.setHeader('Cache-Control', 'max-age=86400')
         response.setHeader('Content-Type', ct)
         # set Last-Modified header
         modified = self.modifiedRaw
