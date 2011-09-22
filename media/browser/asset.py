@@ -76,9 +76,12 @@ class MediaAssetView(ResourceView):
         maxSize = self.typeOptions('media.unauthorized_max_size')
         if maxSize:
             (w, h) = self.adapted.getImageSize(data=data)
+            if len(maxSize) > 2 and maxSize[2]:
+                if w * h <= int(maxSize[2]): # number of pixels
+                    return True
             if w > int(maxSize[0]):
                 return False
-            if len(maxSize) > 1 and h > int(maxSize[1]):
+            if len(maxSize) > 1 and maxSize[1] and h > int(maxSize[1]):
                 return False
         return True
 

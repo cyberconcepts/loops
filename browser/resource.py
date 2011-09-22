@@ -48,7 +48,7 @@ from loops.browser.concept import BaseRelationView, ConceptRelationView
 from loops.browser.concept import ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
 from loops.common import adapted, NameChooser
-from loops.interfaces import IBaseResource, IDocument, IMediaAsset, ITextDocument
+from loops.interfaces import IBaseResource, IDocument, ITextDocument
 from loops.interfaces import IMediaAsset as legacy_IMediaAsset
 from loops.interfaces import ITypeConcept
 from loops.media.interfaces import IMediaAsset
@@ -179,13 +179,21 @@ class ResourceView(BaseView):
         # if self.adapted.isProtected():
         #     raise Unauthorized()
         context = self.context
+        ct = context.contentType
+        response = self.request.response
         self.recordAccess('show', target=self.uniqueId)
+        if ct.startswith('image/'):
+            #response.setHeader('Cache-Control', 'public,max-age=86400')
+            response.setHeader('Cache-Control', 'max-age=86400')
+            adobj = adapted(context)
+            if IMediaAsset.providedBy(adobj):
+                from loops.media.browser.asset import MediaAssetView
+                view = MediaAssetView(context, self.request)
+                return view.show(useAttachment)
         ti = IType(context).typeInterface
         if ti is not None:
             context = ti(context)
         data = context.data
-        response = self.request.response
-        ct = context.contentType
         if useAttachment:
             filename = adapted(self.context).localFilename or getName(self.context)
             filename = NameChooser(getParent(self.context)).normalizeName(filename)
@@ -195,9 +203,6 @@ class ResourceView(BaseView):
         if ct.startswith('text/') and not useAttachment:
             response.setHeader('Content-Type', 'text/html')
             return self.renderText(data, ct)
-        if ct.startswith('image/') and not useAttachment:
-            #response.setHeader('Cache-Control', 'public,max-age=86400')
-            response.setHeader('Cache-Control', 'max-age=86400')
         response.setHeader('Content-Type', ct)
         # set Last-Modified header
         modified = self.modifiedRaw
