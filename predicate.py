@@ -30,10 +30,10 @@ from zope.dottedname.resolve import resolve
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
-from loops.interfaces import ILoopsObject, IConcept, IResource
-from loops.interfaces import IPredicate #, IMappingAttributeRelation
+from loops.interfaces import ILoopsObject, IConcept, IResource, IConceptRelation
+from loops.interfaces import IPredicate, IRelationAdapter #, IMappingAttributeRelation
 from loops.concept import Concept
-from loops.common import AdapterBase
+from loops.common import adapted, AdapterBase
 from loops.type import TypeInterfaceSourceList
 
 
@@ -60,12 +60,36 @@ class PredicateInterfaceSourceList(TypeInterfaceSourceList):
         may be used for specifying additional attributes of relations.
     """
 
-    typeInterfaces = ()
+    predicateInterfaces = ()
+
+    @property
+    def typeInterfaces(self):
+        return self.predicateInterfaces
+
+
+class RelationAdapter(AdapterBase):
+    """ Base class for adapters to relations that may be used for
+        specifying additional attributes for relations.
+    """
+
+    implements(IRelationAdapter)
+    adapts(IConceptRelation)
+
+
+def adaptedRelation(relation):
+    if isinstance(relation, RelationAdapter):
+        return obj
+    ifc = adapted(relation.predicate).predicateInterface
+    if ifc is not None:
+        adRelation = component.queryAdapter(relation, ifc)
+        if adRelation is not None:
+            return adRelation
+    return relation
 
 
 # standard relation adapters
 
-#PredicateInterfaceSourceList.typeInterfaces += (IMappingAttributeRelation,)
+#PredicateInterfaceSourceList.predicateInterfaces += (IMappingAttributeRelation,)
 
 
 #class MappingAttributeRelation(AdapterBase):

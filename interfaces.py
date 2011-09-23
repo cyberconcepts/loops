@@ -729,6 +729,12 @@ class IPredicate(IConceptSchema):
         required=False)
 
 
+class IRelationAdapter(Interface):
+    """ Base interface for adapters to relations that allow the specification
+        of special properties of a relation.
+    """
+
+
 # probably not useful
 class xxIMappingAttributeRelation(IConceptSchema):
     """ A relation based on a predicate ('mappingAttribute') that provides

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -32,9 +32,8 @@ from zope.security.proxy import removeSecurityProxy
 from cybertools.organize.interfaces import IAddress as IBaseAddress
 from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
-from loops.interfaces import IConceptSchema
+from loops.interfaces import ILoopsAdapter, IConceptSchema, IRelationAdapter
 from loops.organize.util import getPrincipalFolder
-from loops.interfaces import ILoopsAdapter
 from loops import util
 from loops.util import _
 
@@ -164,19 +163,20 @@ class ITask(IConceptSchema, ITask, ILoopsAdapter):
     pass
 
 
-# 'allocated' predicate
+# 'hasrole' predicate
 
-class IAllocated(IConceptSchema):
+class IHasRole(IRelationAdapter):
 
-    allocType = schema.Choice(
-            title=_(u'Allocation Type'),
+    role = schema.Choice(
+            title=_(u'Role'),
             description=_(u'Specifies the kind of interaction a person or another '
-                    u'party has with the task or project it is allocated to.'),
+                    u'party has with an institution, a task, or a project '
+                    u'it is associated with.'),
             source=util.KeywordVocabulary((
-                    ('standard', _(u'Standard')),
+                    ('member', _(u'Member')),
                     ('master', _(u'Master')),
                 )),
-            default='standard',
+            default='member',
             required=True)
 
 

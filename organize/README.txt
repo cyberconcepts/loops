@@ -390,15 +390,6 @@ Events listing
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]
 
-Allocation of persons to tasks
-------------------------------
-
-  >>> from loops.organize.interfaces import IAllocated
-  >>> predicate = concepts['predicate']
-  >>> allocated = addAndConfigureObject(concepts, Concept, 'allocated',
-  ...                   title=u'allocated',
-  ...                   conceptType=predicate, predicateInterface=IAllocated)
-
 
 Send Email to Members
 =====================
@@ -421,6 +412,45 @@ Show Presence of Other Users
 
   >>> from loops.organize.presence import Presence
   >>> component.provideUtility(Presence())
+
+
+Roles of Persons
+================
+
+When persons are assigned to a parent (e.g. an instutution or a project)
+this assignment may be characterized by a certain role. This role may
+be specified by using a special predicate that is associated with a
+predicate interface that allows to specify the role.
+
+(Note that the security-relevant assignment of persons is managed via
+other special predicates: 'ismember', 'ismaster'. The 'hasrole'
+predicate described here is intended for situations where the roles
+may be chosen from an arbitrary list.)
+
+  >>> from loops.organize.interfaces import IHasRole
+  >>> predicate = concepts['predicate']
+  >>> hasRole = addAndConfigureObject(concepts, Concept, 'hasrole',
+  ...                   title=u'has Role',
+  ...                   conceptType=predicate, predicateInterface=IHasRole)
+
+Let's now assign john to task01 and have a look at the relation created.
+
+  >>> task01.assignChild(john, hasRole)
+  >>> relation = task01.getChildRelations([hasRole])[0]
+
+The role may be accessed by getting a relation adapter
+
+  >>> from loops.predicate import adaptedRelation
+  >>> adRelation = adaptedRelation(relation)
+  >>> adRelation.role is None
+  True
+
+  >>> adRelation.role = 'member'
+  >>> relation._role
+  'member'
+  >>> adRelation = adaptedRelation(relation)
+  >>> adRelation.role
+  'member'
 
 
 Calendar

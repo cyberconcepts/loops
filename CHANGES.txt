@@ -6,6 +6,8 @@ $Id$
 1.1
 ---
 
+- allow for adoption of relations to a predicate interface;
+  with example implementation for a 'has Role' predicate in loops.organize
 - external collection: provide functionality for automatically populate
   meta information of media assets
 - new query for retrieving work items independently of task or user

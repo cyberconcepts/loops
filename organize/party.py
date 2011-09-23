@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,8 +40,9 @@ from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
 from loops.concept import Concept
 from loops.interfaces import IConcept
-from loops.organize.interfaces import IAddress, IPerson, IAllocated
+from loops.organize.interfaces import IAddress, IPerson, IHasRole
 from loops.organize.interfaces import ANNOTATION_KEY
+from loops.predicate import RelationAdapter
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
 from loops.type import TypeInterfaceSourceList
 from loops.predicate import PredicateInterfaceSourceList
@@ -51,7 +52,7 @@ from loops import util
 # register type interfaces - (TODO: use a function for this)
 
 TypeInterfaceSourceList.typeInterfaces += (IPerson, IAddress)
-PredicateInterfaceSourceList.typeInterfaces += (IAllocated,)
+PredicateInterfaceSourceList.predicateInterfaces += (IHasRole,)
 
 
 def getPersonForUser(context, request=None, principal=None):
@@ -177,3 +178,11 @@ class Address(AdapterBase):
         self.context._lines = value
     lines = property(getLines, setLines)
 
+
+class HasRole(RelationAdapter):
+    """ Allows specification of a role for a relation.
+    """
+
+    implements(IHasRole)
+
+    _contextAttributes = list(IHasRole)

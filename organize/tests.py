@@ -23,8 +23,8 @@ from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from cybertools.util.jeep import Jeep
 from loops.common import adapted
 from loops.concept import Concept
-from loops.organize.interfaces import IPerson
-from loops.organize.party import Person
+from loops.organize.interfaces import IPerson, IHasRole
+from loops.organize.party import Person, HasRole
 from loops.organize.task import Task
 from loops.setup import addAndConfigureObject
 from loops.tests.auth import login
@@ -38,6 +38,7 @@ def setupUtilitiesAndAdapters(loopsRoot):
     component.provideAdapter(Person, provides=IPerson)
     component.provideAdapter(Task)
     component.provideAdapter(FoundPrincipalFactory)
+    component.provideAdapter(HasRole, provides=IHasRole)
     return Jeep((
             ('auth', auth),
             ('principalAnnotations', principalAnnotations),

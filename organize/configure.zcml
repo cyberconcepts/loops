@@ -39,6 +39,16 @@
              set_schema="loops.organize.interfaces.ITask" />
   </zope:class>
 
+  <zope:adapter factory="loops.organize.party.HasRole"
+                provides="loops.organize.interfaces.IHasRole"
+                trusted="True" />
+  <zope:class class="loops.organize.party.HasRole">
+    <require permission="zope.View"
+             interface="loops.organize.interfaces.IHasRole" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.interfaces.IHasRole" />
+  </zope:class>
+
   <!-- member registration -->
 
   <zope:adapter factory="loops.organize.member.MemberRegistrationManager"
