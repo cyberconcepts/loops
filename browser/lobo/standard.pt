@@ -25,7 +25,7 @@
 </metal:block>
 
 
-<metal:block define-macro="list1">
+<metal:block define-macro="list">
   <tal:cell repeat="cell part/getChildren">
     <div tal:condition="cell/img"
          tal:attributes="class python:cell.cssClass[0]">
@@ -45,7 +45,7 @@
 </metal:block>
 
 
-<metal:block define-macro="header1">
+<metal:block define-macro="header">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
     <div tal:define="showImageLink python:True"
@@ -61,21 +61,6 @@
          tal:attributes="class python:part.cssClass[2]">
       <metal:text use-macro="item/macros/text" />
     </div>
-  </div>
-</metal:block>
-
-
-<metal:block define-macro="header2">
-  <metal:text use-macro="item/macros/header1" />
-</metal:block>
-
-
-<metal:block define-macro="header2_xxx">
-  <div tal:define="cell part/getView;
-                   showImageLink python:True">
-    <metal:headline use-macro="item/macros/headline" />
-    <metal:image use-macro="item/macros/image" />
-    <metal:text use-macro="item/macros/text" />
   </div>
 </metal:block>
 

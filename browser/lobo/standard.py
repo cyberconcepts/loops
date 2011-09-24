@@ -81,12 +81,12 @@ class ConceptView(BaseConceptView):
     @Lazy
     def renderedText(self):
         for r in self.resources['texts']:
-                return self.renderText(r.data, r.contentType)
+            return self.renderText(r.data, r.contentType)
 
     @Lazy
     def textDescription(self):
         for r in self.resources['texts']:
-                return r.description
+            return r.description
 
     @Lazy
     def renderedTextDescription(self):
@@ -174,30 +174,34 @@ class Grid3(BasePart):
 
     macroName = 'grid'
     imageSize = 'small'
-    #height = '260px'
     height = 'auto; padding-bottom: 10px'
     gridPattern = ['span-2', 'span-2', 'span-2 last']
 
 
 class List1(BasePart):
 
-    macroName = 'list1'
+    macroName = 'list'
     imageSize = 'small'
     gridPattern = [['span-2 clear', 'span-4 last']]
 
 
+class List2(BasePart):
+
+    macroName = 'list'
+    imageSize = 'medium'
+    gridPattern = [['span-4 clear', 'span-2 last']]
+
+
 class Header1(BasePart):
 
-    macroName = 'header1'
+    macroName = 'header'
     imageSize = 'small'
-    #imageCssClass = 'flow-right'
     cssClass = ['span-2', 'span-4 last', 'clear']
 
 
 class Header2(BasePart):
 
-    macroName = 'header2'
+    macroName = 'header'
     imageSize = 'medium'
-    #imageCssClass = 'flow-left'
     cssClass = ['span-4', 'span-2 last', 'clear']
 
