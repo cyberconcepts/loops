@@ -77,6 +77,7 @@ from loops.security.policy import LoopsSecurityPolicy
 from loops.security.setter import BaseSecuritySetter
 from loops.security.setter import ConceptSecuritySetter, ResourceSecuritySetter
 from loops.setup import SetupManager, addObject
+from loops.table import DataTable
 from loops.type import LoopsType, ConceptType, ResourceType, TypeConcept
 from loops.versioning.versionable import VersionableResource
 from loops.view import Node, NodeAdapter
@@ -130,6 +131,7 @@ class TestSite(object):
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)
         component.provideAdapter(QueryConcept)
+        component.provideAdapter(DataTable)
         component.provideAdapter(FileAdapter, provides=IFile)
         component.provideAdapter(TextDocumentAdapter, provides=ITextDocument)
         component.provideAdapter(NodeAdapter)
