@@ -23,6 +23,11 @@ with lower-level aspects like type or state management.
   >>> from zope.publisher.browser import TestRequest
   >>> from zope.traversing.api import getName
 
+Let's also import some common stuff needed later.
+
+  >>> from loops.common import adapted
+  >>> from loops.setup import addAndConfigureObject
+
 
 Concepts and Relations
 ======================
@@ -868,6 +873,28 @@ informations about all parents of an object.
   ...     print p.object.title, len(p.relations)
   Note 1
   Type 2
+
+
+Tables
+======
+
+  >>> from loops.table import IDataTable, DataTable
+  >>> component.provideAdapter(DataTable)
+
+Let's create the data table concept type and one example, a table that
+relates ISO country codes with the full name of the country.
+
+  >>> dtType = addAndConfigureObject(concepts, Concept, 'datatable',
+  ...                   title='Data Table', conceptType=concepts['type'],
+  ...                   typeInterface=IDataTable)
+  >>> countries = adapted(addAndConfigureObject(concepts, Concept, 'countries',
+  ...                   title='Countries', conceptType=concepts['datatable']))
+
+  >>> countries.data['de'] = ['Germany']
+  >>> countries.data['at'] = ['Austria']
+
+  >>> sorted(adapted(concepts['countries']).data.items())
+  [('at', ['Austria']), ('de', ['Germany'])]
 
 
 Caching
