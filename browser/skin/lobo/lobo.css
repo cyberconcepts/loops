@@ -1,9 +1,14 @@
 /*
- $Id$
 
- settings specific for view / node objects
+  Basic settings for standard Lobo skin
 
 */
+
+/* positioning of page elements */
+
+#portlets {
+    margin-top: 1em;
+}
 
 /* general */
 
