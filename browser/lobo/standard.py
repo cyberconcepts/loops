@@ -133,7 +133,11 @@ class Layout(Base):
 
     def getParts(self):
         result = []
-        parts = (self.params.get('parts') or ['h1,g3'])[0].split(',')
+        parts = (self.params.get('parts') or [''])[0].split(',')   # obsolete
+        if not parts or not parts[0]:
+            parts = (self.options('parts') or
+                     self.typeOptions('parts') or
+                     ['h1', 'g3'])
         for p in parts:
             viewName = 'lobo_' + p
             view = component.queryMultiAdapter((self.context, self.request),
