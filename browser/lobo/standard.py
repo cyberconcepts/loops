@@ -30,6 +30,8 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView as BaseConceptView
 from loops.browser.concept import ConceptRelationView as BaseConceptRelationView
+from loops.browser.resource import ResourceView as BaseResourceView
+from loops.browser.resource import ResourceRelationView as BaseResourceRelationView
 from loops.common import adapted, baseObject
 
 
@@ -208,4 +210,56 @@ class Header2(BasePart):
     macroName = 'header'
     imageSize = 'medium'
     cssClass = ['span-4', 'span-2 last', 'clear']
+
+
+# layout components for presenting lists of resources
+
+class ResourceRelationView(BaseResourceRelationView):
+
+    def __init__(self, relation, request, contextIsSecond=False,
+                 parent=None, idx=0):
+        BaseResourceRelationView.__init__(self, relation, request, contextIsSecond)
+        self.parentView = parent
+        self.idx = idx
+
+    @Lazy
+    def targetUrl(self):
+        return self.nodeView.getUrlForTarget(self.context)
+
+    @Lazy
+    def cssClass(self):
+        pattern = self.parentView.gridPattern
+        if pattern:
+            return pattern[self.idx % len(pattern)]
+
+    @Lazy
+    def style(self):
+        return 'height: %s' % self.parentView.height
+
+    @Lazy
+    def img(self):
+        self.registerDojoLightbox() # also provides access to info popup
+        url = self.nodeView.getUrlForTarget(self.context)
+        src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
+        return dict(src=src, url=url,
+                    cssClass=self.parentView.imageCssClass)
+
+class ResourcesPart(BasePart):
+
+    def getResources(self):
+        result = []
+        resourceRels = self.context.getResourceRelations()
+        for idx, r in enumerate(resourceRels):
+            result.append(ResourceRelationView(r, self.request,
+                                contextIsSecond=True, parent=self, idx=idx))
+        return result
+
+
+class ResourceGrid3(ResourcesPart):
+
+    macroName = 'rgrid'
+    imageSize = 'small'
+    height = 'auto; padding-bottom: 10px'
+    gridPattern = ['span-2', 'span-2', 'span-2 last']
+
 

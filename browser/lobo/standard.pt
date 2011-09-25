@@ -65,6 +65,25 @@
 </metal:block>
 
 
+<!-- resources listing macros -->
+
+<metal:block define-macro="rgrid">
+  <tal:cell repeat="cell part/getResources">
+    <div tal:attributes="class cell/cssClass;
+                         style cell/style">
+      <a tal:attributes="href cell/targetUrl;
+                         title cell/description">
+        <metal:image use-macro="item/macros/image" />
+        <div class="legend">
+          <b tal:content="cell/title" /><br />
+          <i tal:content="cell/description" />
+        </div>
+      </a>
+    </div>
+  </tal:cell>
+</metal:block>
+
+
 <!-- basic component macros -->
 
 <metal:image define-macro="image">

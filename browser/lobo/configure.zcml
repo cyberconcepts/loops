@@ -63,4 +63,14 @@
         factory="loops.browser.lobo.standard.ConceptView"
         permission="zope.View" />
 
+  <!-- parts for displaying resources -->
+
+  <zope:adapter
+        name="lobo_rg3"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.ResourceGrid3"
+        permission="zope.View" />
+
 </configure>
