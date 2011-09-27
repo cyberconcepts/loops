@@ -281,6 +281,14 @@
              set_schema="loops.query.IQueryConcept" />
   </class>
 
+  <adapter factory="loops.table.DataTable" trusted="True" />
+  <class class="loops.table.DataTable">
+    <require permission="zope.View"
+             interface="loops.table.IDataTable" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.table.IDataTable" />
+  </class>
+
   <adapter factory="loops.resource.FileAdapter"
            provides="loops.interfaces.IFile"
            trusted="True" />
