@@ -33,7 +33,7 @@ from zope.traversing.api import getName, traverse
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
 from loops.concept import ConceptManager, Concept
-from loops.interfaces import ILoops, ITypeConcept
+from loops.interfaces import ILoops, ITypeConcept, IPredicate
 from loops.interfaces import IFile, IImage, ITextDocument, INote
 #from loops.query import IQueryConcept
 from loops.record import RecordManager
@@ -98,6 +98,7 @@ class SetupManager(object):
         ITypeConcept(textdocument).typeInterface = ITextDocument
         ITypeConcept(note).typeInterface = INote
         ITypeConcept(note).viewName = 'note.html'
+        ITypeConcept(predicate).typeInterface = IPredicate
         hasType.conceptType = predicate
         standard.conceptType = predicate
 
