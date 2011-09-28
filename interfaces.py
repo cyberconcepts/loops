@@ -707,7 +707,7 @@ class ITypeConcept(IConceptSchema, ILoopsAdapter):
 
 # predicates
 
-class IPredicate(IConceptSchema):
+class IPredicate(IConceptSchema, ILoopsAdapter):
     """ Provided by predicates (predicate concepts that specify relation types),
         i.e. concepts of type 'predicate' should be adaptable to this interface.
     """

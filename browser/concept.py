@@ -347,7 +347,8 @@ class ConceptView(BaseView):
 
     def isHidden(self, pr):
         if (getName(pr.second.conceptType) in
-                IOptions(adapted(pr.predicate))('hide_parents_for', [])):
+                #IOptions(adapted(pr.predicate))('hide_parents_for', [])):
+                IOptions(pr.predicate)('hide_parents_for', [])):
             return True
         hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
         if hideRoles is not None:
