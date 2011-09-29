@@ -155,7 +155,7 @@ with a principal folder:
   >>> from zope.app.authentication.authentication import PluggableAuthentication
   >>> from zope.app.security.interfaces import IAuthentication
   >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-  ...               copy_to_zlog=False, asObject=True)
+  ...               copy_to_zlog=False)
   <...PluggableAuthentication...>
   >>> pau = component.getUtility(IAuthentication, context=site)
 

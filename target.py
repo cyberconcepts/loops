@@ -23,7 +23,6 @@ resources e.g. from forms that are called on view/node objects.
 $Id$
 """
 
-from zope.app import zapi
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
 from zope.i18nmessageid import MessageFactory

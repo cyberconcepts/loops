@@ -50,7 +50,7 @@ def setupObjectsForTesting(site, concepts):
     loopsRoot = concepts.getLoopsRoot()
     setupData = setupUtilitiesAndAdapters(loopsRoot)
     ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-                  copy_to_zlog=False, asObject=True)
+                  copy_to_zlog=False)
     pau = component.getUtility(IAuthentication, context=site)
     # create principal folder and user(s)
     pFolder = PrincipalFolder('users.')
