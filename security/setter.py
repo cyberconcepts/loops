@@ -24,14 +24,14 @@ $Id$
 """
 
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import \
-                    IRolePermissionMap, IRolePermissionManager, \
-                    IPrincipalRoleMap, IPrincipalRoleManager
 from zope import component
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements, Interface
 from zope.security.proxy import isinstance
+from zope.securitypolicy.interfaces import \
+                    IRolePermissionMap, IRolePermissionManager, \
+                    IPrincipalRoleMap, IPrincipalRoleManager
 
 from loops.common import adapted, AdapterBase, baseObject
 from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter

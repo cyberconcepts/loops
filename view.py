@@ -26,11 +26,11 @@ from zope import component
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
-from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy, readproperty
 from zope.component import adapts
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
+from zope.intid.interfaces import IIntIds
 from zope.publisher.browser import applySkin
 from zope import schema
 from zope.security import canAccess

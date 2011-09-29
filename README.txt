@@ -552,7 +552,7 @@ view for rendering.)
   False
 
   >>> view.renderTarget()
-  u'<p>Test data</p>\n<p>Another <a class="reference" href="para">paragraph</a></p>\n'
+  u'<p>Test data</p>\n<p>Another <a class="reference external" href="para">paragraph</a></p>\n'
 
 u'<p>Test data</p>\n<p>Another <a class="reference create"
     href="http://127.0.0.1/loops/wiki/create.html?linkid=0000001">?paragraph</a></p>\n'

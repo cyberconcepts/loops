@@ -28,17 +28,17 @@ from zope.app.security.interfaces import IPermission
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.browser import granting
 from zope.app.securitypolicy.browser.rolepermissionview import RolePermissionView
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, \
-                                               IRolePermissionMap
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager, \
-                                               IPrincipalPermissionMap
-from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
 from zope import component
 from zope.event import notify
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.security.proxy import removeSecurityProxy
+from zope.securitypolicy.interfaces import IPrincipalRoleManager, \
+                                               IRolePermissionMap
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager, \
+                                               IPrincipalPermissionMap
+from zope.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.traversing.api import getName, getParent, getParents
 
 from loops.common import adapted

@@ -24,7 +24,6 @@ $Id$
 """
 
 from zope import interface, component
-from zope.app import zapi
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy

@@ -27,7 +27,6 @@ import os
 import time
 from zope import component
 from zope.interface import Interface, implements
-from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy

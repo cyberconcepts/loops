@@ -26,10 +26,10 @@ from BTrees.IIBTree import IITreeSet
 from BTrees.IFBTree import IFBucket, IFBTree, IFTreeSet
 from BTrees.IOBTree import IOBucket, IOBTree
 from zope import interface, component
-from zope.app.intid.interfaces import IIntIds
 from zope.component import adapts
 from zope.interface import implements, implementer
 from zope.cachedescriptors.property import Lazy
+from zope.intid.interfaces import IIntIds
 
 from cybertools.catalog.query import Term, Eq, Between, And, Or
 from cybertools.catalog.query import Text as BaseText

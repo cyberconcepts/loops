@@ -17,8 +17,8 @@ from zope.app.principalannotation import annotations
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import PrincipalRegistry
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
 
 from cybertools.util.jeep import Jeep
 from loops.common import adapted
