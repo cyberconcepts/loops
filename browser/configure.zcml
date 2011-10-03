@@ -19,6 +19,29 @@
   <!-- jocy JavaScript extension library -->
   <include package="cybertools.ajax" file="configure-jocy.zcml" />
 
+  <!-- restrict Management Interface pages -->
+
+  <!--<page for="zope.annotation.interfaces.IAnnotatable"
+        name="EditMetaData.html"
+        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
+        template="edit_metadata.pt"
+        menu="zmi_views" title="Metadata"
+        permission="loops.ManageSite" />-->
+
+  <!-- <page for="loops.interfaces.IConcept"
+        name="EditMetaData.html"
+        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
+        template="edit.pt"
+        menu="zmi_views" title="Metadata"
+        permission="loops.ManageSite" />
+
+  <page for="loops.interfaces.IResource"
+        name="EditMetaData.html"
+        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
+        template="edit.pt"
+        menu="zmi_views" title="Metadata"
+        permission="loops.ManageSite" />-->
+
   <!-- node pages -->
 
   <page for="loops.interfaces.INode"
@@ -125,7 +148,7 @@
       name="edit.html"
       for="loops.interfaces.ILoops"
       class="loops.browser.manager.LoopsEditForm"
-      permission="zope.ManageApplication"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Edit"
       />
 
@@ -175,7 +198,7 @@
   <pages
       for="loops.interfaces.IConcept"
       class=".concept.ConceptConfigureView"
-      permission="zope.ManageContent">
+      permission="loops.ManageSite">
 
     <page
         name="configure.html"
@@ -193,7 +216,7 @@
       name="edit.html"
       for="loops.interfaces.IConcept"
       class="loops.browser.concept.ConceptEditForm"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Edit" />
 
   <page
@@ -279,7 +302,7 @@
   <pages
       for="loops.interfaces.IResource"
       class=".resource.ResourceConfigureView"
-      permission="zope.ManageContent">
+      permission="loops.ManageSite">
 
     <page
         name="configure.html"
@@ -292,7 +315,7 @@
       name="edit.html"
       for="loops.interfaces.IResource"
       class="loops.browser.resource.ResourceEditForm"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Edit" />
 
   <!-- suppress the upload menu item: -->
@@ -314,7 +337,7 @@
       name="edit.html"
       for="loops.interfaces.IDocument"
       class="loops.browser.resource.DocumentEditForm"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Edit" />
 
   <page
@@ -353,17 +376,17 @@
       schema="loops.interfaces.IViewManager"
       content_factory="loops.view.ViewManager"
       template="add.pt"
-      permission="zope.ManageContent" />
+      permission="loops.ManageSite" />
 
   <containerViews
       for="loops.interfaces.IViewManager"
       index="zope.View"
-      add="zope.ManageContent" />
+      add="loops.ManageSite" />
 
   <menuItem
       for="loops.interfaces.IViewManager"
       action="contents.html"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Contents" />
 
   <!-- record manager -->
@@ -389,7 +412,7 @@
   <menuItem
       for="loops.interfaces.INode"
       action="contents.html"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Contents" />
 
   <addform
@@ -418,7 +441,7 @@
       fields="title description nodeType viewName body"
       for="loops.interfaces.INode"
       template="edit.pt"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Edit">
 
     <widget field="description" height="2" />
@@ -452,13 +475,13 @@
       for="loops.interfaces.INode"
       template="node_target.pt"
       class="loops.browser.node.ConfigureView"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       />
 
   <menuItem
       for="loops.interfaces.INode"
       action="@@configure.html"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="Configure"
       />
 
@@ -690,12 +713,12 @@
       schema="loops.interfaces.IViewConfiguratorSchema"
       for="loops.interfaces.INode"
       template="edit.pt"
-      permission="zope.ManageContent" />
+      permission="loops.ManageSite" />
 
   <menuItem
       for="loops.interfaces.INode"
       action="viewconfigure.html"
-      permission="zope.ManageContent"
+      permission="loops.ManageSite"
       menu="zmi_views" title="View Properties"
       filter="python: context.nodeType == 'menu'" />
 
