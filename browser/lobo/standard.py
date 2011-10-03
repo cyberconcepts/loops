@@ -31,7 +31,6 @@ from cybertools.typology.interfaces import IType
 from loops.browser.concept import ConceptView as BaseConceptView
 from loops.browser.concept import ConceptRelationView as BaseConceptRelationView
 from loops.browser.resource import ResourceView as BaseResourceView
-from loops.browser.resource import ResourceRelationView as BaseResourceRelationView
 from loops.common import adapted, baseObject
 
 
@@ -64,7 +63,6 @@ class ConceptView(BaseConceptView):
 
     def __init__(self, context, request):
         super(ConceptView, self).__init__(baseObject(context), request)
-        self.adapted = context
 
     @Lazy
     def resources(self):
@@ -77,6 +75,11 @@ class ConceptView(BaseConceptView):
             else:
                 result['files'].append(r)
         return result
+
+    @Lazy
+    def images(self):
+        for r in self.resources['images']:
+            yield r
 
     # properties from base class: title, description, renderedDescription
 
@@ -113,23 +116,15 @@ class ConceptView(BaseConceptView):
     @Lazy
     def img(self):
         self.registerDojoLightbox() # also provides access to info popup
-        for r in self.resources['images']:
-                url = self.nodeView.getUrlForTarget(r)
-                src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
-                return dict(src=src, url=url,
-                            cssClass=self.parentView.imageCssClass)
+        for r in self.parentView.parent.images:
+            # fetch from iterator on layout object: avoid duplicates
+            url = self.nodeView.getUrlForTarget(r)
+            src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
+            return dict(src=src, url=url,
+                        cssClass=self.parentView.imageCssClass)
 
 
-class ConceptRelationView(BaseConceptRelationView, ConceptView):
-
-    def __init__(self, relation, request, contextIsSecond=False,
-                 parent=None, idx=0):
-        BaseConceptRelationView.__init__(self, relation, request, contextIsSecond)
-        self.parentView = parent
-        self.idx = idx
-
-
-class Layout(Base):
+class Layout(Base, ConceptView):
 
     macroName = 'layout'
 
@@ -140,11 +135,13 @@ class Layout(Base):
             parts = (self.options('parts') or
                      self.typeOptions('parts') or
                      ['h1', 'g3'])
+        ti = adapted(self.context.conceptType).typeInterface
         for p in parts:
             viewName = 'lobo_' + p
             view = component.queryMultiAdapter((self.context, self.request),
                                                name=viewName)
             if view is not None:
+                view.parent = self
                 result.append(view)
         return result
 
@@ -174,6 +171,12 @@ class BasePart(Base):
                                          name='lobo_cell')
         view.parentView = self
         return view
+
+    def getImages(self):
+        result = []
+        for idx, img in enumerate(self.parent.images):
+            result.append(ResourceView(img, self.request, parent=self, idx=idx))
+        return result
 
 
 class Grid3(BasePart):
@@ -212,13 +215,41 @@ class Header2(BasePart):
     cssClass = ['span-4', 'span-2 last', 'clear']
 
 
-# layout components for presenting lists of resources
+# resource parts
 
-class ResourceRelationView(BaseResourceRelationView):
+
+class ImageGrid3(BasePart):
+
+    macroName = 'imagegrid'
+    imageSize = 'small'
+    height = 'auto; padding-bottom: 10px'
+    gridPattern = ['span-2', 'span-2', 'span-2 last']
+
+
+# relation views, used for cells (components) of lists and grids
+
+class ConceptRelationView(BaseConceptRelationView, ConceptView):
 
     def __init__(self, relation, request, contextIsSecond=False,
                  parent=None, idx=0):
-        BaseResourceRelationView.__init__(self, relation, request, contextIsSecond)
+        BaseConceptRelationView.__init__(self, relation, request, contextIsSecond)
+        self.parentView = parent
+        self.idx = idx
+
+    @Lazy
+    def img(self):
+        self.registerDojoLightbox() # also provides access to info popup
+        for r in self.images:
+            url = self.nodeView.getUrlForTarget(r)
+            src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
+            return dict(src=src, url=url,
+                        cssClass=self.parentView.imageCssClass)
+
+
+class ResourceView(BaseResourceView):
+
+    def __init__(self, resource, request, parent=None, idx=0):
+        BaseResourceView.__init__(self, resource, request)
         self.parentView = parent
         self.idx = idx
 
@@ -243,23 +274,4 @@ class ResourceRelationView(BaseResourceRelationView):
         src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
         return dict(src=src, url=url,
                     cssClass=self.parentView.imageCssClass)
-
-class ResourcesPart(BasePart):
-
-    def getResources(self):
-        result = []
-        resourceRels = self.context.getResourceRelations()
-        for idx, r in enumerate(resourceRels):
-            result.append(ResourceRelationView(r, self.request,
-                                contextIsSecond=True, parent=self, idx=idx))
-        return result
-
-
-class ResourceGrid3(ResourcesPart):
-
-    macroName = 'rgrid'
-    imageSize = 'small'
-    height = 'auto; padding-bottom: 10px'
-    gridPattern = ['span-2', 'span-2', 'span-2 last']
-
 
