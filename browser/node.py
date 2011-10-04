@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -675,6 +675,11 @@ class ListResources(SpecialNodeView):
 class ListChildren(SpecialNodeView):
 
     macroName = 'listchildren'
+
+
+class ListSubobjects(SpecialNodeView):
+
+    macroName = 'listsubobjects'
 
 
 class ConfigureView(NodeView):

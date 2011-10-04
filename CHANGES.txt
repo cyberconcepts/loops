@@ -6,6 +6,9 @@ $Id$
 1.1
 ---
 
+- Lobo layout: provide new part: image grid; make sure image is not repeated if
+  it already appears in header part
+- new special view 'listsubobjects' for nodes
 - allow for adoption of relations to a predicate interface;
   with example implementation for a 'has Role' predicate in loops.organize
 - external collection: provide functionality for automatically populate
