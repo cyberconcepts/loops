@@ -20,6 +20,7 @@ linked objects for organizational process services""",
       install_requires=[
           # -*- Extra requirements: -*-
           'zope.app.securitypolicy',
+          'zope.app.session',
           'cybertools',
       ],
       entry_points="""
