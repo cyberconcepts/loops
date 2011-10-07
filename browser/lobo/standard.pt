@@ -50,7 +50,7 @@
          tal:attributes="class python:part.cssClass[0]">
       <metal:image use-macro="item/macros/image" />
       <span tal:condition="cell/img/showInfo|nothing">
-        <a tal:define="url string:${cell/img/url}/object_info.html"
+        <a tal:define="url string:${cell/img/url}/meta_info.html"
            tal:attributes="href url;
                            onclick string:objectDialog('', '$url');;
                                           return false">
@@ -82,7 +82,7 @@
         <div class="legend">
           <b tal:content="cell/title" />
           <span tal:condition="cell/img/showInfo|nothing">
-            <a tal:define="url string:${cell/img/url}/object_info.html"
+            <a tal:define="url string:${cell/img/url}/meta_info.html"
                tal:attributes="href url;
                                onclick string:objectDialog('', '$url');;
                                               return false">

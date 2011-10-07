@@ -607,6 +607,15 @@ class ObjectInfo(NodeView):
         return self.request.get('dialog', 'object_info')
 
 
+class MetaInfo(ObjectInfo):
+
+    __call__ = innerHtml
+
+    @Lazy
+    def macro(self):
+        return self.macros['meta_info']
+
+
 class InlineEdit(NodeView):
     """ Provides inline editor as inner HTML"""
 

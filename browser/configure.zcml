@@ -548,6 +548,12 @@
       permission="zope.View" />
 
   <page
+      name="meta_info.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.MetaInfo"
+      permission="zope.View" />
+
+  <page
       name="create_object.html"
       for="loops.interfaces.INode"
       class="loops.browser.form.CreateObjectForm"
