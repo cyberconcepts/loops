@@ -296,6 +296,7 @@ class IBaseResource(ILoopsObject):
 
     metaInfo = Attribute('Optional additional information about the resource '
                     'provided as text.')
+    showInfo = Attribute('Show object information in the standard user interface.')
 
     def getType():
         """ Return a concept that provides the object's type, i.e. the
