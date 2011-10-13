@@ -40,6 +40,14 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="lobo_h0"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Header0"
+        permission="zope.View" />
+
+  <zope:adapter
         name="lobo_h1"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"

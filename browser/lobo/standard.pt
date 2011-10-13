@@ -46,18 +46,20 @@
 <metal:block define-macro="header">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
-    <div tal:define="showImageLink python:True"
-         tal:attributes="class python:part.cssClass[0]">
-      <metal:image use-macro="item/macros/image" />
-      <span tal:condition="cell/img/showInfo|nothing">
-        <a tal:define="url string:${cell/img/url}/meta_info.html"
-           tal:attributes="href url;
-                           onclick string:objectDialog('', '$url');;
-                                          return false">
-          <img tal:attributes="src
-                string:${controller/resourceBase}/cybertools.icons/info.png" />
-        </a></span>
-    </div>
+    <tal:image condition="part/showImage">
+      <div tal:define="showImageLink python:True"
+           tal:attributes="class python:part.cssClass[0]">
+        <metal:image use-macro="item/macros/image" />
+        <span tal:condition="cell/img/showInfo|nothing">
+          <a tal:define="url string:${cell/img/url}/meta_info.html"
+             tal:attributes="href url;
+                             onclick string:objectDialog('', '$url');;
+                                            return false">
+            <img tal:attributes="src
+                  string:${controller/resourceBase}/cybertools.icons/info.png" />
+          </a></span>
+      </div>
+    </tal:image>
     <div tal:attributes="class python:part.cssClass[1]">
       <span tal:content="structure cell/renderedTextDescription" />
     </div>

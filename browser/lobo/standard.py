@@ -157,6 +157,7 @@ class BasePart(Base):
     imageCssClass = ''
     height = 260
     gridPattern = []
+    showImage = True
 
     def getChildren(self):
         subtypeNames =  (self.params.get('subtypes') or [''])[0].split(',')
@@ -204,6 +205,13 @@ class List2(BasePart):
     macroName = 'list'
     imageSize = 'medium'
     gridPattern = [['span-4 clear', 'span-2 last']]
+
+
+class Header0(BasePart):
+
+    macroName = 'header'
+    cssClass = ['span-6 last', 'clear']
+    showImage = False
 
 
 class Header1(BasePart):
