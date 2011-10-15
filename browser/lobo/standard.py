@@ -212,6 +212,7 @@ class Header0(BasePart):
     macroName = 'header'
     cssClass = ['span-6 last', 'clear']
     showImage = False
+    cssClass = ['', 'span-6 last', 'clear']
 
 
 class Header1(BasePart):
