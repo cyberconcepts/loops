@@ -63,7 +63,7 @@
     <div tal:attributes="class python:part.cssClass[1]">
       <span tal:content="structure cell/renderedTextDescription" />
     </div>
-    <tal:break condition="cell/img">
+    <tal:break condition="python:part.showImage and cell.img">
       <br style="clear: both" />&nbsp;</tal:break>
     <div tal:condition="cell/renderedText"
          tal:attributes="class python:part.cssClass[2]">
