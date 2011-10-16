@@ -110,13 +110,15 @@
                        title cell/img/title">
       <img tal:condition="showImageLink|python:False"
            tal:attributes="src cell/img/src;
-                           class cell/img/cssClass" />
+                           class cell/img/cssClass;
+                           alt cell/title" />
     </a>
     <a tal:condition="not:showImageLink|python:False"
        tal:attributes="href cell/targetUrl;
-                       title cell/description">
+                       title cell/title">
       <img tal:attributes="src cell/img/src;
-                           class cell/img/cssClass" />
+                           class cell/img/cssClass;
+                           alt cell/title" />
     </a>
   </tal:img>
 </metal:image>
