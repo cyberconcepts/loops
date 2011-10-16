@@ -1,6 +1,7 @@
 <metal:block define-macro="asset">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
-    <div metal:use-macro="views/node_macros/object_actions" />
+    <tal:actions condition="view/showObjectActions">
+      <div metal:use-macro="views/node_macros/object_actions" /></tal:actions>
     <h1 tal:content="item/title">Title</h1><br />
     <p tal:define="url python: view.getUrlForTarget(item)">
       <a tal:omit-tag="view/isAnonymous"
