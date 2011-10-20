@@ -38,7 +38,7 @@
     </tr>
     <tr tal:repeat="info item/additionalInfos">
       <td><span i18n:translate=""
-                tal:content="info/label">Creators</span>:</td>
+                tal:content="info/label">Meta</span>:</td>
       <td tal:content="structure info/value"></td>
     </tr>
     <tr>
@@ -48,5 +48,26 @@
       </td>
     </tr>
   </table>
+</metal:info>
 
+
+<metal:info define-macro="meta_info"
+            tal:define="item nocall:view/item">
+  <table class="object_info" width="400">
+    <tr>
+      <td colspan="2">
+        <h2 tal:content="item/title">Information</h2></td>
+    </tr>
+    <tr tal:repeat="info item/additionalInfos">
+      <td><span i18n:translate=""
+                tal:content="info/label">Meta</span>:</td>
+      <td tal:content="structure info/value"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><br />
+        <input type="button" value="Close" onclick="closeDialog()"
+               i18n:attributes="value" />
+      </td>
+    </tr>
+  </table>
 </metal:info>

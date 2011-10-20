@@ -71,7 +71,13 @@ class MemberRegistrationManager(object):
         options = IOptions(personType)
         pfName = options(self.principalfolder_key,
                          (self.default_principalfolder,))[0]
-        # step 1: create an internal principal in the loops principal folder:
+        self.createPrincipal(pfName, userId, password, lastName, firstName)
+        groups = options(self.groups_key, ())
+        self.setGroupsForPrincipal(pfName, userId,  groups=groups)
+        self.createPersonForPrincipal(self, pfName, userId, lastName, firstName=firstName, useExisting=useExisting, **kw)
+
+    def createPrincipal(self, pfName, userId, password, lastName,
+                              firstName=u'', groups=[], useExisting=False, **kw):
         pFolder = getPrincipalFolder(self.context, pfName)
         if IPersonBasedAuthenticator.providedBy(pFolder):
              pFolder.setPassword(userId, password)
@@ -86,8 +92,9 @@ class MemberRegistrationManager(object):
                     return dict(fieldName='loginName', error='duplicate_loginname')
                 else:
                     pFolder[userId] = principal
-        # step 2 (optional): assign to group(s)
-        groups = options(self.groups_key, ())
+
+    def setGroupsForPrincipal(self, pfName, userId, groups=[]):
+        pFolder = getPrincipalFolder(self.context, pfName)
         for groupInfo in groups:
             names = groupInfo.split(':')
             if len(names) == 1:
@@ -101,7 +108,12 @@ class MemberRegistrationManager(object):
                     members = list(group.principals)
                     members.append(pFolder.prefix + userId)
                     group.principals = members
-        # step 3: create a corresponding person concept:
+
+    def createPersonForPrincipal(self, pfName, userId, lastName, firstName=u'', useExisting=False, **kw):
+        concepts = self.context.getConceptManager()
+        personType = adapted(concepts[self.person_typeName])
+        pFolder = getPrincipalFolder(self.context, pfName)
+        title = firstName and ' '.join((firstName, lastName)) or lastName
         name = baseId = 'person.' + userId
         if useExisting and name in concepts:
             person = concepts[name]

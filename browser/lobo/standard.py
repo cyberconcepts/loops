@@ -120,8 +120,12 @@ class ConceptView(BaseConceptView):
             # fetch from iterator on layout object: avoid duplicates
             url = self.nodeView.getUrlForTarget(r)
             src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
-            return dict(src=src, url=url,
-                        cssClass=self.parentView.imageCssClass)
+            fullSrc = ('%s/mediaasset.html?v=%s' % (url, self.parentView.fullImageSize))
+            adImg = adapted(r)
+            showInfo = adImg.showInfo and adImg.metaInfo
+            return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        url=url, cssClass=self.parentView.imageCssClass,
+                        showInfo=showInfo)
 
 
 class Layout(Base, ConceptView):
@@ -149,6 +153,7 @@ class Layout(Base, ConceptView):
 class BasePart(Base):
 
     imageSize = 'small'
+    fullImageSize = 'medium'
     imageCssClass = ''
     height = 260
     gridPattern = []
@@ -240,10 +245,15 @@ class ConceptRelationView(BaseConceptRelationView, ConceptView):
     def img(self):
         self.registerDojoLightbox() # also provides access to info popup
         for r in self.images:
+            # fetch from iterator on layout object: avoid duplicates
             url = self.nodeView.getUrlForTarget(r)
             src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
-            return dict(src=src, url=url,
-                        cssClass=self.parentView.imageCssClass)
+            fullSrc = ('%s/mediaasset.html?v=%s' % (url, self.parentView.fullImageSize))
+            adImg = adapted(r)
+            showInfo = adImg.showInfo and adImg.metaInfo
+            return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        url=url, cssClass=self.parentView.imageCssClass,
+                        showInfo=showInfo)
 
 
 class ResourceView(BaseResourceView):
@@ -272,6 +282,10 @@ class ResourceView(BaseResourceView):
         self.registerDojoLightbox() # also provides access to info popup
         url = self.nodeView.getUrlForTarget(self.context)
         src = ('%s/mediaasset.html?v=%s' % (url, self.parentView.imageSize))
-        return dict(src=src, url=url,
-                    cssClass=self.parentView.imageCssClass)
+        fullSrc = ('%s/mediaasset.html?v=%s' % (url, self.parentView.fullImageSize))
+        adImg = adapted(self.context)
+        showInfo = adImg.showInfo and adImg.metaInfo
+        return dict(src=src, fullImageUrl=fullSrc, title=self.context.title,
+                    url=url, cssClass=self.parentView.imageCssClass,
+                    showInfo=showInfo)
 

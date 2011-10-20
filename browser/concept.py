@@ -395,9 +395,21 @@ class ConceptView(BaseView):
         fv = FilterView(self.context, self.request)
         rels = self.context.getResourceRelations()
         for r in rels:
-            #yield self.childViewFactory(r, self.request, contextIsSecond=True)
             if fv.check(r.first):
                 yield ResourceRelationView(r, self.request, contextIsSecond=True)
+
+    @Lazy
+    def resourcesByType(self):
+        result = dict(texts=[], images=[], files=[])
+        for rv in self.resources():
+            r = rv.context
+            if r.contentType.startswith('text/'):
+                result['texts'].append(r)
+            if r.contentType.startswith('image/'):
+                result['images'].append(r)
+            else:
+                result['files'].append(r)
+        return result
 
     def unique(self, rels):
         result = Jeep()
