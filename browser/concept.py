@@ -350,7 +350,12 @@ class ConceptView(BaseView):
                 #IOptions(adapted(pr.predicate))('hide_parents_for', [])):
                 IOptions(pr.predicate)('hide_parents_for', [])):
             return True
-        hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
+        hideRoles = None
+        options = component.queryAdapter(adapted(pr.first), IOptions)
+        if options is not None:
+            hideRoles = options('hide_for', None)
+        if not hideRoles:
+            hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
         if hideRoles is not None:
             principal = self.request.principal
             if (IUnauthenticatedPrincipal.providedBy(principal) and
@@ -395,9 +400,27 @@ class ConceptView(BaseView):
         fv = FilterView(self.context, self.request)
         rels = self.context.getResourceRelations()
         for r in rels:
-            #yield self.childViewFactory(r, self.request, contextIsSecond=True)
             if fv.check(r.first):
                 yield ResourceRelationView(r, self.request, contextIsSecond=True)
+
+    @Lazy
+    def resourcesList(self):
+        from loops.browser.resource import ResourceRelationView
+        return [ResourceRelationView(r, self.request, contextIsSecond=True)
+                    for r in self.context.getResourceRelations()]
+
+    @Lazy
+    def resourcesByType(self):
+        result = dict(texts=[], images=[], files=[])
+        for rv in self.resourcesList:
+            r = rv.context
+            if r.contentType.startswith('text/'):
+                result['texts'].append(r)
+            if r.contentType.startswith('image/'):
+                result['images'].append(r)
+            else:
+                result['files'].append(r)
+        return result
 
     def unique(self, rels):
         result = Jeep()

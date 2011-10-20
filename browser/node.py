@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -607,6 +607,15 @@ class ObjectInfo(NodeView):
         return self.request.get('dialog', 'object_info')
 
 
+class MetaInfo(ObjectInfo):
+
+    __call__ = innerHtml
+
+    @Lazy
+    def macro(self):
+        return self.macros['meta_info']
+
+
 class InlineEdit(NodeView):
     """ Provides inline editor as inner HTML"""
 
@@ -674,6 +683,11 @@ class ListResources(SpecialNodeView):
 class ListChildren(SpecialNodeView):
 
     macroName = 'listchildren'
+
+
+class ListSubobjects(SpecialNodeView):
+
+    macroName = 'listsubobjects'
 
 
 class ConfigureView(NodeView):

@@ -12,9 +12,9 @@
   <tal:cell repeat="cell part/getChildren">
     <div tal:attributes="class cell/cssClass;
                          style cell/style">
+      <metal:image use-macro="item/macros/image" />
       <a tal:attributes="href cell/targetUrl;
                          title cell/description">
-        <metal:image use-macro="item/macros/image" />
         <div class="legend">
           <b tal:content="cell/title" /><br />
           <i tal:content="cell/description" />
@@ -29,10 +29,8 @@
   <tal:cell repeat="cell part/getChildren">
     <div tal:condition="cell/img"
          tal:attributes="class python:cell.cssClass[0]">
-      <a tal:attributes="href cell/targetUrl;
-                         title cell/description">
-        <metal:image use-macro="item/macros/image" />
-      </a><br />&nbsp;
+      <metal:image use-macro="item/macros/image" />
+      <br />&nbsp;
     </div>
     <div tal:attributes="class python:cell.cssClass[1]">
       <a tal:attributes="href cell/targetUrl">
@@ -48,14 +46,24 @@
 <metal:block define-macro="header">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
-    <div tal:define="showImageLink python:True"
-         tal:attributes="class python:part.cssClass[0]">
-      <metal:image use-macro="item/macros/image" />
-    </div>
+    <tal:image condition="part/showImage">
+      <div tal:define="showImageLink python:True"
+           tal:attributes="class python:part.cssClass[0]">
+        <metal:image use-macro="item/macros/image" />
+        <span tal:condition="cell/img/showInfo|nothing">
+          <a tal:define="url string:${cell/img/url}/meta_info.html"
+             tal:attributes="href url;
+                             onclick string:objectDialog('', '$url');;
+                                            return false">
+            <img tal:attributes="src
+                  string:${controller/resourceBase}/cybertools.icons/info.png" />
+          </a></span>
+      </div>
+    </tal:image>
     <div tal:attributes="class python:part.cssClass[1]">
       <span tal:content="structure cell/renderedTextDescription" />
     </div>
-    <tal:break condition="cell/img">
+    <tal:break condition="python:part.showImage and cell.img">
       <br style="clear: both" />&nbsp;</tal:break>
     <div tal:condition="cell/renderedText"
          tal:attributes="class python:part.cssClass[2]">
@@ -67,18 +75,25 @@
 
 <!-- resources listing macros -->
 
-<metal:block define-macro="rgrid">
-  <tal:cell repeat="cell part/getResources">
+<metal:block define-macro="imagegrid"
+             tal:define="showImageLink python:True">
+  <tal:cell repeat="cell part/getImages">
     <div tal:attributes="class cell/cssClass;
                          style cell/style">
-      <a tal:attributes="href cell/targetUrl;
-                         title cell/description">
         <metal:image use-macro="item/macros/image" />
         <div class="legend">
-          <b tal:content="cell/title" /><br />
+          <b tal:content="cell/title" />
+          <span tal:condition="cell/img/showInfo|nothing">
+            <a tal:define="url string:${cell/img/url}/meta_info.html"
+               tal:attributes="href url;
+                               onclick string:objectDialog('', '$url');;
+                                              return false">
+              <img tal:attributes="src
+                    string:${controller/resourceBase}/cybertools.icons/info.png" />
+            </a></span>
+          <br />
           <i tal:content="cell/description" />
         </div>
-      </a>
     </div>
   </tal:cell>
 </metal:block>
@@ -89,14 +104,21 @@
 <metal:image define-macro="image">
   <tal:img condition="cell/img">
     <a title="Information about this object."
-       tal:omit-tag="not:showImageLink|python:False"
+       dojoType="dojox.image.Lightbox" group="mediasset"
        i18n:attributes="title"
-       tal:define="url string:${cell/img/url}/object_info.html"
-       tal:attributes="href url;
-                       onclick string:objectDialog('', '$url?dialog=');; return false">
-      <img tal:condition="cell/img"
+       tal:attributes="href cell/img/fullImageUrl;
+                       title cell/img/title">
+      <img tal:condition="showImageLink|python:False"
            tal:attributes="src cell/img/src;
-                           class cell/img/cssClass" />
+                           class cell/img/cssClass;
+                           alt cell/title" />
+    </a>
+    <a tal:condition="not:showImageLink|python:False"
+       tal:attributes="href cell/targetUrl;
+                       title cell/title">
+      <img tal:attributes="src cell/img/src;
+                           class cell/img/cssClass;
+                           alt cell/title" />
     </a>
   </tal:img>
 </metal:image>

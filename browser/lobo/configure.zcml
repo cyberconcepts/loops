@@ -40,6 +40,14 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="lobo_h0"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.Header0"
+        permission="zope.View" />
+
+  <zope:adapter
         name="lobo_h1"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
@@ -66,11 +74,11 @@
   <!-- parts for displaying resources -->
 
   <zope:adapter
-        name="lobo_rg3"
+        name="lobo_ig3"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
-        factory="loops.browser.lobo.standard.ResourceGrid3"
+        factory="loops.browser.lobo.standard.ImageGrid3"
         permission="zope.View" />
 
 </configure>

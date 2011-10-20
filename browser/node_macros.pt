@@ -166,10 +166,45 @@
           <a href="#"
              tal:attributes="href string:${view/url}/.${related/uniqueId};
                              title related/description"
-             tal:content="related/title">Resource Title</a>
+             tal:content="related/title">Concept Title</a>
     </div>
   </div>
 </metal:children>
+
+
+<metal:subobjects define-macro="listsubobjects"
+                 tal:define="target nocall:item/targetObjectView">
+  <div class="content-1"
+       tal:content="structure item/body"
+       tal:attributes="ondblclick python:
+                target and target.openEditWindow('configure.html')
+                        or item.openEditWindow();
+                       id string:${view/itemNum}.body;">
+    Listing
+  </div>
+  <div tal:condition="nocall:target">
+    <div tal:attributes="ondblclick python: target.openEditWindow('configure.html')"
+         tal:define="children python:list(target.children())"
+         tal:condition="children">
+      <h3 i18n:translate="">Children</h3>
+      <div tal:repeat="related children">
+            <a tal:attributes="href python:view.getUrlForTarget(related);
+                               title related/description"
+               tal:content="related/title">Concept Title</a>
+      </div>
+    </div>
+    <div tal:attributes="ondblclick python: target.openEditWindow('resources.html')"
+         tal:define="resources python:list(target.resources())"
+         tal:condition="resources">
+      <h3 i18n:translate="">Resources</h3>
+      <div tal:repeat="related resources">
+            <a tal:attributes="href python:view.getUrlForTarget(related);
+                               title related/description"
+               tal:content="related/title">Resource Title</a>
+      </div>
+    </div>
+  </div>
+</metal:subobjects>
 
 
 <!-- menu -->

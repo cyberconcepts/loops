@@ -243,8 +243,10 @@ class ResourceView(BaseView):
     # actions
 
     def getPortletActions(self, page=None, target=None):
-        return actions.get('portlet', ['edit_object'], view=self, page=page,
-                           target=target)
+        if canWrite(target.context, 'data'):
+            return actions.get('portlet', ['edit_object'], view=self, page=page,
+                               target=target)
+        return []
 
     def getObjectActions(self, page=None, target=None):
         acts = ['info']

@@ -39,3 +39,9 @@ class IMediaAsset(IMediaAsset, IExternalFile):
                 missing_value=u'',
                 required=False)
 
+    showInfo = schema.Bool(
+                title=_(u'Show Object Information'),
+                description=_(u'Show object information in the standard user interface.'),
+                default=False,
+                required=False)
+
