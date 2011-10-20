@@ -249,7 +249,7 @@ class Search(BaseView):
         result = [r for r in result if self.checkStates(r)]
         fv = FilterView(self.context, self.request)
         result = fv.apply(result)
-        result = sorted(result, key=lambda x: x.title.lower())
+        result = sorted(result, key=lambda x: x.title and x.title.lower())
         return self.viewIterator(result)
 
     def checkStates(self, obj):

@@ -422,6 +422,8 @@ class BaseView(GenericView, I18NView):
     def renderDescription(self, text=None):
         if text is None:
             text = self.description
+        if text is None:
+            return u''
         htmlPattern = re.compile(r'<(.+)>.+</\1>')
         if htmlPattern.search(text):
             return text
