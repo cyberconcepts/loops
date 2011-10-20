@@ -19,35 +19,18 @@
   <!-- jocy JavaScript extension library -->
   <include package="cybertools.ajax" file="configure-jocy.zcml" />
 
-  <!-- restrict Management Interface pages -->
-
-  <!--<page for="zope.annotation.interfaces.IAnnotatable"
-        name="EditMetaData.html"
-        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
-        template="edit_metadata.pt"
-        menu="zmi_views" title="Metadata"
-        permission="loops.ManageSite" />-->
-
-  <!-- <page for="loops.interfaces.IConcept"
-        name="EditMetaData.html"
-        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
-        template="edit.pt"
-        menu="zmi_views" title="Metadata"
-        permission="loops.ManageSite" />
-
-  <page for="loops.interfaces.IResource"
-        name="EditMetaData.html"
-        class="zope.dublincore.browser.metadataedit.MetaDataEdit"
-        template="edit.pt"
-        menu="zmi_views" title="Metadata"
-        permission="loops.ManageSite" />-->
-
   <!-- node pages -->
 
   <page for="loops.interfaces.INode"
         name="index.html"
         class="loops.browser.node.NodeView"
         permission="zope.Public" />
+
+  <page for="loops.interfaces.INode"
+        name="contents.html"
+        template="contents.pt"
+        class="cybertools.container.ordered.ContainerView"
+        permission="loops.ManageSite" />
 
   <!-- login/logout -->
 

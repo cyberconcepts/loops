@@ -51,6 +51,14 @@
 
   <browser:page
       for="cybertools.tracking.interfaces.ITrackingStorage"
+      name="contents.html"
+      template="../../browser/contents.pt"
+      class="cybertools.container.ordered.ContainerView"
+      menu="zmi_views" title="Contents"
+      permission="loops.ManageSite" />
+
+  <browser:page
+      for="cybertools.tracking.interfaces.ITrackingStorage"
       name="index.html"
       class="cybertools.tracking.browser.TrackingStorageView"
       permission="zope.View" />
