@@ -24,7 +24,6 @@ $Id$
 
 from itertools import groupby
 from zope import interface, component, schema
-from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.container.contained import ObjectRemovedEvent
@@ -43,6 +42,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
+from zope.traversing.browser import absoluteURL
 
 from cybertools.browser.action import actions
 from cybertools.composer.interfaces import IInstance
@@ -182,7 +182,7 @@ class BaseRelationView(BaseView):
 
     @Lazy
     def predicateUrl(self):
-        return zapi.absoluteURL(self.predicate, self.request)
+        return absoluteURL(self.predicate, self.request)
 
     @Lazy
     def relevance(self):

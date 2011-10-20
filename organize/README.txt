@@ -155,7 +155,7 @@ with a principal folder:
   >>> from zope.app.authentication.authentication import PluggableAuthentication
   >>> from zope.app.security.interfaces import IAuthentication
   >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-  ...               copy_to_zlog=False, asObject=True)
+  ...               copy_to_zlog=False)
   <...PluggableAuthentication...>
   >>> pau = component.getUtility(IAuthentication, context=site)
 
@@ -265,7 +265,7 @@ Automatic security settings on persons
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.
 
-  >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
+  >>> from zope.securitypolicy.interfaces import IPrincipalRoleMap
   >>> IPrincipalRoleMap(concepts['john']).getPrincipalsAndRoles()
   [('loops.Owner', 'users.john', PermissionSetting: Allow)]
   >>> IPrincipalRoleMap(concepts['person.newuser']).getPrincipalsAndRoles()

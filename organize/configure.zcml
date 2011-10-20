@@ -65,11 +65,11 @@
       provides="zope.app.authentication.interfaces.ICredentialsPlugin"
       factory="loops.organize.auth.LoopsSessionCredentialsPlugin" />
 
-  <zope:localUtility class="loops.organize.auth.PersonBasedAuthenticator">
+  <zope:class class="loops.organize.auth.PersonBasedAuthenticator">
     <require
         permission="zope.ManageServices"
         attributes="prefix" />
-  </zope:localUtility>
+  </zope:class>
 
   <!-- other adapters -->
 

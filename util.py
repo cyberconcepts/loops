@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@ $Id$
 
 import os
 from zope import component
-from zope.app.intid.interfaces import IIntIds
 from zope.interface import directlyProvides, directlyProvidedBy
+from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
 

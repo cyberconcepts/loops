@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ Definition of view classes for the top-level loops container.
 $Id$
 """
 
-from zope.app import zapi
 from zope import component
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify

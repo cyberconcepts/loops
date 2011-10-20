@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ $Id$
 
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.securitypolicy.interfaces import IRolePermissionMap
-from zope.app.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.cachedescriptors.property import Lazy
+from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.traversing.api import getName, getParent
 
 from loops.browser.concept import ConceptView

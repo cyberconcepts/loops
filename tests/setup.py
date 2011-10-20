@@ -16,9 +16,6 @@ from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IAuthentication
-from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
-from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
-from zope.app.securitypolicy.rolepermission import AnnotationRolePermissionManager
 from zope.app.session.interfaces import IClientIdManager, ISessionDataContainer
 from zope.app.session import session
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
@@ -27,6 +24,9 @@ from zope.interface import Interface, implements
 from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserView
 from zope.security.checker import Checker, defineChecker
 from zope.security.management import setSecurityPolicy
+from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
+from zope.securitypolicy.principalrole import AnnotationPrincipalRoleManager
+from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
 
 from cybertools.browser.controller import Controller
 from cybertools.catalog.keyword import KeywordIndex

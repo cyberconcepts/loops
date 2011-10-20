@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.groupfolder import GroupFolder
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.traversing.api import getParents
 from loops.common import adapted
 from loops.type import getOptionsDict

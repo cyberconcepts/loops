@@ -17,8 +17,8 @@ from zope.app.principalannotation import annotations
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import PrincipalRegistry
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
 
 from cybertools.util.jeep import Jeep
 from loops.common import adapted
@@ -50,7 +50,7 @@ def setupObjectsForTesting(site, concepts):
     loopsRoot = concepts.getLoopsRoot()
     setupData = setupUtilitiesAndAdapters(loopsRoot)
     ensureUtility(site, IAuthentication, '', PluggableAuthentication,
-                  copy_to_zlog=False, asObject=True)
+                  copy_to_zlog=False)
     pau = component.getUtility(IAuthentication, context=site)
     # create principal folder and user(s)
     pFolder = PrincipalFolder('users.')

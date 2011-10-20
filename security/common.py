@@ -27,14 +27,14 @@ from zope import component
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.traversing.api import getName
 from zope.traversing.interfaces import IPhysicallyLocatable
 

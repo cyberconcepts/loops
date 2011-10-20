@@ -24,10 +24,10 @@ $Id$
 
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
-from zope.app import zapi
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.organize.interfaces import IAddress as IBaseAddress
 from cybertools.organize.interfaces import IPerson as IBasePerson
@@ -70,7 +70,7 @@ class UserId(schema.TextLine):
         if person is not None and person != context:
             raiseValidationError(
                 _(u'There is alread a person ($person) assigned to user $userId.',
-                  mapping=dict(person=zapi.getName(person),
+                  mapping=dict(person=getName(person),
                                userId=userId)))
 
 

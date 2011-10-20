@@ -105,7 +105,7 @@
       name="AddLoopsContainer.html"
       for="zope.app.container.interfaces.IAdding"
       class="loops.browser.manager.LoopsAddForm"
-      permission="zope.ManageApplication"
+      permission="zope.ManageSite"
       />
 
   <addMenuItem
@@ -125,7 +125,7 @@
       name="edit.html"
       for="loops.interfaces.ILoops"
       class="loops.browser.manager.LoopsEditForm"
-      permission="zope.ManageApplication"
+      permission="zope.ManageSite"
       menu="zmi_views" title="Edit"
       />
 

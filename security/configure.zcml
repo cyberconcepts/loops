@@ -16,15 +16,15 @@
 
   <zope:adapter
         for="loops.interfaces.IConcept"
-        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        factory="zope.securitypolicy.rolepermission.AnnotationRolePermissionManager"
         trusted="true" />
   <zope:adapter
         for="loops.interfaces.IResource"
-        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        factory="zope.securitypolicy.rolepermission.AnnotationRolePermissionManager"
         trusted="true" />
   <zope:adapter
         for="loops.interfaces.IView"
-        factory="zope.app.securitypolicy.rolepermission.AnnotationRolePermissionManager"
+        factory="zope.securitypolicy.rolepermission.AnnotationRolePermissionManager"
         trusted="true" />
 
   <zope:adapter factory="loops.security.setter.ConceptSecuritySetter" />

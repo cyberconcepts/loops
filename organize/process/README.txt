@@ -12,7 +12,6 @@ Let's do some basic set up
   >>> site = placefulSetUp(True)
 
   >>> from zope import component, interface
-  >>> from zope.app import zapi
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard

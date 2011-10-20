@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,16 +24,16 @@ $Id$
 """
 
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IPrincipalRoleMap, IRolePermissionMap
-from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
-from zope.app.securitypolicy.zopepolicy import SettingAsBoolean, \
-                        globalRolesForPrincipal, globalRolesForPermission
 from zope import component
 from zope.component import adapts
 from zope.cachedescriptors.property import Lazy
 from zope.interface import classProvides
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.proxy import removeSecurityProxy
+from zope.securitypolicy.interfaces import IPrincipalRoleMap, IRolePermissionMap
+from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
+from zope.securitypolicy.zopepolicy import SettingAsBoolean, \
+                        globalRolesForPrincipal, globalRolesForPermission
 
 from loops.interfaces import IConcept, IResource
 

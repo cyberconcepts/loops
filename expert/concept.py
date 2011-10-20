@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ from BTrees.IFBTree import weightedIntersection, weightedUnion, IFBucket
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
+from zope.intid.interfaces import IIntIds
 
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase

@@ -27,8 +27,8 @@ from BTrees.IFBTree import weightedIntersection, weightedUnion, IFBucket
 from zope import schema, component
 from zope.interface import Interface, Attribute, implements
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
+from zope.intid.interfaces import IIntIds
 
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase

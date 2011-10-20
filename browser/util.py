@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@ Utilities.
 $Id$
 """
 
-from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
 from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
+from zope import component
 from zope.formlib.namedtemplate import NamedTemplateImplementation
 
 
@@ -45,7 +45,7 @@ class LoopsMenu(BrowserMenu):
     def getMenuItems(self, object, request):
         """Return menu item entries in a TAL-friendly form."""
         result = sorted([(item.order, item.action.lower(), item)
-                    for name, item in zapi.getAdapters(
+                    for name, item in component.getAdapters(
                             (object, request), self.getMenuItemType())
                     if item.available()])
         return [

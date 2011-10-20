@@ -432,10 +432,12 @@
   <!-- utilities -->
 
   <utility
+      provides="cybertools.storage.interfaces.IExternalStorage"
       factory="cybertools.storage.filesystem.instanceVarSubdirectoryStorage"
       name="varsubdir" />
 
   <utility
+      provides="cybertools.storage.interfaces.IExternalStorage"
       factory="cybertools.storage.filesystem.fullPathStorage"
       name="fullpath" />
 
