@@ -311,7 +311,8 @@ class ConceptView(BaseView):
                         break
                 if skip:
                     continue
-            if IOptions(adapted(r.predicate))('hide_children'):
+            options = IOptions(adapted(r.predicate), None)
+            if options is not None and options('hide_children'):
                 continue
             if fv.check(r.context):
                 yield r

@@ -54,6 +54,19 @@ Creating the corresponding objects
   >>> adMyquery.options
   [u'option1', u'option2']
 
+Importing types
+---------------
+
+  >>> input = ("type('mytype', u'My Type',"
+  ...          "        typeInterface='loops.expert.concept.IQueryConcept')")
+  >>> reader = PyReader()
+  >>> elements = reader.read(input)
+  >>> loader = Loader(loopsRoot)
+  >>> loader.load(elements)
+
+  >>> adapted(concepts['mytype']).typeInterface
+  <InterfaceClass loops.expert.concept.IQueryConcept>
+
 Working with resources
 ----------------------
 
@@ -118,7 +131,7 @@ Extracting elements
   >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
   >>> elements = list(extractor.extract())
   >>> len(elements)
-  52
+  53
 
 Writing object information to the external storage
 --------------------------------------------------

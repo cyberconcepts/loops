@@ -126,6 +126,9 @@ class TypeElement(ConceptElement):
                             loader.typeConcept, **kw)
         instance = self.getInstance(omit=['title', 'typeInterface'])
         formState = instance.applyTemplate(data=kw, ignoreValidation=True)
+        if ti:
+            # overwrite type interface, might have been ignored in addConcept
+            adapted(self.object).typeInterface = kw['typeInterface']
 
 
 class ChildElement(Element):

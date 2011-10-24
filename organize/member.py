@@ -74,7 +74,8 @@ class MemberRegistrationManager(object):
         self.createPrincipal(pfName, userId, password, lastName, firstName)
         groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)
-        self.createPersonForPrincipal(self, pfName, userId, lastName, firstName=firstName, useExisting=useExisting, **kw)
+        self.createPersonForPrincipal(pfName, userId, lastName, firstName,
+                                      useExisting, **kw)
 
     def createPrincipal(self, pfName, userId, password, lastName,
                               firstName=u'', groups=[], useExisting=False, **kw):
@@ -109,7 +110,8 @@ class MemberRegistrationManager(object):
                     members.append(pFolder.prefix + userId)
                     group.principals = members
 
-    def createPersonForPrincipal(self, pfName, userId, lastName, firstName=u'', useExisting=False, **kw):
+    def createPersonForPrincipal(self, pfName, userId, lastName, firstName=u'',
+                                 useExisting=False, **kw):
         concepts = self.context.getConceptManager()
         personType = adapted(concepts[self.person_typeName])
         pFolder = getPrincipalFolder(self.context, pfName)
