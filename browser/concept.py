@@ -18,8 +18,6 @@
 
 """
 Definition of the concept view classes.
-
-$Id$
 """
 
 from itertools import groupby
@@ -313,6 +311,8 @@ class ConceptView(BaseView):
                         break
                 if skip:
                     continue
+            if IOptions(adapted(r.predicate))('hide_children'):
+                continue
             if fv.check(r.context):
                 yield r
 
