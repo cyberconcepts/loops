@@ -3,9 +3,18 @@
 <body>
 
 
-<metal:textline define-macro="input_relationset"
-                tal:define="fieldInstance field/getFieldInstance;
-                            types fieldInstance/typesParams">
+<metal:display define-macro="display_relationset">
+    <span tal:repeat="elem value">
+      <a tal:attributes="href elem/url"
+         tal:content="elem/label"></a>
+      <tal:separator condition="not:repeat/elem/end"> &middot; </tal:separator>
+    </span>
+</metal:display>
+
+
+<metal:input define-macro="input_relationset"
+             tal:define="fieldInstance field/getFieldInstance;
+                         types fieldInstance/typesParams">
     <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
          tal:attributes="url string:${fieldInstance/selection_view}$types;
                          jsId string:${name}_search_store" >
@@ -31,10 +40,10 @@
                            name string:${name}_search;
                            id string:${name}_search;
                            onChange string:addRelation('$name')" />
-</metal:textline>
+</metal:input>
 
 
-<metal:textline define-macro="input_relation"
+<metal:input define-macro="input_relation"
                 tal:define="fieldInstance field/getFieldInstance;
                             types fieldInstance/typesParams">
     <div dojoType="dojox.data.QueryReadStore" jsId="conceptSearch"
@@ -57,7 +66,7 @@
                            name string:${name}_search;
                            id string:${name}_search;
                            onChange string:setRelation('$name')" />
-</metal:textline>
+</metal:input>
 
 
 </body>

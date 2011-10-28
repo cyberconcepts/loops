@@ -412,6 +412,16 @@ class ChildRelationSet(RelationSet):
         for c in self.context.getChildren([self.predicate]):
             yield adapted(c, langInfo=self.langInfo)
 
+    def getRelations(self, check=None, noSecurityCheck=None):
+        if self.adapted.__is_dummy__:
+            return
+        if noSecurityCheck is None:
+            noSecurityCheck = self.noSecurityCheck
+        for r in self.context.getChildRelations([self.predicate],
+                                                 noSecurityCheck=noSecurityCheck):
+            if check is None or check(r):
+                yield r
+
 
 # property descriptors
 

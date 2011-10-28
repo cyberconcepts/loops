@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Field and field instance classes for grids.
-
-$Id$
 """
 
 from zope import component
@@ -79,10 +77,12 @@ class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
         nodeView = self.clientInstance.view.nodeView
         return [dict(url=nodeView.getUrlForTarget(baseObject(v)),
                      label=v.title) for v in value]
-        #return ' | '.join([v.title for v in value])
 
     def unmarshall(self, value):
         return [util.getObjectForUid(v) for v in value]
+
+    def getRenderer(self, name):
+        return relation_macros.macros[name]
 
 
 class RelationFieldInstance(FieldInstance, BaseRelationFieldInstance):
