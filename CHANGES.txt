@@ -6,6 +6,8 @@ $Id$
 1.1
 ---
 
+- provide controlling of rendering macro via field instance method getRenderer()
+- add getRelations() method to child relation set
 - Lobo layout: provide new part: image grid; make sure image is not repeated if
   it already appears in header part
 - new special view 'listsubobjects' for nodes
