@@ -180,19 +180,25 @@ msgid "Create Event..."
 msgstr "Termin anlegen..."
 
 msgid "Create a new event"
-msgstr "Einen neuen Termin anlegen"
+msgstr "Einen neuen Termin anlegen."
 
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."
 
 msgid "Create a new task"
-msgstr "Eine neue Aufgabe anlegen"
+msgstr "Eine neue Aufgabe anlegen."
 
 msgid "Edit Task..."
 msgstr "Aufgabe bearbeiten..."
 
 msgid "Modify task"
 msgstr "Aufgabe bearbeiten"
+
+msgid "Create Project..."
+msgstr "Project anlegen..."
+
+msgid "Create a new project."
+msgstr "Eine neues Projekt anlegen."
 
 msgid "Create Work Item..."
 msgstr "Aktivität anlegen..."

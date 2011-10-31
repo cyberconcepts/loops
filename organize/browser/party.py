@@ -19,8 +19,6 @@
 """
 Definition of view classes and other browser related stuff (e.g. actions) for
 loops.organize.party.
-
-$Id$
 """
 
 from email.MIMEText import MIMEText
