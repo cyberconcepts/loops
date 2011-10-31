@@ -29,7 +29,7 @@
   <page for="loops.interfaces.INode"
         name="contents.html"
         template="contents.pt"
-        class="cybertools.container.ordered.ContainerView"
+        class="cybertools.container.ordered.OrderedContainerView"
         permission="loops.ManageSite" />
 
   <!-- login/logout -->
