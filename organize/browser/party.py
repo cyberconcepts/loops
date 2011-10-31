@@ -96,6 +96,16 @@ actions.register('editInstitution', 'portlet', DialogAction,
         dialogName='editInstitution',
 )
 
+actions.register('createOrgUnit', 'portlet', DialogAction,
+        title=_(u'Create Orgunit...'),
+        description=_(u'Create a new organizational unit.'),
+        viewName='create_concept.html',
+        dialogName='createOrgUnit',
+        typeToken='.loops/concepts/orgunit',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+)
+
 actions.register('send_email', 'object', DialogAction,
         description=_(u'Send a link to this object by email.'),
         viewName='object_send_email.html',
