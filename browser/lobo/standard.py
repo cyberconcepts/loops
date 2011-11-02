@@ -229,6 +229,13 @@ class Header2(BasePart):
     cssClass = ['span-4', 'span-2 last', 'clear']
 
 
+class Header3(BasePart):
+
+    macroName = 'header'
+    imageSize = 'large'
+    cssClass = ['span-6 last', 'clear']
+
+
 # resource parts
 
 
