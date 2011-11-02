@@ -316,6 +316,17 @@ When we clear the `private` flag the post becomes visible again.
   True
 
 
+Micro Articles
+==============
+
+  >>> from loops.compound.microart.base import MicroArt
+  >>> from loops.compound.microart.interfaces import IMicroArt
+  >>> component.provideAdapter(BlogPost, provides=IMicroArt)
+
+  >>> tMicroArt = addAndConfigureObject(concepts, Concept, 'microart',
+  ...                                   title=u'MicroArt', conceptType=tType)
+
+
 Fin de partie
 =============
 

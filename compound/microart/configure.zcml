@@ -1,0 +1,29 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <zope:adapter
+        factory="loops.compound.microart.base.MicroArt"
+        provides="loops.compound.microart.interfaces.IMicroArt"
+        trusted="True" />
+  <zope:class class="loops.compound.microart.base.MicroArt">
+    <require permission="zope.View"
+        interface="loops.compound.microart.interfaces.IMicroArt" />
+    <require permission="zope.View"
+        attributes="context" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.compound.microart.interfaces.IMicroArt" />
+  </zope:class>
+
+  <!-- views -->
+
+  <zope:adapter
+      name="microart.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.compound.microart.browser.MicroArtView"
+      permission="zope.View" />
+
+</configure>

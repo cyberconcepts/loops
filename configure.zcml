@@ -473,6 +473,7 @@
   <include package=".browser" />
   <include package=".classifier" />
   <include package=".compound.blog" />
+  <include package=".compound.microart" />
   <include package=".config" />
   <include package=".constraint" />
   <include package=".expert" />
