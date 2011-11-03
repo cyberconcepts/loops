@@ -53,7 +53,11 @@ class IMicroArt(ICompound):
                 required=True)
 
     followUps = schema.Text(    #Anschlussfragen
-                title=_(u'Follow-up'),
+                title=_(u'Follow-up Questions'),
                 description=_(u'Question for helping to solve or avoid '
                         u'similar problems in the future.'),
                 required=False)
+
+# ideas, questions:
+# could follow-up questions be associated to links to follow-up micro articles?
+# re-use story for other MAs, e.g. insight and consequences drawn by others?
