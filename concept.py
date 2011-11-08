@@ -429,6 +429,8 @@ class IndexAttributes(object):
         if self.adaptedIndexAttributes is not None:
             return self.adaptedIndexAttributes.text()
         description = self.context.description
+        if description is None:
+            description = u''
         if isinstance(description, I18NValue):
             description = ' '.join(description.values())
         actx = self.adapted
@@ -441,6 +443,8 @@ class IndexAttributes(object):
     def title(self):
         context = self.context
         title = context.title
+        if title is None:
+            title = u''
         if isinstance(title, I18NValue):
             title = ' '.join(title.values())
         return ' '.join((getName(context), title)).strip()
