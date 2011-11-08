@@ -11,7 +11,8 @@
       <div class="row">
         <span class="label">Sub-Concepts</span>:
         <span class="field"
-            tal:repeat="concept view/children">
+              tal:repeat="concept python:
+                    view.getChildren(topLevelOnly=False, useFilter=False)">
           <a href="#"
              tal:attributes="href concept/url"
              tal:content="concept/title">subtask</a>
