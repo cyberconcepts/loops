@@ -18,13 +18,10 @@
 
 """
 Definition of the concept view classes.
-
-$Id$
 """
 
 from itertools import groupby
 from zope import interface, component, schema
-from zope.app import zapi
 from zope.app.catalog.interfaces import ICatalog
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.container.contained import ObjectRemovedEvent
@@ -43,6 +40,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import IIterableSource
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
+from zope.traversing.browser import absoluteURL
 
 from cybertools.browser.action import actions
 from cybertools.composer.interfaces import IInstance
@@ -182,7 +180,7 @@ class BaseRelationView(BaseView):
 
     @Lazy
     def predicateUrl(self):
-        return zapi.absoluteURL(self.predicate, self.request)
+        return absoluteURL(self.predicate, self.request)
 
     @Lazy
     def relevance(self):
@@ -313,6 +311,9 @@ class ConceptView(BaseView):
                         break
                 if skip:
                     continue
+            options = IOptions(adapted(r.predicate), None)
+            if options is not None and options('hide_children'):
+                continue
             if fv.check(r.context):
                 yield r
 
@@ -373,7 +374,7 @@ class ConceptView(BaseView):
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
-                      key=(lambda x: x.first.title.lower()))
+                      key=(lambda x: x.first.title and x.first.title.lower()))
         for r in rels:
             yield self.childViewFactory(r, self.request)
 
