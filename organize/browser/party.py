@@ -19,8 +19,6 @@
 """
 Definition of view classes and other browser related stuff (e.g. actions) for
 loops.organize.party.
-
-$Id$
 """
 
 from email.MIMEText import MIMEText
@@ -94,6 +92,16 @@ actions.register('editInstitution', 'portlet', DialogAction,
         description=_(u'Modify institution.'),
         viewName='edit_concept.html',
         dialogName='editInstitution',
+)
+
+actions.register('createOrgUnit', 'portlet', DialogAction,
+        title=_(u'Create Orgunit...'),
+        description=_(u'Create a new organizational unit.'),
+        viewName='create_concept.html',
+        dialogName='createOrgUnit',
+        typeToken='.loops/concepts/orgunit',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
 )
 
 actions.register('send_email', 'object', DialogAction,

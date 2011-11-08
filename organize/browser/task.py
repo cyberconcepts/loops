@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition of view classes and other browser related stuff for tasks.
-
-$Id$
 """
 
 from zope import interface, component
@@ -46,6 +44,17 @@ actions.register('createTask', 'portlet', DialogAction,
         viewName='create_concept.html',
         dialogName='createTask',
         typeToken='.loops/concepts/task',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('createProject', 'portlet', DialogAction,
+        title=_(u'Create Project...'),
+        description=_(u'Create a new project.'),
+        viewName='create_concept.html',
+        dialogName='createProject',
+        typeToken='.loops/concepts/project',
         fixedType=True,
         innerForm='inner_concept_form.html',
         prerequisites=['registerDojoDateWidget'],

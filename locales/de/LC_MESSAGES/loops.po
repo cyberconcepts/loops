@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-08-21 12:00 CET\n"
+"PO-Revision-Date: 2011-10-31 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -114,13 +114,13 @@ msgid "Create Glossary Item..."
 msgstr "Glossareintrag anlegen..."
 
 msgid "Create Glossary Item"
-msgstr "Glossareintrag anlegen"
+msgstr "Glossareintrag anlegen."
 
 msgid "Create Person..."
 msgstr "Person anlegen..."
 
 msgid "Create a new person."
-msgstr "Eine neue Person anlegen"
+msgstr "Eine neue Person anlegen."
 
 msgid "Edit Person..."
 msgstr "Person bearbeiten..."
@@ -132,25 +132,31 @@ msgid "Create Institution..."
 msgstr "Institution anlegen..."
 
 msgid "Create a new institution."
-msgstr "Eine neue Institution anlegen"
+msgstr "Eine neue Institution anlegen."
 
 msgid "Edit Institution..."
 msgstr "Institution bearbeiten..."
 
 msgid "Modify institution."
-msgstr "Institution bearbeiten"
+msgstr "Institution bearbeiten."
+
+msgid "Create Orgunit..."
+msgstr "Organisationseinheit anlegen..."
+
+msgid "Create a new organizational unit."
+msgstr "Eine neue Organisationseinheit anlegen."
 
 msgid "Create Address..."
 msgstr "Adresse anlegen..."
 
 msgid "Create a new address."
-msgstr "Eine neue Adresse anlegen"
+msgstr "Eine neue Adresse anlegen."
 
 msgid "Edit Address..."
 msgstr "Adresse bearbeiten..."
 
 msgid "Modify address."
-msgstr "Adresse bearbeiten"
+msgstr "Adresse bearbeiten."
 
 msgid "Create Concept, Type = "
 msgstr "Begriff anlegen, Typ = "
@@ -174,19 +180,25 @@ msgid "Create Event..."
 msgstr "Termin anlegen..."
 
 msgid "Create a new event"
-msgstr "Einen neuen Termin anlegen"
+msgstr "Einen neuen Termin anlegen."
 
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."
 
 msgid "Create a new task"
-msgstr "Eine neue Aufgabe anlegen"
+msgstr "Eine neue Aufgabe anlegen."
 
 msgid "Edit Task..."
 msgstr "Aufgabe bearbeiten..."
 
 msgid "Modify task"
 msgstr "Aufgabe bearbeiten"
+
+msgid "Create Project..."
+msgstr "Project anlegen..."
+
+msgid "Create a new project."
+msgstr "Eine neues Projekt anlegen."
 
 msgid "Create Work Item..."
 msgstr "Aktivität anlegen..."

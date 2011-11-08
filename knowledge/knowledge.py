@@ -181,7 +181,7 @@ class Task(BaseTask, KnowledgeAdapterMixin):
                             item['other'].append(k)
                     result.append(item)
         for item in result:
-            item['fit'] /= len(reqs)
+            item['fit'] = round(item['fit'] / len(reqs), 2)
         return sorted(result, key=lambda x: (-x['fit'], x['person'].title))
 
 
