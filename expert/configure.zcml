@@ -16,6 +16,34 @@
   <adapter factory="loops.expert.setup.SetupManager"
            name="expert" />
 
+  <!-- reporting -->
+
+  <adapter factory="loops.expert.report.Report"
+           provides="loops.expert.report.IReport" trusted="True" />
+  <class class="loops.expert.report.Report">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReport" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReport" />
+  </class>
+
+  <adapter factory="loops.expert.report.DefaultConceptReportInstance"
+           name="default_concept_report"
+           trusted="True" />
+  <class class="loops.expert.report.DefaultConceptReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </class>
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="loops.expert.report.ReportTypeSourceList"
+      name="loops.expert.reportTypeSource" />
+
+  <!-- includes -->
+
   <include package=".browser" />
 
 </configure>

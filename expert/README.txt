@@ -219,6 +219,25 @@ Query Concepts and Query Views
   >>> from loops.expert.browser.base import BaseQueryView
 
 
+Reports
+=======
+
+  >>> from loops.expert.report import IReport, Report
+  >>> component.provideAdapter(Report, provides=IReport)
+
+  >>> report = Report(None)
+
+  >>> from loops.expert.report import DefaultConceptReportInstance
+  >>> component.provideAdapter(DefaultConceptReportInstance,
+  ...                          name='default_concept_report')
+
+  >>> from loops.expert.report import ReportTypeSourceList
+  >>> source = ReportTypeSourceList(report)
+  >>> list(source)
+  [(u'default_concept_report',
+    <loops.expert.report.DefaultConceptReportInstance object at ...>)]
+
+
 Fin de partie
 =============
 
