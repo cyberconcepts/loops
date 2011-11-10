@@ -73,6 +73,19 @@
       class="loops.organize.work.browser.WorkItemInfo"
       permission="zope.View" />
 
+  <!-- reporting -->
+
+  <zope:adapter factory="loops.organize.work.report.WorkReportInstance"
+           name="work_report"
+           provides="loops.expert.report.IReportInstance"
+           trusted="True" />
+  <zope:class class="loops.organize.work.report.WorkReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
   <!-- setup -->
 
   <zope:adapter factory="loops.organize.work.setup.SetupManager"

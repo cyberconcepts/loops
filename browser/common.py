@@ -829,27 +829,6 @@ class SimpleTerms(object):
         return (token, self.terms[token])
 
 
-class AdapterTerms(SimpleTerms):
-    """ Allows the selection of a named adapter from a list of tuples
-        (name, adapter).
-
-        The adapter class may have a 'label' attribute for display.
-        The translation domain may be overridden by subclasses.
-    """
-
-    translate = _
-
-    def getTerm(self, value):
-        token, adapter = value
-        adapter = removeSecurityProxy(adapter)
-        label = getattr(adapter.__class__, 'label', token)
-        return SimpleTerm(token, token, self.translate(label))
-
-    def getValue(self, token):
-        # just store the name of the adapter
-        return (token, token)
-
-
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection
         lists.

@@ -180,6 +180,16 @@ So we use the PersonWorkItems view, assigning john to the query.
     'creator': '33'}>]
 
 
+Work Reports
+============
+
+  >>> from loops.organize.work.report import WorkReportInstance
+  >>> from loops.expert.report import IReportInstance
+  >>> component.provideAdapter(WorkReportInstance,
+  ...                          provides=IReportInstance,
+  ...                          name='work_report')
+
+
 Fin de partie
 =============
 

@@ -57,7 +57,7 @@
   <!-- reporting -->
 
   <zope:adapter
-        factory="loops.browser.common.AdapterTerms"
+        factory="loops.browser.common.SimpleTerms"
         for="loops.expert.report.ReportTypeSourceList
              zope.publisher.interfaces.browser.IBrowserRequest" />
 
