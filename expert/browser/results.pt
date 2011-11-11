@@ -1,0 +1,22 @@
+<html i18n:domain="loops">
+
+
+<div metal:define-macro="main"
+     tal:define="item nocall:item/virtualTarget;
+                 report view/reportInstance">
+  <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/concepttitle" />
+  </div>
+  <div>
+    <a tal:attributes="href view/reportUrl">Back to the report definition</a>
+  </div>
+  <div metal:use-macro="view/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="results">
+  Default Results Listing
+</div>
+
+
+</html>
