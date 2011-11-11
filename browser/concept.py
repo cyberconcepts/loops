@@ -276,7 +276,8 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
-    def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True):
+    def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True,
+                    useFilter=True):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -311,11 +312,13 @@ class ConceptView(BaseView):
                         break
                 if skip:
                     continue
-            options = IOptions(adapted(r.predicate), None)
-            if options is not None and options('hide_children'):
-                continue
-            if fv.check(r.context):
-                yield r
+            if useFilter:
+                options = IOptions(adapted(r.predicate), None)
+                if options is not None and options('hide_children'):
+                    continue
+                if not fv.check(r.context):
+                    continue
+            yield r
 
     def checkCriteria(self, relation, criteria):
         result = True
@@ -347,9 +350,10 @@ class ConceptView(BaseView):
         return result
 
     def isHidden(self, pr):
-        if (getName(pr.second.conceptType) in
-                IOptions(adapted(pr.predicate))('hide_parents_for', [])):
-                #IOptions(pr.predicate)('hide_parents_for', [])):
+        predOptions = IOptions(adapted(pr.predicate))
+        if predOptions('hide_parents'):
+            return True
+        if (getName(pr.second.conceptType) in predOptions('hide_parents_for', [])):
             return True
         hideRoles = None
         options = component.queryAdapter(adapted(pr.first), IOptions)

@@ -159,11 +159,20 @@ class BasePart(Base):
     gridPattern = []
     showImage = True
 
+    @Lazy
+    def childPredicates(self):
+        preds = [self.defaultPredicate]
+        for name in ['ispartof', 'hasoverview']:
+            pred = self.conceptManager.get(name)
+            if pred is not None:
+                preds.append(pred)
+        return preds
+
     def getChildren(self):
         subtypeNames =  (self.params.get('subtypes') or [''])[0].split(',')
         subtypes = [self.conceptManager[st] for st in subtypeNames if st]
         result = []
-        childRels = self.context.getChildRelations([self.defaultPredicate])
+        childRels = self.context.getChildRelations(self.childPredicates)
         if subtypes:
             childRels = [r for r in childRels
                            if r.second.conceptType in subtypes]

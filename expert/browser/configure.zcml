@@ -54,4 +54,25 @@
         factory="loops.expert.browser.search.ActionExecutor"
         permission="zope.ManageContent" />
 
+  <!-- reporting -->
+
+  <zope:adapter
+        factory="loops.browser.common.SimpleTerms"
+        for="loops.expert.report.ReportTypeSourceList
+             zope.publisher.interfaces.browser.IBrowserRequest" />
+
+  <zope:adapter
+        name="report.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.ReportView"
+        permission="zope.View" />
+
+  <browser:page
+        name="results.html"
+        for="loops.interfaces.INode"
+        class="loops.expert.browser.report.ResultsView"
+        permission="zope.View" />
+
 </configure>

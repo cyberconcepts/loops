@@ -1,0 +1,22 @@
+<html i18n:domain="loops">
+
+
+<div metal:define-macro="main">
+  <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/concepttitle" />
+      <form method="post" name="report_data" action="results.html">
+        <tal:hidden define="params item/dynamicParams">
+          <input type="hidden"
+                 tal:repeat="name params"
+                 tal:attributes="name name;
+                                 value params/?name" /></tal:hidden>
+        <div metal:define-macro="buttons">
+          <input type="submit" name="report_execute" value="Execute Report"
+                 i18n:attributes="value" />
+        </div>
+      </form>
+  </div>
+</div>
+
+
+</html>

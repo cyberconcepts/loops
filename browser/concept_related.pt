@@ -23,7 +23,8 @@
       </div>
       <div metal:use-macro="views/relation_macros/clients" />
 
-      <div   tal:define="items view/children;
+      <div   tal:define="items python:
+                    view.getChildren(topLevelOnly=False, useFilter=False);
                          action string:remove;
                          qualifier string:children;
                          summary string:Currently assigned objects;
