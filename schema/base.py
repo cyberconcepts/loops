@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Specialized field definitions.
-
-$Id$
 """
 
 from zope.component import adapts
@@ -59,7 +57,8 @@ class Relation(Field):
     __typeInfo__ = ('relation',
                     FieldType('relation', 'relation',
                               u'A field representing a related object.',
-                              instanceName='relation'))
+                              instanceName='relation',
+                              displayRenderer='display_relation'))
 
     def __init__(self, *args, **kw):
         self.target_types = kw.pop('target_types', ())

@@ -12,6 +12,12 @@
 </metal:display>
 
 
+<metal:display define-macro="display_relation">
+      <a tal:attributes="href value/url"
+         tal:content="value/label"></a>
+</metal:display>
+
+
 <metal:input define-macro="input_relationset"
              tal:define="fieldInstance field/getFieldInstance;
                          types fieldInstance/typesParams">

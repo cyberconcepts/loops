@@ -93,9 +93,14 @@ class RelationFieldInstance(FieldInstance, BaseRelationFieldInstance):
 
     def display(self, value):
         if value:
-            return value.title
+            nodeView = self.clientInstance.view.nodeView
+            return dict(url=nodeView.getUrlForTarget(baseObject(value)),
+                        label=value.title)
         return u''
 
     def unmarshall(self, value):
         return util.getObjectForUid(value)
+
+    def getRenderer(self, name):
+        return relation_macros.macros[name]
 

@@ -158,7 +158,7 @@ class Search(BaseView):
                         adObj = adapted(o, self.languageInfo)
                         if filterMethod is not None and not filterMethod(adObj):
                             continue
-                        name = self.getRowName(adObj)
+                        name = self.getRowName(adObj) or u''
                         if title and title.endswith('*'):
                             title = title[:-1]
                         sort = ((title and name.startswith(title) and '0' or '1')
