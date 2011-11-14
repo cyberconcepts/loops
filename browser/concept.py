@@ -235,7 +235,7 @@ class ConceptView(BaseView):
         return self.adapted.description
 
     def getData(self, omit=('title', 'description')):
-        data = self.instance.applyTemplate()
+        data = self.instance.applyTemplate(context=self.context, request=self.request)
         for k in omit:
             if k in data:
                 del data[k]
