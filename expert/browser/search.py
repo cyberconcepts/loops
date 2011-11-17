@@ -31,6 +31,7 @@ from zope.traversing.api import getName, getParent
 from cybertools.browser.form import FormController
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
+from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.common import adapted, AdapterBase
 from loops.expert.concept import ConceptQuery, FullQuery
@@ -74,7 +75,7 @@ class QuickSearchResults(NodeView):
         return self.viewIterator(result)
 
 
-class Search(BaseView):
+class Search(ConceptView):
 
     form_action = 'execute_search_action'
     maxRowNum = 0
