@@ -1,0 +1,17 @@
+concept(u'list_events', u'Termine', u'query', options=u'delta:2', viewName=u'list_events.html')
+concept(u'personal_info', u'Pers\xf6nliche Information', u'query', options=u'', viewName=u'personal_info.html')
+concept(u'recent_changes', u'Aktuelle \xc4nderungen', u'query', options=u'types:project,orgunit,person,topic,task,event,resource:*', viewName=u'recent_changes.html')
+
+# "in box"
+concept(u'wi_planned', u'Aktuell zu bearbeiten', u'query', options=u'wi_state:planned', viewName=u'userworkitems.html')
+
+# for work items overview
+concept(u'wi_current', u'Aktuelle Aktivit\xe4ten', u'query', options=u'wi_to:today\nwi_state:planned,accepted,delegated,running,done', viewName=u'userworkitems.html')
+concept(u'wi_done_today', u'Erledigt', u'query', options=u'wi_to:today\nwi_from:-2\nwi_state:done,done_x,finished', viewName=u'userworkitems.html')
+concept(u'wi_tomorrow', u'Aktivit\xe4ten morgen', u'query', options=u'wi_to:+2\nwi_from:tomorrow\nwi_state:planned,accepted', viewName=u'userworkitems.html')
+
+# future work items
+concept(u'wi_future', u'Aktivit\xe4ten k\xfcnftig', u'query', options=u'wi_to:+366\nwi_from:tomorrow\nwi_state:planned,accepted,delegated,running,done', viewName=u'userworkitems.html')
+
+# done
+concept(u'wi_done', u'Aktivit\xe4ten erledigt', u'query', options=u'wi_from:-60\nwi_state:done,done_x,finished', viewName=u'userworkitems.html')
