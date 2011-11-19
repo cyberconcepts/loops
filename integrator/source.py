@@ -46,11 +46,11 @@ class ExternalSourceInfo(object):
 
     def getExternalIdentifier(self):
         # first try to find adapter on adapted concept or resource
-        adapted = adapted(self.context)
-        if adapted != self.context:
-            adaptedSourceInfo = IExternalSourceInfo(adapted, None)
+        adobj = adapted(self.context)
+        if adobj != self.context:
+            adaptedSourceInfo = IExternalSourceInfo(adobj, None)
             if adaptedSourceInfo is not None:
-                return adaptedSourceInfo.getExternalIdentifier()
+                return adaptedSourceInfo.externalIdentifier
         # otherweise use stored external identifier
         return self.getSourceInfo().get('externalIdentifier')
     def setExternalIdentifier(self, value):
