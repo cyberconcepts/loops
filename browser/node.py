@@ -18,8 +18,6 @@
 
 """
 View class for Node objects.
-
-$Id$
 """
 
 from urlparse import urlparse, urlunparse
@@ -42,6 +40,7 @@ from zope.publisher.defaultview import getDefaultViewName
 from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParent, getParents, getPath
+from zope.traversing.browser import absoluteURL
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
@@ -91,6 +90,17 @@ class NodeView(BaseView):
         result = super(NodeView, self).update()
         self.recordAccess()
         return result
+
+    def breadcrumbs(self):
+        if not self.globalOptions('showBreadcrumbs'):
+            return []
+        menu = self.menu
+        data = [dict(label=menu.title, url=menu.url)]
+        menuItem = self.nearestMenuItem
+        if menuItem != menu.context:
+            data.append(dict(label=menuItem.title,
+                             url=absoluteURL(menuItem, self.request)))
+        return data
 
     def recordAccess(self, viewName=''):
         target = self.virtualTargetObject
