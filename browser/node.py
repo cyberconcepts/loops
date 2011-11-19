@@ -18,14 +18,11 @@
 
 """
 View class for Node objects.
-
-$Id$
 """
 
 from urlparse import urlparse, urlunparse
 from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
-from zope.app import zapi
 from zope.annotation.interfaces import IAnnotations
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.container.browser.contents import JustContents
@@ -39,8 +36,11 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.proxy import removeAllProxies
+from zope.publisher.defaultview import getDefaultViewName
 from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getParent, getParents, getPath
+from zope.traversing.browser import absoluteURL
 
 from cybertools.ajax import innerHtml
 from cybertools.browser import configurator
@@ -90,6 +90,17 @@ class NodeView(BaseView):
         result = super(NodeView, self).update()
         self.recordAccess()
         return result
+
+    def breadcrumbs(self):
+        if not self.globalOptions('showBreadcrumbs'):
+            return []
+        menu = self.menu
+        data = [dict(label=menu.title, url=menu.url)]
+        menuItem = self.nearestMenuItem
+        if menuItem != menu.context:
+            data.append(dict(label=menuItem.title,
+                             url=absoluteURL(menuItem, self.request)))
+        return data
 
     def recordAccess(self, viewName=''):
         target = self.virtualTargetObject
@@ -243,7 +254,7 @@ class NodeView(BaseView):
             return u''
         if text.startswith('<'):  # seems to be HTML
             return text
-        source = zapi.createObject(self.context.contentType, text)
+        source = component.createObject(self.context.contentType, text)
         view = component.getMultiAdapter((removeAllProxies(source), self.request))
         return view.render()
 
@@ -316,7 +327,7 @@ class NodeView(BaseView):
         menu = self.menuObject
         parentMenu = None
         while menu is not None:
-            parent = zapi.getParent(menu)
+            parent = getParent(menu)
             if INode.providedBy(parent):
                 parentMenu = parent.getMenu()
             if parentMenu is None or parentMenu is menu:
@@ -348,7 +359,7 @@ class NodeView(BaseView):
 
     @Lazy
     def parents(self):
-        return zapi.getParents(self.context)
+        return getParents(self.context)
 
     @Lazy
     def nearestMenuItem(self):
@@ -413,7 +424,7 @@ class NodeView(BaseView):
         target = self.virtualTargetObject
         if target is not None:
             # zope.app.publisher.browser
-            name = zapi.getDefaultViewName(target, self.request)
+            name = getDefaultViewName(target, self.request)
             return self.targetView(name)
         return u''
 
@@ -732,8 +743,8 @@ class ConfigureView(NodeView):
         container = type.defaultContainer
         name = form.get('create.name', '')
         if not name:
-            viewManagerPath = zapi.getPath(root.getViewManager())
-            name = zapi.getPath(self.context)[len(viewManagerPath)+1:]
+            viewManagerPath = getPath(root.getViewManager())
+            name = getPath(self.context)[len(viewManagerPath)+1:]
             name = name.replace('/', '.')
         # check for duplicates:
         num = 1
@@ -850,7 +861,7 @@ class NodeViewConfigurator(configurator.AnnotationViewConfigurator):
     @property
     def viewProperties(self):
         result = []
-        for p in list(reversed(zapi.getParents(self.context))) + [self.context]:
+        for p in list(reversed(getParents(self.context))) + [self.context]:
             if not INode.providedBy(p) or p.nodeType != 'menu':
                 continue
             ann = IAnnotations(p)
