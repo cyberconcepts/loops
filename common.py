@@ -355,12 +355,6 @@ class ParentRelationSet(RelationSet):
 
     def add(self, related, order=0, relevance=1.0):
         related = baseObject(related)
-        existing = list(self.context.getParentRelations([self.predicate], related,
-                        noSecurityCheck=self.noSecurityCheck))
-        if len(existing) == 1:
-            rel = existing[0]
-            if rel.order == order and rel.relevance == relevance:
-                return
         self.context.deassignParent(related, [self.predicate],  # avoid duplicates
                                     noSecurityCheck=self.noSecurityCheck)
         self.context.assignParent(related, self.predicate, order, relevance)
@@ -396,12 +390,6 @@ class ChildRelationSet(RelationSet):
 
     def add(self, related, order=0, relevance=1.0):
         related = baseObject(related)
-        existing = list(self.context.getChildRelations([self.predicate], related,
-                        noSecurityCheck=self.noSecurityCheck))
-        if len(existing) == 1:
-            rel = existing[0]
-            if rel.order == order and rel.relevance == relevance:
-                return
         self.context.deassignChild(related, [self.predicate])   # avoid duplicates
         self.context.assignChild(related, self.predicate, order, relevance)
 
@@ -499,7 +487,8 @@ class ParentRelation(object):
             if current != value:
                 s.remove(current)
         if value is not None:
-            s.add(value)    # how to supply additional parameters?
+            if value not in s:
+                s.add(value)    # how to supply additional parameters?
 
 
 # caching (TBD)
