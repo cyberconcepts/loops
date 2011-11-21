@@ -186,7 +186,7 @@ class Concept(Contained, Persistent):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(self, None, p) for p in predicates]
         if sort == 'default':
-            sort = lambda x: (x.order, x.second.title.lower())
+            sort = lambda x: (x.order, (x.second.title and x.second.title.lower()))
         rels = (r for r in getRelations(self, child, relationships=relationships)
                   if canListObject(r.second, noSecurityCheck))
         return sorted(rels, key=sort)
@@ -200,7 +200,6 @@ class Concept(Contained, Persistent):
         predicates = predicates is None and ['*'] or predicates
         relationships = [ConceptRelation(None, self, p) for p in predicates]
         if sort == 'default':
-            #sort = lambda x: (x.order, x.first.title.lower())
             sort = lambda x: (x.first.title and x.first.title.lower())
         rels = (r for r in getRelations(parent, self, relationships=relationships)
                   if canListObject(r.first, noSecurityCheck))
