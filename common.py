@@ -482,13 +482,14 @@ class ParentRelation(object):
         return None
 
     def __set__(self, inst, value):
-        s = ParentRelationSet(inst, self.predicateName)
-        for current in s:
+        rs = ParentRelationSet(inst, self.predicateName)
+        rsList = list(rs)
+        for current in rsList:
             if current != value:
-                s.remove(current)
+                rs.remove(current)
         if value is not None:
-            if value not in s:
-                s.add(value)    # how to supply additional parameters?
+            if value not in rsList:
+                rs.add(value)    # how to supply additional parameters?
 
 
 # caching (TBD)
