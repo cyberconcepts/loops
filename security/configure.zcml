@@ -30,12 +30,15 @@
   <zope:adapter factory="loops.security.setter.ConceptSecuritySetter" />
   <zope:adapter factory="loops.security.setter.ResourceSecuritySetter" />
 
+  <!-- suppress for performance reasons -->
+  <!--
   <zope:subscriber handler="loops.security.common.setDefaultSecurity" />
   <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
   <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
 
   <zope:subscriber handler="loops.security.common.addGroupMembershipOnAssignment" />
   <zope:subscriber handler="loops.security.common.removeGroupMembershipOnDeassignment" />
+  -->
 
   <!-- views -->
 
