@@ -477,14 +477,19 @@ div.comment {
     color: #666666;
 }
 
+.blog .text {
+    font-size: 90%;
+    margin-top: 1em;
+}
+
+.blog img {
+    padding-top: 0.2em;
+}
+
 .blogpost .description {
     font-size: 90%;
     color: #666666;
     margin-top: 1em;
-}
-
-.blogpost .description img {
-    padding-top: 0.2em;
 }
 
 .blog .info, .blogpost .info {
