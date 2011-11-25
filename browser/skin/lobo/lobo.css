@@ -472,6 +472,12 @@ div.comment {
 
 /* blog */
 
+.blog h1.headline {
+    clear: both;
+    margin-top: 0.7em;
+    margin-bottom: 0.2em;
+}
+
 .blog .description {
     font-size: 90%;
     color: #666666;
