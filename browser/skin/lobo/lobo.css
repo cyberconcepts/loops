@@ -478,17 +478,19 @@ div.comment {
 }
 
 .blogpost .description {
-    font-weight: bold;
     font-size: 90%;
     color: #666666;
-    padding-top: 0.4em;
+    margin-top: 1em;
+}
+
+.blogpost .description img {
+    padding-top: 0.2em;
 }
 
 .blog .info, .blogpost .info {
     font-style: italic;
     font-size: 90%;
     color: #666666;
-    padding-top: 0.4em;
 }
 
 /* calendar, work items */
