@@ -36,7 +36,7 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.proxy import removeAllProxies
-from zope.publisher.defaultview import getDefaultViewName
+from zope.app.publisher.browser import getDefaultViewName
 from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParent, getParents, getPath
@@ -91,6 +91,10 @@ class NodeView(BaseView):
         self.recordAccess()
         return result
 
+    @Lazy
+    def title(self):
+        return self.context.title or getName(self.context)
+
     def breadcrumbs(self):
         if not self.globalOptions('showBreadcrumbs'):
             return []
@@ -100,6 +104,13 @@ class NodeView(BaseView):
         if menuItem != menu.context:
             data.append(dict(label=menuItem.title,
                              url=absoluteURL(menuItem, self.request)))
+            for p in getParents(menuItem):
+                if p == menu.context:
+                    break
+                data.insert(1, dict(label=p.title,
+                                    url=absoluteURL(p, self.request)))
+            if self.virtualTarget:
+                data.extend(self.virtualTarget.breadcrumbs())
         return data
 
     def recordAccess(self, viewName=''):
