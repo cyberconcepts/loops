@@ -13,7 +13,7 @@
 /* general */
 
 h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.4em;
 }
 
 a[href]:hover {
@@ -474,7 +474,7 @@ div.comment {
 
 .blog h1.headline {
     clear: both;
-    margin-top: 0.7em;
+    margin-top: 0.6em;
     margin-bottom: 0.2em;
 }
 
