@@ -11,7 +11,8 @@
     </tr>
     <tr tal:repeat="row view/results">
         <tal:column repeat="col view/displayedColumns">
-            <metal:column use-macro="python: view.getColumnRenderer(col.renderer)" />
+            <p tal:content="col/renderer" />
+            <xmetal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
         </tal:column>
     </tr>
   </table>

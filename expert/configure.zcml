@@ -22,9 +22,9 @@
            provides="loops.expert.report.IReport" trusted="True" />
   <class class="loops.expert.report.Report">
     <require permission="zope.View"
-             interface="loops.expert.report.IReportSchema" />
+             interface="loops.expert.report.IReport" />
     <require permission="zope.ManageContent"
-             set_schema="loops.expert.report.IReportSchema" />
+             set_schema="loops.expert.report.IReport" />
   </class>
 
   <adapter factory="loops.expert.report.DefaultConceptReportInstance"

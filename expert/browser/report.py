@@ -85,7 +85,7 @@ class ResultsView(NodeView):
     def reportInstance(self):
         instance = component.getAdapter(self.report, IReportInstance,
                                         name=self.report.reportType)
-        instance.request = self.request
+        instance.view = self
         return instance
 
     #@Lazy

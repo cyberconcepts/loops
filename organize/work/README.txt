@@ -183,11 +183,46 @@ So we use the PersonWorkItems view, assigning john to the query.
 Work Reports
 ============
 
+First we have to make sure that there is a report concept type available.
+In addition we need a predicate that connects one or more tasks with a report.
+
+  >>> from loops.expert.report import IReport, Report
+  >>> component.provideAdapter(Report)
+  >>> tReport = addAndConfigureObject(concepts, Concept, 'report',
+  ...                   title=u'Report', conceptType=concepts.getTypeConcept(),
+  ...                   typeInterface=IReport)
+  >>> hasReport = addAndConfigureObject(concepts, Concept, 'hasreport',
+  ...                   title=u'has Report', conceptType=concepts.getPredicateType())
+
+Now we can create a report and register it as the report for the task
+used above.
+
+  >>> workStatement = addAndConfigureObject(concepts, Concept, 'work_statement',
+  ...                   title=u'Work Statement', conceptType=tReport,
+  ...                   reportType='work_report')
+  >>> workStatement.assignChild(task01, hasReport)
+
+The executable report is a report instance that is an adapter to the
+(adapted) report instance.
+
   >>> from loops.organize.work.report import WorkReportInstance
   >>> from loops.expert.report import IReportInstance
   >>> component.provideAdapter(WorkReportInstance,
   ...                          provides=IReportInstance,
   ...                          name='work_report')
+
+The user interface to the report is a report view, the results are presented
+in a results view.
+
+  >>> from loops.view import Node
+  >>> reportNode = addAndConfigureObject(home, Node, 'report',
+  ...                   title=u'Report', target=workStatement)
+  >>> from loops.expert.browser.report import ReportView, ResultsView
+  >>> resultsView = ResultsView(reportNode, TestRequest())
+
+  >>> results = resultsView.results()
+  >>> len(results.data)
+  2
 
 
 Fin de partie

@@ -28,14 +28,17 @@ from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.composer.report.field import Field
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
+from cybertools.organize.interfaces import IWorkItems
 from cybertools.util.jeep import Jeep
+from loops.common import adapted, baseObject
 from loops.expert.report import ReportInstance
+from loops import util
 
 results_template = ViewPageTemplateFile('results.pt')
 
 
-task = Field('task', u'Task',
-                description=u'The task to which work items belong.',
+tasks = Field('tasks', u'Tasks',
+                description=u'The tasks to which work items belong.',
                 executionSteps=['query', 'output', 'sort'])
 work = Field('work', u'Work',
                 description=u'The short description of the work.',
@@ -65,12 +68,20 @@ class WorkReportInstance(ReportInstance):
     label = u'Work Report'
 
     rowFactory = WorkRow
-    fields = Jeep((day, dayFrom, dayTo, task, work, workDescription))
+    fields = Jeep((day, dayFrom, dayTo, tasks, work, workDescription))
     defaultOutputFields = fields
 
-    @Lazy
+    @property
     def queryCriteria(self):
-        # TODO: take from persistent report where appropriate
+        crit = self.context.queryCriteria
+        if crit is None:
+            f = self.fields['tasks']
+            tasks = baseObject(self.context).getChildren([self.hasReportPredicate])
+            crit = [LeafQueryCriteria(f.name, f.operator, tasks, f)]
+        return CompoundQueryCriteria(crit)
+
+    @property
+    def xx_queryCriteria(self):
         crit = [LeafQueryCriteria(f.name, f.operator, None, f)
                     for f in self.getAllQueryFields()]
         return CompoundQueryCriteria(crit)
@@ -79,8 +90,31 @@ class WorkReportInstance(ReportInstance):
         return results_template.macros[name]
 
     def selectObjects(self, parts):
-        task = parts.get('task')
-        if not task:
-            return []
-        return []
+        result = []
+        tasks = parts.pop('tasks').comparisonValue
+        for t in list(tasks):
+            tasks.extend(self.getAllSubtasks(t))
+        for t in tasks:
+            result.extend(self.selectWorkItems(t, parts))
+        # TODO: remove parts already used for selection from parts list
+        return result
 
+    def selectWorkItems(self, task, parts):
+        wi = self.workItems
+        return wi.query(task=util.getUidForObject(task))
+
+    def getAllSubtasks(self, concept):
+        result = []
+        for c in concept.getChildren():
+            if c.conceptType == self.taskType:
+                result.append(c)
+            result.extend(self.getAllSubtasks(c))
+        return result
+
+    @Lazy
+    def taskType(self):
+        return self.conceptManager['task']
+
+    @Lazy
+    def workItems(self):
+        return IWorkItems(self.recordManager['work'])
