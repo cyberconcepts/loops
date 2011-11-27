@@ -33,39 +33,55 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
+from loops.expert.field import TargetField
 from loops.expert.report import ReportInstance
 from loops import util
 
-results_template = ViewPageTemplateFile('results.pt')
 
+class DateField(Field):
 
-class TargetField(Field):
-
-    renderer = 'target'
+    part = 'date'
+    format = 'short'
+    renderer = 'right'
 
     def getValue(self, row):
         value = self.getRawValue(row)
-        return util.getObjectForUid(value)
-
-    def getDisplayValue(self, row):
-        value = self.getValue(row)
         if value is None:
-            return dict(title=self.getRawValue(row), url=u'')
-        view = row.parent.context.view
-        return dict(title=value.title, url=view.getUrlForTarget(value))
-
-
-class DayField(Field):
-
-    def getValue(self, row):
-        return timeStamp2Date(self.getRawValue(row))
+            return None
+        return timeStamp2Date(value)
 
     def getDisplayValue(self, row):
         value = self.getValue(row)
         if value:
             view = row.parent.context.view
-            return formatDate(value, 'date', 'short', view.languageInfo.language)
+            return formatDate(value, self.part, self.format,
+                              view.languageInfo.language)
         return u''
+
+
+class TimeField(DateField):
+
+    part = 'time'
+
+
+class DurationField(Field):
+
+    renderer = 'right'
+
+    def getValue(self, row):
+        value = self.getRawValue(row)
+        if value and 'totals' in self.executionSteps:
+            data = row.parent.totals.data
+            data[self.name] = data.get(self.name, 0) + value
+        if value:
+            value /= 3600.0
+        return value
+
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        if not value:
+            return u''
+        return u'%02i:%02i' % divmod(value * 60, 60)
 
 
 tasks = Field('tasks', u'Tasks',
@@ -77,13 +93,13 @@ dayFrom = Field('dayFrom', u'Start Day',
 dayTo = Field('dayTo', u'End Day',
                 description=u'The last day until which to select work.',
                 executionSteps=['query'])
-day = DayField('day', u'Day',
+day = DateField('day', u'Day',
                 description=u'The day the work was done.',
                 executionSteps=['sort', 'output'])
-timeStart = Field('start', u'Start Time',
+timeStart = TimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
                 executionSteps=['sort', 'output'])
-timeEnd = Field('end', u'End Time',
+timeEnd = TimeField('end', u'End',
                 description=u'The time the unit of work was finished.',
                 executionSteps=['output'])
 task = TargetField('taskId', u'Task',
@@ -91,19 +107,19 @@ task = TargetField('taskId', u'Task',
                 executionSteps=['output'])
 party = TargetField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
-                executionSteps=['sort', 'output'])
+                executionSteps=['query', 'sort', 'output'])
 title = Field('title', u'Title',
                 description=u'The short description of the work.',
                 executionSteps=['output'])
 description = Field('description', u'Description',
                 description=u'The long description of the work.',
                 executionSteps=['x_output'])
-duration = Field('duration', u'Duration',
+duration = DurationField('duration', u'Duration',
                 description=u'The duration of the work.',
                 executionSteps=['output'])
-effort = Field('effort', u'Effort',
+effort = DurationField('effort', u'Effort',
                 description=u'The effort of the work.',
-                executionSteps=['output', 'sum'])
+                executionSteps=['output', 'totals'])
 state = Field('state', u'State',
                 description=u'The state of the work.',
                 executionSteps=['query', 'output'])
@@ -122,7 +138,19 @@ class WorkRow(BaseRow):
     def getDay(self, attr):
         return self.context.timeStamp
 
-    attributeHandlers = dict(day=getDay)
+    def getDuration(self, attr):
+        value = self.context.data.get('duration')
+        if value is None:
+            value = self.getRawValue('end') - self.getRawValue('start')
+        return value
+
+    def getEffort(self, attr):
+        value = self.context.data.get('effort')
+        if value is None:
+            value = self.getDuration(attr)
+        return value
+
+    attributeHandlers = dict(day=getDay, duration=getDuration, effort=getEffort)
 
 
 class WorkReportInstance(ReportInstance):
@@ -131,37 +159,46 @@ class WorkReportInstance(ReportInstance):
     label = u'Work Report'
 
     rowFactory = WorkRow
+
     fields = Jeep((dayFrom, dayTo, tasks,
                    day, timeStart, timeEnd, task, party, title, description,
                    duration, effort, state))
+
     defaultOutputFields = fields
+    defaultSortCriteria = (day, timeStart,)
 
     @property
     def queryCriteria(self):
+        form = self.view.request.form
         crit = self.context.queryCriteria
         if crit is None:
             f = self.fields['tasks']
             tasks = baseObject(self.context).getChildren([self.hasReportPredicate])
+            tasks = [util.getUidForObject(task) for task in tasks]
             crit = [LeafQueryCriteria(f.name, f.operator, tasks, f)]
+        for f in self.getAllQueryFields():
+            if f.name in form:
+                crit.append(LeafQueryCriteria(f.name, f.operator, form[f.name], f))
         return CompoundQueryCriteria(crit)
-
-    def getResultsRenderer(self, name, defaultMacros):
-        return results_template.macros[name]
 
     def selectObjects(self, parts):
         result = []
-        tasks = parts.pop('tasks').comparisonValue
+        tasks = [util.getObjectForUid(t) for t in parts.pop('tasks').comparisonValue]
         for t in list(tasks):
             tasks.extend(self.getAllSubtasks(t))
         for t in tasks:
             result.extend(self.selectWorkItems(t, parts))
-        # TODO: remove parts already used for selection from parts list
+        # remove parts already used for selection from parts list:
+        parts.pop('userName', None)
         return result
 
     def selectWorkItems(self, task, parts):
-        wi = self.workItems
         states = ['done', 'done_x', 'finished']
-        return wi.query(task=util.getUidForObject(task), state=states)
+        kw = dict(task=util.getUidForObject(task), state=states)
+        if 'userName' in parts:
+            kw['userName'] = parts['userName'].comparisonValue
+        wi = self.workItems
+        return wi.query(**kw)
 
     def getAllSubtasks(self, concept):
         result = []

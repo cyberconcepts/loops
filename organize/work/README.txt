@@ -220,16 +220,20 @@ in a results view.
   >>> from loops.expert.browser.report import ReportView, ResultsView
   >>> resultsView = ResultsView(reportNode, TestRequest())
 
-  >>> results = resultsView.results().getResult()
-  >>> len(results)
+  >>> results = resultsView.results()#.getResult()
+  >>> len(list(results))
   1
   >>> for row in results:
   ...     for col in resultsView.displayedColumns:
   ...         print col.getDisplayValue(row),
   ...     print
-  08/12/28 1230487200 1230491700
+  08/12/28 19:00 20:15
     {'url': '.../home/report/.36', 'title': u'loops Development'}
-    {'url': '.../home/report/.33', 'title': u'john'}  4500 900 finished
+    {'url': '.../home/report/.33', 'title': u'john'}  01:15 00:15 finished
+
+  >>> results.totals.data
+  {'effort': 900}
+
 
 Fin de partie
 =============
