@@ -19,4 +19,16 @@
 </div>
 
 
+<metal:standard define-macro="standard">
+  <td tal:content="structure python:col.getDisplayValue(row)" />
+</metal:standard>
+
+
+<metal:standard define-macro="target">
+  <td tal:define="value python:col.getDisplayValue(row)">
+    <a tal:attributes="href value/url"
+       tal:content="value/title" /></td>
+</metal:standard>
+
+
 </html>
