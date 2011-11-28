@@ -170,8 +170,8 @@ class WorkReportInstance(ReportInstance):
     @property
     def queryCriteria(self):
         form = self.view.request.form
-        crit = self.context.queryCriteria
-        if crit is None:
+        crit = self.context.queryCriteria or []
+        if not crit and 'tasks' not in form:
             f = self.fields['tasks']
             tasks = baseObject(self.context).getChildren([self.hasReportPredicate])
             tasks = [util.getUidForObject(task) for task in tasks]
@@ -203,14 +203,16 @@ class WorkReportInstance(ReportInstance):
     def getAllSubtasks(self, concept):
         result = []
         for c in concept.getChildren():
-            if c.conceptType == self.taskType:
+            if c.conceptType in self.taskTypes:
                 result.append(c)
             result.extend(self.getAllSubtasks(c))
         return result
 
     @Lazy
-    def taskType(self):
-        return self.conceptManager['task']
+    def taskTypes(self):
+        return (self.conceptManager['task'],
+                self.conceptManager['event'],
+                self.conceptManager['project'])
 
     @Lazy
     def workItems(self):
