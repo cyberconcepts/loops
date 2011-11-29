@@ -15,7 +15,6 @@
 
 
 <div metal:define-macro="results">
-  <h2 i18n:translate="">Work Items</h2>
   <table tal:define="results view/results">
     <tr>
         <th tal:repeat="col view/displayedColumns"
