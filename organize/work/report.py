@@ -155,8 +155,8 @@ class WorkRow(BaseRow):
 
 class WorkReportInstance(ReportInstance):
 
-    type = "deliverables"
-    label = u'Work Report'
+    type = "work_statement"
+    label = u'Work Statement'
 
     rowFactory = WorkRow
 
