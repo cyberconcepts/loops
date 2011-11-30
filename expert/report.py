@@ -94,9 +94,10 @@ class ReportInstance(BaseReport):
         crit = self.queryCriteria
         if crit is None:
             return []
-        for k, v in dynaParams.items():
-            if k in crit.parts.keys():
-                crit.parts[k].value = v
+        if dynaParams is not None:
+            for k, v in dynaParams.items():
+                if k in crit.parts.keys():
+                    crit.parts[k].value = v
         parts = Jeep(crit.parts)
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)

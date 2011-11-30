@@ -24,6 +24,15 @@ from cybertools.composer.report.field import Field
 from loops import util
 
 
+class UrlField(Field):
+
+    renderer = 'target'
+
+    def getDisplayValue(self, row):
+        nv = row.parent.context.view.nodeView
+        return dict(title=self.getValue(row), url=nv.getUrlForTarget(row.context))
+
+
 class TargetField(Field):
 
     renderer = 'target'
