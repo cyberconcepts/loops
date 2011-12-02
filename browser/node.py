@@ -111,6 +111,7 @@ class NodeView(BaseView):
                                     url=absoluteURL(p, self.request)))
             if self.virtualTarget:
                 data.extend(self.virtualTarget.breadcrumbs())
+        return data
 
     def recordAccess(self, viewName=''):
         target = self.virtualTargetObject
