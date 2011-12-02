@@ -1,6 +1,8 @@
 <!-- ZPT macros for loops.compound.microart views -->
+<html i18n:domain="loops">
 
-<div metal:define-macro="microart"
+
+<div metal:define-macro="main"
      tal:define="data item/data"
      class="microart">
   <metal:block use-macro="view/concept_macros/concepttitle_only" />
@@ -9,9 +11,17 @@
        tal:condition="description">
     <span tal:content="structure description">Description</span>
   </div>
-  <div class="text"
-       tal:content="structure item/render">Here comes the text...</div>
-  <metal:resources use-macro="view/concept_macros/conceptchildren" />
-  <metal:resources use-macro="view/concept_macros/conceptresources" />
-  <metal:block use-macro="view/comment_macros/comments" />
+  <div class="text">
+    <div class="span-6 last"
+          tal:content="structure item/story" />
+    <div class="span-2"
+         tal:content="structure item/insight" />
+    <div class="span-2"
+          tal:content="structure item/consequences" />
+    <div class="span-2 last"
+          tal:content="structure item/followUps" /></div><br clear="both" />
+    <metal:block use-macro="view/comment_macros/comments" />
 </div>
+
+
+</html>

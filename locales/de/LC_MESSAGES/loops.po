@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2011-11-19 12:00 CET\n"
+"PO-Revision-Date: 2011-12-02 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -83,6 +83,8 @@ msgstr "Thema bearbeiten..."
 msgid "Modify topic."
 msgstr "Thema ändern"
 
+# blog
+
 msgid "Edit Blog Post..."
 msgstr "Eintrag bearbeiten..."
 
@@ -103,6 +105,34 @@ msgstr "Tagebucheintrag anlegen"
 
 msgid "Export Blog"
 msgstr "Tagebuch exportieren"
+
+# micro article
+
+msgid "Story"
+msgstr "Story"
+
+msgid "The story, i.e. the main text of your micro article. Who did what? What happend?"
+msgstr "Die Geschichte, der Haupttext Ihres MikroArtikels. Wer hat was getan? Was geschah?"
+
+msgid "Insight"
+msgstr "Einsicht"
+
+msgid "What can we learn from the story? What has gone wrong? What was good?"
+msgstr "Was können wir aus der Geschichte lernen? Was ist schiefgegangen? Was war gut?"
+
+msgid "Consequences"
+msgstr "Folgerungen"
+
+msgid "What we will do next time in a similar situation?"
+msgstr "Was werden wir das nächste Mal in einer ähnlichen Situation tun?"
+
+msgid "Follow-up Questions"
+msgstr "Anschlussfragen"
+
+msgid "Questions for helping to solve or avoid similar problems in the future."
+msgstr "Fragen, die einem dabei helfen können, das Problem in der Zukunft zu lösen oder zu vermeiden."
+
+# glossary
 
 msgid "Glossary Item"
 msgstr "Glossareintrag"

@@ -43,25 +43,26 @@ class MicroArt(Compound):
 
     implements(IMicroArt)
 
-    _adapterAttributes = Compound._adapterAttributes + ('text',)
-    _noexportAttributes = ('text',)
-    _textIndexAttributes = ('text',)
+    _contextAttributes = list(IMicroArt)
+    _adapterAttributes = Compound._adapterAttributes + ('story',)
+    _noexportAttributes = ('story',)
+    _textIndexAttributes = ('story', 'insight', 'consequences', 'folloUps')
 
-    defaultTextContentType = 'text/restructured'
+    defaultTextContentType = 'text/html'
     textContentType = defaultTextContentType
 
-    def getText(self):
+    def getStory(self):
         res = self.getParts()
         if len(res) > 0:
             return adapted(res[0]).data
         return u''
-    def setText(self, value):
+    def setStory(self, value):
         res = self.getParts()
         if len(res) > 0:
             res = adapted(res[0])
         else:
             tTextDocument = self.conceptManager['textdocument']
-            name = getName(self.context) + '_text'
+            name = getName(self.context) + '_story'
             res = addAndConfigureObject(self.resourceManager, Resource, name,
                     title=self.title, contentType=self.defaultTextContentType,
                     resourceType=tTextDocument)
@@ -70,4 +71,4 @@ class MicroArt(Compound):
             res = adapted(res)
         res.data = value
         notify(ObjectModifiedEvent(res.context))
-    text = property(getText, setText)
+    story = property(getStory, setStory)

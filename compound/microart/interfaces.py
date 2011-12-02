@@ -27,6 +27,11 @@ from loops.compound.interfaces import ICompound
 from loops.util import _
 
 
+class HtmlField(schema.Text):
+
+    __typeInfo__ = ('html',)
+
+
 class IMicroArt(ICompound):
     """ A short article with a few elements, for collecting
         relevant information in a knowledge management environment.
@@ -34,6 +39,7 @@ class IMicroArt(ICompound):
 
                         # title = Ueberschrift, Thema
 
+    #story = HtmlField(        # Geschichte
     story = schema.Text(        # Geschichte
                 title=_(u'Story'),
                 description=_(u'The story, i.e. the main text of your '
@@ -54,7 +60,7 @@ class IMicroArt(ICompound):
 
     followUps = schema.Text(    #Anschlussfragen
                 title=_(u'Follow-up Questions'),
-                description=_(u'Question for helping to solve or avoid '
+                description=_(u'Questions for helping to solve or avoid '
                         u'similar problems in the future.'),
                 required=False)
 

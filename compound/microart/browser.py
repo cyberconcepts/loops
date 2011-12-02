@@ -26,7 +26,7 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
-from loops.browser.concept import ConceptView, ConceptRelationView
+from loops.browser.concept import ConceptView
 from loops.common import adapted
 from loops import util
 from loops.util import _
@@ -38,15 +38,30 @@ view_macros = ViewPageTemplateFile('view_macros.pt')
 class MicroArtView(ConceptView):
 
     @Lazy
+    def contentType(self):
+        return 'text/restructured'
+
+    @Lazy
+    def macros(self):
+        return self.controller.getTemplateMacros('microart.view', view_macros)
+
+    @Lazy
     def macro(self):
-        return view_macros.macros['microart']
+        return self.macros['main']
 
-    def render(self):
-        return self.renderText(self.data['text'], self.adapted.textContentType)
+    @Lazy
+    def story(self):
+        return self.renderText(self.adapted.story, self.contentType)
 
-    def resources(self):
-        stdPred = self.loopsRoot.getConceptManager().getDefaultPredicate()
-        rels = self.context.getResourceRelations([stdPred])
-        for r in rels:
-            yield self.childViewFactory(r, self.request, contextIsSecond=True)
+    @Lazy
+    def insight(self):
+        return self.renderText(self.adapted.insight, self.contentType)
+
+    @Lazy
+    def consequences(self):
+        return self.renderText(self.adapted.consequences, self.contentType)
+
+    @Lazy
+    def followUps(self):
+        return self.renderText(self.adapted.followUps, self.contentType)
 

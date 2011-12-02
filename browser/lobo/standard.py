@@ -139,7 +139,7 @@ class Layout(Base, ConceptView):
             parts = (self.options('parts') or
                      self.typeOptions('parts') or
                      ['h1', 'g3'])
-        ti = adapted(self.context.conceptType).typeInterface
+        #ti = adapted(self.context.conceptType).typeInterface
         for p in parts:
             viewName = 'lobo_' + p
             view = component.queryMultiAdapter((self.context, self.request),
