@@ -91,6 +91,10 @@ class NodeView(BaseView):
         self.recordAccess()
         return result
 
+    @Lazy
+    def title(self):
+        return self.context.title or getName(self.context)
+
     def breadcrumbs(self):
         if not self.globalOptions('showBreadcrumbs'):
             return []
@@ -100,7 +104,13 @@ class NodeView(BaseView):
         if menuItem != menu.context:
             data.append(dict(label=menuItem.title,
                              url=absoluteURL(menuItem, self.request)))
-        return data
+            for p in getParents(menuItem):
+                if p == menu.context:
+                    break
+                data.insert(1, dict(label=p.title,
+                                    url=absoluteURL(p, self.request)))
+            if self.virtualTarget:
+                data.extend(self.virtualTarget.breadcrumbs())
 
     def recordAccess(self, viewName=''):
         target = self.virtualTargetObject

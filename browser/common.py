@@ -18,8 +18,6 @@
 
 """
 Common base class for loops browser view classes.
-
-$Id$
 """
 
 from cgi import parse_qs, parse_qsl
@@ -145,6 +143,9 @@ class BaseView(GenericView, I18NView):
     def resource_macros(self):
         return self.controller.getTemplateMacros('resource', resource_macros)
         #return resource_macros.macros
+
+    def breadcrumbs(self):
+        return []
 
     @Lazy
     def name(self):

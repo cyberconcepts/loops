@@ -649,6 +649,23 @@ to the bottom, and to the top.
   ['m111', 'm114', 'm112', 'm113']
 
 
+Breadcrumbs
+-----------
+
+  >>> view = NodeView(m112, TestRequest())
+  >>> view.breadcrumbs()
+  []
+
+  >>> loopsRoot.options = ['showBreadcrumbs']
+  >>> m114.nodeType = 'page'
+  >>> m114.target = cc1
+  >>> view = NodeView(m114, TestRequest())
+  >>> view.breadcrumbs()
+  [{'url': 'http://127.0.0.1/loops/views/m1', 'label': u'Menu'},
+   {'url': 'http://127.0.0.1/loops/views/m1/m11', 'label': u'Zope'},
+   {'url': 'http://127.0.0.1/loops/views/m1/m11/m114', 'label': u''}]
+
+
 End-user Forms and Special Views
 ================================
 

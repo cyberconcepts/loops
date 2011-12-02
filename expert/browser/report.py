@@ -73,8 +73,7 @@ class ResultsView(NodeView):
     @Lazy
     def params(self):
         params = dict(self.request.form)
-        if 'report_execute' in params:
-            del params['report_execute']
+        params.pop('report_execute', None)
         return params
 
     @Lazy
@@ -85,7 +84,7 @@ class ResultsView(NodeView):
     def reportInstance(self):
         instance = component.getAdapter(self.report, IReportInstance,
                                         name=self.report.reportType)
-        instance.request = self.request
+        instance.view = self
         return instance
 
     #@Lazy
@@ -105,3 +104,5 @@ class ResultsView(NodeView):
     def displayedColumns(self):
         return self.reportInstance.getActiveOutputFields()
 
+    def getColumnRenderer(self, name):
+        return self.result_macros[name]

@@ -29,6 +29,7 @@ from zope.security.proxy import removeSecurityProxy
 from cybertools.composer.report.base import Report as BaseReport
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.composer.report.interfaces import IReport as IBaseReport
+from cybertools.composer.report.interfaces import IReportParams
 from cybertools.composer.report.result import ResultSet, Row
 from cybertools.util.jeep import Jeep
 from loops.common import AdapterBase
@@ -40,7 +41,7 @@ from loops.util import _
 
 # interfaces
 
-class IReport(ILoopsAdapter):
+class IReport(ILoopsAdapter, IReportParams):
     """ The report adapter for the persistent object (concept) that stores
         the report in the concept map.
     """
@@ -53,18 +54,10 @@ class IReport(ILoopsAdapter):
         required=True)
 
 
-class IReportSchema(IBaseReport, IReport):
-    """ All report attributes - use for security declarations.
-    """
-
-
-class IReportInstance(Interface):
+class IReportInstance(IBaseReport):
     """ The report-type-specific object (an adapter on the report) that
         does the real report execution stuff.
     """
-
-    label = Attribute('The user-friendly label of the report type specified '
-                'by this instance class.')
 
 
 # report concept adapter and instances
@@ -85,19 +78,26 @@ class ReportInstance(BaseReport):
 
     rowFactory = Row
 
+    view = None     # set upon creation
+
     def __init__(self, context):
         self.context = context
 
     def getResultsRenderer(self, name, macros):
         return macros[name]
 
+    @property
+    def queryCriteria(self):
+        return self.context.queryCriteria
+
     def getResults(self, dynaParams=None):
         crit = self.queryCriteria
         if crit is None:
             return []
-        for k, v in dynaParams.items():
-            if k in crit.parts.keys():
-                crit.parts[k].value = v
+        if dynaParams is not None:
+            for k, v in dynaParams.items():
+                if k in crit.parts.keys():
+                    crit.parts[k].value = v
         parts = Jeep(crit.parts)
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
@@ -105,7 +105,20 @@ class ReportInstance(BaseReport):
                          sortCriteria=self.getSortCriteria(), queryCriteria=qc)
 
     def selectObjects(self, parts):
+        # to be implemented by subclass
         return []
+
+    @Lazy
+    def conceptManager(self):
+        return self.view.conceptManager
+
+    @Lazy
+    def recordManager(self):
+        return self.view.loopsRoot.getRecordManager()
+
+    @Lazy
+    def hasReportPredicate(self):
+        return self.conceptManager['hasreport']
 
 
 class ReportTypeSourceList(object):

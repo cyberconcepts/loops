@@ -13,7 +13,7 @@
 /* general */
 
 h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.4em;
 }
 
 a[href]:hover {
@@ -472,23 +472,37 @@ div.comment {
 
 /* blog */
 
+.blog h1.headline {
+    clear: both;
+    padding-top: 1em;
+    margin-bottom: 0.2em;
+    font-size: 150%;
+}
+
 .blog .description {
     font-size: 90%;
     color: #666666;
 }
 
+.blog .text {
+    font-size: 90%;
+    margin-top: 0.5em;
+}
+
+.blog img {
+    padding-top: 0.2em;
+}
+
 .blogpost .description {
-    font-weight: bold;
     font-size: 90%;
     color: #666666;
-    padding-top: 0.4em;
+    margin-top: 1em;
 }
 
 .blog .info, .blogpost .info {
     font-style: italic;
     font-size: 90%;
     color: #666666;
-    padding-top: 0.4em;
 }
 
 /* calendar, work items */

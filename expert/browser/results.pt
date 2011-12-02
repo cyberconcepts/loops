@@ -15,8 +15,44 @@
 
 
 <div metal:define-macro="results">
-  Default Results Listing
+  <table tal:define="results view/results">
+    <tr>
+        <th tal:repeat="col view/displayedColumns"
+            tal:content="col/title"
+            i18n:translate="" />
+    </tr>
+    <tr tal:repeat="row results">
+        <tal:column repeat="col view/displayedColumns">
+            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+        </tal:column>
+    </tr>
+    <tr tal:define="row nocall:results/totals"
+        tal:condition="nocall:row">
+        <tal:column repeat="col view/displayedColumns">
+            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+        </tal:column>
+    </tr>
+  </table>
 </div>
+
+
+<metal:standard define-macro="standard">
+  <td tal:content="structure python:col.getDisplayValue(row)" />
+</metal:standard>
+
+
+<metal:right define-macro="right">
+  <td style="text-align: right"
+      tal:content="python:col.getDisplayValue(row)" />
+</metal:right>
+
+
+<metal:target define-macro="target">
+  <td tal:define="value python:col.getDisplayValue(row)">
+    <a tal:omit-tag="not:value/url"
+       tal:attributes="href value/url"
+       tal:content="value/title" /></td>
+</metal:target>
 
 
 </html>

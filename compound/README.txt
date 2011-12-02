@@ -321,10 +321,32 @@ Micro Articles
 
   >>> from loops.compound.microart.base import MicroArt
   >>> from loops.compound.microart.interfaces import IMicroArt
-  >>> component.provideAdapter(BlogPost, provides=IMicroArt)
+  >>> component.provideAdapter(MicroArt, provides=IMicroArt)
 
   >>> tMicroArt = addAndConfigureObject(concepts, Concept, 'microart',
-  ...                                   title=u'MicroArt', conceptType=tType)
+  ...                                   title=u'MicroArt', conceptType=tType,
+  ...                                   typeInterface=IMicroArt)
+
+  >>> ma01 = addAndConfigureObject(concepts, Concept, 'ma01',
+  ...               conceptType=tMicroArt,
+  ...               title=u'Organizational Knowledge',
+  ...               story=u'Systemic KM talks about organizational knowledge.',
+  ...               insight=u'Organizational knowledge is not visible.',
+  ...               consequences=u'Use examples. Look for strucure and rules. '
+  ...                       u'Knowledge shows itself in actions.',
+  ...               followUps=u'What about collective intelligence? '
+  ...                       u'How does an organization express itself?')
+
+  >>> ma01._insight
+  u'Organizational knowledge is not visible.'
+  >>> list(resources)
+  [..., u'ma01_story']
+
+  >>> adMa01 = adapted(ma01)
+  >>> adMa01.insight
+  u'Organizational knowledge is not visible.'
+  >>> adMa01.story
+  u'Systemic KM talks about organizational knowledge.'
 
 
 Fin de partie
