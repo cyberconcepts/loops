@@ -90,10 +90,12 @@ class ConceptElement(Element):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
                          if k not in self.posArgs)
-        # use IInstance adapter (name='editor') for unmarshalling values
-        #self.object = loader.addConcept(self['name'], self['title'], type, **kw)
         self.object = loader.addConcept(self['name'], self['title'], type)
         formState = self.getInstance().applyTemplate(data=kw, ignoreValidation=True)
+        # simple hack for resolving interface definition:
+        pi = self.get('predicateInterface')
+        if pi is not None:
+            adapted(self.object).predicateInterface = resolve(pi)
 
     def getInstance(self, omit=['title']):
         adObject = adapted(self.object)
@@ -126,6 +128,9 @@ class TypeElement(ConceptElement):
                             loader.typeConcept, **kw)
         instance = self.getInstance(omit=['title', 'typeInterface'])
         formState = instance.applyTemplate(data=kw, ignoreValidation=True)
+        if ti:
+            # overwrite type interface, might have been ignored in addConcept
+            adapted(self.object).typeInterface = kw['typeInterface']
 
 
 class ChildElement(Element):

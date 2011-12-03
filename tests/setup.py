@@ -14,6 +14,8 @@ from zope.app.catalog.text import TextIndex
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.app.renderer.rest import IReStructuredTextSource,\
+                ReStructuredTextToHTMLRenderer, ReStructuredTextSourceFactory
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IAuthentication
 from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
@@ -122,8 +124,13 @@ class TestSite(object):
         component.provideUtility(principalRegistry, IAuthentication)
         component.provideAdapter(session.ClientId)
         component.provideAdapter(session.Session)
-        component.provideUtility(session.RAMSessionDataContainer(), ISessionDataContainer)
+        component.provideUtility(session.RAMSessionDataContainer(),
+                                 ISessionDataContainer)
         component.provideUtility(ClientIdManager())
+        component.provideUtility(ReStructuredTextSourceFactory,
+                                 name='zope.source.rest')
+        component.provideAdapter(ReStructuredTextToHTMLRenderer,
+                                 (IReStructuredTextSource, IBrowserRequest), Interface)
 
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)

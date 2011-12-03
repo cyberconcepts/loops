@@ -21,6 +21,7 @@ Field definitions for reports.
 """
 
 from cybertools.composer.report.field import Field
+from loops.common import baseObject
 from loops import util
 
 
@@ -39,7 +40,8 @@ class UrlField(Field):
 
     def getDisplayValue(self, row):
         nv = row.parent.context.view.nodeView
-        return dict(title=self.getValue(row), url=nv.getUrlForTarget(row.context))
+        return dict(title=self.getValue(row),
+                    url=nv.getUrlForTarget(baseObject(row.context)))
 
 
 class TargetField(Field):
