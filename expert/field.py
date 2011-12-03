@@ -24,6 +24,15 @@ from cybertools.composer.report.field import Field
 from loops import util
 
 
+class TextField(Field):
+
+    format = 'text/restructured'
+
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        return row.parent.context.view.renderText(value, self.format)
+
+
 class UrlField(Field):
 
     renderer = 'target'
