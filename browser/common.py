@@ -416,8 +416,8 @@ class BaseView(GenericView, I18NView):
             if contentType == u'text/html':
                 return text
             return u'<pre>%s</pre>' % util.html_quote(text)
-        source = component.createObject(typeKey, text)
-        view = component.getMultiAdapter((removeAllProxies(source), self.request))
+        source = removeAllProxies(component.createObject(typeKey, text))
+        view = component.getMultiAdapter((source, self.request))
         return view.render()
 
     def renderDescription(self, text=None):

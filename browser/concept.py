@@ -234,6 +234,19 @@ class ConceptView(BaseView):
     def description(self):
         return self.adapted.description
 
+    def breadcrumbs(self):
+        data = []
+        if self.breadcrumbsParent is not None:
+            data.extend(self.breadcrumbsParent.breadcrumbs())
+        if self.context != self.nodeView.targetObject:
+            data.append(dict(label=self.title,
+                             url=self.nodeView.getUrlForTarget(self.context)))
+        return data
+
+    @Lazy
+    def breadcrumbsParent(self):
+        return None
+
     def getData(self, omit=('title', 'description')):
         data = self.instance.applyTemplate()
         for k in omit:
