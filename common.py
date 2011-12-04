@@ -332,10 +332,6 @@ class RelationSet(object):
     def __init__(self, context, predicateName, interface=None, noSecurityCheck=False):
         self.adapted = context
         self.context = baseObject(context)
-        #if isinstance(context, AdapterBase):
-        #    self.context = context.context
-        #else:
-        #    self.context = context
         self.predicateName = predicateName
         self.interface = interface
         self.noSecurityCheck = noSecurityCheck
@@ -350,23 +346,18 @@ class RelationSet(object):
 
     @Lazy
     def predicate(self):
-        #return self.conceptManager[self.predicateName]
         return self.conceptManager.get(self.predicateName)
 
 
 class ParentRelationSet(RelationSet):
 
     def add(self, related, order=0, relevance=1.0):
-        #if isinstance(related, AdapterBase):
-        #    related = related.context
         related = baseObject(related)
         self.context.deassignParent(related, [self.predicate],  # avoid duplicates
                                     noSecurityCheck=self.noSecurityCheck)
         self.context.assignParent(related, self.predicate, order, relevance)
 
     def remove(self, related):
-        #if isinstance(related, AdapterBase):
-        #    related = related.context
         self.context.deassignParent(baseObject(related), [self.predicate])
 
     def __iter__(self):
@@ -396,14 +387,12 @@ class ParentRelationSet(RelationSet):
 class ChildRelationSet(RelationSet):
 
     def add(self, related, order=0, relevance=1.0):
-        if isinstance(related, AdapterBase):
-            related = related.context
+        related = baseObject(related)
         self.context.deassignChild(related, [self.predicate])   # avoid duplicates
         self.context.assignChild(related, self.predicate, order, relevance)
 
     def remove(self, related):
-        if isinstance(related, AdapterBase):
-            related = related.context
+        related = baseObject(related.context)
         self.context.deassignChild(related, [self.predicate])
 
     def __iter__(self):
@@ -411,6 +400,16 @@ class ChildRelationSet(RelationSet):
             return
         for c in self.context.getChildren([self.predicate]):
             yield adapted(c, langInfo=self.langInfo)
+
+    def getRelations(self, check=None, noSecurityCheck=None):
+        if self.adapted.__is_dummy__:
+            return
+        if noSecurityCheck is None:
+            noSecurityCheck = self.noSecurityCheck
+        for r in self.context.getChildRelations([self.predicate],
+                                                 noSecurityCheck=noSecurityCheck):
+            if check is None or check(r):
+                yield r
 
 
 # property descriptors
@@ -480,12 +479,14 @@ class ParentRelation(object):
         return None
 
     def __set__(self, inst, value):
-        s = ParentRelationSet(inst, self.predicateName)
-        for current in s:
+        rs = ParentRelationSet(inst, self.predicateName)
+        rsList = list(rs)
+        for current in rsList:
             if current != value:
-                s.remove(current)
+                rs.remove(current)
         if value is not None:
-            s.add(value)    # how to supply additional parameters?
+            if value not in rsList:
+                rs.add(value)    # how to supply additional parameters?
 
 
 # records/tracks
