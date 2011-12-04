@@ -176,6 +176,10 @@ table.records th, table.records td {
     border: 1px solid black;
 }
 
+table.report td {
+    vertical-align: top;
+}
+
 dl.docutils dt {
     font-weight: bold;
     margin-top: 0.3em;

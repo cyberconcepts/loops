@@ -659,7 +659,9 @@ Breadcrumbs
   >>> loopsRoot.options = ['showBreadcrumbs']
   >>> m114.nodeType = 'page'
   >>> m114.target = cc1
-  >>> view = NodeView(m114, TestRequest())
+  >>> request = TestRequest()
+  >>> view = NodeView(m114, request)
+  >>> request.annotations.setdefault('loops.view', {})['nodeView'] = view
   >>> view.breadcrumbs()
   [{'url': 'http://127.0.0.1/loops/views/m1', 'label': u'Menu'},
    {'url': 'http://127.0.0.1/loops/views/m1/m11', 'label': u'Zope'},

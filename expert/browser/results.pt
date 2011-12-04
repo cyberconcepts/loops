@@ -15,7 +15,8 @@
 
 
 <div metal:define-macro="results">
-  <table tal:define="results view/results">
+  <table class="report"
+         tal:define="results view/results">
     <tr>
         <th tal:repeat="col view/displayedColumns"
             tal:content="col/title"
