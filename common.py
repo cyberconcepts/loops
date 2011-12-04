@@ -18,8 +18,6 @@
 
 """
 Common stuff.
-
-$Id$
 """
 
 from zope import component
@@ -35,9 +33,11 @@ from zope.security.proxy import isinstance
 from zope.traversing.api import getName
 
 from cybertools.storage.interfaces import IStorageInfo
+from cybertools.tracking.interfaces import ITrackingStorage
 from cybertools.typology.interfaces import IType
 from loops.interfaces import ILoopsObject, ILoopsContained
 from loops.interfaces import IConcept, IResource, IResourceAdapter
+from loops.interfaces import ITracks
 from loops import util
 
 
@@ -486,6 +486,42 @@ class ParentRelation(object):
                 s.remove(current)
         if value is not None:
             s.add(value)    # how to supply additional parameters?
+
+
+# records/tracks
+
+class Tracks(object):
+    """ A tracking storage adapter managing tracks/records.
+    """
+
+    implements(ITracks)
+    adapts(ITrackingStorage)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __getitem__(self, key):
+        return self.context[key]
+
+    def __iter__(self):
+        return iter(self.context.values())
+
+    def query(self, **criteria):
+        if 'task' in criteria:
+            criteria['taskId'] = criteria.pop('task')
+        if 'party' in criteria:
+            criteria['userName'] = criteria.pop('party')
+        if 'run' in criteria:
+            criteria['runId'] = criteria.pop('run')
+        return self.context.query(**criteria)
+
+    def add(self, task, userName, run=0, **kw):
+        if not run:
+            run = self.context.startRun()
+        trackId = self.context.saveUserTrack(task, run, userName, {})
+        track = self[trackId]
+        track.setData(**kw)
+        return track
 
 
 # caching (TBD)

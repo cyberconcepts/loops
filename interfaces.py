@@ -558,10 +558,35 @@ class INodeContained(Interface):
     containers(INode, IViewManager)
 
 
-# record manager interfaces
+# record manager and records/tracks interfaces
 
 class IRecordManager(ILoopsObject):
     contains(ITrackingStorage)
+
+
+class ITracks(Interface):
+    """ A manager/container of tracks/records.
+
+        Usually implemented as an ITrackingStorage adapter.
+    """
+
+    def __getitem__(key):
+        """ Return the work item identified by the key given.
+        """
+
+    def __iter__():
+        """ Return an iterator of all work items.
+        """
+
+    def query(**criteria):
+        """ Search for tracks. Possible criteria are: task, party, run,
+            timeFrom, timeTo.
+        """
+
+    def add(task, party, run=0, **kw):
+        """ Create and register a work item; return it. Additional properties
+            may be specified via keyword arguments.
+        """
 
 
 # the loops top-level container
