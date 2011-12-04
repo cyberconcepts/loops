@@ -332,10 +332,6 @@ class RelationSet(object):
     def __init__(self, context, predicateName, interface=None, noSecurityCheck=False):
         self.adapted = context
         self.context = baseObject(context)
-        #if isinstance(context, AdapterBase):
-        #    self.context = context.context
-        #else:
-        #    self.context = context
         self.predicateName = predicateName
         self.interface = interface
         self.noSecurityCheck = noSecurityCheck
@@ -396,8 +392,7 @@ class ChildRelationSet(RelationSet):
         self.context.assignChild(related, self.predicate, order, relevance)
 
     def remove(self, related):
-        if isinstance(related, AdapterBase):
-            related = related.context
+        related = baseObject(related.context)
         self.context.deassignChild(related, [self.predicate])
 
     def __iter__(self):
@@ -492,42 +487,6 @@ class ParentRelation(object):
         if value is not None:
             if value not in rsList:
                 rs.add(value)    # how to supply additional parameters?
-
-
-# records/tracks
-
-class Tracks(object):
-    """ A tracking storage adapter managing tracks/records.
-    """
-
-    implements(ITracks)
-    adapts(ITrackingStorage)
-
-    def __init__(self, context):
-        self.context = context
-
-    def __getitem__(self, key):
-        return self.context[key]
-
-    def __iter__(self):
-        return iter(self.context.values())
-
-    def query(self, **criteria):
-        if 'task' in criteria:
-            criteria['taskId'] = criteria.pop('task')
-        if 'party' in criteria:
-            criteria['userName'] = criteria.pop('party')
-        if 'run' in criteria:
-            criteria['runId'] = criteria.pop('run')
-        return self.context.query(**criteria)
-
-    def add(self, task, userName, run=0, **kw):
-        if not run:
-            run = self.context.startRun()
-        trackId = self.context.saveUserTrack(task, run, userName, {})
-        track = self[trackId]
-        track.setData(**kw)
-        return track
 
 
 # records/tracks
