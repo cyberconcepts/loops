@@ -530,6 +530,42 @@ class Tracks(object):
         return track
 
 
+# records/tracks
+
+class Tracks(object):
+    """ A tracking storage adapter managing tracks/records.
+    """
+
+    implements(ITracks)
+    adapts(ITrackingStorage)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __getitem__(self, key):
+        return self.context[key]
+
+    def __iter__(self):
+        return iter(self.context.values())
+
+    def query(self, **criteria):
+        if 'task' in criteria:
+            criteria['taskId'] = criteria.pop('task')
+        if 'party' in criteria:
+            criteria['userName'] = criteria.pop('party')
+        if 'run' in criteria:
+            criteria['runId'] = criteria.pop('run')
+        return self.context.query(**criteria)
+
+    def add(self, task, userName, run=0, **kw):
+        if not run:
+            run = self.context.startRun()
+        trackId = self.context.saveUserTrack(task, run, userName, {})
+        track = self[trackId]
+        track.setData(**kw)
+        return track
+
+
 # caching (TBD)
 
 def cached(obj):
