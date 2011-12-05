@@ -292,8 +292,7 @@ class NodeView(BaseView):
     def targetUrl(self):
         t = self.targetObjectView
         if t is not None:
-            #return '%s/.target%s' % (self.url, t.uniqueId)
-            return '%s/.%s' % (self.url, t.uniqueId)
+            return self.makeTargetUrl(self.url, t.uniqueId, t.title)
         return ''
 
     def renderTarget(self):
@@ -465,10 +464,10 @@ class NodeView(BaseView):
 
     @Lazy
     def virtualTargetUrl(self):
-        targetId = self.targetId
-        if targetId is not None:
-            #return '%s/.target%s' % (self.url, targetId)
-            return '%s/.%s' % (self.url, targetId)
+        target = self.virtualTargetObject
+        if target is not None:
+            tv = BaseView(target, self.request)
+            return self.makeTargetUrl(self.url, tv.uniqueId, tv.title)
         else:
             return self.url
 
@@ -494,12 +493,10 @@ class NodeView(BaseView):
         """ Return URL of given target view given as .XXX URL.
         """
         if isinstance(target, BaseView):
-            #return '%s/.target%s' % (self.url, target.uniqueId)
-            return '%s/.%s' % (self.url, target.uniqueId)
+            return self.makeTargetUrl(self.url, target.uniqueId, target.title)
         else:
-            #return ('%s/.target%s' %
-            return ('%s/.%s' %
-                (self.url, util.getUidForObject(target)))
+            return self.makeTargetUrl(self.url, util.getUidForObject(target),
+                                      target.title)
 
     def getActions(self, category='object', target=None):
         actions = []
@@ -900,21 +897,6 @@ class NodeTraverser(ItemTraverser):
             return self.context.getLoopsRoot()
         if name.startswith('.'):
             name = self.cleanUpTraversalStack(request, name)[1:]
-            #traversalStack = request._traversal_stack
-            #while traversalStack and traversalStack[0].startswith('.target'):
-            #    # skip obsolete target references in the url
-            #    name = traversalStack.pop(0)
-            #traversedNames = request._traversed_names
-            #if traversedNames:
-            #    lastTraversed = traversedNames[-1]
-            #    if lastTraversed.startswith('.target') and lastTraversed != name:
-            #        # let <base .../> tag show the current object
-            #        traversedNames[-1] = name
-            #if len(name) > len('.target'):
-            #    uid = int(name[len('.target'):])
-            #    target = util.getObjectForUid(uid)
-            #else:
-            #    target = self.context.target
             target = self.getTarget(name)
             if target is not None:
                 # remember self.context in request

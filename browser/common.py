@@ -58,6 +58,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
+from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
 from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
@@ -150,6 +151,11 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def name(self):
         return getName(self.context)
+
+    def makeTargetUrl(self, baseUrl, targetId, title=None):
+        if self.globalOptions('useInformativeURLs') and title:
+            return '%s/.%s-%s' % (baseUrl, targetId, normalizeForUrl(title))
+        return '%s/.%s' % (baseUrl, targetId)
 
     @Lazy
     def principalId(self):

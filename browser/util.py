@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,9 @@
 
 """
 Utilities.
-
-$Id$
 """
 
+import re
 from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
@@ -65,3 +64,9 @@ def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
     for re, name in character_entities:
         text = text.replace(re, name)
     return text
+
+
+pattern = re.compile(r'[ /\?\+%]')
+
+def normalizeForUrl(text):
+    return pattern.sub('-', text)
