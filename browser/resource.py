@@ -18,8 +18,6 @@
 
 """
 View class for resource objects.
-
-$Id$
 """
 
 import urllib
@@ -134,9 +132,6 @@ class ResourceView(BaseView):
         else:
             return self.template.macros['download']
 
-    #def __init__(self, context, request):
-    #    super(ResourceView, self).__init__(context, request)
-
     def setupController(self):
         cont = self.controller
         if cont is None:
@@ -156,6 +151,20 @@ class ResourceView(BaseView):
                                     mapping=dict(versionId=versionable.versionId)),
                             subMacro=version_macros.macros['portlet_versions'],
                             priority=25, info=self)
+
+    def breadcrumbs(self):
+        data = []
+        if self.breadcrumbsParent is not None:
+            data.extend(self.breadcrumbsParent.breadcrumbs())
+        if self.context != self.nodeView.targetObject:
+            data.append(dict(label=self.title,
+                             url=self.nodeView.getUrlForTarget(self.context)))
+        return data
+
+    @Lazy
+    def breadcrumbsParent(self):
+        for c in self.context.getConcepts([self.defaultPredicate]):
+            return self.nodeView.getViewForTarget(c)
 
     @Lazy
     def view(self):

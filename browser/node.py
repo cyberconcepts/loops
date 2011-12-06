@@ -444,9 +444,7 @@ class NodeView(BaseView):
     def targetRender(self):
         return u'<div>%s</div>' % self.targetView('download.html', 'show')
 
-    @Lazy
-    def virtualTarget(self):
-        obj = self.virtualTargetObject
+    def getViewForTarget(self, obj):
         if obj is not None:
             basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
@@ -455,6 +453,10 @@ class NodeView(BaseView):
             basicView.setupController()
             if hasattr(basicView, 'view'):
                 return basicView.view
+
+    @Lazy
+    def virtualTarget(self):
+        return self.getViewForTarget(self.virtualTargetObject)
 
     @Lazy
     def targetId(self):
