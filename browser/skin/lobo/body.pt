@@ -30,7 +30,7 @@
         <table tal:define="crumbs view/breadcrumbs"
                tal:condition="crumbs">
           <tr>
-            <td style="white-space: nowrap; vertical-align: top"
+            <td style="white-space: nowrap; vertical-align: top; width: 10%"
                 i18n:translate="">You are here:</td>
             <td>
               <span style="white-space: nowrap"
