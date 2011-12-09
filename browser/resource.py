@@ -164,7 +164,7 @@ class ResourceView(BaseView):
     @Lazy
     def breadcrumbsParent(self):
         for c in self.context.getConcepts([self.defaultPredicate]):
-            return self.nodeView.getViewForTarget(c)
+            return self.nodeView.getViewForTarget(c, setup=False)
 
     @Lazy
     def view(self):

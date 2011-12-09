@@ -444,13 +444,13 @@ class NodeView(BaseView):
     def targetRender(self):
         return u'<div>%s</div>' % self.targetView('download.html', 'show')
 
-    def getViewForTarget(self, obj):
+    def getViewForTarget(self, obj, setup=True):
         if obj is not None:
             basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
                 basicView._viewName = self.context.viewName
-            #if self.context.nodeType != 'text':
-            basicView.setupController()
+            if setup:
+                basicView.setupController()
             if hasattr(basicView, 'view'):
                 return basicView.view
 
