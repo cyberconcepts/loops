@@ -22,8 +22,6 @@ Base classes for layout-based views.
 $Id$
 """
 
-import re
-
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope import component
 from zope.cachedescriptors.property import Lazy
@@ -34,6 +32,7 @@ from zope.traversing.browser import absoluteURL
 from cybertools.util import format
 from loops.common import adapted
 from loops.i18n.browser import LanguageInfo
+from loops.browser.util import normalizeForUrl as normalize
 from loops import util
 
 
@@ -167,11 +166,7 @@ class BaseView(object):
 
     def getKeywords(self):
         return self.context.title.split()
-        
+
     def getMetaDescription(self):
         return self.context.title
 
-pattern = re.compile(r'[ /\?\+%]')
-
-def normalize(text):
-    return pattern.sub('-', text)

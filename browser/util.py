@@ -18,10 +18,9 @@
 
 """
 Utilities.
-
-$Id$
 """
 
+import re
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
 from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
@@ -65,3 +64,9 @@ def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
     for re, name in character_entities:
         text = text.replace(re, name)
     return text
+
+
+pattern = re.compile(r'[ /\?\+%]')
+
+def normalizeForUrl(text):
+    return pattern.sub('-', text)
