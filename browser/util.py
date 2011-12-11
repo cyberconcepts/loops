@@ -20,16 +20,15 @@
 Utilities.
 """
 
-import re
-from zope.app import zapi
+import re, urllib
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
 from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
+from zope import component
 from zope.formlib.namedtemplate import NamedTemplateImplementation
 
 
 pageform = NamedTemplateImplementation(ViewPageTemplateFile('pageform.pt'))
-#dataform = NamedTemplateImplementation(ViewPageTemplateFile('dataform.pt'))
 dataform = ViewPageTemplateFile('dataform.pt')
 
 concept_macros = NamedTemplateImplementation(ViewPageTemplateFile('concept_macros.pt'))
@@ -44,7 +43,7 @@ class LoopsMenu(BrowserMenu):
     def getMenuItems(self, object, request):
         """Return menu item entries in a TAL-friendly form."""
         result = sorted([(item.order, item.action.lower(), item)
-                    for name, item in zapi.getAdapters(
+                    for name, item in component.getAdapters(
                             (object, request), self.getMenuItemType())
                     if item.available()])
         return [
@@ -66,7 +65,7 @@ def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
     return text
 
 
-pattern = re.compile(r'[ /\?\+%]')
+pattern = re.compile(r'[ /\?\+\|%]')
 
 def normalizeForUrl(text):
-    return pattern.sub('-', text)
+    return urllib.quote(pattern.sub('-', text).encode('UTF-8'))
