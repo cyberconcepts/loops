@@ -20,7 +20,7 @@
 Utilities.
 """
 
-import re
+import re, urllib
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.publisher.browser.menu import BrowserMenu
 from zope.app.publisher.interfaces.browser import IBrowserSubMenuItem
@@ -29,7 +29,6 @@ from zope.formlib.namedtemplate import NamedTemplateImplementation
 
 
 pageform = NamedTemplateImplementation(ViewPageTemplateFile('pageform.pt'))
-#dataform = NamedTemplateImplementation(ViewPageTemplateFile('dataform.pt'))
 dataform = ViewPageTemplateFile('dataform.pt')
 
 concept_macros = NamedTemplateImplementation(ViewPageTemplateFile('concept_macros.pt'))
@@ -66,7 +65,7 @@ def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
     return text
 
 
-pattern = re.compile(r'[ /\?\+%]')
+pattern = re.compile(r'[ /\?\+\|%]')
 
 def normalizeForUrl(text):
-    return pattern.sub('-', text)
+    return urllib.quote(pattern.sub('-', text).encode('UTF-8'))
