@@ -509,6 +509,14 @@ div.comment {
     color: #666666;
 }
 
+/* microart */
+
+.micropart {
+    background-color: #f7f7f7;
+    padding: 0 5px 0 5px;
+    margin: 5px 0 5px 0;
+}
+
 /* calendar, work items */
 
 .today {

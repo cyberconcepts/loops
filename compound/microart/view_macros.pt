@@ -3,8 +3,7 @@
 
 
 <div metal:define-macro="main"
-     tal:define="data item/data"
-     class="microart">
+     tal:define="data item/data">
   <metal:block use-macro="view/concept_macros/concepttitle_only" />
   <div class="description"
        tal:define="description description|item/renderedDescription"
@@ -12,14 +11,18 @@
     <span tal:content="structure description">Description</span>
   </div>
   <div class="text">
-    <div class="span-6 last"
-          tal:content="structure item/story" />
-    <div class="span-2"
-         tal:content="structure item/insight" />
-    <div class="span-2"
-          tal:content="structure item/consequences" />
-    <div class="span-2 last"
-          tal:content="structure item/followUps" /></div><br clear="both" />
+    <div class="span-6 last micropart">
+      <h4 i18n:translate="">Story</h4>
+      <div tal:content="structure item/story" /></div>
+    <div class="span-6 last micropart">
+      <h4 i18n:translate="">Insight</h4>
+      <div tal:content="structure item/insight" /></div>
+    <div class="span-6 last micropart">
+      <h4 i18n:translate="">Consequences</h4>
+      <div tal:content="structure item/consequences" /></div>
+    <div class="span-6 last micropart">
+      <h4 i18n:translate="">Follow-up Questions</h4>
+      <div tal:content="structure item/followUps" /></div><br clear="both" /></div>
     <metal:block use-macro="view/comment_macros/comments" />
 </div>
 
