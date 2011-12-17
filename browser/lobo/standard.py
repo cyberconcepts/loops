@@ -199,7 +199,7 @@ class Grid3(BasePart):
     macroName = 'grid'
     imageSize = 'small'
     height = 'auto; padding-bottom: 10px'
-    gridPattern = ['span-2', 'span-2', 'span-2 last']
+    gridPattern = ['span-2 clear', 'span-2', 'span-2 last']
 
 
 class List1(BasePart):
@@ -253,7 +253,7 @@ class ImageGrid3(BasePart):
     macroName = 'imagegrid'
     imageSize = 'small'
     height = 'auto; padding-bottom: 10px'
-    gridPattern = ['span-2', 'span-2', 'span-2 last']
+    gridPattern = ['span-2 clear', 'span-2', 'span-2 last']
 
 
 # relation views, used for cells (components) of lists and grids
