@@ -43,7 +43,10 @@
 
 
 <metal:block define-macro="glossaryitem">
-  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <metal:title use-macro="item/conceptMacros/concepttitle_only" />
+  <p tal:define="description item/renderedDescription"
+     tal:condition="description">
+    <tal:text content="structure description" /></p>
   <p tal:define="translations item/adapted/translations|python:[]"
         tal:condition="translations">
     <span i18n:translate="">Translations</span>:
