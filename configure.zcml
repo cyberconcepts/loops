@@ -1,5 +1,3 @@
-<!-- $Id$ -->
-
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:i18n="http://namespaces.zope.org/i18n"
@@ -355,6 +353,8 @@
            name="grid" />
   <adapter factory="cybertools.composer.schema.grid.field.RecordsFieldInstance"
            name="records" />
+  <adapter factory="cybertools.composer.schema.grid.field.ContextBasedKeyTableFieldInstance"
+           name="keytable" />
   <adapter factory="loops.schema.field.RelationSetFieldInstance"
            name="relationset" />
   <adapter factory="loops.schema.field.RelationFieldInstance"
@@ -366,13 +366,9 @@
            for="loops.interfaces.IResource" />
   <adapter factory="loops.schema.factory.FileSchemaFactory" />
   <adapter factory="loops.schema.factory.NoteSchemaFactory" />
+  <adapter factory="loops.table.DataTableSchemaFactory" />
 
   <adapter factory="loops.setup.SetupManager" />
-
-  <!-- obsolete:
-  <adapter factory="loops.external.NodesLoader" />
-  <adapter factory="loops.external.NodesExporter" />
-  <adapter factory="loops.external.NodesImporter" />-->
 
   <!-- obsolete - remove: -->
   <adapter factory="loops.target.DocumentProxy"
@@ -432,10 +428,12 @@
   <!-- utilities -->
 
   <utility
+      provides="cybertools.storage.interfaces.IExternalStorage"
       factory="cybertools.storage.filesystem.instanceVarSubdirectoryStorage"
       name="varsubdir" />
 
   <utility
+      provides="cybertools.storage.interfaces.IExternalStorage"
       factory="cybertools.storage.filesystem.fullPathStorage"
       name="fullpath" />
 

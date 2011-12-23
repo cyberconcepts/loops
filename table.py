@@ -18,16 +18,16 @@
 
 """
 Data (keyword-based) table definition and implementation.
-
-$Id$
 """
 
 from BTrees.OOBTree import OOBTree
-from zope import schema, component
-from zope.interface import Interface, Attribute, implements
+from zope import component, schema
+from zope.component import adapts
+from zope.interface import implements, Interface, Attribute
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.composer.schema.grid.interfaces import Records
+from cybertools.composer.schema.factory import SchemaFactory
+from cybertools.composer.schema.grid.interfaces import KeyTable
 from loops.common import AdapterBase
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
@@ -47,8 +47,6 @@ class IDataTable(IConceptSchema, ILoopsAdapter):
         default=u'',
         required=False)
 
-    # better: specify column names (and possibly labels, types)
-    # in Python code and reference by name here
     columns = schema.List(
         title=_(u'Columns'),
         description=_(u'The names of the columns of the data table. '
@@ -57,9 +55,11 @@ class IDataTable(IConceptSchema, ILoopsAdapter):
         default=['key', 'value'],
         required=True)
 
-    data = Records(title=_(u'Table Data'),
+    data = KeyTable(title=_(u'Table Data'),
         description=_(u'Table Data'),
         required=False)
+
+IDataTable['columns'].hidden = True
 
 
 class DataTable(AdapterBase):
@@ -75,6 +75,8 @@ class DataTable(AdapterBase):
         self.context._columns = value
     columns = property(getColumns, setColumns)
 
+    columnNames = columns
+
     def getData(self):
         data = getattr(self.context, '_data', None)
         if data is None:
@@ -87,3 +89,15 @@ class DataTable(AdapterBase):
 
 
 TypeInterfaceSourceList.typeInterfaces += (IDataTable,)
+
+
+class DataTableSchemaFactory(SchemaFactory):
+
+    adapts(IDataTable)
+
+    def __call__(self, interface, **kw):
+        schema = super(DataTableSchemaFactory, self).__call__(interface, **kw)
+        schema.fields.remove('columns')
+        schema.fields.remove('viewName')
+        return schema
+

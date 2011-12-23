@@ -159,6 +159,10 @@ table.listing th span.descending {
     background-repeat: no-repeat;
 }
 
+table.records {
+    border-collapse: collapse;
+}
+
 table.records input, table.records textarea {
     border: none;
     padding: 0;
@@ -167,13 +171,13 @@ table.records input, table.records textarea {
 }
 
 table.records th {
-    background-color: lightgrey;
+    background-color: #fefefe;
 }
 
 table.records th, table.records td {
     padding: 0;
     margin: 0;
-    border: 1px solid black;
+    border: 1px solid lightgrey;
 }
 
 table.report td {
