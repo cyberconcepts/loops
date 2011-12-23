@@ -290,7 +290,7 @@ class ConceptView(BaseView):
                     r.order = pos
 
     def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True,
-                    useFilter=True):
+                    useFilter=True, predicates=None):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -307,7 +307,8 @@ class ConceptView(BaseView):
             criteria['types'] = [cm.get(name) for name in params['types']]
         standard = cm.getDefaultPredicate()
         rels = (self.childViewFactory(r, self.request, contextIsSecond=True)
-                for r in self.context.getChildRelations(sort=None))
+                for r in self.context.getChildRelations(
+                                            predicates=predicates, sort=None))
         if sort:
             rels = sorted(rels, key=lambda r: (r.order, r.title.lower()))
         from loops.organize.personal.browser.filter import FilterView
@@ -344,9 +345,10 @@ class ConceptView(BaseView):
     # Override in subclass to control what is displayd in listings:
     children = getChildren
 
-    def childrenAlphaGroups(self):
+    def childrenAlphaGroups(self, predicates=None):
         result = Jeep()
-        rels = self.getChildren(topLevelOnly=False, sort=False)
+        rels = self.getChildren(predicates=predicates or [self.defaultPredicate],
+                                topLevelOnly=False, sort=False)
         rels = sorted(rels, key=lambda r: r.title.lower())
         for letter, group in groupby(rels, lambda r: r.title.lower()[0]):
             letter = letter.upper()
