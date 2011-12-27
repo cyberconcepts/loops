@@ -137,7 +137,7 @@ class BaseRelationView(BaseView):
         return self.getData()
 
     def getData(self):
-        return self.instance.applyTemplate()
+        return self.instance.applyTemplate(context=self.context, request=self.request)
 
     @Lazy
     def instance(self):
@@ -248,7 +248,7 @@ class ConceptView(BaseView):
         return None
 
     def getData(self, omit=('title', 'description')):
-        data = self.instance.applyTemplate()
+        data = self.instance.applyTemplate(context=self.context, request=self.request)
         for k in omit:
             if k in data:
                 del data[k]

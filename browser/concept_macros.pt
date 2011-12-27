@@ -50,10 +50,14 @@
       <tal:row repeat="field fields">
         <tr tal:define="fieldName field/name;
                         value nocall:data/?fieldName;
-                        renderer field/displayRenderer"
+                        fieldInstance python:field.getFieldInstance(
+                                context=context, request=request);
+                        rendererName field/displayRenderer;
+                        renderer python:fieldInstance.getRenderer(rendererName) or
+                                        view.concept_macros[rendererName]"
             tal:condition="nocall:value">
           <td><b tal:content="field/title" i18n:translate="" />:</td>
-          <td><span metal:use-macro="view/concept_macros/?renderer" /></td>
+          <td><span metal:use-macro="renderer" /></td>
         </tr>
       </tal:row>
     </table>
