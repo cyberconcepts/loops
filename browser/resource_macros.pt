@@ -114,7 +114,7 @@
 
 
 <metal:actions define-macro="related">
-          <div tal:repeat="concept macro/info/relatedConcepts">
+          <div tal:repeat="concept macro/info/conceptsForPortlet">
             <a tal:attributes="href python: view.getUrlForTarget(concept);
                                title concept/relationInfo">
               <span i18n:translate="" tal:content="concept/title">Concept</span>
