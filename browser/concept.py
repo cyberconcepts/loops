@@ -137,7 +137,7 @@ class BaseRelationView(BaseView):
         return self.getData()
 
     def getData(self):
-        return self.instance.applyTemplate()
+        return self.instance.applyTemplate(context=self.context, request=self.request)
 
     @Lazy
     def instance(self):

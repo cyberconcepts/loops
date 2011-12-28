@@ -21,14 +21,15 @@ Data (keyword-based) table definition and implementation.
 """
 
 from BTrees.OOBTree import OOBTree
+from zope.cachedescriptors.property import Lazy
 from zope import component, schema
 from zope.component import adapts
 from zope.interface import implements, Interface, Attribute
-from zope.cachedescriptors.property import Lazy
+from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.grid.interfaces import KeyTable
-from loops.common import AdapterBase
+from loops.common import AdapterBase, adapted, baseObject
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
 from loops import util
@@ -101,3 +102,30 @@ class DataTableSchemaFactory(SchemaFactory):
         schema.fields.remove('viewName')
         return schema
 
+
+class DataTableSourceBinder(object):
+
+    implements(IContextSourceBinder)
+
+    def __init__(self, tableName):
+        self.tableName = tableName
+
+    def __call__(self, context):
+        context = baseObject(context)
+        dt = context.getLoopsRoot().getConceptManager()[self.tableName]
+        return DataTableSourceList(adapted(dt))
+
+
+class DataTableSourceList(object):
+
+    implements(IIterableSource)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __iter__(self):
+        items = [(k, v[0]) for k, v in self.context.data.items()]
+        return iter(sorted(items, key=lambda x: x[1]))
+
+    def __len__(self):
+        return len(self.context.data)

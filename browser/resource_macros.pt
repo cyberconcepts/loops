@@ -48,9 +48,10 @@
 <metal:block define-macro="image">
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <div metal:use-macro="views/node_macros/object_actions" />
-    <h1 tal:content="item/title">Title</h1><br />
-    <img src="#"
-         tal:attributes="src
+    <h1><a tal:omit-tag="python: level > 1"
+           tal:attributes="href request/URL"
+           tal:content="item/title">Title</a></h1><br />
+    <img tal:attributes="src
                 string:${view/url}/.${view/targetId}/view?version=this" />
     <p><i tal:content="structure item/renderedDescription">Description</i></p>
     <metal:fields use-macro="view/comment_macros/comments" />
@@ -114,7 +115,7 @@
 
 
 <metal:actions define-macro="related">
-          <div tal:repeat="concept macro/info/relatedConcepts">
+          <div tal:repeat="concept macro/info/conceptsForPortlet">
             <a tal:attributes="href python: view.getUrlForTarget(concept);
                                title concept/relationInfo">
               <span i18n:translate="" tal:content="concept/title">Concept</span>

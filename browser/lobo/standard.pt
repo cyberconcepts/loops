@@ -83,7 +83,7 @@
                          style cell/style">
         <metal:image use-macro="item/macros/image" />
         <div class="legend">
-          <b tal:content="cell/title" />
+          <a tal:attributes="href cell/targetUrl"><b tal:content="cell/title" /></a>
           <span tal:condition="cell/img/showInfo|nothing">
             <a tal:define="url string:${cell/img/url}/meta_info.html"
                tal:attributes="href url;

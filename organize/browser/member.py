@@ -138,10 +138,12 @@ class MemberRegistration(NodeView, CreateForm):
             return True
         login = form.get('loginName')
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
+        phoneNumbers = [x.strip()
+                            for x in (form.get('phoneNumbers') or u'').split('\n')]
         result = regMan.register(login, pw,
                                  form.get('lastName'), form.get('firstName'),
                                  email=form.get('email'),
-                                 phoneNumbers=form.get('phoneNumbers'))
+                                 phoneNumbers=[x for x in phoneNumbers if x])
         if isinstance(result, dict):
             fi = formState.fieldInstances[result['fieldName']]
             fi.setError(result['error'], self.formErrors)

@@ -693,6 +693,10 @@
            for="loops.view.NodeTypeSourceList
                 zope.publisher.interfaces.browser.IBrowserRequest" />
 
+  <zope:adapter factory="loops.browser.common.SimpleTerms"
+           for="loops.table.DataTableSourceList
+                zope.publisher.interfaces.browser.IBrowserRequest" />
+
   <zope:view factory="loops.browser.node.NodeTraverser"
         for="loops.interfaces.INode"
         type="zope.publisher.interfaces.http.IHTTPRequest"

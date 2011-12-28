@@ -38,6 +38,7 @@ from zope.traversing.api import getName, getParent
 from zope.traversing.browser import absoluteURL
 
 from cybertools.browser.action import actions
+from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
 from loops.browser.action import DialogAction, TargetAction
@@ -51,6 +52,7 @@ from loops.interfaces import IMediaAsset as legacy_IMediaAsset
 from loops.interfaces import ITypeConcept
 from loops.media.interfaces import IMediaAsset
 from loops.organize.stateful.browser import statefulActions
+from loops.organize.util import getRolesForPrincipal
 from loops.versioning.browser import version_macros
 from loops.versioning.interfaces import IVersionable
 from loops import util
@@ -270,14 +272,37 @@ class ResourceView(BaseView):
 
     # relations
 
-    def concepts(self):
-        for r in self.context.getConceptRelations():
-            yield ConceptRelationView(r, self.request)
+    def isHidden(self, pr):
+        hideRoles = None
+        options = component.queryAdapter(adapted(pr.first), IOptions)
+        if options is not None:
+            hideRoles = options('hide_for', None)
+        if not hideRoles:
+            hideRoles = IOptions(adapted(pr.first.conceptType))('hide_for', None)
+        if hideRoles is not None:
+            principal = self.request.principal
+            if (IUnauthenticatedPrincipal.providedBy(principal) and
+                'zope.Anonymous' in hideRoles):
+                return True
+            roles = getRolesForPrincipal(principal.id, self.context)
+            for r in roles:
+                if r in hideRoles:
+                    return True
+        return False
+
+    #@Lazy
+    def conceptsForPortlet(self):
+        return [p for p in self.relatedConcepts() if not self.isHidden(p.relation)]
 
     def relatedConcepts(self):
         for c in self.concepts():
-            if c.isProtected: continue
+            if c.isProtected:
+                continue
             yield c
+
+    def concepts(self):
+        for r in self.context.getConceptRelations():
+            yield ConceptRelationView(r, self.request)
 
     def clients(self):
         for node in self.context.getClients():
