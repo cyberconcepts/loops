@@ -113,7 +113,7 @@ title = Field('title', u'Title',
                 executionSteps=['output'])
 description = Field('description', u'Description',
                 description=u'The long description of the work.',
-                executionSteps=['x_output'])
+                executionSteps=['output'])
 duration = DurationField('duration', u'Duration',
                 description=u'The duration of the work.',
                 executionSteps=['output'])
@@ -124,6 +124,8 @@ state = Field('state', u'State',
                 description=u'The state of the work.',
                 executionSteps=['query', 'output'])
 
+
+# basic definitions and work report instance
 
 class WorkRow(BaseRow):
 
@@ -161,11 +163,13 @@ class WorkReportInstance(ReportInstance):
     rowFactory = WorkRow
 
     fields = Jeep((dayFrom, dayTo, tasks,
-                   day, timeStart, timeEnd, task, party, title, description,
+                   day, timeStart, timeEnd, task, party, title, #description,
                    duration, effort, state))
 
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
+    states = ('done', 'done_x', 'finished')
+    taskTypeNames = ('task', 'event', 'project')
 
     @property
     def queryCriteria(self):
@@ -183,22 +187,20 @@ class WorkReportInstance(ReportInstance):
 
     def selectObjects(self, parts):
         result = []
-        tasks = [util.getObjectForUid(t) for t in parts.pop('tasks').comparisonValue]
-        for t in list(tasks):
-            tasks.extend(self.getAllSubtasks(t))
-        for t in tasks:
+        for t in self.getTasks(parts):
             result.extend(self.selectWorkItems(t, parts))
         # remove parts already used for selection from parts list:
         parts.pop('userName', None)
         return result
 
-    def selectWorkItems(self, task, parts):
-        states = ['done', 'done_x', 'finished']
-        kw = dict(task=util.getUidForObject(task), state=states)
-        if 'userName' in parts:
-            kw['userName'] = parts['userName'].comparisonValue
-        wi = self.workItems
-        return wi.query(**kw)
+    def getTasks(self, parts):
+        taskIds = parts.pop('tasks').comparisonValue
+        if not isinstance(taskIds, (list, tuple)):
+            taskIds = [taskIds]
+        tasks = [util.getObjectForUid(t) for t in taskIds]
+        for t in list(tasks):
+            tasks.extend(self.getAllSubtasks(t))
+        return tasks
 
     def getAllSubtasks(self, concept):
         result = []
@@ -208,12 +210,42 @@ class WorkReportInstance(ReportInstance):
             result.extend(self.getAllSubtasks(c))
         return result
 
+    def selectWorkItems(self, task, parts):
+        # TODO: take states from parts
+        kw = dict(task=util.getUidForObject(task), state=self.states)
+        if 'userName' in parts:
+            kw['userName'] = parts['userName'].comparisonValue
+        wi = self.workItems
+        return wi.query(**kw)
+
     @Lazy
     def taskTypes(self):
-        return (self.conceptManager['task'],
-                self.conceptManager['event'],
-                self.conceptManager['project'])
+        return [c for c in [self.conceptManager.get(name)
+                                for name in self.taskTypeNames]
+                  if c is not None]
 
     @Lazy
     def workItems(self):
         return IWorkItems(self.recordManager['work'])
+
+
+# meeting minutes
+
+class TaskRow(BaseRow):
+
+    pass
+
+
+class MeetingMinutes(WorkReportInstance):
+
+    type = "meeting_minutes"
+    label = u'Meeting Minutes'
+
+    rowFactory = TaskRow
+
+    fields = Jeep((tasks, title, description))
+    defaultOutputFields = fields
+
+    def selectObjects(self, parts):
+        return self.getTasks(parts)[1:]
+

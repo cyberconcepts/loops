@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -194,6 +192,9 @@ In addition we need a predicate that connects one or more tasks with a report.
   >>> hasReport = addAndConfigureObject(concepts, Concept, 'hasreport',
   ...                   title=u'has Report', conceptType=concepts.getPredicateType())
 
+Work statement report
+---------------------
+
 Now we can create a report and register it as the report for the task
 used above.
 
@@ -233,6 +234,53 @@ in a results view.
 
   >>> results.totals.data
   {'effort': 900}
+
+
+Meeting Minutes
+===============
+
+We can use an event with assigned tasks as the basis for planning a meeting
+and recording information about the tasks.
+
+Let's start with creating an a event and assigning it a task.
+
+  >>> from loops.organize.interfaces import ITask
+  >>> tEvent = addAndConfigureObject(concepts, Concept, 'event',
+  ...                   title=u'Event', conceptType=concepts.getTypeConcept(),
+  ...                   typeInterface=ITask)
+
+  >>> ev01 = addAndConfigureObject(concepts, Concept, 'ev01',
+  ...                   title=u'loops Meeting', conceptType=tEvent)
+  >>> ev01.assignChild(task01)
+
+Now we create the meeting minutes report. We assign the event type as a
+child in order to provide the information for which types of objects the
+report is available.
+
+  >>> from loops.organize.work.report import MeetingMinutes
+  >>> component.provideAdapter(MeetingMinutes, provides=IReportInstance,
+  ...                          name='meeting_minutes')
+
+  >>> meetingMinutes = addAndConfigureObject(concepts, Concept, 'meeting_minutes',
+  ...                   title=u'Meeting Minutes', conceptType=tReport,
+  ...                   reportType='meeting_minutes')
+  >>> meetingMinutes.assignChild(tEvent, hasReport)
+
+We can now access the report using a results view.
+
+  >>> from loops.util import getUidForObject
+  >>> input = dict(tasks=getUidForObject(ev01))
+  >>> resultsView = ResultsView(home, TestRequest(form=input))
+  >>> resultsView.virtualTargetObject = meetingMinutes
+
+  >>> results = resultsView.results()
+  >>> len(list(results))
+  1
+  >>> for row in results:
+  ...     for col in resultsView.displayedColumns:
+  ...         print col.getDisplayValue(row),
+  ...     print
+  loops Development
 
 
 Fin de partie
