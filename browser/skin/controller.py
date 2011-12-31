@@ -38,7 +38,6 @@ class Controller(BaseController):
         target = self.view.virtualTarget
         if target is not None:
             desc = target.dcDescription
-            print '***', desc
             if desc:
                 for line in desc.splitlines():
                     if ':' in line:
