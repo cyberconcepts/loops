@@ -38,10 +38,11 @@ class Controller(BaseController):
         target = self.view.virtualTarget
         if target is not None:
             desc = target.dcDescription
+            print '***', desc
             if desc:
                 for line in desc.splitlines():
                     if ':' in line:
-                        name, value = line.split(':')
+                        name, value = line.split(':', 1)
                         if name in metaTagNames:
                             macros.register('meta', name, metaName=name,
                                             metaContent=value)
