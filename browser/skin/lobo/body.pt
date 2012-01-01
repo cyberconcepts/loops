@@ -66,7 +66,8 @@
     <div id="footer" class="footer clear"
          metal:define-macro="footer">
       <metal:footer define-slot="footer">
-        &copy; Copyright 2011, cyberconcepts IT-Consulting Dr. Helmut Merz
+        &copy; Copyright <span tal:replace="view/currentYear" />,
+        cyberconcepts IT-Consulting Dr. Helmut Merz
         (<a href="#"
           tal:attributes="href string:${view/topMenu/url}/impressum">Impressum</a>)
         <br />
