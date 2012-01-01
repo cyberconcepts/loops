@@ -97,7 +97,7 @@
                       tal:attributes="onChange
                             string:return replaceFieldsNode(
                                     'form.fields', 'form.type',
-                                    '${view/url}/$innerForm')">
+                                    '${view/virtualTargetUrl}/$innerForm')">
                 <option value=".loops/concepts/note"
                         i18n:translate=""
                         tal:repeat="type python:
@@ -114,7 +114,7 @@
               <script type="text/javascript"
                       tal:content="string:replaceFieldsNode(
                                     'form.fields', 'form.type',
-                                    '${view/url}/$innerForm')">
+                                    '${view/virtualTargetUrl}/$innerForm')">
               </script>
         </th></tr></tbody>
 
