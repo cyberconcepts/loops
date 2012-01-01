@@ -1,4 +1,3 @@
-#-*- coding: UTF-8 -*-
 #
 #  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
