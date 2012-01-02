@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.expert.field import TargetField
+from loops.expert.field import TargetField, TextField, UrlField, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
 
@@ -84,9 +84,15 @@ class DurationField(Field):
         return u'%02i:%02i' % divmod(value * 60, 60)
 
 
+# common fields
+
 tasks = Field('tasks', u'Tasks',
-                description=u'The tasks from which work items should be selected.',
+                description=u'The tasks from which sub-tasks and '
+                        u'work items should be selected.',
                 executionSteps=['query'])
+
+# work report fields
+
 dayFrom = Field('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 executionSteps=['query'])
@@ -108,10 +114,10 @@ task = TargetField('taskId', u'Task',
 party = TargetField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
                 executionSteps=['query', 'sort', 'output'])
-title = Field('title', u'Title',
+workTitle = Field('title', u'Title',
                 description=u'The short description of the work.',
                 executionSteps=['output'])
-description = Field('description', u'Description',
+workDescription = Field('description', u'Description',
                 description=u'The long description of the work.',
                 executionSteps=['output'])
 duration = DurationField('duration', u'Duration',
@@ -123,6 +129,18 @@ effort = DurationField('effort', u'Effort',
 state = Field('state', u'State',
                 description=u'The state of the work.',
                 executionSteps=['query', 'output'])
+
+# task/event report fields
+
+taskTitle = UrlField('title', u'Title',
+                description=u'The short description of the task.',
+                executionSteps=['output'])
+taskDescription = TextField('description', u'Description',
+                description=u'The long description of the task.',
+                executionSteps=['output'])
+workItems = SubReportField('workItems', u'Work Items',
+                description=u'A list of work items belonging to the task.',
+                executionSteps=['output'])
 
 
 # basic definitions and work report instance
@@ -163,7 +181,7 @@ class WorkReportInstance(ReportInstance):
     rowFactory = WorkRow
 
     fields = Jeep((dayFrom, dayTo, tasks,
-                   day, timeStart, timeEnd, task, party, title, #description,
+                   day, timeStart, timeEnd, task, party, workTitle, #description,
                    duration, effort, state))
 
     defaultOutputFields = fields
@@ -238,13 +256,20 @@ class TaskRow(BaseRow):
 
 class MeetingMinutes(WorkReportInstance):
 
+    # TODO:
+    # header (event) fields: title, description, from/to,
+    #               location, participants (or put in description?)
+    # result set field for work items
+    # work item fields: title, description, party, deadline, state
+
     type = "meeting_minutes"
     label = u'Meeting Minutes'
 
     rowFactory = TaskRow
 
-    fields = Jeep((tasks, title, description))
+    fields = Jeep((tasks, taskTitle, taskDescription, workItems))
     defaultOutputFields = fields
+    states = ('planned', 'accepted', 'done', 'done_x', 'finished')
 
     def selectObjects(self, parts):
         return self.getTasks(parts)[1:]
