@@ -349,7 +349,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def dcDescription(self):
-        return self.dublincore.description or self.description
+        return self.dublincore.description or u'' #self.description
 
     @Lazy
     def headTitle(self):

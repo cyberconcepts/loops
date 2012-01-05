@@ -1,4 +1,3 @@
-#-*- coding: UTF-8 -*-
 #
 #  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
 #
@@ -41,7 +40,7 @@ class Controller(BaseController):
             if desc:
                 for line in desc.splitlines():
                     if ':' in line:
-                        name, value = line.split(':')
+                        name, value = line.split(':', 1)
                         if name in metaTagNames:
                             macros.register('meta', name, metaName=name,
                                             metaContent=value)

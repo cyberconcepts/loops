@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.expert.field import TargetField
+from loops.expert.field import TargetField, TextField, UrlField, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
 
@@ -84,9 +84,15 @@ class DurationField(Field):
         return u'%02i:%02i' % divmod(value * 60, 60)
 
 
+# common fields
+
 tasks = Field('tasks', u'Tasks',
-                description=u'The tasks from which work items should be selected.',
+                description=u'The tasks from which sub-tasks and '
+                        u'work items should be selected.',
                 executionSteps=['query'])
+
+# work report fields
+
 dayFrom = Field('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 executionSteps=['query'])
@@ -108,12 +114,12 @@ task = TargetField('taskId', u'Task',
 party = TargetField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
                 executionSteps=['query', 'sort', 'output'])
-title = Field('title', u'Title',
+workTitle = Field('title', u'Title',
                 description=u'The short description of the work.',
                 executionSteps=['output'])
-description = Field('description', u'Description',
+workDescription = Field('description', u'Description',
                 description=u'The long description of the work.',
-                executionSteps=['x_output'])
+                executionSteps=['output'])
 duration = DurationField('duration', u'Duration',
                 description=u'The duration of the work.',
                 executionSteps=['output'])
@@ -124,6 +130,20 @@ state = Field('state', u'State',
                 description=u'The state of the work.',
                 executionSteps=['query', 'output'])
 
+# task/event report fields
+
+taskTitle = UrlField('title', u'Title',
+                description=u'The short description of the task.',
+                executionSteps=['output'])
+taskDescription = TextField('description', u'Description',
+                description=u'The long description of the task.',
+                executionSteps=['output'])
+workItems = SubReportField('workItems', u'Work Items',
+                description=u'A list of work items belonging to the task.',
+                executionSteps=['output'])
+
+
+# basic definitions and work report instance
 
 class WorkRow(BaseRow):
 
@@ -161,11 +181,13 @@ class WorkReportInstance(ReportInstance):
     rowFactory = WorkRow
 
     fields = Jeep((dayFrom, dayTo, tasks,
-                   day, timeStart, timeEnd, task, party, title, description,
+                   day, timeStart, timeEnd, task, party, workTitle, #description,
                    duration, effort, state))
 
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
+    states = ('done', 'done_x', 'finished')
+    taskTypeNames = ('task', 'event', 'project')
 
     @property
     def queryCriteria(self):
@@ -183,22 +205,20 @@ class WorkReportInstance(ReportInstance):
 
     def selectObjects(self, parts):
         result = []
-        tasks = [util.getObjectForUid(t) for t in parts.pop('tasks').comparisonValue]
-        for t in list(tasks):
-            tasks.extend(self.getAllSubtasks(t))
-        for t in tasks:
+        for t in self.getTasks(parts):
             result.extend(self.selectWorkItems(t, parts))
         # remove parts already used for selection from parts list:
         parts.pop('userName', None)
         return result
 
-    def selectWorkItems(self, task, parts):
-        states = ['done', 'done_x', 'finished']
-        kw = dict(task=util.getUidForObject(task), state=states)
-        if 'userName' in parts:
-            kw['userName'] = parts['userName'].comparisonValue
-        wi = self.workItems
-        return wi.query(**kw)
+    def getTasks(self, parts):
+        taskIds = parts.pop('tasks').comparisonValue
+        if not isinstance(taskIds, (list, tuple)):
+            taskIds = [taskIds]
+        tasks = [util.getObjectForUid(t) for t in taskIds]
+        for t in list(tasks):
+            tasks.extend(self.getAllSubtasks(t))
+        return tasks
 
     def getAllSubtasks(self, concept):
         result = []
@@ -208,12 +228,49 @@ class WorkReportInstance(ReportInstance):
             result.extend(self.getAllSubtasks(c))
         return result
 
+    def selectWorkItems(self, task, parts):
+        # TODO: take states from parts
+        kw = dict(task=util.getUidForObject(task), state=self.states)
+        if 'userName' in parts:
+            kw['userName'] = parts['userName'].comparisonValue
+        wi = self.workItems
+        return wi.query(**kw)
+
     @Lazy
     def taskTypes(self):
-        return (self.conceptManager['task'],
-                self.conceptManager['event'],
-                self.conceptManager['project'])
+        return [c for c in [self.conceptManager.get(name)
+                                for name in self.taskTypeNames]
+                  if c is not None]
 
     @Lazy
     def workItems(self):
         return IWorkItems(self.recordManager['work'])
+
+
+# meeting minutes
+
+class TaskRow(BaseRow):
+
+    pass
+
+
+class MeetingMinutes(WorkReportInstance):
+
+    # TODO:
+    # header (event) fields: title, description, from/to,
+    #               location, participants (or put in description?)
+    # result set field for work items
+    # work item fields: title, description, party, deadline, state
+
+    type = "meeting_minutes"
+    label = u'Meeting Minutes'
+
+    rowFactory = TaskRow
+
+    fields = Jeep((tasks, taskTitle, taskDescription, workItems))
+    defaultOutputFields = fields
+    states = ('planned', 'accepted', 'done', 'done_x', 'finished')
+
+    def selectObjects(self, parts):
+        return self.getTasks(parts)[1:]
+

@@ -18,18 +18,18 @@
   <table class="report"
          tal:define="results view/results">
     <tr>
-        <th tal:repeat="col view/displayedColumns"
+        <th tal:repeat="col results/displayedColumns"
             tal:content="col/title"
             i18n:translate="" />
     </tr>
     <tr tal:repeat="row results">
-        <tal:column repeat="col view/displayedColumns">
+        <tal:column repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
         </tal:column>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <tal:column repeat="col view/displayedColumns">
+        <tal:column repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
         </tal:column>
     </tr>
@@ -54,6 +54,31 @@
        tal:attributes="href value/url"
        tal:content="value/title" /></td>
 </metal:target>
+
+
+<div metal:define-macro="subreport">
+  <td>
+    <table class="subreport"
+           tal:define="results python:col.getValue(row)">
+      <tr>
+        <th tal:repeat="col results/displayedColumns"
+            tal:content="col/title"
+            i18n:translate="" />
+      </tr>
+      <tr tal:repeat="row results">
+        <tal:column repeat="col results/displayedColumns">
+            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+        </tal:column>
+      </tr>
+      <tr tal:define="row nocall:results/totals"
+        tal:condition="nocall:row">
+        <tal:column repeat="col results/displayedColumns">
+            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+        </tal:column>
+      </tr>
+    </table>
+  </td>
+</div>
 
 
 </html>

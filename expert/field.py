@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@ Field definitions for reports.
 """
 
 from cybertools.composer.report.field import Field
+from cybertools.composer.report.result import ResultSet
 from loops.common import baseObject
+from loops.expert.report import ReportInstance
 from loops import util
 
 
@@ -40,6 +42,8 @@ class UrlField(Field):
 
     def getDisplayValue(self, row):
         nv = row.parent.context.view.nodeView
+        if row.context is None:     # probably a totals row
+            return dict(title=u'', url=u'')
         return dict(title=self.getValue(row),
                     url=nv.getUrlForTarget(baseObject(row.context)))
 
@@ -61,3 +65,25 @@ class TargetField(Field):
         view = row.parent.context.view
         return dict(title=value.title, url=view.getUrlForTarget(value))
 
+
+# sub-report stuff
+
+class SubReport(ReportInstance):
+
+    pass
+
+
+class SubReportField(Field):
+
+    renderer = 'subreport'
+    reportFactory = SubReport
+
+    def getReportInstance(self, row):
+        baseReport = row.parent.context
+        instance = self.reportFactory(baseReport.context)
+        instance.view = baseReport.view
+        return instance
+
+    def getValue(self, row):
+        ri = self.getReportInstance(row)
+        return ResultSet(ri, ri.getResults())
