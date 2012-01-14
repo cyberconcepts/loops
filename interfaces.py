@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 loops interface definitions.
-
-$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -759,6 +757,16 @@ class IRelationAdapter(Interface):
     """ Base interface for adapters to relations that allow the specification
         of special properties of a relation.
     """
+
+
+class IIsSubtype(IRelationAdapter):
+
+    usePredicate = schema.TextLine(
+            title=_(u'Use Predicate'),
+            description=_(u'The name of the predicate that should be used'
+                    u'for relations between concepts of these types.'),
+            default=u'standard',
+            required=False)
 
 
 # probably not useful

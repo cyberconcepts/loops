@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 """
 Basic implementation of the elements used for the intermediate format for export
 and import of loops objects.
-
-$Id$
 """
 
 import os
@@ -38,6 +36,7 @@ from loops.interfaces import IConceptSchema
 from loops.external.interfaces import IElement
 from loops.i18n.common import I18NValue
 from loops.layout.base import LayoutNode
+from loops.predicate import adaptedRelation
 from loops.view import Node
 
 
@@ -138,14 +137,26 @@ class ChildElement(Element):
     elementType = 'child'
     posArgs = ('first', 'second', 'predicate', 'order', 'relevance')
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kw):
         for idx, arg in enumerate(args):
             self[self.posArgs[idx]] = arg
+        for k, v in kw.items():
+            self[k] = v
 
     def execute(self, loader):
         loader.assignChild(self['first'], self['second'], self['predicate'],
                            order = self.get('order') or 0,
                            relevance = self.get('relevance') or 1.0)
+        additionalParams = [(k, v) for k, v in self.items()
+                                   if k not in self.posArgs]
+        if additionalParams:
+            pred = loader.getPredicate(self['predicate'])
+            first = loader.concepts[self['first']]
+            second = loader.concepts[self['second']]
+            relation = first.getChildRelations([pred], child=second)[0]
+            adaptedRel = adaptedRelation(relation)
+            for attr, value in additionalParams:
+                setattr(adaptedRel, attr, value)
 
 
 class ResourceElement(Element):

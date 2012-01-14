@@ -263,6 +263,15 @@
              set_schema="loops.interfaces.IPredicate" />
   </class>
 
+  <adapter factory="loops.predicate.IsSubtype"
+           provides="loops.interfaces.IIsSubtype" trusted="True" />
+  <class class="loops.predicate.IsSubtype">
+    <require permission="zope.View"
+             interface="loops.interfaces.IIsSubtype" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.interfaces.IIsSubtype" />
+  </class>
+
   <!--<adapter factory="loops.predicate.MappingAttributeRelation" trusted="True" />
   <class class="loops.predicate.MappingAttributeRelation">
     <require permission="zope.View"

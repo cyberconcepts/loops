@@ -64,10 +64,12 @@ from loops.config.base import GlobalOptions, LoopsOptions
 from loops.config.base import QueryOptions, PredicateOptions, TypeOptions
 from loops.interfaces import ILoopsObject, IIndexAttributes
 from loops.interfaces import IDocument, IFile, ITextDocument
+from loops.interfaces import IIsSubtype
 from loops.layout.base import LayoutNode
 from loops.organize.memberinfo import MemberInfoProvider
 from loops.organize.stateful.base import StatefulResourceIndexInfo, handleTransition
-from loops.predicate import Predicate   #, MappingAttributeRelation
+from loops.predicate import Predicate
+from loops.predicate import IsSubtype#, MappingAttributeRelation
 from loops.expert.concept import QueryConcept
 from loops.resource import Resource, FileAdapter, TextDocumentAdapter
 from loops.resource import Document, MediaAsset
@@ -135,6 +137,7 @@ class TestSite(object):
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)
         component.provideAdapter(Predicate)
+        component.provideAdapter(IsSubtype, provides=IIsSubtype)
         #component.provideAdapter(MappingAttributeRelation)
         component.provideAdapter(ResourceType, (IDocument,))
         component.provideAdapter(TypeConcept)

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition and management of special predicates and corresponding relations.
-
-$Id$
 """
 
 from zope import component, schema
@@ -31,7 +29,8 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
 from loops.interfaces import ILoopsObject, IConcept, IResource, IConceptRelation
-from loops.interfaces import IPredicate, IRelationAdapter #, IMappingAttributeRelation
+from loops.interfaces import IPredicate, IRelationAdapter
+from loops.interfaces import IIsSubtype     #, IMappingAttributeRelation
 from loops.concept import Concept
 from loops.common import adapted, AdapterBase
 from loops.type import TypeInterfaceSourceList
@@ -89,8 +88,20 @@ def adaptedRelation(relation):
 
 # standard relation adapters
 
-#PredicateInterfaceSourceList.predicateInterfaces += (IMappingAttributeRelation,)
+PredicateInterfaceSourceList.predicateInterfaces += (
+        IIsSubtype,)
 
+class IsSubtype(RelationAdapter):
+    """ Allows specification of a predicate for relations between concepts
+        of certain types.
+    """
+
+    implements(IIsSubtype)
+
+    _contextAttributes = list(IIsSubtype)
+
+
+#PredicateInterfaceSourceList.predicateInterfaces += (IMappingAttributeRelation,)
 
 #class MappingAttributeRelation(AdapterBase):
 
