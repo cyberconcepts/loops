@@ -110,8 +110,9 @@ class DataTableSourceBinder(object):
     def __init__(self, tableName):
         self.tableName = tableName
 
-    def __call__(self, context):
-        context = baseObject(context)
+    def __call__(self, instance):
+        #context = baseObject(instance.context)
+        context = instance.view.nodeView.context
         dt = context.getLoopsRoot().getConceptManager()[self.tableName]
         return DataTableSourceList(adapted(dt))
 
