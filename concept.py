@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition of the Concept and related classes.
-
-$Id$
 """
 
 from zope import component, schema
@@ -209,9 +207,26 @@ class Concept(Contained, Persistent):
         return [r.first for r in self.getParentRelations(predicates, sort=sort,
                                                 noSecurityCheck=noSecurityCheck)]
 
-    def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
+    def checkPredicate(self, child, predicate=None):
+        cm = self.getConceptManager()
+        defaultPredicate = cm.getDefaultPredicate()
         if predicate is None:
-            predicate = self.getConceptManager().getDefaultPredicate()
+            predicate = defaultPredicate
+        if predicate == defaultPredicate:
+            subtypePred = cm.get('issubtype')
+            if subtypePred is not None:
+                subtypeRels = list(self.conceptType.getChildRelations(
+                                        [subtypePred], child.conceptType))
+                if subtypeRels:
+                    from loops.predicate import adaptedRelation
+                    rel = adaptedRelation(subtypeRels[0])
+                    predName = rel.usePredicate
+                    if predName and predName != u'standard':
+                        predicate = cm[predName]
+        return predicate
+
+    def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
+        predicate = self.checkPredicate(concept, predicate)
         registry = component.getUtility(IRelationRegistry)
         rel = ConceptRelation(self, concept, predicate)
         if order != 0:
