@@ -41,29 +41,36 @@ class UrlField(Field):
     renderer = 'target'
 
     def getDisplayValue(self, row):
-        nv = row.parent.context.view.nodeView
         if row.context is None:     # probably a totals row
             return dict(title=u'', url=u'')
+        nv = row.parent.context.view.nodeView
         return dict(title=self.getValue(row),
                     url=nv.getUrlForTarget(baseObject(row.context)))
 
 
-class TargetField(Field):
+class RelationField(Field):
 
     renderer = 'target'
+
+    def getValue(self, row):
+        return self.getRawValue(row)
+
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        if value is None:
+            return dict(title=u'', url=u'')
+        nv = row.parent.context.view.nodeView
+        return dict(title=value.title,
+                    url=nv.getUrlForTarget(baseObject(value)))
+
+
+class TargetField(RelationField):
 
     def getValue(self, row):
         value = self.getRawValue(row)
         if value is None:
             return None
         return util.getObjectForUid(value)
-
-    def getDisplayValue(self, row):
-        value = self.getValue(row)
-        if value is None:
-            return dict(title=u'', url=u'')
-        view = row.parent.context.view
-        return dict(title=value.title, url=view.getUrlForTarget(value))
 
 
 # sub-report stuff
