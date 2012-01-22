@@ -97,7 +97,7 @@ class ViewMode(object):
 
     @property
     def cssClass(self):
-        return self.active and u'active' or u''
+        return self.active and u'active' or u'inactive'
 
 
 class IAddForm(Interface):

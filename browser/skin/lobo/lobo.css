@@ -36,9 +36,8 @@ ul.view-modes li.active a {
     background-color: #eee;
 }
 
-ul.view-modes li a:hover {
-    border-bottom: #eee 1px solid;
-    background-color: #eee;
+ul.view-modes li.inactive a:hover {
+    background-color: #f8f8f8;
 }
 
 /* general */
