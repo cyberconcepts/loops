@@ -1,7 +1,5 @@
 """
 Set up a loops site for testing.
-
-$Id$
 """
 
 from zope import component
@@ -57,13 +55,14 @@ from cybertools.wiki.dcu.rstx import Parser as DocutilsRstxParser
 from loops.base import Loops
 from loops import util
 from loops.browser.node import ViewPropertiesConfigurator
+from loops.browser.concept import ConceptView
 from loops.common import NameChooser
 from loops.concept import Concept
 from loops.concept import IndexAttributes as ConceptIndexAttributes
 from loops.config.base import GlobalOptions, LoopsOptions
 from loops.config.base import QueryOptions, PredicateOptions, TypeOptions
 from loops.interfaces import ILoopsObject, IIndexAttributes
-from loops.interfaces import IDocument, IFile, ITextDocument
+from loops.interfaces import IConcept, IDocument, IFile, ITextDocument
 from loops.interfaces import IIsSubtype
 from loops.layout.base import LayoutNode
 from loops.organize.memberinfo import MemberInfoProvider
@@ -133,6 +132,7 @@ class TestSite(object):
                                  name='zope.source.rest')
         component.provideAdapter(ReStructuredTextToHTMLRenderer,
                                  (IReStructuredTextSource, IBrowserRequest), Interface)
+        component.provideAdapter(ConceptView, (IConcept, IBrowserRequest), Interface)
 
         component.provideAdapter(LoopsType)
         component.provideAdapter(ConceptType)

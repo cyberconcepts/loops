@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.jeep import Jeep
 from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
 from loops.config.base import DummyOptions
@@ -74,7 +75,7 @@ from loops.versioning.interfaces import IVersionable
 
 
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
-conceptMacrosTemplate = concept_macros      #
+conceptMacrosTemplate = concept_macros
 resource_macros = ViewPageTemplateFile('resource_macros.pt')
 
 
@@ -84,14 +85,28 @@ class NameField(schema.ASCIILine):
         super(NameField, self)._validate(value)
 
 
+class ViewMode(object):
+
+    def __init__(self, name='view', title=None, url=None, active=False,
+                 description=u''):
+        self.name = name
+        self.title = title
+        self.url = url
+        self.active = active
+        self.description = description
+
+    @property
+    def cssClass(self):
+        return self.active and u'active' or u''
+
+
 class IAddForm(Interface):
 
     name = NameField(
             title=_(u'Object name'),
             description=_(u'Name of the object - will be used for addressing the '
-                        'object via a URL; should therefore be unique within '
-                        'the container and not contain special characters')
-        )
+                        u'object via a URL; should therefore be unique within '
+                        u'the container and not contain special characters'))
 
 
 class AddForm(form.AddForm):
@@ -115,6 +130,7 @@ class BaseView(GenericView, I18NView):
 
     actions = {}
     icon = None
+    modeName = 'view'
 
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
@@ -147,6 +163,9 @@ class BaseView(GenericView, I18NView):
 
     def breadcrumbs(self):
         return []
+
+    def viewModes(self):
+        return Jeep()
 
     @Lazy
     def name(self):

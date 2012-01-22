@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -48,10 +48,11 @@ from cybertools.browser.action import Action
 from cybertools.browser.view import GenericView
 from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.jeep import Jeep
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import actions, DialogAction
 from loops.common import adapted, AdapterBase
-from loops.i18n.browser import i18n_macros
+from loops.i18n.browser import i18n_macros, LanguageInfo
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
 from loops.resource import MediaAsset
@@ -112,6 +113,11 @@ class NodeView(BaseView):
             if self.virtualTarget:
                 data.extend(self.virtualTarget.breadcrumbs())
         return data
+
+    def viewModes(self):
+        if self.virtualTarget:
+            return self.virtualTarget.viewModes()
+        return Jeep()
 
     def recordAccess(self, viewName=''):
         target = self.virtualTargetObject
@@ -911,6 +917,15 @@ class NodeTraverser(ItemTraverser):
                     # we'll use the target object in the node's context
                     viewAnnotations['target'] = target
                     return self.context
+        target = viewAnnotations.get('target')
+        if target is not None:      # name may be a view name for target
+            langInfo = LanguageInfo(self.context, request)
+            adTarget = adapted(target, langInfo)
+            view = component.queryMultiAdapter((adTarget, request), name=name)
+            if view is not None:
+                viewAnnotations['targetView'] = view
+                view.logInfo('NodeTraverser:targetView = %r' % view)
+                return self.context
         obj = super(NodeTraverser, self).publishTraverse(request, name)
         return obj
 

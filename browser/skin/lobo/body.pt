@@ -44,6 +44,7 @@
       </metal:breadcrumbs>
       <div metal:define-slot="actions"></div>
       <div metal:define-slot="message"></div>
+      <metal:tabs use-macro="views/node_macros/view_modes" />
       <metal:content define-slot="content">
         <tal:content define="item nocall:view/item;
                              level level|python: 1;
