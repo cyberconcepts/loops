@@ -933,7 +933,7 @@ class NodeTraverser(ItemTraverser):
             langInfo = LanguageInfo(self.context, request)
             adTarget = adapted(target, langInfo)
             view = component.queryMultiAdapter((adTarget, request), name=name)
-            if view is not None:
+            if isinstance(view, BaseView):
                 viewAnnotations['targetView'] = view
                 view.logInfo('NodeTraverser:targetView = %r' % view)
                 return self.context
