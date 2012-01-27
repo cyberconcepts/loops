@@ -133,6 +133,7 @@ class BaseView(GenericView, I18NView):
     modeName = 'view'
 
     def __init__(self, context, request):
+        context = baseObject(context)
         super(BaseView, self).__init__(context, request)
         # TODO: get rid of removeSecurityProxy() call - not yet...
         self.context = removeSecurityProxy(context)
@@ -211,7 +212,7 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def viewAnnotations(self):
-        return self.request.annotations.get('loops.view', {})
+        return self.request.annotations.setdefault('loops.view', {})
 
     @Lazy
     def node(self):

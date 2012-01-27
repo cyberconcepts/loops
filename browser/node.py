@@ -51,7 +51,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import actions, DialogAction
-from loops.common import adapted, AdapterBase
+from loops.common import adapted, AdapterBase, baseObject
 from loops.i18n.browser import i18n_macros, LanguageInfo
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
@@ -204,9 +204,8 @@ class NodeView(BaseView):
         name = self.request.get('loops.viewName', '') or self.context.viewName
         if name and '?' in name:
             name, params = name.split('?', 1)
-            ann = self.request.annotations.get('loops.view', {})
+            ann = self.viewAnnotations
             ann['params'] = params
-            self.request.annotations['loops.view'] = ann
         if name:
             adapter = component.queryMultiAdapter(
                             (self.context, self.request), name=name)
@@ -216,10 +215,13 @@ class NodeView(BaseView):
 
     @Lazy
     def item(self):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            return tv
         viewName = self.request.get('loops.viewName') or ''
         # was there a .target... element in the URL?
         #target = self.virtualTargetObject  # ignores page even for direktly assignd target
-        target = self.request.annotations.get('loops.view', {}).get('target')
+        target = self.viewAnnotations.get('target')
         if target is not None:
             basicView = component.getMultiAdapter((target, self.request), name=viewName)
             # xxx: obsolete when self.targetObject is virtual target:
@@ -230,6 +232,9 @@ class NodeView(BaseView):
 
     @Lazy
     def targetItem(self):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            return tv
         viewName = self.request.get('loops.viewName') or ''
         target = self.virtualTargetObject
         if target is not None:
@@ -400,7 +405,7 @@ class NodeView(BaseView):
 
     @Lazy
     def virtualTargetObject(self):
-        target = self.request.annotations.get('loops.view', {}).get('target')
+        target = self.viewAnnotations.get('target')
         if target is None:
             target = self.context.target
             if target is not None:
@@ -417,6 +422,9 @@ class NodeView(BaseView):
             return None
 
     def targetView(self, name='index.html', methodName='show'):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            return tv
         if '?' in name:
             name, params = name.split('?', 1)
         target = self.virtualTargetObject
@@ -462,6 +470,9 @@ class NodeView(BaseView):
 
     @Lazy
     def virtualTarget(self):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            return tv
         return self.getViewForTarget(self.virtualTargetObject)
 
     @Lazy
@@ -503,6 +514,7 @@ class NodeView(BaseView):
         if isinstance(target, BaseView):
             return self.makeTargetUrl(self.url, target.uniqueId, target.title)
         else:
+            target = baseObject(target)
             return self.makeTargetUrl(self.url, util.getUidForObject(target),
                                       target.title)
 
@@ -922,7 +934,7 @@ class NodeTraverser(ItemTraverser):
             langInfo = LanguageInfo(self.context, request)
             adTarget = adapted(target, langInfo)
             view = component.queryMultiAdapter((adTarget, request), name=name)
-            if view is not None:
+            if isinstance(view, BaseView):
                 viewAnnotations['targetView'] = view
                 view.logInfo('NodeTraverser:targetView = %r' % view)
                 return self.context

@@ -6,6 +6,8 @@ $Id$
 1.1
 ---
 
+- use targetView entry in request annotations for calling views declared
+  for adapted concept map objects (i.e. type interfaces)
 - Lobo layout: provide new part: image grid; make sure image is not repeated if
   it already appears in header part
 - new special view 'listsubobjects' for nodes
