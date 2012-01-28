@@ -131,6 +131,7 @@ class BaseView(GenericView, I18NView):
     actions = {}
     icon = None
     modeName = 'view'
+    isToplevel = False
 
     def __init__(self, context, request):
         context = baseObject(context)

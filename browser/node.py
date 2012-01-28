@@ -83,6 +83,13 @@ class NodeView(BaseView):
         viewConfig = getViewConfiguration(context, request)
         self.setSkin(viewConfig.get('skinName'))
 
+    def __call__(self, *args, **kw):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            if tv.isToplevel:
+                return tv(*args, **kw)
+        return super(NodeView, self).__call__(*args, **kw)
+
     @Lazy
     def macro(self):
         return self.template.macros['content']
@@ -424,7 +431,7 @@ class NodeView(BaseView):
     def targetView(self, name='index.html', methodName='show'):
         tv = self.viewAnnotations.get('targetView')
         if tv is not None:
-            return tv
+            return tv()
         if '?' in name:
             name, params = name.split('?', 1)
         target = self.virtualTargetObject
