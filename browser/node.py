@@ -51,7 +51,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import actions, DialogAction
-from loops.common import adapted, AdapterBase
+from loops.common import adapted, AdapterBase, baseObject
 from loops.i18n.browser import i18n_macros, LanguageInfo
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
@@ -82,6 +82,13 @@ class NodeView(BaseView):
         self.viewAnnotations.setdefault('node', self.context)
         viewConfig = getViewConfiguration(context, request)
         self.setSkin(viewConfig.get('skinName'))
+
+    def __call__(self, *args, **kw):
+        tv = self.viewAnnotations.get('targetView')
+        if tv is not None:
+            if tv.isToplevel:
+                return tv(*args, **kw)
+        return super(NodeView, self).__call__(*args, **kw)
 
     @Lazy
     def macro(self):
@@ -422,9 +429,10 @@ class NodeView(BaseView):
             return None
 
     def targetView(self, name='index.html', methodName='show'):
-        tv = self.viewAnnotations.get('targetView')
-        if tv is not None:
-            return tv
+        if name == 'index.html':    # only when called for default view
+            tv = self.viewAnnotations.get('targetView')
+            if tv is not None:
+                return tv()
         if '?' in name:
             name, params = name.split('?', 1)
         target = self.virtualTargetObject
@@ -514,6 +522,7 @@ class NodeView(BaseView):
         if isinstance(target, BaseView):
             return self.makeTargetUrl(self.url, target.uniqueId, target.title)
         else:
+            target = baseObject(target)
             return self.makeTargetUrl(self.url, util.getUidForObject(target),
                                       target.title)
 
