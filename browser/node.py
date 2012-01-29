@@ -429,9 +429,10 @@ class NodeView(BaseView):
             return None
 
     def targetView(self, name='index.html', methodName='show'):
-        tv = self.viewAnnotations.get('targetView')
-        if tv is not None:
-            return tv()
+        if name == 'index.html':    # only when called for default view
+            tv = self.viewAnnotations.get('targetView')
+            if tv is not None:
+                return tv()
         if '?' in name:
             name, params = name.split('?', 1)
         target = self.virtualTargetObject
