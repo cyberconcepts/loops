@@ -51,6 +51,7 @@ from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
+from loops.interfaces import IIsSubtype
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
 from loops.security.common import canListObject
 from loops import util
@@ -220,9 +221,10 @@ class Concept(Contained, Persistent):
                 if subtypeRels:
                     from loops.predicate import adaptedRelation
                     rel = adaptedRelation(subtypeRels[0])
-                    predName = rel.usePredicate
-                    if predName and predName != u'standard':
-                        predicate = cm[predName]
+                    if IIsSubtype.providedBy(rel):
+                        predName = rel.usePredicate
+                        if predName and predName != u'standard':
+                            predicate = cm[predName]
         return predicate
 
     def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
