@@ -50,7 +50,7 @@
 
 <metal:target define-macro="target">
   <td tal:define="value python:col.getDisplayValue(row)">
-    <a tal:omit-tag="not:value/url"
+    <a tal:omit-tag="python:not getattr(item, 'showLinks', True) or not value['url']"
        tal:attributes="href value/url"
        tal:content="value/title" /></td>
 </metal:target>
