@@ -51,6 +51,7 @@ class UrlField(Field):
 class RelationField(Field):
 
     renderer = 'target'
+    displayAttribute = 'title'
 
     def getValue(self, row):
         return self.getRawValue(row)
@@ -60,7 +61,7 @@ class RelationField(Field):
         if value is None:
             return dict(title=u'', url=u'')
         nv = row.parent.context.view.nodeView
-        return dict(title=value.title,
+        return dict(title=getattr(value, self.displayAttribute),
                     url=nv.getUrlForTarget(baseObject(value)))
 
 
