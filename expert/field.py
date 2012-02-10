@@ -20,6 +20,8 @@
 Field definitions for reports.
 """
 
+from zope.i18n.locales import locales
+
 from cybertools.composer.report.field import Field
 from cybertools.composer.report.result import ResultSet
 from loops.common import baseObject
@@ -34,6 +36,24 @@ class TextField(Field):
     def getDisplayValue(self, row):
         value = self.getValue(row)
         return row.parent.context.view.renderText(value, self.format)
+
+
+class DateField(Field):
+
+    format = ('date', 'short')
+
+    def getDisplayValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return u''
+        nv = row.parent.context.view.nodeView
+        langInfo = nv and getattr(nv, 'languageInfo', None) or None
+        if langInfo:
+            locale = locales.getLocale(langInfo.language)
+            fmt = locale.dates.getFormatter(*self.format)
+            return fmt.format(value)
+        else:
+            return value.isoformat()[:10]
 
 
 class UrlField(Field):
