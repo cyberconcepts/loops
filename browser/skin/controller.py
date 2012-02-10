@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class Controller(BaseController):
 
     def setupMetadata(self):
         macros = self.macros
-        target = self.view.virtualTarget
+        target = getattr(self.view, 'virtualTarget', None)
         if target is not None:
             desc = target.dcDescription
             if desc:
