@@ -24,6 +24,7 @@ from zope.i18n.locales import locales
 
 from cybertools.composer.report.field import Field
 from cybertools.composer.report.result import ResultSet
+from cybertools.util.date import timeStamp2Date
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
 from loops import util
@@ -46,6 +47,8 @@ class DateField(Field):
         value = self.getRawValue(row)
         if not value:
             return u''
+        if isinstance(value, int):
+            value = timeStamp2Date(value)
         nv = row.parent.context.view.nodeView
         langInfo = nv and getattr(nv, 'languageInfo', None) or None
         if langInfo:
