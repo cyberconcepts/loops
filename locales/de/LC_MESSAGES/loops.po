@@ -111,14 +111,20 @@ msgstr "Tagebuch exportieren"
 msgid "Edit MicroArticle..."
 msgstr "MikroArtikel bearbeiten..."
 
+msgid "Edit MicroArticle"
+msgstr "MikroArtikel bearbeiten"
+
 msgid "Modify MicroArticle."
-msgstr "Tagebucheintrag ändern."
+msgstr "MikroArtikel ändern."
 
 msgid "Create MicroArticle..."
-msgstr "Tagebucheintrag anlegen..."
+msgstr "MikroArtikel anlegen..."
 
 msgid "Create a new MicroArticle."
-msgstr "Einen neuen Tagebucheintrag erzeugen"
+msgstr "Einen neuen MikroArtikel erzeugen"
+
+msgid "Create MicroArticle"
+msgstr "MikroArtikel anlegen"
 
 msgid "Story"
 msgstr "Story"

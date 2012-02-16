@@ -472,7 +472,12 @@ div.comment {
     background-color: #f7f7f7;
     padding: 0 5px 0 5px;
     margin: 5px 0 5px 0;
-    text-decoration: none;
+}
+
+.micropart h3,h4,h5 {
+    font-weight: bold;
+    margin-bottom: 0.2em;
+    border-bottom: none;
 }
 
 /* calendar, work items */
