@@ -26,10 +26,30 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from loops.browser.action import actions, DialogAction
 from loops.browser.concept import ConceptView
 from loops.common import adapted
 from loops import util
 from loops.util import _
+
+
+actions.register('create_microart', 'portlet', DialogAction,
+        title=_(u'Create MicroArticle...'),
+        description=_(u'Create a new MicroArticle.'),
+        viewName='create_concept.html',
+        dialogName='createConcept',
+        typeToken='.loops/concepts/microart',
+        fixedType=True,
+        #prerequisites=['registerDojoTextWidget'],
+)
+
+actions.register('edit_microart', 'portlet', DialogAction,
+        title=_(u'Edit MicroArticle...'),
+        description=_(u'Modify MicroArticle.'),
+        viewName='edit_concept.html',
+        dialogName='editConcept',
+        #prerequisites=['registerDojoTextWidget'],
+)
 
 
 view_macros = ViewPageTemplateFile('view_macros.pt')

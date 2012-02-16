@@ -1,5 +1,4 @@
 /*
- $Id$
 
  settings specific for view / node objects
 
@@ -465,6 +464,15 @@ div.comment {
     font-size: 90%;
     color: #666666;
     padding-top: 0.4em;
+}
+
+/* microart */
+
+.micropart {
+    background-color: #f7f7f7;
+    padding: 0 5px 0 5px;
+    margin: 5px 0 5px 0;
+    text-decoration: none;
 }
 
 /* calendar, work items */
