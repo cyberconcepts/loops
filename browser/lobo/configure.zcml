@@ -24,6 +24,14 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="lobo_lt"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.ListThumbs"
+        permission="zope.View" />
+
+  <zope:adapter
         name="lobo_l1"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
@@ -37,6 +45,14 @@
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.List2"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_ht"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.browser.lobo.standard.HeaderThumbs"
         permission="zope.View" />
 
   <zope:adapter
