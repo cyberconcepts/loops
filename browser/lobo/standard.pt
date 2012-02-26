@@ -17,7 +17,7 @@
                          title cell/description">
         <div class="legend">
           <b tal:content="cell/title" /><br />
-          <i tal:content="cell/description" />
+          <i tal:content="structure cell/renderedDescription" />
         </div>
       </a>
     </div>

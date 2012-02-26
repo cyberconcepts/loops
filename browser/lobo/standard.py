@@ -202,6 +202,13 @@ class Grid3(BasePart):
     gridPattern = ['span-2 clear', 'span-2', 'span-2 last']
 
 
+class ListThumbs(BasePart):
+
+    macroName = 'list'
+    imageSize = 'minithumb'
+    gridPattern = [['span-1 clear', 'span-5 last']]
+
+
 class List1(BasePart):
 
     macroName = 'list'
@@ -222,6 +229,13 @@ class Header0(BasePart):
     cssClass = ['span-6 last', 'clear']
     showImage = False
     cssClass = ['', 'span-6 last', 'clear']
+
+
+class HeaderThumbs(BasePart):
+
+    macroName = 'header'
+    imageSize = 'minithumb'
+    cssClass = ['span-1', 'span-5 last', 'clear']
 
 
 class Header1(BasePart):

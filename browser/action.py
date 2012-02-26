@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Base classes (sort of views) for action portlet items.
-
-$Id$
 """
 
 from urllib import urlencode
@@ -75,7 +73,6 @@ class DialogAction(Action):
 
     @Lazy
     def url(self):
-        #return '%s/%s' % (self.page.getUrlForTarget(self.view), self.viewName)
         if self.target is not None:
             url = self.page.getUrlForTarget(self.target)
         else:
@@ -96,9 +93,6 @@ class DialogAction(Action):
         if self.viewTitle:
             urlParams['view_title'] = self.viewTitle
         urlParams.update(self.addParams)
-        #url = self.page.getUrlForTarget(self.view)
-        #return self.jsOnClick % (self.dialogName, url, self.viewName,
-        #                         urlencode(urlParams))
         if self.target is not None:
             url = self.page.getUrlForTarget(self.target)
         else:
@@ -116,7 +110,6 @@ class DialogAction(Action):
 actions.register('info', 'object', DialogAction,
         description=_(u'Information about this object.'),
         viewName='object_info.html',
-        #dialogName='object_info',
         dialogName='',
         icon='cybertools.icons/info.png',
         cssClass='icon-action',
@@ -152,8 +145,6 @@ actions.register('create_concept', 'portlet', DialogAction,
         viewName='create_concept.html',
         dialogName='createConcept',
         qualifier='create_concept',
-        #typeToken='.loops/concepts/topic',
-        #fixedType=True,
         innerForm='inner_concept_form.html',
 )
 

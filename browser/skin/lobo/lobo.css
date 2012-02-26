@@ -484,6 +484,12 @@ img.notselected {
     margin-top: 5px;
 }
 
+/* no vertical spacing for descriptions in grids */
+div.legend i p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 /* comments */
 
 div.comment {

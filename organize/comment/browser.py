@@ -57,7 +57,8 @@ class CommentsView(NodeView):
 
     @Lazy
     def addUrl(self):
-        return '%s/create_comment.html' % self.getUrlForTarget(self.context)
+        return '%s/create_comment.html' % self.virtualTargetUrl
+        #return '%s/create_comment.html' % self.getUrlForTarget(self.context)
 
     @Lazy
     def addOnClick(self):

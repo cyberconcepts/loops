@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Classes for form presentation and processing.
-
-$Id$
 """
 
 from zope import component, interface, schema
@@ -561,8 +559,8 @@ class EditObject(FormController, I18NView):
             if k.startswith('state.'):
                 stateKeys.append(k)
         self.collectAutoConcepts()
-        if self.old or self.selected:
-            self.assignConcepts(obj)
+        #if self.old or self.selected:
+        self.assignConcepts(obj)
         for k in stateKeys:
             self.updateState(k)
         notify(ObjectModifiedEvent(obj))
@@ -641,7 +639,6 @@ class EditObject(FormController, I18NView):
         form = self.request.form
         if form.get('version.create'):
             versionable = IVersionable(obj)
-            #level = int(form.get('version.level', 1))
             level = int(form.get('version.level', 0))
             version = versionable.createVersion(level)
             notify(ObjectCreatedEvent(version))
@@ -712,8 +709,6 @@ class EditConcept(EditObject):
         obj.deassignParent(concept, predicates)
 
     def update(self):
-        #self.object = self.view.virtualTargetObject
-        #self.object = self.view.item.context
         self.object = self.view.item.target
         formState = self.updateFields()
         self.view.formState = formState
