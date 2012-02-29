@@ -479,8 +479,9 @@ class ParentRelation(object):
         return None
 
     def __set__(self, inst, value):
+        value = baseObject(value)
         rs = ParentRelationSet(inst, self.predicateName)
-        rsList = list(rs)
+        rsList = [baseObject(p) for p in rs]
         for current in rsList:
             if current != value:
                 rs.remove(current)
