@@ -52,9 +52,10 @@ a[href]:hover {
 }
 
 pre {
+    padding: 0.2em;
     font-size: 100%;
-    background-color: #f4f4f4;
-    overflow: scroll;
+    background-color: #f8f8f8;
+    overflow: auto;
     max-height: 35em;
 }
 
