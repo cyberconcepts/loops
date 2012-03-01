@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 XML-RPC views.
-
-$Id$
 """
 
 from zope.app.container.interfaces import INameChooser
@@ -34,7 +32,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
-from loops.common import adapted
+from loops.common import adapted, AdapterBase
 from loops.concept import Concept
 from loops.i18n.browser import I18NView
 from loops.util import getUidForObject, getObjectForUid, toUnicode
@@ -166,7 +164,7 @@ def objectAsDict(obj, langInfo=None):
                'title': adapter.title, 'description': adapter.description,
                'type': getUidForObject(objType.typeProvider)}
     ti = objType.typeInterface
-    if ti is not None and adapter != obj:
+    if ti is not None and isinstance(adapter, AdapterBase): #adapter != obj:
         #for attr in (list(adapter._adapterAttributes) + list(ti)):
         for attr in list(ti):
             if attr not in ('__parent__', 'context', 'id', 'name',

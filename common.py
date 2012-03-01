@@ -137,8 +137,12 @@ class AdapterBase(object):
     def __eq__(self, other):
         if not isinstance(other, AdapterBase):
             return self.context == other
-            #return False
         return self.context == other.context
+
+    def __ne__(self, other):
+        if not isinstance(other, AdapterBase):
+            return self.context != other
+        return self.context != other.context
 
     def getLoopsRoot(self):
         return self.context.getLoopsRoot()
@@ -443,8 +447,9 @@ class RelationSetProperty(object):
                             noSecurityCheck=self.noSecurityCheck)
 
     def __set__(self, inst, value):
+        value = [baseObject(c) for c in value]
         rs = self.factory(inst, self.predicateName)
-        current = list(rs)
+        current = [baseObject(c) for c in rs]
         for c in current:
             if c not in value:
                 rs.remove(c)
