@@ -514,6 +514,12 @@ class NodeView(BaseView):
         if target is not None:
             return BaseView(target, self.request).url
 
+    @Lazy
+    def typeProvider(self):
+        if self.virtualTargetObject is not None:
+            return IType(self.virtualTargetObject).typeProvider
+        return None
+
     # target viewing and editing support
 
     def getUrlForTarget(self, target):

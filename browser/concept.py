@@ -505,9 +505,9 @@ class ConceptView(BaseView):
 
     def getObjectActions(self, page=None, target=None):
         acts = ['info']
-        acts.extend('state.' + st.statesDefinition for st in self.states)
         if self.globalOptions('organize.allowSendEmail'):
             acts.append('send_email')
+        acts.extend('state.' + st.statesDefinition for st in self.states)
         return actions.get('object', acts, view=self, page=page, target=target)
 
     actions = dict(object=getObjectActions)

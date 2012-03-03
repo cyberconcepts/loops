@@ -613,16 +613,18 @@ class BaseView(GenericView, I18NView):
 
     # states
 
+    viewStatesPermission = 'zope.ManageContent'
+
     @Lazy
     def states(self):
         result = []
-        if not checkPermission('loops.ManageSite', self.context):
-            # TODO: replace by more sensible permission
+        if not checkPermission(self.viewStatesPermission, self.context):
             return result
         if IResource.providedBy(self.target):
             statesDefs = self.globalOptions('organize.stateful.resource', ())
         else:
-            statesDefs = self.globalOptions('organize.stateful.concept', ())
+            statesDefs = (self.globalOptions('organize.stateful.concept', []) +
+                          self.typeOptions('organize.stateful', []))
         for std in statesDefs:
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
