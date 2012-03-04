@@ -78,8 +78,8 @@
        tal:omit-tag="not:view/isInnerHtml">
   <form method="post" enctype="multipart/form-data"
         id="dialog_form" class="dialog"
-        tal:define="qualifier request/qualifier | string:resource;
-                    innerForm request/inner_form | string:inner_form.html;
+        tal:define="qualifier request/qualifier|view/qualifier|string:resource;
+                    innerForm request/inner_form|view/inner_form|string:inner_form.html;
                     typeToken view/typeToken;
                     fixedType view/fixedType">
     <div dojoType="dijit.layout.ContentPane" region="center"

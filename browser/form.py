@@ -372,6 +372,8 @@ class CreateConceptForm(CreateObjectForm):
 
     defaultTitle = u'Create Concept, Type = '
     form_action = 'create_concept'
+    inner_form = 'inner_concept_form.html'
+    qualifier = 'concept'
 
     @Lazy
     def defaultTypeToken(self):
