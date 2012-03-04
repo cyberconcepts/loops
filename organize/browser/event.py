@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition of view classes and other browser related stuff for tasks.
-
-$Id$
 """
 
 import calendar
@@ -174,7 +172,8 @@ class CalendarInfo(NodeView):
         tEvent = cm['event']
         hasType = cm.getTypePredicate()
         start = datetime(self.selectedYear, self.selectedMonth, 1)
-        end = start + timedelta(31)
+        fday, ndays = calendar.monthrange(self.selectedYear, self.selectedMonth)
+        end = start + timedelta(ndays)
         view = self.eventListQuery
         if view is not None:
             relViews = (view.childViewFactory(r, self.request, contextIsSecond=True)
