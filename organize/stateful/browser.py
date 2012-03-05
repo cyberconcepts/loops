@@ -37,7 +37,8 @@ from loops.util import _
 
 
 statefulActions = ('classification_quality',
-                   'simple_publishing',)
+                   'simple_publishing',
+                   'task_states',)
 
 
 class StateAction(Action):

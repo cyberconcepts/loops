@@ -36,6 +36,20 @@
   </zope:class>
 
   <zope:utility
+        factory="loops.organize.stateful.task.taskStates"
+        name="task_states" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.task.StatefulTask"
+        name="task_states" trusted="True" />
+  <zope:class class="loops.organize.stateful.task.StatefulTask">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+  <zope:utility
         factory="loops.organize.stateful.quality.classificationQuality"
         name="classification_quality" />
 

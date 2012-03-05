@@ -29,7 +29,7 @@
 
   <browser:page
         name="listConceptsForComboBox.js"
-        for="loops.interfaces.ILoopsObject"
+        for="loops.interfaces.INode"
         class="loops.expert.browser.search.Search"
         attribute="listConcepts"
         permission="zope.View" />

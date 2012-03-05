@@ -107,7 +107,7 @@
           <tr>
             <th tal:condition="item/showCheckboxes|nothing">&nbsp;</th>
             <th i18n:translate="">Title</th>
-            <th i18n:translate="">Type</th>
+            <th class="center" i18n:translate="">Type</th>
             <th i18n:translate="">Modification Date</th>
             <th i18n:translate="">Author(s)</th>
             <th i18n:translate=""
@@ -140,7 +140,7 @@
                 <td><span tal:replace="related/modified">2011-01-10</span></td>
                 <td tal:attributes="title related/creators">
                   <span tal:replace="related/lastCreator">Author</span></td>
-                <td class="nowrap center"
+                <td class="nowrap"
                     tal:define="target nocall:related;
                                 style nothing"
                     tal:condition="view/showObjectActions">
