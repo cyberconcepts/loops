@@ -210,7 +210,10 @@
                         item.editable and 'dojo.dnd.Source' or ''">
           <tal:items repeat="related resources">
             <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
-                              description related/description">
+                              description related/description;
+                              predicate related/predicateTitle;
+                              info python: ' | '.join(
+                                    t for t in (description, predicate) if t)">
               <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
                                   id related/uniqueId">
                 <td tal:condition="item/showCheckboxes|nothing"
@@ -227,7 +230,7 @@
                     <img tal:attributes="src icon/src" />
                   </a>
                   <a tal:attributes="href python: view.getUrlForTarget(related);
-                                     title description">
+                                     title info">
                     <div tal:content="related/title">Resource Title</div>
                   </a>
                 </td>
