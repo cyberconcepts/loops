@@ -67,9 +67,13 @@ class StatefulConceptIndexInfo(IndexInfo):
     @property
     def availableStatesDefinitions(self):
         globalOptions = IOptions(self.context.getLoopsRoot())
-        typeOptions = IOptions(adapted(self.context.conceptType))
-        return (globalOptions('organize.stateful.concept', []) +
-                typeOptions('organize.stateful', []))
+        type = self.context.conceptType
+        if type is None:    # may happen during object creation
+            return globalOptions('organize.stateful.concept', [])
+        else:
+            typeOptions = IOptions(adapted(type))
+            return (globalOptions('organize.stateful.concept', []) +
+                    typeOptions('organize.stateful', []))
 
 
 class StatefulResourceIndexInfo(IndexInfo):

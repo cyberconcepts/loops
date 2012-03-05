@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View classes for lobo (blueprint-based) layouts.
-
-$Id$
 """
 
 from cgi import parse_qs
@@ -66,8 +64,20 @@ class ConceptView(BaseConceptView):
 
     @Lazy
     def resources(self):
+        return self.getResources()
+
+    @Lazy
+    def representingResources(self):
+        pred = self.representationPredicate
+        if pred is None:
+            return {}
+        return self.getResources([pred])
+
+    def getResources(self, predicates=None):
         result = dict(texts=[], images=[], files=[])
-        for r in self.context.getResources([self.defaultPredicate]):
+        if predicates is None:
+            predicates = [self.defaultPredicate]
+        for r in self.context.getResources(predicates):
             if r.contentType.startswith('text/'):
                 result['texts'].append(r)
             if r.contentType.startswith('image/'):
@@ -80,6 +90,10 @@ class ConceptView(BaseConceptView):
     def images(self):
         for r in self.resources['images']:
             yield r
+
+    @Lazy
+    def representationPredicate(self):
+        return self.conceptManager.get('represents')
 
     # properties from base class: title, description, renderedDescription
 
@@ -98,6 +112,12 @@ class ConceptView(BaseConceptView):
         if self.textDescription is None:
             return u''
         return self.renderDescription(self.textDescription)
+
+    @Lazy
+    def textRepresentation(self):
+        for r in self.representingResources.get('texts', []):
+            return self.renderText(r.data, r.contentType)
+        return self.renderedDescription
 
     @Lazy
     def targetUrl(self):
