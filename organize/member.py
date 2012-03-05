@@ -78,14 +78,21 @@ class MemberRegistrationManager(object):
                                       useExisting, **kw)
 
     def createPrincipal(self, pfName, userId, password, lastName,
-                              firstName=u'', groups=[], useExisting=False, **kw):
+                              firstName=u'', groups=[], useExisting=False,
+                              overwrite=False, **kw):
         pFolder = getPrincipalFolder(self.context, pfName)
         if IPersonBasedAuthenticator.providedBy(pFolder):
              pFolder.setPassword(userId, password)
         else:
             title = firstName and ' '.join((firstName, lastName)) or lastName
             principal = InternalPrincipal(userId, password, title)
-            if useExisting:
+            if overwrite:
+                if userId in pFolder:
+                    principal = pFolder[userId]
+                    principal.password = password
+                else:
+                    pFolder[userId] = principal
+            elif useExisting:
                 if userId not in pFolder:
                     pFolder[userId] = principal
             else:

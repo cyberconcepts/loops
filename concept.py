@@ -476,7 +476,10 @@ class IndexAttributes(object):
         for c in cr:
             try:
                 principal = pau.getPrincipal(c)
-                creators.append(principal.title)
+                if principal is None:
+                    creators.append(c)
+                else:
+                    creators.append(principal.title)
             except PrincipalLookupError:
                 creators.append(c)
         return creators
