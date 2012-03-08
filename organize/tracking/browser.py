@@ -49,7 +49,7 @@ class BaseTrackView(TrackView):
         task = self.task
         if task is None:
             return self.metadata['taskId']
-        return getattr(task, 'title', getName(task))
+        return getattr(task, 'title', None) or getName(task)
 
     @Lazy
     def taskUrl(self):
