@@ -39,6 +39,25 @@ class TextField(Field):
         return row.parent.context.view.renderText(value, self.format)
 
 
+class DecimalField(Field):
+
+    format = '###,###,##0.##'
+
+    def getDisplayValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return u''
+        if not isinstance(value, float):
+            value = float(value)
+        nv = row.parent.context.view.nodeView
+        langInfo = nv and getattr(nv, 'languageInfo', None) or None
+        if langInfo:
+            locale = locales.getLocale(langInfo.language)
+            fmt = locale.numbers.getFormatter('decimal')
+            return fmt.format(value)
+        return '%.2f' % value
+
+
 class DateField(Field):
 
     format = ('date', 'short')
