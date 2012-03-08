@@ -41,7 +41,9 @@ class TextField(Field):
 
 class DecimalField(Field):
 
-    format = '###,###,##0.##'
+    format = 'decimal'
+    pattern = u'#,##0.00;-#,##0.00'
+    renderer = 'right'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -53,8 +55,8 @@ class DecimalField(Field):
         langInfo = nv and getattr(nv, 'languageInfo', None) or None
         if langInfo:
             locale = locales.getLocale(langInfo.language)
-            fmt = locale.numbers.getFormatter('decimal')
-            return fmt.format(value)
+            fmt = locale.numbers.getFormatter(self.format)
+            return fmt.format(value, pattern=self.pattern)
         return '%.2f' % value
 
 
