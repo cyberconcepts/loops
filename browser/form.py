@@ -357,7 +357,7 @@ class CreateObjectPopup(CreateObjectForm):
         self.registerDojo()
         cm = self.controller.macros
         cm.register('css', identifier='popup.css', resourceName='popup.css',
-                    media='all', position=4)
+                    media='all', priority=90) #, position=4)
         jsCall = ('dojo.require("dojo.parser");'
                   'dojo.require("dijit.form.FilteringSelect");'
                   'dojo.require("dojox.data.QueryReadStore");')
