@@ -54,6 +54,9 @@ concept(u'personal_info', u'Pers\xf6nliche Informationen', u'query', options=u''
     viewName=u'personal_info.html')
 concept(u'participants', u'Teilnehmer', u'query', options=u'',
     viewName=u'list_children.html')
+concept(u'recenct_changes', u'Aktuelle \xc4nderungen', u'query',
+    options=u'types:concept:*,resource:*',
+    viewName=u'recent_changes.html')
 concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')
 concept(u'topics', u'Themen', u'query', options=u'action.portlet:createTopic',
     viewName=u'list_children.html')
@@ -69,11 +72,18 @@ child(u'system', u'extcollection', u'standard')
 child(u'system', u'issubtype', u'standard')
 child(u'system', u'media_asset', u'standard')
 child(u'system', u'personal_info', u'standard')
+child(u'topic', u'topic', u'issubtype', 1)
+
+resource(u'homepage', u'Willkommen', u'textdocument', contentType='text/restructured')
+resource(u'impressum', u'Impressum', u'textdocument', contentType='text/restructured')
 
 #nodes
-node(u'home', u'Startseite', '', 'menu', body=u'Willkommen\n==========')
-node(u'participants', u'Teilnehmer', u'home', 'page',
-    target=u'concepts/participants')
+node(u'home', u'Startseite', '', 'menu')
+node(u'willkommen', u'Willkommen', u'home', u'text')
+node(u'willkommen', u'Willkommen', u'home/willkommen', u'text',
+    target=u'resources/homepage')
+node(u'participants', u'Teilnehmer', u'home', 'page', target=u'concepts/participants')
 node(u'topics', u'Themen', u'home', 'page', target=u'concepts/topics')
 node(u'glossary', u'Glossar', u'home', 'page', target=u'concepts/glossary')
 node(u'search', u'Suche', u'home', 'page', target=u'concepts/search')
+node(u'impressum', u'Impressum', u'home', u'info', target=u'resources/impressum')
