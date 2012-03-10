@@ -20,7 +20,10 @@
 Field definitions for reports.
 """
 
+from zope.app.form.browser.interfaces import ITerms
+from zope import component
 from zope.i18n.locales import locales
+from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
 from cybertools.composer.report.field import Field
 from cybertools.composer.report.result import ResultSet
@@ -37,6 +40,27 @@ class TextField(Field):
     def getDisplayValue(self, row):
         value = self.getValue(row)
         return row.parent.context.view.renderText(value, self.format)
+
+
+class DecimalField(Field):
+
+    format = 'decimal'
+    pattern = u'#,##0.00;-#,##0.00'
+    renderer = 'right'
+
+    def getDisplayValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return u''
+        if not isinstance(value, float):
+            value = float(value)
+        nv = row.parent.context.view.nodeView
+        langInfo = nv and getattr(nv, 'languageInfo', None) or None
+        if langInfo:
+            locale = locales.getLocale(langInfo.language)
+            fmt = locale.numbers.getFormatter(self.format)
+            return fmt.format(value, pattern=self.pattern)
+        return '%.2f' % value
 
 
 class DateField(Field):
@@ -57,6 +81,52 @@ class DateField(Field):
             return fmt.format(value)
         else:
             return value.isoformat()[:10]
+
+
+class VocabularyField(Field):
+
+    vocabulary = None
+
+    def getDisplayValue(self, row):
+        value = self.getRawValue(row)
+        if self.vocabulary is None:
+            return value
+        items = self.getVocabularyItems(row)
+        for item in items:
+            if item['token'] == value:
+                return item['title']
+
+    def getVocabularyItems(self, row):
+        context = row.context
+        request = row.parent.context.view.request
+        voc = self.vocabulary
+        if isinstance(voc, basestring):
+            terms = self.getVocabularyTerms(voc, context, request)
+            if terms is not None:
+                return terms
+            voc = voc.splitlines()
+            return [dict(token=t, title=t) for t in voc if t.strip()]
+        elif IContextSourceBinder.providedBy(voc):
+            source = voc(row.parent.context)
+            terms = component.queryMultiAdapter((source, request), ITerms)
+            if terms is not None:
+                termsList = [terms.getTerm(value) for value in source]
+                return [dict(token=t.token, title=t.title) for t in termsList]
+            else:
+                return []
+        return [dict(token=t.token, title=t.title or t.value) for t in voc]
+
+    def getVocabularyTerms(self, name, context, request):
+        if context is None or request is None:
+            return None
+        source = component.queryUtility(IVocabularyFactory, name=name)
+        if source is not None:
+            source = source(context)
+            terms = component.queryMultiAdapter((source, request), ITerms)
+            if terms is not None:
+                termsList = [terms.getTerm(value) for value in source]
+                return [dict(token=t.token, title=t.title) for t in termsList]
+        return None
 
 
 class UrlField(Field):
