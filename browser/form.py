@@ -47,6 +47,7 @@ from cybertools.composer.schema.browser.common import schema_macros, schema_edit
 from cybertools.composer.schema.schema import FormState
 from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.format import toUnicode
 from loops.browser.node import NodeView
 from loops.browser.concept import ConceptRelationView
 from loops.common import adapted
@@ -154,7 +155,7 @@ class ObjectForm(NodeView):
         for k, v in data.items():
             #overwrite data with values from request.form
             if k in self.request.form:
-                data[k] = form[k]
+                data[k] = toUnicode(form[k])
         return data
 
     @Lazy
@@ -357,7 +358,7 @@ class CreateObjectPopup(CreateObjectForm):
         self.registerDojo()
         cm = self.controller.macros
         cm.register('css', identifier='popup.css', resourceName='popup.css',
-                    media='all', position=4)
+                    media='all', priority=90) #, position=4)
         jsCall = ('dojo.require("dojo.parser");'
                   'dojo.require("dijit.form.FilteringSelect");'
                   'dojo.require("dojox.data.QueryReadStore");')

@@ -17,7 +17,7 @@
                          title cell/description">
         <div class="legend">
           <b tal:content="cell/title" /><br />
-          <i tal:content="structure cell/renderedDescription" />
+          <i tal:content="structure cell/textRepresentation" />
         </div>
       </a>
     </div>
@@ -36,7 +36,7 @@
       <a tal:attributes="href cell/targetUrl">
         <b tal:content="cell/title" /></a><br />
       <tal:desc condition="cell/description">
-        <span tal:content="structure cell/renderedDescription" /></tal:desc>
+        <span tal:content="structure cell/textRepresentation" /></tal:desc>
       <br />
     </div>
   </tal:cell>
