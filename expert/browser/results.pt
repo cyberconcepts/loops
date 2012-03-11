@@ -42,6 +42,12 @@
 </metal:standard>
 
 
+<metal:right define-macro="center">
+  <td style="text-align: center"
+      tal:content="python:col.getDisplayValue(row)" />
+</metal:right>
+
+
 <metal:right define-macro="right">
   <td style="text-align: right"
       tal:content="python:col.getDisplayValue(row)" />
