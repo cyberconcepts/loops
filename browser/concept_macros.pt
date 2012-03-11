@@ -182,7 +182,7 @@
 <metal:resources define-macro="conceptresources">
     <div tal:attributes="class string:content-$level;
                          ondblclick python: item.openEditWindow('resources.html')"
-         tal:define="resources python: list(item.resources())"
+         tal:define="resources resources|python:list(item.resources())"
          tal:condition="resources">
       <h2 i18n:translate="">Resources</h2>
       <form method="post"
