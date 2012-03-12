@@ -387,8 +387,10 @@ class CreateConceptForm(CreateObjectForm):
             include.remove('subtype')
             parentType = self.target.conceptType
             subtypePred = self.conceptManager['issubtype']
+            tconcepts = (self.target.getChildren([subtypePred]) +
+                            parentType.getChildren([subtypePred]))
             types = [dict(token=ConceptTypeInfo(t).token, title=t.title)
-                        for t in parentType.getChildren([subtypePred])]
+                        for t in tconcepts]
         if include or include is None:
             return util.KeywordVocabulary(types + self.listTypes(include, ('hidden',)))
         return util.KeywordVocabulary(types)
