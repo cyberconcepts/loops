@@ -104,5 +104,6 @@ class ResultsView(NodeView):
     def displayedColumns(self):
         return self.reportInstance.getActiveOutputFields()
 
-    def getColumnRenderer(self, name):
-        return self.result_macros[name]
+    def getColumnRenderer(self, col):
+        return self.result_macros[col.renderer]
+

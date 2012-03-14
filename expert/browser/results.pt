@@ -24,13 +24,13 @@
     </tr>
     <tr tal:repeat="row results">
         <tal:column repeat="col results/displayedColumns">
-            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+            <metal:column use-macro="python:view.getColumnRenderer(col)" />
         </tal:column>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
         <tal:column repeat="col results/displayedColumns">
-            <metal:column use-macro="python:view.getColumnRenderer(col.renderer)" />
+            <metal:column use-macro="python:view.getColumnRenderer(col)" />
         </tal:column>
     </tr>
   </table>
