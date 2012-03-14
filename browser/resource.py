@@ -207,7 +207,8 @@ class ResourceView(BaseView):
         data = context.data
         if useAttachment:
             filename = adapted(self.context).localFilename or getName(self.context)
-            filename = NameChooser(getParent(self.context)).normalizeName(filename)
+            if not self.typeOptions('no_normalize_download_filename'):
+                filename = NameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         response.setHeader('Content-Length', len(data))

@@ -671,6 +671,8 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def xeditable(self):
+        if self.typeOptions('no_external_edit'):
+            return False
         ct = getattr(self.context, 'contentType', '')
         if not ct or ct in ('application/pdf', 'application/x-pdf'):
             return False
