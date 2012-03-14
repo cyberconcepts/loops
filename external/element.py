@@ -93,7 +93,7 @@ class ConceptElement(Element):
         formState = self.getInstance().applyTemplate(data=kw, ignoreValidation=True)
         # simple hack for resolving interface definition:
         pi = self.get('predicateInterface')
-        if pi is not None:
+        if pi:
             adapted(self.object).predicateInterface = resolve(pi)
 
     def getInstance(self, omit=['title']):

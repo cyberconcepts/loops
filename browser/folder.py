@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Elements for handling and presentation of pseudo folders.
-
-$Id$
 """
 
 
@@ -50,6 +48,7 @@ actions.register('editFolder', 'portlet', DialogAction,
 class FolderView(ConceptView):
 
     def getActions(self, category='concept', page=None, target=None):
+        # obsolete: define actions via type option
         if category == 'portlet':
             return actions.get(category, ['createFolder', 'editFolder'],
                                view=self, page=page, target=target)

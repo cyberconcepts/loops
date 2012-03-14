@@ -55,6 +55,8 @@
             layer="loops.browser.skin.Lobo" />
   <resource name="custom.css" file="lobo/custom.css"
             layer="loops.browser.skin.Lobo" />
+  <resource name="popup.css" file="lobo/popup.css"
+            layer="loops.browser.skin.Lobo" />
   <resource name="favicon.png" file="loops_favicon.png"
             layer="loops.browser.skin.Lobo" />
   <resource name="logo.png" file="loops_logo.png"

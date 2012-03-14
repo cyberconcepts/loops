@@ -1,0 +1,16 @@
+type(u'book', u'Buch', viewName=u'', typeInterface=u'',
+    options=u'action.portlet:create_subtype,edit_concept')
+type(u'page', u'Seite', viewName=u'', typeInterface=u'',
+    options=u'action.portlet:edit_concept')
+type(u'section', u'Kapitel', viewName=u'', typeInterface=u'',
+    options=u'action.portlet:create_subtype,edit_concept')
+
+concept(u'ispartof', u'is Part of', u'predicate', options=u'', predicateInterface=u'')
+concept(u'issubtype', u'is Subtype', u'predicate', options=u'', predicateInterface=u'')
+concept(u'maintext', u'Haupttext', u'documenttype')
+concept(u'quote', u'Zitat', u'documenttype')
+
+child(u'book', u'section', u'issubtype')
+child(u'section', u'section', u'issubtype')
+child(u'section', u'page', u'issubtype')
+child(u'system', u'personal_info', u'standard')

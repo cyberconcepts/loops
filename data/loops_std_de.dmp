@@ -1,3 +1,4 @@
+# types
 type(u'query', u'Abfrage', options=u'',
     typeInterface='loops.expert.concept.IQueryConcept', viewName=u'')
 type(u'task', u'Aufgabe', options=u'',
@@ -5,55 +6,84 @@ type(u'task', u'Aufgabe', options=u'',
 type(u'domain', u'Bereich', options=u'', typeInterface=u'', viewName=u'')
 type(u'classifier', u'Classifier', options=u'',
     typeInterface='loops.classifier.interfaces.IClassifier', viewName=u'classifier.html')
-type(u'documenttype', u'Document Type', options=u'', typeInterface=u'', viewName=u'')
+type(u'documenttype', u'Dokumentenart', options=u'', typeInterface=u'', viewName=u'')
 type(u'extcollection', u'External Collection', options=u'',
     typeInterface='loops.integrator.interfaces.IExternalCollection',
     viewName=u'collection.html')
+type(u'folder', u'Ordner', options=u'', typeInterface=u'', viewName=u'')
 type(u'glossaryitem', u'Glossareintrag', options=u'',
     typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'glossaryitem.html')
 type(u'media_asset', u'Media Asset',
     options=u'storage:varsubdir\nstorage_parameters:extfiles/sites_zzz\nasset_transform.minithumb: size(105)\nasset_transform.small: size(230)\nasset_transform.medium: size(480)', typeInterface='loops.media.interfaces.IMediaAsset', viewName=u'image_medium.html')
-type(u'note', u'Note', options=u'', typeInterface='loops.interfaces.INote',
+type(u'note', u'Notiz', options=u'', typeInterface='loops.interfaces.INote',
     viewName='note.html')
 type(u'person', u'Person', options=u'',
     typeInterface='loops.knowledge.interfaces.IPerson', viewName=u'')
-type(u'predicate', u'Predicate', options=u'',
+type(u'predicate', u'Prädikat', options=u'',
     typeInterface=u'loops.interfaces.IPredicate', viewName=u'')
 type(u'event', u'Termin', options=u'', typeInterface='loops.organize.interfaces.ITask',
     viewName=u'task.html')
 type(u'textdocument', u'Text', options=u'', typeInterface='loops.interfaces.ITextDocument', viewName=u'')
-type(u'topic', u'Thema', options=u'', typeInterface='loops.knowledge.interfaces.ITopic',
+type(u'topic', u'Thema', options=u'action.portlet:createTopic,editTopic',
+    typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
+type(u'type', u'Typ', options=u'', typeInterface='loops.interfaces.ITypeConcept',
     viewName=u'')
-type(u'type', u'Type', options=u'', typeInterface='loops.interfaces.ITypeConcept',
-    viewName=u'')
+
+# domains
+concept(u'general', u'Allgemein', u'domain')
+concept(u'system', u'System', u'domain')
+
+# predicates
 concept(u'depends', u'depends', u'predicate')
 concept(u'follows', u'follows', u'predicate')
-concept(u'general', u'Allgemein', u'domain')
-concept(u'glossary', u'Glossar', u'query', options=u'', viewName=u'glossary.html')
 concept(u'hasType', u'has Type', u'predicate')
 concept(u'ispartof', u'is Part of', u'predicate')
 concept(u'issubtype', u'is Subtype', u'predicate')
 concept(u'knows', u'knows', u'predicate')
 concept(u'ownedby', u'owned by', u'predicate')
-concept(u'personal_info', u'Pers\xf6nliche Information', u'query', options=u'',
-    viewName=u'personal_info.html')
 concept(u'provides', u'provides', u'predicate')
 concept(u'querytarget', u'is Query Target', u'predicate')
 concept(u'requires', u'requires', u'predicate')
-concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')
 concept(u'standard', u'subobject', u'predicate')
-concept(u'system', u'System', u'domain')
+
+# queries
+concept(u'events', u'Termine', u'query', options=u'delta:2',
+    viewName=u'list_events.html')
+concept(u'glossary', u'Glossar', u'query', options=u'', viewName=u'glossary.html')
+concept(u'personal_info', u'Pers\xf6nliche Informationen', u'query', options=u'',
+    viewName=u'personal_info.html')
+concept(u'participants', u'Teilnehmer', u'query', options=u'',
+    viewName=u'list_children.html')
+concept(u'recenct_changes', u'Aktuelle \xc4nderungen', u'query',
+    options=u'types:concept:*,resource:*',
+    viewName=u'recent_changes.html')
+concept(u'search', u'Suche', u'query', options=u'', viewName=u'search')
+concept(u'topics', u'Themen', u'query', options=u'action.portlet:createTopic',
+    viewName=u'list_children.html')
+
+# child assignments
 child(u'general', u'documenttype', u'standard')
 child(u'general', u'event', u'standard')
+child(u'general', u'events', u'standard')
+child(u'general', u'participants', u'standard')
+child(u'general', u'topics', u'standard')
 child(u'system', u'classifier', u'standard')
 child(u'system', u'extcollection', u'standard')
 child(u'system', u'issubtype', u'standard')
 child(u'system', u'media_asset', u'standard')
 child(u'system', u'personal_info', u'standard')
-node(u'home', u'Startseite', '', 'menu', body=u'Willkommen\n==========')
-node(u'participants', u'Teilnehmer', u'home', 'page', body=u'Teilnehmer\n==========',
-    target=u'concepts/person', viewName=u'listchildren')
-node(u'topics', u'Themen', u'home', 'page', body=u'Themen\n======',
-    target=u'concepts/topic', viewName=u'listchildren')
+child(u'topic', u'topic', u'issubtype', 1)
+
+resource(u'homepage', u'Willkommen', u'textdocument', contentType='text/restructured')
+resource(u'impressum', u'Impressum', u'textdocument', contentType='text/restructured')
+
+#nodes
+node(u'home', u'Startseite', '', 'menu')
+node(u'willkommen', u'Willkommen', u'home', u'text')
+node(u'willkommen', u'Willkommen', u'home/willkommen', u'text',
+    target=u'resources/homepage')
+node(u'participants', u'Teilnehmer', u'home', 'page', target=u'concepts/participants')
+node(u'topics', u'Themen', u'home', 'page', target=u'concepts/topics')
 node(u'glossary', u'Glossar', u'home', 'page', target=u'concepts/glossary')
 node(u'search', u'Suche', u'home', 'page', target=u'concepts/search')
+node(u'impressum', u'Impressum', u'home', u'info', target=u'resources/impressum')
