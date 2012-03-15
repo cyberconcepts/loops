@@ -33,11 +33,13 @@
             <td style="white-space: nowrap; vertical-align: top; width: 10%"
                 i18n:translate="">You are here:</td>
             <td>
-              <span style="white-space: nowrap"
-                tal:repeat="crumb crumbs">
-              <a tal:attributes="href crumb/url"
-                 tal:content="crumb/label" />
-              <span tal:condition="not:repeat/crumb/end"> > </span></span>
+              <span>
+                <span style="white-space: nowrap"
+                      tal:repeat="crumb crumbs">
+                  <a tal:attributes="href crumb/url"
+                      tal:content="crumb/label" />
+                  <tal:delimiter
+                    condition="not:repeat/crumb/end"> ></tal:delimiter></span> </span>
             </td>
           </tr>
         </table>

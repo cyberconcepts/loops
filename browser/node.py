@@ -117,8 +117,8 @@ class NodeView(BaseView):
                     break
                 data.insert(1, dict(label=p.title,
                                     url=absoluteURL(p, self.request)))
-            if self.virtualTarget:
-                data.extend(self.virtualTarget.breadcrumbs())
+        if self.virtualTarget:
+            data.extend(self.virtualTarget.breadcrumbs())
         return data
 
     def viewModes(self):
