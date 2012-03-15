@@ -61,6 +61,13 @@
        tal:content="value/title" /></td>
 </metal:target>
 
+<metal:standard define-macro="multiline">
+  <td tal:define="values python:col.getDisplayValues(row)">
+    <tal:values repeat="value values">
+      <span tal:replace="value" />
+    </tal:values>
+  </td>
+</metal:standard>
 
 <div metal:define-macro="subreport">
   <td>

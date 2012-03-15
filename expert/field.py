@@ -167,8 +167,18 @@ class TargetField(RelationField):
         return util.getObjectForUid(value)
 
 
-# sub-report stuff
+class MultiLineField(Field):
+    
+    renderer = 'multiline'
 
+    def getValue(self, row):
+        return self.getRawValue(row)
+
+    def getDisplayValues(self, row):
+        return self.getValue(row)
+
+
+# sub-report stuff
 class SubReport(ReportInstance):
 
     pass
