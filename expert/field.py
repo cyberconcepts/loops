@@ -187,4 +187,4 @@ class SubReportField(Field):
 
     def getValue(self, row):
         ri = self.getReportInstance(row)
-        return ResultSet(ri, ri.getResults())
+        return ri.getResults()
