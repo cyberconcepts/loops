@@ -280,9 +280,8 @@ We can now access the report using a results view.
   ...     for col in resultsView.displayedColumns:
   ...         print col.getDisplayValue(row),
   ...     print
-  {'url': 'http://127.0.0.1/loops/views/home/.36', 'title': u'loops Development'} []
-
-<cybertools.composer.report.result.ResultSet object ...>
+  {'url': 'http://127.0.0.1/loops/views/home/.36', 'title': u'loops Development'}
+  <cybertools.composer.report.result.ResultSet object ...>
 
 
 Fin de partie

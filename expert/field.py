@@ -93,7 +93,7 @@ class VocabularyField(Field):
             return value
         items = self.getVocabularyItems(row)
         for item in items:
-            if item['token'] == value:
+            if str(item['token']) == str(value):
                 return item['title']
 
     def getVocabularyItems(self, row):
