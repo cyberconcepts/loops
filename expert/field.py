@@ -168,7 +168,7 @@ class TargetField(RelationField):
 
 
 class MultiLineField(Field):
-    
+
     renderer = 'multiline'
 
     def getValue(self, row):
@@ -197,4 +197,4 @@ class SubReportField(Field):
 
     def getValue(self, row):
         ri = self.getReportInstance(row)
-        return ResultSet(ri, ri.getResults())
+        return ri.getResults()
