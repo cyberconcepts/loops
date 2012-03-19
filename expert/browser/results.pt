@@ -65,6 +65,9 @@
   <td tal:define="values python:col.getDisplayValues(row)">
     <tal:values repeat="value values">
       <span tal:replace="value" />
+      <span tal:condition="python: repeat['value'].index() < len(values)">
+        <br/>
+      </span>
     </tal:values>
   </td>
 </metal:standard>
