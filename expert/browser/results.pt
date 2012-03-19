@@ -23,57 +23,56 @@
             i18n:translate="" />
     </tr>
     <tr tal:repeat="row results">
-        <tal:column repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col)" />
-        </tal:column>
+        </td>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <tal:column repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col)" />
-        </tal:column>
+        </td>
     </tr>
   </table>
 </div>
 
 
 <metal:standard define-macro="standard">
-  <td tal:content="structure python:col.getDisplayValue(row)" />
+  <tal:column content="structure python:col.getDisplayValue(row)" />
 </metal:standard>
 
 
 <metal:right define-macro="center">
-  <td style="text-align: center"
-      tal:content="python:col.getDisplayValue(row)" />
+  <tal:column content="python:col.getDisplayValue(row)" />
 </metal:right>
 
 
 <metal:right define-macro="right">
-  <td style="text-align: right"
-      tal:content="python:col.getDisplayValue(row)" />
+  <tal:column content="python:col.getDisplayValue(row)" />
 </metal:right>
 
 
 <metal:target define-macro="target">
-  <td tal:define="value python:col.getDisplayValue(row)">
+  <tal:column define="value python:col.getDisplayValue(row)">
     <a tal:omit-tag="python:not getattr(item, 'showLinks', True) or not value['url']"
        tal:attributes="href value/url"
-       tal:content="value/title" /></td>
+       tal:content="value/title" />
+  </tal:column>
 </metal:target>
 
 <metal:standard define-macro="multiline">
-  <td tal:define="values python:col.getDisplayValues(row)">
+  <tal:column define="values python:col.getDisplayValues(row)">
     <tal:values repeat="value values">
       <span tal:replace="value" />
       <span tal:condition="python: repeat['value'].index() < len(values)">
         <br/>
       </span>
     </tal:values>
-  </td>
+  </tal:column>
 </metal:standard>
 
 <div metal:define-macro="subreport">
-  <td>
+  <tal:column>
     <table class="subreport"
            tal:define="results python:col.getValue(row)">
       <tr>
@@ -82,18 +81,18 @@
             i18n:translate="" />
       </tr>
       <tr tal:repeat="row results">
-        <tal:column repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col)" />
-        </tal:column>
+        </td>
       </tr>
       <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <tal:column repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns">
             <metal:column use-macro="python:view.getColumnRenderer(col)" />
-        </tal:column>
+        </td>
       </tr>
     </table>
-  </td>
+  </tal:column>
 </div>
 
 
