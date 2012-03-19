@@ -149,6 +149,9 @@ class RelationField(Field):
     def getValue(self, row):
         return self.getRawValue(row)
 
+    def getSortValue(self, row):
+        return self.getDisplayValue(row)['title']
+
     def getDisplayValue(self, row):
         value = self.getValue(row)
         if value is None:

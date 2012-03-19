@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Generic query functionality for retrieving stuff from a loops database.
-
-$Id$
 """
 
 from BTrees.IIBTree import IITreeSet
@@ -58,6 +56,10 @@ def Text(value):
 
 @implementer(IQuery)
 def Identifier(value):
+    if value.endswith('*'):
+        v1 = value[:-1]
+        v2 = value[:-1] + '\x7f'
+        return Between(identifierIndex, v1, v2)
     return Eq(identifierIndex, value)
 
 @implementer(IQuery)
