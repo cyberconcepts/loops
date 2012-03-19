@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -207,7 +207,9 @@ class ResourceView(BaseView):
         data = context.data
         if useAttachment:
             filename = adapted(self.context).localFilename or getName(self.context)
-            if not self.typeOptions('no_normalize_download_filename'):
+            if self.typeOptions('no_normalize_download_filename'):
+                filename = '"%s"' % filename
+            else:
                 filename = NameChooser(getParent(self.context)).normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)

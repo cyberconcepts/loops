@@ -93,7 +93,7 @@ class VocabularyField(Field):
             return value
         items = self.getVocabularyItems(row)
         for item in items:
-            if item['token'] == value:
+            if str(item['token']) == str(value):
                 return item['title']
 
     def getVocabularyItems(self, row):
@@ -168,7 +168,7 @@ class TargetField(RelationField):
 
 
 class MultiLineField(Field):
-    
+
     renderer = 'multiline'
 
     def getValue(self, row):
@@ -197,4 +197,4 @@ class SubReportField(Field):
 
     def getValue(self, row):
         ri = self.getReportInstance(row)
-        return ResultSet(ri, ri.getResults())
+        return ri.getResults()

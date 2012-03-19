@@ -130,18 +130,6 @@ state = Field('state', u'State',
                 description=u'The state of the work.',
                 executionSteps=['query', 'output'])
 
-# task/event report fields
-
-taskTitle = UrlField('title', u'Title',
-                description=u'The short description of the task.',
-                executionSteps=['output'])
-taskDescription = TextField('description', u'Description',
-                description=u'The long description of the task.',
-                executionSteps=['output'])
-workItems = SubReportField('workItems', u'Work Items',
-                description=u'A list of work items belonging to the task.',
-                executionSteps=['output'])
-
 
 # basic definitions and work report instance
 
@@ -248,6 +236,18 @@ class WorkReportInstance(ReportInstance):
 
 
 # meeting minutes
+
+taskTitle = UrlField('title', u'Title',
+                description=u'The short description of the task.',
+                executionSteps=['output'])
+taskDescription = TextField('description', u'Description',
+                description=u'The long description of the task.',
+                executionSteps=['output'])
+workItems = SubReportField('workItems', u'Work Items',
+                description=u'A list of work items belonging to the task.',
+                reportFactory=WorkReportInstance,
+                executionSteps=['output'])
+
 
 class TaskRow(BaseRow):
 
