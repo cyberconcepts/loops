@@ -95,5 +95,18 @@
   </tal:column>
 </div>
 
+<div metal:define-macro="container">
+    <tal:column define="values python:col.getDisplayValues(row)">
+    <table class="multivalue">
+      <tr>
+        <tal:values repeat="value values">
+          <td style="border:none;"
+              tal:content="value"></td>
+        </tal:values>
+      </tr>
+    </table>
+  </tal:column>
+</div>
+
 
 </html>
