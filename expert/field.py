@@ -47,6 +47,7 @@ class DecimalField(Field):
     format = 'decimal'
     pattern = u'#,##0.00;-#,##0.00'
     renderer = 'right'
+    coltextalign='right'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -202,15 +203,3 @@ class SubReportField(Field):
         ri = self.getReportInstance(row)
         return ri.getResults()
     
-
-class MultiValueField(Field):
-    """A Container for report fields to manage columns representing multiple fields
-    """
-    
-    renderer = 'container'
-
-    def getValue(self, row):
-        return self.getRawValue(row)
-
-    def getDisplayValues(self, row):
-        return self.getValue(row)
