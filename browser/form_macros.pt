@@ -229,12 +229,25 @@
 
 
 <metal:versioning define-macro="versioning"
-                  tal:define="versionInfo view/versionInfo"
+                  tal:define="versionInfo view/versionInfo;
+                              notVersioned view/versionable/notVersioned|nothing"
                   tal:condition="versionInfo">
       <tr>
-        <td colspan="5" i18n:translate="" class="headline">Versioning</td>
+        <td colspan="1" i18n:translate="" class="headline">Versioning</td>
+        <td colspan="4">
+          <span i18n:attributes="title"
+                title="Check this field if you want to suppress versioning for this resource.">
+            <input type="checkbox"
+                   name="version.not_versioned" id="version.not_versioned"
+                   value="not_versioned"
+                   tal:attributes="checked notVersioned" />
+            <label style="display: inline"
+                   for="version.not_versioned"><span i18n:translate="">
+              Suppress Versioning</span></label>
+          </span>
+        </td>
       </tr>
-      <tr>
+      <tr tal:condition="not:notVersioned">
         <td colspan="2">
           <span i18n:translate="">Version</span>:
           <span tal:content="versionInfo">1.1 (current, released)</span>

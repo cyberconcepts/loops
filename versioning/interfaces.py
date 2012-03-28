@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Versioning interfaces.
-
-$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -30,31 +28,34 @@ class IVersionable(Interface):
     """ An object that may exist in different versions.
     """
 
-    versionNumbers = Attribute(u'A tuple of version numbers for the context '
+    versionNumbers = Attribute('A tuple of version numbers for the context '
                         'object, with a number for each level')
 
-    variantIds = Attribute(u'A tuple of variant IDs (e.g. for language '
+    variantIds = Attribute('A tuple of variant IDs (e.g. for language '
                         'varuants) for the context object')
 
-    versionId = Attribute(u'A string identifying this version, e.g. 1.1_de, '
+    versionId = Attribute('A string identifying this version, e.g. 1.1_de, '
                         'derived from versionNumbers and variantIds')
 
-    master = Attribute(u'The object (master version) that should be used for access to '
+    master = Attribute('The object (master version) that should be used for access to '
                         'version-independent attributes and central '
                         'versioning metadata')
 
-    parent = Attribute(u'The version this one was created from')
+    parent = Attribute('The version this one was created from')
 
-    comment = Attribute(u'Somme informative text provided when creating '
+    comment = Attribute('Somme informative text provided when creating '
                         'this version')
 
     # attributes taken from the master version:
 
-    versions = Attribute(u'A dictionary of all versions of this object')
+    versions = Attribute('A dictionary of all versions of this object')
 
-    currentVersion = Attribute(u'The default version to be used for editing')
+    currentVersion = Attribute('The default version to be used for editing')
 
-    releasedVersion = Attribute(u'The default version to be used for viewing')
+    releasedVersion = Attribute('The default version to be used for viewing')
+
+    notVersioned = Attribute('A boolean that is True if this object should '
+                    'not be versioned')
 
     def createVersion(level=1):
         """ Create a copy of the context object as a new version and return it.

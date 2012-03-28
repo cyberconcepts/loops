@@ -642,8 +642,11 @@ class EditObject(FormController, I18NView):
 
     def checkCreateVersion(self, obj):
         form = self.request.form
-        if form.get('version.create'):
-            versionable = IVersionable(obj)
+        versionable = IVersionable(obj)
+        notVersioned = bool(form.get('version.not_versioned'))
+        if notVersioned != versionable.notVersioned:
+            versionable.notVersioned = notVersioned
+        if not notVersioned and form.get('version.create'):
             level = int(form.get('version.level', 0))
             version = versionable.createVersion(level)
             notify(ObjectCreatedEvent(version))

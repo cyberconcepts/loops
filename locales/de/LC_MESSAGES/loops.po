@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-02-16 12:00 CET\n"
+"PO-Revision-Date: 2012-03-28 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -436,6 +436,12 @@ msgstr "Suchbegriff"
 
 msgid "Select if you want to create a new version"
 msgstr "Bitte markieren, wenn Sie eine neue Version anlegen möchten"
+
+msgid "Suppress Versioning"
+msgstr "Keine Versionierung"
+
+msgid "Check this field if you want to suppress versioning for this resource."
+msgstr "Bitte markieren, wenn diese Ressource nicht versioniert werden soll."
 
 msgid "Search text"
 msgstr "Suchtext"
