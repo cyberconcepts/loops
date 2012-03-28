@@ -144,6 +144,7 @@ class ConceptView(BaseConceptView):
             adImg = adapted(r)
             showInfo = adImg.showInfo and adImg.metaInfo
             return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        description=r.description,
                         url=url, cssClass=self.parentView.imageCssClass,
                         showInfo=showInfo)
 
@@ -313,6 +314,7 @@ class ConceptRelationView(BaseConceptRelationView, ConceptView):
             adImg = adapted(r)
             showInfo = adImg.showInfo and adImg.metaInfo
             return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        description=r.description,
                         url=url, cssClass=self.parentView.imageCssClass,
                         showInfo=showInfo)
 
@@ -347,6 +349,7 @@ class ResourceView(BaseResourceView):
         adImg = adapted(self.context)
         showInfo = adImg.showInfo and adImg.metaInfo
         return dict(src=src, fullImageUrl=fullSrc, title=self.context.title,
+                    description=self.context.description,
                     url=url, cssClass=self.parentView.imageCssClass,
                     showInfo=showInfo)
 

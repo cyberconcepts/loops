@@ -83,7 +83,8 @@
                          style cell/style">
         <metal:image use-macro="item/macros/image" />
         <div class="legend">
-          <a tal:attributes="href cell/targetUrl"><b tal:content="cell/title" /></a>
+          <a tal:attributes="href cell/targetUrl">
+            <b tal:content="python: cell.description or cell.title" /></a>
           <span tal:condition="cell/img/showInfo|nothing">
             <a tal:define="url string:${cell/img/url}/meta_info.html"
                tal:attributes="href url;
@@ -93,7 +94,7 @@
                     string:${controller/resourceBase}/cybertools.icons/info.png" />
             </a></span>
           <br />
-          <i tal:content="cell/description" />
+          <!--<i tal:content="cell/description" />-->
         </div>
     </div>
   </tal:cell>
@@ -104,11 +105,10 @@
 
 <metal:image define-macro="image">
   <tal:img condition="cell/img">
-    <a title="Information about this object."
-       dojoType="dojox.image.Lightbox" group="mediasset"
+    <a dojoType="dojox.image.Lightbox" group="mediasset"
        i18n:attributes="title"
        tal:attributes="href cell/img/fullImageUrl;
-                       title cell/img/title">
+                       title python: cell.img['description'] or cell.img['title']">
       <img tal:condition="showImageLink|python:False"
            tal:attributes="src cell/img/src;
                            class cell/img/cssClass;
