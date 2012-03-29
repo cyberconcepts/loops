@@ -103,6 +103,11 @@ class ReportInstance(BaseReport):
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
                          sortCriteria=self.getSortCriteria(), queryCriteria=qc)
+        
+    def getCategoryResults(self):
+        result = list(self.selectObjects(None))
+        return ResultSet(self, result, rowFactory=self.categoryRowFactory,
+                         filterDublicate=True)
 
     def selectObjects(self, parts):
         # to be implemented by subclass
