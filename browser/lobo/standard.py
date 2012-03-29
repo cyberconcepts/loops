@@ -246,6 +246,13 @@ class List2(BasePart):
     gridPattern = [['span-4 clear', 'span-2 last']]
 
 
+class List3(BasePart):
+
+    macroName = 'list3'
+    imageSize = 'large'
+    gridPattern = [['span-6 clear']]
+
+
 class Header0(BasePart):
 
     macroName = 'header'
