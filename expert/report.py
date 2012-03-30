@@ -30,7 +30,7 @@ from cybertools.composer.report.base import Report as BaseReport
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.composer.report.interfaces import IReport as IBaseReport
 from cybertools.composer.report.interfaces import IReportParams
-from cybertools.composer.report.result import ResultSet, Row
+from cybertools.composer.report.result import CombinedResultSet, ResultSet, Row
 from cybertools.util.jeep import Jeep
 from loops.common import AdapterBase
 from loops.interfaces import ILoopsAdapter
@@ -104,10 +104,14 @@ class ReportInstance(BaseReport):
         return ResultSet(self, result, rowFactory=self.rowFactory,
                          sortCriteria=self.getSortCriteria(), queryCriteria=qc)
         
-    def getCategoryResults(self):
+    def getCategories(self):
         result = list(self.selectObjects(None))
         return ResultSet(self, result, rowFactory=self.categoryRowFactory,
                          filterDublicate=True)
+        
+    def getCombinedResults(self):
+        return CombinedResultSet(self, self.getCategories(), self.getResults())
+        
 
     def selectObjects(self, parts):
         # to be implemented by subclass
