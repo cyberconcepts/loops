@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -103,15 +103,14 @@ class ReportInstance(BaseReport):
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
                          sortCriteria=self.getSortCriteria(), queryCriteria=qc)
-        
+
     def getCategories(self):
         result = list(self.selectObjects(None))
         return ResultSet(self, result, rowFactory=self.categoryRowFactory,
-                         filterDublicate=True)
-        
+                         filterDuplicates=True)
+
     def getCombinedResults(self):
         return CombinedResultSet(self, self.getCategories(), self.getResults())
-        
 
     def selectObjects(self, parts):
         # to be implemented by subclass
