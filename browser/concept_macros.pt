@@ -239,7 +239,7 @@
                 <tal:version tal:condition="view/useVersioning">
                   <td class="center"
                       tal:define="versionId related/versionId">
-                    <a href="#"
+                    <a tal:condition="not:related/versionable/notVersioned|nothing"
                        tal:content="versionId"
                        tal:omit-tag="python: versionId=='1.1'"
                        tal:define="url python: view.getUrlForTarget(related)"

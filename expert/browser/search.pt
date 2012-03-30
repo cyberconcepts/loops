@@ -129,7 +129,7 @@
                   <tal:version condition="view/useVersioning">
                     <td class="center"
                         tal:define="versionId row/versionId|string:">
-                      <a href="#"
+                      <a tal:condition="not:row/versionable/notVersioned|nothing"
                          tal:content="versionId"
                          tal:omit-tag="python: versionId and versionId=='1.1'"
                          tal:attributes="href
