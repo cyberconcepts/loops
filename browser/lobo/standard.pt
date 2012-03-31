@@ -152,7 +152,8 @@
       <img tal:attributes="src string:$resourceBase/cybertools.icons/table.png" />
     </a>
   </h1>
-  <div tal:condition="cell/description">
+  <div class="head-description"
+       tal:condition="cell/description">
     <i tal:content="structure cell/renderedDescription" />
     &nbsp;</div>
 </metal:block>
