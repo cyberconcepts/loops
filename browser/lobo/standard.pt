@@ -17,7 +17,7 @@
                          title cell/description">
         <div class="legend">
           <b tal:content="cell/title" /><br />
-          <i tal:content="structure cell/textRepresentation" />
+          <span tal:content="structure cell/textRepresentation" />
         </div>
       </a>
     </div>
@@ -154,7 +154,7 @@
   </h1>
   <div class="head-description"
        tal:condition="cell/description">
-    <i tal:content="structure cell/renderedDescription" />
+    <span tal:content="structure cell/renderedDescription" />
     &nbsp;</div>
 </metal:block>
 
