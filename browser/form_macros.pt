@@ -1,6 +1,5 @@
 <html i18n:domain="loops">
-<!-- macros for rendering edit/create forms
-     $Id$ -->
+<!-- macros for rendering edit/create forms -->
 
 
 <form metal:define-macro="edit" i18n:domain="loops"
@@ -81,7 +80,9 @@
         tal:define="qualifier request/qualifier|view/qualifier|string:resource;
                     innerForm request/inner_form|view/inner_form|string:inner_form.html;
                     typeToken view/typeToken;
-                    fixedType view/fixedType">
+                    fixedType view/fixedType;
+                    langInfo view/languageInfo;
+                    language langInfo/language">
     <div dojoType="dijit.layout.ContentPane" region="center"
          tal:omit-tag="not:view/isInnerHtml">
       <input type="hidden" name="form.action" value="create"
