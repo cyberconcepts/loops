@@ -52,7 +52,7 @@ the default language using a LanguageInfo object that is similar to a view.
   >>> from loops.i18n.browser import LanguageInfo
   >>> langInfo = LanguageInfo(topic01, TestRequest())
   >>> langInfo.availableLanguages
-  []
+  <AutoElement 'languages'>
   >>> langInfo.language is None
   True
   >>> langInfo.defaultLanguage is None

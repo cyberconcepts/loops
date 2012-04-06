@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View extension for support of i18n content.
-
-$Id$
 """
 
 from zope import interface, component
@@ -29,6 +27,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.negotiator import negotiator
 
+from cybertools.meta.interfaces import IOptions
 from loops.common import adapted
 
 
@@ -50,12 +49,7 @@ class LanguageInfo(object):
 
     @Lazy
     def availableLanguages(self):
-        for opt in self.loopsRoot.options:
-            if opt.startswith('languages:'):
-                return opt[len('languages:'):].split(',')
-        return []
-        # new implementation:
-        # return IOptions(self.context).i18n.languages
+        return IOptions(self.loopsRoot).languages
 
     @Lazy
     def defaultLanguage(self):
@@ -64,10 +58,12 @@ class LanguageInfo(object):
 
     @Lazy
     def language(self):
+        available = self.availableLanguages or ('en', 'de')
+        if len(available) == 1:
+            return available[0]
         lang = self.request.get('loops.language')
-        if lang is not None and lang in self.availableLanguages:
+        if lang is not None and lang in available:
             return lang
-        available = self.availableLanguages or ('en', 'de',)
         return (negotiator.getLanguage(available, self.request)
                 or self.defaultLanguage)
 
@@ -95,7 +91,7 @@ class I18NView(object):
 
     def checkLanguage(self):
         session = ISession(self.request)[packageId]
-        lang = session.get('language')
+        lang = session.get('language') or self.languageInfo.language
         if lang:
             self.setLanguage(lang)
 
