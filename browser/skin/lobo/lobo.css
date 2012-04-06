@@ -260,12 +260,7 @@ fieldset.box td {
 
 .top-actions {
     position: absolute;
-    top: 1em;
-}
-
-.quicksearch {
-    position: absolute;
-    top: 0.5em;
+    top: 30px;
 }
 
 .quicksearch input {
@@ -274,13 +269,13 @@ fieldset.box td {
 
 .language-switch {
     position: absolute;
-    top: 2.5em;
+    top: 55px;
 }
 
 .page-actions {
     position: absolute;
-    top: 0.8em;
-    margin-left: 18.5em;
+    top: 55px;
+    margin-left: 210px;
 }
 
 .top image {
