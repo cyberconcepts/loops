@@ -6,8 +6,24 @@
 
 /* page sections */
 
+body {
+    background-color: #f8f8f8;
+}
+
+.container {
+    padding: 15px 20px 20px 20px;
+    background-color: #ffffff;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #d0d0d0;
+}
+
 #portlets {
     margin-top: 1em;
+}
+
+.head-description, .legend {
+    font-style: italic;
 }
 
 ul.view-modes {
@@ -244,12 +260,7 @@ fieldset.box td {
 
 .top-actions {
     position: absolute;
-    top: 1em;
-}
-
-.quicksearch {
-    position: absolute;
-    top: 0.5em;
+    top: 30px;
 }
 
 .quicksearch input {
@@ -258,13 +269,13 @@ fieldset.box td {
 
 .language-switch {
     position: absolute;
-    top: 2.5em;
+    top: 55px;
 }
 
 .page-actions {
     position: absolute;
-    top: 0.8em;
-    margin-left: 18.5em;
+    top: 55px;
+    margin-left: 210px;
 }
 
 .top image {

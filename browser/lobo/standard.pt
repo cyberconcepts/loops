@@ -17,7 +17,7 @@
                          title cell/description">
         <div class="legend">
           <b tal:content="cell/title" /><br />
-          <i tal:content="structure cell/textRepresentation" />
+          <span tal:content="structure cell/textRepresentation" />
         </div>
       </a>
     </div>
@@ -38,6 +38,16 @@
       <tal:desc condition="cell/description">
         <span tal:content="structure cell/textRepresentation" /></tal:desc>
       <br />
+    </div>
+  </tal:cell>
+</metal:block>
+
+
+<metal:block define-macro="list3">
+  <tal:cell repeat="cell part/getChildren">
+    <div tal:condition="cell/img"
+         tal:attributes="class python:cell.cssClass[0]">
+      <metal:image use-macro="item/macros/image" />
     </div>
   </tal:cell>
 </metal:block>
@@ -83,7 +93,8 @@
                          style cell/style">
         <metal:image use-macro="item/macros/image" />
         <div class="legend">
-          <a tal:attributes="href cell/targetUrl"><b tal:content="cell/title" /></a>
+          <a tal:attributes="href cell/targetUrl">
+            <b tal:content="python: cell.description or cell.title" /></a>
           <span tal:condition="cell/img/showInfo|nothing">
             <a tal:define="url string:${cell/img/url}/meta_info.html"
                tal:attributes="href url;
@@ -93,7 +104,7 @@
                     string:${controller/resourceBase}/cybertools.icons/info.png" />
             </a></span>
           <br />
-          <i tal:content="cell/description" />
+          <!--<i tal:content="cell/description" />-->
         </div>
     </div>
   </tal:cell>
@@ -104,11 +115,10 @@
 
 <metal:image define-macro="image">
   <tal:img condition="cell/img">
-    <a title="Information about this object."
-       dojoType="dojox.image.Lightbox" group="mediasset"
+    <a dojoType="dojox.image.Lightbox" group="mediasset"
        i18n:attributes="title"
        tal:attributes="href cell/img/fullImageUrl;
-                       title cell/img/title">
+                       title python: cell.img['description'] or cell.img['title']">
       <img tal:condition="showImageLink|python:False"
            tal:attributes="src cell/img/src;
                            class cell/img/cssClass;
@@ -142,8 +152,9 @@
       <img tal:attributes="src string:$resourceBase/cybertools.icons/table.png" />
     </a>
   </h1>
-  <div tal:condition="cell/description">
-    <i tal:content="structure cell/renderedDescription" />
+  <div class="head-description"
+       tal:condition="cell/description">
+    <span tal:content="structure cell/renderedDescription" />
     &nbsp;</div>
 </metal:block>
 

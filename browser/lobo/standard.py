@@ -144,6 +144,7 @@ class ConceptView(BaseConceptView):
             adImg = adapted(r)
             showInfo = adImg.showInfo and adImg.metaInfo
             return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        description=r.description,
                         url=url, cssClass=self.parentView.imageCssClass,
                         showInfo=showInfo)
 
@@ -245,6 +246,13 @@ class List2(BasePart):
     gridPattern = [['span-4 clear', 'span-2 last']]
 
 
+class List3(BasePart):
+
+    macroName = 'list3'
+    imageSize = 'large'
+    gridPattern = [['span-6 clear']]
+
+
 class Header0(BasePart):
 
     macroName = 'header'
@@ -313,6 +321,7 @@ class ConceptRelationView(BaseConceptRelationView, ConceptView):
             adImg = adapted(r)
             showInfo = adImg.showInfo and adImg.metaInfo
             return dict(src=src, fullImageUrl=fullSrc, title=r.title,
+                        description=r.description,
                         url=url, cssClass=self.parentView.imageCssClass,
                         showInfo=showInfo)
 
@@ -347,6 +356,7 @@ class ResourceView(BaseResourceView):
         adImg = adapted(self.context)
         showInfo = adImg.showInfo and adImg.metaInfo
         return dict(src=src, fullImageUrl=fullSrc, title=self.context.title,
+                    description=self.context.description,
                     url=url, cssClass=self.parentView.imageCssClass,
                     showInfo=showInfo)
 

@@ -66,17 +66,16 @@
     <p><i tal:content="structure item/renderedDescription">Description</i>&nbsp;</p>
     <p>
       <span class="button">
-        <a href="#"
-           i18n:translate=""
+        <a i18n:translate=""
            tal:attributes="href
                 string:${view/virtualTargetUrl}/download.html?version=this">
           Download
         </a>
       </span>
       <span class="button"
-            tal:condition="item/viewable | nothing">
-        <a href="#"
-           i18n:translate=""
+            tal:define="viewable item/viewable|nothing"
+            tal:condition="python: viewable and not view.typeOptions('no_view_button')">
+        <a i18n:translate=""
            tal:attributes="href
                 string:${view/virtualTargetUrl}/view?version=this">
           View
@@ -84,7 +83,7 @@
       </span>
       <span class="button"
             tal:condition="item/xeditable">
-        <a href="#" title="Edit with External Editor"
+        <a title="Edit with External Editor"
            i18n:translate=""
            tal:define="url view/virtualTargetUrl"
            tal:attributes="href string:$url/external_edit?version=this">

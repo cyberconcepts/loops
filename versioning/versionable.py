@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Utilities for managing version informations.
-
-$Id$
 """
 
 from BTrees.OOBTree import OOBTree
@@ -128,6 +126,13 @@ class VersionableResource(object):
     def releasedVersion(self):
         m = self.versionableMaster
         return self.versionableMaster.getVersioningAttribute('releasedVersion', None)
+
+    def getNotVersioned(self):
+        m = self.versionableMaster
+        return self.versionableMaster.getVersioningAttribute('notVersioned', False)
+    def setNotVersioned(self, value):
+        self.versionableMaster.setVersioningAttribute('notVersioned', bool(value))
+    notVersioned = property(getNotVersioned, setNotVersioned)
 
     def createVersionObject(self, versionNumbers, variantIds, comment=u''):
         versionableMaster = self.versionableMaster
