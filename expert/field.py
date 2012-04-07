@@ -203,12 +203,3 @@ class SubReportField(Field):
         ri = self.getReportInstance(row)
         return ri.getResults()
     
-    def getCategoryValue(self, row):
-        ri = self.getReportInstance(row)
-        return ri.getCategories()
-
-    def getCombinedValue(self, row):
-        ri = self.getReportInstance(row)
-        return ri.getCombinedResults()
-
-    
