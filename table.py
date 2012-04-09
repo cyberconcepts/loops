@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.grid.interfaces import KeyTable
+from cybertools.composer.interfaces import IInstance
 from loops.common import AdapterBase, adapted, baseObject
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
@@ -111,8 +112,10 @@ class DataTableSourceBinder(object):
         self.tableName = tableName
 
     def __call__(self, instance):
-        #context = baseObject(instance.context)
-        context = instance.view.nodeView.context
+        if IInstance.providedBy(instance):
+            context = instance.view.nodeView.context
+        else:
+            context = baseObject(instance.context)
         dt = context.getLoopsRoot().getConceptManager()[self.tableName]
         return DataTableSourceList(adapted(dt))
 
