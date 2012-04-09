@@ -39,7 +39,17 @@ class TextField(Field):
 
     def getDisplayValue(self, row):
         value = self.getValue(row)
-        return row.parent.context.view.renderText(value, self.format)
+        text = row.parent.context.view.renderText(value, self.format)
+        text = self.removeTopSpacing(text)
+        return text
+
+    def removeTopSpacing(self, text):
+        styleInfo = u' style="margin-top: 0"'
+        for tag in (u'<p', u'<ol', u'<ul'):
+            if text.startswith(tag):
+                text = tag + styleInfo + text[len(tag):]
+                break
+        return text
 
 
 class DecimalField(Field):
