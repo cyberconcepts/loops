@@ -77,7 +77,7 @@ class ReportInstance(BaseReport):
     adapts(IReport)
 
     rowFactory = Row
-    headerRowFactory = Row
+    #headerRowFactory = Row
 
     view = None     # set upon creation
 
@@ -103,7 +103,6 @@ class ReportInstance(BaseReport):
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
-                         headerRowFactory=self.headerRowFactory,
                          sortCriteria=self.getSortCriteria(), queryCriteria=qc)
     def selectObjects(self, parts):
         # to be implemented by subclass

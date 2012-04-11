@@ -179,7 +179,10 @@ class MultiLineField(Field):
         return self.getRawValue(row)
 
     def getDisplayValues(self, row):
-        return self.getValue(row)
+        value = self.getValue(row)
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        return value
 
 
 # sub-report stuff
