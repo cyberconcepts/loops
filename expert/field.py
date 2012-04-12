@@ -47,7 +47,7 @@ class DecimalField(Field):
     format = 'decimal'
     pattern = u'#,##0.00;-#,##0.00'
     renderer = 'right'
-    coltextalign='right'
+    style = {'text-align':'right'}
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
