@@ -25,7 +25,7 @@ from zope import component
 from zope.i18n.locales import locales
 from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
-from cybertools.composer.report.field import Field
+from cybertools.composer.report.field import Field, TableCellStyle
 from cybertools.composer.report.result import ResultSet
 from cybertools.util.date import timeStamp2Date
 from loops.common import baseObject
@@ -47,7 +47,9 @@ class DecimalField(Field):
     format = 'decimal'
     pattern = u'#,##0.00;-#,##0.00'
     renderer = 'right'
-    style = {'text-align':'right'}
+    styleData = {'text-align':'right'}
+    decimalStyleData = dict(Field.style.data, **styleData)
+    style = TableCellStyle(**decimalStyleData)
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
