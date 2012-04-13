@@ -48,8 +48,8 @@ class DecimalField(Field):
     pattern = u'#,##0.00;-#,##0.00'
     renderer = 'right'
     styleData = {'text-align':'right'}
-    decimalStyleData = dict(Field.style.data, **styleData)
-    style = TableCellStyle(**decimalStyleData)
+    styleData = dict(Field.style.data, **styleData)
+    style = TableCellStyle(**styleData)
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
