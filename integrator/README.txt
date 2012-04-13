@@ -189,7 +189,7 @@ to the external system:
   >>> aMail.data
   u'<p><b>Blogging from ...</b><br />\n'
   >>> aMail.externalAddress
-  u'imap://jim@merz12/20081208171745.e4ce2xm96cco80cg@cy55.de'
+  u'imap://jim@.../20081208171745.e4ce2xm96cco80cg@cy55.de'
 
 
 Uploading Resources with HTTP PUT Requests
