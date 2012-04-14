@@ -71,18 +71,19 @@
 </form>
 
 
-<metal:block define-macro="create" i18n:domain="loops">
- <div dojoType="dijit.layout.BorderContainer"
+<form metal:define-macro="create" i18n:domain="loops"
+      method="post" enctype="multipart/form-data"
+      id="dialog_form" class="dialog"
+      dojoType="dijit.form.Form"
+      tal:define="qualifier request/qualifier|view/qualifier|string:resource;
+                  innerForm request/inner_form|view/inner_form|string:inner_form.html;
+                  typeToken view/typeToken;
+                  fixedType view/fixedType;
+                  langInfo view/languageInfo;
+                  language langInfo/language">
+  <div dojoType="dijit.layout.BorderContainer"
        style="width: 70em; height: 600px"
        tal:omit-tag="not:view/isInnerHtml">
-  <form method="post" enctype="multipart/form-data"
-        id="dialog_form" class="dialog"
-        tal:define="qualifier request/qualifier|view/qualifier|string:resource;
-                    innerForm request/inner_form|view/inner_form|string:inner_form.html;
-                    typeToken view/typeToken;
-                    fixedType view/fixedType;
-                    langInfo view/languageInfo;
-                    language langInfo/language">
     <div dojoType="dijit.layout.ContentPane" region="center"
          tal:omit-tag="not:view/isInnerHtml">
       <input type="hidden" name="form.action" value="create"
@@ -113,6 +114,7 @@
                      tal:condition="fixedType"
                      tal:attributes="value typeToken" />
               <script type="text/javascript"
+                      tal:condition="not:fixedType"
                       tal:content="string:replaceFieldsNode(
                                     'form.fields', 'form.type',
                                     '${view/virtualTargetUrl}/$innerForm')">
@@ -135,9 +137,8 @@
       </table>
     </div>
     <div metal:use-macro="view/template/macros/buttons" />
-  </form>
- </div>
-</metal:block>
+  </div>
+</form>
 
 
 <metal:assignments define-macro="assignments"
