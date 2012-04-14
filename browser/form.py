@@ -149,6 +149,9 @@ class ObjectForm(NodeView):
 
     @Lazy
     def data(self):
+        return self.getData()
+
+    def getData(self):
         instance = self.instance
         data = instance.applyTemplate(mode='edit')
         form = self.request.form

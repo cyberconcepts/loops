@@ -64,6 +64,10 @@ class LanguageInfo(object):
         lang = self.request.get('loops.language')
         if lang is not None and lang in available:
             return lang
+        session = ISession(self.request)[packageId]
+        lang = session.get('language')
+        if lang is not None and lang in available:
+            return lang
         return (negotiator.getLanguage(available, self.request)
                 or self.defaultLanguage)
 
