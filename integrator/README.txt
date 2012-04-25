@@ -231,7 +231,7 @@ Extracting Document Properties from MS Office Files
   >>> path = os.path.join(dataDir, 'office')
   >>> fn = os.path.join(path, 'example.docx')
   >>> os.path.getsize(fn)
-  20337L
+  20337...
 
   >>> officeFile = addAndConfigureObject(resources, Resource, 'test.docx',
   ...                    title=u'Example Word File', resourceType=tOfficeFile,
