@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Member registration adapter(s).
-
-$Id$
 """
 
 from zope import interface, component, schema
@@ -65,14 +63,16 @@ class MemberRegistrationManager(object):
         self.context = context
 
     def register(self, userId, password, lastName, firstName=u'',
-                 groups=[], useExisting=False, **kw):
+                 groups=[], useExisting=False, pfName=None, **kw):
         concepts = self.context.getConceptManager()
         personType = adapted(concepts[self.person_typeName])
         options = IOptions(personType)
-        pfName = options(self.principalfolder_key,
-                         (self.default_principalfolder,))[0]
+        if pfName is None:
+            pfName = options(self.principalfolder_key,
+                             (self.default_principalfolder,))[0]
         self.createPrincipal(pfName, userId, password, lastName, firstName)
-        groups = options(self.groups_key, ())
+        if not groups:
+            groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)
         self.createPersonForPrincipal(pfName, userId, lastName, firstName,
                                       useExisting, **kw)

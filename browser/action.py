@@ -81,7 +81,7 @@ class DialogAction(Action):
 
     @Lazy
     def onClick(self):
-        urlParams = dict(dialog=self.dialogName)
+        urlParams = dict(dialog=self.dialogName, version='this')
         if self.qualifier:
             urlParams['qualifier'] = self.qualifier
         if self.typeToken:
