@@ -11,7 +11,8 @@
 <metal:part define-macro="text">
   <tal:cell repeat="cell part/getResources">
     <div tal:attributes="class cell/cssClass">
-        <span tal:content="structure cell/view/render" />
+      <h3 tal:content="cell/title" />
+      <span tal:content="structure cell/view/render" />
     </div>
   </tal:cell>
 </metal:part>

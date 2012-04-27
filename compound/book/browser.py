@@ -39,8 +39,8 @@ book_template = ViewPageTemplateFile('view_macros.pt')
 class PageLayout(standard.Layout):
 
     def getParts(self):
-        parts = ['headline', 'keyquestions', 'maintext', 
-                 'story', 'usecase', 'quote']
+        parts = ['headline', 'keyquestions', 'quote', 'maintext', 
+                 'story', 'usecase']
         return self.getPartViews(parts)
 
 
@@ -69,3 +69,24 @@ class Headline(PagePart, standard.Header2):
 class MainText(PagePart, standard.BasePart):
 
     partName = 'maintext'
+
+
+class KeyQuestions(PagePart, standard.BasePart):
+
+    partName = 'keyquestions'
+
+
+class Story(PagePart, standard.BasePart):
+
+    partName = 'story'
+
+
+class UseCase(PagePart, standard.BasePart):
+
+    partName = 'usecase'
+
+
+class Quote(PagePart, standard.BasePart):
+
+    partName = 'quote'
+    gridPattern = ['span-2 last']

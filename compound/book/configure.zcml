@@ -36,11 +36,43 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="lobo_keyquestions"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.KeyQuestions"
+        permission="zope.View" />
+
+  <zope:adapter
         name="lobo_maintext"
         for="loops.compound.book.interfaces.IPage
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.compound.book.browser.MainText"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_story"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.Story"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_usecase"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.UseCase"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_quote"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.Quote"
         permission="zope.View" />
 
 </configure>
