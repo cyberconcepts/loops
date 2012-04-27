@@ -1,0 +1,46 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <!-- type adapters -->
+
+  <zope:adapter factory="loops.compound.book.base.Page" 
+                provides="loops.compound.book.interfaces.IPage"
+                trusted="True" />
+  <zope:class class="loops.compound.book.base.Page">
+    <require permission="zope.View"
+             interface="loops.compound.book.interfaces.IPage" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.compound.book.interfaces.IPage" />
+  </zope:class>
+
+  <!-- Views -->
+
+  <zope:adapter
+        name="page_layout"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.PageLayout"
+        permission="zope.View" />
+
+  <!-- parts -->
+
+  <zope:adapter
+        name="lobo_headline"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.Headline"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="lobo_maintext"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.MainText"
+        permission="zope.View" />
+
+</configure>
