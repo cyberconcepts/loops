@@ -480,6 +480,7 @@
   <include package=".browser" />
   <include package=".classifier" />
   <include package=".compound.blog" />
+  <include package=".compound.book" />
   <include package=".compound.microart" />
   <include package=".config" />
   <include package=".constraint" />
@@ -492,7 +493,6 @@
   <include package=".media" />
   <include package=".organize" />
   <include package=".rest" />
-  <!--<include package=".search" />-->
   <include package=".security" />
   <include package=".system" />
   <include package=".versioning" />

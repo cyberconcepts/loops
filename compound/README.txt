@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
   >>> from zope import component
   >>> from zope.traversing.api import getName
 
@@ -347,6 +345,17 @@ Micro Articles
   u'Organizational knowledge is not visible.'
   >>> adMa01.story
   u'Systemic KM talks about organizational knowledge.'
+
+
+Books, Sections, and Pages
+==========================
+
+  >>> import os
+  >>> from loops.setup import importData
+  >>> importPath = os.path.join(os.path.dirname(__file__), 'book')
+  >>> importData(loopsRoot, importPath, 'loops_book_de.dmp')
+
+  >>> from loops.compound.book.browser import PageLayout
 
 
 Fin de partie

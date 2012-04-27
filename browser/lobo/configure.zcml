@@ -17,7 +17,7 @@
 
   <zope:adapter
         name="lobo_g3"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.Grid3"
@@ -25,7 +25,7 @@
 
   <zope:adapter
         name="lobo_lt"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.ListThumbs"
@@ -33,7 +33,7 @@
 
   <zope:adapter
         name="lobo_l1"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.List1"
@@ -41,7 +41,7 @@
 
   <zope:adapter
         name="lobo_l3"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.List3"
@@ -49,7 +49,7 @@
 
   <zope:adapter
         name="lobo_l2"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.List2"
@@ -57,7 +57,7 @@
 
   <zope:adapter
         name="lobo_ht"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.HeaderThumbs"
@@ -65,7 +65,7 @@
 
   <zope:adapter
         name="lobo_h0"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.Header0"
@@ -73,7 +73,7 @@
 
   <zope:adapter
         name="lobo_h1"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.Header1"
@@ -81,7 +81,7 @@
 
   <zope:adapter
         name="lobo_h2"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.Header2"
@@ -89,7 +89,7 @@
 
   <zope:adapter
         name="lobo_h3"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.Header3"
@@ -107,7 +107,7 @@
 
   <zope:adapter
         name="lobo_ig3"
-        for="loops.interfaces.IConcept
+        for="loops.interfaces.IConceptSchema
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
         factory="loops.browser.lobo.standard.ImageGrid3"

@@ -1,4 +1,5 @@
-# $Id$
+# tests.py
+# Package loops.compound
 
 import unittest, doctest
 from zope.testing.doctestunit import DocFileSuite

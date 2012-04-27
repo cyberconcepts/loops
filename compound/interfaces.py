@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Compound objects like articles, blog posts, storyboard items, ...
-
-$Id$
 """
 
 #TODO: move generic stuff to cybertools.composer
@@ -31,7 +29,7 @@ from loops.interfaces import IConceptSchema
 from loops.util import _
 
 
-compoundPredicateName = 'ispartof'
+compoundPredicateNames = ['ispartof']
 
 
 class ICompound(IConceptSchema):
