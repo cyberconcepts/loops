@@ -1,0 +1,21 @@
+<html i18n:domain="loops">
+
+
+<metal:part define-macro="headline">
+  <div tal:define="cell part/getView">
+    <metal:headline use-macro="item/macros/headline" />
+  </div>
+</metal:part>
+
+
+<metal:part define-macro="text">
+  <tal:cell repeat="cell part/getResources">
+    <div tal:attributes="class cell/cssClass">
+      <h3 tal:content="cell/title" />
+      <span tal:content="structure cell/view/render" />
+    </div>
+  </tal:cell>
+</metal:part>
+
+
+</html>

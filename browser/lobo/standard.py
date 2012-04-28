@@ -165,7 +165,7 @@ class Layout(Base, ConceptView):
         result = []
         for p in parts:
             viewName = 'lobo_' + p
-            view = component.queryMultiAdapter((self.context, self.request),
+            view = component.queryMultiAdapter((self.adapted, self.request),
                                                name=viewName)
             if view is not None:
                 view.parent = self

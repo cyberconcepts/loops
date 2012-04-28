@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Compound objects like articles, blog posts, storyboard items, ...
-
-$Id$
 """
 
 from zope.cachedescriptors.property import Lazy
@@ -27,35 +25,40 @@ from zope.interface import implements
 from zope.traversing.api import getName
 
 from loops.common import AdapterBase
-from loops.compound.interfaces import ICompound, compoundPredicateName
+from loops.compound.interfaces import ICompound, compoundPredicateNames
 
 
 class Compound(AdapterBase):
 
     implements(ICompound)
 
+    compoundPredicateNames = compoundPredicateNames
+
     @Lazy
-    def compoundPredicate(self):
-        return self.context.getConceptManager()[compoundPredicateName]
+    def compoundPredicates(self):
+        return [self.context.getConceptManager()[n] 
+                    for n in self.compoundPredicateNames]
 
     def getParts(self):
         if self.context.__parent__ is None:
             return []
-        return self.context.getResources([self.partOf])
+        return self.context.getResources(self.compoundPredicates)
 
     def add(self, obj, position=None):
         if position is None:
             order = self.getMaxOrder() + 1
         else:
             order = self.getOrderForPosition(position)
-        self.context.assignResource(obj, self.partOf, order=order)
+        self.context.assignResource(obj, self.partOf, 
+                                    order=order)
 
     def remove(self, obj, position=None):
         if position is None:
-            self.context.deassignResource(obj, [self.partOf])
+            self.context.deassignResource(obj, self.compoundPredicates)
         else:
             rel = self.getPartRelations()[position]
-            self.context.deassignResource(obj, [self.partOf], order=rel.order)
+            self.context.deassignResource(obj, self.compoundPredicates, 
+                                          order=rel.order)
 
     def reorder(self, parts):
         existing = list(self.getPartRelations())
@@ -77,7 +80,7 @@ class Compound(AdapterBase):
     # helper methods and properties
 
     def getPartRelations(self):
-        return self.context.getResourceRelations([self.partOf])
+        return self.context.getResourceRelations(self.compoundPredicates)
 
     def getMaxOrder(self):
         rels = self. getPartRelations()
@@ -117,5 +120,5 @@ class Compound(AdapterBase):
 
     @Lazy
     def partOf(self):
-        return self.conceptManager[compoundPredicateName]
+        return self.compoundPredicates[0]
 
