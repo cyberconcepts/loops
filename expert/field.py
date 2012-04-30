@@ -183,6 +183,19 @@ class TargetField(RelationField):
         return util.getObjectForUid(value)
 
 
+class IntegerField(Field):
+    
+    def getSortValue(self, row):
+        value = self.getValue(row)
+        if value.isdigit():
+            return int(value)
+
+
+class IntegerUrlField(IntegerField, UrlField):
+
+    pass
+
+
 class MultiLineField(Field):
 
     renderer = 'multiline'
