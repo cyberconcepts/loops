@@ -144,6 +144,10 @@ class AdapterBase(object):
             return self.context != other
         return self.context != other.context
 
+    @Lazy
+    def loopsRoot(self):
+        return self.getLoopsRoot()
+
     def getLoopsRoot(self):
         return self.context.getLoopsRoot()
 
