@@ -20,6 +20,7 @@
     <tr>
         <th tal:repeat="col results/displayedColumns"
             tal:content="col/title"
+            tal:attributes="class col/cssClass"
             i18n:translate="" />
     </tr>
     <tr tal:repeat="row results">
@@ -29,7 +30,8 @@
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <td tal:repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns"
+            tal:attributes="class col/cssClass">
             <metal:column use-macro="python:view.getColumnRenderer(col)" />
         </td>
     </tr>

@@ -56,7 +56,7 @@ class DecimalField(Field):
 
     format = 'decimal'
     pattern = u'#,##0.00;-#,##0.00'
-    renderer = 'right'
+    renderer = cssClass = 'right'
     styleData = {'text-align':'right'}
     styleData = dict(Field.style.data, **styleData)
     style = TableCellStyle(**styleData)
@@ -76,9 +76,20 @@ class DecimalField(Field):
         return '%.2f' % value
 
 
+class IntegerField(Field):
+    
+    renderer = cssClass = 'right'
+
+    def getSortValue(self, row):
+        value = self.getValue(row)
+        if value.isdigit():
+            return int(value)
+
+
 class DateField(Field):
 
     format = ('date', 'short')
+    renderer = cssClass = 'right'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -154,6 +165,11 @@ class UrlField(Field):
                     url=nv.getUrlForTarget(baseObject(row.context)))
 
 
+class IntegerUrlField(IntegerField, UrlField):
+
+    renderer = 'target'
+
+
 class RelationField(Field):
 
     renderer = 'target'
@@ -181,19 +197,6 @@ class TargetField(RelationField):
         if value is None:
             return None
         return util.getObjectForUid(value)
-
-
-class IntegerField(Field):
-    
-    def getSortValue(self, row):
-        value = self.getValue(row)
-        if value.isdigit():
-            return int(value)
-
-
-class IntegerUrlField(IntegerField, UrlField):
-
-    pass
 
 
 class MultiLineField(Field):
