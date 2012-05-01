@@ -89,7 +89,7 @@ class IntegerField(Field):
 class DateField(Field):
 
     format = ('date', 'short')
-    renderer = cssClass = 'right'
+    renderer = cssClass = 'center'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
