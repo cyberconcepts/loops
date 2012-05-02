@@ -56,7 +56,7 @@ class DecimalField(Field):
 
     format = 'decimal'
     pattern = u'#,##0.00;-#,##0.00'
-    renderer = 'right'
+    cssClass = 'number'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -76,6 +76,7 @@ class DecimalField(Field):
 class DateField(Field):
 
     format = ('date', 'short')
+    cssClass = 'center'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)

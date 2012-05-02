@@ -162,8 +162,8 @@ class AdapterBase(object):
     def uid(self):
         return util.getUidForObject(self.context)
 
-    def getChildren(self):
-        for c in self.context.getChildren():
+    def getChildren(self, predicates=None):
+        for c in self.context.getChildren(predicates):
             yield adapted(c, self.languageInfo)
 
     def getLongTitle(self):

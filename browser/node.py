@@ -468,6 +468,7 @@ class NodeView(BaseView):
 
     def getViewForTarget(self, obj, setup=True):
         if obj is not None:
+            obj = baseObject(obj)
             basicView = component.getMultiAdapter((obj, self.request))
             if obj == self.targetObject:
                 basicView._viewName = self.context.viewName
