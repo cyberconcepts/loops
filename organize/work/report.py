@@ -33,7 +33,8 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.expert.field import TargetField, TextField, UrlField, SubReportField
+from loops.expert.field import TargetField, TextField, UrlField
+from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
 
@@ -237,6 +238,25 @@ class WorkReportInstance(ReportInstance):
 
 # meeting minutes
 
+class MeetingMinutesWorkRow(WorkRow):
+
+    pass
+
+
+class MeetingMinutesWork(WorkReportInstance, SubReport):
+
+    rowFactory = MeetingMinutesWorkRow
+
+    states = ('planned',)
+
+    def selectObjects(self, parts):
+        parts.pop('tasks', None)
+        t = self.parentRow.context
+        if t is not None:
+            return self.selectWorkItems(t, parts)
+        return []
+
+
 taskTitle = UrlField('title', u'Title',
                 description=u'The short description of the task.',
                 executionSteps=['output'])
@@ -245,7 +265,7 @@ taskDescription = TextField('description', u'Description',
                 executionSteps=['output'])
 workItems = SubReportField('workItems', u'Work Items',
                 description=u'A list of work items belonging to the task.',
-                reportFactory=WorkReportInstance,
+                reportFactory=MeetingMinutesWork,
                 executionSteps=['output'])
 
 
@@ -273,4 +293,5 @@ class MeetingMinutes(WorkReportInstance):
 
     def selectObjects(self, parts):
         return self.getTasks(parts)[1:]
+
 

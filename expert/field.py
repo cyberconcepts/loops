@@ -194,6 +194,7 @@ class SubReportField(Field):
         baseReport = row.parent.context
         instance = self.reportFactory(baseReport.context)
         instance.view = baseReport.view
+        instance.parentRow = row
         return instance
 
     def getValue(self, row):
