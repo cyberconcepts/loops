@@ -50,3 +50,12 @@ class MeetingMinutes(ResultsConceptView):
     def macro(self):
         return self.meeting_macros['content']
 
+    @Lazy
+    def resultsRenderer(self):
+        return self.meeting_macros['results']
+
+    def getColumnRenderer(self, col):
+        renderer = col.renderer
+        if renderer == 'subreport':
+            return self.meeting_macros[renderer]
+        return self.result_macros[renderer]

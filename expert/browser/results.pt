@@ -89,7 +89,6 @@
 
 
 <div metal:define-macro="subreport">
-  <tal:column>
     <table class="subreport"
            tal:define="results python:col.getValue(row)">
       <tr>
@@ -111,7 +110,6 @@
         </td>
       </tr>
     </table>
-  </tal:column>
 </div>
 
 

@@ -102,6 +102,7 @@ dayTo = Field('dayTo', u'End Day',
                 executionSteps=['query'])
 day = DateField('day', u'Day',
                 description=u'The day the work was done.',
+                cssClass='center',
                 executionSteps=['sort', 'output'])
 timeStart = TimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
@@ -129,6 +130,7 @@ effort = DurationField('effort', u'Effort',
                 executionSteps=['output', 'totals'])
 state = Field('state', u'State',
                 description=u'The state of the work.',
+                cssClass='center',
                 executionSteps=['query', 'output'])
 
 
@@ -265,9 +267,11 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
 
 taskTitle = UrlField('title', u'Title',
                 description=u'The short description of the task.',
+                cssClass='header-1',
                 executionSteps=['output'])
 taskDescription = TextField('description', u'Description',
                 description=u'The long description of the task.',
+                cssClass='header-2',
                 executionSteps=['output'])
 workItems = SubReportField('workItems', u'Work Items',
                 description=u'A list of work items belonging to the task.',
