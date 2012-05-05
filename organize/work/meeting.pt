@@ -1,0 +1,15 @@
+<html i18n:domain="loops">
+
+
+<div metal:define-macro="content"
+     tal:define="report item/reportInstance;
+                 reportView nocall:item">
+  <div tal:attributes="class string:content-$level;">
+    <metal:block use-macro="view/concept_macros/concepttitle" />
+    <metal:block use-macro="view/concept_macros/conceptfields" />
+  </div>
+  <div metal:use-macro="item/resultsRenderer" />
+</div>
+
+
+</html>

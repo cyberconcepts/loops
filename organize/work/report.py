@@ -247,7 +247,13 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
 
     rowFactory = MeetingMinutesWorkRow
 
+    fields = Jeep((workTitle, party, day, state))   #description,
+    defaultOutputFields = fields
     states = ('planned',)
+
+    @property
+    def queryCriteria(self):
+        return CompoundQueryCriteria([])
 
     def selectObjects(self, parts):
         parts.pop('tasks', None)

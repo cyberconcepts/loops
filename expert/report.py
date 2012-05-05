@@ -97,7 +97,7 @@ class ReportInstance(BaseReport):
         if dynaParams is not None:
             for k, v in dynaParams.items():
                 if k in crit.parts.keys():
-                    crit.parts[k].value = v
+                    crit.parts[k].comparisonValue = v
         parts = Jeep(crit.parts)
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
