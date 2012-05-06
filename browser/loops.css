@@ -147,6 +147,10 @@ table.records th, table.records td {
     border: 1px solid black;
 }
 
+table.report td {
+    vertical-align: top;
+}
+
 dl.docutils dt {
     font-weight: bold;
     margin-top: 0.3em;
@@ -420,6 +424,19 @@ img.notselected {
     background-color: #c3d9ff;
     padding: 4px;
     margin-bottom: 4px;
+}
+
+.header-1 {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
 }
 
 /* comments */
