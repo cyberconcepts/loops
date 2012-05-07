@@ -251,7 +251,9 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
 
     fields = Jeep((workTitle, party, day, state))   #description,
     defaultOutputFields = fields
-    states = ('planned',)
+    defaultSortCriteria = (day,)
+    states = ('planned', 'accepted', 'running', 'done', 
+                'finished', 'closed', 'moved')
 
     @property
     def queryCriteria(self):
