@@ -39,6 +39,11 @@ from loops.expert.report import ReportInstance
 from loops import util
 
 
+class StateField(Field):
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        return util._(value)
+
 class DateField(Field):
 
     part = 'date'
@@ -128,7 +133,7 @@ duration = DurationField('duration', u'Duration',
 effort = DurationField('effort', u'Effort',
                 description=u'The effort of the work.',
                 executionSteps=['output', 'totals'])
-state = Field('state', u'State',
+state = StateField('state', u'State',
                 description=u'The state of the work.',
                 cssClass='center',
                 executionSteps=['query', 'output'])

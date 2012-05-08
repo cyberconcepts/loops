@@ -18,17 +18,24 @@
     <tr>
         <th i18n:translate=""
             style="border: 1px solid grey">Task/Action</th>
-        <th colspan="3" style="border: 1px solid grey"
-            i18n:translate="">Who/When</th>
+        <th style="border: 1px solid grey"
+            i18n:translate="">Who?</th>
+        <th style="border: 1px solid grey"
+            i18n:translate="">When?</th>
+        <th style="border: 1px solid grey"
+            i18n:translate=""></th>
     </tr>
     <tal:task repeat="row results">
         <tr tal:repeat="colname python: ('title', 'description',)">
-          <td colspan="4" style="border: 1px solid grey"
+          <td style="border: 1px solid grey"
               tal:define="col report/fields/?colname"
               tal:attributes="class col/cssClass">
             <metal:column use-macro="python:
                             reportView.getColumnRenderer(col)" />
           </td>
+          <td style="border: 1px solid grey" />
+          <td style="border: 1px solid grey" />
+          <td style="border: 1px solid grey" />
         </tr>
         <tal:workitems define="col report/fields/workItems">
             <metal:column use-macro="python:
