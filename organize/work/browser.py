@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View class(es) for work items.
-
-$Id$
 """
 
 from datetime import date
@@ -235,9 +233,9 @@ class BaseWorkItemsView(object):
             result['timeFromTo'] = (tsFrom, tsTo)
         state = form.get('wi_state') or self.options.wi_state
         if not state:
-            result['state'] = ['planned', 'accepted', 'running', 'done', 'done_x',
-                               'finished', 'delegated', 'moved',
-                               'cancelled']
+            result['state'] = ['planned', 'accepted', 'running', 'done', 
+                    'done_x', 'finished', 'delegated', 'moved', 
+                    'closed', 'cancelled']
         elif state != 'all':
             result['state'] = state
         return result
