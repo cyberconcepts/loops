@@ -213,20 +213,20 @@
           (<span tal:content="python:
                    item.getUserForUserName(item.track.creator)['title']" />)</td>
     </tr>
-    <tr tal:condition="python:state.name == 'delegated'">
+    <tr tal:condition="python:state.name in ('delegated', 'delegated_x')">
       <td><span i18n:translate="">Delegated to</span>:</td>
       <td><a tal:define="party python:view.getObjectForUid(item.targetWorkItem.party)"
              tal:attributes="href python:view.getUrlForTarget(party)"
              tal:content="party/title" /></td>
     </tr>
-    <tr tal:condition="python:state.name == 'moved'">
+    <tr tal:condition="python:state.name in ('moved', 'moved_x')">
       <td><span i18n:translate="">Moved To</span>:</td>
       <td><a tal:define="task python:view.getObjectForUid(item.targetWorkItem.taskId)"
              tal:attributes="href python:view.getUrlForTarget(task)"
              tal:content="task/title" /></td>
     </tr>
     <tr tal:define="source item/sourceWorkItem;
-                    isDelegated python:source and source.state == 'delegated'"
+                    isDelegated python:source and source.state in ('delegated', 'delegated_x')"
         tal:condition="source">
       <td>
         <span tal:condition="isDelegated"
