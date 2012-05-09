@@ -234,8 +234,8 @@ class BaseWorkItemsView(object):
         state = form.get('wi_state') or self.options.wi_state
         if not state:
             result['state'] = ['planned', 'accepted', 'running', 'done', 
-                    'done_x', 'finished', 'delegated', 'moved', 
-                    'closed', 'cancelled']
+                    'done_x', 'finished', 'delegated', 'moved', 'cancelled']
+                    #, 'closed']
         elif state != 'all':
             result['state'] = state
         return result
