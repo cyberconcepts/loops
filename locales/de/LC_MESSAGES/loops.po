@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-05-08 12:00 CET\n"
+"PO-Revision-Date: 2012-05-09 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -415,6 +415,9 @@ msgstr "Status"
 
 msgid "Save"
 msgstr "Speichern"
+
+msgid "Save Changes"
+msgstr "Änderungen speichern"
 
 msgid "Cancel"
 msgstr "Abbrechen"
