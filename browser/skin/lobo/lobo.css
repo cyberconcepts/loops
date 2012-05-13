@@ -110,6 +110,10 @@ thead th {
 
 /* class-specific */
 
+.breadcrumbs td {
+    padding-left: 0;
+}
+
 .description {
     font-style: italic;
     /* margin-top: 0.5em;*/
