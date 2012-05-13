@@ -7,7 +7,7 @@ type(u'book', u'Buch', viewName=u'', typeInterface=u'',
 type(u'page', u'Seite', viewName=u'page_layout', 
     typeInterface=u'loops.compound.book.interfaces.IPage',
     options=u'action.portlet:edit_concept')
-type(u'section', u'Kapitel', viewName=u'', typeInterface=u'',
+type(u'section', u'Kapitel', viewName=u'section_view', typeInterface=u'',
     options=u'action.portlet:create_subtype,edit_concept')
 
 concept(u'system', u'System', u'domain')

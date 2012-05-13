@@ -18,6 +18,14 @@
   <!-- Views -->
 
   <zope:adapter
+        name="section_view"
+        for="loops.interfaces.IConcept
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.SectionView"
+        permission="zope.View" />
+
+  <zope:adapter
         name="page_layout"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
