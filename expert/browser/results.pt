@@ -62,6 +62,7 @@
   </tal:column>
 </metal:target>
 
+
 <metal:standard define-macro="multiline">
   <tal:column define="values python:col.getDisplayValues(row)">
     <tal:values repeat="value values">
@@ -72,6 +73,7 @@
     </tal:values>
   </tal:column>
 </metal:standard>
+
 
 <div metal:define-macro="subreport">
   <tal:column>
@@ -96,5 +98,6 @@
     </table>
   </tal:column>
 </div>
+
 
 </html>
