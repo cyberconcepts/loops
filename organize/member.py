@@ -70,7 +70,7 @@ class MemberRegistrationManager(object):
         if pfName is None:
             pfName = options(self.principalfolder_key,
                              (self.default_principalfolder,))[0]
-        self.createPrincipal(pfName, userId, password, lastName, firstName)
+        self.createPrincipal(pfName, userId, password, lastName, firstName, useExisting=useExisting)
         if not groups:
             groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)

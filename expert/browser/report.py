@@ -42,6 +42,8 @@ results_template = ViewPageTemplateFile('results.pt')
 
 
 class ReportView(ConceptView):
+    """ A view for defining (editing) a report.
+    """
 
     @Lazy
     def report_macros(self):
@@ -107,3 +109,51 @@ class ResultsView(NodeView):
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
 
+
+class ResultsConceptView(ConceptView):
+    """ View on a concept using a report.
+    """
+
+    reportName = None   # define in subclass if applicable
+
+    @Lazy
+    def result_macros(self):
+        return self.controller.getTemplateMacros('results', results_template)
+
+    @Lazy
+    def resultsRenderer(self):
+        return self.reportInstance.getResultsRenderer(
+                                        'results', self.result_macros)
+
+    @Lazy
+    def macro(self):
+        return self.result_macros['content']
+
+    @Lazy
+    def hasReportPredicate(self):
+        return self.conceptManager['hasreport']
+
+    @Lazy
+    def report(self):
+        if self.reportName:
+            return adapted(self.conceptManager[self.reportName])
+        type = self.context.conceptType
+        reports = type.getParents([self.hasReportPredicate])
+        return adapted(reports[0])
+
+    @Lazy
+    def reportInstance(self):
+        ri = component.getAdapter(self.report, IReportInstance,
+                                  name=self.report.reportType)
+        ri.view = self.nodeView
+        return ri
+
+    def results(self):
+        return self.reportInstance.getResults(dict(tasks=util.getUidForObject(self.context)))
+
+    @Lazy
+    def displayedColumns(self):
+        return self.reportInstance.getActiveOutputFields()
+
+    def getColumnRenderer(self, col):
+        return self.result_macros[col.renderer]

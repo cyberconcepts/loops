@@ -97,6 +97,12 @@
              set_schema="loops.expert.report.IReportInstance" />
   </zope:class>
 
+  <browser:page
+      name="meeting_minutes.html"
+      for="loops.interfaces.IConceptSchema"
+      class="loops.organize.work.meeting.MeetingMinutes"
+      permission="zope.View" />
+
   <!-- setup -->
 
   <zope:adapter factory="loops.organize.work.setup.SetupManager"

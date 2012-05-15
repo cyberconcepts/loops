@@ -1,0 +1,62 @@
+<html i18n:domain="loops">
+
+
+<div metal:define-macro="content"
+     tal:define="report item/reportInstance;
+                 reportView nocall:item">
+  <div tal:attributes="class string:content-$level;">
+    <metal:block use-macro="view/concept_macros/concepttitle" />
+    <metal:block use-macro="view/concept_macros/conceptfields" />
+  </div><br />
+  <div metal:use-macro="reportView/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="results">
+  <table class="report"
+         tal:define="results reportView/results">
+    <tr>
+        <th i18n:translate=""
+            style="border: 1px solid grey">Task/Action</th>
+        <th style="border: 1px solid grey"
+            i18n:translate="">Who?</th>
+        <th style="border: 1px solid grey"
+            i18n:translate="">When?</th>
+        <th style="border: 1px solid grey"
+            i18n:translate=""></th>
+    </tr>
+    <tal:task repeat="row results">
+        <tr tal:repeat="colname python: ('title', 'description',)">
+          <td style="border: 1px solid grey"
+              tal:define="col report/fields/?colname"
+              tal:attributes="class col/cssClass">
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
+          </td>
+          <td style="border: 1px solid grey" />
+          <td style="border: 1px solid grey" />
+          <td style="border: 1px solid grey" />
+        </tr>
+        <tal:workitems define="col report/fields/workItems">
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
+        </tal:workitems>
+    </tal:task>
+  </table>
+</div>
+
+
+<div metal:define-macro="subreport"
+     tal:define="results python:col.getValue(row)">
+      <tr class="listing" tal:repeat="row results">
+        <td tal:repeat="col results/displayedColumns"
+            tal:attributes="class col/cssClass"
+            style="border: 1px solid grey">
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
+        </td>
+      </tr>
+</div>
+
+
+</html>

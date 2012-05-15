@@ -100,16 +100,28 @@ textarea {
     font-size: 100%;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 thead th {
     background: none;
 }
 
 /* class-specific */
 
+.breadcrumbs td {
+    padding-left: 0;
+}
+
 .description {
     font-style: italic;
     /* margin-top: 0.5em;*/
     margin-bottom: 0.3em;
+}
+
+.fields td {
+    vertical-align: top;
 }
 
 .dialog div.heading {
@@ -136,7 +148,6 @@ table.listing {
     margin: 1px;
     /*margin-top: 0.5em; */
     margin-bottom: 1em;
-    border-collapse: collapse;
 }
 
 table.listing th {
@@ -204,10 +215,6 @@ table.listing th span.descending {
     background-image: url(/++resource++cybertools.icons/arrowup.gif);
     background-position: right;
     background-repeat: no-repeat;
-}
-
-table.records {
-    border-collapse: collapse;
 }
 
 table.records input, table.records textarea {
@@ -488,6 +495,11 @@ img.notselected {
     background-color: #c3d9ff;
     padding: 4px;
     margin-bottom: 4px;
+}
+
+.header-1 {
+    font-size: 120%;
+    font-weight: bold;
 }
 
 .center {

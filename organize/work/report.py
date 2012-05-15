@@ -33,10 +33,16 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.expert.field import TargetField, TextField, UrlField, SubReportField
+from loops.expert.field import TargetField, TextField, UrlField
+from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
 
+
+class StateField(Field):
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        return util._(value)
 
 class DateField(Field):
 
@@ -101,6 +107,7 @@ dayTo = Field('dayTo', u'End Day',
                 executionSteps=['query'])
 day = DateField('day', u'Day',
                 description=u'The day the work was done.',
+                cssClass='center',
                 executionSteps=['sort', 'output'])
 timeStart = TimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
@@ -126,8 +133,9 @@ duration = DurationField('duration', u'Duration',
 effort = DurationField('effort', u'Effort',
                 description=u'The effort of the work.',
                 executionSteps=['output', 'totals'])
-state = Field('state', u'State',
+state = StateField('state', u'State',
                 description=u'The state of the work.',
+                cssClass='center',
                 executionSteps=['query', 'output'])
 
 
@@ -237,15 +245,44 @@ class WorkReportInstance(ReportInstance):
 
 # meeting minutes
 
+class MeetingMinutesWorkRow(WorkRow):
+
+    pass
+
+
+class MeetingMinutesWork(WorkReportInstance, SubReport):
+
+    rowFactory = MeetingMinutesWorkRow
+
+    fields = Jeep((workTitle, party, day, state))   #description,
+    defaultOutputFields = fields
+    defaultSortCriteria = (day,)
+    states = ('planned', 'accepted', 'running', 'done', 
+                'finished', 'closed', 'moved')
+
+    @property
+    def queryCriteria(self):
+        return CompoundQueryCriteria([])
+
+    def selectObjects(self, parts):
+        parts.pop('tasks', None)
+        t = self.parentRow.context
+        if t is not None:
+            return self.selectWorkItems(t, parts)
+        return []
+
+
 taskTitle = UrlField('title', u'Title',
                 description=u'The short description of the task.',
+                cssClass='header-1',
                 executionSteps=['output'])
 taskDescription = TextField('description', u'Description',
                 description=u'The long description of the task.',
+                cssClass='header-2',
                 executionSteps=['output'])
 workItems = SubReportField('workItems', u'Work Items',
                 description=u'A list of work items belonging to the task.',
-                reportFactory=WorkReportInstance,
+                reportFactory=MeetingMinutesWork,
                 executionSteps=['output'])
 
 
@@ -273,4 +310,5 @@ class MeetingMinutes(WorkReportInstance):
 
     def selectObjects(self, parts):
         return self.getTasks(parts)[1:]
+
 

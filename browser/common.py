@@ -77,6 +77,7 @@ from loops.versioning.interfaces import IVersionable
 concept_macros = ViewPageTemplateFile('concept_macros.pt')
 conceptMacrosTemplate = concept_macros
 resource_macros = ViewPageTemplateFile('resource_macros.pt')
+form_macros = ViewPageTemplateFile('form_macros.pt')
 
 
 class NameField(schema.ASCIILine):
@@ -161,7 +162,10 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def resource_macros(self):
         return self.controller.getTemplateMacros('resource', resource_macros)
-        #return resource_macros.macros
+
+    @Lazy
+    def form_macros(self):
+        return self.controller.getTemplateMacros('form', form_macros)
 
     def breadcrumbs(self):
         return []

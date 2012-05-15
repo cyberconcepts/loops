@@ -27,7 +27,9 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
 from loops.browser.lobo import standard
-from loops.browser.concept import ConceptRelationView as BaseConceptRelationView
+from loops.browser.concept import ConceptView
+from loops.browser.concept import ConceptRelationView as \
+    BaseConceptRelationView
 from loops.browser.resource import ResourceView as BaseResourceView
 from loops.common import adapted, baseObject
 
@@ -36,7 +38,24 @@ standard_template = standard.standard_template
 book_template = ViewPageTemplateFile('view_macros.pt')
 
 
-class PageLayout(standard.Layout):
+class Base(object):
+
+    @Lazy
+    def isPartOfPredicate(self):
+        return self.conceptManager['ispartof']
+
+    @Lazy
+    def breadcrumbsParent(self):
+        for p in self.context.getParents([self.isPartOfPredicate]):
+            return self.nodeView.getViewForTarget(p)
+
+
+class SectionView(Base, ConceptView):
+
+    pass
+
+
+class PageLayout(Base, standard.Layout):
 
     def getParts(self):
         parts = ['headline', 'keyquestions', 'quote', 'maintext', 

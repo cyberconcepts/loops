@@ -3,7 +3,8 @@
 
 <div metal:define-macro="main"
      tal:define="item nocall:item/virtualTarget;
-                 report view/reportInstance">
+                 report view/reportInstance;
+                 reportView nocall:view">
   <div tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />
   </div>
@@ -14,9 +15,19 @@
 </div>
 
 
+<div metal:define-macro="content"
+     tal:define="report item/reportInstance;
+                 reportView nocall:item">
+  <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/concepttitle" />
+  </div>
+  <div metal:use-macro="item/resultsRenderer" />
+</div>
+
+
 <div metal:define-macro="results">
   <table class="report"
-         tal:define="results view/results">
+         tal:define="results reportView/results">
     <tr>
         <th tal:repeat="col results/displayedColumns"
             tal:content="col/title"
@@ -25,14 +36,16 @@
     </tr>
     <tr tal:repeat="row results">
         <td tal:repeat="col results/displayedColumns">
-            <metal:column use-macro="python:view.getColumnRenderer(col)" />
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
         </td>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
         <td tal:repeat="col results/displayedColumns"
             tal:attributes="class col/cssClass">
-            <metal:column use-macro="python:view.getColumnRenderer(col)" />
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
         </td>
     </tr>
   </table>
@@ -76,7 +89,6 @@
 
 
 <div metal:define-macro="subreport">
-  <tal:column>
     <table class="subreport"
            tal:define="results python:col.getValue(row)">
       <tr>
@@ -86,17 +98,18 @@
       </tr>
       <tr tal:repeat="row results">
         <td tal:repeat="col results/displayedColumns">
-            <metal:column use-macro="python:view.getColumnRenderer(col)" />
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
         </td>
       </tr>
       <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
         <td tal:repeat="col results/displayedColumns">
-            <metal:column use-macro="python:view.getColumnRenderer(col)" />
+            <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
         </td>
       </tr>
     </table>
-  </tal:column>
 </div>
 
 
