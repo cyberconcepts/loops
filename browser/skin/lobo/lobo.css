@@ -120,6 +120,10 @@ thead th {
     margin-bottom: 0.3em;
 }
 
+.fields td {
+    vertical-align: top;
+}
+
 .dialog div.heading {
     font-weight: bold;
     font-size: 140%;

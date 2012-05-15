@@ -45,7 +45,8 @@
                         values python: [v for v in data.values() if v];
                         fields item/fields"
             tal:condition="values">
-    <table tal:attributes="ondblclick item/openEditWindow">
+    <table class="fields"
+           tal:attributes="ondblclick item/openEditWindow">
       <tal:row repeat="field fields">
         <tr tal:define="fieldName field/name;
                         value nocall:data/?fieldName;
