@@ -1,4 +1,4 @@
-# $Id$
+# tests.py - loops.knowledge package
 
 import unittest, doctest
 from zope.testing.doctestunit import DocFileSuite
