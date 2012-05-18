@@ -30,3 +30,6 @@ child(u'task', u'general', u'standard')
 child(u'topic', u'general', u'standard')
 
 child(u'issubtype', u'system', u'standard')
+
+# records
+records(u'qualification', u'loops.knowledge.qualification.QualificationRecord')
