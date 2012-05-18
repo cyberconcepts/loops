@@ -30,10 +30,11 @@ from zope.traversing.api import getName, traverse
 
 from cybertools.composer.interfaces import IInstance
 from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.tracking.btree import TrackingStorage
 from cybertools.typology.interfaces import IType
 from loops.common import adapted
-from loops.interfaces import IConceptSchema
 from loops.external.interfaces import IElement
+from loops.interfaces import IConceptSchema
 from loops.i18n.common import I18NValue
 from loops.layout.base import LayoutNode
 from loops.predicate import adaptedRelation
@@ -130,6 +131,33 @@ class TypeElement(ConceptElement):
         if ti:
             # overwrite type interface, might have been ignored in addConcept
             adapted(self.object).typeInterface = kw['typeInterface']
+
+
+class RecordManagerElement(Element):
+
+    elementType = 'records'
+    posArgs = ('name', 'trackFactory')
+
+    def __init__(self, name, trackFactory, **kw):
+        self['name'] = name
+        tf = self['trackFactory'] = trackFactory
+        if not isinstance(tf, basestring):
+            self['trackFactory'] = '.'.join((tf.__module__, tf.__name__))
+        for k, v in kw.items():
+            self[k] = v
+
+    def execute(self, loader):
+        name = self['name']
+        tf = resolve(self['trackFactory'])
+        records = loader.context.getRecordManager()
+        obj = records.get(name)
+        if obj is None:
+            obj = records[name] = TrackingStorage(trackFactory=tf)
+        else:
+            obj.trackFactory = tf
+            obj.indexAttributes = tf.index_attributes
+            obj.setupIndexes()
+        self.object = obj
 
 
 class ChildElement(Element):
@@ -261,6 +289,7 @@ class LayoutNodeElement(NodeElement):
 elementTypes = dict(
     type=TypeElement,
     concept=ConceptElement,
+    records=RecordManagerElement,
     child=ChildElement,
     resource=ResourceElement,
     resourceRelation=ResourceRelationElement,
@@ -270,5 +299,5 @@ elementTypes = dict(
     I18NValue=I18NValue,
 )
 
-toplevelElements = ('type', 'concept', 'resource',
+toplevelElements = ('type', 'concept', 'resource', 'records',
                     'child', 'resourceRelation', 'node', 'deassign')
