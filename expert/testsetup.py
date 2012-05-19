@@ -14,7 +14,8 @@ from loops.expert.setup import SetupManager as ExpertSetupManager
 from loops.resource import Resource
 from loops.knowledge.interfaces import IPerson
 from loops.knowledge.knowledge import Person
-from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+#from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+from loops.knowledge.tests import importData
 from loops.setup import SetupManager, addObject
 from loops.tests.setup import TestSite as BaseTestSite
 from loops.type import ConceptType, ResourceType, TypeConcept
@@ -32,10 +33,11 @@ class TestSite(BaseTestSite):
 
         component.provideAdapter(Person, provides=IPerson)
 
-        component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        #component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         component.provideAdapter(ExpertSetupManager, name='expert')
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
+        importData(loopsRoot)
 
         tType = concepts.getTypeConcept()
         tDomain = concepts['domain']

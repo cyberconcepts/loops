@@ -21,8 +21,6 @@ ZCML setup):
   >>> from loops.setup import addObject
   >>> from loops.organize.setup import SetupManager as OrganizeSetupManager
   >>> component.provideAdapter(OrganizeSetupManager, name='organize')
-  >>> from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
-  >>> component.provideAdapter(KnowledgeSetupManager, name='knowledge')
   >>> from loops.tests.setup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
@@ -31,10 +29,13 @@ ZCML setup):
   >>> loopsRoot = site['loops']
   >>> loopsId = util.getUidForObject(loopsRoot)
 
+  >>> from loops.knowledge.tests import importData
+  >>> importData(loopsRoot)
+
 Let's look what setup has provided us with:
 
   >>> len(concepts)
-  18
+  23
 
 Now let's add a few more concepts:
 
@@ -71,10 +72,11 @@ note that the 'hasType' predicate is not shown as it should not be
 applied in an explicit assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
-  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
-   u'task', u'textdocument', u'topic', u'type']
+  [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
+   u'predicate', u'task', u'textdocument', u'topic', u'training', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
-  [u'depends', u'knows', u'ownedby', u'provides', u'requires', u'standard']
+  [u'depends', u'issubtype', u'knows', u'ownedby', u'provides', u'requires', 
+   u'standard']
 
 We can also retrieve a certain object by its id or its name:
 
@@ -93,8 +95,8 @@ All methods that retrieve one object also returns its children and parents:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
-   u'task', u'textdocument', u'topic', u'type']
+  [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
+   u'predicate', u'task', u'textdocument', u'topic', u'training', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -112,8 +114,8 @@ We can also retrieve children and parents explicitely:
   >>> ch[0]['name']
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
-  [u'customer', u'domain', u'file', u'note', u'person', u'predicate',
-   u'task', u'textdocument', u'topic', u'type']
+  [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
+   u'predicate', u'task', u'textdocument', u'topic', u'training', u'type']
 
   >>> pa = xrf.getParents('6')
   >>> len(pa)
@@ -172,14 +174,14 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '22', 'id': '54',
+  {'description': u'', 'title': u'Zope 2', 'type': '36', 'id': '75',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '22', 'id': '56',
+  {'description': u'', 'title': u'Python', 'type': '36', 'id': '77',
    'name': u'python'}
 
 If we try to deassign a ``hasType`` relation nothing will happen; a

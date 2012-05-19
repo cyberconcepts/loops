@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  18
+  11
 
   >>> loopsRoot = site['loops']
   >>> #loopsRoot.options = ['useVersioning:rev']

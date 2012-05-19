@@ -24,7 +24,7 @@ from loops.integrator.collection import DirectoryCollectionProvider
 from loops.integrator.collection import ExternalCollectionAdapter
 from loops.integrator.interfaces import IExternalCollection, IExternalCollectionProvider
 from loops.organize.setup import SetupManager as OrganizeSetupManager
-from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+#from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.knowledge.knowledge import Person
 from loops.knowledge.interfaces import IPerson
 from loops.setup import SetupManager, addAndConfigureObject
@@ -39,7 +39,7 @@ class TestSite(BaseTestSite):
         self.site = site
 
     def setup(self):
-        component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        #component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         component.provideAdapter(OrganizeSetupManager, name='organize')
         concepts, resources, views = self.baseSetup()
 

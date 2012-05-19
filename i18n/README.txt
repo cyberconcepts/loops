@@ -18,14 +18,14 @@ ZCML setup):
   >>> from loops.interfaces import ILoops, IConcept
   >>> from loops.concept import Concept
   >>> from loops.setup import ISetupManager
-  >>> from loops.knowledge.setup import SetupManager
-  >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
-  ...                           name='knowledge')
 
   >>> from loops.tests.setup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
+
+  >>> from loops.knowledge.tests import importData
+  >>> importData(loopsRoot)
 
   >>> from loops.knowledge.knowledge import Topic
   >>> component.provideAdapter(Topic)

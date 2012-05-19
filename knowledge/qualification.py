@@ -38,9 +38,37 @@ from loops.organize.work.base import WorkItem, WorkItems
 @implementer(IStatesDefinition)
 def qualificationStates():
     return StatesDefinition('qualification',
-        State('new', 'new',
-              ('plan', 'accept', 'start', 'work', 'finish', 'delegate', 'cancel'),
-              color='red'),)
+        State('open', 'open',
+              ('register', 'pass', 'fail', 'cancel', 'modify'),
+              color='red'),
+        State('registered', 'registered',
+              ('register', 'pass', 'fail', 'unregister', 'cancel', 'modify'),
+              color='yellow'),
+        State('passed', 'passed',
+              ('cancel', 'close', 'modify', 'open', 'expire'),
+              color='green'),
+        State('failed', 'failed',
+              ('register', 'cancel', 'modify', 'open'),
+              color='green'),
+        State('expired', 'expired',
+              ('register', 'cancel', 'modify', 'open'),
+              color='red'),
+        State('cancelled', 'cancelled', ('modify', 'open'),
+              color='grey'),
+        State('closed', 'closed', ('modify', 'open'),
+              color='lightblue'),
+        # not directly reachable states:
+        State('open_x', 'open', ('modify',), color='red'),
+        State('registered_x', 'registered', ('modify',), color='yellow'),
+        # transitions:
+        Transition('register', 'register', 'registered'),
+        Transition('pass', 'pass', 'passed'),
+        Transition('fail', 'fail', 'failed'),
+        Transition('unregister', 'unregister', 'open'),
+        Transition('cancel', 'cancel', 'cancelled'),
+        Transition('close', 'close', 'closed'),
+        Transition('open', 'open', 'open'),
+        initialState='open')
 
 
 class QualificationRecord(WorkItem):
@@ -48,7 +76,15 @@ class QualificationRecord(WorkItem):
     implements(IQualificationRecord)
 
     typeName = 'QualificationRecord'
+    typeInterface = IQualificationRecord
     statesDefinition = 'knowledge.qualification'
+
+    def doAction(self, action, userName, **kw):
+        new = self.createNew(action, userName, **kw)
+        new.userName = self.userName
+        new.doTransition(action)
+        new.reindex()
+        return new
 
 
 class QualificationRecords(WorkItems):

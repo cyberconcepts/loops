@@ -260,7 +260,7 @@ Automatic security settings on persons
 
   >>> from zope.traversing.api import getName
   >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
-  [u'jim', u'john', u'martha', u'person.newuser']
+  [u'general', u'jim', u'john', u'martha', u'person.newuser']
 
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.
@@ -358,7 +358,7 @@ Task view with edit action
   >>> from loops.organize.browser.task import TaskView
   >>> view = TaskView(task01, TestRequest())
   >>> list(view.getActions('portlet'))
-  []
+  [...]
 
 OK, the action is not provided automatically any more by the TaskView
 but has to be entered as a type option.
@@ -404,7 +404,7 @@ Send Email to Members
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.97\n\n'
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.116\n\n'
 
 
 Show Presence of Other Users

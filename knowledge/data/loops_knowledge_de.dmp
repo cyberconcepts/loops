@@ -9,11 +9,9 @@ type(u'task', u'Aufgabe', viewName=u'',
 type(u'topic', u'Thema', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.ITopic', 
     options=u'action.portlet:createTopic,editTopic')
-type(u'training_event', u'Schulung', viewName=u'', 
+type(u'training', u'Schulung', viewName=u'', 
     typeInterface=u'loops.organize.interfaces.ITask', 
-    options=u'action.portlet:edit_concept')
-type(u'training_offer', u'Schulungsangebot', viewName=u'', 
-    typeInterface=u'', options=u'action.portlet:create_subtype,edit_concept')
+    options=u'action.portlet:create_subtype,edit_concept')
 
 concept(u'general', u'Allgemein', u'domain')
 concept(u'system', u'System', u'domain')
@@ -36,15 +34,11 @@ child(u'provides', u'general', u'standard')
 child(u'requires', u'general', u'standard')
 child(u'task', u'general', u'standard')
 child(u'topic', u'general', u'standard')
-child(u'training_event', u'general', u'standard')
-child(u'training_offer', u'general', u'standard')
+child(u'training', u'general', u'standard')
 
 child(u'issubtype', u'system', u'standard')
 
-child(u'training_event', u'competence', u'issubtype', 
-    usePredicate=u'provides')
-child(u'training_offer', u'competence', u'issubtype', 
-    usePredicate=u'provides')
+child(u'training', u'competence', u'issubtype', usePredicate=u'provides')
 
 # records
 records(u'qualification', u'loops.knowledge.qualification.QualificationRecord')
