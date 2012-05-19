@@ -172,6 +172,16 @@ For testing, we first have to provide the needed utilities and settings
 Competence and Certification Management
 =======================================
 
+  >>> from cybertools.stateful.interfaces import IStatesDefinition
+  >>> from loops.knowledge.qualification import qualificationStates
+  >>> from loops.knowledge.interfaces import IQualificationRecords
+  >>> from loops.knowledge.qualification import QualificationRecords
+  >>> component.provideUtility(qualificationStates, 
+  ...                          provides=IStatesDefinition)
+  >>> component.provideAdapter(QualificationRecords,
+  ...                          provides=IQualificationRecords)
+
+
 Glossaries
 ==========
 

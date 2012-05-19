@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Interfaces for knowledge management and elearning with loops.
-
-$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -29,6 +27,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from cybertools.knowledge.interfaces import IKnowing, IRequirementProfile
 from cybertools.knowledge.interfaces import IKnowledgeElement
+from cybertools.organize.interfaces import IWorkItem, IWorkItems
 from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.organize.interfaces import IPerson as IBasePerson
 from loops.organize.interfaces import ITask as IBaseTask
@@ -63,3 +62,13 @@ class ITopic(IConceptSchema, IKnowledgeElement, ILoopsAdapter):
     """ Just a topic, some general classification concept.
     """
 
+
+class IQualificationRecord(IWorkItem):
+    """ Records needs for qualification (acqusition of competence)
+        and corresponding participations in training events etc.
+    """
+
+
+class IQualificationRecords(IWorkItems):
+    """ Container for qualification records.
+    """
