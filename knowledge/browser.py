@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 """
 Definition of view classes and other browser related stuff for the
 loops.knowledge package.
-
-$Id$
 """
 
 from zope import interface, component
@@ -32,9 +30,15 @@ from cybertools.typology.interfaces import IType
 from loops.browser.action import DialogAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.expert.browser.report import ResultsConceptView
 from loops.knowledge.interfaces import IPerson, ITask
+from loops.organize.work.browser import CreateWorkItemForm, CreateWorkItem
 from loops.organize.party import getPersonForUser
 from loops.util import _
+
+
+template = ViewPageTemplateFile('knowledge_macros.pt')
+knowledge_macros = template.macros
 
 
 actions.register('createTopic', 'portlet', DialogAction,
@@ -54,10 +58,19 @@ actions.register('editTopic', 'portlet', DialogAction,
         dialogName='editTopic',
 )
 
+actions.register('createQualification', 'portlet', DialogAction,
+        title=_(u'Create Qualification Record...'),
+        description=_(u'Create a work item for this person.'),
+        viewName='create_qualification.html',
+        dialogName='createQualification',
+        prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget',
+                       'registerDojoTextarea'],
+)
+
 
 class MyKnowledge(ConceptView):
 
-    template = ViewPageTemplateFile('knowledge_macros.pt')
+    template = template
 
     @Lazy
     def macro(self):
@@ -90,9 +103,30 @@ class MyKnowledge(ConceptView):
 
 class Candidates(ConceptView):
 
-    template = ViewPageTemplateFile('knowledge_macros.pt')
+    template = template
 
     @Lazy
     def macro(self):
         return self.template.macros['requirement_candidates']
+
+
+# qualification stuff
+
+class PersonQualificationView(ResultsConceptView):
+
+    pass
+
+
+class CreateQualificationRecordForm(CreateWorkItemForm):
+
+    macros = knowledge_macros
+
+    @Lazy
+    def macro(self):
+        return self.macros['create_qualification']
+
+
+class CreateQualificationRecord(CreateWorkItem):
+
+    pass
 

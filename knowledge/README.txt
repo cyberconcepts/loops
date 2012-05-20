@@ -23,10 +23,8 @@ ZCML setup):
 We then import a loops .dmp file containing all necessary types and
 predicates.
 
-  >>> import os
-  >>> from loops.setup import importData
-  >>> importPath = os.path.join(os.path.dirname(__file__), 'data')
-  >>> importData(loopsRoot, importPath, 'loops_knowledge_de.dmp')
+  >>> from loops.knowledge.tests import importData
+  >>> importData(loopsRoot)
 
 We need some type concepts for controlling the meaning of the concepts objects,
 these have already been created during setup and .dmp import:
@@ -177,9 +175,23 @@ Competence and Certification Management
   >>> from loops.knowledge.interfaces import IQualificationRecords
   >>> from loops.knowledge.qualification import QualificationRecords
   >>> component.provideUtility(qualificationStates, 
-  ...                          provides=IStatesDefinition)
+  ...                          provides=IStatesDefinition,
+  ...                          name='knowledge.qualification')
   >>> component.provideAdapter(QualificationRecords,
   ...                          provides=IQualificationRecords)
+
+  >>> qurecs = loopsRoot.getRecordManager()['qualification']
+
+We first create a training that provides knowledge in Python specials.
+
+  >>> trainingPySpecC = concepts['trpyspec'] = Concept(
+  ...                                           u'Python Specials Training')
+  >>> trainingPySpecC.assignParent(pySpecialsC)
+
+Then we record the need for John to acquire this knowledge.
+
+  >>> from loops.knowledge.browser import CreateQualificationRecordForm
+  >>> from loops.knowledge.browser import CreateQualificationRecord
 
 
 Glossaries
