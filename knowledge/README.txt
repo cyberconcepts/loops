@@ -2,33 +2,32 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
-Note: This package depends on cybertools.knowledge and cybertools.organize.
+Note: This package depends on cybertools.knowledge and loops.organize.
 
 Let's do some basic set up
 
+  >>> from zope import component, interface
+
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-
-  >>> from zope import component, interface
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
 ZCML setup):
 
-  >>> from loops.interfaces import ILoops, IConcept
-  >>> from loops.setup import ISetupManager
-  >>> from loops.knowledge.setup import SetupManager
-  >>> component.provideAdapter(SetupManager, (ILoops,), ISetupManager,
-  ...                           name='knowledge')
-
   >>> from loops.tests.setup import TestSite
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
+  >>> loopsRoot = site['loops']
+
+We then import a loops .dmp file containing all necessary types and
+predicates.
+
+  >>> from loops.knowledge.tests import importData
+  >>> importData(loopsRoot)
 
 We need some type concepts for controlling the meaning of the concepts objects,
-these have already been created during setup:
+these have already been created during setup and .dmp import:
 
   >>> topic = concepts['topic']
   >>> person = concepts['person']
@@ -40,6 +39,7 @@ Manage knowledge and knowledge requirements
 
 The classes used in this package are just adapters to IConcept.
 
+  >>> from loops.interfaces import IConcept
   >>> from loops.knowledge.knowledge import Person, Topic, Task
   >>> from loops.knowledge.interfaces import IPerson
   >>> from cybertools.knowledge.interfaces import IKnowledgeElement
@@ -165,6 +165,34 @@ For testing, we first have to provide the needed utilities and settings
   >>> from loops.knowledge.browser import MyKnowledge
   >>> view = MyKnowledge(task01C, request)
   >>> prov = view.myKnowledgeProvidersForTask()
+
+
+Competence and Certification Management
+=======================================
+
+  >>> from cybertools.stateful.interfaces import IStatesDefinition
+  >>> from loops.knowledge.qualification import qualificationStates
+  >>> from loops.knowledge.interfaces import IQualificationRecords
+  >>> from loops.knowledge.qualification import QualificationRecords
+  >>> component.provideUtility(qualificationStates, 
+  ...                          provides=IStatesDefinition,
+  ...                          name='knowledge.qualification')
+  >>> component.provideAdapter(QualificationRecords,
+  ...                          provides=IQualificationRecords)
+
+  >>> qurecs = loopsRoot.getRecordManager()['qualification']
+
+We first create a training that provides knowledge in Python specials.
+
+  >>> trainingPySpecC = concepts['trpyspec'] = Concept(
+  ...                                           u'Python Specials Training')
+  >>> trainingPySpecC.assignParent(pySpecialsC)
+
+Then we record the need for John to acquire this knowledge.
+
+  >>> from loops.knowledge.browser import CreateQualificationRecordForm
+  >>> from loops.knowledge.browser import CreateQualificationRecord
+
 
 Glossaries
 ==========

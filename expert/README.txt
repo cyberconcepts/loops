@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts) + len(resources)
-  33
+  37
 
   >>> loopsRoot = site['loops']
 
@@ -47,19 +47,19 @@ Type- and text-based queries
   >>> from loops.expert import query
   >>> qu = query.Title('ty*')
   >>> list(qu.apply())
-  [0, 1, 47]
+  [0, 1, 68]
 
   >>> qu = query.Type('loops:*')
   >>> len(list(qu.apply()))
-  33
+  37
 
   >>> qu = query.Type('loops:concept:predicate')
   >>> len(list(qu.apply()))
-  7
+  8
 
   >>> qu = query.Type('loops:concept:predicate') & query.Title('t*')
   >>> list(qu.apply())
-  [1, 43]
+  [1, 29]
 
 State-based queries
 -------------------

@@ -17,7 +17,7 @@ Let's set up a loops site with basic and example concepts and resources.
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
   >>> len(concepts), len(resources), len(views)
-  (30, 3, 1)
+  (34, 3, 1)
 
 
 Importing loops Objects
@@ -44,7 +44,7 @@ Creating the corresponding objects
   >>> loader = Loader(loopsRoot)
   >>> loader.load(elements)
   >>> len(concepts), len(resources), len(views)
-  (31, 3, 1)
+  (35, 3, 1)
 
   >>> from loops.common import adapted
   >>> adMyquery = adapted(concepts['myquery'])
@@ -131,7 +131,7 @@ Extracting elements
   >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
   >>> elements = list(extractor.extract())
   >>> len(elements)
-  53
+  68
 
 Writing object information to the external storage
 --------------------------------------------------
@@ -143,6 +143,7 @@ Writing object information to the external storage
   >>> writer = PyWriter()
   >>> writer.write(elements, output)
   >>> print output.getvalue()
+  type(u'task', ...)...
   type(u'country', u'Country', viewName=u'', typeInterface=u''..., options=u''...)...
   type(u'query', u'Query', viewName=u'', typeInterface='loops.expert.concept.IQueryConcept'..., options=u''...)...
   concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
@@ -184,6 +185,7 @@ corresponding extractor adapter.
   >>> PyWriter().write(extractor.extract(), output)
 
   >>> print output.getvalue()
+  type(u'task', ...)...
   type(u'country', u'Country', viewName=u'', typeInterface=u''..., options=u''...)...
   concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
           viewName=u'mystuff.html')[

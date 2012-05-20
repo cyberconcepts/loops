@@ -27,7 +27,7 @@ configuration):
   >>> concepts, resources, views = t.setup()
 
   >>> len(concepts), len(resources)
-  (20, 0)
+  (15, 0)
 
 Let's now add an external collection that reads in a set of resources
 from external files so we have something to work with.

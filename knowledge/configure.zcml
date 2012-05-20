@@ -66,6 +66,22 @@
              interface="cybertools.knowledge.interfaces.IKnowledgeProvider" />
   </zope:class>
 
+  <!-- records -->
+
+  <zope:class class="loops.knowledge.qualification.QualificationRecord">
+    <require permission="zope.View"
+             interface="loops.knowledge.interfaces.IQualificationRecord" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.interfaces.IQualificationRecord" />
+  </zope:class>
+
+  <zope:adapter factory="loops.knowledge.qualification.QualificationRecords"
+                provides="loops.knowledge.interfaces.IQualificationRecords" />
+
+  <zope:utility factory="loops.knowledge.qualification.qualificationStates"
+           provides="cybertools.stateful.interfaces.IStatesDefinition"
+           name="knowledge.qualification" />
+
   <!-- views -->
 
   <zope:adapter
@@ -87,9 +103,6 @@
   <!-- other adapters -->
 
   <zope:adapter factory="loops.knowledge.schema.PersonSchemaFactory" />
-
-  <zope:adapter factory="loops.knowledge.setup.SetupManager"
-                name="knowledge" />
 
   <!-- sub-packages -->
 

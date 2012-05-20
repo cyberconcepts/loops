@@ -33,7 +33,7 @@ from loops.config.base import LoopsOptions
 from loops.interfaces import ILoopsObject, IConcept
 from loops.resource import Resource
 from loops.resource import IndexAttributes as ResourceIndexAttributes
-from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+#from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addObject
 from loops.type import ConceptType, ResourceType, TypeConcept
 from loops.versioning.versionable import cleanupVersions
@@ -74,7 +74,7 @@ class TestSite(object):
 
         loopsRoot = site['loops'] = Loops()
 
-        component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        #component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         setup = SetupManager(loopsRoot)
         concepts, resources, views = setup.setup()
 

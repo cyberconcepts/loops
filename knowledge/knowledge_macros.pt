@@ -57,4 +57,19 @@
 </metal:candidates>
 
 
+<!-- forms -->
+
+<metal:block define-macro="create_qualification">
+    <form method="post" id="addQualification_form" class="dialog"
+          dojoType="dijit.form.Form">
+      <div class="buttons">
+        <input value="Save" type="submit"
+               i18n:attributes="value">
+        <input type="button" value="Cancel"
+               onClick="return closeDialog(false)"
+               i18n:attributes="value"></div>
+    </form>
+</metal:block>
+
+
 </html>

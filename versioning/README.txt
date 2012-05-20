@@ -26,13 +26,11 @@ configuration):
   >>> t = TestSite(site)
   >>> concepts, resources, views = t.setup()
 
-  >>> #sorted(concepts)
-  >>> #sorted(resources)
-  >>> len(concepts) + len(resources)
-  23
-
   >>> loopsRoot = site['loops']
   >>> loopsRoot.options = ['useVersioning']
+
+  >>> len(concepts) + len(resources)
+  16
 
 
 Version Information

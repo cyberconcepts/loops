@@ -18,7 +18,7 @@ from loops.resource import Resource, FileAdapter, ExternalFileAdapter
 from loops.integrator.interfaces import IExternalSourceInfo, IExternalCollection
 from loops.integrator.interfaces import IOfficeFile
 from loops.integrator.office.base import OfficeFile
-from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
+#from loops.knowledge.setup import SetupManager as KnowledgeSetupManager
 from loops.setup import SetupManager, addAndConfigureObject
 from loops.tests.setup import TestSite as BaseTestSite
 from loops.versioning.versionable import VersionableResource
@@ -32,7 +32,7 @@ class TestSite(BaseTestSite):
         self.site = site
 
     def setup(self):
-        component.provideAdapter(KnowledgeSetupManager, name='knowledge')
+        #component.provideAdapter(KnowledgeSetupManager, name='knowledge')
         concepts, resources, views = self.baseSetup()
 
         component.provideAdapter(FileAdapter, provides=IFile)

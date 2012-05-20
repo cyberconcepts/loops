@@ -66,13 +66,13 @@ zcml in real life:
 
   >>> t = searchView.typesForSearch()
   >>> len(t)
-  14
+  16
   >>> t.getTermByToken('loops:resource:*').title
   'Any Resource'
 
   >>> t = searchView.conceptTypesForSearch()
   >>> len(t)
-  11
+  13
   >>> t.getTermByToken('loops:concept:*').title
   'Any Concept'
 
@@ -91,7 +91,7 @@ a controller attribute for the search view.
 
   >>> searchView.submitReplacing('1.results', '1.search.form', pageView)
   'submitReplacing("1.results", "1.search.form",
-       "http://127.0.0.1/loops/views/page/.target80/@@searchresults.html");...'
+       "http://127.0.0.1/loops/views/page/.target99/@@searchresults.html");...'
 
 Basic (text/title) search
 -------------------------
@@ -177,7 +177,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  u"{identifier: 'id', items: [{label: 'Zope (Topic)', name: 'Zope', id: '85'}, {label: 'Zope 2 (Topic)', name: 'Zope 2', id: '87'}, {label: 'Zope 3 (Topic)', name: 'Zope 3', id: '89'}]}"
+  u"{identifier: 'id', items: [{label: 'Zope (Thema)', name: 'Zope', id: '104'}, {label: 'Zope 2 (Thema)', name: 'Zope 2', id: '106'}, {label: 'Zope 3 (Thema)', name: 'Zope 3', id: '108'}]}"
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -219,13 +219,13 @@ and thus include the customer type in the preset search types.
 
   >>> searchView.conceptsForType('loops:concept:customer')
   [{'token': 'none', 'title': u'not selected'},
-   {'token': '58', 'title': u'Customer 1'},
-   {'token': '60', 'title': u'Customer 2'},
-   {'token': '62', 'title': u'Customer 3'}]
+   {'token': '77', 'title': u'Customer 1'},
+   {'token': '79', 'title': u'Customer 2'},
+   {'token': '81', 'title': u'Customer 3'}]
 
 Let's use this new search option for querying:
 
-  >>> form = {'search.4.text_selected': u'58'}
+  >>> form = {'search.4.text_selected': u'77'}
   >>> resultsView = SearchResults(page, TestRequest(form=form))
   >>> results = list(resultsView.results)
   >>> results[0].title
