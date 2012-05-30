@@ -27,6 +27,7 @@ from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.browser.action import actions
 from cybertools.meta.interfaces import IOptions
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
@@ -38,6 +39,17 @@ from loops.util import _
 organize_macros = ViewPageTemplateFile('view_macros.pt')
 
 
+actions.register('createEvent', 'portlet', DialogAction,
+        title=_(u'Create Event...'),
+        description=_(u'Create a new event.'),
+        viewName='create_concept.html',
+        dialogName='createEvent',
+        typeToken='.loops/concepts/event',
+        fixedType=True,
+        prerequisites=['registerDojoDateWidget'],
+)
+
+
 class Events(ConceptView):
 
     @Lazy
@@ -45,19 +57,11 @@ class Events(ConceptView):
         return organize_macros.macros['events']
 
     def getActions(self, category='object', page=None, target=None):
-        actions = []
+        acts = super(Events, self).getActions(category, page, target)
         if category == 'portlet':
-            actions.append(DialogAction(self, title=_(u'Create Event...'),
-                  description=_(u'Create a new event.'),
-                  viewName='create_concept.html',
-                  dialogName='createEvent',
-                  typeToken='.loops/concepts/event',
-                  fixedType=True,
-                  innerForm='inner_concept_form.html',
-                  page=page,
-                  target=target))
-            self.registerDojoDateWidget()
-        return actions
+            acts.extend(actions.get(category, ['createEvent'],
+                                view=self, page=page, target=target))
+        return acts
 
     @Lazy
     def selectedDate(self):

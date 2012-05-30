@@ -83,7 +83,7 @@ class ObjectForm(NodeView):
     def checkPermissions(self):
         obj = self.target
         if obj is None:
-            obj = self.context
+            obj = self.containerext
         return canWriteObject(obj)
 
     @Lazy
@@ -289,7 +289,9 @@ class CreateObjectForm(ObjectForm):
     @Lazy
     def title(self):
         if self.fixedType:
-            return _(u'Create %s') % self.typeConcept.title
+            #return _(u'Create %s') % self.typeConcept.title
+            return _(u'Create $type', 
+                     mapping=dict(type=self.typeConcept.title))
         else:
             return _(self.defaultTitle)
 
