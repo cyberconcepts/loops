@@ -236,16 +236,31 @@ msgstr "Termin anlegen..."
 msgid "Create a new event."
 msgstr "Einen neuen Termin anlegen."
 
+msgid "Create Follow-up Event..."
+msgstr "Folgetermin anlegen..."
+
+msgid "Create an event that is linked to this one."
+msgstr "Einen neuen Termin anlegen, der mit diesem verknüpft ist."
+
+msgid "Edit Event..."
+msgstr "Termin bearbeiten..."
+
+msgid "Modify event."
+msgstr "Termin bearbeiten"
+
+msgid "Modify follow-up event."
+msgstr "Folgetermin bearbeiten"
+
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."
 
-msgid "Create a new task"
+msgid "Create a new task."
 msgstr "Eine neue Aufgabe anlegen."
 
 msgid "Edit Task..."
 msgstr "Aufgabe bearbeiten..."
 
-msgid "Modify task"
+msgid "Modify task."
 msgstr "Aufgabe bearbeiten"
 
 msgid "Create Project..."

@@ -83,6 +83,32 @@
       class="loops.organize.browser.party.EditPersonForm"
       permission="zope.View" />
 
+  <browser:page
+        name="create_followup_event.html"
+        for="loops.interfaces.INode"
+        class="loops.organize.browser.event.CreateFollowUpEventForm"
+        permission="zope.View" />
+
+  <zope:adapter
+      name="create_followup_event"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.browser.event.CreateFollowUpEvent"
+      permission="zope.View" />
+
+  <browser:page
+        name="edit_followup_event.html"
+        for="loops.interfaces.INode"
+        class="loops.organize.browser.event.EditFollowUpEventForm"
+        permission="zope.View" />
+
+  <zope:adapter
+      name="edit_followup_event"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.browser.event.EditFollowUpEvent"
+      permission="zope.View" />
+
   <!-- authentication -->
 
   <browser:addform

@@ -29,8 +29,10 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.action import actions
 from cybertools.meta.interfaces import IOptions
-from loops.browser.action import DialogAction
+from loops.browser.action import DialogAction, TargetAction
 from loops.browser.concept import ConceptView
+from loops.browser.form import CreateConceptPage, CreateConcept
+from loops.browser.form import EditConceptPage, EditConcept
 from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.util import _
@@ -46,6 +48,28 @@ actions.register('createEvent', 'portlet', DialogAction,
         dialogName='createEvent',
         typeToken='.loops/concepts/event',
         fixedType=True,
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editEvent', 'portlet', DialogAction,
+        title=_(u'Edit Event...'),
+        description=_(u'Modify event.'),
+        viewName='edit_concept.html',
+        dialogName='editEvent',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('createFollowUpEvent', 'portlet', TargetAction,
+        title=_(u'Create Follow-up Event...'),
+        description=_(u'Create an event that is linked to this one.'),
+        viewName='create_followup_event.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editFollowUpEvent', 'portlet', TargetAction,
+        title=_(u'Edit Event...'),
+        description=_(u'Modify follow-up event.'),
+        viewName='edit_followup_event.html',
         prerequisites=['registerDojoDateWidget'],
 )
 
@@ -219,3 +243,36 @@ class CalendarInfo(NodeView):
     def getEventTitles(self, day):
         events = self.events[day-1]
         return '; '.join(ev.title for ev in events)
+
+
+# special forms
+
+class CreateFollowUpEventForm(CreateConceptPage):
+
+    fixedType = True
+    typeToken = '.loops/concepts/event'
+    form_action = 'create_followup_event'
+    showAssignments = True
+
+
+class EditFollowUpEventForm(EditConceptPage, CreateFollowUpEventForm):
+
+    pass
+
+
+# form controllers
+
+class BaseFollowUpController(object):
+
+    pass
+
+
+class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
+
+    defaultTypeToken = '.loops/concepts/event'
+
+
+class EditFollowUpEvent(EditConcept, BaseFollowUpController):
+
+    pass
+
