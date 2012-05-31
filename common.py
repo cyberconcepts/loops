@@ -396,7 +396,7 @@ class ChildRelationSet(RelationSet):
         self.context.assignChild(related, self.predicate, order, relevance)
 
     def remove(self, related):
-        related = baseObject(related.context)
+        related = baseObject(related)
         self.context.deassignChild(related, [self.predicate])
 
     def __iter__(self):
