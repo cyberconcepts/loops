@@ -115,6 +115,7 @@ class ResultsConceptView(ConceptView):
     """
 
     reportName = None   # define in subclass if applicable
+    reportType = None   # set for using special report instance adapter
 
     @Lazy
     def result_macros(self):
@@ -143,8 +144,9 @@ class ResultsConceptView(ConceptView):
 
     @Lazy
     def reportInstance(self):
+        reportType = self.reportType or self.report.reportType
         ri = component.getAdapter(self.report, IReportInstance,
-                                  name=self.report.reportType)
+                                  name=reportType)
         ri.view = self.nodeView
         return ri
 
