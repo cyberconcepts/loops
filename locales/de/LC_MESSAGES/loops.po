@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-05-09 12:00 CET\n"
+"PO-Revision-Date: 2012-05-30 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -46,6 +46,9 @@ msgstr "Ressource anlegen..."
 
 msgid "Create %s"
 msgstr "%s anlegen"
+
+msgid "Create $type"
+msgstr "$type anlegen"
 
 msgid "Create a new resource object."
 msgstr "Eine neue Ressource erzeugen"
@@ -230,19 +233,34 @@ msgstr "Begriff bearbeiten"
 msgid "Create Event..."
 msgstr "Termin anlegen..."
 
-msgid "Create a new event"
+msgid "Create a new event."
 msgstr "Einen neuen Termin anlegen."
+
+msgid "Create Follow-up Event..."
+msgstr "Folgetermin anlegen..."
+
+msgid "Create an event that is linked to this one."
+msgstr "Einen neuen Termin anlegen, der mit diesem verknüpft ist."
+
+msgid "Edit Event..."
+msgstr "Termin bearbeiten..."
+
+msgid "Modify event."
+msgstr "Termin bearbeiten"
+
+msgid "Modify follow-up event."
+msgstr "Folgetermin bearbeiten"
 
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."
 
-msgid "Create a new task"
+msgid "Create a new task."
 msgstr "Eine neue Aufgabe anlegen."
 
 msgid "Edit Task..."
 msgstr "Aufgabe bearbeiten..."
 
-msgid "Modify task"
+msgid "Modify task."
 msgstr "Aufgabe bearbeiten"
 
 msgid "Create Project..."

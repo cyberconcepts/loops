@@ -27,15 +27,51 @@ from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.browser.action import actions
 from cybertools.meta.interfaces import IOptions
-from loops.browser.action import DialogAction
+from loops.browser.action import DialogAction, TargetAction
 from loops.browser.concept import ConceptView
+from loops.browser.form import CreateConceptPage, CreateConcept
+from loops.browser.form import EditConceptPage, EditConcept
 from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.util import _
 
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
+
+
+actions.register('createEvent', 'portlet', DialogAction,
+        title=_(u'Create Event...'),
+        description=_(u'Create a new event.'),
+        viewName='create_concept.html',
+        dialogName='createEvent',
+        typeToken='.loops/concepts/event',
+        fixedType=True,
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editEvent', 'portlet', DialogAction,
+        title=_(u'Edit Event...'),
+        description=_(u'Modify event.'),
+        viewName='edit_concept.html',
+        dialogName='editEvent',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('createFollowUpEvent', 'portlet', TargetAction,
+        title=_(u'Create Follow-up Event...'),
+        description=_(u'Create an event that is linked to this one.'),
+        viewName='create_followup_event.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editFollowUpEvent', 'portlet', TargetAction,
+        title=_(u'Edit Event...'),
+        description=_(u'Modify follow-up event.'),
+        viewName='edit_followup_event.html',
+        prerequisites=['registerDojoDateWidget'],
+)
 
 
 class Events(ConceptView):
@@ -45,19 +81,11 @@ class Events(ConceptView):
         return organize_macros.macros['events']
 
     def getActions(self, category='object', page=None, target=None):
-        actions = []
+        acts = super(Events, self).getActions(category, page, target)
         if category == 'portlet':
-            actions.append(DialogAction(self, title=_(u'Create Event...'),
-                  description=_(u'Create a new event.'),
-                  viewName='create_concept.html',
-                  dialogName='createEvent',
-                  typeToken='.loops/concepts/event',
-                  fixedType=True,
-                  innerForm='inner_concept_form.html',
-                  page=page,
-                  target=target))
-            self.registerDojoDateWidget()
-        return actions
+            acts.extend(actions.get(category, ['createEvent'],
+                                view=self, page=page, target=target))
+        return acts
 
     @Lazy
     def selectedDate(self):
@@ -215,3 +243,36 @@ class CalendarInfo(NodeView):
     def getEventTitles(self, day):
         events = self.events[day-1]
         return '; '.join(ev.title for ev in events)
+
+
+# special forms
+
+class CreateFollowUpEventForm(CreateConceptPage):
+
+    fixedType = True
+    typeToken = '.loops/concepts/event'
+    form_action = 'create_followup_event'
+    showAssignments = True
+
+
+class EditFollowUpEventForm(EditConceptPage, CreateFollowUpEventForm):
+
+    pass
+
+
+# form controllers
+
+class BaseFollowUpController(object):
+
+    pass
+
+
+class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
+
+    defaultTypeToken = '.loops/concepts/event'
+
+
+class EditFollowUpEvent(EditConcept, BaseFollowUpController):
+
+    pass
+
