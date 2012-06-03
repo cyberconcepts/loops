@@ -668,6 +668,9 @@ class CreateObject(EditObject):
     def container(self):
         return self.loopsRoot.getResourceManager()
 
+    def getName(self):
+        return None
+
     def getNameFromData(self):
         data = self.request.form.get('data')
         if data and isinstance(data, FileUpload):
@@ -686,15 +689,17 @@ class CreateObject(EditObject):
         if not title:
             raise BadRequest('Title field is empty')
         obj = self.factory(title)
-        name = self.getNameFromData()
-        # TODO: validate fields
-        name = INameChooser(container).chooseName(name, obj)
+        name = self.getName()
+        if name is None:
+            name = self.getNameFromData()
+            name = INameChooser(container).chooseName(name, obj)
         container[name] = obj
         tc = form.get('form.type') or self.defaultTypeToken
         obj.setType(self.loopsRoot.loopsTraverse(tc))
         notify(ObjectCreatedEvent(obj))
         #notify(ObjectAddedEvent(obj))
         self.object = obj
+        # TODO: validate fields
         formState = self.updateFields() # TODO: suppress validation
         self.view.formState = formState
         # TODO: error handling

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Type management stuff.
-
-$Id$
 """
 
 from zope import component, schema
@@ -36,6 +34,7 @@ from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import ITypeConcept
 from loops.interfaces import IResourceAdapter, IFile, IExternalFile, IImage
 from loops.interfaces import ITextDocument, INote
+from loops.common import adapted
 from loops.concept import Concept
 from loops.resource import Resource, Document, MediaAsset
 from loops.common import AdapterBase
@@ -266,6 +265,11 @@ class TypeConcept(AdapterBase):
     def setOptions(self, value):
         self.context._options = value
     options = property(getOptions, setOptions)
+
+    @property
+    def typeInstances(self):
+        tp = self.context.getConceptManager().getTypePredicate()
+        return [adapted(c) for c in self.context.getChildren([tp])]
 
 
 class TypeInterfaceSourceList(object):
