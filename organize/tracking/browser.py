@@ -78,7 +78,7 @@ class BaseTrackView(TrackView):
                 return self.authentication.getPrincipal(uid).title or uid
             except PrincipalLookupError:
                 return uid
-        return self.user.title
+        return self.user and self.user.title or u''
 
     @Lazy
     def userUrl(self):
