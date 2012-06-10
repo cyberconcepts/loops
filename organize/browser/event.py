@@ -35,7 +35,9 @@ from loops.browser.form import CreateConceptPage, CreateConcept
 from loops.browser.form import EditConceptPage, EditConcept
 from loops.browser.node import NodeView
 from loops.common import adapted
+from loops.organize.work.meeting import MeetingMinutes
 from loops.util import _
+from loops import util
 
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
@@ -247,12 +249,39 @@ class CalendarInfo(NodeView):
 
 # special forms
 
-class CreateFollowUpEventForm(CreateConceptPage):
+class CreateFollowUpEventForm(CreateConceptPage, MeetingMinutes):
 
     fixedType = True
     typeToken = '.loops/concepts/event'
     form_action = 'create_followup_event'
-    showAssignments = True
+    showAssignments = False
+
+    @Lazy
+    def macro(self):
+        return organize_macros.macros['create_followup_event']
+
+    @Lazy
+    def baseEvent(self):
+        return adapted(self.virtualTargetObject)
+
+    @Lazy
+    def title(self):
+        event = self.baseEvent
+        evView = ConceptView(event, self.request)
+        eventTitle = u'%s, %s' % (event.title, evView.data['start'])
+        return _(u'Create Follow-up Event for: $event', 
+                    mapping=dict(event=eventTitle))
+
+    @Lazy
+    def data(self):
+        data = self.getData()
+        data['title'] = self.baseEvent.title
+        data['description'] = self.baseEvent.description
+        return data
+
+    def results(self):
+        return self.reportInstance.getResults(
+                dict(tasks=util.getUidForObject(self.virtualTargetObject)))
 
 
 class EditFollowUpEventForm(EditConceptPage, CreateFollowUpEventForm):
