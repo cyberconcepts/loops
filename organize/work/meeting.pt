@@ -8,6 +8,20 @@
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <metal:block use-macro="view/concept_macros/conceptfields" />
   </div><br />
+  <span class="button"
+        tal:condition="item/reportDownload">
+    <a target="_blank"
+       tal:attributes="href string:${item/targetUrl}/${item/reportDownload}"
+       i18n:translate="">Download Meeting Minutes</a></span>
+  <br />&nbsp;
+  <div metal:use-macro="reportView/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="document"
+     tal:define="item nocall:view;
+                 report item/reportInstance;
+                 reportView nocall:item">
   <div metal:use-macro="reportView/resultsRenderer" />
 </div>
 

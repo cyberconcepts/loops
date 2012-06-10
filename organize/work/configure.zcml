@@ -103,6 +103,12 @@
       class="loops.organize.work.meeting.MeetingMinutes"
       permission="zope.View" />
 
+  <browser:page
+      name="meeting_minutes.doc"
+      for="loops.interfaces.IConceptSchema"
+      class="loops.organize.work.meeting.MeetingMinutesDocument"
+      permission="zope.View" />
+
   <!-- setup -->
 
   <zope:adapter factory="loops.organize.work.setup.SetupManager"

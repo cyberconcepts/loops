@@ -293,6 +293,9 @@ msgstr "Besprechungsprotokoll anzeigen..."
 msgid "Show meeting minutes for this object."
 msgstr "Besprechungsprotokoll für dieses Objekt anzeigen."
 
+msgid "Download Meeting Minutes"
+msgstr "Besprechungsprotokoll generieren"
+
 msgid "Task/Action"
 msgstr "Aufgabe"
 
