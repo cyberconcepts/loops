@@ -260,7 +260,7 @@ Automatic security settings on persons
 
   >>> from zope.traversing.api import getName
   >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
-  [u'general', u'jim', u'john', u'martha', u'person.newuser']
+  [u'jim', u'john', u'martha', u'person.newuser']
 
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.

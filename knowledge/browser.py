@@ -32,6 +32,7 @@ from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.expert.browser.report import ResultsConceptView
 from loops.knowledge.interfaces import IPerson, ITask
+from loops.knowledge.qualification import QualificationRecord
 from loops.organize.work.browser import CreateWorkItemForm, CreateWorkItem
 from loops.organize.party import getPersonForUser
 from loops.util import _
@@ -120,6 +121,8 @@ class PersonQualificationView(ResultsConceptView):
 class CreateQualificationRecordForm(CreateWorkItemForm):
 
     macros = knowledge_macros
+    recordManagerName = 'qualification'
+    trackFactory = QualificationRecord
 
     @Lazy
     def macro(self):

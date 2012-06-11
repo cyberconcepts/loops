@@ -100,6 +100,19 @@
         factory="loops.knowledge.browser.Candidates"
         permission="zope.View" />
 
+  <browser:page
+      name="create_qualification.html"
+      for="loops.interfaces.INode"
+      class="loops.knowledge.browser.CreateQualificationRecordForm"
+      permission="zope.View" />
+
+  <zope:adapter
+      name="create_qualification"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.knowledge.browser.CreateQualificationRecord"
+      permission="zope.View" />
+
   <!-- other adapters -->
 
   <zope:adapter factory="loops.knowledge.schema.PersonSchemaFactory" />
