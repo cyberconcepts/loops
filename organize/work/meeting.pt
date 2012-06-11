@@ -3,7 +3,8 @@
 
 <div metal:define-macro="content"
      tal:define="report item/reportInstance;
-                 reportView nocall:item">
+                 reportView nocall:item;
+                 results reportView/results">
   <div tal:attributes="class string:content-$level;">
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <metal:block use-macro="view/concept_macros/conceptfields" />
@@ -21,15 +22,33 @@
 <div metal:define-macro="document"
      tal:define="item nocall:view;
                  report item/reportInstance;
-                 reportView nocall:item">
-  <div metal:use-macro="reportView/resultsRenderer" />
+                 reportView nocall:item;
+                 results reportView/results;
+                 fields results/context/fields">
+  <metal:header use-macro="item/macros/header" />
+  <metal:results use-macro="reportView/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="header"
+     tal:define="row results/first">
+  <h1 i18n:translate="">Meeting Minutes</h1>
+  <h2 tal:define="col fields/eventTitle">
+    <metal:col use-macro="python:item.getColumnRenderer(col)" /></h2>
+  <div>
+    <span tal:define="col fields/eventStart">
+      <metal:col use-macro="python:item.getColumnRenderer(col)" /></span> -
+    <span tal:define="col fields/eventEnd">
+      <metal:col use-macro="python:item.getColumnRenderer(col)" /></span>
+  </div>
+  <div tal:define="col fields/eventDescription">
+    <metal:col use-macro="python:item.getColumnRenderer(col)" /></div>
 </div>
 
 
 <div metal:define-macro="results">
   <table class="report"
-         tal:define="results reportView/results;
-                     showCheckboxes cb_name|nothing">
+         tal:define="showCheckboxes cb_name|nothing">
     <tr>
         <th tal:condition="showCheckboxes"
             style="border: 1px solid grey">

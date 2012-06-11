@@ -147,7 +147,8 @@ class ResultsConceptView(ConceptView):
         reportType = self.reportType or self.report.reportType
         ri = component.getAdapter(self.report, IReportInstance,
                                   name=reportType)
-        ri.view = self.nodeView
+        #ri.view = self.nodeView
+        ri.view = self
         return ri
 
     def results(self):

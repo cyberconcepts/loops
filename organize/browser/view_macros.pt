@@ -67,6 +67,7 @@
   <h3 i18n:translate="">Tasks</h3>
   <tal:tasks define="report item/reportInstance;
                      reportView nocall:item;
+                     results reportView/results;
                      cb_name string:cb_select_tasks;">
     <metal:results use-macro="view/resultsRenderer" />
   </tal:tasks>
