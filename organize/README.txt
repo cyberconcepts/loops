@@ -390,6 +390,11 @@ Events listing
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]
 
+Creation of follow-up event
+---------------------------
+
+  >>> from loops.organize.browser.event import CreateFollowUpEvent
+
 
 Send Email to Members
 =====================

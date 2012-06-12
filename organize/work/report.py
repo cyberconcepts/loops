@@ -330,8 +330,6 @@ class TaskRow(BaseRow):
     )
 
 
-
-
 class MeetingMinutes(WorkReportInstance):
 
     type = "meeting_minutes"
@@ -345,6 +343,6 @@ class MeetingMinutes(WorkReportInstance):
     states = ('planned', 'accepted', 'done', 'done_x', 'finished')
 
     def selectObjects(self, parts):
-        return self.getTasks(parts)[1:]
+        return [adapted(t) for t in self.getTasks(parts)[1:]]
 
 

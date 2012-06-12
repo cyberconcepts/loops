@@ -70,7 +70,8 @@
               style="border: 1px solid grey">
             <input type="checkbox" checked
                    tal:condition="python:colname == 'title'"
-                   tal:attributes="name string:$cb_name:list" /></td>
+                   tal:attributes="name string:$cb_name:list;
+                                   value row/context/uid" /></td>
           <td style="border: 1px solid grey"
               tal:define="col report/fields/?colname"
               tal:attributes="class col/cssClass">
