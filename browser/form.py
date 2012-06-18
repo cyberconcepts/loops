@@ -663,10 +663,16 @@ class CreateObject(EditObject):
 
     factory = Resource
     defaultTypeToken = '.loops/concepts/textdocument'
+    namePrefix = u''
 
     @Lazy
     def container(self):
         return self.loopsRoot.getResourceManager()
+
+    @Lazy
+    def objectType(self):
+        tc = self.request.form.get('form.type') or self.defaultTypeToken
+        return self.loopsRoot.loopsTraverse(tc)
 
     def getName(self):
         return None
@@ -692,10 +698,11 @@ class CreateObject(EditObject):
         name = self.getName()
         if name is None:
             name = self.getNameFromData()
-            name = INameChooser(container).chooseName(name, obj)
+            nc = INameChooser(container)
+            nc.prefix = self.namePrefix
+            name = nc.chooseName(name, obj)
         container[name] = obj
-        tc = form.get('form.type') or self.defaultTypeToken
-        obj.setType(self.loopsRoot.loopsTraverse(tc))
+        obj.setType(self.objectType)
         notify(ObjectCreatedEvent(obj))
         #notify(ObjectAddedEvent(obj))
         self.object = obj
@@ -744,7 +751,14 @@ class CreateConcept(EditConcept, CreateObject):
 
     @Lazy
     def container(self):
+        cmName = adapted(self.objectType).conceptManager
+        if cmName:
+            return self.loopsRoot[cmName]
         return self.loopsRoot.getConceptManager()
+
+    @Lazy
+    def namePrefix(self):
+        return adapted(self.objectType).namePrefix or u''
 
     def getNameFromData(self):
         return None

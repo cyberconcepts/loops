@@ -215,11 +215,14 @@ class NameChooser(BaseNameChooser):
 
     adapts(ILoopsContained)
 
+    prefix = u''
+
     def chooseName(self, name, obj):
         if not name:
             name = self.generateNameFromTitle(obj)
         else:
             name = self.normalizeName(name)
+        name = self.prefix + name
         name = super(NameChooser, self).chooseName(name, obj)
         return name
 
