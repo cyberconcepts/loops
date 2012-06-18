@@ -23,9 +23,11 @@ Definition of view classes and other browser related stuff for tasks.
 import calendar
 from datetime import date, datetime, timedelta
 from urllib import urlencode
-from zope import interface, component
+from zope.app.container.interfaces import INameChooser
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope import interface, component
+from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
 from cybertools.meta.interfaces import IOptions
@@ -34,8 +36,12 @@ from loops.browser.concept import ConceptView
 from loops.browser.form import CreateConceptPage, CreateConcept
 from loops.browser.form import EditConceptPage, EditConcept
 from loops.browser.node import NodeView
-from loops.common import adapted
+from loops.common import adapted, baseObject
+from loops.concept import Concept
+from loops.organize.work.meeting import MeetingMinutes
+from loops.setup import addAndConfigureObject
 from loops.util import _
+from loops import util
 
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
@@ -247,12 +253,39 @@ class CalendarInfo(NodeView):
 
 # special forms
 
-class CreateFollowUpEventForm(CreateConceptPage):
+class CreateFollowUpEventForm(CreateConceptPage, MeetingMinutes):
 
     fixedType = True
     typeToken = '.loops/concepts/event'
     form_action = 'create_followup_event'
-    showAssignments = True
+    showAssignments = False
+
+    @Lazy
+    def macro(self):
+        return organize_macros.macros['create_followup_event']
+
+    @Lazy
+    def baseEvent(self):
+        return adapted(self.virtualTargetObject)
+
+    @Lazy
+    def title(self):
+        event = self.baseEvent
+        evView = ConceptView(event, self.request)
+        eventTitle = u'%s, %s' % (event.title, evView.data['start'])
+        return _(u'Create Follow-up Event for: $event', 
+                    mapping=dict(event=eventTitle))
+
+    @Lazy
+    def data(self):
+        data = self.getData()
+        data['title'] = self.baseEvent.title
+        data['description'] = self.baseEvent.description
+        return data
+
+    def results(self):
+        return self.reportInstance.getResults(
+                dict(tasks=util.getUidForObject(self.virtualTargetObject)))
 
 
 class EditFollowUpEventForm(EditConceptPage, CreateFollowUpEventForm):
@@ -270,6 +303,55 @@ class BaseFollowUpController(object):
 class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
 
     defaultTypeToken = '.loops/concepts/event'
+
+    @Lazy
+    def followsPredicate(self):
+        return self.view.conceptManager['follows']
+
+    @Lazy
+    def baseEvent(self):
+        return adapted(self.view.virtualTargetObject)
+
+    def update(self):
+        result = super(CreateFollowUpEvent, self).update()
+        form = self.request.form
+        toBeAssigned = form.get('cb_select_tasks') or []
+        print '***', toBeAssigned
+        for uid in toBeAssigned:
+            task = util.getObjectForUid(uid)
+            self.createFollowUpTask(adapted(task))
+        return result
+
+    def createFollowUpTask(self, source):
+        cm = self.view.conceptManager
+        stask = baseObject(source)
+        bevt = baseObject(self.baseEvent)
+        taskType = stask.conceptType
+        taskName = getName(stask)
+        name = INameChooser(cm).chooseName(taskName, stask)
+        newTask = addAndConfigureObject(cm, Concept, name,
+                        conceptType=taskType, 
+                        title=source.title, 
+                        description=source.description,
+                        start=source.start,
+                        end=source.end)
+        stask.assignChild(newTask, self.followsPredicate)
+        for rel in stask.getParentRelations():
+            if rel.predicate != self.view.typePredicate:
+                if rel.first == bevt:
+                    parent = self.object
+                else:
+                    parent = rel.first
+                newTask.assignParent(parent, rel.predicate, 
+                                     order=rel.order, relevance=rel.relevance)
+        return newTask
+
+    def assignConcepts(self, obj):
+        bevt = baseObject(self.baseEvent)
+        bevt.assignChild(obj, self.followsPredicate)
+        for rel in bevt.getParentRelations():
+            if rel.predicate != self.view.typePredicate:
+                obj.assignParent(rel.first, rel.predicate)
 
 
 class EditFollowUpEvent(EditConcept, BaseFollowUpController):

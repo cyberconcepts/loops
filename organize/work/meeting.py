@@ -24,6 +24,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.action import actions
+from cybertools.docgen.base import WordDocument
 from loops.browser.action import TargetAction
 from loops.expert.browser.report import ResultsConceptView
 from loops.util import _
@@ -41,6 +42,7 @@ actions.register('meeting_minutes', 'portlet', TargetAction,
 class MeetingMinutes(ResultsConceptView):
 
     reportName = 'meeting_minutes'
+    reportDownload = 'meeting_minutes.doc'
 
     @Lazy
     def meeting_macros(self):
@@ -59,3 +61,25 @@ class MeetingMinutes(ResultsConceptView):
         if renderer == 'subreport':
             return self.meeting_macros[renderer]
         return self.result_macros[renderer]
+
+
+class MeetingMinutesDocument(WordDocument, MeetingMinutes):
+
+    isToplevel = True
+
+    def __init__(self, context, request):
+        MeetingMinutes.__init__(self, context, request)
+
+    @Lazy
+    def macros(self):
+        return meeting_template.macros
+
+    @Lazy
+    def reportRenderer(self):
+        return self.macros['document']
+
+    @Lazy
+    def content(self):
+        return self.reportRenderer
+
+

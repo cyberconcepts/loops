@@ -3,19 +3,58 @@
 
 <div metal:define-macro="content"
      tal:define="report item/reportInstance;
-                 reportView nocall:item">
+                 reportView nocall:item;
+                 results reportView/results">
   <div tal:attributes="class string:content-$level;">
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <metal:block use-macro="view/concept_macros/conceptfields" />
   </div><br />
+  <span class="button"
+        tal:condition="item/reportDownload">
+    <a target="_blank"
+       tal:attributes="href string:${item/targetUrl}/${item/reportDownload}"
+       i18n:translate="">Download Meeting Minutes</a></span>
+  <br />&nbsp;
   <div metal:use-macro="reportView/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="document"
+     tal:define="item nocall:view;
+                 report item/reportInstance;
+                 reportView nocall:item;
+                 results reportView/results;
+                 fields results/context/fields">
+  <metal:header use-macro="item/macros/header" />
+  <metal:results use-macro="reportView/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="header"
+     tal:define="row results/first">
+  <h1 i18n:translate="">Meeting Minutes</h1>
+  <h2 tal:define="col fields/eventTitle">
+    <metal:col use-macro="python:item.getColumnRenderer(col)" /></h2>
+  <div>
+    <span tal:define="col fields/eventStart">
+      <metal:col use-macro="python:item.getColumnRenderer(col)" /></span> -
+    <span tal:define="col fields/eventEnd">
+      <metal:col use-macro="python:item.getColumnRenderer(col)" /></span>
+  </div>
+  <div tal:define="col fields/eventDescription">
+    <metal:col use-macro="python:item.getColumnRenderer(col)" /></div>
 </div>
 
 
 <div metal:define-macro="results">
   <table class="report"
-         tal:define="results reportView/results">
+         tal:define="showCheckboxes cb_name|nothing">
     <tr>
+        <th tal:condition="showCheckboxes"
+            style="border: 1px solid grey">
+          <input type="checkbox" checked
+                 tal:attributes="onclick 
+                      string:toggleCheckBoxes(this, '$cb_name:list')" /></th>
         <th i18n:translate=""
             style="border: 1px solid grey">Task/Action</th>
         <th style="border: 1px solid grey"
@@ -27,6 +66,12 @@
     </tr>
     <tal:task repeat="row results">
         <tr tal:repeat="colname python: ('title', 'description',)">
+          <td tal:condition="showCheckboxes"
+              style="border: 1px solid grey">
+            <input type="checkbox" checked
+                   tal:condition="python:colname == 'title'"
+                   tal:attributes="name string:$cb_name:list;
+                                   value row/context/uid" /></td>
           <td style="border: 1px solid grey"
               tal:define="col report/fields/?colname"
               tal:attributes="class col/cssClass">
@@ -49,6 +94,8 @@
 <div metal:define-macro="subreport"
      tal:define="results python:col.getValue(row)">
       <tr class="listing" tal:repeat="row results">
+        <td tal:condition="showCheckboxes"
+            style="border: 1px solid grey" />
         <td tal:repeat="col results/displayedColumns"
             tal:attributes="class col/cssClass"
             style="border: 1px solid grey">

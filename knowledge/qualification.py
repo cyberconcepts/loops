@@ -38,8 +38,12 @@ from loops.organize.work.base import WorkItem, WorkItems
 @implementer(IStatesDefinition)
 def qualificationStates():
     return StatesDefinition('qualification',
+        State('new', 'new', ('assign',), 
+              color='grey'),
         State('open', 'open',
-              ('register', 'pass', 'fail', 'cancel', 'modify'),
+              ('register', 
+                #'pass', 'fail', 
+                'cancel', 'modify'),
               color='red'),
         State('registered', 'registered',
               ('register', 'pass', 'fail', 'unregister', 'cancel', 'modify'),
@@ -61,14 +65,17 @@ def qualificationStates():
         State('open_x', 'open', ('modify',), color='red'),
         State('registered_x', 'registered', ('modify',), color='yellow'),
         # transitions:
+        Transition('assign', 'assign', 'open'),
         Transition('register', 'register', 'registered'),
         Transition('pass', 'pass', 'passed'),
         Transition('fail', 'fail', 'failed'),
         Transition('unregister', 'unregister', 'open'),
         Transition('cancel', 'cancel', 'cancelled'),
+        Transition('modify', 'modify', 'open'),
         Transition('close', 'close', 'closed'),
         Transition('open', 'open', 'open'),
-        initialState='open')
+        #initialState='open')
+        initialState='new')  # TODO: handle assignment to competence
 
 
 class QualificationRecord(WorkItem):

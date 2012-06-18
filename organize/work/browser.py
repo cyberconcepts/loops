@@ -307,6 +307,8 @@ class UserWorkItems(PersonWorkItems):
 class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     template = work_macros
+    recordManagerName = 'work'
+    trackFactory = WorkItem
 
     def checkPermissions(self):
         return canAccessObject(self.task or self.target)
@@ -325,9 +327,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     def track(self):
         id = self.request.form.get('id')
         if id is not None:
-            workItems = self.loopsRoot.getRecordManager()['work']
+            workItems = self.loopsRoot.getRecordManager()[
+                                        self.recordManagerName]
             return workItems.get(id)
-        return WorkItem(None, 0, None, {})
+        return self.trackFactory(None, 0, None, {})
 
     @Lazy
     def title(self):

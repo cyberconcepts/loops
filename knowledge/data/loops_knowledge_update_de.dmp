@@ -1,14 +1,14 @@
 type(u'competence', u'Kompetenz', viewName=u'', 
     typeInterface=u'', options=u'action.portlet:create_subtype,edit_concept')
-type(u'person', u'Person', viewName=u'', 
-    typeInterface=u'loops.knowledge.interfaces.IPerson', 
-    options=u'action.portlet:createQualification,editPerson')
-type(u'task', u'Aufgabe', viewName=u'', 
-    typeInterface=u'loops.knowledge.interfaces.ITask', 
-    options=u'action.portlet:createTask,editTask')
-type(u'topic', u'Thema', viewName=u'', 
-    typeInterface=u'loops.knowledge.interfaces.ITopic', 
-    options=u'action.portlet:createTask,createTopic,editTopic')
+# type(u'person', u'Person', viewName=u'', 
+#     typeInterface=u'loops.knowledge.interfaces.IPerson', 
+#     options=u'action.portlet:editPerson')
+# type(u'task', u'Aufgabe', viewName=u'', 
+#     typeInterface=u'loops.knowledge.interfaces.ITask', 
+#     options=u'action.portlet:createTask,editTask')
+# type(u'topic', u'Thema', viewName=u'', 
+#     typeInterface=u'loops.knowledge.interfaces.ITopic', 
+#     options=u'action.portlet:createTask,createTopic,editTopic')
 type(u'training', u'Schulung', viewName=u'', 
     typeInterface=u'loops.organize.interfaces.ITask', 
     options=u'action.portlet:edit_concept')
@@ -29,11 +29,11 @@ concept(u'issubtype', u'is Subtype', u'predicate', options=u'hide_children',
 child(u'general', u'competence', u'standard')
 child(u'general', u'depends', u'standard')
 child(u'general', u'knows', u'standard')
-child(u'general', u'person', u'standard')
+#child(u'general', u'person', u'standard')
 child(u'general', u'provides', u'standard')
 child(u'general', u'requires', u'standard')
-child(u'general', u'task', u'standard')
-child(u'general', u'topic', u'standard')
+#child(u'general', u'task', u'standard')
+#child(u'general', u'topic', u'standard')
 child(u'general', u'training', u'standard')
 
 child(u'system', u'issubtype', u'standard')

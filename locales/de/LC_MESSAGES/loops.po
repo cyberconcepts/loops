@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-05-30 12:00 CET\n"
+"PO-Revision-Date: 2012-06-10 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -242,6 +242,9 @@ msgstr "Folgetermin anlegen..."
 msgid "Create an event that is linked to this one."
 msgstr "Einen neuen Termin anlegen, der mit diesem verknüpft ist."
 
+msgid "Create Follow-up Event for: $event"
+msgstr "Folgetermin anlegen für: $event"
+
 msgid "Edit Event..."
 msgstr "Termin bearbeiten..."
 
@@ -289,6 +292,9 @@ msgstr "Besprechungsprotokoll anzeigen..."
 
 msgid "Show meeting minutes for this object."
 msgstr "Besprechungsprotokoll für dieses Objekt anzeigen."
+
+msgid "Download Meeting Minutes"
+msgstr "Besprechungsprotokoll generieren"
 
 msgid "Task/Action"
 msgstr "Aufgabe"
@@ -394,6 +400,9 @@ msgstr "Thema"
 
 msgid "Task"
 msgstr "Aufgabe"
+
+msgid "Tasks"
+msgstr "Aufgaben"
 
 msgid "Domain"
 msgstr "Bereich"

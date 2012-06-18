@@ -260,7 +260,7 @@ Automatic security settings on persons
 
   >>> from zope.traversing.api import getName
   >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
-  [u'general', u'jim', u'john', u'martha', u'person.newuser']
+  [u'jim', u'john', u'martha', u'person.newuser']
 
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.
@@ -389,6 +389,11 @@ Events listing
 
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]
+
+Creation of follow-up event
+---------------------------
+
+  >>> from loops.organize.browser.event import CreateFollowUpEvent
 
 
 Send Email to Members

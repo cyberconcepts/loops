@@ -26,14 +26,14 @@ from zope.component import adapter
 
 from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
-from cybertools.composer.report.field import Field
+from cybertools.composer.report.field import Field, CalculatedField
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
 from cybertools.organize.interfaces import IWorkItems
 from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.expert.field import TargetField, TextField, UrlField
+from loops.expert.field import TargetField, DateField, TextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
@@ -44,7 +44,8 @@ class StateField(Field):
         value = self.getValue(row)
         return util._(value)
 
-class DateField(Field):
+
+class TrackDateField(Field):
 
     part = 'date'
     format = 'short'
@@ -65,7 +66,7 @@ class DateField(Field):
         return u''
 
 
-class TimeField(DateField):
+class TrackTimeField(TrackDateField):
 
     part = 'time'
 
@@ -105,14 +106,14 @@ dayFrom = Field('dayFrom', u'Start Day',
 dayTo = Field('dayTo', u'End Day',
                 description=u'The last day until which to select work.',
                 executionSteps=['query'])
-day = DateField('day', u'Day',
+day = TrackDateField('day', u'Day',
                 description=u'The day the work was done.',
                 cssClass='center',
                 executionSteps=['sort', 'output'])
-timeStart = TimeField('start', u'Start',
+timeStart = TrackTimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
                 executionSteps=['sort', 'output'])
-timeEnd = TimeField('end', u'End',
+timeEnd = TrackTimeField('end', u'End',
                 description=u'The time the unit of work was finished.',
                 executionSteps=['output'])
 task = TargetField('taskId', u'Task',
@@ -272,7 +273,21 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
         return []
 
 
-taskTitle = UrlField('title', u'Title',
+eventTitle = CalculatedField('eventTitle', u'Event Title',
+                description=u'',
+                executionSteps=(['header']))
+eventDescription = CalculatedField('eventDescription', u'Event Description',
+                description=u'',
+                executionSteps=(['header']))
+eventStart = DateField('eventStart', u'Event Start',
+                description=u'',
+                format=('dateTime', 'short'),
+                executionSteps=(['header']))
+eventEnd = DateField('eventEnd', u'Event End',
+                description=u'',
+                format=('dateTime', 'short'),
+                executionSteps=(['header']))
+taskTitle = UrlField('title', u'Task Title',
                 description=u'The short description of the task.',
                 cssClass='header-1',
                 executionSteps=['output'])
@@ -288,27 +303,46 @@ workItems = SubReportField('workItems', u'Work Items',
 
 class TaskRow(BaseRow):
 
-    pass
+    @Lazy
+    def event(self):
+        return self.parent.context.view.adapted
+
+    @Lazy
+    def eventTitle(self):
+        return self.event.title
+
+    @Lazy
+    def eventDescription(self):
+        return self.event.description
+
+    @Lazy
+    def eventStart(self):
+        return self.event.start
+
+    @Lazy
+    def eventEnd(self):
+        return self.event.end
+
+    useRowProperty = BaseRow.useRowProperty
+    attributeHandlers = dict(
+            eventStart=useRowProperty,
+            eventEnd=useRowProperty,
+    )
 
 
 class MeetingMinutes(WorkReportInstance):
-
-    # TODO:
-    # header (event) fields: title, description, from/to,
-    #               location, participants (or put in description?)
-    # result set field for work items
-    # work item fields: title, description, party, deadline, state
 
     type = "meeting_minutes"
     label = u'Meeting Minutes'
 
     rowFactory = TaskRow
 
-    fields = Jeep((tasks, taskTitle, taskDescription, workItems))
+    fields = Jeep((eventTitle, eventStart, eventEnd, eventDescription,
+                   tasks, taskTitle, taskDescription, workItems))
     defaultOutputFields = fields
     states = ('planned', 'accepted', 'done', 'done_x', 'finished')
 
     def selectObjects(self, parts):
-        return self.getTasks(parts)[1:]
+        return [adapted(t) for t in self.getTasks(parts)[1:]]
 
 

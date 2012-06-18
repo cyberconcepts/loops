@@ -62,6 +62,48 @@
 <metal:block define-macro="create_qualification">
     <form method="post" id="addQualification_form" class="dialog"
           dojoType="dijit.form.Form">
+      <input type="hidden" name="form.action" value="create_qualification" />
+      <input type="hidden" name="id"
+             tal:attributes="value request/form/id|nothing" />
+      <div class="heading" i18n:translate="">Add Qualification Record</div>
+      <div>
+        <label i18n:translate="" for="title">Title</label>
+        <div>
+          <input name="title" id="title" style="width: 60em"
+                 dojoType="dijit.form.ValidationTextBox" required
+                 tal:attributes="value view/title" /></div>
+      </div>
+      <div>
+        <label i18n:translate="" for="action">Action</label>
+        <select name="workitem.action" id="action" style="display:none">
+          <option tal:repeat="action view/actions"
+                  tal:attributes="value action/name"
+                  tal:content="action/title"
+                  i18n:translate="" />
+        </select>
+        <span id="target_competence">&nbsp;
+          <label i18n:translate="assign_to_competence" for="input_competence"
+                 style="display: inline">Assign to Competence</label>
+          <span dojoType="dojox.data.QueryReadStore" 
+                jsId="competence_search_store"
+                tal:define="types python:
+                    view.getTypesParamsForFilteringSelect(['competence'])"
+                tal:attributes="url string:listConceptsForComboBox.js$types;" >
+          </span>
+          <input dojoType="dijit.form.FilteringSelect"
+                 autoComplete="False" labelAttr="label" searchDelay="400"
+                 name="competence" id="input_competence"
+                 store="competence_search_store" />
+        </span>
+      </div>
+      <div>
+        <label i18n:translate="" for="comment">Comment</label>
+        <div>
+          <textarea name="comment" cols="80" rows="4" id="comment"
+                    dojoType="dijit.form.SimpleTextarea"
+                    style="width: 60em"
+                    tal:content="view/comment"></textarea></div>
+      </div>
       <div class="buttons">
         <input value="Save" type="submit"
                i18n:attributes="value">
