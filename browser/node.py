@@ -75,6 +75,7 @@ class NodeView(BaseView):
     _itemNum = 0
     template = node_macros
     nextUrl = None
+    setupTarget = True
 
     def __init__(self, context, request):
         super(NodeView, self).__init__(context, request)
@@ -191,8 +192,9 @@ class NodeView(BaseView):
             cm.register('portlet_left', 'calendar', title=_(u'Calendar'),
                         subMacro=calendar_macros.macros['main'],
                         priority=90)
-        # force early portlet registrations by target by setting up target view
-        self.virtualTarget
+        if self.setupTarget:
+            # force early portlet registrations by target
+            self.virtualTarget
 
     @Lazy
     def usersPresent(self):
@@ -482,7 +484,8 @@ class NodeView(BaseView):
         tv = self.viewAnnotations.get('targetView')
         if tv is not None:
             return tv
-        return self.getViewForTarget(self.virtualTargetObject)
+        setup = self.setupTarget
+        return self.getViewForTarget(self.virtualTargetObject, setup=setup)
 
     @Lazy
     def targetId(self):
@@ -538,13 +541,18 @@ class NodeView(BaseView):
         #self.registerDojo()
         self.registerDojoFormAll()
         if target is None:
-            target = self.virtualTarget
+            #target = self.virtualTarget
+            target = self.getViewForTarget(self.virtualTargetObject, 
+                                           setup=False)
         if category in self.actions:
             actions.extend(self.actions[category](self, target=target))
-        if target is not None:
-            actions.extend(target.getActions(category, page=self, target=target))
-        if target != self.virtualTarget:  # self view must be used directly for target
-            actions.extend(self.view.getAdditionalActions(category, self, target))
+        if target is not None and self.setupTarget:
+            actions.extend(target.getActions(
+                                    category, page=self, target=target))
+        if target is not None and target.context != self.virtualTargetObject:  
+            # self view must be used directly for target
+            actions.extend(self.view.getAdditionalActions(
+                                    category, self, target))
         return actions
 
     def getPortletActions(self, target=None):

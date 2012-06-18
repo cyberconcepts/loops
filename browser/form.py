@@ -269,6 +269,7 @@ class CreateObjectForm(ObjectForm):
     defaultTitle = u'Create Resource, Type = '
     form_action = 'create_resource'
     dialog_name = 'create'
+    setupTarget = False
 
     @property
     def macro(self): return self.template.macros['create']
