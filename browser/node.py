@@ -564,7 +564,6 @@ class NodeView(BaseView):
     actions = dict(portlet=getPortletActions)
 
     def checkAction(self, name, category, target):
-        #if name in ('create_resource',) and target is not None:
         if target is not None:
             return target.checkAction(name, category, target)
         return super(NodeView, self).checkAction(name, category, target)
