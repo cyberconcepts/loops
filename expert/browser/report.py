@@ -75,8 +75,31 @@ class ResultsView(NodeView):
     @Lazy
     def params(self):
         params = dict(self.request.form)
-        params.pop('report_execute', None)
+        params = self.parseParams(params)
         return params
+
+    def parseParams(self, params):
+        params.pop('report_execute', None)
+        if 'limits' in params:
+            params['limits'] = self.parseLimitsParam(params['limits'])
+        return params
+
+    def parseLimitsParam(self, value):
+        if not value:
+            return None
+        if isinstance(value, basestring):
+            limits = value.split(',')
+        else:
+            limits = value
+        if len(limits) < 2:
+            limits.append(None)
+        result = []
+        for p in limits[:2]:
+            if not p:
+                result.append(None)
+            else:
+                result.append(int(p))
+        return result
 
     @Lazy
     def report(self):
