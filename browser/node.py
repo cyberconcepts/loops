@@ -541,9 +541,9 @@ class NodeView(BaseView):
         #self.registerDojo()
         self.registerDojoFormAll()
         if target is None:
-            #target = self.virtualTarget
-            target = self.getViewForTarget(self.virtualTargetObject, 
-                                           setup=False)
+            target = self.virtualTarget
+            #target = self.getViewForTarget(self.virtualTargetObject, 
+            #                               setup=False)
         if category in self.actions:
             actions.extend(self.actions[category](self, target=target))
         if target is not None and self.setupTarget:
