@@ -1,12 +1,23 @@
 <html i18n:domain="loops">
 
 
+<metal:section define-macro="section">
+  <metal:info use-macro="view/concept_macros/concepttitle" />
+  <div tal:repeat="related item/resources">
+    <div tal:attributes="class python:
+                item.getCssClassForResource(related)"
+         tal:content="structure related/render" />
+  </div>
+</metal:section>
+
+
+<!-- layout part macros - obsolete? -->
+
 <metal:part define-macro="headline">
   <div tal:define="cell part/getView">
     <metal:headline use-macro="item/macros/headline" />
   </div>
 </metal:part>
-
 
 <metal:part define-macro="text">
   <tal:cell repeat="cell part/getResources">

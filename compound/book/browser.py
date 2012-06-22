@@ -24,6 +24,7 @@ from cgi import parse_qs
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName
 
 from cybertools.typology.interfaces import IType
 from loops.browser.lobo import standard
@@ -52,8 +53,24 @@ class Base(object):
 
 class SectionView(Base, ConceptView):
 
-    pass
+    @Lazy
+    def macro(self):
+        return book_template.macros['section']
 
+    @Lazy
+    def tabview(self):
+        if self.editable:
+            return 'index.html'
+
+    def getCssClassForResource(self, r):
+        documentType = self.conceptManager['documenttype']
+        for c in r.context.getConcepts([self.defaultPredicate]):
+            if c.conceptType == documentType:
+                return getName(c)
+        return 'textelement'
+
+
+# layout parts - probably obsolete:
 
 class PageLayout(Base, standard.Layout):
 
