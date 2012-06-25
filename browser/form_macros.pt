@@ -19,7 +19,9 @@
       <input type="hidden" name="form.action" value="edit"
              tal:attributes="value view/form_action" />
       <input type="hidden" name="version"
-             tal:attributes="value request/version | nothing" />
+             tal:attributes="value request/version|nothing" />
+      <input type="hidden" name="targetUid"
+             tal:attributes="value request/targetUid|nothing" />
       <tal:title condition="not:view/isInnerHtml">
         <h1 tal:content="request/view_title|view/title"
             i18n:translate="">Edit Information Object</h1>
