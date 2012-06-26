@@ -184,7 +184,7 @@ class RelationField(Field):
 
     def getDisplayValue(self, row):
         value = self.getValue(row)
-        if value is None:
+        if not value:
             return dict(title=u'', url=u'')
         nv = row.parent.context.view.nodeView
         return dict(title=getattr(value, self.displayAttribute),
