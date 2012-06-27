@@ -130,6 +130,7 @@ class EditForm(form.EditForm):
 class BaseView(GenericView, I18NView):
 
     actions = {}
+    portlet_actions = []
     icon = None
     modeName = 'view'
     isToplevel = False

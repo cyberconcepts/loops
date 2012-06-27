@@ -503,6 +503,12 @@ class ConceptView(BaseView):
             acts.extend(self.actions[category](self, page, target))
         return acts
 
+    def getPortletActions(self, page=None, target=None):
+        if self.portlet_actions:
+            return actions.get('portlet', self.portlet_actions,
+                                view=self, page=page, target=target)
+        return []
+
     def getObjectActions(self, page=None, target=None):
         acts = ['info']
         if self.globalOptions('organize.allowSendEmail'):
@@ -510,7 +516,7 @@ class ConceptView(BaseView):
         acts.extend('state.' + st.statesDefinition for st in self.states)
         return actions.get('object', acts, view=self, page=page, target=target)
 
-    actions = dict(object=getObjectActions)
+    actions = dict(object=getObjectActions, portlet=getPortletActions)
 
     def checkAction(self, name, category, target):
         if name in (self.typeOptions('hide_action.' + category) or []):
