@@ -222,6 +222,7 @@ class SubReport(ReportInstance):
 
 class SubReportField(Field):
 
+    template = None
     renderer = 'subreport'
     reportFactory = SubReport
 
