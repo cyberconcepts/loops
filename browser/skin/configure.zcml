@@ -5,6 +5,28 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <!-- Loopy skin -->
+
+  <zope:interface
+      interface="loops.browser.skin.Loopy"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Loopy" />
+
+  <page for="*"
+        name="body.html"
+        class="loops.browser.skin.loopy.browser.View"
+        permission="zope.View"
+        layer="loops.browser.skin.Loopy" />
+
+  <resource name="loops.css" file="loopy/loops.css"
+            layer="loops.browser.skin.Loopy" />
+  <resource name="custom.css" file="loopy/custom.css"
+            layer="loops.browser.skin.Loopy" />
+  <resource name="favicon.png" file="loops_favicon.png"
+            layer="loops.browser.skin.Loopy" />
+  <resource name="logo.png" file="loops_logo.png"
+            layer="loops.browser.skin.Loopy" />
+
   <!-- Loopz skin -->
 
   <zope:interface
