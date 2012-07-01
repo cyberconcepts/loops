@@ -9,6 +9,16 @@
             tal:attributes="src string:${resourceBase}logo.png" /></a>
 
 
+    <metal:breadcrumbs fill-slot="breadcrumbs">
+      <metal:tabs use-macro="views/node_macros/breadcrumbs" />
+    </metal:breadcrumbs>
+
+
+    <metal:tabs fill-slot="view_modes">
+      <metal:tabs use-macro="views/node_macros/view_modes" />
+    </metal:tabs>
+
+
     <metal:left fill-slot="portlet-left">
         <tal:portlet repeat="macro controller/macros/portlet_left">
           <metal:portlet use-macro="macro" />

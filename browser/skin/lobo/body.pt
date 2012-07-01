@@ -27,23 +27,7 @@
     <div id="content" class="span-6"
          metal:define-macro="content">
       <metal:breadcrumbs define-slot="breadcrumbs">
-        <table class="breadcrumbs"
-               tal:define="crumbs view/breadcrumbs"
-               tal:condition="crumbs">
-          <tr>
-            <td style="white-space: nowrap; vertical-align: top; width: 10%"
-                i18n:translate="">You are here:</td>
-            <td>
-              <span>
-                <span style="white-space: nowrap"
-                      tal:repeat="crumb crumbs">
-                  <a tal:attributes="href crumb/url"
-                      tal:content="crumb/label" />
-                  <tal:delimiter
-                    condition="not:repeat/crumb/end"> ></tal:delimiter></span> </span>
-            </td>
-          </tr>
-        </table>
+        <metal:tabs use-macro="views/node_macros/breadcrumbs" />
       </metal:breadcrumbs>
       <div metal:define-slot="actions"></div>
       <div metal:define-slot="message"></div>

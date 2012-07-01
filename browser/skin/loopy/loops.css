@@ -6,8 +6,8 @@
 
 /* general */
 
-#content {width: 82%}
-#menu {width: 17%;}
+#content {width: 79%}
+#menu {width: 20%;}
 #sub-section {width: 0}
 
 
@@ -53,6 +53,7 @@ table {
 
 .breadcrumbs td {
     padding-left: 0;
+    padding-top: 12px;
 }
 
 .description {
