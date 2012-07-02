@@ -243,8 +243,12 @@ class ConceptView(BaseView):
         if self.breadcrumbsParent is not None:
             data.extend(self.breadcrumbsParent.breadcrumbs())
         if self.context != self.nodeView.targetObject:
-            data.append(dict(label=self.title, url=self.targetUrl))
+            data.append(dict(label=self.breadcrumbsTitle, url=self.targetUrl))
         return data
+
+    @Lazy
+    def breadcrumbsTitle(self):
+        return self.title
 
     @Lazy
     def breadcrumbsParent(self):
