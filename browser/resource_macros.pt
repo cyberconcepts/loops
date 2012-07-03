@@ -83,8 +83,8 @@
       </span>
       <span class="button"
             tal:condition="item/xeditable">
-        <a title="Edit with External Editor"
-           i18n:translate=""
+        <a title="Edit with external editor"
+           i18n:translate="" i18n:attributes="title"
            tal:define="url view/virtualTargetUrl"
            tal:attributes="href string:$url/external_edit?version=this">
          Open for editing

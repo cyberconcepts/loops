@@ -227,6 +227,15 @@ class ResourceView(BaseView):
             response.setHeader('Last-Modified', modified.strftime(format))
         return data
 
+    def render(self):
+        """ Return the rendered content (data) of the context object.
+        """
+        self.recordAccess('render', target=self.uniqueId)
+        ctx = adapted(self.context)
+        text = ctx.data
+        contentType = ctx.contentType
+        return self.renderText(ctx.data, ctx.contentType)
+
     def renderText(self, text, contentType):
         if contentType == 'text/restructured' and wikiLinksActive(self.loopsRoot):
             # TODO: make this more flexible/configurable
@@ -399,15 +408,6 @@ class DocumentView(ResourceView):
 
     @Lazy
     def view(self): return self
-
-    def render(self):
-        """ Return the rendered content (data) of the context object.
-        """
-        self.recordAccess('render', target=self.uniqueId)
-        ctx = adapted(self.context)
-        text = ctx.data
-        contentType = ctx.contentType
-        return self.renderText(ctx.data, ctx.contentType)
 
     @Lazy
     def inlineEditable(self):

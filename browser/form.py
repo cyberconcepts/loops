@@ -501,6 +501,9 @@ class EditObject(FormController, I18NView):
 
     @Lazy
     def target(self):
+        targetUid = self.request.form.get('targetUid')
+        if targetUid:
+            return self.view.getObjectForUid(targetUid)
         return self.view.virtualTargetObject or self.context
 
     @Lazy
@@ -706,8 +709,7 @@ class CreateObject(EditObject):
         obj.setType(self.objectType)
         notify(ObjectCreatedEvent(obj))
         #notify(ObjectAddedEvent(obj))
-        self.object = obj
-        # TODO: validate fields
+        self.object = self.view.object = obj
         formState = self.updateFields() # TODO: suppress validation
         self.view.formState = formState
         # TODO: error handling

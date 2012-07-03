@@ -240,6 +240,27 @@
 </metal:actions>
 
 
+<metal:breadcrumbs define-macro="breadcrumbs">
+    <table class="breadcrumbs"
+           tal:define="crumbs view/breadcrumbs"
+           tal:condition="crumbs">
+      <tr>
+        <td style="white-space: nowrap; vertical-align: top; width: 10%"
+            i18n:translate="">You are here:</td>
+        <td>
+          <span>
+            <span style="white-space: nowrap"
+                  tal:repeat="crumb crumbs">
+              <a tal:attributes="href crumb/url"
+                  tal:content="crumb/label" />
+              <tal:delimiter
+                condition="not:repeat/crumb/end"> ></tal:delimiter></span> </span>
+        </td>
+      </tr>
+    </table>
+</metal:breadcrumbs>
+
+
 <metal:actions define-macro="view_modes">
   <ul class="view-modes"
       tal:define="viewModes view/viewModes"

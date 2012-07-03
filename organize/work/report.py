@@ -219,7 +219,7 @@ class WorkReportInstance(ReportInstance):
 
     def getAllSubtasks(self, concept):
         result = []
-        for c in concept.getChildren():
+        for c in concept.getChildren([self.view.defaultPredicate]):
             if c.conceptType in self.taskTypes:
                 result.append(c)
             result.extend(self.getAllSubtasks(c))
@@ -227,7 +227,8 @@ class WorkReportInstance(ReportInstance):
 
     def selectWorkItems(self, task, parts):
         # TODO: take states from parts
-        kw = dict(task=util.getUidForObject(task), state=self.states)
+        kw = dict(task=util.getUidForObject(baseObject(task)), 
+                  state=self.states)
         if 'userName' in parts:
             kw['userName'] = parts['userName'].comparisonValue
         wi = self.workItems
