@@ -1,4 +1,5 @@
 <tal:block i18n:domain="loops">
+<div metal:define-macro="body">
 <div metal:use-macro="views/cybertools.body_macros/body">
 
 
@@ -33,12 +34,6 @@
 
 
     <metal:footer fill-slot="footer">
-      <div xtal:condition="view/editable"
-           tal:condition="nothing">
-        <span i18n:translate="">For quick creation of notes/links bookmark this link</span>:
-        <a href="#"
-           tal:attributes="href view/popupCreateObjectForm">Create loops Note</a>
-      </div>
       Powered by
       <b><a href="http://loops.cy55.de">loops</a></b> &middot;
       <b><a href="http://wiki.zope.org/zope3">Zope 3</a></b> &middot;
@@ -47,5 +42,6 @@
     </metal:footer>
 
 
+</div>
 </div>
 </tal:block>

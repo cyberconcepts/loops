@@ -18,6 +18,11 @@
         permission="zope.View"
         layer="loops.browser.skin.Loopy" />
 
+  <page for="*"
+        name="loopy.body_macros"
+        template="loopy/body.pt"
+        permission="zope.Public" />
+
   <resource name="loops.css" file="loopy/loops.css"
             layer="loops.browser.skin.Loopy" />
   <resource name="custom.css" file="loopy/custom.css"
