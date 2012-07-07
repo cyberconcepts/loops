@@ -32,7 +32,7 @@ from cybertools.browser.controller import Controller
 from cybertools.catalog.keyword import KeywordIndex
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.field import FieldInstance, \
-        NumberFieldInstance, FloatFieldInstance, BooleanFieldInstance, \
+        NumberFieldInstance, DecimalFieldInstance, BooleanFieldInstance, \
         DateFieldInstance, EmailFieldInstance, ListFieldInstance
 from cybertools.composer.schema.field import FileUploadFieldInstance
 from cybertools.composer.schema.grid.field import RecordsFieldInstance
@@ -164,7 +164,7 @@ class TestSite(object):
         component.provideAdapter(Editor, name='editor')
         component.provideAdapter(FieldInstance)
         component.provideAdapter(NumberFieldInstance, name='number')
-        component.provideAdapter(FloatFieldInstance, name='float')
+        component.provideAdapter(DecimalFieldInstance, name='decimal')
         component.provideAdapter(DateFieldInstance, name='date')
         component.provideAdapter(EmailFieldInstance, name='email')
         component.provideAdapter(BooleanFieldInstance, name='boolean')

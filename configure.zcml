@@ -346,8 +346,8 @@
   <adapter factory="cybertools.composer.schema.field.FieldInstance" />
   <adapter factory="cybertools.composer.schema.field.NumberFieldInstance"
            name="number" />
-  <adapter factory="cybertools.composer.schema.field.FloatFieldInstance"
-           name="float" />
+  <adapter factory="cybertools.composer.schema.field.DecimalFieldInstance"
+           name="decimal" />
   <adapter factory="cybertools.composer.schema.field.DateFieldInstance"
            name="date" />
   <adapter factory="cybertools.composer.schema.field.EmailFieldInstance"
