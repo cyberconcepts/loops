@@ -31,9 +31,9 @@ from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
 from cybertools.browser.controller import Controller
 from cybertools.catalog.keyword import KeywordIndex
 from cybertools.composer.schema.factory import SchemaFactory
-from cybertools.composer.schema.field import FieldInstance, NumberFieldInstance
-from cybertools.composer.schema.field import DateFieldInstance, BooleanFieldInstance
-from cybertools.composer.schema.field import EmailFieldInstance, ListFieldInstance
+from cybertools.composer.schema.field import FieldInstance, \
+        NumberFieldInstance, FloatFieldInstance, BooleanFieldInstance, \
+        DateFieldInstance, EmailFieldInstance, ListFieldInstance
 from cybertools.composer.schema.field import FileUploadFieldInstance
 from cybertools.composer.schema.grid.field import RecordsFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
@@ -164,6 +164,7 @@ class TestSite(object):
         component.provideAdapter(Editor, name='editor')
         component.provideAdapter(FieldInstance)
         component.provideAdapter(NumberFieldInstance, name='number')
+        component.provideAdapter(FloatFieldInstance, name='float')
         component.provideAdapter(DateFieldInstance, name='date')
         component.provideAdapter(EmailFieldInstance, name='email')
         component.provideAdapter(BooleanFieldInstance, name='boolean')

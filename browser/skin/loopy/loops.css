@@ -485,8 +485,8 @@ img.notselected {
 /* view modes (tabs) */
 
 ul.view-modes {
-    padding: 0 0 0 2em;
-    margin: 0.7em 0 0 0;
+    padding: 0 0 1px 0.5em;
+    margin: 1.5em 0 0 0;
     white-space: nowrap;
     list-style-type: none;
     border-bottom: #ccc 1px solid;
@@ -494,11 +494,11 @@ ul.view-modes {
 }
 
 ul.view-modes li {
-    display: inline
+    display: inline;
 }
 
 ul.view-modes li a {
-    padding: 0.15em 1.25em 0.15em 1.25em;
+    padding: 3px 1.25em 3px 1.25em;
     margin: 0 0.5em 0 0;
     text-decoration: none;
     border: #ccc 1px solid;
