@@ -89,7 +89,8 @@ class ConceptElement(Element):
     def execute(self, loader):
         type = loader.concepts[self['type']]
         kw = dict((k, v) for k, v in self.items()
-                         if k not in self.posArgs)
+                         #if k not in self.posArgs)
+                         if k not in ['name', 'type'])
         self.object = loader.addConcept(self['name'], self['title'], type)
         formState = self.getInstance().applyTemplate(data=kw, ignoreValidation=True)
         # simple hack for resolving interface definition:
@@ -97,7 +98,8 @@ class ConceptElement(Element):
         if pi:
             adapted(self.object).predicateInterface = resolve(pi)
 
-    def getInstance(self, omit=['title']):
+    #def getInstance(self, omit=['title']):
+    def getInstance(self, omit=[]):
         adObject = adapted(self.object)
         schemaFactory = ISchemaFactory(adObject)
         ti = IType(self.object).typeInterface or IConceptSchema
