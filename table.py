@@ -31,6 +31,7 @@ from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.grid.interfaces import KeyTable
 from cybertools.composer.interfaces import IInstance
 from loops.common import AdapterBase, adapted, baseObject
+from loops.external.element import Element
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
 from loops import util
@@ -99,8 +100,9 @@ class DataTableSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(DataTableSchemaFactory, self).__call__(interface, **kw)
-        schema.fields.remove('columns')
-        schema.fields.remove('viewName')
+        if not isinstance(kw.get('manager'), Element):
+            schema.fields.remove('columns')
+            schema.fields.remove('viewName')
         return schema
 
 
