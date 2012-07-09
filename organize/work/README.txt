@@ -212,25 +212,23 @@ The executable report is a report instance that is an adapter to the
   ...                          provides=IReportInstance,
   ...                          name='work_report')
 
-The user interface to the report is a report view, the results are presented
-in a results view.
+The user interface is a ReportConceptView subclass that is directly associated with the task.
 
-  >>> from loops.view import Node
-  >>> reportNode = addAndConfigureObject(home, Node, 'report',
-  ...                   title=u'Report', target=workStatement)
-  >>> from loops.expert.browser.report import ReportView, ResultsView
-  >>> resultsView = ResultsView(reportNode, TestRequest())
+  >>> from loops.organize.work.report import WorkStatementView
+  >>> reportView = WorkStatementView(task01, TestRequest())
+  >>> reportView.nodeView = nodeView
 
-  >>> results = resultsView.results()#.getResult()
+  >>> results = reportView.results()
   >>> len(list(results))
   1
+
   >>> for row in results:
-  ...     for col in resultsView.displayedColumns:
+  ...     for col in reportView.displayedColumns:
   ...         print col.getDisplayValue(row),
   ...     print
   08/12/28 19:00 20:15
-    {'url': '.../home/report/.36', 'title': u'loops Development'}
-    {'url': '.../home/report/.33', 'title': u'john'}  01:15 00:15 finished
+    {'url': '.../home/.36', 'title': u'loops Development'}
+    {'url': '.../home/.33', 'title': u'john'}  01:15 00:15 finished
 
   >>> results.totals.data
   {'effort': 900}
@@ -266,18 +264,17 @@ report is available.
   ...                   reportType='meeting_minutes')
   >>> meetingMinutes.assignChild(tEvent, hasReport)
 
-We can now access the report using a results view.
+We can now access the report using a corresponding report-based view.
 
-  >>> from loops.util import getUidForObject
-  >>> input = dict(tasks=getUidForObject(ev01))
-  >>> resultsView = ResultsView(home, TestRequest(form=input))
-  >>> resultsView.virtualTargetObject = meetingMinutes
+  >>> from loops.organize.work.meeting import MeetingMinutes
+  >>> reportView = MeetingMinutes(ev01, TestRequest())
+  >>> reportView.nodeView = nodeView
 
-  >>> results = resultsView.results()
+  >>> results = reportView.results()
   >>> len(list(results))
   1
   >>> for row in results:
-  ...     for col in resultsView.displayedColumns:
+  ...     for col in reportView.displayedColumns:
   ...         print col.getDisplayValue(row),
   ...     print
   {'url': 'http://127.0.0.1/loops/views/home/.36', 'title': u'loops Development'}

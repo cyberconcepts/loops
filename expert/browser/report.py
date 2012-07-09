@@ -134,7 +134,7 @@ class ResultsView(NodeView):
 
 
 class ResultsConceptView(ConceptView):
-    """ View on a concept using a report.
+    """ View on a concept using the results of a report.
     """
 
     reportName = None   # define in subclass if applicable
@@ -175,7 +175,7 @@ class ResultsConceptView(ConceptView):
         return ri
 
     def results(self):
-        return self.reportInstance.getResults(dict(tasks=util.getUidForObject(self.context)))
+        return self.reportInstance.getResults()
 
     @Lazy
     def displayedColumns(self):
@@ -183,3 +183,8 @@ class ResultsConceptView(ConceptView):
 
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
+
+
+class ReportConceptView(ResultsConceptView):
+    """ View on a concept using a report.
+    """

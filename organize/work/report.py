@@ -33,13 +33,24 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
+from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import TargetField, DateField, TextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
 
 
+# reporting views
+
+class WorkStatementView(ReportConceptView):
+
+    reportName = 'work_statement'
+
+
+# fields
+
 class StateField(Field):
+
     def getDisplayValue(self, row):
         value = self.getValue(row)
         return util._(value)
@@ -178,9 +189,11 @@ class WorkReportInstance(ReportInstance):
     rowFactory = WorkRow
 
     fields = Jeep((dayFrom, dayTo, tasks,
-                   day, timeStart, timeEnd, task, party, workTitle, #description,
+                   day, timeStart, timeEnd, task, party, workTitle, 
+                   #description,
                    duration, effort, state))
 
+    userSettings = (dayFrom, dayTo, party)
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
     states = ('done', 'done_x', 'finished')
@@ -192,12 +205,13 @@ class WorkReportInstance(ReportInstance):
         crit = self.context.queryCriteria or []
         if not crit and 'tasks' not in form:
             f = self.fields['tasks']
-            tasks = baseObject(self.context).getChildren([self.hasReportPredicate])
+            tasks = [self.view.context]
             tasks = [util.getUidForObject(task) for task in tasks]
             crit = [LeafQueryCriteria(f.name, f.operator, tasks, f)]
         for f in self.getAllQueryFields():
             if f.name in form:
-                crit.append(LeafQueryCriteria(f.name, f.operator, form[f.name], f))
+                crit.append(
+                    LeafQueryCriteria(f.name, f.operator, form[f.name], f))
         return CompoundQueryCriteria(crit)
 
     def selectObjects(self, parts):
