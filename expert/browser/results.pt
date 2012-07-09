@@ -35,7 +35,8 @@
             i18n:translate="" />
     </tr>
     <tr tal:repeat="row results">
-        <td tal:repeat="col results/displayedColumns">
+        <td tal:repeat="col results/displayedColumns"
+            tal:attributes="class col/cssClass">
             <metal:column use-macro="python:
                             reportView.getColumnRenderer(col)" />
         </td>

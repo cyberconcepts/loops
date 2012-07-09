@@ -2,21 +2,73 @@
 
 
 <div metal:define-macro="main">
-  <div tal:attributes="class string:content-$level;">
+  <div tal:define="report item/reportInstance;
+                   reportView nocall:item"
+       tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />
-      <form method="post" name="report_data" action="results.html">
-        <tal:hidden define="params item/dynamicParams">
+      <form method="post" name="report_data">
+        <tal:hidden define="params item/dynamicParams"
+                    tal:condition="nothing">
           <input type="hidden"
                  tal:repeat="name params"
                  tal:attributes="name name;
                                  value params/?name" /></tal:hidden>
+        <div metal:use-macro="item/report_macros/params" />
         <div metal:define-macro="buttons">
           <input type="submit" name="report_execute" value="Execute Report"
                  i18n:attributes="value" />
         </div>
       </form>
+    <div metal:use-macro="item/resultsRenderer" />
   </div>
 </div>
+
+
+<metal:block define-macro="params">
+  <metal:block use-macro="item/report_macros/query" />
+</metal:block>
+
+
+<metal:block define-macro="query"
+             tal:define="criteria 
+                  item/reportInstance/queryCriteria/parts|nothing">
+  <table>
+    <tr tal:repeat="field item/queryFields">
+      <tal:field define="fieldType field/fieldType;
+                         crit python:criteria and criteria.get(field.name)">
+        <td><b><span tal:content="field/title" />: </b></td>
+        <td><metal:field use-macro="item/report_macros/?fieldType" /></td>
+      </tal:field>
+    </tr>
+  </table>
+  <br />
+</metal:block>
+
+
+<metal:field define-macro="textline">
+  <input tal:attributes="name string:${field/name};
+                         value crit/comparisonValue|nothing" />
+</metal:field>
+
+
+<metal:field define-macro="number">
+  <input tal:attributes="name string:query.field.${field/name};
+                         value crit/comparisonValue|nothing" />
+</metal:field>
+
+
+<metal:field define-macro="date">
+  <input dojoType="dijit.form.DateTextBox"
+         constraints="{datePattern: 'd. MMM y',
+                       min: '1980-01-01', max: '2020-12-31'}"
+         tal:attributes="name string:${field/name};
+                         value crit/comparisonValue|nothing" />
+</metal:field>
+
+
+<metal:field define-macro="selection">
+  <metal:use use-macro="item/report_macros/textline" />
+</metal:field>
 
 
 </html>

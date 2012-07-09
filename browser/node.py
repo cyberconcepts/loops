@@ -481,6 +481,7 @@ class NodeView(BaseView):
     def virtualTarget(self):
         tv = self.viewAnnotations.get('targetView')
         if tv is not None:
+            tv.setupController()
             return tv
         return self.getViewForTarget(self.virtualTargetObject)
 

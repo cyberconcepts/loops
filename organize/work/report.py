@@ -26,15 +26,16 @@ from zope.component import adapter
 
 from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
-from cybertools.composer.report.field import Field, CalculatedField
+from cybertools.composer.report.field import CalculatedField
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
 from cybertools.organize.interfaces import IWorkItems
-from cybertools.util.date import timeStamp2Date
+from cybertools.util.date import timeStamp2Date, timeStamp2ISO
 from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
 from loops.expert.browser.report import ReportConceptView
-from loops.expert.field import TargetField, DateField, TextField, UrlField
+from loops.expert.field import Field, TargetField, DateField, \
+                            TextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
@@ -58,9 +59,10 @@ class StateField(Field):
 
 class TrackDateField(Field):
 
+    fieldType = 'date'
     part = 'date'
     format = 'short'
-    renderer = 'right'
+    cssClass = 'right'
 
     def getValue(self, row):
         value = self.getRawValue(row)
@@ -76,6 +78,12 @@ class TrackDateField(Field):
                               view.languageInfo.language)
         return u''
 
+    def getSelectValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return ''
+        return timeStamp2ISO(value)[:10]
+
 
 class TrackTimeField(TrackDateField):
 
@@ -84,7 +92,7 @@ class TrackTimeField(TrackDateField):
 
 class DurationField(Field):
 
-    renderer = 'right'
+    cssClass = 'right'
 
     def getValue(self, row):
         value = self.getRawValue(row)
@@ -111,11 +119,15 @@ tasks = Field('tasks', u'Tasks',
 
 # work report fields
 
-dayFrom = Field('dayFrom', u'Start Day',
+dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
+                fieldType='date',
+                operator=u'gt',
                 executionSteps=['query'])
-dayTo = Field('dayTo', u'End Day',
+dayTo = TrackDateField('dayTo', u'End Day',
                 description=u'The last day until which to select work.',
+                fieldType='date',
+                operator=u'le',
                 executionSteps=['query'])
 day = TrackDateField('day', u'Day',
                 description=u'The day the work was done.',
@@ -132,6 +144,7 @@ task = TargetField('taskId', u'Task',
                 executionSteps=['output'])
 party = TargetField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
+                fieldType='selection',
                 executionSteps=['query', 'sort', 'output'])
 workTitle = Field('title', u'Title',
                 description=u'The short description of the work.',
@@ -178,7 +191,8 @@ class WorkRow(BaseRow):
             value = self.getDuration(attr)
         return value
 
-    attributeHandlers = dict(day=getDay, duration=getDuration, effort=getEffort)
+    attributeHandlers = dict(day=getDay, dayFrom=getDay, dayTo=getDay,
+                             duration=getDuration, effort=getEffort)
 
 
 class WorkReportInstance(ReportInstance):
@@ -243,8 +257,9 @@ class WorkReportInstance(ReportInstance):
         # TODO: take states from parts
         kw = dict(task=util.getUidForObject(baseObject(task)), 
                   state=self.states)
-        if 'userName' in parts:
-            kw['userName'] = parts['userName'].comparisonValue
+        userNameCrit = parts.get('userName')
+        if userNameCrit and userNameCrit.comparisonValue:
+            kw['userName'] = userNameCrit.comparisonValue
         wi = self.workItems
         return wi.query(**kw)
 

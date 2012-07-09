@@ -25,12 +25,18 @@ from zope import component
 from zope.i18n.locales import locales
 from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
-from cybertools.composer.report.field import Field
+from cybertools.composer.report.field import Field as BaseField
 from cybertools.composer.report.result import ResultSet
 from cybertools.util.date import timeStamp2Date
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
 from loops import util
+
+
+class Field(BaseField):
+
+    def getSelectValue(self, row):
+        return self.getRawValue(row)
 
 
 class TextField(Field):
