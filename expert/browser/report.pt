@@ -58,8 +58,8 @@
 
 
 <metal:field define-macro="date">
-  <input dojoType="dijit.form.DateTextBox"
-         constraints="{datePattern: 'd. MMM y',
+  <input dojoType="dijit.form.DateTextBox" style="width: 8em"
+         constraints="{datePattern: 'd.M.y',
                        min: '1980-01-01', max: '2020-12-31'}"
          tal:attributes="name string:${field/name};
                          value crit/comparisonValue|nothing" />
