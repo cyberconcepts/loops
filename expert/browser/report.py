@@ -178,7 +178,9 @@ class ResultsConceptView(ConceptView):
         return ri
 
     def results(self):
-        return self.reportInstance.getResults()
+        res = self.reportInstance.getResults()
+        self.resultSets[res.context.name] = res
+        return res
 
     @Lazy
     def displayedColumns(self):
