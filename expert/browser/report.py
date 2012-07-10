@@ -134,7 +134,7 @@ class ResultsView(NodeView):
 
 
 class ResultsConceptView(ConceptView):
-    """ View on a concept using a report.
+    """ View on a concept using the results of a report.
     """
 
     reportName = None   # define in subclass if applicable
@@ -170,12 +170,11 @@ class ResultsConceptView(ConceptView):
         reportType = self.reportType or self.report.reportType
         ri = component.getAdapter(self.report, IReportInstance,
                                   name=reportType)
-        #ri.view = self.nodeView
         ri.view = self
         return ri
 
     def results(self):
-        return self.reportInstance.getResults(dict(tasks=util.getUidForObject(self.context)))
+        return self.reportInstance.getResults()
 
     @Lazy
     def displayedColumns(self):
@@ -183,3 +182,24 @@ class ResultsConceptView(ConceptView):
 
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
+
+
+class ReportConceptView(ResultsConceptView, ReportView):
+    """ View on a concept using a report.
+    """
+
+    def setupController(self):
+        super(ReportConceptView, self).setupController()
+        self.registerDojoDateWidget()
+
+    @Lazy
+    def macro(self):
+        return self.report_macros['main']
+
+    @Lazy
+    def queryFields(self):
+        ri = self.reportInstance
+        qf = ri.getAllQueryFields()
+        if ri.userSettings:
+            return [f for f in qf if f in ri.userSettings]
+        return qf

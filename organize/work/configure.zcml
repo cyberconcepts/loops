@@ -75,10 +75,11 @@
 
   <!-- reporting -->
 
-  <zope:adapter factory="loops.organize.work.report.WorkReportInstance"
-           name="work_report"
-           provides="loops.expert.report.IReportInstance"
-           trusted="True" />
+  <zope:adapter 
+      name="work_report"
+      factory="loops.organize.work.report.WorkReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
   <zope:class class="loops.organize.work.report.WorkReportInstance">
     <require permission="zope.View"
              interface="loops.expert.report.IReportInstance" />
@@ -86,10 +87,17 @@
              set_schema="loops.expert.report.IReportInstance" />
   </zope:class>
 
-  <zope:adapter factory="loops.organize.work.report.MeetingMinutes"
-           name="meeting_minutes"
-           provides="loops.expert.report.IReportInstance"
-           trusted="True" />
+  <browser:page
+      name="work.html"
+      for="loops.organize.interfaces.ITask"
+      class="loops.organize.work.report.WorkStatementView"
+      permission="zope.View" />
+
+  <zope:adapter 
+      name="meeting_minutes"
+      factory="loops.organize.work.report.MeetingMinutes"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
   <zope:class class="loops.organize.work.report.MeetingMinutes">
     <require permission="zope.View"
              interface="loops.expert.report.IReportInstance" />
