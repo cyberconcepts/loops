@@ -25,6 +25,7 @@ from zope.component import adapts
 from zope.interface import Interface, Attribute, implements
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.composer.report.base import Report as BaseReport
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
@@ -53,6 +54,8 @@ class IReport(ILoopsAdapter, IReportParams):
         source='loops.expert.reportTypeSource',
         required=True)
 
+    name = Attribute('The name of the report.')
+
 
 class IReportInstance(IBaseReport):
     """ The report-type-specific object (an adapter on the report) that
@@ -67,6 +70,10 @@ class Report(AdapterBase):
     implements(IReport)
 
     _contextAttributes = list(IReport)
+
+    @Lazy
+    def name(self):
+        return getName(self.context)
 
 TypeInterfaceSourceList.typeInterfaces += (IReport,)
 
@@ -83,6 +90,7 @@ class ReportInstance(BaseReport):
 
     def __init__(self, context):
         self.context = context
+        self.name = context.name
 
     def getResultsRenderer(self, name, macros):
         return macros[name]
