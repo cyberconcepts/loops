@@ -140,6 +140,10 @@ class ResultsConceptView(ConceptView):
     reportName = None   # define in subclass if applicable
     reportType = None   # set for using special report instance adapter
 
+    def __init__(self, context, request):
+        super(ResultsConceptView, self).__init__(context, request)
+        self.resultSets = {}    # storage for result sets from reports
+
     @Lazy
     def result_macros(self):
         return self.controller.getTemplateMacros('results', results_template)
