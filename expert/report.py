@@ -90,7 +90,7 @@ class ReportInstance(BaseReport):
 
     def __init__(self, context):
         self.context = context
-        self.name = context.name
+        self.name = self.type
 
     def getResultsRenderer(self, name, macros):
         return macros[name]
