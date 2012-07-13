@@ -78,7 +78,10 @@
       id="dialog_form" class="dialog"
       dojoType="dijit.form.Form"
       tal:define="qualifier request/qualifier|view/qualifier|string:resource;
-                  innerForm request/inner_form|view/inner_form|string:inner_form.html;
+                  innerForm 
+                    request/inner_form|view/inner_form|string:inner_form.html;
+                  typesVocabulary python:
+                            view.getTypesVocabulary((qualifier,));
                   typeToken view/typeToken;
                   fixedType view/fixedType;
                   langInfo view/languageInfo;
@@ -104,8 +107,7 @@
                                     '${view/virtualTargetUrl}/$innerForm')">
                 <option value=".loops/concepts/note"
                         i18n:translate=""
-                        tal:repeat="type python:
-                            view.getTypesVocabulary((qualifier,))"
+                        tal:repeat="type typesVocabulary"
                         tal:content="type/title"
                         tal:attributes="value type/token;
                                         selected python:type.token == typeToken">
@@ -115,12 +117,6 @@
               <input type="hidden" name="form.type"
                      tal:condition="fixedType"
                      tal:attributes="value typeToken" />
-              <script type="text/javascript"
-                      tal:condition="not:fixedType"
-                      tal:content="string:replaceFieldsNode(
-                                    'form.fields', 'form.type',
-                                    '${view/virtualTargetUrl}/$innerForm')">
-              </script>
         </th></tr></tbody>
 
         <tbody><tr><td colspan="5">
