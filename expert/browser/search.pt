@@ -122,7 +122,7 @@
                       <img tal:define="icon row/icon"
                            tal:condition="icon"
                            tal:attributes="src icon/src" />
-                      <div tal:content="row/title" /></a>
+                      <div tal:content="row/listingTitle" /></a>
                   </td>
                   <td i18n:translate="" class="center"
                       tal:content="row/longTypeTitle|row/typeTitle">Type</td>

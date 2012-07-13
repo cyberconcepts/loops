@@ -18,8 +18,6 @@
 
 """
 Adapter and view class(es) for statistics reporting.
-
-$Id$
 """
 
 from datetime import date, datetime
@@ -268,9 +266,14 @@ class TrackDetails(BaseView):
         obj = self.object
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
+        view = self.view.getViewForObject(obj)
+        if view is None:
+            title = obj.title
+        else:
+            title = view.listingTitle
         versionable = IVersionable(self.object, None)
         version = versionable is not None and versionable.versionId or ''
-        return dict(object=obj, title=obj.title,
+        return dict(object=obj, title=title,
                     type=self.longTypeTitle, url=url, version=version,
                     canAccess=canAccessObject(obj))
 
