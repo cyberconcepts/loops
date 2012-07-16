@@ -392,6 +392,40 @@ class BaseView(GenericView, I18NView):
     def uniqueId(self):
         return util.getUidForObject(self.context)
 
+    @Lazy
+    def breadcrumbsTitle(self):
+        return self.title
+
+    @Lazy
+    def listingTitle(self):
+        return self.title
+
+    def getViewForObject(self, obj):
+        if obj is not None:
+            obj = baseObject(obj)
+            basicView = component.getMultiAdapter((obj, self.request))
+            if hasattr(basicView, 'view'):
+                return basicView.view
+
+    def viewIterator(self, objs):
+        request = self.request
+        for obj in objs:
+            view = self.getViewForObject(obj)
+            if view is None:
+                view = BaseView(obj, request)
+            yield view
+
+    def xx_viewIterator(self,obj):
+            view = component.queryMultiAdapter(
+                            (o, request), name='index.html')
+            #if view is None:
+            #    view = component.queryMultiAdapter((o, request), IBrowserView)
+            if view is None:
+                view = BaseView(o, request)
+            if hasattr(view, 'view'):   # use view setting for type
+                view = view.view
+            yield view
+
     # type stuff
 
     @Lazy
@@ -433,16 +467,6 @@ class BaseView(GenericView, I18NView):
         if provider is not None:
             return absoluteURL(provider, self.request)
         return None
-
-    def viewIterator(self, objs):
-        request = self.request
-        for o in objs:
-            view = component.queryMultiAdapter((o, request), name='index.html')
-            #if view is None:
-            #    view = component.queryMultiAdapter((o, request), IBrowserView)
-            if view is None:
-                view = BaseView(o, request)
-            yield view
 
     def renderText(self, text, contentType):
         text = util.toUnicode(text)

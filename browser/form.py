@@ -397,6 +397,8 @@ class CreateConceptForm(CreateObjectForm):
                             parentType.getChildren([subtypePred]))
             types = [dict(token=ConceptTypeInfo(t).token, title=t.title)
                         for t in tconcepts]
+        if self.defaultTypeToken is None and types:
+            self.defaultTypeToken = types[0]['token']
         if include or include is None:
             return util.KeywordVocabulary(types + self.listTypes(include, ('hidden',)))
         return util.KeywordVocabulary(types)

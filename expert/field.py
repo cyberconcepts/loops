@@ -37,7 +37,7 @@ from loops import util
 class Field(BaseField):
 
     def getSelectValue(self, row):
-        return self.getRawValue(row)
+        return self.getValue(row)
 
 
 class TextField(Field):
