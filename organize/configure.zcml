@@ -39,6 +39,26 @@
              set_schema="loops.organize.interfaces.ITask" />
   </zope:class>
 
+  <zope:adapter factory="loops.organize.task.Event" 
+                provides="loops.organize.interfaces.IEvent"
+                trusted="True" />
+  <zope:class class="loops.organize.task.Event">
+    <require permission="zope.View"
+             interface="loops.organize.interfaces.IEvent" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.interfaces.IEvent" />
+  </zope:class>
+
+  <zope:adapter factory="loops.organize.task.AgendaItem" 
+                provides="loops.organize.interfaces.IAgendaItem"
+                trusted="True" />
+  <zope:class class="loops.organize.task.AgendaItem">
+    <require permission="zope.View"
+             interface="loops.organize.interfaces.IAgendaItem" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.organize.interfaces.IAgendaItem" />
+  </zope:class>
+
   <zope:adapter factory="loops.organize.party.HasRole"
                 provides="loops.organize.interfaces.IHasRole"
                 trusted="True" />

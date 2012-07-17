@@ -371,6 +371,7 @@ class MeetingMinutes(WorkReportInstance):
                    tasks, taskTitle, taskDescription, workItems))
     defaultOutputFields = fields
     states = ('planned', 'accepted', 'done', 'done_x', 'finished')
+    taskTypeNames = ('agendaitem',)
 
     def selectObjects(self, parts):
         return [adapted(t) for t in self.getTasks(parts)[1:]]

@@ -316,7 +316,6 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         result = super(CreateFollowUpEvent, self).update()
         form = self.request.form
         toBeAssigned = form.get('cb_select_tasks') or []
-        print '***', toBeAssigned
         for uid in toBeAssigned:
             task = util.getObjectForUid(uid)
             self.createFollowUpTask(adapted(task))

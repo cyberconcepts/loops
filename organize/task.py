@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,22 @@
 #
 
 """
-Adapters for IConcept providing interfaces from the cybertools.organize package.
-
-$Id$
+Adapters for IConcept providing interfaces from the 
+cybertools.organize package.
 """
 
 from time import mktime
 from zope.component import adapts
 from zope.interface import implements
 
-from loops.organize.interfaces import ITask
+from loops.organize.interfaces import ITask, IEvent, IAgendaItem
 from loops.interfaces import IConcept
 from loops.interfaces import IIndexAttributes
 from loops.common import AdapterBase
 from loops.type import TypeInterfaceSourceList
 
 
-TypeInterfaceSourceList.typeInterfaces += (ITask,)
+TypeInterfaceSourceList.typeInterfaces += (ITask, IEvent, IAgendaItem)
 
 
 class Task(AdapterBase):
@@ -42,8 +41,27 @@ class Task(AdapterBase):
 
     implements(ITask)
 
-    _adapterAttributes = ('context', '__parent__',)
+    _adapterAttributes = AdapterBase._adapterAttributes
     _contextAttributes = list(ITask)
+
+
+class Event(Task):
+    """ A scheduled event or appointment.
+    """
+
+    implements(IEvent)
+
+    _contextAttributes = list(IEvent)
+
+
+class AgendaItem(AdapterBase):
+    """ Some topic (a sort of task) that is discussed during an event.
+    """
+
+    implements(IAgendaItem)
+
+    _adapterAttributes = AdapterBase._adapterAttributes
+    _contextAttributes = list(IAgendaItem)
 
 
 class IndexAttributes(object):

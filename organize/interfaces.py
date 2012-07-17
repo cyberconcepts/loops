@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Interfaces for organizational stuff like persons and addresses.
-
-$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -156,9 +154,25 @@ class IMemberRegistrationManager(Interface):
             current password.
         """
 
-# task
+# task management, meeting minutes: task, event, agenda item
 
 class ITask(IConceptSchema, ITask, ILoopsAdapter):
+
+    pass
+
+
+class IEvent(ITask):
+
+    participants = schema.Text(
+        title=_(u'Participants'),
+        description=_(u'The names of the persons taking part in the event.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
+
+
+class IAgendaItem(ILoopsAdapter):
 
     pass
 
