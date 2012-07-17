@@ -303,7 +303,7 @@ msgid "The names of the persons taking part in the event."
 msgstr "Die Namen der Personen, die an der Besprechung teilnehmen."
 
 msgid "label_responsible"
-msgstr "Referent"
+msgstr "Vortragender"
 
 msgid "desc_responsible"
 msgstr "Person, die diesen Tagesordnungpunkt vertritt."
