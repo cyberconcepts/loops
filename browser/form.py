@@ -263,6 +263,9 @@ class EditConceptPage(EditConceptForm):
         super(EditConceptPage, self).setupController()
         self.registerDojoFormAll()
 
+    def getActions(self, category='object', page=None, target=None):
+        return []
+
 
 class CreateObjectForm(ObjectForm):
 
@@ -447,6 +450,9 @@ class CreateConceptPage(CreateConceptForm):
     def setupController(self):
         super(CreateConceptPage, self).setupController()
         self.registerDojoFormAll()
+
+    def getActions(self, category='object', page=None, target=None):
+        return []
 
     @Lazy
     def nextUrl(self):
