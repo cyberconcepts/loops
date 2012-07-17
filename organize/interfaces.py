@@ -171,10 +171,27 @@ class IEvent(ITask):
         required=False)
 
 
-
 class IAgendaItem(ILoopsAdapter):
 
-    pass
+    responsible = schema.TextLine(
+        title=_(u'label_responsible'),
+        description=_(u'desc_responsible.'),
+        default=u'',
+        required=False)
+
+    discussion = schema.Text(
+        title=_(u'label_discussion'),
+        description=_(u'desc_discussion.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
+    concequences = schema.Text(
+        title=_(u'label_consequences'),
+        description=_(u'desc_consequences.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
 
 
 # 'hasrole' predicate
