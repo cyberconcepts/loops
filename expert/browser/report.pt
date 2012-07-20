@@ -17,6 +17,10 @@
         <div metal:define-macro="buttons">
           <input type="submit" name="report_execute" value="Execute Report"
                  i18n:attributes="value" />
+          <input type="submit"
+                 tal:condition="item/reportDownload"
+                 tal:attributes="name string:${item/reportDownload}:method;
+                                 value item/reportDownloadTitle" />
         </div>
       </form>
     <div metal:use-macro="item/resultsRenderer" />

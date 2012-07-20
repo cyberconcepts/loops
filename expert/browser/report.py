@@ -138,6 +138,7 @@ class ResultsConceptView(ConceptView):
     """
 
     reportName = None   # define in subclass if applicable
+    reportDownload = None
     reportType = None   # set for using special report instance adapter
 
     def __init__(self, context, request):
@@ -156,6 +157,9 @@ class ResultsConceptView(ConceptView):
     @Lazy
     def macro(self):
         return self.result_macros['content']
+
+    def reportDownloadTitle(self):
+        return _(u'Download $title', mapping={'title': self.report.title})
 
     @Lazy
     def hasReportPredicate(self):
