@@ -22,6 +22,7 @@
                  tal:attributes="name string:${item/reportDownload}:method;
                                  value item/reportDownloadTitle" />
         </div>
+        <br />
       </form>
     <div metal:use-macro="item/resultsRenderer" />
   </div>

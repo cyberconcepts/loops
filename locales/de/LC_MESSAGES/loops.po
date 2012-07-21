@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-06-10 12:00 CET\n"
+"PO-Revision-Date: 2012-07-21 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -527,11 +527,14 @@ msgstr "Suchergebnisse"
 msgid "Download"
 msgstr "Herunterladen"
 
+msgid "Download $title"
+msgstr "$title abrufen"
+
+msgid "Execute Report"
+msgstr "Bericht anzeigen"
+
 msgid "Open for editing"
 msgstr "Zum Bearbeiten öffnen"
-
-msgid "View"
-msgstr "Ansehen"
 
 msgid "Concept Assignments"
 msgstr "Zugeordnete Begriffe"
