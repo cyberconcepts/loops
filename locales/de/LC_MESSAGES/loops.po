@@ -296,6 +296,30 @@ msgstr "Besprechungsprotokoll für dieses Objekt anzeigen."
 msgid "Download Meeting Minutes"
 msgstr "Besprechungsprotokoll generieren"
 
+msgid "Participants"
+msgstr "Teilnehmer"
+
+msgid "The names of the persons taking part in the event."
+msgstr "Die Namen der Personen, die an der Besprechung teilnehmen."
+
+msgid "label_responsible"
+msgstr "Vortragender"
+
+msgid "desc_responsible"
+msgstr "Person, die diesen Tagesordnungpunkt vertritt."
+
+msgid "label_discussion"
+msgstr "Diskussion"
+
+msgid "desc_discussion"
+msgstr "Diskussion"
+
+msgid "label_consequences"
+msgstr "Schlussfolgerungen"
+
+msgid "desc_consequences"
+msgstr "Schlussfolgerungen"
+
 msgid "Task/Action"
 msgstr "Aufgabe"
 

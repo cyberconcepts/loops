@@ -24,8 +24,9 @@ from cybertools.util.jeep import Jeep
 from loops.common import adapted
 from loops.concept import Concept
 from loops.organize.interfaces import IPerson, IHasRole
+from loops.organize.interfaces import IEvent, IAgendaItem
 from loops.organize.party import Person, HasRole
-from loops.organize.task import Task
+from loops.organize.task import Task, Event, AgendaItem
 from loops.setup import addAndConfigureObject
 from loops.tests.auth import login
 
@@ -37,6 +38,8 @@ def setupUtilitiesAndAdapters(loopsRoot):
     component.provideUtility(principalAnnotations, IPrincipalAnnotationUtility)
     component.provideAdapter(Person, provides=IPerson)
     component.provideAdapter(Task)
+    component.provideAdapter(Event, provides=IEvent)
+    component.provideAdapter(AgendaItem, provides=IAgendaItem)
     component.provideAdapter(FoundPrincipalFactory)
     component.provideAdapter(HasRole, provides=IHasRole)
     return Jeep((

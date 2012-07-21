@@ -281,6 +281,7 @@ class CreateFollowUpEventForm(CreateConceptPage, MeetingMinutes):
         data = self.getData()
         data['title'] = self.baseEvent.title
         data['description'] = self.baseEvent.description
+        data['participants'] = self.baseEvent.participants
         return data
 
     def results(self):
@@ -316,7 +317,6 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         result = super(CreateFollowUpEvent, self).update()
         form = self.request.form
         toBeAssigned = form.get('cb_select_tasks') or []
-        print '***', toBeAssigned
         for uid in toBeAssigned:
             task = util.getObjectForUid(uid)
             self.createFollowUpTask(adapted(task))
@@ -333,8 +333,9 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
                         conceptType=taskType, 
                         title=source.title, 
                         description=source.description,
-                        start=source.start,
-                        end=source.end)
+                        responsible=source.start,
+                        discussion=source.discussion,
+                        consequences=source.consequences)
         stask.assignChild(newTask, self.followsPredicate)
         for rel in stask.getParentRelations():
             if rel.predicate != self.view.typePredicate:

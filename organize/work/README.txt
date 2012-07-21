@@ -242,14 +242,19 @@ and recording information about the tasks.
 
 Let's start with creating an a event and assigning it a task.
 
-  >>> from loops.organize.interfaces import ITask
+  >>> from loops.organize.interfaces import IEvent, IAgendaItem
   >>> tEvent = addAndConfigureObject(concepts, Concept, 'event',
-  ...                   title=u'Event', conceptType=concepts.getTypeConcept(),
-  ...                   typeInterface=ITask)
+  ...     title=u'Event', conceptType=concepts.getTypeConcept(),
+  ...     typeInterface=IEvent)
+  >>> tAgendaItem = addAndConfigureObject(concepts, Concept, 'agendaitem',
+  ...     title=u'AgendaItem', conceptType=concepts.getTypeConcept(),
+  ...     typeInterface=IEvent)
 
   >>> ev01 = addAndConfigureObject(concepts, Concept, 'ev01',
-  ...                   title=u'loops Meeting', conceptType=tEvent)
-  >>> ev01.assignChild(task01)
+  ...     title=u'loops Meeting', conceptType=tEvent)
+  >>> aitem01 = addAndConfigureObject(concepts, Concept, 'aitem01',
+  ...     title=u'Documentation of Features', conceptType=tAgendaItem)
+  >>> ev01.assignChild(aitem01)
 
 Now we create the meeting minutes report. We assign the event type as a
 child in order to provide the information for which types of objects the
@@ -259,9 +264,9 @@ report is available.
   >>> component.provideAdapter(MeetingMinutes, provides=IReportInstance,
   ...                          name='meeting_minutes')
 
-  >>> meetingMinutes = addAndConfigureObject(concepts, Concept, 'meeting_minutes',
-  ...                   title=u'Meeting Minutes', conceptType=tReport,
-  ...                   reportType='meeting_minutes')
+  >>> meetingMinutes = addAndConfigureObject(concepts, Concept, 
+  ...     'meeting_minutes', title=u'Meeting Minutes', conceptType=tReport,
+  ...     reportType='meeting_minutes')
   >>> meetingMinutes.assignChild(tEvent, hasReport)
 
 We can now access the report using a corresponding report-based view.
@@ -277,7 +282,8 @@ We can now access the report using a corresponding report-based view.
   ...     for col in reportView.displayedColumns:
   ...         print col.getDisplayValue(row),
   ...     print
-  {'url': 'http://127.0.0.1/loops/views/home/.36', 'title': u'loops Development'}
+  {'url': 'http://127.0.0.1/loops/views/home/.58', 
+   'title': u'Documentation of Features'}
   <cybertools.composer.report.result.ResultSet object ...>
 
 
