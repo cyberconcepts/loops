@@ -51,7 +51,7 @@
         </tal:block>
       </div>
     </div>
-    <input dojoType="dijit.form.FilteringSelect"
+    <input dojoType="dijit.form.FilteringSelect" searchDelay="400"
            autoComplete="False" labelAttr="label"
            tal:attributes="store string:${name}_search_store;
                            name string:${name}_search;
