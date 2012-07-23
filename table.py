@@ -106,12 +106,19 @@ class DataTableSchemaFactory(SchemaFactory):
         return schema
 
 
+def getRowValue(k, v):
+    return v[0]
+
+def getRowValueWithKey(k, v):
+    return u' '.join((unicode(k), v[0]))
+
 class DataTableSourceBinder(object):
 
     implements(IContextSourceBinder)
 
-    def __init__(self, tableName):
+    def __init__(self, tableName, valueProvider=getRowValue):
         self.tableName = tableName
+        self.valueProvider = valueProvider
 
     def __call__(self, instance):
         if IInstance.providedBy(instance):
@@ -119,18 +126,20 @@ class DataTableSourceBinder(object):
         else:
             context = baseObject(instance.context)
         dt = context.getLoopsRoot().getConceptManager()[self.tableName]
-        return DataTableSourceList(adapted(dt))
+        return DataTableSourceList(adapted(dt), self.valueProvider)
 
 
 class DataTableSourceList(object):
 
     implements(IIterableSource)
 
-    def __init__(self, context):
+    def __init__(self, context, valueProvider=getRowValue):
         self.context = context
+        self.valueProvider = valueProvider
 
     def __iter__(self):
-        items = [(k, v[0]) for k, v in self.context.data.items()]
+        items = [(k, self.valueProvider(k, v))
+                    for k, v in self.context.data.items()]
         return iter(sorted(items, key=lambda x: x[1]))
 
     def __len__(self):
