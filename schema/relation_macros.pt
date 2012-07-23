@@ -67,7 +67,7 @@
       </div>
     </div>
     <input dojoType="dijit.form.FilteringSelect"
-           autoComplete="False" labelAttr="label"
+           autoComplete="False" labelAttr="label" searchDelay="400"
            tal:attributes="store string:${name}_search_store;
                            name string:${name}_search;
                            id string:${name}_search;
