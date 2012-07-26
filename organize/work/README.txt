@@ -248,7 +248,7 @@ Let's start with creating an a event and assigning it a task.
   ...     typeInterface=IEvent)
   >>> tAgendaItem = addAndConfigureObject(concepts, Concept, 'agendaitem',
   ...     title=u'AgendaItem', conceptType=concepts.getTypeConcept(),
-  ...     typeInterface=IEvent)
+  ...     typeInterface=IAgendaItem)
 
   >>> ev01 = addAndConfigureObject(concepts, Concept, 'ev01',
   ...     title=u'loops Meeting', conceptType=tEvent)

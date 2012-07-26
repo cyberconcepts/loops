@@ -285,7 +285,7 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
 
     rowFactory = MeetingMinutesWorkRow
 
-    fields = Jeep((workTitle, party, day, state))   #description,
+    fields = Jeep((workTitle, party, day))  #, state))   #description,
     defaultOutputFields = fields
     defaultSortCriteria = (day,)
     states = ('planned', 'accepted', 'running', 'done', 
@@ -309,13 +309,20 @@ eventTitle = CalculatedField('eventTitle', u'Event Title',
 eventDescription = CalculatedField('eventDescription', u'Event Description',
                 description=u'',
                 executionSteps=(['header']))
+eventDate = DateField('eventDate', u'Event Date',
+                description=u'',
+                format=('date', 'short'),
+                executionSteps=(['header']))
 eventStart = DateField('eventStart', u'Event Start',
                 description=u'',
-                format=('dateTime', 'short'),
+                format=('time', 'short'),
                 executionSteps=(['header']))
 eventEnd = DateField('eventEnd', u'Event End',
                 description=u'',
-                format=('dateTime', 'short'),
+                format=('time', 'short'),
+                executionSteps=(['header']))
+participants = CalculatedField('participants', u'Participants',
+                description=u'',
                 executionSteps=(['header']))
 taskTitle = UrlField('title', u'Task Title',
                 description=u'The short description of the task.',
@@ -323,6 +330,18 @@ taskTitle = UrlField('title', u'Task Title',
                 executionSteps=['output'])
 taskDescription = TextField('description', u'Description',
                 description=u'The long description of the task.',
+                cssClass='header-2',
+                executionSteps=['output'])
+responsible = TextField('responsible', u'label_responsible',
+                description=u'Responsible.',
+                cssClass='header-2',
+                executionSteps=['output'])
+discussion = TextField('discussion', u'label_discussion',
+                description=u'Discussion.',
+                cssClass='header-2',
+                executionSteps=['output'])
+consequences = TextField('consequences', u'label_consequences',
+                description=u'Consequences.',
                 cssClass='header-2',
                 executionSteps=['output'])
 workItems = SubReportField('workItems', u'Work Items',
@@ -346,6 +365,10 @@ class TaskRow(BaseRow):
         return self.event.description
 
     @Lazy
+    def eventDate(self):
+        return self.event.start
+
+    @Lazy
     def eventStart(self):
         return self.event.start
 
@@ -353,8 +376,13 @@ class TaskRow(BaseRow):
     def eventEnd(self):
         return self.event.end
 
+    @Lazy
+    def participants(self):
+        return self.event.participants
+
     useRowProperty = BaseRow.useRowProperty
     attributeHandlers = dict(
+            eventDate=useRowProperty,
             eventStart=useRowProperty,
             eventEnd=useRowProperty,
     )
@@ -367,8 +395,10 @@ class MeetingMinutes(WorkReportInstance):
 
     rowFactory = TaskRow
 
-    fields = Jeep((eventTitle, eventStart, eventEnd, eventDescription,
-                   tasks, taskTitle, taskDescription, workItems))
+    fields = Jeep((eventTitle, eventDate, eventStart, eventEnd, 
+                   eventDescription, participants,
+                   tasks, taskTitle, responsible, taskDescription, 
+                   discussion, consequences, workItems))
     defaultOutputFields = fields
     states = ('planned', 'accepted', 'done', 'done_x', 'finished')
     taskTypeNames = ('agendaitem',)

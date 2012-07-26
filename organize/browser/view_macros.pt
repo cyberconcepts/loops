@@ -64,7 +64,7 @@
   <input type="hidden" name="form.action"
          tal:attributes="value view/form_action" />
   <metal:data use-macro="view/fieldRenderers/fields" />
-  <h3 i18n:translate="">Tasks</h3>
+  <br />
   <tal:tasks define="report item/reportInstance;
                      reportView nocall:item;
                      results reportView/results;
