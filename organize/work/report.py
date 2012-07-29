@@ -66,7 +66,7 @@ class TrackDateField(Field):
 
     def getValue(self, row):
         value = self.getRawValue(row)
-        if value is None:
+        if not value:
             return None
         return timeStamp2Date(value)
 
@@ -119,6 +119,10 @@ tasks = Field('tasks', u'Tasks',
 
 # work report fields
 
+deadline = TrackDateField('deadline', u'Deadline',
+                description=u'The day the work has to be finished.',
+                cssClass='center',
+                executionSteps=['sort', 'output'])
 dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 fieldType='date',
@@ -285,7 +289,7 @@ class MeetingMinutesWork(WorkReportInstance, SubReport):
 
     rowFactory = MeetingMinutesWorkRow
 
-    fields = Jeep((workTitle, party, day))  #, state))   #description,
+    fields = Jeep((workTitle, party, deadline))  #, state))   #description,
     defaultOutputFields = fields
     defaultSortCriteria = (day,)
     states = ('planned', 'accepted', 'running', 'done', 

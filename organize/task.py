@@ -60,7 +60,6 @@ class AgendaItem(AdapterBase):
 
     implements(IAgendaItem)
 
-    _adapterAttributes = AdapterBase._adapterAttributes
     _contextAttributes = list(IAgendaItem)
 
 

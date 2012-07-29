@@ -174,8 +174,8 @@ So we use the PersonWorkItems view, assigning john to the query.
   >>> work = PersonWorkItems(query, TestRequest(form=input))
   >>> work.listWorkItems()
   [<WorkItem ['36', 2, '33', '2009-01-19 09:00', 'planned']:
-   {'start': 1232352000, 'created': ..., 'title': u'Install Zope',
-    'creator': '33'}>]
+   {'title': u'Install Zope', 'created': ..., 'end': 1232352000, 
+    'start': 1232352000, 'creator': '33'}>]
 
 
 Work Reports

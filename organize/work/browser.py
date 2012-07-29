@@ -33,13 +33,16 @@ from zope.traversing.api import getName, getParent
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
+from cybertools.meta.interfaces import IOptions
 from cybertools.organize.interfaces import IWorkItems
+from cybertools.organize.work import workItemTypes
 from cybertools.tracking.btree import getTimeStamp
 from cybertools.util import format
 from loops.browser.action import DialogAction
 from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
+from loops.common import adapted
 from loops.organize.party import getPersonForUser
 from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.browser import BaseTrackView
@@ -341,6 +344,30 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return self.track.description or u''
 
     @Lazy
+    def workItemType(self):
+        name = self.track.workItemType
+        return (name and workItemTypes[name] or self.workItemTypes[0])
+
+    @Lazy
+    def workItemTypes(self):
+        options = IOptions(adapted(self.task.conceptType))
+        typeNames = options.workitem_types
+        if typeNames:
+            return [workItemTypes[name] for name in typeNames]
+        return workItemTypes
+
+    @Lazy
+    def showTypes(self):
+        return len(self.workItemTypes) != 1
+
+    @Lazy
+    def deadline(self):
+        ts = self.track.deadline# or getTimeStamp()
+        if ts:
+            return time.strftime('%Y-%m-%d', time.localtime(ts))
+        return ''
+
+    @Lazy
     def date(self):
         ts = self.track.start or getTimeStamp()
         return time.strftime('%Y-%m-%d', time.localtime(ts))
@@ -367,9 +394,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def actions(self):
         result = [dict(name=t.name, title=t.title)
-                    for t in self.track.getAvailableTransitions()]
-                    #if t.name != 'delegate' or
-                    #    checkPermission('loops.ManageSite', self.context)]
+                    for t in self.track.getAvailableTransitions()
+                    if t.name in self.workItemType.actions]
+                    #and (t.name != 'delegate' or
+                    #    checkPermission('loops.ManageSite', self.context))]
         return result
 
     def getTypesParamsForFilteringSelect(self, types=['person']):
@@ -452,17 +480,16 @@ class CreateWorkItem(EditObject, BaseTrackView):
             v = form.get(k)
             if v:
                 result[k] = v
-        for k in ('title', 'description', 'comment'):
+        for k in ('workItemType', 'title', 'description', 'comment'):
             setValue(k)
         if action == 'delegate':
             setValue('party')
         if action == 'move':
             setValue('task')
+        result['deadline'] = parseDate(form.get('deadline'))
         startDate = form.get('start_date', '').strip()
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
         endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'
-        #print '***', startDate, startTime, endTime
-        #if startDate and startTime:
         if startDate:
             result['start'] = parseDateTime('T'.join((startDate, startTime)))
             result['end'] = parseDateTime('T'.join((startDate, endTime)))
