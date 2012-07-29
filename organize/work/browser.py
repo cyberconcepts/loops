@@ -350,7 +350,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def workItemTypes(self):
-        options = IOptions(adapted(self.task.conceptType))
+        task = self.task
+        if task is None:
+            task = self.target
+        options = IOptions(adapted(task.conceptType))
         typeNames = options.workitem_types
         if typeNames:
             return [workItemTypes[name] for name in typeNames]
