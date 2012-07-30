@@ -36,7 +36,7 @@ function showIf(node, value, targetName) {
 
 function showIfIn(node, conditions) {
     dojo.forEach(conditions, function(cond) {
-        var display = (node.value == cond[0]) ? 'inline' : 'none';
+        var display = (node.value == cond[0]) ? '' : 'none';
         dojo.byId(cond[1]).style.display = display;
     })
 }
