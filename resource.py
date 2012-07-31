@@ -201,7 +201,7 @@ class Resource(Image, Contained):
 
     def getConceptRelations (self, predicates=None, concept=None, sort='default',
                              noSecurityCheck=False):
-        predicates = predicates is None and ['*'] or predicates
+        predicates = predicates is None and ['r*'] or predicates
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
         if sort == 'default':

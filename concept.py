@@ -63,6 +63,8 @@ from loops.view import TargetRelation
 
 class BaseRelation(DyadicRelation):
 
+    fallback = '*'
+
     def __init__(self, first, second, predicate=None):
         super(BaseRelation, self).__init__(first, second)
         if predicate is None:
@@ -72,9 +74,15 @@ class BaseRelation(DyadicRelation):
         self.predicate = predicate
 
     def getPredicateName(self):
+        if self.predicate is None:
+            return None
         baseName = super(BaseRelation, self).getPredicateName()
         id = util.getUidForObject(self.predicate)
         return '.'.join((baseName, id))
+
+    @property
+    def ident(self):
+        return self.predicate
 
     # Problem with reindex catalog, needs __parent__ - but this does not help:
     #__parent__ = None
@@ -89,11 +97,15 @@ class ConceptRelation(BaseRelation):
     """
     implements(IConceptRelation)
 
+    fallback = 'c*'
+
 
 class ResourceRelation(BaseRelation):
     """ A relation between a concept and a resource object.
     """
     implements(IConceptRelation)
+
+    fallback = 'r*'
 
 
 # concept
@@ -182,7 +194,7 @@ class Concept(Contained, Persistent):
 
     def getChildRelations(self, predicates=None, child=None, sort='default',
                           noSecurityCheck=False):
-        predicates = predicates is None and ['*'] or predicates
+        predicates = predicates is None and ['c*'] or predicates
         relationships = [ConceptRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, (x.second.title and x.second.title.lower()))
@@ -196,7 +208,7 @@ class Concept(Contained, Persistent):
 
     def getParentRelations (self, predicates=None, parent=None, sort='default',
                             noSecurityCheck=False):
-        predicates = predicates is None and ['*'] or predicates
+        predicates = predicates is None and ['c*'] or predicates
         relationships = [ConceptRelation(None, self, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.first.title and x.first.title.lower())
@@ -277,7 +289,7 @@ class Concept(Contained, Persistent):
                              noSecurityCheck=False):
         if resource is not None:
             resource = getMaster(resource)
-        predicates = predicates is None and ['*'] or predicates
+        predicates = predicates is None and ['r*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.second.title.lower())

@@ -647,6 +647,13 @@
       factory="loops.browser.form.EditConcept"
       permission="zope.View" />
 
+  <page
+      name="test.html"
+      for="loops.interfaces.INode"
+      class="loops.browser.node.TestView"
+      permission="zope.View" />
+
+
   <!-- inner HTML views -->
 
   <page

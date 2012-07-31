@@ -1006,3 +1006,18 @@ def getViewConfiguration(context, request):
     viewAnnotations = request.annotations.get('loops.view', {})
     return dict(skinName=viewAnnotations.get('skinName'),
                 options=viewAnnotations.get('options'))
+
+
+
+class TestView(NodeView):
+
+    def __call__(self):
+        print '*** begin'
+        for i in range(500):
+            #x = util.getObjectForUid('1994729849')
+            x = util.getObjectForUid('2018653366')
+            self.c = list(x.getChildren())
+            #self.c = list(x.getChildren([self.defaultPredicate]))
+        print '*** end', len(self.c)
+        return 'done'
+
