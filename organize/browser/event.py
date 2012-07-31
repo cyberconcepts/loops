@@ -333,12 +333,13 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
                         conceptType=taskType, 
                         title=source.title, 
                         description=source.description,
-                        responsible=source.start,
+                        responsible=source.responsible,
                         discussion=source.discussion,
                         consequences=source.consequences)
         stask.assignChild(newTask, self.followsPredicate)
         for rel in stask.getParentRelations():
-            if rel.predicate != self.view.typePredicate:
+            if rel.predicate not in (
+                        self.view.typePredicate, self.followsPredicate):
                 if rel.first == bevt:
                     parent = self.object
                 else:

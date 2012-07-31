@@ -76,6 +76,10 @@ class WorkItemDetails(TrackDetails):
         return format.nl2br(self.description)
 
     @Lazy
+    def deadline(self):
+        return self.formatTimeStamp(self.track.deadline, 'date')
+
+    @Lazy
     def start(self):
         return self.formatTimeStamp(self.track.start, 'time')
 
@@ -418,7 +422,14 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return [dict(name=util.getUidForObject(p), title=p.title)
                     for p in persons]
 
-    taskTypes = ['task', 'event']
+    taskTypes = ['task', 'event', 'agendaitem']
+
+    @Lazy
+    def followUpTask(self):
+        pred = self.conceptManager.get('follows')
+        if pred is not None and self.task is not None:
+            for t in self.task.getChildren([pred]):
+                return t
 
     @Lazy
     def x_tasks(self):
