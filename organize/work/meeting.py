@@ -66,6 +66,7 @@ class MeetingMinutes(ResultsConceptView):
 class MeetingMinutesDocument(WordDocument, MeetingMinutes):
 
     isToplevel = True
+    omitSectionElement = True
 
     def __init__(self, context, request):
         MeetingMinutes.__init__(self, context, request)

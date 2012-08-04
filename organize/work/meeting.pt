@@ -19,30 +19,32 @@
 </div>
 
 
-<div metal:define-macro="document"
+<metal:doc define-macro="document"
      tal:define="item nocall:view;
                  report item/reportInstance;
                  reportView nocall:item;
                  results reportView/results;
                  fields results/context/fields">
   <metal:page use-macro="item/macros/page_header" />
-  <table class="report" width="100%"
-         tal:define="showCheckboxes nothing">
-    <metal:header use-macro="item/macros/header" />
-    <metal:header use-macro="item/macros/rows" />
-  </table>
-</div>
+  <div class ="Section2">
+    <table class="report" width="100%"
+           tal:define="showCheckboxes nothing">
+      <metal:header use-macro="item/macros/header" />
+      <metal:header use-macro="item/macros/rows" />
+    </table>
+  </div>
+</metal:doc>
 
 
-<div metal:define-macro="page_header">
+<metal:page define-macro="page_header">
   <table width="100%">
     <tr>
       <td>&nbsp;</td>
       <td><h1 i18n:translate="">Meeting Minutes</h1></td>
       <td><span i18n:translate="">Page</span> </td>
     </tr>
-  <table>
-</div>
+  </table>
+</metal:page>
 
 
 <metal:header define-macro="header"
@@ -91,6 +93,12 @@
               i18n:translate=""
               style="border: 1px solid grey">Copy Agenda Items</th>
       </tr>
+      <tr>
+        <td style="width: 15%">&nbsp;</td>
+        <td style="width: 53%">&nbsp;</td>
+        <td style="width: 20%">&nbsp;</td>
+        <td style="width: 12%">&nbsp;</td>
+      </tr>
       <tal:task repeat="row results">
           <tr>
             <td tal:condition="showCheckboxes"
@@ -115,7 +123,7 @@
                   tal:content="col/title"
                   i18n:translate=""></td>
               <td colspan="3"
-                  style="border: 1px solid grey"
+                  style="border: 1px solid grey; width: 85%"
                   tal:attributes="class col/cssClass">
                 <metal:column use-macro="python:
                                 reportView.getColumnRenderer(col)" />
@@ -126,7 +134,7 @@
             <th style="border: 1px solid grey" 
                 tal:condition="showCheckboxes"></th>
             <th colspan="2"
-                style="border: 1px solid grey"
+                style="border: 1px solid grey; width: 68%"
                 i18n:translate="">header_workitems</th>
             <th style="border: 1px solid grey; width: 20%"
                 i18n:translate="">header_responsible</th>
@@ -144,15 +152,27 @@
 
 
 <metal:sub define-macro="subreport"
-     tal:define="results python:col.getValue(row)">
+     tal:define="results python:col.getValue(row);
+                 fields results/displayedColumns">
       <tr class="listing" tal:repeat="row results">
         <td tal:condition="showCheckboxes"
             style="border: 1px solid grey" />
-        <td tal:repeat="col results/displayedColumns"
-            tal:attributes="class col/cssClass;
-                            colspan python:
-                                col.name == 'title' and '2' or None"
-            style="border: 1px solid grey">
+        <td colspan="2"
+            tal:define="col fields/title"
+            tal:attributes="class col/cssClass"
+            style="border: 1px solid grey; width: 68%">
+          <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
+        </td>
+        <td tal:define="col fields/userName"
+            tal:attributes="class col/cssClass"
+            style="border: 1px solid grey; width: 20%">
+          <metal:column use-macro="python:
+                            reportView.getColumnRenderer(col)" />
+        </td>
+        <td tal:define="col fields/deadline"
+            tal:attributes="class col/cssClass"
+            style="border: 1px solid grey; width: 12%">
           <metal:column use-macro="python:
                             reportView.getColumnRenderer(col)" />
         </td>
