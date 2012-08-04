@@ -64,6 +64,10 @@ class WorkItemDetails(TrackDetails):
     """
 
     @Lazy
+    def workItemType(self):
+        return self.track.getWorkItemType()
+
+    @Lazy
     def description(self):
         return self.track.description
 
@@ -81,11 +85,13 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def start(self):
-        return self.formatTimeStamp(self.track.start, 'time')
+        result = self.formatTimeStamp(self.track.start, 'time')
+        return result != '00:00' and result or ''
 
     @Lazy
     def end(self):
-        return self.formatTimeStamp(self.track.end, 'time')
+        result = self.formatTimeStamp(self.track.end, 'time')
+        return result != '00:00' and result or ''
 
     @Lazy
     def duration(self):
@@ -349,8 +355,7 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def workItemType(self):
-        name = self.track.workItemType
-        return (name and workItemTypes[name] or self.workItemTypes[0])
+        return self.track.getWorkItemType() or self.workItemTypes[0]
 
     @Lazy
     def workItemTypes(self):
