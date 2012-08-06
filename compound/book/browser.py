@@ -78,7 +78,7 @@ class SectionView(Base, ConceptView):
 
     def getParentsForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
-            if c.conceptType not in (self.documentTypeType, self.sectionType):
+            if c != self.context and c.conceptType != self.documentTypeType:
                 yield c
 
 
