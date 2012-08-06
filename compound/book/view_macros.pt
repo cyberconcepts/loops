@@ -4,29 +4,37 @@
 <metal:section define-macro="section">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <div tal:repeat="related item/resources">
-    <div class="object-actions" style="padding-top: 0"
-         tal:define="url python:view.getUrlForTarget(related.context)"
-         tal:condition="related/editable">
-      <a i18n:translate="" i18n:attributes="title"
-         title="Edit"
-         tal:define="targetUid python:view.getUidForObject(related.context);
-                     url 
-                string:$url/edit_object.html?version=this&targetUid=$targetUid"
-         tal:attributes="href url;
-                         onclick string:objectDialog('edit', '$url');; 
-                                        return false">
-        <img tal:attributes="src 
-                  string:$resourceBase/cybertools.icons/vcard_edit.png" /></a>
-      <a i18n:translate="" i18n:attributes="title"
-         title="Edit with external editor."
-         tal:condition="related/xeditable"
-         tal:attributes="href string:$url/external_edit?version=this">
-        <img tal:attributes="src 
+    <div class="span-4">
+      <div tal:attributes="class python:
+                  item.getCssClassForResource(related)"
+           tal:content="structure related/render" />
+    </div>
+    <div class="span-2 last" style="padding-top: 0.4em">
+      <div class="object-actions" style="padding-top: 0"
+           tal:define="url python:view.getUrlForTarget(related.context)"
+           tal:condition="related/editable">
+        <a i18n:translate="" i18n:attributes="title"
+           title="Edit"
+           tal:define="targetUid python:view.getUidForObject(related.context);
+                       url 
+                  string:$url/edit_object.html?version=this&targetUid=$targetUid"
+           tal:attributes="href url;
+                           onclick string:objectDialog('edit', '$url');; 
+                                          return false">
+          <img tal:attributes="src 
+                    string:$resourceBase/cybertools.icons/vcard_edit.png" /></a>
+        <a i18n:translate="" i18n:attributes="title"
+           title="Edit with external editor."
+           tal:condition="related/xeditable"
+           tal:attributes="href string:$url/external_edit?version=this">
+          <img tal:attributes="src 
             string:$resourceBase/cybertools.icons/application_edit.png" /></a>
       </div>
-    <div tal:attributes="class python:
-                item.getCssClassForResource(related)"
-         tal:content="structure related/render" />
+      <div tal:repeat="parent python:item.getParentsForResource(related)">
+        <a tal:content="parent/title"
+           tal:attributes="href python:view.getUrlForTarget(parent)" />
+      </div>
+    </div>
   </div>
 </metal:section>
 

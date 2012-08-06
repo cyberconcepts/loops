@@ -62,12 +62,24 @@ class SectionView(Base, ConceptView):
         if self.editable:
             return 'index.html'
 
+    @Lazy
+    def documentTypeType(self):
+        return self.conceptManager['documenttype']
+
+    @Lazy
+    def sectionType(self):
+        return self.conceptManager['section']
+
     def getCssClassForResource(self, r):
-        documentType = self.conceptManager['documenttype']
         for c in r.context.getConcepts([self.defaultPredicate]):
-            if c.conceptType == documentType:
+            if c.conceptType == self.documentTypeType:
                 return getName(c)
         return 'textelement'
+
+    def getParentsForResource(self, r):
+        for c in r.context.getConcepts([self.defaultPredicate]):
+            if c.conceptType not in (self.documentTypeType, self.sectionType):
+                yield c
 
 
 # layout parts - probably obsolete:
