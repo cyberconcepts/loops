@@ -526,6 +526,12 @@ div.comment {
     background-color: #eeeeff;
 }
 
+tr.agenda-item-headline td, 
+tr.agenda-item-headline td a, 
+tr.agenda-item-headline td a[href] {
+    color: white;
+}
+
 /* dojo stuff */
 
 .dijitDialog {

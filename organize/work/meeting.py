@@ -71,6 +71,9 @@ class MeetingMinutesDocument(WordDocument, MeetingMinutes):
     def __init__(self, context, request):
         MeetingMinutes.__init__(self, context, request)
 
+    def __call__(self, *args, **kw):
+        return self.embed(*args, **kw)
+
     @Lazy
     def macros(self):
         return meeting_template.macros
