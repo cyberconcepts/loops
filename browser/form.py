@@ -45,6 +45,7 @@ from cybertools.composer.schema.grid.field import grid_macros
 from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.browser.common import schema_macros, schema_edit_macros
 from cybertools.composer.schema.schema import FormState
+from cybertools.meta.interfaces import IOptions
 from cybertools.stateful.interfaces import IStateful
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.format import toUnicode
@@ -727,6 +728,13 @@ class EditConcept(EditObject):
         return obj.getParentRelations(predicates=predicates, parent=concept)
 
     def assignConcept(self, obj, concept, predicate):
+        if IOptions(adapted(concept.conceptType)).children_append:
+            sibRelations = concept.getChildRelations()
+            if sibRelations:
+                maxOrder = max([r.order for r in sibRelations])
+                if maxOrder > 0:
+                    return obj.assignParent(concept, predicate, 
+                                            order=maxOrder+1)
         obj.assignParent(concept, predicate)
 
     def deassignConcept(self, obj, concept, predicates):

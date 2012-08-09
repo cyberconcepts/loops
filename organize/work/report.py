@@ -282,7 +282,10 @@ class WorkReportInstance(ReportInstance):
 
 class MeetingMinutesWorkRow(WorkRow):
 
-    pass
+    @Lazy
+    def isActive(self):
+        return self.context.state not in (
+            'finished', 'closed', 'cancelled')
 
 
 class MeetingMinutesWork(WorkReportInstance, SubReport):

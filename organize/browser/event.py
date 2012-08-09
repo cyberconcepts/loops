@@ -39,6 +39,7 @@ from loops.browser.node import NodeView
 from loops.common import adapted, baseObject
 from loops.concept import Concept
 from loops.organize.work.meeting import MeetingMinutes
+from loops.organize.tracking.report import TrackDetails
 from loops.setup import addAndConfigureObject
 from loops.util import _
 from loops import util
@@ -317,9 +318,21 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         result = super(CreateFollowUpEvent, self).update()
         form = self.request.form
         toBeAssigned = form.get('cb_select_tasks') or []
-        for uid in toBeAssigned:
-            task = util.getObjectForUid(uid)
-            self.createFollowUpTask(adapted(task))
+        taskId = newTask = None
+        workItems = self.view.loopsRoot.getRecordManager()['work']
+        for id in sorted(toBeAssigned):
+            if not '.' in id:
+                taskId = id
+                task = util.getObjectForUid(id)
+                newTask = self.createFollowUpTask(adapted(task))
+            else:
+                tId, trackId = id.split('.')
+                if tId == taskId:
+                    track = workItems.get(trackId)
+                    if track is not None:
+                        td = TrackDetails(self.view, track)
+                        newTId = self.view.getUidForObject(newTask)
+                        track.doAction('move', td.personId, task=newTId)
         return result
 
     def createFollowUpTask(self, source):
