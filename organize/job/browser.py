@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,13 +18,12 @@
 
 """
 Definition of view classes and other browser related stuff for job management.
-
-$Id$
 """
 
 from logging import getLogger
 from zope import component
 from zope.cachedescriptors.property import Lazy
+from zope.security.proxy import removeSecurityProxy
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.organize.interfaces import IJobManager
@@ -49,16 +48,20 @@ class Executor(object):
 
     def processJobs(self):
         output = []
-        names = [n for n in self.request.get('job_managers', '').split(',') if n]
+        names = [n for n in self.request.get('job_managers', '').split(',') 
+                    if n]
         if not names:
             names = self.options('organize.job.managers', [])
         for name in names:
-            manager = component.queryAdapter(self.context, IJobManager, name=name)
+            manager = component.queryAdapter(self.context, IJobManager, 
+                                             name=name)
             if manager is None:
                 msg = "Job manager '%s' not found." % name
                 self.logger.warn(msg)
                 output.append(msg)
             else:
+                manager = removeSecurityProxy(manager)
+                manager.view = self
                 output.append(manager.process())
         if not output:
             return 'No job managers available.'

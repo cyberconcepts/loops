@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Base class(es) for job management.
-
-$Id$
 """
 
 from zope import component, interface
@@ -32,6 +30,8 @@ class JobManager(object):
 
     interface.implements(IJobManager)
     component.adapts(ILoops)
+
+    view = None      # may be set by calling view
 
     def __init__(self, context):
         self.context = context
