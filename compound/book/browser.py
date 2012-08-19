@@ -50,6 +50,11 @@ class Base(object):
         for p in self.context.getParents([self.isPartOfPredicate]):
             return self.nodeView.getViewForTarget(p)
 
+    @Lazy
+    def tabview(self):
+        if self.editable:
+            return 'index.html'
+
 
 class BookOverview(Base, ConceptView):
 
@@ -63,11 +68,6 @@ class SectionView(Base, ConceptView):
     @Lazy
     def macro(self):
         return book_template.macros['section']
-
-    @Lazy
-    def tabview(self):
-        if self.editable:
-            return 'index.html'
 
     @Lazy
     def documentTypeType(self):
