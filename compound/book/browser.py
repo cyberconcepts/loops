@@ -51,6 +51,13 @@ class Base(object):
             return self.nodeView.getViewForTarget(p)
 
 
+class BookOverview(Base, ConceptView):
+
+    @Lazy
+    def macro(self):
+        return book_template.macros['book']
+
+
 class SectionView(Base, ConceptView):
 
     @Lazy

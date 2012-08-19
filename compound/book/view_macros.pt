@@ -1,6 +1,17 @@
 <html i18n:domain="loops">
 
 
+<metal:book define-macro="book">
+  <metal:info use-macro="view/concept_macros/concepttitle" />
+  <div tal:repeat="related item/children">
+    <h3>
+      <a tal:attributes="href python:view.getUrlForTarget(related)"
+         tal:content="related/title" /></h3>
+    <div tal:content="structure related/renderedDescription" />
+  </div>
+</metal:book>
+
+
 <metal:section define-macro="section">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <div tal:repeat="related item/resources">
