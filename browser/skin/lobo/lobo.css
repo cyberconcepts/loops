@@ -597,6 +597,10 @@ div.comment {
 
 /* calendar, work items */
 
+.MinutesAndAgendaTitles a[href] {
+    color: white;
+}
+
 .today {
     color: #444488;
     font-weight: bold;

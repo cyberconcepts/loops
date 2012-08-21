@@ -285,14 +285,14 @@ class MeetingMinutesWorkRow(WorkRow):
     @Lazy
     def isActive(self):
         return self.context.state not in (
-            'finished', 'closed', 'cancelled')
+            'finished', 'closed', 'cancelled', 'moved')
 
 
 class MeetingMinutesWork(WorkReportInstance, SubReport):
 
     rowFactory = MeetingMinutesWorkRow
 
-    fields = Jeep((workTitle, party, deadline))  #, state))   #description,
+    fields = Jeep((workTitle, party, deadline, state))   #description,
     defaultOutputFields = fields
     defaultSortCriteria = (day,)
     states = ('planned', 'accepted', 'running', 'done', 

@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-08-09 12:00 CET\n"
+"PO-Revision-Date: 2012-08-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -253,6 +253,18 @@ msgstr "Termin bearbeiten"
 
 msgid "Modify follow-up event."
 msgstr "Folgetermin bearbeiten"
+
+msgid "Create Agenda Item..."
+msgstr "Tagesordnungspunkt anlegen..."
+
+msgid "Create a new agenda item."
+msgstr "Einen neuen Tagesordnungspunkt anlegen."
+
+msgid "Edit Agenda Item..."
+msgstr "Tagesordnungspunkt bearbeiten..."
+
+msgid "Modify agenda item."
+msgstr "Tagesordnungspunkt bearbeiten"
 
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."

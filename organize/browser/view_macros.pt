@@ -58,7 +58,8 @@
 <form metal:define-macro="create_followup_event" method="post"
       id="dialog_form" class="dialog"
       dojoType="dijit.form.Form"
-      tal:define="item nocall:item|nocall:view">
+      tal:define="item nocall:item|nocall:view;
+                  showState python:True">
   <h2 tal:content="view/title"
       i18n:translate="" />
   <input type="hidden" name="form.action"

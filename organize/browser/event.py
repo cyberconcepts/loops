@@ -80,6 +80,24 @@ actions.register('editFollowUpEvent', 'portlet', TargetAction,
         prerequisites=['registerDojoDateWidget'],
 )
 
+actions.register('createAgendaItem', 'portlet', DialogAction,
+        title=_(u'Create Agenda Item...'),
+        description=_(u'Create a new agenda item.'),
+        viewName='create_concept.html',
+        dialogName='createAgendaItem',
+        typeToken='.loops/concepts/agendaitem',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editAgendaItem', 'portlet', DialogAction,
+        title=_(u'Edit Agenda Item...'),
+        description=_(u'Modify agenda item.'),
+        viewName='edit_concept.html',
+        dialogName='editAgendaItem',
+)
+
 
 class Events(ConceptView):
 
