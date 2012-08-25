@@ -407,10 +407,19 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     def actions(self):
         result = [dict(name=t.name, title=t.title)
                     for t in self.track.getAvailableTransitions()
-                    if t.name in self.workItemType.actions]
+                    if t.name in self.workItemType.actions and
+                       t.name not in self.hiddenActions]
                     #and (t.name != 'delegate' or
                     #    checkPermission('loops.ManageSite', self.context))]
         return result
+
+    @Lazy
+    def hiddenActions(self):
+        task = self.task
+        if task is None:
+            task = self.target
+        options = IOptions(adapted(task.conceptType))
+        return options.hidden_workitem_actions or []
 
     def getTypesParamsForFilteringSelect(self, types=['person']):
         result = []
