@@ -34,7 +34,7 @@ from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
 from loops.expert.browser.report import ReportConceptView
-from loops.expert.field import Field, TargetField, DateField, \
+from loops.expert.field import Field, TargetField, DateField, StateField, \
                             TextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
@@ -49,13 +49,6 @@ class WorkStatementView(ReportConceptView):
 
 
 # fields
-
-class StateField(Field):
-
-    def getDisplayValue(self, row):
-        value = self.getValue(row)
-        return util._(value)
-
 
 class TrackDateField(Field):
 
@@ -165,6 +158,7 @@ effort = DurationField('effort', u'Effort',
 state = StateField('state', u'State',
                 description=u'The state of the work.',
                 cssClass='center',
+                statesDefinition='workItemStates',
                 executionSteps=['query', 'output'])
 
 

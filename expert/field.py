@@ -27,6 +27,7 @@ from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
 from cybertools.composer.report.field import Field as BaseField
 from cybertools.composer.report.result import ResultSet
+from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from cybertools.util.date import timeStamp2Date
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
@@ -98,6 +99,23 @@ class DateField(Field):
             return fmt.format(value)
         else:
             return value.isoformat()[:10]
+
+
+class StateField(Field):
+
+    statesDefinition = 'workItemStates'
+    renderer = 'state'
+
+    def getDisplayValue(self, row):
+        if IStateful.providedBy(row.context):
+            stf = row.context
+        else:
+            stf = component.getAdapter(row.context, IStateful, 
+                                        name=self.statesDefinition)
+        stateObject = stf.getStateObject()
+        icon = stateObject.icon or 'led%s.png' % stateObject.color
+        return dict(title=util._(stateObject.title), 
+                    icon='cybertools.icons/' + icon)
 
 
 class VocabularyField(Field):
