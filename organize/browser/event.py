@@ -39,6 +39,7 @@ from loops.browser.node import NodeView
 from loops.common import adapted, baseObject
 from loops.concept import Concept
 from loops.organize.work.meeting import MeetingMinutes
+from loops.organize.tracking.report import TrackDetails
 from loops.setup import addAndConfigureObject
 from loops.util import _
 from loops import util
@@ -77,6 +78,24 @@ actions.register('editFollowUpEvent', 'portlet', TargetAction,
         description=_(u'Modify follow-up event.'),
         viewName='edit_followup_event.html',
         prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('createAgendaItem', 'portlet', DialogAction,
+        title=_(u'Create Agenda Item...'),
+        description=_(u'Create a new agenda item.'),
+        viewName='create_concept.html',
+        dialogName='createAgendaItem',
+        typeToken='.loops/concepts/agendaitem',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+        prerequisites=['registerDojoDateWidget'],
+)
+
+actions.register('editAgendaItem', 'portlet', DialogAction,
+        title=_(u'Edit Agenda Item...'),
+        description=_(u'Modify agenda item.'),
+        viewName='edit_concept.html',
+        dialogName='editAgendaItem',
 )
 
 
@@ -317,9 +336,21 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         result = super(CreateFollowUpEvent, self).update()
         form = self.request.form
         toBeAssigned = form.get('cb_select_tasks') or []
-        for uid in toBeAssigned:
-            task = util.getObjectForUid(uid)
-            self.createFollowUpTask(adapted(task))
+        taskId = newTask = None
+        workItems = self.view.loopsRoot.getRecordManager()['work']
+        for id in sorted(toBeAssigned):
+            if not '.' in id:
+                taskId = id
+                task = util.getObjectForUid(id)
+                newTask = self.createFollowUpTask(adapted(task))
+            else:
+                tId, trackId = id.split('.')
+                if tId == taskId:
+                    track = workItems.get(trackId)
+                    if track is not None:
+                        td = TrackDetails(self.view, track)
+                        newTId = self.view.getUidForObject(newTask)
+                        track.doAction('move', td.personId, task=newTId)
         return result
 
     def createFollowUpTask(self, source):
@@ -333,12 +364,13 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
                         conceptType=taskType, 
                         title=source.title, 
                         description=source.description,
-                        responsible=source.start,
+                        responsible=source.responsible,
                         discussion=source.discussion,
                         consequences=source.consequences)
         stask.assignChild(newTask, self.followsPredicate)
         for rel in stask.getParentRelations():
-            if rel.predicate != self.view.typePredicate:
+            if rel.predicate not in (
+                        self.view.typePredicate, self.followsPredicate):
                 if rel.first == bevt:
                     parent = self.object
                 else:

@@ -68,9 +68,19 @@
 </metal:right>
 
 
+<metal:state define-macro="state">
+  <tal:column define=" value python:col.getDisplayValue(row)">
+    <img tal:attributes="src string:$resourceBase${value/icon};
+                         alt value/title;
+                         title value/title" />
+  </tal:column>
+</metal:state>
+
+
 <metal:target define-macro="target">
   <tal:column define="value python:col.getDisplayValue(row)">
-    <a tal:omit-tag="python:not getattr(item, 'showLinks', True) or not value['url']"
+    <a tal:omit-tag="python:
+                  not getattr(item, 'showLinks', True) or not value['url']"
        tal:attributes="href value/url"
        tal:content="value/title" />
   </tal:column>

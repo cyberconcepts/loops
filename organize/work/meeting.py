@@ -66,9 +66,13 @@ class MeetingMinutes(ResultsConceptView):
 class MeetingMinutesDocument(WordDocument, MeetingMinutes):
 
     isToplevel = True
+    omitSectionElement = True
 
     def __init__(self, context, request):
         MeetingMinutes.__init__(self, context, request)
+
+    def __call__(self, *args, **kw):
+        return self.embed(*args, **kw)
 
     @Lazy
     def macros(self):

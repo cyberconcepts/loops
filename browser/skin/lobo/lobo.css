@@ -510,6 +510,12 @@ img.notselected {
     text-align: right;
 }
 
+/* work */
+
+.work_event {
+    background-color: #f3f3ff;
+}
+
 /* lobo layout-specific classes */
 
 .legend {
@@ -590,6 +596,10 @@ div.comment {
 }
 
 /* calendar, work items */
+
+.MinutesAndAgendaTitles a[href] {
+    color: white;
+}
 
 .today {
     color: #444488;

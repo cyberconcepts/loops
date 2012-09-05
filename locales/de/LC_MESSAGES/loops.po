@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-07-21 12:00 CET\n"
+"PO-Revision-Date: 2012-08-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -254,6 +254,18 @@ msgstr "Termin bearbeiten"
 msgid "Modify follow-up event."
 msgstr "Folgetermin bearbeiten"
 
+msgid "Create Agenda Item..."
+msgstr "Tagesordnungspunkt anlegen..."
+
+msgid "Create a new agenda item."
+msgstr "Einen neuen Tagesordnungspunkt anlegen."
+
+msgid "Edit Agenda Item..."
+msgstr "Tagesordnungspunkt bearbeiten..."
+
+msgid "Modify agenda item."
+msgstr "Tagesordnungspunkt bearbeiten"
+
 msgid "Create Task..."
 msgstr "Aufgabe anlegen..."
 
@@ -274,6 +286,12 @@ msgstr "Eine neues Projekt anlegen."
 
 msgid "Create Work Item..."
 msgstr "Aktivität anlegen..."
+
+msgid "Create a work item for this object."
+msgstr "Eine Aktivität zu diesem Objekt anlegen."
+
+msgid "Add Work Item"
+msgstr "Aktivität anlegen/bearbeiten"
 
 msgid "Edit Video..."
 msgstr "Video bearbeiten..."
@@ -296,6 +314,9 @@ msgstr "Besprechungsprotokoll für dieses Objekt anzeigen."
 msgid "Download Meeting Minutes"
 msgstr "Besprechungsprotokoll generieren"
 
+msgid "Copy Agenda Items"
+msgstr "Tagesordnungspunkte kopieren"
+
 msgid "Participants"
 msgstr "Teilnehmer"
 
@@ -303,7 +324,7 @@ msgid "The names of the persons taking part in the event."
 msgstr "Die Namen der Personen, die an der Besprechung teilnehmen."
 
 msgid "label_responsible"
-msgstr "Vortragender"
+msgstr "Vortragende/r"
 
 msgid "desc_responsible"
 msgstr "Person, die diesen Tagesordnungpunkt vertritt."
@@ -315,10 +336,19 @@ msgid "desc_discussion"
 msgstr "Diskussion"
 
 msgid "label_consequences"
-msgstr "Schlussfolgerungen"
+msgstr "Schlussfolgerung"
 
 msgid "desc_consequences"
-msgstr "Schlussfolgerungen"
+msgstr "Schlussfolgerung"
+
+msgid "header_workitems"
+msgstr "Aufgaben"
+
+msgid "header_responsible"
+msgstr "zuständig"
+
+msgid "header_deadline"
+msgstr "Termin"
 
 msgid "Task/Action"
 msgstr "Aufgabe"

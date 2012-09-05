@@ -174,8 +174,8 @@ So we use the PersonWorkItems view, assigning john to the query.
   >>> work = PersonWorkItems(query, TestRequest(form=input))
   >>> work.listWorkItems()
   [<WorkItem ['36', 2, '33', '2009-01-19 09:00', 'planned']:
-   {'start': 1232352000, 'created': ..., 'title': u'Install Zope',
-    'creator': '33'}>]
+   {'title': u'Install Zope', 'created': ..., 'end': 1232352000, 
+    'start': 1232352000, 'creator': '33'}>]
 
 
 Work Reports
@@ -228,7 +228,8 @@ The user interface is a ReportConceptView subclass that is directly associated w
   ...     print
   08/12/28 19:00 20:15
     {'url': '.../home/.36', 'title': u'loops Development'}
-    {'url': '.../home/.33', 'title': u'john'}  01:15 00:15 finished
+    {'url': '.../home/.33', 'title': u'john'}  01:15 00:15
+    {'icon': 'cybertools.icons/ledgreen.png', 'title': u'finished'}
 
   >>> results.totals.data
   {'effort': 900}
@@ -248,7 +249,7 @@ Let's start with creating an a event and assigning it a task.
   ...     typeInterface=IEvent)
   >>> tAgendaItem = addAndConfigureObject(concepts, Concept, 'agendaitem',
   ...     title=u'AgendaItem', conceptType=concepts.getTypeConcept(),
-  ...     typeInterface=IEvent)
+  ...     typeInterface=IAgendaItem)
 
   >>> ev01 = addAndConfigureObject(concepts, Concept, 'ev01',
   ...     title=u'loops Meeting', conceptType=tEvent)

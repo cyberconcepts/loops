@@ -115,6 +115,7 @@
       name="meeting_minutes.doc"
       for="loops.interfaces.IConceptSchema"
       class="loops.organize.work.meeting.MeetingMinutesDocument"
+      attribute="embed"
       permission="zope.View" />
 
   <!-- setup -->

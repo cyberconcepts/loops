@@ -2,7 +2,7 @@ type(u'documenttype', u'Dokumentenart', options=u'qualifier:assign',
     viewName=u'')
 
 # book types
-type(u'book', u'Buch', viewName=u'', typeInterface=u'',
+type(u'book', u'Buch', viewName=u'book_overview', typeInterface=u'',
     options=u'action.portlet:create_subtype,edit_concept')
 #type(u'page', u'Seite', viewName=u'page_layout', 
 #    typeInterface=u'loops.compound.book.interfaces.IPage',

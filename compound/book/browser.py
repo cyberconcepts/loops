@@ -50,6 +50,18 @@ class Base(object):
         for p in self.context.getParents([self.isPartOfPredicate]):
             return self.nodeView.getViewForTarget(p)
 
+    @Lazy
+    def tabview(self):
+        if self.editable:
+            return 'index.html'
+
+
+class BookOverview(Base, ConceptView):
+
+    @Lazy
+    def macro(self):
+        return book_template.macros['book']
+
 
 class SectionView(Base, ConceptView):
 
@@ -58,16 +70,23 @@ class SectionView(Base, ConceptView):
         return book_template.macros['section']
 
     @Lazy
-    def tabview(self):
-        if self.editable:
-            return 'index.html'
+    def documentTypeType(self):
+        return self.conceptManager['documenttype']
+
+    @Lazy
+    def sectionType(self):
+        return self.conceptManager['section']
 
     def getCssClassForResource(self, r):
-        documentType = self.conceptManager['documenttype']
         for c in r.context.getConcepts([self.defaultPredicate]):
-            if c.conceptType == documentType:
+            if c.conceptType == self.documentTypeType:
                 return getName(c)
         return 'textelement'
+
+    def getParentsForResource(self, r):
+        for c in r.context.getConcepts([self.defaultPredicate]):
+            if c != self.context and c.conceptType != self.documentTypeType:
+                yield c
 
 
 # layout parts - probably obsolete:

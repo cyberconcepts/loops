@@ -125,22 +125,18 @@ function setConceptTypeForComboBox(typeId, cbId) {
 }
 
 var dialog;
-var dialogName;
 
 function objectDialog(dlgName, url) {
     dojo.require('dijit.Dialog');
     dojo.require('dojo.parser');
     dojo.require('dijit.form.FilteringSelect');
     dojo.require('dojox.data.QueryReadStore');
-    if (dialogName == undefined || dialogName != dlgName || dialogName == '') {
-        if (dialog != undefined) {
-            dialog.destroyRecursive();
-        }
-        dialogName = dlgName;
-        dialog = new dijit.Dialog({
-                    href: url
-                        }, dojo.byId('dialog.' + dlgName));
+    if (dialog != undefined) {
+        dialog.destroyRecursive();
     }
+    dialog = new dijit.Dialog({
+                href: url
+                    }, dojo.byId('dialog.' + dlgName));
     dialog.show();
 }
 
