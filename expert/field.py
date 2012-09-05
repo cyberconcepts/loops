@@ -124,13 +124,18 @@ class StateField(Field):
     def getDisplayValue(self, row):
         if IStateful.providedBy(row.context):
             stf = row.context
+        elif row.context is None:
+            return None
         else:
-            stf = component.getAdapter(row.context, IStateful, 
+            stf = component.getAdapter(baseObject(row.context), IStateful, 
                                         name=self.statesDefinition)
         stateObject = stf.getStateObject()
         icon = stateObject.icon or 'led%s.png' % stateObject.color
-        return dict(title=util._(stateObject.title), 
+        return dict(title=self.translate(stateObject.title), 
                     icon='cybertools.icons/' + icon)
+
+    def translate(self, text):
+        return util._(text)
 
 
 class VocabularyField(Field):
