@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-08-20 12:00 CET\n"
+"PO-Revision-Date: 2012-09-17 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -754,6 +754,9 @@ msgstr "Kommentare"
 
 msgid "Add Comment"
 msgstr "Kommentar hinzufügen"
+
+msgid "Subject"
+msgstr "Thema"
 
 msgid "Selection using: $targets"
 msgstr "Auswahl über: $targets"

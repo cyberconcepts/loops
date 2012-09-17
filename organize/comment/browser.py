@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition of view classes and other browser related stuff for comments.
-
-$Id$
 """
 
 from zope import interface, component
@@ -52,6 +50,8 @@ class CommentsView(NodeView):
 
     @Lazy
     def allowed(self):
+        if self.isAnonymous:
+            return False
         return (self.virtualTargetObject is not None and
                     self.globalOptions('organize.allowComments'))
 
@@ -120,8 +120,8 @@ class CreateComment(EditObject):
     def update(self):
         form = self.request.form
         subject = form.get('subject')
-        text = form.get('text')
-        if not subject or not text or self.personId is None or self.object is None:
+        text = form.get('text') or u''
+        if not subject or self.personId is None or self.object is None:
             return True
         #contentType = form.get('contentType') or 'text/restructured'
         rm = self.view.loopsRoot.getRecordManager()
