@@ -159,7 +159,11 @@ class ObjectForm(NodeView):
         for k, v in data.items():
             #overwrite data with values from request.form
             if k in self.request.form:
-                data[k] = toUnicode(form[k])
+                field = self.schema.fields.get(k)
+                if field:
+                    fi = field.getFieldInstance(self.instance)
+                    data[k] = fi.marshall(fi.unmarshall(form[k]))
+                    #data[k] = toUnicode(form[k])
         return data
 
     @Lazy
