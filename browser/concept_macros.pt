@@ -62,9 +62,10 @@
                         fieldInstance python:field.getFieldInstance(
                                 context=context, request=request);
                         rendererName field/displayRenderer;
-                        renderer python:fieldInstance.getRenderer(rendererName) or
-                                        view.concept_macros[rendererName]"
-            tal:condition="nocall:value">
+                        renderer python:
+                            fieldInstance.getRenderer(rendererName) or
+                                view.concept_macros[rendererName]"
+            tal:condition="python:value or field.showEmpty">
           <td><b tal:content="field/title" i18n:translate="" />:</td>
           <td><span metal:use-macro="renderer" /></td>
         </tr>
