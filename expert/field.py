@@ -109,6 +109,8 @@ class StateField(Field):
     def getDisplayValue(self, row):
         if IStateful.providedBy(row.context):
             stf = row.context
+        elif row.context is None:
+            return None
         else:
             stf = component.getAdapter(row.context, IStateful, 
                                         name=self.statesDefinition)

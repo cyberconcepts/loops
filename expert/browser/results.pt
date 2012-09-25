@@ -70,7 +70,8 @@
 
 <metal:state define-macro="state">
   <tal:column define=" value python:col.getDisplayValue(row)">
-    <img tal:attributes="src string:$resourceBase${value/icon};
+    <img tal:condition="value"
+         tal:attributes="src string:$resourceBase${value/icon};
                          alt value/title;
                          title value/title" />
   </tal:column>
