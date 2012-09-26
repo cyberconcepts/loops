@@ -77,6 +77,30 @@ class SectionView(Base, ConceptView):
     def sectionType(self):
         return self.conceptManager['section']
 
+    def getResources(self):
+        relViews = super(SectionView, self).getResources()
+        return relViews
+
+    @Lazy
+    def textResources(self):
+        self.images = [[]]
+        result = []
+        idx = 0
+        for rv in self.getResources():
+            if rv.context.contentType.startswith('text/'):
+                idx += 1
+                result.append(rv)
+                self.images.append([])
+            else:
+                self.registerDojoLightbox()
+                url = self.nodeView.getUrlForTarget(rv.context)
+                src = '%s/mediaasset.html?v=small' % url
+                fullSrc = '%s/mediaasset.html?v=medium' % url
+                img = dict(src=src, fullImageUrl=fullSrc, title=rv.title,
+                           description=rv.description, url=url, object=rv)
+                self.images[idx].append(img)
+        return result
+
     def getCssClassForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
             if c.conceptType == self.documentTypeType:

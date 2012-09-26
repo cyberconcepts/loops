@@ -413,7 +413,7 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
-    def resources(self):
+    def getResources(self):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -429,6 +429,9 @@ class ConceptView(BaseView):
         for r in rels:
             if fv.check(r.first):
                 yield ResourceRelationView(r, self.request, contextIsSecond=True)
+
+    def resources(self):
+        return self.getResources()
 
     @Lazy
     def resourcesList(self):
