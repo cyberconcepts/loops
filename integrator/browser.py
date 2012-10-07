@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View class(es) for integrating external objects.
-
-$Id$
 """
 
 from zope import interface, component
@@ -44,5 +42,7 @@ class ExternalCollectionView(ConceptView):
             cta = adapted(self.context)
             if cta is not None:
                 cta.update()
+            if cta.updateMessage is not None:
+                self.request.form['message'] = cta.updateMessage
         return True
 

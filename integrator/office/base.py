@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Resource adapter(s) for MS Office files.
-
-$Id$
 """
 
 from datetime import date, datetime, timedelta
@@ -54,10 +52,15 @@ class OfficeFile(ExternalFileAdapter):
 
     implements(IOfficeFile)
 
+    _adapterAttributes = ExternalFileAdapter._adapterAttributes + (
+                                'processingErrors',)
+
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
     fileExtensions = ('.docm', '.docx', 'dotm', 'dotx', 'pptx', 'potx', 'ppsx',
                       '.xlsm', '.xlsx', '.xltm', '.xltx')
+
+    processingErrors = []
 
     @Lazy
     def logger(self):
@@ -136,7 +139,9 @@ class OfficeFile(ExternalFileAdapter):
             newZf.writestr(self.propFileName, etree.tostring(dom))
             newZf.close()
             shutil.move(newFn, fn)
-        self.update(attributes)
+        errors = self.update(attributes)
+        if errors:
+            self.processingErrors = errors
 
     def update(self, attributes):
         # to be implemented by subclass
@@ -146,10 +151,10 @@ class OfficeFile(ExternalFileAdapter):
 def parseDate(s):
     if not s:
         return None
-    tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-    #try:
-    #    tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-    #except ValueError:
+    try:
+        tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
+    except ValueError:
+        return None
     #    try:
     #        tt = strptime(s, '%d.%m.%y')
     #    except ValueError:
