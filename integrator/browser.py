@@ -40,8 +40,8 @@ class ExternalCollectionView(ConceptView):
     def update(self):
         if 'update' in self.request.form:
             cta = adapted(self.context)
-            if cta is not None:
-                cta.update()
+            cta.request = self.request
+            cta.update()
             if cta.updateMessage is not None:
                 self.request.form['message'] = cta.updateMessage
         return True

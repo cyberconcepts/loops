@@ -52,15 +52,11 @@ class OfficeFile(ExternalFileAdapter):
 
     implements(IOfficeFile)
 
-    _adapterAttributes = ExternalFileAdapter._adapterAttributes + (
-                                'processingErrors',)
-
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
+    corePropFileName = 'docProps/core.xml'
     fileExtensions = ('.docm', '.docx', 'dotm', 'dotx', 'pptx', 'potx', 'ppsx',
                       '.xlsm', '.xlsx', '.xltm', '.xltx')
-
-    processingErrors = []
 
     @Lazy
     def logger(self):
@@ -91,18 +87,30 @@ class OfficeFile(ExternalFileAdapter):
             from logging import getLogger
             self.logger.warn(e)
             return []
+        if self.corePropFileName not in zf.namelist():
+            self.logger.warn('Core properties not found in file %s.' %
+                             self.externalAddress)
         if self.propFileName not in zf.namelist():
             self.logger.warn('Custom properties not found in file %s.' %
                              self.externalAddress)
         propsXml = zf.read(self.propFileName)
+        corePropsXml = zf.read(self.corePropFileName)
+        # TODO: read core.xml, return both trees in dictionary
         zf.close()
-        return etree.fromstring(propsXml)
+        return {'custom': etree.fromstring(propsXml),
+                'core': etree.fromstring(corePropsXml)}
 
     def getDocProperty(self, pname):
-        for p in self.docPropertyDom:
+        for p in self.docPropertyDom['custom']:
             name = p.attrib.get('name')
             if name == pname:
                 return p[0].text
+        return None
+
+    def getCoreProperty(self, pname):
+        for p in self.docPropertyDom['core']:
+            if p.tag.endswith(pname):
+                return p.text
         return None
 
     def processDocument(self):
@@ -112,11 +120,14 @@ class OfficeFile(ExternalFileAdapter):
         strType = ('{http://schemas.openxmlformats.org/'
                    'officeDocument/2006/docPropsVTypes}lpwstr')
         attributes = {}
-        dom = self.docPropertyDom
+        # get dc:description from core.xml
+        desc = self.getCoreProperty('description')
+        if desc is not None:
+            attributes['comments'] = desc
+        dom = self.docPropertyDom['custom']
         for p in dom:
             name = p.attrib.get('name')
             value = p[0].text
-            #print '***', self.externalAddress, name, value, p[0].tag
             attr = self.propertyMap.get(name)
             if attr == 'version':
                 docVersion = value

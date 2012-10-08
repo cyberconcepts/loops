@@ -101,6 +101,7 @@ class ExternalCollectionAdapter(AdapterBase):
                     adobj = adapted(obj)
                     directory = provider.getDirectory(self)
                     adobj.storageParams=dict(subdirectory=directory)
+                    adobj.request = self.request
                     adobj.externalAddress = addr
                     # collect error information
                     if adobj.processingErrors:
@@ -209,6 +210,7 @@ class DirectoryCollectionProvider(object):
                             contentType=contentType,
             )
             adobj = adapted(obj)
+            adobj.request = client.request
             adobj.externalAddress = addr     # must be set last
             # collect error information
             if adobj.processingErrors:

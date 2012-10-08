@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Definition of the Concept class.
-
-$Id$
 """
 
 from cStringIO import StringIO
@@ -352,7 +350,10 @@ class ExternalFileAdapter(FileAdapter):
     implements(IExternalFile)
 
     _adapterAttributes = (FileAdapter._adapterAttributes
-                       + ('storageParams', 'externalAddress', 'uniqueAddress'))
+                        + ('storageParams', 'externalAddress', 'uniqueAddress',
+                           'processingErrors'))
+
+    processingErrors = []
 
     def getStorageParams(self):
         params = getattr(self.context, '_storageParams', None)
