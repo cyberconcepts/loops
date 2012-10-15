@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Resource adapter(s) for MS Office files.
-
-$Id$
 """
 
 from datetime import date, datetime, timedelta
@@ -56,6 +54,7 @@ class OfficeFile(ExternalFileAdapter):
 
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
+    corePropFileName = 'docProps/core.xml'
     fileExtensions = ('.docm', '.docx', 'dotm', 'dotx', 'pptx', 'potx', 'ppsx',
                       '.xlsm', '.xlsx', '.xltm', '.xltx')
 
@@ -88,18 +87,30 @@ class OfficeFile(ExternalFileAdapter):
             from logging import getLogger
             self.logger.warn(e)
             return []
+        if self.corePropFileName not in zf.namelist():
+            self.logger.warn('Core properties not found in file %s.' %
+                             self.externalAddress)
         if self.propFileName not in zf.namelist():
             self.logger.warn('Custom properties not found in file %s.' %
                              self.externalAddress)
         propsXml = zf.read(self.propFileName)
+        corePropsXml = zf.read(self.corePropFileName)
+        # TODO: read core.xml, return both trees in dictionary
         zf.close()
-        return etree.fromstring(propsXml)
+        return {'custom': etree.fromstring(propsXml),
+                'core': etree.fromstring(corePropsXml)}
 
     def getDocProperty(self, pname):
-        for p in self.docPropertyDom:
+        for p in self.docPropertyDom['custom']:
             name = p.attrib.get('name')
             if name == pname:
                 return p[0].text
+        return None
+
+    def getCoreProperty(self, pname):
+        for p in self.docPropertyDom['core']:
+            if p.tag.endswith(pname):
+                return p.text
         return None
 
     def processDocument(self):
@@ -109,11 +120,14 @@ class OfficeFile(ExternalFileAdapter):
         strType = ('{http://schemas.openxmlformats.org/'
                    'officeDocument/2006/docPropsVTypes}lpwstr')
         attributes = {}
-        dom = self.docPropertyDom
+        # get dc:description from core.xml
+        desc = self.getCoreProperty('description')
+        if desc is not None:
+            attributes['comments'] = desc
+        dom = self.docPropertyDom['custom']
         for p in dom:
             name = p.attrib.get('name')
             value = p[0].text
-            #print '***', self.externalAddress, name, value, p[0].tag
             attr = self.propertyMap.get(name)
             if attr == 'version':
                 docVersion = value
@@ -136,7 +150,9 @@ class OfficeFile(ExternalFileAdapter):
             newZf.writestr(self.propFileName, etree.tostring(dom))
             newZf.close()
             shutil.move(newFn, fn)
-        self.update(attributes)
+        errors = self.update(attributes)
+        if errors:
+            self.processingErrors = errors
 
     def update(self, attributes):
         # to be implemented by subclass
@@ -146,10 +162,10 @@ class OfficeFile(ExternalFileAdapter):
 def parseDate(s):
     if not s:
         return None
-    tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-    #try:
-    #    tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
-    #except ValueError:
+    try:
+        tt = strptime(s, '%Y-%m-%dT%H:%M:%SZ')
+    except ValueError:
+        return None
     #    try:
     #        tt = strptime(s, '%d.%m.%y')
     #    except ValueError:

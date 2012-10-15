@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 """
 Concept adapter(s) for external collections, e.g. a directory in the
 file system.
-
-$Id$
 """
 
 from datetime import datetime
@@ -62,10 +60,12 @@ class ExternalCollectionAdapter(AdapterBase):
     implements(IExternalCollection)
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__', 'exclude', 'newResources')
+    _adapterAttributes = AdapterBase._adapterAttributes + (
+                            'exclude', 'newResources', 'updateMessage')
     _contextAttributes = list(IExternalCollection) + list(IConcept)
 
     newResources = None
+    updateMessage = None
 
     def getExclude(self):
         return getattr(self.context, '_exclude', None) or []
@@ -101,12 +101,17 @@ class ExternalCollectionAdapter(AdapterBase):
                     adobj = adapted(obj)
                     directory = provider.getDirectory(self)
                     adobj.storageParams=dict(subdirectory=directory)
+                    adobj.request = self.request
                     adobj.externalAddress = addr
+                    # collect error information
+                    if adobj.processingErrors:
+                        message = self.updateMessage or u''
+                        message += u'<br />'.join(adobj.processingErrors)
+                        self.updateMessage = message
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
             else:
                 new.append(addr)
-        #print '*** new', new
         if new:
             self.newResources = provider.createExtFileObjects(self, new)
             for r in self.newResources:
@@ -205,7 +210,13 @@ class DirectoryCollectionProvider(object):
                             contentType=contentType,
             )
             adobj = adapted(obj)
+            adobj.request = client.request
             adobj.externalAddress = addr     # must be set last
+            # collect error information
+            if adobj.processingErrors:
+                message = client.updateMessage or u''
+                message += u'<br />'.join(adobj.processingErrors)
+                client.updateMessage = message
             yield obj
 
     def getDirectory(self, client):

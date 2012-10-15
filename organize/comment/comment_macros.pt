@@ -58,7 +58,7 @@
       </div>
       <div class="buttons">
         <input value="Save" type="submit"
-               onClick="return closeDialog(true)"
+               onClick="if (not this.validate()) return False; return closeDialog(true)"
                i18n:attributes="value">
         <input type="button" value="Cancel"
                onClick="return closeDialog(false)"

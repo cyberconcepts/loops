@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ class AdapterBase(object):
 
     adapts(IConcept)
 
-    _adapterAttributes = ('context', '__parent__')
+    _adapterAttributes = ('context', '__parent__', 'request')
     _contextAttributes = list(IConcept)
     _noexportAttributes = ()
     _textIndexAttributes = ()
@@ -106,6 +106,7 @@ class AdapterBase(object):
     __is_dummy__ = False
     __type__ = None
 
+    request = None
     languageInfo = None
 
     def __init__(self, context):

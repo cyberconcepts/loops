@@ -14,7 +14,7 @@
 
 <metal:section define-macro="section">
   <metal:info use-macro="view/concept_macros/concepttitle" />
-  <div tal:repeat="related item/resources">
+  <div tal:repeat="related item/textResources">
     <div class="span-4">
       <div tal:attributes="class python:
                   item.getCssClassForResource(related)"
@@ -36,7 +36,8 @@
                     string:$resourceBase/cybertools.icons/vcard_edit.png" /></a>
         <a i18n:translate="" i18n:attributes="title"
            title="Edit with external editor."
-           tal:condition="related/xeditable"
+           xxtal:condition="related/xeditable"
+           tal:condition="nothing"
            tal:attributes="href string:$url/external_edit?version=this">
           <img tal:attributes="src 
             string:$resourceBase/cybertools.icons/application_edit.png" /></a>
@@ -44,6 +45,15 @@
       <div tal:repeat="parent python:item.getParentsForResource(related)">
         <a tal:content="parent/title"
            tal:attributes="href python:view.getUrlForTarget(parent)" />
+      </div>
+      <div tal:repeat="image python:
+                          item.images[repeat['related'].index() + 1]">
+        <a dojoType="dojox.image.Lightbox" group="mediasset"
+           i18n:attributes="title"
+           tal:attributes="href image/fullImageUrl;
+                           title image/title">
+          <img tal:attributes="src image/src;
+                               alt image/title" /></a>
       </div>
     </div>
   </div>

@@ -7,6 +7,10 @@
   <metal:block use-macro="view/concept_macros/conceptdata">
     <metal:fill tal:condition="item/editable"
                 fill-slot="fields">
+      <div class="error"
+           tal:define="message view/message | request/message | nothing" 
+           tal:condition="message"
+           tal:content="structure message" />
       <metal:block use-macro="view/concept_macros/conceptfields" />
       <form method="post">
         <input type="submit" name="update" value="Update Collection" />
