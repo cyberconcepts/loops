@@ -61,7 +61,7 @@ actions.register('editTopic', 'portlet', DialogAction,
 
 actions.register('createQualification', 'portlet', DialogAction,
         title=_(u'Create Qualification Record...'),
-        description=_(u'Create a work item for this person.'),
+        description=_(u'Create a qualification record for this person.'),
         viewName='create_qualification.html',
         dialogName='createQualification',
         prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget',

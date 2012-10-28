@@ -42,6 +42,10 @@ book_template = ViewPageTemplateFile('view_macros.pt')
 class Base(object):
 
     @Lazy
+    def book_macros(self):
+        return book_template.macros
+
+    @Lazy
     def isPartOfPredicate(self):
         return self.conceptManager['ispartof']
 
@@ -49,6 +53,29 @@ class Base(object):
     def breadcrumbsParent(self):
         for p in self.context.getParents([self.isPartOfPredicate]):
             return self.nodeView.getViewForTarget(p)
+
+    @Lazy
+    def neighbours(self):
+        pred = succ = None
+        parent = self.breadcrumbsParent
+        if parent is not None:
+            myself = None
+            children = list(parent.context.getChildren([self.isPartOfPredicate]))
+            for idx, c in enumerate(children):
+                if c == self.context:
+                    if idx > 0:
+                        pred = self.nodeView.getViewForTarget(children[idx-1])
+                    if idx < len(children) - 1:
+                        succ = self.nodeView.getViewForTarget(children[idx+1])
+        return pred, succ
+
+    @Lazy
+    def predecessor(self):
+        return self.neighbours[0]
+
+    @Lazy
+    def successor(self):
+        return self.neighbours[1]
 
     @Lazy
     def tabview(self):
@@ -72,6 +99,10 @@ class SectionView(Base, ConceptView):
     @Lazy
     def documentTypeType(self):
         return self.conceptManager['documenttype']
+
+    @Lazy
+    def showNavigation(self):
+        return self.typeOptions.show_navigation
 
     @Lazy
     def sectionType(self):
