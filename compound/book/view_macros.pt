@@ -18,14 +18,17 @@
     <div tal:define="parent nocall:item/breadcrumbsParent;
                      pred nocall:item/predecessor;
                      succ nocall:item/successor">
-      <span tal:condition="nocall:pred">
-        <a tal:attributes="href pred/targetUrl"
-           tal:content="pred/title" /> &lt; </span>
-      <a tal:attributes="href parent/targetUrl"
-         tal:content="parent/title" />
-      <span tal:condition="nocall:succ"> &gt;
-        <a tal:attributes="href succ/targetUrl"
-           tal:content="succ/title" /></span>
+      <a tal:condition="nocall:pred"
+         tal:attributes="href pred/targetUrl;
+                         title pred/title">
+        <img src="/@@/cybertools.icons/arrow_left.png" /></a>
+      <a tal:attributes="href parent/targetUrl;
+                          title parent/title">
+        <img src="/@@/cybertools.icons/arrow_up.png" /></a>
+      <a  tal:condition="nocall:succ"
+          tal:attributes="href succ/targetUrl;
+                          title succ/title">
+        <img src="/@@/cybertools.icons/arrow_right.png" /></a>
     </div>
   </metal:navigation>
   <metal:info use-macro="view/concept_macros/concepttitle" />
