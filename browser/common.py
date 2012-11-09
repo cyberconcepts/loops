@@ -69,7 +69,7 @@ from loops.resource import Resource
 from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
-from loops.util import _
+from loops.util import _, saveRequest
 from loops import version
 from loops.versioning.interfaces import IVersionable
 
@@ -145,6 +145,7 @@ class BaseView(GenericView, I18NView):
                 raise Unauthorized(str(self.contextInfo))
         except ForbiddenAttribute:  # ignore when testing
             pass
+        saveRequest(request)
 
     def checkPermissions(self):
         return canAccessObject(self.context)

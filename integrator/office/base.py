@@ -78,15 +78,16 @@ class OfficeFile(ExternalFileAdapter):
     @Lazy
     def docPropertyDom(self):
         fn = self.docFilename
+        dummy = dict(core=[], custom=[])
         root, ext = os.path.splitext(fn)
         if not ext.lower() in self.fileExtensions:
-            return []
+            return dummy
         try:
             zf = ZipFile(fn, 'r')
         except IOError, e:
             from logging import getLogger
             self.logger.warn(e)
-            return []
+            return dummy
         if self.corePropFileName not in zf.namelist():
             self.logger.warn('Core properties not found in file %s.' %
                              self.externalAddress)

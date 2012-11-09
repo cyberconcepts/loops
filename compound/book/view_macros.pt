@@ -13,6 +13,24 @@
 
 
 <metal:section define-macro="section">
+  <metal:navigation define-macro="navigation"
+                    tal:condition="item/showNavigation">
+    <div tal:define="parent nocall:item/breadcrumbsParent;
+                     pred nocall:item/predecessor;
+                     succ nocall:item/successor">
+      <a tal:condition="nocall:pred"
+         tal:attributes="href pred/targetUrl;
+                         title pred/title">
+        <img src="/@@/cybertools.icons/arrow_left.png" /></a>
+      <a tal:attributes="href parent/targetUrl;
+                          title parent/title">
+        <img src="/@@/cybertools.icons/arrow_up.png" /></a>
+      <a  tal:condition="nocall:succ"
+          tal:attributes="href succ/targetUrl;
+                          title succ/title">
+        <img src="/@@/cybertools.icons/arrow_right.png" /></a>
+    </div>
+  </metal:navigation>
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <div tal:repeat="related item/textResources">
     <div class="span-4">
@@ -57,6 +75,9 @@
       </div>
     </div>
   </div>
+  <br style="clear: both" />
+  <metal:navigation use-macro="item/book_macros/navigation" />
+  <br />
 </metal:section>
 
 

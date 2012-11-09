@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Utility functions.
-
-$Id$
 """
 
 import os
@@ -28,6 +26,7 @@ from zope.interface import directlyProvides, directlyProvidedBy
 from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
 from zope.schema import vocabulary
+from zope import thread
 
 import cybertools
 from loops.browser.util import html_quote
@@ -134,3 +133,12 @@ def getLogDirectory(request=None):
     return os.path.join(os.path.dirname(varDir), 'log')
 
 
+# store thread-local stuff
+
+local_data = thread.local()
+
+def saveRequest(request):
+    local_data.request = request
+
+def getRequest():
+    return local_data.request
