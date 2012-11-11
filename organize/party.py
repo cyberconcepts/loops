@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Adapters for IConcept providing interfaces from the cybertools.organize package.
-
-$Id$
 """
 
 from persistent.mapping import PersistentMapping
@@ -91,8 +89,8 @@ class Person(AdapterBase, BasePerson):
             person = getPersonForUser(self.context, principal=principal)
             if person is not None and person != self.context:
                 raise ValueError(
-                    'There is alread a person (%s) assigned to user %s.'
-                    % (getName(person), userId))
+                    'Error when creating user %s: There is already a person (%s) assigned to user %s.'
+                    % (getName(self.context), getName(person), userId))
             pa = annotations(principal)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)
