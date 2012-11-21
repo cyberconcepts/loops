@@ -309,7 +309,7 @@
               <input value="Save" type="submit"
                      i18n:attributes="value"
                      tal:attributes="onClick python: view.closeAction(True) or
-                            'return true'">
+                            'submit();; return false'">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
