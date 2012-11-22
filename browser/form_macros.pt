@@ -291,7 +291,8 @@
                     tal:condition="stTrans"
                     tal:attributes="name string:state.$stDef">
               <option i18n:translate="" value="-">No change</option>
-              <option tal:repeat="trans stTrans"
+              <option i18n:translate=""
+                      tal:repeat="trans stTrans"
                       tal:attributes="value trans/name"
                       tal:content="trans/title">publish</option>
             </select>

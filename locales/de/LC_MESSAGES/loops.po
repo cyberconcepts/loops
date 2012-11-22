@@ -704,9 +704,6 @@ msgstr "Deckungsgrad"
 msgid "Create loops Note"
 msgstr "loops-Notiz anlegen"
 
-msgid "State information for $definition: $title"
-msgstr "Status ($definition): $title"
-
 msgid "User ID"
 msgstr "Benutzerkennung"
 
@@ -885,8 +882,26 @@ msgstr "nach"
 
 # state definitions
 
+msgid "Restrict to objects with certain states"
+msgstr "Auf Objekte mit bestimmtem Status beschränken"
+
+msgid "Workflow"
+msgstr "Statusdefinition/Workflow"
+
+msgid "States"
+msgstr "Statuswerte"
+
+msgid "State information for $definition: $title"
+msgstr "Status ($definition): $title"
+
+msgid "classification_quality"
+msgstr "Klassifizierung"
+
+msgid "simple_publishing"
+msgstr "Veröffentlichung"
+
 msgid "task_states"
-msgstr "Status"
+msgstr "Aufgabe"
 
 # state names
 
@@ -896,8 +911,14 @@ msgstr "angenommen"
 msgid "active"
 msgstr "aktiv"
 
+msgid "archived"
+msgstr "Archiv"
+
 msgid "cancelled"
 msgstr "abgebrochen"
+
+msgid "classified"
+msgstr "klassifiziert"
 
 msgid "closed"
 msgstr "abgeschlossen"
@@ -923,40 +944,96 @@ msgstr "neu"
 msgid "planned"
 msgstr "geplant"
 
+msgid "private"
+msgstr "privat"
+
+msgid "published"
+msgstr "veröffentlicht"
+
+msgid "removed"
+msgstr "gelöscht"
+
 msgid "replaced"
 msgstr "ersetzt"
 
 msgid "running"
 msgstr "in Arbeit"
 
-# transitions
+msgid "unclassified"
+msgstr "unklassifiziert"
 
-msgid "plan"
-msgstr "planen"
+msgid "verified"
+msgstr "verifiziert"
+
+# transitions
 
 msgid "accept"
 msgstr "annehmen"
 
-msgid "start working"
-msgstr "Arbeit beginnen"
+msgid "archive"
+msgstr "archivieren"
 
-msgid "work"
-msgstr "bearbeiten"
+msgid "classify"
+msgstr "klassifizieren"
 
-msgid "finish"
-msgstr "beenden"
+msgid "change_classification"
+msgstr "Klassifizierung ändern"
 
 msgid "cancel"
 msgstr "abbrechen"
 
+msgid "close"
+msgstr "abschließen"
+
 msgid "delegate"
 msgstr "delegieren"
+
+msgid "finish"
+msgstr "beenden"
+
+msgid "hide"
+msgstr "verstecken"
 
 msgid "move"
 msgstr "verschieben"
 
-msgid "close"
-msgstr "abschließen"
+msgid "No change"
+msgstr "keine Änderung"
+
+msgid "plan"
+msgstr "planen"
+
+msgid "publish"
+msgstr "veröffentlichen"
+
+msgid "remove"
+msgstr "entfernen"
+
+msgid "release"
+msgstr "freigeben"
+
+msgid "re-open"
+msgstr "zurücksetzen"
+
+msgid "remove_classification"
+msgstr "Klassifizierung entfernen"
+
+msgid "retract"
+msgstr "zurückziehen"
+
+msgid "show"
+msgstr "anzeigen"
+
+msgid "start working"
+msgstr "Arbeit beginnen"
+
+msgid "verify"
+msgstr "verifizieren"
+
+msgid "work"
+msgstr "bearbeiten"
+
+# calendar
 
 msgid "Monday"
 msgstr "Montag"
