@@ -1,6 +1,13 @@
 <html i18n:domain="loops">
 
 
+<metal:data define-macro="conceptinfo">
+  <tal:part repeat="part item/parts">
+    <metal:part use-macro="part/renderer" />
+  </tal:part>
+</metal:data>
+
+
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />

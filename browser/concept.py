@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -200,16 +200,22 @@ class BaseRelationView(BaseView):
 class ConceptView(BaseView):
 
     template = concept_macros
+    templateName = 'concept.standard'
+    macroName = 'conceptdata'
+    partPrefix = 'part_'
+    defaultParts = ('title', 'fields', 
+                    'children', 'resources', 'workitems', 'comments',)
 
     def childViewFactory(self, *args, **kw):
         return ConceptRelationView(*args, **kw)
 
     @Lazy
-    def macro(self):
-        return self.template.macros['conceptdata']
+    def macros(self):
+        return self.controller.getTemplateMacros(self.templateName, self.template)
 
-    #def __init__(self, context, request):
-    #    super(ConceptView, self).__init__(context, request)
+    @property
+    def macro(self):
+        return self.macros[self.macroName]
 
     def setupController(self):
         cont = self.controller
@@ -221,6 +227,24 @@ class ConceptView(BaseView):
             cont.macros.register('portlet_right', 'parents', title=_(u'Parents'),
                         subMacro=concept_macros.macros['parents'],
                         priority=20, info=self)
+
+    def getParts(self):
+        parts = (self.params.get('parts') or [])   # deprecated!
+        if not parts:
+            parts = (self.options('parts') or self.typeOptions('parts') or
+                     self.defaultParts)
+        return self.getPartViews(parts)
+
+    def getPartViews(self, parts):
+        result = []
+        for p in parts:
+            viewName = self.partPrefix + p
+            view = component.queryMultiAdapter((self.adapted, self.request),
+                                               name=viewName)
+            if view is not None:
+                view.parent = self
+                result.append(view)
+        return result
 
     @Lazy
     def adapted(self):
