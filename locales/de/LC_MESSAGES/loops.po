@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: $Id$\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-09-17 12:00 CET\n"
+"PO-Revision-Date: 2012-11-22 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -883,38 +883,53 @@ msgstr "an"
 msgid "move_to_task"
 msgstr "nach"
 
+# state definitions
+
+msgid "task_states"
+msgstr "Status"
+
+# state names
+
+msgid "accepted"
+msgstr "angenommen"
+
+msgid "active"
+msgstr "aktiv"
+
+msgid "cancelled"
+msgstr "abgebrochen"
+
+msgid "closed"
+msgstr "abgeschlossen"
+
+msgid "delegated"
+msgstr "delegiert"
+
+msgid "done"
+msgstr "bearbeitet"
+
+msgid "draft"
+msgstr "Entwurf"
+
+msgid "finished"
+msgstr "beendet"
+
+msgid "moved"
+msgstr "verschoben"
+
 msgid "new"
 msgstr "neu"
 
 msgid "planned"
 msgstr "geplant"
 
-msgid "accepted"
-msgstr "angenommen"
-
-msgid "delegated"
-msgstr "delegiert"
+msgid "replaced"
+msgstr "ersetzt"
 
 msgid "running"
 msgstr "in Arbeit"
 
-msgid "done"
-msgstr "bearbeitet"
-
-msgid "finished"
-msgstr "beendet"
-
-msgid "closed"
-msgstr "abgeschlossen"
-
-msgid "cancelled"
-msgstr "abgebrochen"
-
-msgid "moved"
-msgstr "verschoben"
-
-msgid "replaced"
-msgstr "ersetzt"
+# transitions
 
 msgid "plan"
 msgstr "planen"

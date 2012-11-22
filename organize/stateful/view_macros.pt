@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 
 
 <metal:query define-macro="query">
@@ -32,7 +31,7 @@
                          tal:attributes="name string:$name:list;
                                          value value;
                                          checked python:
-                                             value in item.selectedStates.get(name, ());
+                                            value in item.selectedStates.get(name, ());
                                          id string:$name.$value"
                       />&nbsp;<label tal:content="state/title"
                                      i18n:translate=""

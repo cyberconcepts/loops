@@ -35,16 +35,21 @@ from loops.organize.stateful.base import StatefulLoopsObject
 @implementer(IStatesDefinition)
 def taskStates():
     return StatesDefinition('task_states',
-        State('planned', 'planned', ('finish', 'cancel'),
+        State('draft', 'draft', ('start', 'cancel',),
               color='yellow'),
-        State('finished', 'finished', ('reopen'),
+        State('active', 'active', ('finish', 'cancel',),
+              color='yellow'),
+        State('finished', 'finished', ('reopen', 'archive',),
               color='green'),
-        State('cancelled', 'cancelled', ('reopen'),
+        State('cancelled', 'cancelled', ('reopen',),
               color='grey'),
+        State('archived', 'archived', ('reopen',),
+              color='grey'),
+        Transition('start', 'start', 'active'),
         Transition('finish', 'finish', 'finished'),
         Transition('cancel', 'cancel', 'cancelled'),
-        Transition('reopen', 're-open', 'planned'),
-        initialState='planned')
+        Transition('reopen', 're-open', 'draft'),
+        initialState='draft')
 
 
 class StatefulTask(StatefulLoopsObject):

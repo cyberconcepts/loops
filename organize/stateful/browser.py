@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,13 +18,12 @@
 
 """
 Views and actions for states management.
-
-$Id$
 """
 
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.i18n import translate
 
 from cybertools.browser.action import Action, actions
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
@@ -53,9 +52,11 @@ class StateAction(Action):
 
     @Lazy
     def description(self):
+        lang = self.view.languageInfo.language
+        definition = translate(_(self.definition), target_language=lang)
+        title = translate(_(self.stateObject.title), target_language=lang)
         return _(u'State information for $definition: $title',
-                 mapping=dict(definition=self.definition,
-                              title=self.stateObject.title))
+                 mapping=dict(definition=definition, title=title))
 
     @Lazy
     def stateObject(self):
