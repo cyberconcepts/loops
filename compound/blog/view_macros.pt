@@ -1,5 +1,4 @@
-<!-- ZPT macros for loops.compound.blog views
-     $Id$ -->
+
 
 <metal:block define-macro="blog">
   <div>
@@ -7,9 +6,12 @@
     <div tal:repeat="related item/blogPosts"
              class="blog">
       <tal:child define="data related/data">
+        <tal:actions condition="view/showObjectActions"
+                     define="target nocall:related">
+            <div metal:use-macro="views/node_macros/object_actions" />
+        </tal:actions>
         <h1 class="headline">
-          <a href="#"
-             tal:content="related/title"
+          <a tal:content="related/title"
              tal:attributes="href python: view.getUrlForTarget(related);">Post</a>
         </h1>
         <div class="info"
