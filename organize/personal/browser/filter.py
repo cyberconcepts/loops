@@ -27,6 +27,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
+from cybertools.stateful.interfaces import IStateful
 from loops.browser.node import NodeView
 from loops.concept import Concept
 from loops.organize.party import getPersonForUser
@@ -107,7 +108,17 @@ class FilterView(NodeView):
             result.setdefault(obj.getType(), set([])).add(obj)
         return result
 
-    def check(self, obj):
+    def check(self, obj, options=None):
+        if options:
+            for std in options.states.keys():
+                stf = component.getAdapter(obj, IStateful, name=std)
+                formStates = self.request.form.get('states.' + std)
+                if formStates:
+                    if stf.state not in formStates.split(','):
+                        return False
+                else:
+                    if stf.state not in getattr(options.states, std):
+                        return False
         fs = self.filterStructure
         if not fs:
             return True

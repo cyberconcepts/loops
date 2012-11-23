@@ -132,6 +132,7 @@ class BaseView(GenericView, I18NView):
     actions = {}
     portlet_actions = []
     parts = ()
+    filter_input = ()
     icon = None
     modeName = 'view'
     isToplevel = False
@@ -564,14 +565,20 @@ class BaseView(GenericView, I18NView):
         return component.queryAdapter(self.adapted, IOptions) or DummyOptions()
 
     @Lazy
-    def globalOptions(self):
-        return IOptions(self.loopsRoot)
-
-    @Lazy
     def typeOptions(self):
         if self.typeProvider is None:
             return DummyOptions()
         return IOptions(adapted(self.typeProvider))
+
+    @Lazy
+    def globalOptions(self):
+        return IOptions(self.loopsRoot)
+
+    def getOptions(self, key):
+        for opt in (self.options, self.typeOptions, self.globalOptions):
+            value = opt[key]
+            if not isinstance(value, DummyOptions):
+                return value
 
     def getPredicateOptions(self, relation):
         return IOptions(adapted(relation.predicate), None) or DummyOptions()

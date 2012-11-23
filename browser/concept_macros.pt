@@ -1,15 +1,16 @@
 <html i18n:domain="loops">
 
 
-<metal:data define-macro="conceptinfo">
-  <tal:part repeat="part item/parts">
-    <metal:part use-macro="part/renderer" />
+<metal:data define-macro="layout">
+  <tal:part repeat="part item/getParts">
+    <metal:part use-macro="part/macro" />
   </tal:part>
 </metal:data>
 
 
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/filter_input" />
       <metal:block use-macro="view/concept_macros/concepttitle" />
       <metal:slot define-slot="fields">
         <metal:block use-macro="view/concept_macros/conceptfields" />
@@ -27,6 +28,18 @@
       <metal:block use-macro="view/comment_macros/comments" />
   </div>
 </metal:data>
+
+
+<metal:selection define-macro="filter_input">
+  <div tal:define="criteria item/filter"
+       tal:condition="criteria">
+    <form method="get" name="filter" id="form-filter">
+      <span tal:repeat="crit criteria">
+        <metal:input use-macro="crit/macro" />
+      </span>
+    </form>
+  </div>
+</metal:selection>
 
 
 <metal:title define-macro="concepttitle">
