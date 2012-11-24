@@ -54,6 +54,7 @@ from zope.traversing.api import getName, getParent
 from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
+from cybertools.meta.element import Element
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
@@ -132,7 +133,6 @@ class BaseView(GenericView, I18NView):
     actions = {}
     portlet_actions = []
     parts = ()
-    filter_input = ()
     icon = None
     modeName = 'view'
     isToplevel = False
@@ -185,6 +185,15 @@ class BaseView(GenericView, I18NView):
         if self.globalOptions('useInformativeURLs') and title:
             return '%s/.%s-%s' % (baseUrl, targetId, normalizeForUrl(title))
         return '%s/.%s' % (baseUrl, targetId)
+
+    def filterInput(self):
+        result = []
+        for name in self.getOptions('filter_input'):
+            view = component.queryMultiAdapter(
+                        (self.context, self.request), name='filter_input.' + name)
+            if view is not None:
+                result.append(view)
+        return result
 
     @Lazy
     def principalId(self):
@@ -574,11 +583,18 @@ class BaseView(GenericView, I18NView):
     def globalOptions(self):
         return IOptions(self.loopsRoot)
 
-    def getOptions(self, key):
+    def getOptions(self, keys):
         for opt in (self.options, self.typeOptions, self.globalOptions):
-            value = opt[key]
-            if not isinstance(value, DummyOptions):
-                return value
+            if isinstance(opt, DummyOptions):
+                continue
+            #import pdb; pdb.set_trace()
+            v = opt
+            for key in keys.split('.'):
+                if isinstance(v, list):
+                    break
+                v = getattr(v, key)
+            if not isinstance(v, DummyOptions):
+                return v
 
     def getPredicateOptions(self, relation):
         return IOptions(adapted(relation.predicate), None) or DummyOptions()

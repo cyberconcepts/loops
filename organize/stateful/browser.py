@@ -35,6 +35,8 @@ from loops.security.common import checkPermission
 from loops.util import _
 
 
+template = ViewPageTemplateFile('view_macros.pt')
+
 statefulActions = ('classification_quality',
                    'simple_publishing',
                    'task_states',)
@@ -78,7 +80,7 @@ for std in statefulActions:
 #class StateQuery(ConceptView):
 class StateQuery(BaseView):
 
-    template = ViewPageTemplateFile('view_macros.pt')
+    template = template
 
     form_action = 'execute_search_action'
 
@@ -145,3 +147,15 @@ class StateQuery(BaseView):
             uids = q.apply()
             return self.viewIterator(getObjects(uids, self.loopsRoot))
         return []
+
+
+class FilterAllStates(BaseView):
+
+    @Lazy
+    def macros(self):
+        return template.macros
+
+    @Lazy
+    def macro(self):
+        return self.macros['filter_allstates']
+

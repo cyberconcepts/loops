@@ -2,8 +2,12 @@
 
 
 <metal:input define-macro="filter_allstates">
-  <input type="checkbox" name="filter.allstates" value="yes"
-         tal:attributes="checked crit/checked" />
+  <input type="checkbox" name="filter.states" value="all" id="filter-states"
+         onclick="submit()"
+         tal:attributes="checked python:
+                  request.form.get('filter.states') == 'all'" />
+  <label for="filter-states"
+         i18n:translate="">Show all</label>
 </metal:input>
 
 

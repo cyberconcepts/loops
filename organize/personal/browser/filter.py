@@ -108,17 +108,30 @@ class FilterView(NodeView):
             result.setdefault(obj.getType(), set([])).add(obj)
         return result
 
+    def checkOptions(self, obj, options):
+        if isinstance(options, list):
+            return True
+        form = self.request.form
+        if form.get('filter.states') == 'all':
+            return True
+        filterStates = options
+        for std in filterStates.keys():
+            formStates = form.get('filter.states.' + std)
+            if formStates == 'all':
+                continue
+            stf = component.getAdapter(obj, IStateful, name=std)
+            if formStates:
+                if stf.state not in formStates.split(','):
+                    return False
+            else:
+                if stf.state not in getattr(filterStates, std):
+                    return False
+        return True
+
     def check(self, obj, options=None):
-        if options:
-            for std in options.states.keys():
-                stf = component.getAdapter(obj, IStateful, name=std)
-                formStates = self.request.form.get('states.' + std)
-                if formStates:
-                    if stf.state not in formStates.split(','):
-                        return False
-                else:
-                    if stf.state not in getattr(options.states, std):
-                        return False
+        if options is not None: 
+            if not self.checkOptions(obj, options):
+                return False
         fs = self.filterStructure
         if not fs:
             return True

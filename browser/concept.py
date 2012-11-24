@@ -361,7 +361,7 @@ class ConceptView(BaseView):
                 options = IOptions(adapted(r.predicate), None)
                 if options is not None and options('hide_children'):
                     continue
-                filterOptions = self.getOptions('filter')
+                filterOptions = self.getOptions('filter.states')
                 if not fv.check(r.context, filterOptions):
                     continue
             yield r

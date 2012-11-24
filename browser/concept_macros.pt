@@ -10,7 +10,6 @@
 
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-      <metal:block use-macro="view/concept_macros/filter_input" />
       <metal:block use-macro="view/concept_macros/concepttitle" />
       <metal:slot define-slot="fields">
         <metal:block use-macro="view/concept_macros/conceptfields" />
@@ -31,12 +30,14 @@
 
 
 <metal:selection define-macro="filter_input">
-  <div tal:define="criteria item/filter"
+  <div tal:define="criteria item/filterInput"
        tal:condition="criteria">
     <form method="get" name="filter" id="form-filter">
       <span tal:repeat="crit criteria">
         <metal:input use-macro="crit/macro" />
       </span>
+      <input type="submit" name="show" value="Show"
+             tal:condition="nothing" />
     </form>
   </div>
 </metal:selection>
@@ -61,6 +62,7 @@
           string:$resourceBase/cybertools.icons/table.png" />
       </a>
     </h1>
+  <metal:block use-macro="view/concept_macros/filter_input" />
   </metal:title>
   <p tal:define="description description|item/renderedDescription"
      tal:condition="description">

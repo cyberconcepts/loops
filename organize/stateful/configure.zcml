@@ -71,6 +71,12 @@
         class="loops.organize.stateful.browser.StateQuery"
         permission="zope.View" />
 
+  <browser:page
+        for="loops.interfaces.IConcept"
+        name="filter_input.allstates"
+        class="loops.organize.stateful.browser.FilterAllStates"
+        permission="zope.View" />
+
   <!-- event handlers -->
 
   <zope:subscriber handler="loops.organize.stateful.base.handleTransition" />
