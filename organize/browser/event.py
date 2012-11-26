@@ -383,8 +383,9 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         bevt = baseObject(self.baseEvent)
         bevt.assignChild(obj, self.followsPredicate)
         for rel in bevt.getParentRelations():
-            if rel.predicate != self.view.typePredicate:
-                obj.assignParent(rel.first, rel.predicate)
+            if rel.predicate not in (self.view.typePredicate, self.followsPredicate):
+                obj.assignParent(rel.first, rel.predicate,
+                                 order=rel.order, relevance=rel.relevance)
 
 
 class EditFollowUpEvent(EditConcept, BaseFollowUpController):
