@@ -288,6 +288,25 @@ class TaskWorkItems(BaseWorkItemsView, ConceptView):
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
+class RelatedTaskWorkItems(TaskWorkItems):
+    """ Show work items for all instances of a concept type assigned to
+        the query as query target.
+    """
+
+    @Lazy
+    def isQueryTarget(self):
+        return self.conceptManager['querytarget']
+
+    def listWorkItems(self):
+        criteria = self.baseCriteria
+        tasks = []
+        for parent in self.context.getChildren([self.isQueryTarget]):
+            for task in parent.getChildren([self.typePredicate]):
+                tasks.append(util.getUidForObject(task))
+        criteria['task'] = tasks
+        return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
+
+
 class PersonWorkItems(BaseWorkItemsView, ConceptView):
     """ A query view showing work items for a person, the query's parent.
     """
