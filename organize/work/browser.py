@@ -288,7 +288,7 @@ class TaskWorkItems(BaseWorkItemsView, ConceptView):
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
-class RelatedTaskWorkItems(TaskWorkItems):
+class RelatedTaskWorkItems(AllWorkItems):
     """ Show work items for all instances of a concept type assigned to
         the query as query target.
     """
