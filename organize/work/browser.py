@@ -380,24 +380,34 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return ''
 
     @Lazy
+    def defaultTimeStamp(self):
+        if self.workItemType.prefillDate:
+            return getTimeStamp()
+        return None
+
+    @Lazy
     def date(self):
-        ts = self.track.start or getTimeStamp()
-        return time.strftime('%Y-%m-%d', time.localtime(ts))
+        ts = self.track.start or self.defaultTimeStamp
+        if ts:
+            return time.strftime('%Y-%m-%d', time.localtime(ts))
+        return ''
 
     @Lazy
     def startTime(self):
-        ts = self.track.start or getTimeStamp()
-        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
-        return time.strftime('T%H:%M', time.localtime(ts))
+        ts = self.track.start or self.defaultTimeStamp
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
 
     @Lazy
     def endTime(self):
         if self.state == 'running':
-            ts = getTimeStamp()
+            ts = self.defaultTimeStamp
         else:
-            ts = self.track.end or getTimeStamp()
-        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
-        return time.strftime('T%H:%M', time.localtime(ts))
+            ts = self.track.end or self.defaultTimeStamp
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
 
     @Lazy
     def state(self):
