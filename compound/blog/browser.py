@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View classes for glossary and glossary items.
-
-$Id$
 """
 
 
@@ -27,6 +25,7 @@ import itertools
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
 from cybertools.browser.member import IMemberInfoProvider
@@ -99,6 +98,8 @@ class BlogView(ConceptView):
 
     @Lazy
     def blogOwnerId(self):
+        if getName(self.context.conceptType) != 'blog':
+            return ''
         pType = self.loopsRoot.getConceptManager()['person']
         persons = [p for p in self.context.getParents() if p.conceptType == pType]
         if len(persons) == 1:
