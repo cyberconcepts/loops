@@ -150,7 +150,7 @@ class PageLayout(Base, standard.Layout):
 
     def getParts(self):
         parts = ['headline', 'keyquestions', 'quote', 'maintext', 
-                 'story', 'usecase']
+                 'story', 'tip', 'usecase']
         return self.getPartViews(parts)
 
 
@@ -189,6 +189,11 @@ class KeyQuestions(PagePart, standard.BasePart):
 class Story(PagePart, standard.BasePart):
 
     partName = 'story'
+
+
+class Tip(PagePart, standard.BasePart):
+
+    partName = 'tip'
 
 
 class UseCase(PagePart, standard.BasePart):

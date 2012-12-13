@@ -76,6 +76,14 @@
         permission="zope.View" />
 
   <zope:adapter
+        name="lobo_tip"
+        for="loops.compound.book.interfaces.IPage
+             loops.browser.skin.Lobo"
+        provides="zope.interface.Interface"
+        factory="loops.compound.book.browser.Tip"
+        permission="zope.View" />
+
+  <zope:adapter
         name="lobo_usecase"
         for="loops.compound.book.interfaces.IPage
              loops.browser.skin.Lobo"
