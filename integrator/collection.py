@@ -197,6 +197,8 @@ class DirectoryCollectionProvider(object):
                 extFileType = extFileTypes.get(contentType.split('/')[0] + '/*')
                 if extFileType is None:
                     extFileType = extFileTypes['*/*']
+                if extFileType is None:
+                    extFileType = extFileTypes['image/*']
             if extFileType is None:
                 getLogger('loops.integrator.collection.DirectoryCollectionProvider'
                             ).warn('No external file type found for %r, '
