@@ -279,7 +279,7 @@ class MeetingMinutesWorkRow(WorkRow):
     @Lazy
     def isActive(self):
         return self.context.state not in (
-            'finished', 'closed', 'cancelled', 'moved')
+            'finished', 'finished_x', 'closed', 'cancelled', 'moved')
 
 
 class MeetingMinutesWork(WorkReportInstance, SubReport):
