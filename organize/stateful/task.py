@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,40 @@ def taskStates():
         initialState='draft')
 
 
+@implementer(IStatesDefinition)
+def publishableTask():
+    return StatesDefinition('publishable_task',
+        State('draft', 'draft', ('release', 'release_publish', 'cancel',),
+              color='yellow'),
+        State('active', 'active', ('finish', 'publish', 'cancel',),
+              color='lightblue'),
+        State('active_published', 'active (published)', 
+              ('finish_published', 'retract', 'cancel',), color='blue'),
+        State('finished', 'finished', ('reopen', 'archive',),
+              color='lightgreen'),
+        State('finished_published', 'finished (published)', ('reopen', 'archive',),
+              color='green'),
+        State('cancelled', 'cancelled', ('reopen',),
+              color='x'),
+        State('archived', 'archived', ('reopen',),
+              color='grey'),
+        Transition('release', 'release', 'active'),
+        Transition('release_publish', 'release, publish', 'active_published'),
+        Transition('publish', 'publish', 'active_published'),
+        Transition('retract', 'retract', 'active'),
+        Transition('finish', 'finish', 'finished'),
+        Transition('finish_published', 'finish (published)', 'finished_published'),
+        Transition('cancel', 'cancel', 'cancelled'),
+        Transition('reopen', 're-open', 'draft'),
+        initialState='draft')
+
+
 class StatefulTask(StatefulLoopsObject):
 
     statesDefinition = 'task_states'
+
+
+class PublishableTask(StatefulLoopsObject):
+
+    statesDefinition = 'publishable_task'
 

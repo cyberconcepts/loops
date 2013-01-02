@@ -50,6 +50,20 @@
   </zope:class>
 
   <zope:utility
+        factory="loops.organize.stateful.task.publishableTask"
+        name="publishable_task" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.task.PublishableTask"
+        name="publishable_task" trusted="True" />
+  <zope:class class="loops.organize.stateful.task.PublishableTask">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+  <zope:utility
         factory="loops.organize.stateful.quality.classificationQuality"
         name="classification_quality" />
 

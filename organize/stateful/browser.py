@@ -39,7 +39,8 @@ template = ViewPageTemplateFile('view_macros.pt')
 
 statefulActions = ('classification_quality',
                    'simple_publishing',
-                   'task_states',)
+                   'task_states',
+                   'publishable_task',)
 
 
 class StateAction(Action):

@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 
-"Project-Id-Version: $Id$\n"
+"Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2012-11-24 12:00 CET\n"
+"PO-Revision-Date: 2013-01-02 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -906,6 +906,9 @@ msgstr "Veröffentlichung"
 msgid "task_states"
 msgstr "Aufgabe"
 
+msgid "publishable_task"
+msgstr "Aufgabe/Zugriff"
+
 # state names
 
 msgid "accepted"
@@ -913,6 +916,9 @@ msgstr "angenommen"
 
 msgid "active"
 msgstr "aktiv"
+
+msgid "active (published)"
+msgstr "aktiv (zugänglich)"
 
 msgid "archived"
 msgstr "Archiv"
@@ -937,6 +943,9 @@ msgstr "Entwurf"
 
 msgid "finished"
 msgstr "beendet"
+
+msgid "finished (published)"
+msgstr "beendet (zugänglich)"
 
 msgid "moved"
 msgstr "verschoben"
@@ -994,6 +1003,9 @@ msgstr "delegieren"
 msgid "finish"
 msgstr "beenden"
 
+msgid "finish (published)"
+msgstr "beenden (zugänglich)"
+
 msgid "hide"
 msgstr "verstecken"
 
@@ -1014,6 +1026,9 @@ msgstr "entfernen"
 
 msgid "release"
 msgstr "freigeben"
+
+msgid "release, publish"
+msgstr "freigeben (zugänglich)"
 
 msgid "re-open"
 msgstr "zurücksetzen"
