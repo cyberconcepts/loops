@@ -59,6 +59,11 @@ class TextField(Field):
         return text
 
 
+class HtmlTextField(Field):
+
+    format = 'text/html'
+
+
 class DecimalField(Field):
 
     format = 'decimal'

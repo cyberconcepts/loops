@@ -323,17 +323,15 @@
 <!-- overridden field renderers -->
 
 <metal:html define-macro="input_html">
-    <p>HTML</p>
-    <div name="field" rows="3" style="width: 600px"
-           dojoType="dijit.Editor"
-           extraPlugins="['insertHorizontalRule','createLink', 'viewsource']"
-           tal:define="width field/width|nothing;
-                       height field/height|python:3"
-           tal:attributes="name name; id name;
-                           rows python: height or 3;
-                           style python:
-                                'width: %s' % (width and str(width)+'px' or '600px');"
-           tal:content="structure data/?name|string:">
+    <div dojoType="dijit.Editor"
+         extraPlugins="['insertHorizontalRule', 'createLink', 'viewsource']"
+         tal:define="width field/width|nothing;
+                     height field/height|python:3"
+         tal:attributes="name name; id name;
+                         rows python:height or 3;
+                         style python:
+                              'width: %s' % (width and str(width)+'px' or '600px');"
+         tal:content="structure data/?name|string:">
     </div>
 </metal:html>
 

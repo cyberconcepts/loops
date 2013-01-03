@@ -843,6 +843,7 @@ class BaseView(GenericView, I18NView):
 
     def registerDojoFormAll(self):
         self.registerDojo()
+        self.registerDojoEditor()
         cm = self.controller.macros
         jsCall = ('dojo.require("dijit.form.Form"); '
                   'dojo.require("dijit.form.DateTextBox"); '

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ from cybertools.organize.interfaces import IAddress as IBaseAddress
 from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
 from loops.interfaces import ILoopsAdapter, IConceptSchema, IRelationAdapter
+from loops.interfaces import HtmlText
 from loops.organize.util import getPrincipalFolder
 from loops import util
 from loops.util import _
@@ -173,25 +174,34 @@ class IEvent(ITask):
 
 class IAgendaItem(ILoopsAdapter):
 
+    description = HtmlText(
+        title=_(u'label_description'),
+        description=_(u'desc_description'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
     responsible = schema.TextLine(
         title=_(u'label_responsible'),
-        description=_(u'desc_responsible.'),
+        description=_(u'desc_responsible'),
         default=u'',
         required=False)
 
-    discussion = schema.Text(
+    discussion = HtmlText(
         title=_(u'label_discussion'),
-        description=_(u'desc_discussion.'),
+        description=_(u'desc_discussion'),
         default=u'',
         missing_value=u'',
         required=False)
 
-    consequences = schema.Text(
+    consequences = HtmlText(
         title=_(u'label_consequences'),
-        description=_(u'desc_consequences.'),
+        description=_(u'desc_consequences'),
         default=u'',
         missing_value=u'',
         required=False)
+
+    description.height =  discussion.height = consequences.height = 5
 
 
 # 'hasrole' predicate

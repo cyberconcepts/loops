@@ -443,7 +443,13 @@ msgstr "Überschrift, sprechende Bezeichnung des Begriffs"
 msgid "Description"
 msgstr "Beschreibung"
 
+msgid "label_description"
+msgstr "Beschreibung"
+
 msgid "A medium-length description describing the content and the purpose of the object"
+msgstr "Eine ausführlichere Beschreibung des Inhalts und Zwecks des Objekts"
+
+msgid "desc_description"
 msgstr "Eine ausführlichere Beschreibung des Inhalts und Zwecks des Objekts"
 
 msgid "Related Items"
