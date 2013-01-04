@@ -6,6 +6,19 @@
    i18n_domain="zope">
 
   <zope:adapter
+        factory="loops.compound.blog.post.SimpleBlogPost"
+        provides="loops.compound.blog.interfaces.ISimpleBlogPost"
+        trusted="True" />
+  <zope:class class="loops.compound.blog.post.SimpleBlogPost">
+    <require permission="zope.View"
+        interface="loops.compound.blog.interfaces.ISimpleBlogPost" />
+    <require permission="zope.View"
+        attributes="context" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.compound.blog.interfaces.ISimpleBlogPost" />
+  </zope:class>
+
+  <zope:adapter
         factory="loops.compound.blog.post.BlogPost"
         provides="loops.compound.blog.interfaces.IBlogPost"
         trusted="True" />

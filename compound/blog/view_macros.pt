@@ -53,7 +53,7 @@
     <a tal:omit-tag="not:url"
        tal:content="data/creator"
        tal:attributes="href url">Will Smith</a>
-    <span tal:condition="item/adapted/private">
+    <span tal:condition="item/adapted/private|nothing">
       (<span i18n:translate="">Private</span>)
     </span>
   </div>
@@ -65,7 +65,7 @@
   <div class="text"
        tal:content="structure item/render">Here comes the text...</div>
   <div class="comment"
-       tal:define="comment data/privateComment"
+       tal:define="comment data/privateComment|nothing"
        tal:condition="comment">
     <h4 i18n:translate="" class="headline">Private Comment</h4>
     <div tal:content="structure python:

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Blogs (weblogs) and blog posts.
-
-$Id$
 """
 
 from datetime import datetime
@@ -27,7 +25,30 @@ from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
 from loops.compound.interfaces import ICompound
+from loops.interfaces import HtmlText
 from loops.util import _
+
+
+class ISimpleBlogPost(ICompound):
+    """ An item on a blog, sort of a diary item, minimal version.
+    """
+
+    date = schema.Datetime(
+                title=_(u'Date/Time'),
+                description=_(u'The date and time the information '
+                        'was posted.'),
+                required=True,)
+    date.default_method = datetime.now
+    creator = schema.ASCIILine(
+                title=_(u'Creator'),
+                description=_(u'The principal id of the user that created '
+                        'the blog post.'),
+                readonly=True,
+                required=False,)
+    text = HtmlText(
+                title=_(u'Text'),
+                description=_(u'The text of your blog entry'),
+                required=False)
 
 
 class IBlogPost(ICompound):
