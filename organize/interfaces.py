@@ -201,7 +201,8 @@ class IAgendaItem(ILoopsAdapter):
         missing_value=u'',
         required=False)
 
-    description.height =  discussion.height = consequences.height = 5
+    description.height = 10
+    discussion.height = consequences.height = 7
 
 
 # 'hasrole' predicate

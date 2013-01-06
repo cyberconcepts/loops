@@ -34,6 +34,6 @@ class BlogPostSchemaFactory(SchemaFactory):
 
     def __call__(self, interface, **kw):
         schema = super(BlogPostSchemaFactory, self).__call__(interface, **kw)
-        schema.fields.text.height = 10
+        schema.fields.text.height = 15
         return schema
 
