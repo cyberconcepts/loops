@@ -20,6 +20,7 @@
 Basic implementations for stateful objects and adapters.
 """
 
+from zope.app.security.settings import Allow, Deny, Unset
 from zope import component
 from zope.component import adapter
 from zope.interface import implementer
@@ -30,6 +31,15 @@ from cybertools.stateful.definition import State, Transition
 from cybertools.stateful.interfaces import IStatesDefinition, IStateful
 from loops.common import adapted
 from loops.organize.stateful.base import StatefulLoopsObject
+from loops.security.interfaces import ISecuritySetter
+
+
+def setPermissionsForRoles(settings):
+    def setSecurity(obj):
+        setter = ISecuritySetter(obj.context)
+        setter.setRolePermissions(settings)
+        setter.propagateSecurity()
+    return setSecurity
 
 
 @implementer(IStatesDefinition)
@@ -56,23 +66,44 @@ def taskStates():
 def publishableTask():
     return StatesDefinition('publishable_task',
         State('draft', 'draft', ('release', 'release_publish', 'cancel',),
-              color='yellow'),
-        State('active', 'active', ('finish', 'publish', 'cancel',),
-              color='lightblue'),
+              color='yellow',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Deny,
+                  ('zope.View', 'loops.Member'): Deny,})),
+        State('active', 'active', ('retract', 'finish', 'publish', 'cancel',),
+              color='lightblue',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Deny,
+                  ('zope.View', 'loops.Member'): Allow,})),
         State('active_published', 'active (published)', 
-              ('finish_published', 'retract', 'cancel',), color='blue'),
+              ('retract', 'finish_published', 'retract', 'cancel',), color='blue',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Allow,
+                  ('zope.View', 'loops.Member'): Allow,})),
         State('finished', 'finished', ('reopen', 'archive',),
-              color='lightgreen'),
+              color='lightgreen',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Deny,
+                  ('zope.View', 'loops.Member'): Allow,})),
         State('finished_published', 'finished (published)', ('reopen', 'archive',),
-              color='green'),
+              color='green',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Allow,
+                  ('zope.View', 'loops.Member'): Allow,})),
         State('cancelled', 'cancelled', ('reopen',),
-              color='x'),
+              color='x',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Deny,
+                  ('zope.View', 'loops.Member'): Deny,})),
         State('archived', 'archived', ('reopen',),
-              color='grey'),
+              color='grey',
+              setSecurity=setPermissionsForRoles({
+                  ('zope.View', 'zope.Member'): Deny,
+                  ('zope.View', 'loops.Member'): Deny,})),
         Transition('release', 'release', 'active'),
         Transition('release_publish', 'release, publish', 'active_published'),
         Transition('publish', 'publish', 'active_published'),
-        Transition('retract', 'retract', 'active'),
+        Transition('retract', 'retract', 'draft'),
         Transition('finish', 'finish', 'finished'),
         Transition('finish_published', 'finish (published)', 'finished_published'),
         Transition('cancel', 'cancel', 'cancelled'),
