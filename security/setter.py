@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 """
 Base classes for security setters, i.e. adapters that provide standardized
 methods for setting role permissions and other security-related stuff.
-
-$Id$
 """
 
 from zope.app.security.settings import Allow, Deny, Unset
@@ -136,7 +134,7 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
     def copyPrincipalRoles(self, source, revert=False):
         prm = IPrincipalRoleMap(baseObject(source.context))
         for r, p, s in prm.getPrincipalsAndRoles():
-            if p in self.workspacePrincipals:
+            #if p in self.workspacePrincipals:
                 if revert:
                     setPrincipalRole(self.principalRoleManager, r, p, Unset)
                 else:
@@ -155,6 +153,7 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
         setter = ISecuritySetter(adapted(relation.second))
         setter.setDefaultRolePermissions()
         setter.acquireRolePermissions()
+        # TODO: use setter.acquirePrincipalRoles() instead of copyPrincipalRoles()
         wi = baseObject(self.context).workspaceInformation
         if wi and not wi.propagateParentSecurity:
              return

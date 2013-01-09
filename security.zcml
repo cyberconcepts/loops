@@ -79,6 +79,11 @@
   <grant role="loops.Owner" permission="loops.ViewRestricted" />
   <grant role="loops.Owner" permission="zope.View" />
 
+  <role id="loops.Person"
+        title="[loops-person-role] Person" />
+  <grant role="loops.Person" permission="zope.View" />
+  <grant role="loops.Person" permission="loops.ViewRestricted" />
+  
   <!-- moved to etc/securitypolicy.zcml: -->
   <!--<grant role="zope.ContentManager" permission="loops.AssignAsParent" />-->
 

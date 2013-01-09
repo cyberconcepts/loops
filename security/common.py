@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Common functions and other stuff for working with permissions and roles.
-
-$Id$
 """
 
 from persistent import Persistent
@@ -49,12 +47,12 @@ allRolesExceptOwner = (
         'zope.Anonymous', 'zope.Member', 'zope.ContentManager', 'loops.Staff',
         'loops.xmlrpc.ConceptManager', # relevant for local security?
         #'loops.SiteManager',
-         'loops.Member', 'loops.Master',)
+        'loops.Person', 'loops.Member', 'loops.Master')
 allRolesExceptOwnerAndMaster = tuple(allRolesExceptOwner[:-1])
 minorPrivilegedRoles = ('zope.Anonymous', 'zope.Member',)
 localRoles = ('zope.Anonymous', 'zope.Member', 'zope.ContentManager',
         'loops.SiteManager', 'loops.Staff', 'loops.Member', 'loops.Master',
-        'loops.Owner')
+        'loops.Owner', 'loops.Person')
 
 localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
         'loops.ViewRestricted', 'loops.EditRestricted', 'loops.AssignAsParent',)
@@ -127,7 +125,15 @@ def assignOwner(obj, principalId):
 
 def removeOwner(obj, principalId):
     prm = IPrincipalRoleManager(obj)
-    prm.removeRoleFromPrincipal('loops.Owner', principalId)
+    prm.unsetRoleForPrincipal('loops.Owner', principalId)
+
+def assignPersonRole(obj, principalId):
+    prm = IPrincipalRoleManager(obj)
+    prm.assignRoleToPrincipal('loops.Person', principalId)
+
+def removePersonRole(obj, principalId):
+    prm = IPrincipalRoleManager(obj)
+    prm.unsetRoleForPrincipal('loops.Person', principalId)
 
 
 def allowEditingForOwner(obj, deny=allRolesExceptOwner, revert=False):

@@ -42,7 +42,7 @@ TypeInterfaceSourceList.typeInterfaces += (ISimpleBlogPost, IBlogPost,)
 
 class SimpleBlogPost(Compound):
 
-    implements(IBlogPost)
+    implements(ISimpleBlogPost)
 
     textContentType = 'text/html'
 

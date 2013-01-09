@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Adapters for IConcept providing interfaces from the cybertools.organize package.
-
-$Id$
 """
 
 from persistent.mapping import PersistentMapping
@@ -43,9 +41,11 @@ from loops.interfaces import IConcept
 from loops.organize.interfaces import IAddress, IPerson, IHasRole
 from loops.organize.interfaces import ANNOTATION_KEY
 from loops.predicate import RelationAdapter
-from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
-from loops.type import TypeInterfaceSourceList
 from loops.predicate import PredicateInterfaceSourceList
+from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
+from loops.security.common import assignPersonRole, removePersonRole
+from loops.security.interfaces import ISecuritySetter
+from loops.type import TypeInterfaceSourceList
 from loops import util
 
 
@@ -84,6 +84,7 @@ class Person(AdapterBase, BasePerson):
     def getUserId(self):
         return getattr(self.context, '_userId', None)
     def setUserId(self, userId):
+        setter = ISecuritySetter(self)
         if userId:
             principal = self.getPrincipalForUserId(userId)
             if principal is None:
@@ -99,13 +100,16 @@ class Person(AdapterBase, BasePerson):
             if ann is None: # or not isinstance(ann, PersistentMapping):
                 ann = pa[ANNOTATION_KEY] = PersistentMapping()
             ann[loopsId] = self.context
-            assignOwner(self.context, userId)
+            #assignOwner(self.context, userId)
+            assignPersonRole(self.context, userId)
         oldUserId = self.userId
         if oldUserId and oldUserId != userId:
             self.removeReferenceFromPrincipal(oldUserId)
             removeOwner(self.context, oldUserId)
+            removePersonRole(self.context, oldUserId)
         self.context._userId = userId
-        allowEditingForOwner(self.context, revert=not userId)
+        setter.propagateSecurity()
+        allowEditingForOwner(self.context, revert=not userId)  # why this?
     userId = property(getUserId, setUserId)
 
     def removeReferenceFromPrincipal(self, userId):

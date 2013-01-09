@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Note: This packages depends on cybertools.organize.
 
 Let's do some basic setup
@@ -267,9 +265,9 @@ Person objects that have a user assigned to them receive this user
 
   >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
   >>> IPrincipalRoleMap(concepts['john']).getPrincipalsAndRoles()
-  [('loops.Owner', 'users.john', PermissionSetting: Allow)]
+  [('loops.Person', 'users.john', PermissionSetting: Allow)]
   >>> IPrincipalRoleMap(concepts['person.newuser']).getPrincipalsAndRoles()
-  [('loops.Owner', u'loops.newuser', PermissionSetting: Allow)]
+  [('loops.Person', u'loops.newuser', PermissionSetting: Allow)]
 
 The person ``martha`` hasn't got a user id, so there is no role assigned
 to it.
@@ -307,9 +305,12 @@ Now we are ready to look for the real stuff - what John is allowed to do.
   True
 
 Person objects that have an owner may be modified by this owner.
+(Changed in 2013-01-14: Owner not set automatically)
 
   >>> canWrite(john, 'title')
-  True
+  False
+
+was: True
 
 So let's try with another user with another role setting.
 
