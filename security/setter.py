@@ -31,7 +31,10 @@ from zope.cachedescriptors.property import Lazy
 from zope.interface import implements, Interface
 from zope.security.proxy import isinstance
 
+from cybertools.meta.interfaces import IOptions
+from cybertools.stateful.interfaces import IStateful
 from loops.common import adapted, AdapterBase, baseObject
+from loops.config.base import DummyOptions
 from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
@@ -55,6 +58,17 @@ class BaseSecuritySetter(object):
     @Lazy
     def conceptManager(self):
         return self.baseObject.getLoopsRoot().getConceptManager()
+
+    @Lazy
+    def typeOptions(self):
+        type = self.baseObject.getType()
+        if type is None:
+            return DummyOptions()
+        return IOptions(adapted(type), DummyOptions())
+
+    @Lazy
+    def globalOptions(self):
+        return IOptions(self.baseObject.getLoopsRoot())
 
     @Lazy
     def acquiringPredicates(self):
@@ -106,6 +120,14 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         rpm = self.rolePermissionManager
         for p, r, s in rpm.getRolesAndPermissions():
             setRolePermission(rpm, p, r, Unset)
+        self.setStateSecurity()
+
+    def setStateSecurity(self):
+        statesDefs = (self.globalOptions('organize.stateful.concept', []) +
+                      (self.typeOptions('organize.stateful') or []))
+        for std in statesDefs:
+            stf = component.getAdapter(self.baseObject, IStateful, name=std)
+            stf.getStateObject().setSecurity(stf)
 
     def acquireRolePermissions(self):
         settings = {}
@@ -185,6 +207,12 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
     @Lazy
     def parents(self):
         return self.baseObject.getConcepts(self.acquiringPredicates)
+
+    def setStateSecurity(self):
+        statesDefs = (self.globalOptions('organize.stateful.resource', []))
+        for std in statesDefs:
+            stf = component.getAdapter(self.target, IStateful, name=std)
+            stf.getStateObject().setSecurity(self.context)
 
     def setRolePermissions(self, settings):
         vSetters = [self]
