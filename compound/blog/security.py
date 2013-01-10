@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Security settings for blogs and blog posts.
-
-$Id$
 """
 
 from zope.cachedescriptors.property import Lazy
@@ -30,10 +28,10 @@ from zope.traversing.api import getName
 from loops.compound.blog.interfaces import IBlogPost
 from loops.security.common import allowEditingForOwner, assignOwner, restrictView
 from loops.security.common import getCurrentPrincipal
-from loops.security.setter import BaseSecuritySetter
+from loops.security.setter import LoopsObjectSecuritySetter
 
 
-class BlogPostSecuritySetter(BaseSecuritySetter):
+class BlogPostSecuritySetter(LoopsObjectSecuritySetter):
 
     adapts(IBlogPost)
 

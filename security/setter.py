@@ -93,6 +93,9 @@ class BaseSecuritySetter(object):
     def acquireRolePermissions(self):
         pass
 
+    def acquirePrincipalRoles(self):
+        pass
+
     def copyPrincipalRoles(self, source, revert=False):
         pass
 
@@ -153,6 +156,44 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         for (p, r), s in settings.items():
             setRolePermission(self.rolePermissionManager, p, r, s)
 
+    def acquirePrincipalRoles(self):
+        settings = {}
+        for p in self.parents:
+            if p == self.baseObject:
+                continue
+            wi = p.workspaceInformation
+            if wi:
+                if not wi.propagateParentSecurity:
+                    continue
+                prm = IPrincipalRoleMap(wi)
+                for r, p, s in prm.getPrincipalsAndRoles():
+                    current = settings.get((r, p))
+                    if current is None or overrides(s, current):
+                        settings[(p, r)] = s
+            prm = IPrincipalRoleMap(p)
+            for r, p, s in prm.getPrincipalsAndRoles():
+                current = settings.get((r, p))
+                if current is None or overrides(s, current):
+                    settings[(p, r)] = s
+        self.setDefaultPrincipalRoles()
+        for setter in self.versionSetters:
+            setter.setPrincipalRoles(settings)
+
+    @Lazy
+    def versionSetters(self):
+        return [self]
+
+    def setDefaultPrincipalRoles(self):
+        prm = self.principalRoleManager
+        for r, p, s in prm.getPrincipalsAndRoles():
+            setPrincipalRole(prm, r, p, Unset)
+
+    def setPrincipalRoles(self, settings):
+        prm = self.principalRoleManager
+        for (r, p), s in settings.items():
+            if r != 'loops.Owner':
+                setPrincipalRole(prm, r, p, s)
+
     def copyPrincipalRoles(self, source, revert=False):
         prm = IPrincipalRoleMap(baseObject(source.context))
         for r, p, s in prm.getPrincipalsAndRoles():
@@ -176,13 +217,13 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
         setter = ISecuritySetter(adapted(relation.second))
         setter.setDefaultRolePermissions()
         setter.acquireRolePermissions()
-        # TODO: use setter.acquirePrincipalRoles() instead of copyPrincipalRoles()
-        wi = baseObject(self.context).workspaceInformation
-        if wi and not wi.propagateParentSecurity:
-             return
-        setter.copyPrincipalRoles(self, revert)
-        if wi: 
-            setter.copyPrincipalRoles(ISecuritySetter(wi), revert)
+        setter.acquirePrincipalRoles()
+        #wi = baseObject(self.context).workspaceInformation
+        #if wi and not wi.propagateParentSecurity:
+        #     return
+        #setter.copyPrincipalRoles(self, revert)
+        #if wi: 
+        #    setter.copyPrincipalRoles(ISecuritySetter(wi), revert)
         setter.propagateSecurity(revert, updated)
 
     def propagateSecurity(self, revert=False, updated=None):
@@ -240,3 +281,10 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
                     else:
                         setPrincipalRole(v.principalRoleManager, r, p, s)
 
+    @Lazy
+    def versionSetters(self):
+        vr = IVersionable(baseObject(self.context))
+        versions = list(vr.versions.values())
+        if versions:
+            return [ISecuritySetter(adapted(v)) for v in versions]
+        return [self]
