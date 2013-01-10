@@ -167,6 +167,9 @@ def setDefaultSecurity(obj, event):
     aObj = adapted(obj)
     setter = ISecuritySetter(aObj)
     setter.setDefaultSecurity()
+    principal = getCurrentPrincipal()
+    if principal is not None:
+        assignOwner(obj, principal.id)
 
 
 @component.adapter(IConcept, IAssignmentEvent)

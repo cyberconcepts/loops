@@ -135,6 +135,7 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         prm = IPrincipalRoleMap(baseObject(source.context))
         for r, p, s in prm.getPrincipalsAndRoles():
             #if p in self.workspacePrincipals:
+            if r != 'loops.Owner':
                 if revert:
                     setPrincipalRole(self.principalRoleManager, r, p, Unset)
                 else:
@@ -203,7 +204,8 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
             vSetters = [ISecuritySetter(adapted(v)) for v in versions]
         prm = IPrincipalRoleMap(baseObject(source.context))
         for r, p, s in prm.getPrincipalsAndRoles():
-            if p in self.workspacePrincipals:
+            #if p in self.workspacePrincipals:
+            if r != 'loops.Owner' and p in self.workspacePrincipals:
                 for v in vSetters:
                     if revert:
                         setPrincipalRole(v.principalRoleManager, r, p, Unset)
