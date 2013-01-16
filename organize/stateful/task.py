@@ -72,7 +72,7 @@ def publishableTask():
                   ('zope.View', 'loops.Member'): Deny,
                   ('zope.View', 'loops.Person'): Deny,
                   ('zope.View', 'loops.Staff'): Deny,})),
-        State('active', 'active', ('retract', 'finish', 'publish', 'cancel',),
+        State('active', 'active', ('reopen', 'finish', 'publish', 'cancel',),
               color='lightblue',
               setSecurity=setPermissionsForRoles({
                   ('zope.View', 'zope.Member'): Deny,
@@ -80,7 +80,7 @@ def publishableTask():
                   ('zope.View', 'loops.Person'): Allow,
                   ('zope.View', 'loops.Staff'): Deny,})),
         State('active_published', 'active (published)', 
-              ('retract', 'finish_published', 'retract', 'cancel',), color='blue',
+              ('reopen', 'finish_published', 'retract', 'cancel',), color='blue',
               setSecurity=setPermissionsForRoles({
                   ('zope.View', 'zope.Member'): Allow,
                   ('zope.View', 'loops.Member'): Allow,
