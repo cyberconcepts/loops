@@ -122,6 +122,7 @@ def publishableTask():
         Transition('finish_published', 'finish (published)', 'finished_published'),
         Transition('cancel', 'cancel', 'cancelled'),
         Transition('reopen', 're-open', 'draft'),
+        Transition('archive', 'archive', 'archived'),
         initialState='draft')
 
 
