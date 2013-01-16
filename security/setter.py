@@ -185,6 +185,8 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
     def setDefaultPrincipalRoles(self):
         prm = self.principalRoleManager
+        # TODO: only for local roles
+        # TODO: set loops.Person roles for Person parents
         for r, p, s in prm.getPrincipalsAndRoles():
             setPrincipalRole(prm, r, p, Unset)
 

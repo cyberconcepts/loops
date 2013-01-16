@@ -948,10 +948,10 @@ msgid "draft"
 msgstr "Entwurf"
 
 msgid "finished"
-msgstr "beendet"
+msgstr "erledigt"
 
 msgid "finished (published)"
-msgstr "beendet (zugänglich)"
+msgstr "erledigt (zugänglich)"
 
 msgid "moved"
 msgstr "verschoben"
