@@ -38,7 +38,7 @@ from loops.config.base import DummyOptions
 from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
-from loops.security.common import acquiringPredicateNames
+from loops.security.common import allRolesExceptOwner, acquiringPredicateNames
 from loops.security.interfaces import ISecuritySetter
 from loops.versioning.interfaces import IVersionable
 
@@ -157,11 +157,13 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
             setRolePermission(self.rolePermissionManager, p, r, s)
 
     def acquirePrincipalRoles(self):
+        #if baseObject(self.context).workspaceInformation:
+        #    return      # do not remove/overwrite workspace settings
         settings = {}
-        for p in self.parents:
-            if p == self.baseObject:
+        for parent in self.parents:
+            if parent == self.baseObject:
                 continue
-            wi = p.workspaceInformation
+            wi = parent.workspaceInformation
             if wi:
                 if not wi.propagateParentSecurity:
                     continue
@@ -169,12 +171,12 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
                 for r, p, s in prm.getPrincipalsAndRoles():
                     current = settings.get((r, p))
                     if current is None or overrides(s, current):
-                        settings[(p, r)] = s
-            prm = IPrincipalRoleMap(p)
+                        settings[(r, p)] = s
+            prm = IPrincipalRoleMap(parent)
             for r, p, s in prm.getPrincipalsAndRoles():
                 current = settings.get((r, p))
                 if current is None or overrides(s, current):
-                    settings[(p, r)] = s
+                    settings[(r, p)] = s
         self.setDefaultPrincipalRoles()
         for setter in self.versionSetters:
             setter.setPrincipalRoles(settings)
@@ -185,10 +187,10 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
     def setDefaultPrincipalRoles(self):
         prm = self.principalRoleManager
-        # TODO: only for local roles
-        # TODO: set loops.Person roles for Person parents
+        # TODO: set loops.Person roles for Person
         for r, p, s in prm.getPrincipalsAndRoles():
-            setPrincipalRole(prm, r, p, Unset)
+            if r in allRolesExceptOwner:
+                setPrincipalRole(prm, r, p, Unset)
 
     def setPrincipalRoles(self, settings):
         prm = self.principalRoleManager
