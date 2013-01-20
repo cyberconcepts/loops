@@ -256,7 +256,7 @@ class ResourceSecuritySetter(LoopsObjectSecuritySetter):
     def setStateSecurity(self):
         statesDefs = (self.globalOptions('organize.stateful.resource', []))
         for std in statesDefs:
-            stf = component.getAdapter(self.target, IStateful, name=std)
+            stf = component.getAdapter(self.baseObject, IStateful, name=std)
             stf.getStateObject().setSecurity(self.context)
 
     def setRolePermissions(self, settings):
