@@ -50,6 +50,7 @@ actions.register('createTopic', 'portlet', DialogAction,
         typeToken='.loops/concepts/topic',
         fixedType=True,
         innerForm='inner_concept_form.html',
+        permission='loops.AssignAsParent',
 )
 
 actions.register('editTopic', 'portlet', DialogAction,
@@ -57,6 +58,7 @@ actions.register('editTopic', 'portlet', DialogAction,
         description=_(u'Modify topic.'),
         viewName='edit_concept.html',
         dialogName='editTopic',
+        permission='zope.ManageContent',
 )
 
 actions.register('createQualification', 'portlet', DialogAction,
@@ -66,6 +68,7 @@ actions.register('createQualification', 'portlet', DialogAction,
         dialogName='createQualification',
         prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget',
                        'registerDojoTextarea'],
+        permission='loops.AssignAsParent',
 )
 
 

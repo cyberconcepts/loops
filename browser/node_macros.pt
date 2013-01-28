@@ -293,7 +293,8 @@
 <metal:actions define-macro="object_actions">
   <div id="object-actions" class="object-actions"
        tal:define="target nocall:target|nothing;">
-    <tal:actions repeat="action python:view.getActions('object', target=target)">
+    <tal:actions repeat="action python:
+                    view.getAllowedActions('object', target=target)">
       <metal:action use-macro="action/macro" />
     </tal:actions>
   </div>
@@ -322,7 +323,7 @@
     <div><a href="logout.html?nextURL=login.html"
             tal:attributes="href string:logout.html?nextURL=${view/menu/url}"
             i18n:translate="">Log out</a></div>
-    <tal:actions repeat="action python:view.getActions('personal')">
+    <tal:actions repeat="action python:view.getAllowedActions('personal')">
       <metal:action use-macro="action/macro" />
     </tal:actions>
 </metal:actions>

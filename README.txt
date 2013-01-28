@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 The loops platform consists up of three basic types of objects:
 
 (1) concepts: simple interconnected objects usually representing
@@ -612,7 +610,7 @@ Actions
   >>> view.controller = Controller(view, request)
   >>> #view.setupController()
 
-  >>> actions = view.getActions('portlet')
+  >>> actions = view.getAllowedActions('portlet')
   >>> len(actions)
   2
 
@@ -849,7 +847,7 @@ In order to provide suitable links for viewing or editing a target you may
 ask a view which view and edit actions it supports. We directly use the
 target object's view here:
 
-  >>> actions = view.virtualTarget.getActions('object', page=view)
+  >>> actions = view.virtualTarget.getAllowedActions('object', page=view)
   >>> #actions[0].url
 
 'http://127.0.0.1/loops/views/m1/m11/m111/.target23'

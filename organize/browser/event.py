@@ -56,6 +56,7 @@ actions.register('createEvent', 'portlet', DialogAction,
         typeToken='.loops/concepts/event',
         fixedType=True,
         prerequisites=['registerDojoDateWidget'],
+        permission='loops.AssignAsParent',
 )
 
 actions.register('editEvent', 'portlet', DialogAction,

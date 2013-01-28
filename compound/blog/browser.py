@@ -52,6 +52,7 @@ actions.register('createBlogPost', 'portlet', DialogAction,
         fixedType=True,
         innerForm='inner_concept_form.html',
         prerequisites=['registerDojoDateWidget'], # +'registerDojoTextWidget'?
+        permission='loops.AssignAsParent',
 )
 
 

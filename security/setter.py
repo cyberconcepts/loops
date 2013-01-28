@@ -123,7 +123,6 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         rpm = self.rolePermissionManager
         for p, r, s in rpm.getRolesAndPermissions():
             setRolePermission(rpm, p, r, Unset)
-        self.setStateSecurity()
 
     def setStateSecurity(self):
         statesDefs = (self.globalOptions('organize.stateful.concept', []) +
@@ -151,6 +150,7 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
                     settings[(p, r)] = s
         self.setDefaultRolePermissions()
         self.setRolePermissions(settings)
+        self.setStateSecurity()
 
     def setRolePermissions(self, settings):
         for (p, r), s in settings.items():

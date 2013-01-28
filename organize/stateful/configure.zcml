@@ -27,7 +27,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.base.SimplePublishable"
-        name="simple_publishing" trusted="True" />
+        name="simple_publishing" />
   <zope:class class="loops.organize.stateful.base.SimplePublishable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -41,7 +41,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.task.StatefulTask"
-        name="task_states" trusted="True" />
+        name="task_states" />
   <zope:class class="loops.organize.stateful.task.StatefulTask">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -55,7 +55,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.task.PublishableTask"
-        name="publishable_task" trusted="True" />
+        name="publishable_task" />
   <zope:class class="loops.organize.stateful.task.PublishableTask">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -69,7 +69,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.quality.ClassificationQualityCheckable"
-        name="classification_quality" trusted="True" />
+        name="classification_quality" />
   <zope:class class="loops.organize.stateful.quality.ClassificationQualityCheckable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ from zope.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import IBrowserSkinType, IBrowserView
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
-from zope.security import canAccess, checkPermission
+from zope.security import canAccess
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
@@ -67,6 +67,7 @@ from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
 from loops.organize.tracking import access
 from loops.resource import Resource
+from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
@@ -705,6 +706,16 @@ class BaseView(GenericView, I18NView):
         """ Provide additional actions; override by subclass.
         """
         return []
+
+    def getAllowedActions(self, category='object', page=None, target=None):
+        result = []
+        for act in self.getActions(category, page=page, target=target):
+            if act.permission is not None:
+                ctx = (target is not None and target.context) or self.context
+                if not checkPermission(act.permission, ctx):
+                    continue
+            result.append(act)
+        return result
 
     @Lazy
     def showObjectActions(self):
