@@ -320,6 +320,10 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
+    @Lazy
+    def filterOptions(self):
+        return self.getOptions('filter.states')
+
     def getChildren(self, topLevelOnly=True, sort=True, noDuplicates=True,
                     useFilter=True, predicates=None):
         form = self.request.form
@@ -361,8 +365,7 @@ class ConceptView(BaseView):
                 options = IOptions(adapted(r.predicate), None)
                 if options is not None and options('hide_children'):
                     continue
-                filterOptions = self.getOptions('filter.states')
-                if not fv.check(r.context, filterOptions):
+                if not fv.check(r.context, self.filterOptions):
                     continue
             yield r
 
@@ -717,4 +720,23 @@ class ListChildren(ConceptView):
     @Lazy
     def macro(self):
         return concept_macros.macros['list_children']
+
+
+class ListTypeInstances(ListChildren):
+
+    @Lazy
+    def targets(self):
+        targetPredicate = self.conceptManager['querytarget']
+        for c in self.context.getChildren([targetPredicate]):
+            # TODO: use type-specific view
+            yield ConceptView(c, self.request)
+
+    def children(self, topLevelOnly=True, sort=True, noDuplicates=True,
+                    useFilter=True, predicates=None):
+        # TODO: use filter options of query for selection of children
+        for tv in self.targets:
+            tv.filterOptions = self.filterOptions
+            for c in tv.getChildren(topLevelOnly, sort,
+                                    noDuplicates, useFilter, [self.typePredicate]):
+                yield c
 

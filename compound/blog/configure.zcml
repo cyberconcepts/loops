@@ -38,6 +38,15 @@
   <!-- views -->
 
   <zope:adapter
+      name="bloglist.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.compound.blog.browser.BlogList"
+      permission="zope.View"
+      />
+
+  <zope:adapter
       name="blog.html"
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"

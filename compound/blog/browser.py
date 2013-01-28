@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -54,6 +54,32 @@ actions.register('createBlogPost', 'portlet', DialogAction,
         prerequisites=['registerDojoDateWidget'], # +'registerDojoTextWidget'?
 )
 
+
+# blog lists
+
+class BlogList(ConceptView):
+
+    @Lazy
+    def macro(self):
+        return view_macros.macros['bloglist']
+
+    def children(self, topLevelOnly=True, sort=True, noDuplicates=True,
+                    useFilter=True, predicates=None):
+        rels = self.getChildren(topLevelOnly, sort,
+                            noDuplicates, useFilter, predicates)
+        return [rel for rel in rels if self.notEmpty(rel)]
+
+    def notEmpty(self, rel):
+        if self.request.form.get('filter.states') == 'all':
+            return True
+        # TODO: use type-specific view
+        view = ConceptView(rel.relation.second, self.request)
+        for c in view.children():
+            return True
+        return False
+
+
+# blog view
 
 def supplyCreator(self, data):
     creator = data.get('creator')
@@ -128,6 +154,8 @@ class BlogView(ConceptView):
         return False
 
 
+# blog post view
+
 class BlogPostView(ConceptView):
 
     @Lazy
@@ -170,6 +198,8 @@ class BlogPostView(ConceptView):
         for r in rels:
             yield self.childViewFactory(r, self.request, contextIsSecond=True)
 
+
+# forms and form controllers
 
 class EditBlogPostForm(EditConceptForm):
 

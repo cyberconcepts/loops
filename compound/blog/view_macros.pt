@@ -1,3 +1,12 @@
+<html i18n:domain="loops">
+
+
+<metal:block define-macro="bloglist">
+  <div tal:define="show_headline nothing">
+    <metal:fields use-macro="item/template/macros/concepttitle" /><br />
+    <metal:fields use-macro="item/template/macros/conceptchildren" />
+  </div>
+</metal:block>
 
 
 <metal:block define-macro="blog">
@@ -74,3 +83,6 @@
   <metal:resources use-macro="view/concept_macros/conceptresources" />
   <metal:block use-macro="view/comment_macros/comments" />
 </div>
+
+
+</html>
