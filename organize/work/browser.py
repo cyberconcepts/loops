@@ -151,6 +151,7 @@ class WorkItemDetails(TrackDetails):
                       addParams=dict(id=self.track.__name__))
         actions = [info, WorkItemStateAction(self)]
         if self.isLastInRun and self.allowedToEditWorkItem:
+        #if self.allowedToEditWorkItem:
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()

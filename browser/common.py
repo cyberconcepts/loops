@@ -670,7 +670,10 @@ class BaseView(GenericView, I18NView):
 
     # states
 
-    viewStatesPermission = 'zope.ManageContent'
+    @Lazy
+    def viewStatesPermission(self):
+        opt = self.globalOptions('organize.show_states')
+        return opt and opt[0] or 'zope.ManageContent'
 
     @Lazy
     def states(self):
