@@ -47,7 +47,7 @@ Type- and text-based queries
   >>> from loops.expert import query
   >>> qu = query.Title('ty*')
   >>> list(qu.apply())
-  [0, 1, 68]
+  [0, 2, 68]
 
   >>> qu = query.Type('loops:*')
   >>> len(list(qu.apply()))
@@ -59,7 +59,7 @@ Type- and text-based queries
 
   >>> qu = query.Type('loops:concept:predicate') & query.Title('t*')
   >>> list(qu.apply())
-  [1, 29]
+  [2, 29]
 
 State-based queries
 -------------------

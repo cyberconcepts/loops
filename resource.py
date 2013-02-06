@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -199,7 +199,7 @@ class Resource(Image, Contained):
 
     def getConceptRelations (self, predicates=None, concept=None, sort='default',
                              noSecurityCheck=False):
-        predicates = predicates is None and ['*'] or predicates
+        predicates = predicates is None and ['r*'] or predicates
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
         if sort == 'default':
