@@ -182,6 +182,7 @@ class BlogPostView(ConceptView):
                   description=_(u'Modify blog post.'),
                   viewName='edit_blogpost.html',
                   dialogName='editBlogPost',
+                  permission='zope.ManageContent',
                   page=page, target=target))
             #self.registerDojoTextWidget()
             self.registerDojoDateWidget()
