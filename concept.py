@@ -48,6 +48,7 @@ from loops.base import ParentInfo
 from loops.common import adapted, AdapterBase
 from loops.i18n.common import I18NValue
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
+from loops.interfaces import IResource
 from loops.interfaces import IConceptManager, IConceptManagerContained
 from loops.interfaces import ILoopsContained
 from loops.interfaces import IIndexAttributes
@@ -199,7 +200,8 @@ class Concept(Contained, Persistent):
         if sort == 'default':
             sort = lambda x: (x.order, (x.second.title and x.second.title.lower()))
         rels = (r for r in getRelations(self, child, relationships=relationships)
-                  if canListObject(r.second, noSecurityCheck))
+                  if canListObject(r.second, noSecurityCheck) and
+                     IConcept.providedBy(r.second))
         return sorted(rels, key=sort)
 
     def getChildren(self, predicates=None, sort='default', noSecurityCheck=False):
@@ -294,7 +296,8 @@ class Concept(Contained, Persistent):
         if sort == 'default':
             sort = lambda x: (x.order, x.second.title.lower())
         rels = (r for r in getRelations(self, resource, relationships=relationships)
-                  if canListObject(r.second, noSecurityCheck))
+                  if canListObject(r.second, noSecurityCheck) and
+                     IResource.providedBy(r.second))
         return sorted(rels, key=sort)
 
     def getResources(self, predicates=None, sort='default', noSecurityCheck=False):
