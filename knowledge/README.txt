@@ -171,9 +171,9 @@ Competence and Certification Management
 =======================================
 
   >>> from cybertools.stateful.interfaces import IStatesDefinition
-  >>> from loops.knowledge.qualification import qualificationStates
-  >>> from loops.knowledge.interfaces import IQualificationRecords
-  >>> from loops.knowledge.qualification import QualificationRecords
+  >>> from loops.knowledge.qualification.base import qualificationStates
+  >>> from loops.knowledge.qualification.interfaces import IQualificationRecords
+  >>> from loops.knowledge.qualification.base import QualificationRecords
   >>> component.provideUtility(qualificationStates, 
   ...                          provides=IStatesDefinition,
   ...                          name='knowledge.qualification')
@@ -190,8 +190,8 @@ We first create a training that provides knowledge in Python specials.
 
 Then we record the need for John to acquire this knowledge.
 
-  >>> from loops.knowledge.browser import CreateQualificationRecordForm
-  >>> from loops.knowledge.browser import CreateQualificationRecord
+  >>> from loops.knowledge.qualification.browser import CreateQualificationRecordForm
+  >>> from loops.knowledge.qualification.browser import CreateQualificationRecord
 
 
 Glossaries
@@ -203,6 +203,12 @@ Glossary items are topic-like concepts that may be edited by end users.
   >>> from loops.knowledge.glossary.browser import EditGlossaryItemForm
   >>> from loops.knowledge.glossary.browser import CreateGlossaryItem
   >>> from loops.knowledge.glossary.browser import EditGlossaryItem
+
+
+Survey
+======
+
+  >>> from loops.knowledge.survey.base import Questionnaire
 
 
 Fin de partie

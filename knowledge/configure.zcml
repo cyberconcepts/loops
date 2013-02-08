@@ -1,5 +1,3 @@
-<!-- $Id$ -->
-
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
@@ -66,22 +64,6 @@
              interface="cybertools.knowledge.interfaces.IKnowledgeProvider" />
   </zope:class>
 
-  <!-- records -->
-
-  <zope:class class="loops.knowledge.qualification.QualificationRecord">
-    <require permission="zope.View"
-             interface="loops.knowledge.interfaces.IQualificationRecord" />
-    <require permission="zope.ManageContent"
-             set_schema="loops.knowledge.interfaces.IQualificationRecord" />
-  </zope:class>
-
-  <zope:adapter factory="loops.knowledge.qualification.QualificationRecords"
-                provides="loops.knowledge.interfaces.IQualificationRecords" />
-
-  <zope:utility factory="loops.knowledge.qualification.qualificationStates"
-           provides="cybertools.stateful.interfaces.IStatesDefinition"
-           name="knowledge.qualification" />
-
   <!-- views -->
 
   <zope:adapter
@@ -100,19 +82,6 @@
         factory="loops.knowledge.browser.Candidates"
         permission="zope.View" />
 
-  <browser:page
-      name="create_qualification.html"
-      for="loops.interfaces.INode"
-      class="loops.knowledge.browser.CreateQualificationRecordForm"
-      permission="zope.View" />
-
-  <zope:adapter
-      name="create_qualification"
-      for="loops.browser.node.NodeView
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      factory="loops.knowledge.browser.CreateQualificationRecord"
-      permission="zope.View" />
-
   <!-- other adapters -->
 
   <zope:adapter factory="loops.knowledge.schema.PersonSchemaFactory" />
@@ -120,5 +89,7 @@
   <!-- sub-packages -->
 
   <include package=".glossary" />
+  <include package=".qualification" />
+  <include package=".survey" />
 
 </configure>

@@ -41,4 +41,4 @@ child(u'system', u'issubtype', u'standard')
 child(u'competence', u'training', u'issubtype', usePredicate=u'provides')
 
 # records
-records(u'qualification', u'loops.knowledge.qualification.QualificationRecord')
+records(u'qualification', u'loops.knowledge.qualification.base.QualificationRecord')

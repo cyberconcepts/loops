@@ -1,0 +1,39 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <!-- records -->
+
+  <zope:class class="loops.knowledge.qualification.base.QualificationRecord">
+    <require permission="zope.View"
+        interface="loops.knowledge.qualification.interfaces.IQualificationRecord" />
+    <require permission="zope.ManageContent"
+        set_schema="loops.knowledge.qualification.interfaces.IQualificationRecord" />
+  </zope:class>
+
+  <zope:adapter 
+        factory="loops.knowledge.qualification.base.QualificationRecords"
+        provides="loops.knowledge.qualification.interfaces.IQualificationRecords" />
+
+  <zope:utility 
+        factory="loops.knowledge.qualification.base.qualificationStates"
+        provides="cybertools.stateful.interfaces.IStatesDefinition"
+        name="knowledge.qualification" />
+
+  <!-- views -->
+
+  <browser:page
+      name="create_qualification.html"
+      for="loops.interfaces.INode"
+      class="loops.knowledge.qualification.browser.CreateQualificationRecordForm"
+      permission="zope.View" />
+
+  <zope:adapter
+      name="create_qualification"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.knowledge.qualification.browser.CreateQualificationRecord"
+      permission="zope.View" />
+
+</configure>
