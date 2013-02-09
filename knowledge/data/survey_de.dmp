@@ -1,0 +1,14 @@
+# survey types
+type(u'questionnaire', u'Fragebogen', viewName=u'', 
+    typeInterface=u'loops.knowledge.survey.interfaces.IQuestionnaire', 
+    options=u'action.portlet:create_subtype,edit_concept')
+type(u'question', u'Frage', viewName=u'', 
+    typeInterface=u'loops.knowledge.survey.interfaces.IQuestion', 
+    options=u'action.portlet:create_subtype,edit_concept')
+type(u'resultelement', u'Feedback-Element', viewName=u'', 
+    typeInterface=u'loops.knowledge.survey.interfaces.IResultElement', 
+    options=u'action.portlet:edit_concept')
+
+# subtypes
+child(u'questionnaire', u'question', u'issubtype')
+child(u'question', u'resultelement', u'issubtype')

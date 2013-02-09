@@ -23,11 +23,33 @@ Surveys used in knowledge management.
 from zope.component import adapts
 from zope.interface import implementer, implements
 
-from cybertools.knowledge.survey.questionnaire import Questionnaire \
-      as BaseQuestionnaire
+from cybertools.knowledge.survey.questionnaire import Questionnaire, Question,\
+            ResultElement
+from loops.common import AdapterBase
+from loops.knowledge.survey.interfaces import IQuestionnaire, IQuestion, IResultElement
+from loops.type import TypeInterfaceSourceList
 
 
-class Questionnaire(BaseQuestionnaire):
+TypeInterfaceSourceList.typeInterfaces += (IQuestionnaire, IQuestion, IResultElement)
 
-  pass
+
+class Questionnaire(AdapterBase, Questionnaire):
+
+    implements(IQuestionnaire)
+
+    _contextAttributes = list(IQuestionnaire)
+
+
+class Question(AdapterBase, Question):
+
+    implements(IQuestion)
+
+    _contextAttributes = list(IQuestion)
+
+
+class ResultElement(AdapterBase, ResultElement):
+
+    implements(IResultElement)
+
+    _contextAttributes = list(IResultElement)
 

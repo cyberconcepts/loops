@@ -3,4 +3,16 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <zope:adapter
+        factory="loops.knowledge.survey.base.Questionnaire"
+        provides="loops.knowledge.survey.interfaces.IQuestionnaire" />
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.Question"
+        provides="loops.knowledge.survey.interfaces.IQuestion" />
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.ResultElement"
+        provides="loops.knowledge.survey.interfaces.IResultElement" />
+
 </configure>

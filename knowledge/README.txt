@@ -208,7 +208,8 @@ Glossary items are topic-like concepts that may be edited by end users.
 Survey
 ======
 
-  >>> from loops.knowledge.survey.base import Questionnaire
+  >>> from loops.knowledge.tests import importSurvey
+  >>> importSurvey(loopsRoot)
 
 
 Fin de partie
