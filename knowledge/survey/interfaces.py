@@ -31,7 +31,7 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
     """ A collection of questions for setting up a survey.
     """
 
-    defaultOptions = Attribute('A sequence of answer options to select from. '
+    defaultAnswerOptions = Attribute('A sequence of answer options to select from. '
                 'Default value used for questions that do not '
                 'explicitly provide the values attribute.')
 
@@ -41,7 +41,7 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
     """
 
     text = Attribute('The question asked.')
-    options = Attribute('A sequence of answer options to select from.')
+    answerOptions = Attribute('A sequence of answer options to select from.')
 
 
 class IResultElement(IConceptSchema, interfaces.IResultElement):
@@ -55,5 +55,10 @@ class IResultElement(IConceptSchema, interfaces.IResultElement):
 class IResponse(interfaces.IResponse):
     """ A set of response values given to the questions of a questionnaire
         by a single person or party.
+    """
+    
+
+class IResponses(Interface):
+    """ A container of manager of survey responses.
     """
     

@@ -11,4 +11,8 @@ type(u'resultelement', u'Feedback-Element', viewName=u'',
 
 # subtypes
 child(u'questionnaire', u'question', u'issubtype')
+child(u'questionnaire', u'questionnaire', u'issubtype')
 child(u'question', u'resultelement', u'issubtype')
+
+# records
+records(u'survey_responses', u'loops.knowledge.survey.response.Response')
