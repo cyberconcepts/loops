@@ -38,6 +38,10 @@
              set_schema="loops.expert.report.IReportInstance" />
   </class>
 
+  <adapter factory="loops.expert.standard.TypeInstances"
+           name="type_instances"
+           provides="loops.expert.report.IReportInstance" />
+
   <utility
       provides="zope.schema.interfaces.IVocabularyFactory"
       component="loops.expert.report.ReportTypeSourceList"
