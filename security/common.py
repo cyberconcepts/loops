@@ -120,12 +120,14 @@ def setPrincipalRole(prm, r, p, setting):
 
 
 def assignOwner(obj, principalId):
-    prm = IPrincipalRoleManager(obj)
-    prm.assignRoleToPrincipal('loops.Owner', principalId)
+    prm = IPrincipalRoleManager(obj, None)
+    if prm is not None:
+        prm.assignRoleToPrincipal('loops.Owner', principalId)
 
 def removeOwner(obj, principalId):
-    prm = IPrincipalRoleManager(obj)
-    prm.unsetRoleForPrincipal('loops.Owner', principalId)
+    prm = IPrincipalRoleManager(obj, None)
+    if prm is not None:
+        prm.unsetRoleForPrincipal('loops.Owner', principalId)
 
 def assignPersonRole(obj, principalId):
     prm = IPrincipalRoleManager(obj)
