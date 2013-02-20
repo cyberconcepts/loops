@@ -495,7 +495,7 @@ class BaseView(GenericView, I18NView):
         if text is None:
             return u''
         htmlPattern = re.compile(r'<(.+)>.+</\1>')
-        if htmlPattern.search(text):
+        if '<br />' in text or htmlPattern.search(text):
             return text
         return self.renderText(text, 'text/restructured')
 
