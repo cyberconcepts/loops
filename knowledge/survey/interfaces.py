@@ -25,15 +25,18 @@ from zope import interface, component, schema
 
 from cybertools.knowledge.survey import interfaces
 from loops.interfaces import IConceptSchema
+from loops.util import _
 
 
 class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
     """ A collection of questions for setting up a survey.
     """
 
-    defaultAnswerOptions = Attribute('A sequence of answer options to select from. '
-                'Default value used for questions that do not '
-                'explicitly provide the values attribute.')
+    defaultAnswerRange = schema.Int(
+        title=_(u'Answer Range'),
+        description=_(u'Number of items (answer options) to select from.'),
+        default=4,
+        required=True)
 
 
 class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
@@ -45,16 +48,17 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
 
-    text = Attribute('The question asked.')
-    answerOptions = Attribute('A sequence of answer options to select from.')
+    revertAnswerOptions = schema.Bool(
+        title=_(u'Negative'),
+        description=_(u'Value inversion: High selection means low value.'),
+        default=False,
+        required=False)
 
 
 class IFeedbackItem(IConceptSchema, interfaces.IFeedbackItem):
     """ Some text (e.g. a recommendation) or some other kind of information
         that may be deduced from the res)ponses to a questionnaire.
     """
-
-    text = Attribute('A text representing this result element.')
 
 
 class IResponse(interfaces.IResponse):
@@ -64,6 +68,6 @@ class IResponse(interfaces.IResponse):
     
 
 class IResponses(Interface):
-    """ A container of manager of survey responses.
+    """ A container or manager of survey responses.
     """
-    
+

@@ -4,13 +4,14 @@ type(u'questionnaire', u'Fragebogen', viewName=u'',
     options=u'action.portlet:create_subtype,edit_concept')
 type(u'questiongroup', u'Fragengruppe', viewName=u'', 
     typeInterface=u'loops.knowledge.survey.interfaces.IQuestionGroup', 
-    options=u'action.portlet:create_subtype,edit_concept')
+    options=u'action.portlet:create_subtype,edit_concept\nchildren_append\nshow_navigation')
 type(u'question', u'Frage', viewName=u'', 
     typeInterface=u'loops.knowledge.survey.interfaces.IQuestion', 
-    options=u'action.portlet:create_subtype,edit_concept')
+    options=u'action.portlet:edit_concept\nshow_navigation')
+    #options=u'action.portlet:create_subtype,edit_concept')
 type(u'feedbackitem', u'Feedback-Element', viewName=u'', 
     typeInterface=u'loops.knowledge.survey.interfaces.IFeedbackItem', 
-    options=u'action.portlet:edit_concept')
+    options=u'action.portlet:edit_concept\nshow_navigation')
 
 # subtypes
 #child(u'questionnaire', u'questionnaire', u'issubtype')

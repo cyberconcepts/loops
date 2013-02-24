@@ -40,6 +40,9 @@ class Questionnaire(AdapterBase, Questionnaire):
     implements(IQuestionnaire)
 
     _contextAttributes = list(IQuestionnaire)
+    _adapterAttributes = AdapterBase._adapterAttributes + (
+                'questionGroups', 'questions', 'responses',)
+    _noexportAttributes = _adapterAttributes
 
 
 class QuestionGroup(AdapterBase, QuestionGroup):
@@ -47,6 +50,9 @@ class QuestionGroup(AdapterBase, QuestionGroup):
     implements(IQuestionGroup)
 
     _contextAttributes = list(IQuestionGroup)
+    _adapterAttributes = AdapterBase._adapterAttributes + (
+                'questionnaire', 'questions', 'feedbackItems',)
+    _noexportAttributes = _adapterAttributes
 
 
 class Question(AdapterBase, Question):
@@ -54,6 +60,9 @@ class Question(AdapterBase, Question):
     implements(IQuestion)
 
     _contextAttributes = list(IQuestion)
+    _adapterAttributes = AdapterBase._adapterAttributes + (
+                'text', 'questionnaire', 'answerRange', 'feedbackItems',)
+    _noexportAttributes = _adapterAttributes
 
 
 class FeedbackItem(AdapterBase, FeedbackItem):
@@ -61,4 +70,7 @@ class FeedbackItem(AdapterBase, FeedbackItem):
     implements(IFeedbackItem)
 
     _contextAttributes = list(IFeedbackItem)
+    _adapterAttributes = AdapterBase._adapterAttributes + (
+                'text',)
+    _noexportAttributes = _adapterAttributes
 
