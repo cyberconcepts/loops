@@ -36,6 +36,11 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
                 'explicitly provide the values attribute.')
 
 
+class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
+    """ A group of questions within a questionnaire.
+    """
+
+
 class IQuestion(IConceptSchema, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
@@ -44,7 +49,7 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
     answerOptions = Attribute('A sequence of answer options to select from.')
 
 
-class IResultElement(IConceptSchema, interfaces.IResultElement):
+class IFeedbackItem(IConceptSchema, interfaces.IFeedbackItem):
     """ Some text (e.g. a recommendation) or some other kind of information
         that may be deduced from the res)ponses to a questionnaire.
     """

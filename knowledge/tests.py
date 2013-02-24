@@ -7,9 +7,9 @@ from zope import component
 from zope.interface.verify import verifyClass
 from zope.testing.doctestunit import DocFileSuite
 
-from loops.knowledge.survey.base import Questionnaire, Question, ResultElement
+from loops.knowledge.survey.base import Questionnaire, Question, FeedbackItem
 from loops.knowledge.survey.interfaces import IQuestionnaire, IQuestion, \
-                IResultElement
+                IFeedbackItem
 from loops.organize.party import Person
 from loops.setup import importData as baseImportData
 
@@ -23,7 +23,7 @@ def importData(loopsRoot):
 def importSurvey(loopsRoot):
     component.provideAdapter(Questionnaire, provides=IQuestionnaire)
     component.provideAdapter(Question, provides=IQuestion)
-    component.provideAdapter(ResultElement, provides=IResultElement)
+    component.provideAdapter(FeedbackItem, provides=IFeedbackItem)
     baseImportData(loopsRoot, importPath, 'survey_de.dmp')
 
 

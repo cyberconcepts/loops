@@ -2,17 +2,23 @@
 type(u'questionnaire', u'Fragebogen', viewName=u'', 
     typeInterface=u'loops.knowledge.survey.interfaces.IQuestionnaire', 
     options=u'action.portlet:create_subtype,edit_concept')
+type(u'questiongroup', u'Fragengruppe', viewName=u'', 
+    typeInterface=u'loops.knowledge.survey.interfaces.IQuestionGroup', 
+    options=u'action.portlet:create_subtype,edit_concept')
 type(u'question', u'Frage', viewName=u'', 
     typeInterface=u'loops.knowledge.survey.interfaces.IQuestion', 
     options=u'action.portlet:create_subtype,edit_concept')
-type(u'resultelement', u'Feedback-Element', viewName=u'', 
-    typeInterface=u'loops.knowledge.survey.interfaces.IResultElement', 
+type(u'feedbackitem', u'Feedback-Element', viewName=u'', 
+    typeInterface=u'loops.knowledge.survey.interfaces.IFeedbackItem', 
     options=u'action.portlet:edit_concept')
 
 # subtypes
-child(u'questionnaire', u'question', u'issubtype')
-child(u'questionnaire', u'questionnaire', u'issubtype')
-child(u'question', u'resultelement', u'issubtype')
+#child(u'questionnaire', u'questionnaire', u'issubtype')
+#child(u'questionnaire', u'question', u'issubtype')
+child(u'questionnaire', u'questiongroup', u'issubtype')
+child(u'questiongroup', u'question', u'issubtype')
+child(u'questiongroup', u'feedbackitem', u'issubtype')
+#child(u'question', u'feedbackitem', u'issubtype')
 
 # records
 records(u'survey_responses', u'loops.knowledge.survey.response.Response')
