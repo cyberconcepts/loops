@@ -170,28 +170,7 @@ For testing, we first have to provide the needed utilities and settings
 Competence and Certification Management
 =======================================
 
-  >>> from cybertools.stateful.interfaces import IStatesDefinition
-  >>> from loops.knowledge.qualification.base import qualificationStates
-  >>> from loops.knowledge.qualification.interfaces import IQualificationRecords
-  >>> from loops.knowledge.qualification.base import QualificationRecords
-  >>> component.provideUtility(qualificationStates, 
-  ...                          provides=IStatesDefinition,
-  ...                          name='knowledge.qualification')
-  >>> component.provideAdapter(QualificationRecords,
-  ...                          provides=IQualificationRecords)
-
-  >>> qurecs = loopsRoot.getRecordManager()['qualification']
-
-We first create a training that provides knowledge in Python specials.
-
-  >>> trainingPySpecC = concepts['trpyspec'] = Concept(
-  ...                                           u'Python Specials Training')
-  >>> trainingPySpecC.assignParent(pySpecialsC)
-
-Then we record the need for John to acquire this knowledge.
-
-  >>> from loops.knowledge.qualification.browser import CreateQualificationRecordForm
-  >>> from loops.knowledge.qualification.browser import CreateQualificationRecord
+  >>> tCompetence = concepts['competence']
 
 
 Glossaries

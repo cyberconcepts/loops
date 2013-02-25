@@ -28,26 +28,9 @@ from zope.cachedescriptors.property import Lazy
 from loops.expert.browser.report import ResultsConceptView
 from loops.knowledge.browser import template, knowledge_macros
 from loops.knowledge.qualification.base import QualificationRecord
-from loops.organize.work.browser import CreateWorkItemForm, CreateWorkItem
 
 
 class PersonQualificationView(ResultsConceptView):
-
-    pass
-
-
-class CreateQualificationRecordForm(CreateWorkItemForm):
-
-    macros = knowledge_macros
-    recordManagerName = 'qualification'
-    trackFactory = QualificationRecord
-
-    @Lazy
-    def macro(self):
-        return self.macros['create_qualification']
-
-
-class CreateQualificationRecord(CreateWorkItem):
 
     pass
 
