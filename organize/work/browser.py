@@ -363,7 +363,12 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
             workItems = self.loopsRoot.getRecordManager()[
                                         self.recordManagerName]
             return workItems.get(id)
-        return self.trackFactory(None, 0, None, {})
+        self.task = self.target
+        track = self.trackFactory(None, 0, None, {})
+        types = self.workItemTypes
+        if len(types) == 1:
+            track.workItemType = types[0].name
+        return track
 
     @Lazy
     def title(self):
