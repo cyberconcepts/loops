@@ -25,4 +25,14 @@ Central part of CCM competence and certification management framework.
 from zope.component import adapts
 from zope.interface import implementer, implements
 
+from loops.common import AdapterBase
+from loops.knowledge.qualification.interfaces import ICompetence
+
+
+class Competence(AdapterBase):
+
+    implements(ICompetence)
+
+    _contextAttributes = list(ICompetence)
+
 

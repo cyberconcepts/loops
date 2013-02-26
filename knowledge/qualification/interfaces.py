@@ -23,3 +23,22 @@ Interfaces for knowledge management and elearning with loops.
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from loops.interfaces import IConceptSchema
+from loops.util import _
+
+
+class ICompetence(IConceptSchema):
+    """ The competence of a person.
+
+        Maybe assigned to the person via a 'knows' relation or
+        work items of type 'checkup'.
+    """
+
+    validityPeriod = schema.Int(
+        title=_(u'Validity Period (Months)'),
+        description=_(u'Number of months the competence remains valid. '
+                u'Zero means unlimited validity.'),
+        default=0,
+        required=False)
+
+

@@ -1,5 +1,6 @@
 type(u'competence', u'Kompetenz', viewName=u'', 
-    typeInterface=u'', options=u'action.portlet:create_subtype,edit_concept')
+    typeInterface=u'loops.knowledge.qualification.interfaces.ICompetence', 
+    options=u'action.portlet:create_subtype,edit_concept')
 # type(u'person', u'Person', viewName=u'', 
 #     typeInterface=u'loops.knowledge.interfaces.IPerson', 
 #     options=u'action.portlet:editPerson')
@@ -38,6 +39,7 @@ child(u'general', u'requires', u'standard')
 
 child(u'system', u'issubtype', u'standard')
 
+child(u'competence', u'competence', u'issubtype')
 #child(u'competence', u'training', u'issubtype', usePredicate=u'provides')
 
 # records
