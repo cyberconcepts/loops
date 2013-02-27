@@ -168,7 +168,10 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def allowedToEditWorkItem(self):
+        # if not canAccessObject(self.object.task):
+        #     return False
         if checkPermission('loops.ManageSite', self.object):
+            # or hasRole('loops.Master', self.object):
             return True
         if self.track.data.get('creator') == self.personId:
             return True
