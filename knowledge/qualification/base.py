@@ -27,6 +27,10 @@ from zope.interface import implementer, implements
 
 from loops.common import AdapterBase
 from loops.knowledge.qualification.interfaces import ICompetence
+from loops.type import TypeInterfaceSourceList
+
+
+TypeInterfaceSourceList.typeInterfaces += (ICompetence,)
 
 
 class Competence(AdapterBase):
