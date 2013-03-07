@@ -1,5 +1,5 @@
 # survey types
-type(u'questionnaire', u'Fragebogen', viewName=u'', 
+type(u'questionnaire', u'Fragebogen', viewName=u'survey.html', 
     typeInterface=u'loops.knowledge.survey.interfaces.IQuestionnaire', 
     options=u'action.portlet:create_subtype,edit_concept')
 type(u'questiongroup', u'Fragengruppe', viewName=u'', 

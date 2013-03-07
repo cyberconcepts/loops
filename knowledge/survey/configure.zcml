@@ -3,6 +3,8 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
+  <!-- concept classes -->
+
   <zope:adapter
         factory="loops.knowledge.survey.base.Questionnaire"
         provides="loops.knowledge.survey.interfaces.IQuestionnaire" />
@@ -18,5 +20,15 @@
   <zope:adapter
         factory="loops.knowledge.survey.base.FeedbackItem"
         provides="loops.knowledge.survey.interfaces.IFeedbackItem" />
+
+  <!-- views -->
+
+  <zope:adapter
+      name="survey.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.knowledge.survey.browser.SurveyView"
+      permission="zope.View" />
 
 </configure>

@@ -25,7 +25,7 @@ from zope.interface import implementer, implements
 
 from cybertools.knowledge.survey.questionnaire import Questionnaire, \
             QuestionGroup, Question, FeedbackItem
-from loops.common import AdapterBase
+from loops.common import adapted, AdapterBase
 from loops.knowledge.survey.interfaces import IQuestionnaire, \
             IQuestionGroup, IQuestion, IFeedbackItem
 from loops.type import TypeInterfaceSourceList
@@ -44,6 +44,17 @@ class Questionnaire(AdapterBase, Questionnaire):
                 'questionGroups', 'questions', 'responses',)
     _noexportAttributes = _adapterAttributes
 
+    @property
+    def questionGroups(self):
+        return [adapted(c) for c in self.context.getChildren()]
+
+    @property
+    def questions(self):
+        for qug in self.questionGroups:
+            for qu in qug.questions:
+                qu.questionnaire = self
+                yield qu
+
 
 class QuestionGroup(AdapterBase, QuestionGroup):
 
@@ -54,6 +65,14 @@ class QuestionGroup(AdapterBase, QuestionGroup):
                 'questionnaire', 'questions', 'feedbackItems',)
     _noexportAttributes = _adapterAttributes
 
+    @property
+    def subobjects(self):
+        return [adapted(c) for c in self.context.getChildren()]
+
+    @property
+    def questions(self):
+        return [obj for obj in self.subobjects if IQuestion.providedBy(obj)]
+
 
 class Question(AdapterBase, Question):
 
@@ -63,6 +82,10 @@ class Question(AdapterBase, Question):
     _adapterAttributes = AdapterBase._adapterAttributes + (
                 'text', 'questionnaire', 'answerRange', 'feedbackItems',)
     _noexportAttributes = _adapterAttributes
+
+    @property
+    def text(self):
+        return self.context.description
 
 
 class FeedbackItem(AdapterBase, FeedbackItem):

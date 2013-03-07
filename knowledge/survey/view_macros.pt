@@ -1,0 +1,35 @@
+<!-- ZPT macros for loops.knowledge.survey views -->
+<html i18n:domain="loops">
+
+
+<metal:block define-macro="survey">
+  <metal:title use-macro="item/conceptMacros/concepttitle" />
+  <table>
+    <tr>
+      <th></th>
+      <th>
+        <table>
+          <tr>
+            <td i18n:translate="">Does not apply</td>
+            <td style="text-align: right"
+                i18n:translate="">Fully applies</td>
+          </tr>
+        </table>
+      </th>
+    </tr>
+    <tr tal:repeat="question item/adapted/questions">
+      <td tal:content="question/text" />
+      <td style="white-space: nowrap">
+        <span tal:repeat="value python:range(question.answerRange)">&nbsp;
+          <input type="radio"                
+                 tal:attributes="name question/uid;
+                                 value value;
+                                 checked repeat/value/start" />&nbsp;
+        </span>
+      </td>
+    </tr>
+  </table>
+</metal:block>
+
+
+</html>

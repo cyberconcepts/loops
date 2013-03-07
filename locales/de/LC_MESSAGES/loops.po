@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-02-26 12:00 CET\n"
+"PO-Revision-Date: 2013-03-07 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -183,6 +183,12 @@ msgstr "Negativbewertung"
 
 msgid "Value inversion: High selection means low value."
 msgstr "Invertierung der Bewertung: Hohe gewählte Stufe bedeutet niedriger Wert."
+
+msgid "Does not apply"
+msgstr "Trifft nicht zu"
+
+msgid "Fully applies"
+msgstr "Trifft voll zu"
 
 # competence (qualification)
 

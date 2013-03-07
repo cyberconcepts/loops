@@ -190,6 +190,8 @@ Survey
   >>> from loops.knowledge.tests import importSurvey
   >>> importSurvey(loopsRoot)
 
+  >>> from loops.knowledge.survey.browser import SurveyView
+
 
 Fin de partie
 =============
