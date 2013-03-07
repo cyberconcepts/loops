@@ -24,7 +24,9 @@ surveys and self-assessments.
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.knowledge.survey.questionnaire import Response
 from loops.browser.concept import ConceptView
+from loops.common import adapted
 from loops.organize.party import getPersonForUser
 
 
@@ -33,8 +35,33 @@ template = ViewPageTemplateFile('view_macros.pt')
 class SurveyView(ConceptView):
 
     tabview = 'index.html'
+    data = None
 
     @Lazy
     def macro(self):
         return template.macros['survey']
+
+    def results(self):
+        form = self.request.form
+        if 'submit' in form:
+            self.data = {}
+            response = Response(self.adapted, None)
+            for key, value in form.items():
+                if key.startswith('question_'):
+                    uid = key[len('question_'):]
+                    question = adapted(self.getObjectForUid(uid))
+                    value = int(value)
+                    self.data[uid] = value
+                    response.values[question] = value
+            result = response.getGroupedResult()
+            return [dict(category=r[0].title, text=r[1].text) for r in result]
+            #return [{'category': 'foo', 'text': 'bar'}]
+        return []
+
+    def isChecked(self, question, value):
+        if self.data is not None:
+            setting = self.data.get(question.uid)
+            if setting is not None:
+                return value == setting 
+        return value == 0
 

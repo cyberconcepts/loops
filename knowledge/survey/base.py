@@ -52,7 +52,7 @@ class Questionnaire(AdapterBase, Questionnaire):
     def questions(self):
         for qug in self.questionGroups:
             for qu in qug.questions:
-                qu.questionnaire = self
+                #qu.questionnaire = self
                 yield qu
 
 
@@ -66,12 +66,23 @@ class QuestionGroup(AdapterBase, QuestionGroup):
     _noexportAttributes = _adapterAttributes
 
     @property
+    def questionnaire(self):
+        for p in self.context.getParents():
+            ap = adapted(p)
+            if IQuestionnaire.providedBy(ap):
+                return ap
+
+    @property
     def subobjects(self):
         return [adapted(c) for c in self.context.getChildren()]
 
     @property
     def questions(self):
         return [obj for obj in self.subobjects if IQuestion.providedBy(obj)]
+
+    @property
+    def feedbackItems(self):
+        return [obj for obj in self.subobjects if IFeedbackItem.providedBy(obj)]
 
 
 class Question(AdapterBase, Question):
@@ -87,6 +98,20 @@ class Question(AdapterBase, Question):
     def text(self):
         return self.context.description
 
+    @property
+    def questionGroup(self):
+        for p in self.context.getParents():
+            ap = adapted(p)
+            if IQuestionGroup.providedBy(ap):
+                return ap
+
+    @property
+    def questionnaire(self):
+        return self.questionGroup.questionnaire
+
+    def __hash__(self):
+        return hash(self.context)
+
 
 class FeedbackItem(AdapterBase, FeedbackItem):
 
@@ -96,4 +121,8 @@ class FeedbackItem(AdapterBase, FeedbackItem):
     _adapterAttributes = AdapterBase._adapterAttributes + (
                 'text',)
     _noexportAttributes = _adapterAttributes
+
+    @property
+    def text(self):
+        return self.context.description
 

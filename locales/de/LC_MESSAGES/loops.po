@@ -184,11 +184,26 @@ msgstr "Negativbewertung"
 msgid "Value inversion: High selection means low value."
 msgstr "Invertierung der Bewertung: Hohe gewählte Stufe bedeutet niedriger Wert."
 
+msgid "Questionnaire"
+msgstr "Fragebogen"
+
+msgid "Feedback"
+msgstr "Auswertung"
+
+msgid "Category"
+msgstr "Kategorie"
+
+msgid "Response"
+msgstr "Beurteilung"
+
 msgid "Does not apply"
 msgstr "Trifft nicht zu"
 
 msgid "Fully applies"
 msgstr "Trifft voll zu"
+
+msgid "Evaluate Questionnaire"
+msgstr "Fragebogen auswerten"
 
 # competence (qualification)
 

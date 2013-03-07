@@ -2,33 +2,55 @@
 <html i18n:domain="loops">
 
 
-<metal:block define-macro="survey">
+<metal:block define-macro="survey"
+              tal:define="feedback item/results">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
-  <table>
-    <tr>
-      <th></th>
-      <th>
-        <table>
-          <tr>
-            <td i18n:translate="">Does not apply</td>
-            <td style="text-align: right"
-                i18n:translate="">Fully applies</td>
-          </tr>
-        </table>
-      </th>
-    </tr>
-    <tr tal:repeat="question item/adapted/questions">
-      <td tal:content="question/text" />
-      <td style="white-space: nowrap">
-        <span tal:repeat="value python:range(question.answerRange)">&nbsp;
-          <input type="radio"                
-                 tal:attributes="name question/uid;
-                                 value value;
-                                 checked repeat/value/start" />&nbsp;
-        </span>
-      </td>
-    </tr>
-  </table>
+  <div tal:condition="feedback">
+    <h3 i18n:translate="">Feedback</h3>
+    <table>
+      <tr>
+        <th i18n:translate="">Category</th>
+        <th i18n:translate="">Response</th>
+      </tr>
+      <tr tal:repeat="fbitem feedback">
+        <td tal:content="fbitem/category" />
+        <td tal:content="fbitem/text" />
+      </tr>
+    </table>
+    <br />
+  </div>
+  <h3 i18n:translate="">Questionnaire</h3>
+  <form method="post">
+    <table>
+      <tr>
+        <th></th>
+        <th>
+          <table>
+            <tr>
+              <td i18n:translate="">Does not apply</td>
+              <td style="text-align: right"
+                  i18n:translate="">Fully applies</td>
+            </tr>
+          </table>
+        </th>
+      </tr>
+      <tr tal:repeat="question item/adapted/questions">
+        <td tal:content="question/text" />
+        <td style="white-space: nowrap">
+          <span tal:repeat="value python:range(question.answerRange)">&nbsp;
+            <input type="radio"                
+                   tal:attributes="
+                        name string:question_${question/uid};
+                        value value;
+                        checked python:item.isChecked(question, value)" />&nbsp;
+          </span>
+        </td>
+      </tr>
+    </table>
+    <br />
+    <input type="submit" name="submit" value="Evaluate Questionnaire"
+           i18n:attributes="value" />
+  </form>
 </metal:block>
 
 
