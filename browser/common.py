@@ -59,6 +59,7 @@ from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.date import toLocalTime
 from cybertools.util.jeep import Jeep
 from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
@@ -270,6 +271,8 @@ class BaseView(GenericView, I18NView):
             d = dc.modified or dc.created
         if isinstance(d, str):
             d = datetime(*(strptime(d, '%Y-%m-%dT%H:%M')[:6]))
+        else:
+            d = toLocalTime(d)
         return d
 
     @Lazy
