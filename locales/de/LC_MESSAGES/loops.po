@@ -202,6 +202,18 @@ msgstr "Trifft nicht zu"
 msgid "Fully applies"
 msgstr "Trifft voll zu"
 
+msgid "survey_value_0"
+msgstr "trifft für unser Unternehmen überhaupt nicht zu"
+
+msgid "survey_value_1"
+msgstr "trifft eher nicht zu"
+
+msgid "survey_value_2"
+msgstr "trifft eher zu"
+
+msgid "survey_value_3"
+msgstr "trifft für unser Unternehmen voll und ganz zu"
+
 msgid "Evaluate Questionnaire"
 msgstr "Fragebogen auswerten"
 

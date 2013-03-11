@@ -42,6 +42,8 @@ class SurveyView(ConceptView):
         return template.macros['survey']
 
     def results(self):
+        result = []
+        response = None
         form = self.request.form
         if 'submit' in form:
             self.data = {}
@@ -53,15 +55,19 @@ class SurveyView(ConceptView):
                     value = int(value)
                     self.data[uid] = value
                     response.values[question] = value
+            # TODO: store self.data in track
+        # else:
+        #     get response from track
+        if response is not None:
             result = response.getGroupedResult()
-            return [dict(category=r[0].title, text=r[1].text) for r in result]
-            #return [{'category': 'foo', 'text': 'bar'}]
-        return []
+        return [dict(category=r[0].title, text=r[1].text, 
+                            score=int(round(r[2] * 100)))
+                        for r in result]
 
-    def isChecked(self, question, value):
+    def getValues(self, question):
+        setting = 0
         if self.data is not None:
-            setting = self.data.get(question.uid)
-            if setting is not None:
-                return value == setting 
-        return value == 0
+            setting = self.data.get(question.uid) or 0
+        return [dict(value=i, checked=(i == setting)) 
+                    for i in range(question.answerRange)]
 
