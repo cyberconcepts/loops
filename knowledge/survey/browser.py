@@ -52,9 +52,10 @@ class SurveyView(ConceptView):
                 if key.startswith('question_'):
                     uid = key[len('question_'):]
                     question = adapted(self.getObjectForUid(uid))
-                    value = int(value)
-                    self.data[uid] = value
-                    response.values[question] = value
+                    if value != 'none':
+                        value = int(value)
+                        self.data[uid] = value
+                        response.values[question] = value
             # TODO: store self.data in track
         # else:
         #     get response from track
@@ -65,9 +66,10 @@ class SurveyView(ConceptView):
                         for r in result]
 
     def getValues(self, question):
-        setting = 0
+        setting = None
         if self.data is not None:
-            setting = self.data.get(question.uid) or 0
-        return [dict(value=i, checked=(i == setting)) 
-                    for i in range(question.answerRange)]
+            setting = self.data.get(question.uid)
+        noAnswer = [dict(value='none', checked=(setting == None))]
+        return noAnswer + [dict(value=i, checked=(setting == i)) 
+                                for i in reversed(range(question.answerRange))]
 

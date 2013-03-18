@@ -43,10 +43,23 @@ class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
     """ A group of questions within a questionnaire.
     """
 
+    minAnswers = schema.Int(
+        title=_(u'Minimum Number of Answers'),
+        description=_(u'Minumum number of questions that have to be answered. '
+            'Empty means all questions have to be answered.'),
+        default=4,
+        required=False)
+
 
 class IQuestion(IConceptSchema, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
+
+    required = schema.Bool(
+        title=_(u'Required'),
+        description=_(u'Question must be answered.'),
+        default=False,
+        required=False)
 
     revertAnswerOptions = schema.Bool(
         title=_(u'Negative'),
