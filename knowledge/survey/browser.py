@@ -87,6 +87,7 @@ class SurveyView(ConceptView):
                 minAnswers = len(qugroup.questions)
             if count < minAnswers:
                 errors.append('Please answer the minimum number of questions.')
+                break
         return errors
 
     def getInfoText(self, qugroup):
