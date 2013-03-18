@@ -47,7 +47,7 @@ class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
         title=_(u'Minimum Number of Answers'),
         description=_(u'Minumum number of questions that have to be answered. '
             'Empty means all questions have to be answered.'),
-        default=4,
+        default=None,
         required=False)
 
 

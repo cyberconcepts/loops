@@ -62,7 +62,7 @@ class QuestionGroup(AdapterBase, QuestionGroup):
 
     _contextAttributes = list(IQuestionGroup)
     _adapterAttributes = AdapterBase._adapterAttributes + (
-                'questionnaire', 'questions', 'feedbackItems',)
+                'questionnaire', 'questions', 'feedbackItems')
     _noexportAttributes = _adapterAttributes
 
     @property
@@ -108,9 +108,6 @@ class Question(AdapterBase, Question):
     @property
     def questionnaire(self):
         return self.questionGroup.questionnaire
-
-    def __hash__(self):
-        return hash(self.context)
 
 
 class FeedbackItem(AdapterBase, FeedbackItem):

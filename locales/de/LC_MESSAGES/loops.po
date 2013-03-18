@@ -185,7 +185,7 @@ msgid "Minumum number of questions that have to be answered. Empty means all que
 msgstr "Anzahl der Fragen, die mindestens beantwortet werden müssen. Keine Angabe: Es müssen alle Fragen beantwortet werden."
 
 msgid "Required"
-msgstr "Erforderlich"
+msgstr "Pflichtfrage"
 
 msgid "Question must be answered."
 msgstr "Frage muss unbedingt beantwortet werden."
@@ -241,8 +241,11 @@ msgstr "Bitte beantworten Sie mindestens $minAnswers Fragen."
 msgid "Please answer all questions."
 msgstr "Bitte beantworten Sie alle Fragen."
 
-msgid "Please answer the obligatory questions marked with an asterisk."
-msgstr "Bitte beantworten Sie die mit einem Stern markierten Pflichtfragen."
+msgid "Please answer the obligatory questions."
+msgstr "Bitte beantworten Sie die Pflichtfragen."
+
+msgid "Please answer the minimum number of questions."
+msgstr "Bitte beantworten Sie die angegebene Mindestanzahl an Fragen je Fragengruppe."
 
 msgid "Obligatory question, must be answered"
 msgstr "Pflichtfrage, muss beantwortet werden"
