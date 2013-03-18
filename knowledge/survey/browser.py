@@ -60,10 +60,10 @@ class SurveyView(ConceptView):
                         value = int(value)
                         self.data[uid] = value
                         response.values[question] = value
+            Responses(self.context).save(self.data)
             self.errors = self.check(response)
             if self.errors:
                 return []
-            Responses(self.context).save(self.data)
         if response is not None:
             result = response.getGroupedResult()
         return [dict(category=r[0].title, text=r[1].text, 
