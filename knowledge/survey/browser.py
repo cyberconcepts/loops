@@ -28,6 +28,7 @@ from zope.i18n import translate
 from cybertools.knowledge.survey.questionnaire import Response
 from loops.browser.concept import ConceptView
 from loops.common import adapted
+from loops.knowledge.survey.response import Responses
 from loops.organize.party import getPersonForUser
 from loops.util import _
 
@@ -62,7 +63,7 @@ class SurveyView(ConceptView):
             self.errors = self.check(response)
             if self.errors:
                 return []
-            # TODO: store self.data in track
+            Responses(self.context).save(self.data)
         if response is not None:
             result = response.getGroupedResult()
         return [dict(category=r[0].title, text=r[1].text, 
@@ -106,8 +107,9 @@ class SurveyView(ConceptView):
 
     def getValues(self, question):
         setting = None
-        # TODO: get response from track
-        if self.data is not None:
+        if self.data is None:
+            self.data = Responses(self.context).load()
+        if self.data:
             setting = self.data.get(question.uid)
         noAnswer = [dict(value='none', checked=(setting == None),
                          radio=(not question.required))]

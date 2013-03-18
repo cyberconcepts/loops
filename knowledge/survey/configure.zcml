@@ -21,6 +21,15 @@
         factory="loops.knowledge.survey.base.FeedbackItem"
         provides="loops.knowledge.survey.interfaces.IFeedbackItem" />
 
+  <!-- track -->
+
+  <zope:class class="loops.knowledge.survey.response.Response">
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrack" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.tracking.interfaces.ITrack" />
+  </zope:class>
+
   <!-- views -->
 
   <zope:adapter

@@ -235,6 +235,9 @@ msgstr "Trifft für unser Unternehmen voll und ganz zu"
 msgid "Evaluate Questionnaire"
 msgstr "Fragebogen auswerten"
 
+msgid "Back to Questionnaire"
+msgstr "Zurück zum Fragebogen"
+
 msgid "Please answer at least $minAnswers questions."
 msgstr "Bitte beantworten Sie mindestens $minAnswers Fragen."
 

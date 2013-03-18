@@ -122,4 +122,3 @@ class FeedbackItem(AdapterBase, FeedbackItem):
     @property
     def text(self):
         return self.context.description
-

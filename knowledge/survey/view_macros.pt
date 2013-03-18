@@ -27,53 +27,60 @@
         <td tal:content="fbitem/score" />
       </tr>
     </table>
-    <br />
+    <div class="button" id="show_questionnaire">
+      <a href="" onclick="back(); return false"
+         i18n:translate="">
+        Back to Questionnaire</a>
+      <br />
+    </div>
   </div>
-  <h3 i18n:translate="">Questionnaire</h3>
-  <form method="post">
-    <table class="listing">
-      <tal:qugroup repeat="qugroup item/adapted/questionGroups">
-        <tr><td colspan="6">&nbsp;</td></tr>
-        <tr>
-          <td tal:define="infoText python:item.getInfoText(qugroup)">
-            <b tal:content="qugroup/title" />
-            <div tal:condition="infoText">
-              <span tal:content="structure infoText" />
-              <br />&nbsp;
-            </div>
-          </td>
-          <td style="text-align: center"
-              i18n:translate="">No answer</td>
-          <td colspan="2"
-              i18n:translate="">Fully applies</td>
-          <td colspan="2"
-              style="text-align: right"
-              i18n:translate="">Does not apply</td>
-        </tr>
-        <tr tal:repeat="question qugroup/questions">
-          <td tal:content="question/text" />
-          <td style="white-space: nowrap; text-align: center"
-              tal:repeat="value python:item.getValues(question)">
-              <input type="radio"
-                     i18n:attributes="title"
-                     tal:condition="value/radio"      
-                     tal:attributes="
-                          name string:question_${question/uid};
-                          value value/value;
-                          checked value/checked;
-                          title string:survey_value_${value/value}" />
-              <span tal:condition="not:value/radio"
-                    title="Obligatory question, must be answered"
-                    i18n:attributes="title">***
-              </span>
-          </td>
-        </tr>
-      </tal:qugroup>
-    </table>
-    <br />
-    <input type="submit" name="submit" value="Evaluate Questionnaire"
-           i18n:attributes="value" />
-  </form>
+  <div id="questionnaire"
+       tal:condition="not:feedback">
+    <h3 i18n:translate="">Questionnaire</h3>
+    <form method="post">
+      <table class="listing">
+        <tal:qugroup repeat="qugroup item/adapted/questionGroups">
+          <tr><td colspan="6">&nbsp;</td></tr>
+          <tr>
+            <td tal:define="infoText python:item.getInfoText(qugroup)">
+              <b tal:content="qugroup/title" />
+              <div tal:condition="infoText">
+                <span tal:content="structure infoText" />
+                <br />&nbsp;
+              </div>
+            </td>
+            <td style="text-align: center"
+                i18n:translate="">No answer</td>
+            <td colspan="2"
+                i18n:translate="">Fully applies</td>
+            <td colspan="2"
+                style="text-align: right"
+                i18n:translate="">Does not apply</td>
+          </tr>
+          <tr tal:repeat="question qugroup/questions">
+            <td tal:content="question/text" />
+            <td style="white-space: nowrap; text-align: center"
+                tal:repeat="value python:item.getValues(question)">
+                <input type="radio"
+                       i18n:attributes="title"
+                       tal:condition="value/radio"      
+                       tal:attributes="
+                            name string:question_${question/uid};
+                            value value/value;
+                            checked value/checked;
+                            title string:survey_value_${value/value}" />
+                <span tal:condition="not:value/radio"
+                      title="Obligatory question, must be answered"
+                      i18n:attributes="title">***
+                </span>
+            </td>
+          </tr>
+        </tal:qugroup>
+      </table>
+      <input type="submit" name="submit" value="Evaluate Questionnaire"
+             i18n:attributes="value" />
+    </form>
+  </div>
 </metal:block>
 
 
