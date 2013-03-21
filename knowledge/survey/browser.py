@@ -21,15 +21,20 @@ Definition of view classes and other browser related stuff for
 surveys and self-assessments.
 """
 
+import csv
+from cStringIO import StringIO
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
 
 from cybertools.knowledge.survey.questionnaire import Response
+from cybertools.util.date import formatTimeStamp
 from loops.browser.concept import ConceptView
+from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.knowledge.survey.response import Responses
 from loops.organize.party import getPersonForUser
+from loops.util import getObjectForUid
 from loops.util import _
 
 
@@ -115,4 +120,55 @@ class SurveyView(ConceptView):
                          radio=(not question.required))]
         return noAnswer + [dict(value=i, checked=(setting == i), radio=True) 
                                 for i in reversed(range(question.answerRange))]
+
+
+class SurveyCsvExport(NodeView):
+
+    encoding = 'ISO8859-15'
+
+    def encode(self, text):
+        text.encode(self.encoding)
+
+    @Lazy
+    def questions(self):
+        result = []
+        for idx1, qug in enumerate(adapted(self.virtualTargetObject).questionGroups):
+            for idx2, qu in enumerate(qug.questions):
+                result.append((idx1, idx2, qug, qu))
+        return result
+
+    @Lazy
+    def columns(self):
+        infoCols = ['Name', 'Timestamp']
+        dataCols = ['%02i-%02i' % (item[0], item[1]) for item in self.questions]
+        return infoCols + dataCols
+
+    def getRows(self):
+        for tr in Responses(self.virtualTargetObject).getAllTracks():
+            p = adapted(getObjectForUid(tr.userName))
+            name = p and p.title or u'???'
+            ts = formatTimeStamp(tr.timeStamp)
+            cells = [tr.data.get(qu.uid, -1) 
+                        for (idx1, idx2, qug, qu) in self.questions]
+            yield [name, ts] + cells
+
+    def __call__(self):
+        f = StringIO()
+        writer = csv.writer(f, delimiter=',')
+        writer.writerow(self.columns)
+        for row in self.getRows():
+            writer.writerow(row)
+        text = f.getvalue()
+        self.setDownloadHeader(text)
+        return text
+
+    def setDownloadHeader(self, text):
+        response = self.request.response
+        filename = 'survey_data.csv'
+        response.setHeader('Content-Disposition',
+                               'attachment; filename=%s' % filename)
+        response.setHeader('Cache-Control', '')
+        response.setHeader('Pragma', '')
+        response.setHeader('Content-Length', len(text))
+        response.setHeader('Content-Type', 'text/csv')
 

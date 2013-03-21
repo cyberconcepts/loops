@@ -51,6 +51,9 @@ class Responses(BaseRecordManager):
                 return tracks[0].data
         return {}
 
+    def getAllTracks(self):
+        return self.storage.query(taskId=self.uid)
+
 
 class Response(Track):
 

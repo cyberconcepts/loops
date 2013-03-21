@@ -68,4 +68,9 @@
       factory="loops.knowledge.survey.browser.SurveyView"
       permission="zope.View" />
 
+  <browser:page name="survey_data.csv"
+        for="loops.interfaces.IView"
+        class="loops.knowledge.survey.browser.SurveyCsvExport"
+        permission="zope.View" />
+
 </configure>
