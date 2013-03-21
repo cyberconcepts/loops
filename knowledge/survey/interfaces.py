@@ -24,7 +24,7 @@ from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
 from cybertools.knowledge.survey import interfaces
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
 
 
@@ -37,6 +37,13 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         description=_(u'Number of items (answer options) to select from.'),
         default=4,
         required=True)
+
+    feedbackFooter = schema.Text(
+        title=_(u'Feedback Footer'),
+        description=_(u'Text that will appear at the end of the feedback page.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
 
 
 class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):

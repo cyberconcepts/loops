@@ -175,6 +175,12 @@ msgstr "Glossareintrag anlegen."
 msgid "Answer Range"
 msgstr "Abstufung Bewertungen"
 
+msgid "Feedback Footer"
+msgstr "Auswertungs-Hinweis"
+
+msgid "Text that will appear at the end of the feedback page."
+msgstr "Text, der am Ende der Auswertungsseite erscheinen soll."
+
 msgid "Number of items (answer options) to select from."
 msgstr "Anzahl der Abstufungen, aus denen bei der Antwort gewählt werden kann."
 

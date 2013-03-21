@@ -5,14 +5,10 @@
 <metal:block define-macro="survey"
               tal:define="feedback item/results;
                           errors item/errors">
-  <metal:title use-macro="item/conceptMacros/concepttitle" />
-  <div class="error"
-       tal:condition="errors">
-    <div tal:repeat="error errors">
-      <span i18n:translate=""
-            tal:content="error" />
-    </div>
-  </div>
+  <metal:title use-macro="item/conceptMacros/concepttitle_only" />
+  <tal:description condition="not:feedback">
+    <metal:title use-macro="item/conceptMacros/conceptdescription" />
+  </tal:description>
   <div tal:condition="feedback">
     <h3 i18n:translate="">Feedback</h3>
     <table class="listing">
@@ -33,10 +29,20 @@
         Back to Questionnaire</a>
       <br />
     </div>
+    <div tal:define="footer item/adapted/feedbackFooter"
+         tal:condition="footer"
+         tal:content="structure python:item.renderText(footer, 'text/restructured')" />
   </div>
   <div id="questionnaire"
        tal:condition="not:feedback">
     <h3 i18n:translate="">Questionnaire</h3>
+    <div class="error"
+         tal:condition="errors">
+      <div tal:repeat="error errors">
+        <span i18n:translate=""
+              tal:content="error" />
+      </div>
+    </div>
     <form method="post">
       <table class="listing">
         <tal:qugroup repeat="qugroup item/adapted/questionGroups">

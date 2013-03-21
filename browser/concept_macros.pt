@@ -62,9 +62,10 @@
           string:$resourceBase/cybertools.icons/table.png" />
       </a>
     </h1>
-  <metal:block use-macro="view/concept_macros/filter_input" />
+    <metal:block use-macro="view/concept_macros/filter_input" />
   </metal:title>
-  <p tal:define="description description|item/renderedDescription"
+  <p metal:define-macro="conceptdescription"
+     tal:define="description description|item/renderedDescription"
      tal:condition="description">
     <i tal:content="structure description">Description</i></p>
 </metal:title>

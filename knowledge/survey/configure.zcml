@@ -7,19 +7,47 @@
 
   <zope:adapter
         factory="loops.knowledge.survey.base.Questionnaire"
-        provides="loops.knowledge.survey.interfaces.IQuestionnaire" />
+        provides="loops.knowledge.survey.interfaces.IQuestionnaire"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.Questionnaire">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestionnaire" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestionnaire" />
+  </zope:class>
 
   <zope:adapter
         factory="loops.knowledge.survey.base.QuestionGroup"
-        provides="loops.knowledge.survey.interfaces.IQuestionGroup" />
+        provides="loops.knowledge.survey.interfaces.IQuestionGroup"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.QuestionGroup">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestionGroup" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestionGroup" />
+  </zope:class>
 
   <zope:adapter
         factory="loops.knowledge.survey.base.Question"
-        provides="loops.knowledge.survey.interfaces.IQuestion" />
+        provides="loops.knowledge.survey.interfaces.IQuestion"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.Question">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestion" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestion" />
+  </zope:class>
 
   <zope:adapter
         factory="loops.knowledge.survey.base.FeedbackItem"
-        provides="loops.knowledge.survey.interfaces.IFeedbackItem" />
+        provides="loops.knowledge.survey.interfaces.IFeedbackItem"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.FeedbackItem">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IFeedbackItem" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IFeedbackItem" />
+  </zope:class>
 
   <!-- track -->
 
