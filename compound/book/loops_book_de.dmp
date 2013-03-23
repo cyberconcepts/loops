@@ -24,6 +24,7 @@ concept(u'textelement', u'Textabschnitt', u'documenttype')
 concept(u'textelement2', u'Textabschnitt separat', u'documenttype')
 concept(u'quote', u'Zitat', u'documenttype')
 concept(u'story', u'Geschichte', u'documenttype')
+concept(u'tip', u'Tipp', u'documenttype')
 concept(u'usecase', u'Fallbeispiel', u'documenttype')
 
 # book structure

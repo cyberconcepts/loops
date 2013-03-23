@@ -56,6 +56,7 @@ actions.register('createEvent', 'portlet', DialogAction,
         typeToken='.loops/concepts/event',
         fixedType=True,
         prerequisites=['registerDojoDateWidget'],
+        permission='loops.AssignAsParent',
 )
 
 actions.register('editEvent', 'portlet', DialogAction,
@@ -383,8 +384,9 @@ class CreateFollowUpEvent(CreateConcept, BaseFollowUpController):
         bevt = baseObject(self.baseEvent)
         bevt.assignChild(obj, self.followsPredicate)
         for rel in bevt.getParentRelations():
-            if rel.predicate != self.view.typePredicate:
-                obj.assignParent(rel.first, rel.predicate)
+            if rel.predicate not in (self.view.typePredicate, self.followsPredicate):
+                obj.assignParent(rel.first, rel.predicate,
+                                 order=rel.order, relevance=rel.relevance)
 
 
 class EditFollowUpEvent(EditConcept, BaseFollowUpController):

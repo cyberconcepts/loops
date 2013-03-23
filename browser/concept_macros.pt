@@ -1,6 +1,13 @@
 <html i18n:domain="loops">
 
 
+<metal:data define-macro="layout">
+  <tal:part repeat="part item/getParts">
+    <metal:part use-macro="part/macro" />
+  </tal:part>
+</metal:data>
+
+
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />
@@ -22,6 +29,20 @@
 </metal:data>
 
 
+<metal:selection define-macro="filter_input">
+  <div tal:define="criteria item/filterInput"
+       tal:condition="criteria">
+    <form method="get" name="filter" id="form-filter">
+      <span tal:repeat="crit criteria">
+        <metal:input use-macro="crit/macro" />
+      </span>
+      <input type="submit" name="show" value="Show"
+             tal:condition="nothing" />
+    </form>
+  </div>
+</metal:selection>
+
+
 <metal:title define-macro="concepttitle">
   <metal:title define-macro="concepttitle_only">
     <tal:actions condition="view/showObjectActions">
@@ -41,8 +62,10 @@
           string:$resourceBase/cybertools.icons/table.png" />
       </a>
     </h1>
+    <metal:block use-macro="view/concept_macros/filter_input" />
   </metal:title>
-  <p tal:define="description description|item/renderedDescription"
+  <p metal:define-macro="conceptdescription"
+     tal:define="description description|item/renderedDescription"
      tal:condition="description">
     <i tal:content="structure description">Description</i></p>
 </metal:title>

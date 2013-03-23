@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Blogs and blog posts.
-
-$Id$
 """
 
 from zope.cachedescriptors.property import Lazy
@@ -32,14 +30,31 @@ from zope.traversing.api import getName
 
 from loops.common import adapted
 from loops.compound.base import Compound
-from loops.compound.blog.interfaces import IBlogPost
+from loops.compound.blog.interfaces import ISimpleBlogPost, IBlogPost
 from loops.resource import Resource
 from loops.security.common import restrictView
 from loops.setup import addAndConfigureObject
 from loops.type import TypeInterfaceSourceList
 
 
-TypeInterfaceSourceList.typeInterfaces += (IBlogPost,)
+TypeInterfaceSourceList.typeInterfaces += (ISimpleBlogPost, IBlogPost,)
+
+
+class SimpleBlogPost(Compound):
+
+    implements(ISimpleBlogPost)
+
+    textContentType = 'text/html'
+
+    _adapterAttributes = Compound._adapterAttributes + ('creator',)
+    _contextAttributes = list(ISimpleBlogPost)
+    _noexportAttributes = _adapterAttributes
+    _textIndexAttributes = ('text',)
+
+    @property
+    def creator(self):
+        cr = IZopeDublinCore(self.context).creators
+        return cr and cr[0] or None
 
 
 class BlogPost(Compound):

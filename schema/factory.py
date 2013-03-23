@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Specialized fields factories.
-
-$Id$
 """
 
 from zope.component import adapts
@@ -38,7 +36,7 @@ class ResourceSchemaFactory(SchemaFactory):
     def __call__(self, interface, **kw):
         schema = super(ResourceSchemaFactory, self).__call__(interface, **kw)
         #if 'data' in schema.fields.keys():
-        schema.fields.data.height = 10
+        schema.fields.data.height = 15
         if self.context.contentType == 'text/html':
             schema.fields.data.fieldType = 'html'
         return schema

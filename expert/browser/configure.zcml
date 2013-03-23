@@ -75,4 +75,20 @@
         class="loops.expert.browser.report.ResultsView"
         permission="zope.View" />
 
+  <zope:adapter
+        name="concept_report.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.ReportConceptView"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="concept_results.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.ResultsConceptView"
+        permission="zope.View" />
+
 </configure>

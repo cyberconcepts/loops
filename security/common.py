@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Common functions and other stuff for working with permissions and roles.
-
-$Id$
 """
 
 from persistent import Persistent
@@ -49,12 +47,12 @@ allRolesExceptOwner = (
         'zope.Anonymous', 'zope.Member', 'zope.ContentManager', 'loops.Staff',
         'loops.xmlrpc.ConceptManager', # relevant for local security?
         #'loops.SiteManager',
-         'loops.Member', 'loops.Master',)
+        'loops.Person', 'loops.Member', 'loops.Master')
 allRolesExceptOwnerAndMaster = tuple(allRolesExceptOwner[:-1])
 minorPrivilegedRoles = ('zope.Anonymous', 'zope.Member',)
 localRoles = ('zope.Anonymous', 'zope.Member', 'zope.ContentManager',
         'loops.SiteManager', 'loops.Staff', 'loops.Member', 'loops.Master',
-        'loops.Owner')
+        'loops.Owner', 'loops.Person')
 
 localPermissions = ('zope.ManageContent', 'zope.View', 'loops.ManageWorkspaces',
         'loops.ViewRestricted', 'loops.EditRestricted', 'loops.AssignAsParent',)
@@ -77,7 +75,7 @@ def canListObject(obj, noCheck=False):
     return canAccess(obj, 'title')
 
 def canWriteObject(obj):
-    return canWrite(obj, 'title')
+    return canWrite(obj, 'title') or canAssignAsParent(obj) 
 
 def canEditRestricted(obj):
     return checkPermission('loops.EditRestricted', obj)
@@ -122,12 +120,22 @@ def setPrincipalRole(prm, r, p, setting):
 
 
 def assignOwner(obj, principalId):
-    prm = IPrincipalRoleManager(obj)
-    prm.assignRoleToPrincipal('loops.Owner', principalId)
+    prm = IPrincipalRoleManager(obj, None)
+    if prm is not None:
+        prm.assignRoleToPrincipal('loops.Owner', principalId)
 
 def removeOwner(obj, principalId):
+    prm = IPrincipalRoleManager(obj, None)
+    if prm is not None:
+        prm.unsetRoleForPrincipal('loops.Owner', principalId)
+
+def assignPersonRole(obj, principalId):
     prm = IPrincipalRoleManager(obj)
-    prm.removeRoleFromPrincipal('loops.Owner', principalId)
+    prm.assignRoleToPrincipal('loops.Person', principalId)
+
+def removePersonRole(obj, principalId):
+    prm = IPrincipalRoleManager(obj)
+    prm.unsetRoleForPrincipal('loops.Person', principalId)
 
 
 def allowEditingForOwner(obj, deny=allRolesExceptOwner, revert=False):
@@ -161,6 +169,9 @@ def setDefaultSecurity(obj, event):
     aObj = adapted(obj)
     setter = ISecuritySetter(aObj)
     setter.setDefaultSecurity()
+    principal = getCurrentPrincipal()
+    if principal is not None:
+        assignOwner(obj, principal.id)
 
 
 @component.adapter(IConcept, IAssignmentEvent)

@@ -27,7 +27,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.base.SimplePublishable"
-        name="simple_publishing" trusted="True" />
+        name="simple_publishing" />
   <zope:class class="loops.organize.stateful.base.SimplePublishable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -41,8 +41,22 @@
 
   <zope:adapter
         factory="loops.organize.stateful.task.StatefulTask"
-        name="task_states" trusted="True" />
+        name="task_states" />
   <zope:class class="loops.organize.stateful.task.StatefulTask">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+  <zope:utility
+        factory="loops.organize.stateful.task.publishableTask"
+        name="publishable_task" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.task.PublishableTask"
+        name="publishable_task" />
+  <zope:class class="loops.organize.stateful.task.PublishableTask">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
     <require permission="zope.ManageContent"
@@ -55,7 +69,7 @@
 
   <zope:adapter
         factory="loops.organize.stateful.quality.ClassificationQualityCheckable"
-        name="classification_quality" trusted="True" />
+        name="classification_quality" />
   <zope:class class="loops.organize.stateful.quality.ClassificationQualityCheckable">
     <require permission="zope.View"
              interface="cybertools.stateful.interfaces.IStateful" />
@@ -69,6 +83,12 @@
         for="loops.interfaces.IConcept"
         name="select_state.html"
         class="loops.organize.stateful.browser.StateQuery"
+        permission="zope.View" />
+
+  <browser:page
+        for="loops.interfaces.IConcept"
+        name="filter_input.allstates"
+        class="loops.organize.stateful.browser.FilterAllStates"
         permission="zope.View" />
 
   <!-- event handlers -->

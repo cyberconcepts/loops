@@ -151,6 +151,7 @@ class WorkItemDetails(TrackDetails):
                       addParams=dict(id=self.track.__name__))
         actions = [info, WorkItemStateAction(self)]
         if self.isLastInRun and self.allowedToEditWorkItem:
+        #if self.allowedToEditWorkItem:
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()
@@ -167,7 +168,10 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def allowedToEditWorkItem(self):
+        # if not canAccessObject(self.object.task):
+        #     return False
         if checkPermission('loops.ManageSite', self.object):
+            # or hasRole('loops.Master', self.object):
             return True
         if self.track.data.get('creator') == self.personId:
             return True
@@ -288,6 +292,25 @@ class TaskWorkItems(BaseWorkItemsView, ConceptView):
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 
+class RelatedTaskWorkItems(AllWorkItems):
+    """ Show work items for all instances of a concept type assigned to
+        the query as query target.
+    """
+
+    @Lazy
+    def isQueryTarget(self):
+        return self.conceptManager['querytarget']
+
+    def listWorkItems(self):
+        criteria = self.baseCriteria
+        tasks = []
+        for parent in self.context.getChildren([self.isQueryTarget]):
+            for task in parent.getChildren([self.typePredicate]):
+                tasks.append(util.getUidForObject(task))
+        criteria['task'] = tasks
+        return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
+
+
 class PersonWorkItems(BaseWorkItemsView, ConceptView):
     """ A query view showing work items for a person, the query's parent.
     """
@@ -343,7 +366,12 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
             workItems = self.loopsRoot.getRecordManager()[
                                         self.recordManagerName]
             return workItems.get(id)
-        return self.trackFactory(None, 0, None, {})
+        self.task = self.target
+        track = self.trackFactory(None, 0, None, {})
+        types = self.workItemTypes
+        if len(types) == 1:
+            track.workItemType = types[0].name
+        return track
 
     @Lazy
     def title(self):
@@ -380,24 +408,34 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return ''
 
     @Lazy
+    def defaultTimeStamp(self):
+        if self.workItemType.prefillDate:
+            return getTimeStamp()
+        return None
+
+    @Lazy
     def date(self):
-        ts = self.track.start or getTimeStamp()
-        return time.strftime('%Y-%m-%d', time.localtime(ts))
+        ts = self.track.start or self.defaultTimeStamp
+        if ts:
+            return time.strftime('%Y-%m-%d', time.localtime(ts))
+        return ''
 
     @Lazy
     def startTime(self):
-        ts = self.track.start or getTimeStamp()
-        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
-        return time.strftime('T%H:%M', time.localtime(ts))
+        ts = self.track.start or self.defaultTimeStamp
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
 
     @Lazy
     def endTime(self):
         if self.state == 'running':
-            ts = getTimeStamp()
+            ts = self.defaultTimeStamp
         else:
-            ts = self.track.end or getTimeStamp()
-        #return time.strftime('%Y-%m-%dT%H:%M', time.localtime(ts))
-        return time.strftime('T%H:%M', time.localtime(ts))
+            ts = self.track.end or self.defaultTimeStamp
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
 
     @Lazy
     def state(self):

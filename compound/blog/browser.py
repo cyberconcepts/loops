@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View classes for glossary and glossary items.
-
-$Id$
 """
 
 
@@ -27,6 +25,7 @@ import itertools
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName
 
 from cybertools.browser.action import actions
 from cybertools.browser.member import IMemberInfoProvider
@@ -53,8 +52,35 @@ actions.register('createBlogPost', 'portlet', DialogAction,
         fixedType=True,
         innerForm='inner_concept_form.html',
         prerequisites=['registerDojoDateWidget'], # +'registerDojoTextWidget'?
+        permission='loops.AssignAsParent',
 )
 
+
+# blog lists
+
+class BlogList(ConceptView):
+
+    @Lazy
+    def macro(self):
+        return view_macros.macros['bloglist']
+
+    def children(self, topLevelOnly=True, sort=True, noDuplicates=True,
+                    useFilter=True, predicates=None):
+        rels = self.getChildren(topLevelOnly, sort,
+                            noDuplicates, useFilter, predicates)
+        return [rel for rel in rels if self.notEmpty(rel)]
+
+    def notEmpty(self, rel):
+        if self.request.form.get('filter.states') == 'all':
+            return True
+        # TODO: use type-specific view
+        view = ConceptView(rel.relation.second, self.request)
+        for c in view.children():
+            return True
+        return False
+
+
+# blog view
 
 def supplyCreator(self, data):
     creator = data.get('creator')
@@ -99,6 +125,8 @@ class BlogView(ConceptView):
 
     @Lazy
     def blogOwnerId(self):
+        if getName(self.context.conceptType) != 'blog':
+            return ''
         pType = self.loopsRoot.getConceptManager()['person']
         persons = [p for p in self.context.getParents() if p.conceptType == pType]
         if len(persons) == 1:
@@ -127,6 +155,8 @@ class BlogView(ConceptView):
         return False
 
 
+# blog post view
+
 class BlogPostView(ConceptView):
 
     @Lazy
@@ -152,6 +182,7 @@ class BlogPostView(ConceptView):
                   description=_(u'Modify blog post.'),
                   viewName='edit_blogpost.html',
                   dialogName='editBlogPost',
+                  permission='zope.ManageContent',
                   page=page, target=target))
             #self.registerDojoTextWidget()
             self.registerDojoDateWidget()
@@ -169,6 +200,8 @@ class BlogPostView(ConceptView):
         for r in rels:
             yield self.childViewFactory(r, self.request, contextIsSecond=True)
 
+
+# forms and form controllers
 
 class EditBlogPostForm(EditConceptForm):
 

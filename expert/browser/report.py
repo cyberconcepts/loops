@@ -166,11 +166,21 @@ class ResultsConceptView(ConceptView):
         return self.conceptManager['hasreport']
 
     @Lazy
+    def reportName(self):
+        return (self.getOptions('report_name') or [None])[0]
+
+    @Lazy
+    def reportType(self):
+        return (self.getOptions('report_type') or [None])[0]
+
+    @Lazy
     def report(self):
         if self.reportName:
             return adapted(self.conceptManager[self.reportName])
-        type = self.context.conceptType
-        reports = type.getParents([self.hasReportPredicate])
+        reports = self.context.getParents([self.hasReportPredicate])
+        if not reports:
+            type = self.context.conceptType
+            reports = type.getParents([self.hasReportPredicate])
         return adapted(reports[0])
 
     @Lazy

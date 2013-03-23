@@ -1,4 +1,14 @@
-<!-- $Id$ -->
+<html i18n:domain="loops">
+
+
+<metal:input define-macro="filter_allstates">
+  <input type="checkbox" name="filter.states" value="all" id="filter-states"
+         onclick="submit()"
+         tal:attributes="checked python:
+                  request.form.get('filter.states') == 'all'" />
+  <label for="filter-states"
+         i18n:translate="">Show all</label>
+</metal:input>
 
 
 <metal:query define-macro="query">
@@ -32,7 +42,7 @@
                          tal:attributes="name string:$name:list;
                                          value value;
                                          checked python:
-                                             value in item.selectedStates.get(name, ());
+                                            value in item.selectedStates.get(name, ());
                                          id string:$name.$value"
                       />&nbsp;<label tal:content="state/title"
                                      i18n:translate=""
@@ -56,3 +66,6 @@
     </form>
   </div>
 </metal:query>
+
+
+</html>

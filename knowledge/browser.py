@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,7 @@ from cybertools.typology.interfaces import IType
 from loops.browser.action import DialogAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
-from loops.expert.browser.report import ResultsConceptView
 from loops.knowledge.interfaces import IPerson, ITask
-from loops.knowledge.qualification import QualificationRecord
-from loops.organize.work.browser import CreateWorkItemForm, CreateWorkItem
 from loops.organize.party import getPersonForUser
 from loops.util import _
 
@@ -50,6 +47,7 @@ actions.register('createTopic', 'portlet', DialogAction,
         typeToken='.loops/concepts/topic',
         fixedType=True,
         innerForm='inner_concept_form.html',
+        permission='loops.AssignAsParent',
 )
 
 actions.register('editTopic', 'portlet', DialogAction,
@@ -57,6 +55,7 @@ actions.register('editTopic', 'portlet', DialogAction,
         description=_(u'Modify topic.'),
         viewName='edit_concept.html',
         dialogName='editTopic',
+        permission='zope.ManageContent',
 )
 
 actions.register('createQualification', 'portlet', DialogAction,
@@ -66,6 +65,7 @@ actions.register('createQualification', 'portlet', DialogAction,
         dialogName='createQualification',
         prerequisites=['registerDojoDateWidget', 'registerDojoNumberWidget',
                        'registerDojoTextarea'],
+        permission='loops.AssignAsParent',
 )
 
 
@@ -110,26 +110,4 @@ class Candidates(ConceptView):
     def macro(self):
         return self.template.macros['requirement_candidates']
 
-
-# qualification stuff
-
-class PersonQualificationView(ResultsConceptView):
-
-    pass
-
-
-class CreateQualificationRecordForm(CreateWorkItemForm):
-
-    macros = knowledge_macros
-    recordManagerName = 'qualification'
-    trackFactory = QualificationRecord
-
-    @Lazy
-    def macro(self):
-        return self.macros['create_qualification']
-
-
-class CreateQualificationRecord(CreateWorkItem):
-
-    pass
 

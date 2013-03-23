@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -51,17 +51,18 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 from cybertools.xedit.browser import ExternalEditorView
 from loops.browser.action import actions, DialogAction
+from loops.browser.common import BaseView
+from loops.browser.concept import ConceptView
 from loops.common import adapted, AdapterBase, baseObject
 from loops.i18n.browser import i18n_macros, LanguageInfo
 from loops.interfaces import IConcept, IResource, IDocument, IMediaAsset, INode
 from loops.interfaces import IViewConfiguratorSchema
-from loops.resource import MediaAsset
-from loops import util
-from loops.util import _
-from loops.browser.common import BaseView
-from loops.browser.concept import ConceptView
 from loops.organize.interfaces import IPresence
 from loops.organize.tracking import access
+from loops.resource import MediaAsset
+from loops.security.common import canWriteObject
+from loops import util
+from loops.util import _
 from loops.versioning.util import getVersion
 
 
@@ -150,13 +151,15 @@ class NodeView(BaseView):
                         priority=20)
         cm.register('portlet_left', 'navigation', title='Navigation',
                     subMacro=node_macros.macros['menu'])
-        if canWrite(self.context, 'title') or (
+        if canWriteObject(self.context) or (
                 # TODO: is this useful in any case?
                 self.virtualTargetObject is not None and
-                    canWrite(self.virtualTargetObject, 'title')):
+                    canWriteObject(self.virtualTargetObject)):
             # check if there are any available actions;
             # store list of actions in macro object (evaluate only once)
-            actions = [act for act in self.getActions('portlet') if act.condition]
+            actions = [act for act in self.getAllowedActions('portlet',
+                                            target=self.virtualTarget) 
+                            if act.condition]
             if actions:
                 cm.register('portlet_right', 'actions', title=_(u'Actions'),
                             subMacro=node_macros.macros['actions'],
@@ -537,7 +540,7 @@ class NodeView(BaseView):
             return self.makeTargetUrl(self.url, util.getUidForObject(target),
                                       target.title)
 
-    def getActions(self, category='object', target=None):
+    def getActions(self, category='object', page=None, target=None):
         actions = []
         #self.registerDojo()
         self.registerDojoFormAll()
@@ -565,9 +568,11 @@ class NodeView(BaseView):
                       description='Open concept map editor in new window',
                       url=cmeUrl, target=target))
         if self.checkAction('create_resource', 'portlet', target):
-            actions.append(DialogAction(self, title='Create Resource...',
+            actions.append(DialogAction(self, name='create_resource',
+                      title='Create Resource...',
                       description='Create a new resource object.',
-                      page=self, target=target))
+                      page=self, target=target,
+                      permission='zope.ManageContent'))
         return actions
 
     actions = dict(portlet=getPortletActions)

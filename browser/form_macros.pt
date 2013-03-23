@@ -291,7 +291,8 @@
                     tal:condition="stTrans"
                     tal:attributes="name string:state.$stDef">
               <option i18n:translate="" value="-">No change</option>
-              <option tal:repeat="trans stTrans"
+              <option i18n:translate=""
+                      tal:repeat="trans stTrans"
                       tal:attributes="value trans/name"
                       tal:content="trans/title">publish</option>
             </select>
@@ -309,7 +310,7 @@
               <input value="Save" type="submit"
                      i18n:attributes="value"
                      tal:attributes="onClick python: view.closeAction(True) or
-                            'return true'">
+                            'submit();; return false'">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
                      tal:condition="view/isInnerHtml"
@@ -322,17 +323,16 @@
 <!-- overridden field renderers -->
 
 <metal:html define-macro="input_html">
-    <p>HTML</p>
-    <div name="field" rows="3" style="width: 600px"
-           dojoType="dijit.Editor"
-           extraPlugins="['insertHorizontalRule','createLink', 'viewsource']"
-           tal:define="width field/width|nothing;
-                       height field/height|python:3"
-           tal:attributes="name name; id name;
-                           rows python: height or 3;
-                           style python:
-                                'width: %s' % (width and str(width)+'px' or '600px');"
-           tal:content="structure data/?name|string:">
+    <div dojoType="dijit.Editor"
+         extraPlugins="['insertHorizontalRule', 'createLink', 'viewsource']"
+         tal:define="width field/width|nothing;
+                     height field/height|python:10"
+         tal:attributes="name name; id name;
+                         height python:
+                              '%spx' % (height and str(height * 15) or '150');
+                         style python:
+                              'width: %spx' % (width and str(width) or '600');"
+         tal:content="structure data/?name|string:">
     </div>
 </metal:html>
 

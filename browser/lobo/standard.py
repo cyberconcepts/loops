@@ -41,18 +41,12 @@ class Base(BaseConceptView):
     templateName = 'lobo.standard'
     macroName = None
 
-    @Lazy
-    def macros(self):
-        return self.controller.getTemplateMacros(self.templateName, self.template)
-
-    @property
-    def macro(self):
-        return self.macros[self.macroName]
-
-    @Lazy
-    def params(self):
-        ann = self.request.annotations.get('loops.view', {})
-        return parse_qs(ann.get('params') or '')
+    #@Lazy      
+    # better implementation in BaseView: 
+    #       splits comma-separated list of values automatically
+    #def params(self):
+    #    ann = self.request.annotations.get('loops.view', {})
+    #    return parse_qs(ann.get('params') or '')
 
 
 class ConceptView(BaseConceptView):
@@ -152,25 +146,8 @@ class ConceptView(BaseConceptView):
 class Layout(Base, ConceptView):
 
     macroName = 'layout'
-
-    def getParts(self):
-        parts = (self.params.get('parts') or [''])[0].split(',')   # obsolete
-        if not parts or not parts[0]:
-            parts = (self.options('parts') or
-                     self.typeOptions('parts') or
-                     ['h1', 'g3'])
-        return self.getPartViews(parts)
-
-    def getPartViews(self, parts):
-        result = []
-        for p in parts:
-            viewName = 'lobo_' + p
-            view = component.queryMultiAdapter((self.adapted, self.request),
-                                               name=viewName)
-            if view is not None:
-                view.parent = self
-                result.append(view)
-        return result
+    partPrefix = 'lobo_'
+    defaultParts = ('h1', 'g3',)
 
 
 class BasePart(Base):
@@ -192,7 +169,7 @@ class BasePart(Base):
         return preds
 
     def getChildren(self):
-        subtypeNames =  (self.params.get('subtypes') or [''])[0].split(',')
+        subtypeNames =  (self.params.get('subtypes') or [])
         subtypes = [self.conceptManager[st] for st in subtypeNames if st]
         result = []
         childRels = self.context.getChildRelations(self.childPredicates)

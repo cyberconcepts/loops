@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ actions.register('edit_object', 'portlet', DialogAction,
         viewName='edit_object.html',
         dialogName='edit',
         prerequisites=['registerDojoEditor'],
+        permission='zope.ManageContent',
 )
 
 actions.register('edit_concept', 'portlet', DialogAction,
@@ -137,6 +138,7 @@ actions.register('edit_concept', 'portlet', DialogAction,
         viewName='edit_concept.html',
         dialogName='edit',
         prerequisites=['registerDojoEditor'],
+        permission='zope.ManageContent',
 )
 
 actions.register('create_concept', 'portlet', DialogAction,
@@ -146,6 +148,7 @@ actions.register('create_concept', 'portlet', DialogAction,
         dialogName='createConcept',
         qualifier='create_concept',
         innerForm='inner_concept_form.html',
+        permission='loops.AssignAsParent',
 )
 
 actions.register('create_subtype', 'portlet', DialogAction,
@@ -155,4 +158,5 @@ actions.register('create_subtype', 'portlet', DialogAction,
         dialogName='createConcept',
         qualifier='subtype',
         innerForm='inner_concept_form.html',
+        permission='loops.AssignAsParent',
 )

@@ -101,17 +101,19 @@ class ReportInstance(BaseReport):
 
     def getResults(self, dynaParams=None):
         crit = self.queryCriteria
-        if crit is None:
-            return []
         limits = self.limits
-        if dynaParams is not None:
-            for k, v in dynaParams.items():
-                if k == 'limits':
-                    limits = v
-                    break
-                if k in crit.parts.keys():
-                    crit.parts[k].comparisonValue = v
-        parts = Jeep(crit.parts)
+        if crit is None:
+            parts = Jeep()
+            #return ResultSet(self, [])
+        else:
+            if dynaParams is not None:
+                for k, v in dynaParams.items():
+                    if k == 'limits':
+                        limits = v
+                        break
+                    if k in crit.parts.keys():
+                        crit.parts[k].comparisonValue = v
+            parts = Jeep(crit.parts)
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,

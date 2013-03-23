@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
-                            TextField, UrlField
+                            TextField, HtmlTextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.report import ReportInstance
 from loops import util
@@ -279,7 +279,7 @@ class MeetingMinutesWorkRow(WorkRow):
     @Lazy
     def isActive(self):
         return self.context.state not in (
-            'finished', 'closed', 'cancelled', 'moved')
+            'finished', 'finished_x', 'closed', 'cancelled', 'moved')
 
 
 class MeetingMinutesWork(WorkReportInstance, SubReport):
@@ -329,7 +329,7 @@ taskTitle = UrlField('title', u'Task Title',
                 description=u'The short description of the task.',
                 cssClass='header-1',
                 executionSteps=['output'])
-taskDescription = TextField('description', u'Description',
+taskDescription = HtmlTextField('description', u'Description',
                 description=u'The long description of the task.',
                 cssClass='header-2',
                 executionSteps=['output'])
@@ -337,11 +337,11 @@ responsible = TextField('responsible', u'label_responsible',
                 description=u'Responsible.',
                 cssClass='header-2',
                 executionSteps=['output'])
-discussion = TextField('discussion', u'label_discussion',
+discussion = HtmlTextField('discussion', u'label_discussion',
                 description=u'Discussion.',
                 cssClass='header-2',
                 executionSteps=['output'])
-consequences = TextField('consequences', u'label_consequences',
+consequences = HtmlTextField('consequences', u'label_consequences',
                 description=u'Consequences.',
                 cssClass='header-2',
                 executionSteps=['output'])

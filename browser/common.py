@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ from zope.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import IBrowserSkinType, IBrowserView
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
-from zope.security import canAccess, checkPermission
+from zope.security import canAccess
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
@@ -54,10 +54,12 @@ from zope.traversing.api import getName, getParent
 from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
+from cybertools.meta.element import Element
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
+from cybertools.util.date import toLocalTime
 from cybertools.util.jeep import Jeep
 from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
@@ -66,6 +68,7 @@ from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
 from loops.organize.tracking import access
 from loops.resource import Resource
+from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
 from loops.type import ITypeConcept
 from loops import util
@@ -131,6 +134,7 @@ class BaseView(GenericView, I18NView):
 
     actions = {}
     portlet_actions = []
+    parts = ()
     icon = None
     modeName = 'view'
     isToplevel = False
@@ -183,6 +187,15 @@ class BaseView(GenericView, I18NView):
         if self.globalOptions('useInformativeURLs') and title:
             return '%s/.%s-%s' % (baseUrl, targetId, normalizeForUrl(title))
         return '%s/.%s' % (baseUrl, targetId)
+
+    def filterInput(self):
+        result = []
+        for name in self.getOptions('filter_input'):
+            view = component.queryMultiAdapter(
+                        (self.context, self.request), name='filter_input.' + name)
+            if view is not None:
+                result.append(view)
+        return result
 
     @Lazy
     def principalId(self):
@@ -258,6 +271,8 @@ class BaseView(GenericView, I18NView):
             d = dc.modified or dc.created
         if isinstance(d, str):
             d = datetime(*(strptime(d, '%Y-%m-%dT%H:%M')[:6]))
+        else:
+            d = toLocalTime(d)
         return d
 
     @Lazy
@@ -486,7 +501,7 @@ class BaseView(GenericView, I18NView):
         if text is None:
             return u''
         htmlPattern = re.compile(r'<(.+)>.+</\1>')
-        if htmlPattern.search(text):
+        if '<br />' in text or htmlPattern.search(text):
             return text
         return self.renderText(text, 'text/restructured')
 
@@ -566,14 +581,27 @@ class BaseView(GenericView, I18NView):
         return component.queryAdapter(self.adapted, IOptions) or DummyOptions()
 
     @Lazy
-    def globalOptions(self):
-        return IOptions(self.loopsRoot)
-
-    @Lazy
     def typeOptions(self):
         if self.typeProvider is None:
             return DummyOptions()
         return IOptions(adapted(self.typeProvider))
+
+    @Lazy
+    def globalOptions(self):
+        return IOptions(self.loopsRoot)
+
+    def getOptions(self, keys):
+        for opt in (self.options, self.typeOptions, self.globalOptions):
+            if isinstance(opt, DummyOptions):
+                continue
+            #import pdb; pdb.set_trace()
+            v = opt
+            for key in keys.split('.'):
+                if isinstance(v, list):
+                    break
+                v = getattr(v, key)
+            if not isinstance(v, DummyOptions):
+                return v
 
     def getPredicateOptions(self, relation):
         return IOptions(adapted(relation.predicate), None) or DummyOptions()
@@ -648,7 +676,10 @@ class BaseView(GenericView, I18NView):
 
     # states
 
-    viewStatesPermission = 'zope.ManageContent'
+    @Lazy
+    def viewStatesPermission(self):
+        opt = self.globalOptions('organize.show_states')
+        return opt and opt[0] or 'zope.ManageContent'
 
     @Lazy
     def states(self):
@@ -684,6 +715,16 @@ class BaseView(GenericView, I18NView):
         """ Provide additional actions; override by subclass.
         """
         return []
+
+    def getAllowedActions(self, category='object', page=None, target=None):
+        result = []
+        for act in self.getActions(category, page=page, target=target):
+            if act.permission is not None:
+                ctx = (target is not None and target.context) or self.context
+                if not checkPermission(act.permission, ctx):
+                    continue
+            result.append(act)
+        return result
 
     @Lazy
     def showObjectActions(self):
@@ -822,6 +863,7 @@ class BaseView(GenericView, I18NView):
 
     def registerDojoFormAll(self):
         self.registerDojo()
+        self.registerDojoEditor()
         cm = self.controller.macros
         jsCall = ('dojo.require("dijit.form.Form"); '
                   'dojo.require("dijit.form.DateTextBox"); '

@@ -1,5 +1,13 @@
-<!-- ZPT macros for loops.compound.blog views
-     $Id$ -->
+<html i18n:domain="loops">
+
+
+<metal:block define-macro="bloglist">
+  <div tal:define="show_headline nothing">
+    <metal:fields use-macro="item/template/macros/concepttitle" /><br />
+    <metal:fields use-macro="item/template/macros/conceptchildren" />
+  </div>
+</metal:block>
+
 
 <metal:block define-macro="blog">
   <div>
@@ -7,9 +15,12 @@
     <div tal:repeat="related item/blogPosts"
              class="blog">
       <tal:child define="data related/data">
+        <tal:actions condition="view/showObjectActions"
+                     define="target nocall:related">
+            <div metal:use-macro="views/node_macros/object_actions" />
+        </tal:actions>
         <h1 class="headline">
-          <a href="#"
-             tal:content="related/title"
+          <a tal:content="related/title"
              tal:attributes="href python: view.getUrlForTarget(related);">Post</a>
         </h1>
         <div class="info"
@@ -51,7 +62,7 @@
     <a tal:omit-tag="not:url"
        tal:content="data/creator"
        tal:attributes="href url">Will Smith</a>
-    <span tal:condition="item/adapted/private">
+    <span tal:condition="item/adapted/private|nothing">
       (<span i18n:translate="">Private</span>)
     </span>
   </div>
@@ -63,7 +74,7 @@
   <div class="text"
        tal:content="structure item/render">Here comes the text...</div>
   <div class="comment"
-       tal:define="comment data/privateComment"
+       tal:define="comment data/privateComment|nothing"
        tal:condition="comment">
     <h4 i18n:translate="" class="headline">Private Comment</h4>
     <div tal:content="structure python:
@@ -72,3 +83,6 @@
   <metal:resources use-macro="view/concept_macros/conceptresources" />
   <metal:block use-macro="view/comment_macros/comments" />
 </div>
+
+
+</html>

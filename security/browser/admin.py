@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Security-related views.
-
-$Id$
 """
 
 from zope.app.authentication.groupfolder import GroupInformation
@@ -145,7 +143,7 @@ class PermissionView(object):
         for e in entry:
             value = SettingAsBoolean[e[1]]
             value = (value is False and '-') or (value and '+') or ''
-            result.append(value + e[0])
+            result.append(value + (e[0] or ''))
         return ', '.join(result)
 
     def getPrincipalPermissions(self):

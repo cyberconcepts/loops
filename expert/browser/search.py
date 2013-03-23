@@ -196,8 +196,9 @@ class Search(ConceptView):
 
     @Lazy
     def statesDefinitions(self):
-        return [component.getUtility(IStatesDefinition, name=n)
-                    for n in self.globalOptions('organize.stateful.resource', ())]
+        stdnames = (self.globalOptions('organize.stateful.resource', []) +
+                    self.globalOptions('organize.stateful.special', []))
+        return [component.getUtility(IStatesDefinition, name=n) for n in stdnames]
 
     @Lazy
     def selectedStates(self):
@@ -259,6 +260,8 @@ class Search(ConceptView):
         for std, states in self.selectedStates.items():
             if std.startswith('state.resource.'):
                 std = std[len('state.resource.'):]
+            elif std.startswith('state.'):
+                std = std[len('state.'):]
             else:
                 continue
             stf = component.queryAdapter(obj, IStateful, name=std)

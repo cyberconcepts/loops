@@ -1,0 +1,76 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <!-- concept classes -->
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.Questionnaire"
+        provides="loops.knowledge.survey.interfaces.IQuestionnaire"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.Questionnaire">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestionnaire" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestionnaire" />
+  </zope:class>
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.QuestionGroup"
+        provides="loops.knowledge.survey.interfaces.IQuestionGroup"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.QuestionGroup">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestionGroup" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestionGroup" />
+  </zope:class>
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.Question"
+        provides="loops.knowledge.survey.interfaces.IQuestion"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.Question">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IQuestion" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IQuestion" />
+  </zope:class>
+
+  <zope:adapter
+        factory="loops.knowledge.survey.base.FeedbackItem"
+        provides="loops.knowledge.survey.interfaces.IFeedbackItem"
+        trusted="True" />
+  <zope:class class="loops.knowledge.survey.base.FeedbackItem">
+    <require permission="zope.View"
+             interface="loops.knowledge.survey.interfaces.IFeedbackItem" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.survey.interfaces.IFeedbackItem" />
+  </zope:class>
+
+  <!-- track -->
+
+  <zope:class class="loops.knowledge.survey.response.Response">
+    <require permission="zope.View"
+             interface="cybertools.tracking.interfaces.ITrack" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.tracking.interfaces.ITrack" />
+  </zope:class>
+
+  <!-- views -->
+
+  <zope:adapter
+      name="survey.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.knowledge.survey.browser.SurveyView"
+      permission="zope.View" />
+
+  <browser:page name="survey_data.csv"
+        for="loops.interfaces.IView"
+        class="loops.knowledge.survey.browser.SurveyCsvExport"
+        permission="zope.View" />
+
+</configure>

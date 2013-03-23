@@ -368,7 +368,8 @@
         i18n:translate=""></td>
     <td colspan="2">
       <tal:states repeat="state def/states">
-        <tal:state define="name string:state.$deftype.${def/name};
+        <tal:state define="xx_name string:state.$deftype.${def/name};
+                           name string:state.${def/name};
                            value state/name">
             <input type="checkbox"
                    tal:attributes="name string:$name:list;

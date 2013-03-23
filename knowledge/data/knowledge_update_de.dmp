@@ -1,5 +1,6 @@
 type(u'competence', u'Kompetenz', viewName=u'', 
-    typeInterface=u'', options=u'action.portlet:create_subtype,edit_concept')
+    typeInterface=u'loops.knowledge.qualification.interfaces.ICompetence', 
+    options=u'action.portlet:create_subtype,edit_concept')
 # type(u'person', u'Person', viewName=u'', 
 #     typeInterface=u'loops.knowledge.interfaces.IPerson', 
 #     options=u'action.portlet:editPerson')
@@ -9,9 +10,9 @@ type(u'competence', u'Kompetenz', viewName=u'',
 # type(u'topic', u'Thema', viewName=u'', 
 #     typeInterface=u'loops.knowledge.interfaces.ITopic', 
 #     options=u'action.portlet:createTask,createTopic,editTopic')
-type(u'training', u'Schulung', viewName=u'', 
-    typeInterface=u'loops.organize.interfaces.ITask', 
-    options=u'action.portlet:edit_concept')
+#type(u'training', u'Schulung', viewName=u'', 
+#    typeInterface=u'loops.organize.interfaces.ITask', 
+#    options=u'action.portlet:edit_concept')
 
 concept(u'general', u'Allgemein', u'domain')
 concept(u'system', u'System', u'domain')
@@ -34,11 +35,12 @@ child(u'general', u'provides', u'standard')
 child(u'general', u'requires', u'standard')
 #child(u'general', u'task', u'standard')
 #child(u'general', u'topic', u'standard')
-child(u'general', u'training', u'standard')
+#child(u'general', u'training', u'standard')
 
 child(u'system', u'issubtype', u'standard')
 
-child(u'competence', u'training', u'issubtype', usePredicate=u'provides')
+child(u'competence', u'competence', u'issubtype')
+#child(u'competence', u'training', u'issubtype', usePredicate=u'provides')
 
 # records
-records(u'qualification', u'loops.knowledge.qualification.QualificationRecord')
+#records(u'qualification', u'loops.knowledge.qualification.base.QualificationRecord')

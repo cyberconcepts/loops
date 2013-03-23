@@ -170,28 +170,7 @@ For testing, we first have to provide the needed utilities and settings
 Competence and Certification Management
 =======================================
 
-  >>> from cybertools.stateful.interfaces import IStatesDefinition
-  >>> from loops.knowledge.qualification import qualificationStates
-  >>> from loops.knowledge.interfaces import IQualificationRecords
-  >>> from loops.knowledge.qualification import QualificationRecords
-  >>> component.provideUtility(qualificationStates, 
-  ...                          provides=IStatesDefinition,
-  ...                          name='knowledge.qualification')
-  >>> component.provideAdapter(QualificationRecords,
-  ...                          provides=IQualificationRecords)
-
-  >>> qurecs = loopsRoot.getRecordManager()['qualification']
-
-We first create a training that provides knowledge in Python specials.
-
-  >>> trainingPySpecC = concepts['trpyspec'] = Concept(
-  ...                                           u'Python Specials Training')
-  >>> trainingPySpecC.assignParent(pySpecialsC)
-
-Then we record the need for John to acquire this knowledge.
-
-  >>> from loops.knowledge.browser import CreateQualificationRecordForm
-  >>> from loops.knowledge.browser import CreateQualificationRecord
+  >>> tCompetence = concepts['competence']
 
 
 Glossaries
@@ -203,6 +182,15 @@ Glossary items are topic-like concepts that may be edited by end users.
   >>> from loops.knowledge.glossary.browser import EditGlossaryItemForm
   >>> from loops.knowledge.glossary.browser import CreateGlossaryItem
   >>> from loops.knowledge.glossary.browser import EditGlossaryItem
+
+
+Survey
+======
+
+  >>> from loops.knowledge.tests import importSurvey
+  >>> importSurvey(loopsRoot)
+
+  >>> from loops.knowledge.survey.browser import SurveyView
 
 
 Fin de partie

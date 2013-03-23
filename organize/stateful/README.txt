@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
   >>> from zope import component
   >>> from zope.traversing.api import getName
 
@@ -181,6 +179,12 @@ Querying objects by state
 
   >>> list(view.results)
   [<...>]
+
+
+Task States
+===========
+
+  >>> from loops.organize.stateful.task import taskStates, publishableTask
 
 
 Fin de partie

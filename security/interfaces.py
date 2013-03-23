@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Interfaces for loops security management.
-
-$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -33,6 +31,10 @@ class ISecuritySetter(Interface):
     def setDefaultSecurity():
         """ Set some default role permission assignments (grants) on the
             context object.
+        """
+
+    def setStateSecurity():
+        """ Set the security according to the state(s) of the object.
         """
 
     def setDefaultRolePermissions():

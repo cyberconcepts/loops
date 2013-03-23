@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -58,6 +58,11 @@ class TextField(Field):
                 text = tag + styleInfo + text[len(tag):]
                 break
         return text
+
+
+class HtmlTextField(Field):
+
+    format = 'text/html'
 
 
 class DecimalField(Field):

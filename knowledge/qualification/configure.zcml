@@ -1,0 +1,11 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="loops">
+
+  <zope:adapter
+        factory="loops.knowledge.qualification.base.Competence" />
+
+  <!-- views -->
+
+</configure>

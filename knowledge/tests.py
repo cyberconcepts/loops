@@ -2,16 +2,31 @@
 
 import os
 import unittest, doctest
-from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import ztapi
+from zope import component
 from zope.interface.verify import verifyClass
+from zope.testing.doctestunit import DocFileSuite
+
+from loops.knowledge.qualification.base import Competence
+from loops.knowledge.survey.base import Questionnaire, Question, FeedbackItem
+from loops.knowledge.survey.interfaces import IQuestionnaire, IQuestion, \
+                IFeedbackItem
 from loops.organize.party import Person
 from loops.setup import importData as baseImportData
 
 
+importPath = os.path.join(os.path.dirname(__file__), 'data')
+
+
 def importData(loopsRoot):
-    importPath = os.path.join(os.path.dirname(__file__), 'data')
-    baseImportData(loopsRoot, importPath, 'loops_knowledge_de.dmp')
+    baseImportData(loopsRoot, importPath, 'knowledge_de.dmp')
+
+def importSurvey(loopsRoot):
+    component.provideAdapter(Competence)
+    component.provideAdapter(Questionnaire, provides=IQuestionnaire)
+    component.provideAdapter(Question, provides=IQuestion)
+    component.provideAdapter(FeedbackItem, provides=IFeedbackItem)
+    baseImportData(loopsRoot, importPath, 'survey_de.dmp')
 
 
 class Test(unittest.TestCase):

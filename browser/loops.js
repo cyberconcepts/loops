@@ -211,6 +211,22 @@ function closeDialog(save) {
 }
 
 function closeDataWidget(save) {
+    form = dojo.byId('dialog_form');
+    dojo.query('.dijitEditor').forEach(function(item, index) {
+        console.log(item);
+        var name = item.id;
+        var widget = dijit.byId(name);
+        value = widget.getValue();
+        var ta = document.createElement('input');
+        ta.type = 'hidden';
+        ta.name = name;
+        ta.value = value;
+        form.appendChild(ta);
+    });
+}
+
+
+function xx_closeDataWidget(save) {
     var widget = dijit.byId('data');
     if (widget != undefined && save) {
         value = widget.getValue();
