@@ -154,6 +154,11 @@ class BaseView(GenericView, I18NView):
     def checkPermissions(self):
         return canAccessObject(self.context)
 
+    def translate(self, text, msgFactory=_):
+        if msgFactory is None:
+            return text
+        return msgFactory(text)
+
     @Lazy
     def contextInfo(self):
         return dict(view=self, context=getName(self.context))

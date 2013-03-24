@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ class StateAction(Action):
 
     url = None
     definition = None
+    msgFactory = _
 
     @Lazy
     def stateful(self):
@@ -56,6 +57,7 @@ class StateAction(Action):
     @Lazy
     def description(self):
         lang = self.view.languageInfo.language
+        _ = self.msgFactory
         definition = translate(_(self.definition), target_language=lang)
         title = translate(_(self.stateObject.title), target_language=lang)
         return _(u'State information for $definition: $title',
@@ -71,11 +73,15 @@ class StateAction(Action):
         return 'cybertools.icons/' + icon
 
 
-for std in statefulActions:
+def registerStatefulAction(std, msgFactory=_):
     actions.register('state.' + std, 'object', StateAction,
             definition = std,
             cssClass='icon-action',
+            msgFactory=msgFactory,
     )
+
+for std in statefulActions:
+    registerStatefulAction(std)
 
 
 #class StateQuery(ConceptView):

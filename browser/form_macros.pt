@@ -274,18 +274,22 @@
 </metal:versioning>
 
 
-<metal:states define-macro="states"
+<metal:states define-macro="states">
+    <tr><td colspan="5" i18n:translate="" class="headline">States</td></tr>
+    <metal:states define-macro="states_info"
                   tal:define="states view/states"
                   tal:condition="states">
-      <tr><td colspan="5" i18n:translate="" class="headline">States</td></tr>
       <tr tal:repeat="st states">
         <tal:state define="stObj st/getStateObject;
                            stDef st/statesDefinition;
                            stTrans st/getAvailableTransitionsForUser">
-          <td colspan="2" i18n:translate=""
-              tal:content="stDef">loops.simple_publishing</td>
-          <td i18n:translate=""
-              tal:content="stObj/title">draft</td>
+          <td colspan="2">
+            <b i18n:translate=""
+               tal:content="python:view.translate(stDef, st.msgFactory)">
+              loops.simple_publishing</b>:&nbsp;</td>
+          <td>
+            <span i18n:translate=""
+                  tal:content="stObj/title">draft</span>&nbsp;</td>
           <td>
             <select name="state.loops.simple_publishing"
                     tal:condition="stTrans"
@@ -300,6 +304,7 @@
           <td />
         </tal:state>
       </tr>
+    </metal:states>
 </metal:states>
 
 
