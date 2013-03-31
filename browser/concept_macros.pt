@@ -159,11 +159,8 @@
                  tal:attributes="dojoType python:
                         item.editable and 'dojo.dnd.Source' or ''">
           <tal:items repeat="related children">
-            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
-                              description related/description;
-                              predicate related/predicateTitle;
-                              info python: ' | '.join(
-                                    t for t in (description, predicate) if t)">
+            <tal:item define="class python: 
+                        repeat['related'].odd() and 'even' or 'odd';">
               <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
                                   id related/uniqueId">
                 <td tal:condition="item/showCheckboxes|nothing"
@@ -173,7 +170,7 @@
                          tal:attributes="value uid;" /></td>
                 <td valign="top">
                   <a tal:attributes="href python: view.getUrlForTarget(related);
-                                     title info">
+                                     title related/relationInfo">
                     <span tal:replace="related/title">Resource Title</span>
                   </a>
                 </td>
@@ -242,11 +239,8 @@
                  tal:attributes="dojoType python:
                         item.editable and 'dojo.dnd.Source' or ''">
           <tal:items repeat="related resources">
-            <tal:item define="class python: repeat['related'].odd() and 'even' or 'odd';
-                              description related/description;
-                              predicate related/predicateTitle;
-                              info python: ' | '.join(
-                                    t for t in (description, predicate) if t)">
+            <tal:item define="class python: 
+                        repeat['related'].odd() and 'even' or 'odd';">
               <tr tal:attributes="class string:$class dojoDndItem dojoDndHandle;
                                   id related/uniqueId">
                 <td tal:condition="item/showCheckboxes|nothing"
@@ -263,7 +257,7 @@
                     <img tal:attributes="src icon/src" />
                   </a>
                   <a tal:attributes="href python: view.getUrlForTarget(related);
-                                     title info">
+                                     title related/relationInfo">
                     <div tal:content="related/title">Resource Title</div>
                   </a>
                 </td>

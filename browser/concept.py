@@ -196,6 +196,12 @@ class BaseRelationView(BaseView):
             return u''
         return self.predicateTitle
 
+    @Lazy
+    def relationInfo(self):
+        predInfo = ', ' .join(p.title for p in self.predicates 
+                                if p != self.defaultPredicate)
+        return ' | '.join(t for t in (self.description, predInfo) if t)
+
 
 class ConceptView(BaseView):
 
