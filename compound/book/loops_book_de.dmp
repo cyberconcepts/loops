@@ -4,11 +4,11 @@ type(u'documenttype', u'Dokumentenart', options=u'qualifier:assign',
 # book types
 type(u'book', u'Buch', viewName=u'book_overview', typeInterface=u'',
     options=u'action.portlet:create_subtype,edit_concept')
-#type(u'page', u'Seite', viewName=u'page_layout', 
-#    typeInterface=u'loops.compound.book.interfaces.IPage',
-#    options=u'action.portlet:edit_concept')
 type(u'section', u'Kapitel', viewName=u'section_view', typeInterface=u'',
     options=u'action.portlet:create_subtype,edit_concept')
+#type(u'topic', u'Thema', viewName=u'book_topic_view', 
+#    typeInterface=u'loops.knowledge.interfaces.ITopic',
+#    options=u'action.portlet:create_topic,edit_topic')
 
 concept(u'system', u'System', u'domain')
 
@@ -30,4 +30,3 @@ concept(u'usecase', u'Fallbeispiel', u'documenttype')
 # book structure
 child(u'book', u'section', u'issubtype', usePredicate=u'ispartof')
 child(u'section', u'section', u'issubtype', usePredicate=u'ispartof')
-#child(u'section', u'page', u'issubtype', usePredicate=u'ispartof')

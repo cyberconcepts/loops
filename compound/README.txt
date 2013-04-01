@@ -355,7 +355,7 @@ Books, Sections, and Pages
   >>> importPath = os.path.join(os.path.dirname(__file__), 'book')
   >>> importData(loopsRoot, importPath, 'loops_book_de.dmp')
 
-  >>> from loops.compound.book.browser import PageLayout
+  >>> from loops.compound.book.browser import BookView, SectionView, TopicView
 
 
 Fin de partie

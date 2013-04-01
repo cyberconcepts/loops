@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -46,8 +46,20 @@ class Base(object):
         return book_template.macros
 
     @Lazy
+    def documentTypeType(self):
+        return self.conceptManager['documenttype']
+
+    @Lazy
+    def sectionType(self):
+        return self.conceptManager['section']
+
+    @Lazy
     def isPartOfPredicate(self):
         return self.conceptManager['ispartof']
+
+    @Lazy
+    def showNavigation(self):
+        return self.typeOptions.show_navigation
 
     @Lazy
     def breadcrumbsParent(self):
@@ -82,34 +94,8 @@ class Base(object):
         if self.editable:
             return 'index.html'
 
-
-class BookOverview(Base, ConceptView):
-
-    @Lazy
-    def macro(self):
-        return book_template.macros['book']
-
-
-class SectionView(Base, ConceptView):
-
-    @Lazy
-    def macro(self):
-        return book_template.macros['section']
-
-    @Lazy
-    def documentTypeType(self):
-        return self.conceptManager['documenttype']
-
-    @Lazy
-    def showNavigation(self):
-        return self.typeOptions.show_navigation
-
-    @Lazy
-    def sectionType(self):
-        return self.conceptManager['section']
-
     def getResources(self):
-        relViews = super(SectionView, self).getResources()
+        relViews = super(Base, self).getResources()
         return relViews
 
     @Lazy
@@ -144,64 +130,23 @@ class SectionView(Base, ConceptView):
                 yield c
 
 
-# layout parts - probably obsolete:
+class BookView(Base, ConceptView):
 
-class PageLayout(Base, standard.Layout):
-
-    def getParts(self):
-        parts = ['headline', 'keyquestions', 'quote', 'maintext', 
-                 'story', 'tip', 'usecase']
-        return self.getPartViews(parts)
+    @Lazy
+    def macro(self):
+        return book_template.macros['book']
 
 
-class PagePart(object):
+class SectionView(Base, ConceptView):
 
-    template = book_template
-    templateName = 'compound.book'
-    macroName = 'text'
-    partName = None     # define in subclass
-    gridPattern = ['span-4']
-
-    def getResources(self):
-        result = []
-        res = self.adapted.getParts().get(self.partName) or []
-        for idx, r in enumerate(res):
-            result.append(standard.ResourceView(
-                                r, self.request, parent=self, idx=idx))
-        return result
+    @Lazy
+    def macro(self):
+        return book_template.macros['section']
 
 
-class Headline(PagePart, standard.Header2):
+class TopicView(Base, ConceptView):
 
-    macroName = 'headline'
+    @Lazy
+    def macro(self):
+        return book_template.macros['topic']
 
-
-class MainText(PagePart, standard.BasePart):
-
-    partName = 'maintext'
-
-
-class KeyQuestions(PagePart, standard.BasePart):
-
-    partName = 'keyquestions'
-
-
-class Story(PagePart, standard.BasePart):
-
-    partName = 'story'
-
-
-class Tip(PagePart, standard.BasePart):
-
-    partName = 'tip'
-
-
-class UseCase(PagePart, standard.BasePart):
-
-    partName = 'usecase'
-
-
-class Quote(PagePart, standard.BasePart):
-
-    partName = 'quote'
-    gridPattern = ['span-2 last']
