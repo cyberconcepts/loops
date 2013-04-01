@@ -1,14 +1,20 @@
 <html i18n:domain="loops">
 
 
-<metal:book define-macro="book">
-  <metal:info use-macro="view/concept_macros/concepttitle" />
-  <div tal:repeat="related item/children">
+<metal:children define-macro="children">
+  <div tal:repeat="related item/children"
+       tal:define="level python:level + 1"
+       tal:attributes="class string:content-$level">
     <h3>
       <a tal:attributes="href python:view.getUrlForTarget(related)"
          tal:content="related/title" /></h3>
     <div tal:content="structure related/renderedDescription" />
   </div>
+</metal:children>
+
+<metal:book define-macro="book">
+  <metal:info use-macro="view/concept_macros/concepttitle" />
+  <metal:info use-macro="item/book_macros/children" />
 </metal:book>
 
 
@@ -32,71 +38,82 @@
     </div>
   </metal:navigation>
   <metal:info use-macro="view/concept_macros/concepttitle" />
-  <div tal:repeat="related item/textResources">
-    <div class="span-4">
-      <div tal:attributes="class python:
-                  item.getCssClassForResource(related)"
-           tal:content="structure related/render" />
+  <metal:info use-macro="item/book_macros/children" />
+  <metal:text define-macro="textresources">
+    <div tal:repeat="related item/textResources">
+      <div class="span-4">
+        <div tal:attributes="class python:
+                    item.getCssClassForResource(related)"
+             tal:content="structure related/render" />
+      </div>
+      <div class="span-2 last" style="padding-top: 0.4em">
+        <div class="object-actions" style="padding-top: 0"
+             tal:define="url python:view.getUrlForTarget(related.context)"
+             tal:condition="related/editable">
+          <a i18n:translate="" i18n:attributes="title"
+             title="Edit"
+             tal:define="targetUid python:view.getUidForObject(related.context);
+                         url 
+                    string:$url/edit_object.html?version=this&targetUid=$targetUid"
+             tal:attributes="href url;
+                             onclick string:objectDialog('edit', '$url');; 
+                                            return false">
+            <img tal:attributes="src 
+                      string:$resourceBase/cybertools.icons/vcard_edit.png" /></a>
+          <a i18n:translate="" i18n:attributes="title"
+             title="Edit with external editor."
+             xxtal:condition="related/xeditable"
+             tal:condition="nothing"
+             tal:attributes="href string:$url/external_edit?version=this">
+            <img tal:attributes="src 
+              string:$resourceBase/cybertools.icons/application_edit.png" /></a>
+        </div>
+        <div tal:repeat="parent python:item.getParentsForResource(related)">
+          <a tal:content="parent/title"
+             tal:attributes="href python:view.getUrlForTarget(parent)" />
+        </div>
+        <div tal:repeat="image python:
+                            item.images[repeat['related'].index() + 1]">
+          <a dojoType="dojox.image.Lightbox" group="mediasset"
+             i18n:attributes="title"
+             tal:attributes="href image/fullImageUrl;
+                             title image/title">
+            <img tal:attributes="src image/src;
+                                 alt image/title" /></a>
+        </div>
+      </div>
     </div>
-    <div class="span-2 last" style="padding-top: 0.4em">
-      <div class="object-actions" style="padding-top: 0"
-           tal:define="url python:view.getUrlForTarget(related.context)"
-           tal:condition="related/editable">
-        <a i18n:translate="" i18n:attributes="title"
-           title="Edit"
-           tal:define="targetUid python:view.getUidForObject(related.context);
-                       url 
-                  string:$url/edit_object.html?version=this&targetUid=$targetUid"
-           tal:attributes="href url;
-                           onclick string:objectDialog('edit', '$url');; 
-                                          return false">
-          <img tal:attributes="src 
-                    string:$resourceBase/cybertools.icons/vcard_edit.png" /></a>
-        <a i18n:translate="" i18n:attributes="title"
-           title="Edit with external editor."
-           xxtal:condition="related/xeditable"
-           tal:condition="nothing"
-           tal:attributes="href string:$url/external_edit?version=this">
-          <img tal:attributes="src 
-            string:$resourceBase/cybertools.icons/application_edit.png" /></a>
-      </div>
-      <div tal:repeat="parent python:item.getParentsForResource(related)">
-        <a tal:content="parent/title"
-           tal:attributes="href python:view.getUrlForTarget(parent)" />
-      </div>
-      <div tal:repeat="image python:
-                          item.images[repeat['related'].index() + 1]">
-        <a dojoType="dojox.image.Lightbox" group="mediasset"
-           i18n:attributes="title"
-           tal:attributes="href image/fullImageUrl;
-                           title image/title">
-          <img tal:attributes="src image/src;
-                               alt image/title" /></a>
-      </div>
-    </div>
-  </div>
+  </metal:text>
   <br style="clear: both" />
   <metal:navigation use-macro="item/book_macros/navigation" />
   <br />
 </metal:section>
 
 
-<!-- layout part macros - obsolete? -->
-
-<metal:part define-macro="headline">
-  <div tal:define="cell part/getView">
-    <metal:headline use-macro="item/macros/headline" />
-  </div>
-</metal:part>
-
-<metal:part define-macro="text">
-  <tal:cell repeat="cell part/getResources">
-    <div tal:attributes="class cell/cssClass">
-      <h3 tal:content="cell/title" />
-      <span tal:content="structure cell/view/render" />
+<metal:topic define-macro="topic">
+  <metal:info use-macro="view/concept_macros/concepttitle" />
+  <h2 i18n:translate=""
+      tal:condition="python: list(item.children())">Children</h2>
+  <metal:children use-macro="item/book_macros/children" />
+  <h2 i18n:translate=""
+      tal:condition="item/textResources">Text Elements</h2>
+  <div>
+    <div tal:repeat="related item/textResources"
+         tal:define="level python:level + 1"
+         tal:attributes="class string:content-$level">
+      <h3>
+        <a tal:attributes="href python:view.getUrlForTarget(related.context)"
+           tal:content="related/title" />
+      </h3>
+      <div>
+        <div tal:replace="structure related/renderShortText" />
+        <p>
+          <a i18n:translate=""
+              tal:attributes="href python:view.getUrlForTarget(related.context)">
+            more...</a></p>
     </div>
-  </tal:cell>
-</metal:part>
+  </div>
+</metal:topic>
 
 
 </html>

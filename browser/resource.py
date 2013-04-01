@@ -40,6 +40,7 @@ from zope.traversing.browser import absoluteURL
 from cybertools.browser.action import actions
 from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
+from cybertools.util.html import extractFirstPart
 from cybertools.xedit.browser import ExternalEditorView, fromUnicode
 from loops.browser.action import DialogAction, TargetAction
 from loops.browser.common import EditForm, BaseView
@@ -251,6 +252,12 @@ class ResourceView(BaseView):
             #print wp.wiki.getManager()
             #return util.toUnicode(wp.render(self.request))
         return super(ResourceView, self).renderText(text, contentType)
+
+    def renderShortText(self):
+        return self.renderDescription() or self.createShortText(self.render())
+
+    def createShortText(self, text=None):
+        return extractFirstPart(text or self.render())
 
     def download(self):
         """ Force download, e.g. of a PDF file """
