@@ -85,6 +85,9 @@
       </table>
       <input type="submit" name="submit" value="Evaluate Questionnaire"
              i18n:attributes="value" />
+      <input type="button" name="reset_responses" value="Reset Responses Entered"
+             i18n:attributes="value"
+             onclick="setRadioButtons('none'); return false" />
     </form>
   </div>
 </metal:block>
