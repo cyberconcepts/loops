@@ -48,6 +48,7 @@ class SurveyView(ConceptView):
 
     @Lazy
     def macro(self):
+        self.registerDojo()
         return template.macros['survey']
 
     def results(self):

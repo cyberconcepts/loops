@@ -20,6 +20,7 @@
 Base class(es) for track/record managers.
 """
 
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.meta.interfaces import IOptions
@@ -65,6 +66,8 @@ class BaseRecordManager(object):
         else:
             principal = getPrincipalForUserId(userId, context=self.context)
         if principal is not None:
+            if IUnauthenticatedPrincipal.providedBy(principal):
+                return None
             person = getPersonForUser(self.context, principal=principal)
             if person is None:
                 return principal.id
