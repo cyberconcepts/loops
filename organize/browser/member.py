@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 """
 Definition of view classes and other browser related stuff for
 members (persons).
-
-$Id$
 """
 
 from zope import interface, component
@@ -78,7 +76,7 @@ class PersonalInfo(ConceptView):
 
 class MemberRegistration(NodeView, CreateForm):
 
-    interface = IMemberRegistration
+    interface = IMemberRegistration     # TODO: add company, create institution
     message = _(u'The user account has been created.')
 
     formErrors = dict(
@@ -99,7 +97,7 @@ class MemberRegistration(NodeView, CreateForm):
 
     def checkPermissions(self):
         personType = adapted(self.conceptManager['person'])
-        perms = IOptions(personType)('registration.permission')
+        perms = IOptions(personType)(self.permissions_key)
         if perms:
             return checkPermission(perms[0], self.context)
         return checkPermission('loops.ManageSite', self.context)
@@ -114,7 +112,7 @@ class MemberRegistration(NodeView, CreateForm):
         schema.fields.remove('birthDate')
         schema.fields.reorder(-2, 'loginName')
         return schema
-
+    # TODO: add company, create institution
     @Lazy
     def object(self):
         return Person(Concept())
@@ -155,6 +153,31 @@ class MemberRegistration(NodeView, CreateForm):
         #                    % (self.url, login, msg))
         self.request.response.redirect('%s?message=%s' % (self.url, msg))
         return False
+
+
+class SecureMemberRegistration(MemberRegistration):
+
+    permissions_key = u'secure_registration.permissions'
+    roles_key = u'secure_registration.roles'
+
+    @Lazy
+    def schema(self):
+        schema = super(MemberRegistration, self).schema
+        schema.fields.remove('birthDate')
+        schema.fields.remove('password')
+        schema.fields.remove('passwordConfirm')
+        schema.fields.remove('phoneNumbers')
+        schema.fields.reorder(-2, 'loginName')
+        return schema
+
+
+class ConfirmMemberRegistration(NodeView):
+
+    # TODO: control form via interface?
+
+    @Lazy
+    def macro(self):
+        return organize_macros.macros['confirm']
 
 
 class PasswordChange(NodeView, Form):

@@ -1,5 +1,9 @@
 <html i18n:domain="loops">
 
+<metal:registration define-macro="confirm">
+</metal:registration>
+
+
 <metal:task define-macro="task">
   <metal:data use-macro="view/concept_macros/conceptdata">
   </metal:data>
