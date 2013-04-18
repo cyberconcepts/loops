@@ -112,8 +112,12 @@ def getObjectsForUids(uids, adapt=True):
     return [obj for obj in result if obj is not None]
 
 
+varDirectory = None
+
 def getVarDirectory(request=None):
-    varDir = None
+    varDir = varDirectory
+    if varDir is not None:
+        return varDir
     if request is not None:
         pub = request.publication
         if pub is not None:
