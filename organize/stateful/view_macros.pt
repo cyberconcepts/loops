@@ -68,4 +68,32 @@
 </metal:query>
 
 
+<!-- portlets -->
+
+<metal:actions define-macro="portlet_states">
+    <div tal:repeat="stf macro/stfs">
+      <div tal:condition="python:len(macro.stfs) > 1">
+        <span i18n:translate="">Workflow</span>
+        <span i18n:translate=""
+              tal:content="stf/statesDefinition" />
+      </div>
+      <div>
+        <b i18n:translate="">State</b>:
+        <span i18n:translate=""
+              tal:content="stf/state" />
+      </div>
+      <div>
+        <div><b i18n:translate="">Available Transitions</b>:</div>
+        <ul>
+          <li tal:repeat="action stf/getAvailableTransitionsForUser">
+            <a i18n:translate=""
+               tal:attributes="href string:change_state.html"
+               tal:content="action/title" />
+          </li>
+        </ul>
+      </div>
+    </div>
+</metal:actions>
+
+
 </html>

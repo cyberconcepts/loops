@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 from loops.browser.common import EditForm, BaseView, LoopsTerms, concept_macros
+from loops.browser.common import ViewMode
 from loops.common import adapted
 from loops.concept import Concept, ConceptTypeSourceList, PredicateSourceList
 from loops.i18n.browser import I18NView
@@ -746,3 +747,30 @@ class ListTypeInstances(ListChildren):
                                     noDuplicates, useFilter, [self.typePredicate]):
                 yield c
 
+
+class TabbedPage(ConceptView):
+
+    @Lazy
+    def subpagePredicates(self):
+        pred = self.conceptManager.get('issubpage')
+        if pred is None:
+            pred = self.isPartOfPredicate
+        return [pred]
+
+    def viewModes(self):
+        modes = Jeep()
+        for s in self.getSiblings(self.subpagePredicates):
+            url = self.nodeView.getUrlForTarget(s)
+            modes.append(ViewMode(getName(s), s.title, url))
+        if not modes:
+            return modes
+        modes[getName(self.context)].active = True
+        return modes
+
+    def getSiblings(self, preds):
+        for p in self.context.getParents(preds):
+            parent = p
+            break
+        else:
+            return []
+        return p.getChildren(preds)

@@ -42,13 +42,18 @@ template = ViewPageTemplateFile('view_macros.pt')
 
 class SurveyView(ConceptView):
 
-    tabview = 'index.html'
     data = None
     errors = None
 
     @Lazy
     def macro(self):
+        self.registerDojo()
         return template.macros['survey']
+
+    @Lazy
+    def tabview(self):
+        if self.editable:
+            return 'index.html'
 
     def results(self):
         result = []

@@ -195,9 +195,12 @@ class NodeView(BaseView):
             cm.register('portlet_left', 'calendar', title=_(u'Calendar'),
                         subMacro=calendar_macros.macros['main'],
                         priority=90)
-        if self.setupTarget:
-            # force early portlet registrations by target
-            self.virtualTarget
+        # force early portlet registrations by target by setting up target view
+        if self.virtualTarget is not None:
+            std = self.virtualTarget.typeOptions('portlet_states')
+            if std:
+                from loops.organize.stateful.browser import registerStatesPortlet
+                registerStatesPortlet(self.controller, self.virtualTarget, std)
 
     @Lazy
     def usersPresent(self):

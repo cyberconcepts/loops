@@ -117,6 +117,7 @@
   <tal:img condition="cell/img">
     <a dojoType="dojox.image.Lightbox" group="mediasset"
        i18n:attributes="title"
+       tal:omit-tag="python:part.imageSize in ('large',)"
        tal:attributes="href cell/img/fullImageUrl;
                        title python: cell.img['description'] or cell.img['title']">
       <img tal:condition="showImageLink|python:False"

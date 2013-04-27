@@ -39,10 +39,9 @@ class Responses(BaseRecordManager):
         self.context = context
 
     def save(self, data):
-        if not self.personId:
-            return
-        self.storage.saveUserTrack(self.uid, 0, self.personId, data, 
-                                    update=True, overwrite=True)
+        if self.personId:
+            self.storage.saveUserTrack(self.uid, 0, self.personId, data, 
+                                        update=True, overwrite=True)
 
     def load(self):
         if self.personId:

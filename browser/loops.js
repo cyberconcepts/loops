@@ -1,4 +1,4 @@
-/* $Id$ */
+/* loops.js */
 
 function openEditWindow(url) {
     zmi = window.open(url, 'zmi');
@@ -17,6 +17,12 @@ function toggleCheckBoxes(toggle, fieldName) {
     var w = toggle.form[fieldName];
     if (w[0] == null) w = [w];
     for (i in w) w[i].checked=toggle.checked;
+}
+
+function setRadioButtons(value) {
+    dojo.forEach(dojo.query('input[type="radio"][value="' + value + '"]'), 
+                        function(n) {
+                            n.checked = true;})
 }
 
 function validate(nodeName, required) {
