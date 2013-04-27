@@ -553,6 +553,14 @@
       factory="loops.browser.concept.ListTypeInstances"
       permission="zope.View" />
 
+  <zope:adapter
+      name="tabbed_page.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.concept.TabbedPage"
+      permission="zope.View" />
+
   <!-- dialogs/forms (end-user views) -->
 
   <page
