@@ -120,6 +120,10 @@ thead th {
     margin-bottom: 0.3em;
 }
 
+.infotext {
+    font-size: 90%;
+}
+
 .fields td {
     vertical-align: top;
 }
@@ -161,6 +165,10 @@ table.listing td {
     white-space: normal;
     vertical-align: middle;
     border-bottom: 1px dotted #dddddd;
+}
+
+table.listing tr.vpad td {
+    padding: 7px 2px 7px 2px;
 }
 
 fieldset.box table.listing td {
