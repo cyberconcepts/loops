@@ -279,7 +279,8 @@ fieldset.box td {
 
 .top-actions {
     position: absolute;
-    top: 30px;
+    top: 40px;
+    margin-left: 10px;
 }
 
 .quicksearch input {
@@ -293,7 +294,7 @@ fieldset.box td {
 
 .page-actions {
     position: absolute;
-    top: 55px;
+    top: 75px;
     margin-left: 210px;
 }
 
