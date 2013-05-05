@@ -124,6 +124,9 @@ class Base(object):
                 return getName(c)
         return 'textelement'
 
+    def getMacroForResource(self, r):
+        return self.book_macros['default_text']
+
     def getParentsForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
             if c != self.context and c.conceptType != self.documentTypeType:
