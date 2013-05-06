@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-04-06 12:00 CET\n"
+"PO-Revision-Date: 2013-05-05 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -85,6 +85,9 @@ msgstr "Thema bearbeiten..."
 
 msgid "Modify topic."
 msgstr "Thema ändern"
+
+msgid "Please correct the indicated errors."
+msgstr "Bitte berichtigen Sie die angezeigten Fehler."
 
 # blog
 
@@ -759,11 +762,17 @@ msgstr "Teilnehmerregistrierung"
 msgid "Register"
 msgstr "Benutzer registrieren"
 
+msgid "Login name already taken."
+msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."
+
 msgid "Your old password was not entered correctly."
 msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
 
 msgid "Password and password confirmation do not match."
 msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort überein."
+
+msgid "The user account has been created."
+msgstr "Ihr Benutzerkonto wurde eingerichtet."
 
 msgid "Your password has been changed."
 msgstr "Ihr Passwort wurde geändert."

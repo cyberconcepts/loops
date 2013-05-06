@@ -111,6 +111,10 @@ class BaseMemberRegistration(NodeView):
     def item(self):
         return self
 
+    @Lazy
+    def data(self):
+        return self.request.form
+
     def getPrincipalAnnotation(self, principal):
         return annotations(principal).get(ANNOTATION_KEY, None)
 
@@ -201,12 +205,13 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
         pw = generateName()
         email = form.get('email')
-        result = regMan.register(login, pw,
-                                 form.get('lastName'), form.get('firstName'),
-                                 email=email,)
-        if isinstance(result, dict):
-            fi = formState.fieldInstances[result['fieldName']]
-            fi.setError(result['error'], self.formErrors)
+        try:
+            result = regMan.register(login, pw,
+                                     form.get('lastName'), form.get('firstName'),
+                                     email=email,)
+        except ValueError, e:
+            fi = formState.fieldInstances['loginName']
+            fi.setError('duplicate_loginname', self.formErrors)
             formState.severity = max(formState.severity, fi.severity)
             return True
         self.object = result
@@ -225,11 +230,11 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         url = u'%s/selfservice_confirmation.html?login=%s&id=%s' % (
                                     baseUrl, userid, id,)
         recipients = [recipient]
-        message = u'Um die Anmeldung abzuschliessen muessen Sie folgenden Link betaetigen:\n\n'
+        message = _(u'confirmation_mail_text') + u':\n\n'
         message = (message + url).encode('UTF-8')
-        sender = 'webmaster@zeitraum-bayern.de'
+        sender = 'helmutm@cy55.de'
         msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = 'Benutzer-Registrierung'
+        msg['Subject'] = _(u'confirmation_mail_subject')
         msg['From'] = sender
         msg['To'] = ', '.join(recipients)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
@@ -263,12 +268,10 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
         schema = super(ConfirmMemberRegistration, self).schema
         schema.fields.remove('birthDate')
         schema.fields.remove('phoneNumbers')
-        schema.fields.loginName.readonly = True
-        schema.fields.reorder(-2, 'loginName')
-        schema.fields.firstName.readonly = True
-        schema.fields.lastName.readonly = True
-        schema.fields.firstName.readonly = True
-        schema.fields.email.readonly = True
+        schema.fields.remove('loginName')
+        schema.fields.remove('firstName')
+        schema.fields.remove('lastName')
+        schema.fields.remove('email')
         return schema
 
     def update(self):
@@ -285,11 +288,19 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
         id = form.get('id')
         if not id or id != pa.get('id'):
             return True
+        instance = component.getAdapter(self.object, IInstance, name='editor')
+        instance.template = self.schema
+        self.formState = formState = instance.applyTemplate(data=form,
+                                            fieldHandlers=self.fieldHandlers)
+        #formState = self.formState = self.validate(form)
+        if formState.severity > 0:
+            return True
         pw = form.get('password')
         pwConfirm = form.get('passwordConfirm')
         if pw != pwConfirm:
-            msg = self.errorMessages['confirm_nomatch']
-            self.request.form['message'] = msg
+            fi = formState.fieldInstances['password']
+            fi.setError('confirm_nomatch', self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
             return True
         del pa['id']
         del pa['timestamp']
