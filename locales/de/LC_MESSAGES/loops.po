@@ -774,7 +774,7 @@ msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort üb
 msgid "confirmation_mail_subject"
 msgstr "Benutzer-Registrierung"
 
-msgid "confirmation_mail_text."
+msgid "confirmation_mail_text"
 msgstr "Bitte clicken Sie auf den folgenden Link, um die Anmeldung abzschließen."
 
 msgid "The user account has been created."

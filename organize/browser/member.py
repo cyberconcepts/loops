@@ -83,6 +83,7 @@ class BaseMemberRegistration(NodeView):
 
     interface = IMemberRegistration     # TODO: add company, create institution
     message = _(u'The user account has been created.')
+    template = form_macros
 
     formErrors = dict(
         confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
@@ -95,6 +96,17 @@ class BaseMemberRegistration(NodeView):
     permissions_key = u'registration.permissions'
     roles_key = u'registration.roles'
     registration_adapter_key = u'registration.adapter'
+    text_names_prefix = 'organize.member.registration'
+    # texts: reg_info, reg_feedback, conf_mail, conf_info, conf_feedback
+    info_key = 'reg_info'
+    feedback_key = 'reg_feedback'
+
+    isInnerHtml = False
+    showAssignments = False
+    form_action = 'register'
+
+    def closeAction(self, submit=True):
+        return u''
 
     @Lazy
     def macro(self):
@@ -118,6 +130,21 @@ class BaseMemberRegistration(NodeView):
     def getPrincipalAnnotation(self, principal):
         return annotations(principal).get(ANNOTATION_KEY, None)
 
+    @Lazy
+    def infoText(self):
+        name = '.'.join((self.text_names_prefix, self.info_key))
+        text = self.resourceManager.get(name)
+        if text:
+            return self.renderText(text.data)
+        return u''
+
+    @Lazy
+    def feedbackUrl(self):
+        name = '.'.join((self.text_names_prefix, self.feedback_key))
+        text = self.resourceManager.get(name)
+        if text:
+            return self.getUrlForTarget(text)
+
 
 class MemberRegistration(BaseMemberRegistration, CreateForm):
 
@@ -135,7 +162,7 @@ class MemberRegistration(BaseMemberRegistration, CreateForm):
 
     def update(self):
         form = self.request.form
-        if not form.get('action'):
+        if not form.get('form.action'):
             return True
         instance = component.getAdapter(self.object, IInstance, name='editor')
         instance.template = self.schema
@@ -187,12 +214,16 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         return schema
 
     @Lazy
+    def macro(self):
+        return organize_macros.macros['register']
+
+    @Lazy
     def object(self):
         return Person(Concept())
 
     def update(self):
         form = self.request.form
-        if not form.get('action'):
+        if not form.get('form.action'):
             return True
         instance = component.getAdapter(self.object, IInstance, name='editor')
         instance.template = self.schema
@@ -205,7 +236,7 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
         pw = generateName()
         email = form.get('email')
-        try:
+        try:    
             result = regMan.register(login, pw,
                                      form.get('lastName'), form.get('firstName'),
                                      email=email,)
@@ -221,8 +252,11 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         pa['id'] = generateName()
         pa['timestamp'] = datetime.utcnow()
         self.notifyEmail(login, email, pa['id'])
-        msg = self.message
-        self.request.response.redirect('%s?loops.message=%s' % (self.url, msg))
+        if self.feedbackUrl:
+            self.request.response.redirect(self.feedbackUrl)
+        else:
+            msg = self.message
+            self.request.response.redirect('%s?loops.message=%s' % (self.url, msg))
         return False
 
     def notifyEmail(self, userid, recipient, id):
@@ -230,11 +264,18 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         url = u'%s/selfservice_confirmation.html?login=%s&id=%s' % (
                                     baseUrl, userid, id,)
         recipients = [recipient]
-        message = _(u'confirmation_mail_text') + u':\n\n'
-        message = (message + url).encode('UTF-8')
+        subject = _(u'confirmation_mail_subject')
+        name = '.'.join((self.text_names_prefix, self.feedback_key))
+        text = self.resourceManager.get(name)
+        if text:
+            message = text.data % url
+            subject = text.description or subject
+        else:
+            message = _(u'confirmation_mail_text') + u':\n\n'
+            message = (message + url).encode('UTF-8')
         sender = 'helmutm@cy55.de'
         msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = _(u'confirmation_mail_subject')
+        msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(recipients)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
@@ -245,14 +286,10 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
 
     permissions_key = u'secure_registration.permissions'
     roles_key = u'secure_registration.roles'
+    info_key = 'conf_info'
+    feedback_key = 'conf_feedback'
 
-    template = form_macros
-    isInnerHtml = False
-    showAssignments = False
     form_action = 'confirm_registration'
-
-    def closeAction(self, submit=True):
-        return u''
 
     @Lazy
     def macro(self):
@@ -306,8 +343,11 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
         del pa['timestamp']
         ip = getInternalPrincipal(userId)
         ip.setPassword(pw)
-        url = '%s?loops.message=%s' % (self.url, self.message)
-        self.request.response.redirect(url)
+        if self.feedbackUrl:
+            self.request.response.redirect(self.feedbackUrl)
+        else:
+            url = '%s?loops.message=%s' % (self.url, self.message)
+            self.request.response.redirect(url)
         return False
 
 

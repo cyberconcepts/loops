@@ -481,7 +481,7 @@ class BaseView(GenericView, I18NView):
             return absoluteURL(provider, self.request)
         return None
 
-    def renderText(self, text, contentType):
+    def renderText(self, text, contentType='text/restructured'):
         text = util.toUnicode(text)
         typeKey = util.renderingFactories.get(contentType, None)
         if typeKey is None:

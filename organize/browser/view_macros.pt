@@ -1,7 +1,14 @@
 <html i18n:domain="loops">
 
 
+<metal:block define-macro="register">
+  <tal:info content="structure item/infoText" />
+  <metal:data use-macro="view/form_macros/edit" />
+</metal:block>
+
+
 <metal:block define-macro="confirm">
+  <tal:info content="structure item/infoText" />
   <metal:data use-macro="view/form_macros/edit">
     <metal:custom fill-slot="custom_header">
       <tbody><tr><td colspan="5">
