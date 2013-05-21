@@ -123,6 +123,15 @@ actions.register('external_edit', 'object', TargetAction,
         cssClass='icon-action',
 )
 
+actions.register('create_object', 'portlet', DialogAction,
+        title=_('Create Resource...'),
+        description=_('Create a new resource object.'),
+        viewName='create_object.html',
+        dialogName='edit',
+        prerequisites=['registerDojoEditor'],
+        permission='zope.ManageContent',
+)
+
 actions.register('edit_object', 'portlet', DialogAction,
         title=_(u'Edit Resource...'),
         description=_(u'Modify resource object.'),
