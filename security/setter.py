@@ -231,6 +231,8 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
         setter.propagateSecurity(revert, updated)
 
     def propagateSecurity(self, revert=False, updated=None):
+        if self.globalOptions('noPropagateSecurity'):
+            return
         if updated is None:
             updated = set()
         obj = self.baseObject
