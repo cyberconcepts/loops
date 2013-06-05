@@ -92,6 +92,7 @@ class BaseMemberRegistration(NodeView):
 
     label = _(u'Member Registration')
     label_submit = _(u'Register')
+    title = _('Member Registration')
 
     permissions_key = u'registration.permissions'
     roles_key = u'registration.roles'
@@ -104,6 +105,7 @@ class BaseMemberRegistration(NodeView):
     isInnerHtml = False
     showAssignments = False
     form_action = 'register'
+    versionInfo = None
 
     def closeAction(self, submit=True):
         return u''
@@ -202,6 +204,7 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
 
     permissions_key = u'secure_registration.permissions'
     roles_key = u'secure_registration.roles'
+    email_key = 'reg_email'
 
     @Lazy
     def schema(self):
@@ -265,17 +268,19 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
                                     baseUrl, userid, id,)
         recipients = [recipient]
         subject = _(u'confirmation_mail_subject')
-        name = '.'.join((self.text_names_prefix, self.feedback_key))
+        name = '.'.join((self.text_names_prefix, self.email_key))
         text = self.resourceManager.get(name)
         if text:
-            message = text.data % url
+            message = (text.data % url).encode('UTF-8')
             subject = text.description or subject
         else:
             message = _(u'confirmation_mail_text') + u':\n\n'
             message = (message + url).encode('UTF-8')
-        sender = 'helmutm@cy55.de'
+        senderInfo = self.globalOptions('email.sender')
+        sender = senderInfo and senderInfo[0] or 'info@loops.cy55.de'
+        sender = sender.encode('UTF-8')
         msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = subject
+        msg['Subject'] = subject.encode('UTF-8')
         msg['From'] = sender
         msg['To'] = ', '.join(recipients)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
@@ -286,8 +291,9 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
 
     permissions_key = u'secure_registration.permissions'
     roles_key = u'secure_registration.roles'
-    info_key = 'conf_info'
-    feedback_key = 'conf_feedback'
+    info_key = 'confirm_info'
+    feedback_key = 'confirm_feedback'
+    email_key = 'confirm_email'
 
     form_action = 'confirm_registration'
 
@@ -303,6 +309,8 @@ class ConfirmMemberRegistration(BaseMemberRegistration, Form):
     @Lazy
     def schema(self):
         schema = super(ConfirmMemberRegistration, self).schema
+        schema.fields.remove('salutation')
+        schema.fields.remove('academicTitle')
         schema.fields.remove('birthDate')
         schema.fields.remove('phoneNumbers')
         schema.fields.remove('loginName')

@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-05-05 12:00 CET\n"
+"PO-Revision-Date: 2013-06-05 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -762,6 +762,9 @@ msgstr "Teilnehmerregistrierung"
 msgid "Register"
 msgstr "Benutzer registrieren"
 
+msgid "Register new member"
+msgstr "Neu registrieren"
+
 msgid "Login name already taken."
 msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."
 
@@ -775,7 +778,7 @@ msgid "confirmation_mail_subject"
 msgstr "Benutzer-Registrierung"
 
 msgid "confirmation_mail_text"
-msgstr "Bitte clicken Sie auf den folgenden Link, um die Anmeldung abzschließen."
+msgstr "Bitte clicken Sie auf den folgenden Link, um die Anmeldung abzuschließen."
 
 msgid "The user account has been created."
 msgstr "Ihr Benutzerkonto wurde eingerichtet."
