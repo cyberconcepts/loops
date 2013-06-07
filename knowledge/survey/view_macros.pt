@@ -11,6 +11,9 @@
   </tal:description>
   <div tal:condition="feedback">
     <h3 i18n:translate="">Feedback</h3>
+    <div tal:define="header item/adapted/feedbackHeader"
+         tal:condition="header"
+         tal:content="structure python:item.renderText(header, 'text/restructured')" />
     <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
