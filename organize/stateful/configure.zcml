@@ -77,7 +77,7 @@
              set_schema="cybertools.stateful.interfaces.IStateful" />
   </zope:class>
 
-  <!-- views -->
+  <!-- views and form controllers -->
 
   <browser:page
         for="loops.interfaces.IConcept"
@@ -90,6 +90,19 @@
         name="filter_input.allstates"
         class="loops.organize.stateful.browser.FilterAllStates"
         permission="zope.View" />
+
+  <browser:page
+      name="change_state.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.stateful.browser.ChangeStateForm"
+      permission="zope.ManageContent" />
+
+  <zope:adapter
+      name="change_state"
+      for="loops.browser.node.NodeView
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      factory="loops.organize.stateful.browser.ChangeState"
+      permission="zope.ManageContent" />
 
   <!-- event handlers -->
 

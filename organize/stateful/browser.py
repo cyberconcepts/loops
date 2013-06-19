@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,9 +26,13 @@ from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
 
 from cybertools.browser.action import Action, actions
+from cybertools.composer.schema.field import Field
+from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.composer.schema.schema import Schema
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.browser.form import ObjectForm, EditObject
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
@@ -83,16 +87,65 @@ class StateAction(Action):
 
 for std in statefulActions:
     actions.register('state.' + std, 'object', StateAction,
-            definition = std,
+            definition=std,
             cssClass='icon-action',
     )
+
+
+class ChangeStateBase(object):
+
+    @Lazy
+    def stateful(self):
+        return component.getAdapter(self.view.context, IStateful,
+                                    name=self.definition)
+
+    @Lazy
+    def definition(self):
+        return self.request.form.get('stdef') or u''
+
+    @Lazy
+    def action(self):
+        return self.request.form.get('action') or u''
+
+    @Lazy
+    def stateObject(self):
+        return self.stateful.getStateObject()
+
+
+class ChangeStateForm(ObjectForm, ChangeStateBase):
+
+    form_action = 'change_state_action'
+    data = {}
+
+    @Lazy
+    def macro(self):
+        return template.macros['change_state']
+
+    @Lazy
+    def schema(self):
+        # TODO: create schema directly, use field information specified
+        # in transition
+        commentsField = Field('comments', u'Comments', 'textarea',
+                              description=u'Enter comments.')
+        fields = [commentsField]
+        return Schema(name='change_state', request=self.request, 
+                      manager=self, *fields)
+        #schemaFactory = ISchemaFactory(self.adapted)
+        #return schemaFactory(self.typeInterface, manager=self,
+        #                     request=self.request)
+
+
+class ChangeState(EditObject, ChangeStateBase):
+
+    def update(self):
+        print '***', self.request.form
+        return True
 
 
 #class StateQuery(ConceptView):
 class StateQuery(BaseView):
 
     template = template
-
     form_action = 'execute_search_action'
 
     @Lazy
