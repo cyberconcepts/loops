@@ -52,7 +52,7 @@ def registerStatesPortlet(controller, view, statesDefs,
     cm = controller.macros
     stfs = [component.getAdapter(view.context, IStateful, name=std) 
                 for std in statesDefs]
-    cm.register(region, 'states', title=_(u'States'),
+    cm.register(region, 'states', title=_(u'Workflow'),
                 subMacro=template.macros['portlet_states'],
                 priority=priority, info=view, stfs=stfs)
 
@@ -81,8 +81,9 @@ class StateAction(Action):
 
     @Lazy
     def icon(self):
-        icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
-        return 'cybertools.icons/' + icon
+        return self.stateObject.stateIcon
+        #icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
+        #return 'cybertools.icons/' + icon
 
 
 for std in statefulActions:
@@ -96,7 +97,7 @@ class ChangeStateBase(object):
 
     @Lazy
     def stateful(self):
-        return component.getAdapter(self.view.context, IStateful,
+        return component.getAdapter(self.view.virtualTargetObject, IStateful,
                                     name=self.definition)
 
     @Lazy
@@ -106,6 +107,10 @@ class ChangeStateBase(object):
     @Lazy
     def action(self):
         return self.request.form.get('action') or u''
+
+    @Lazy
+    def transition(self):
+        return self.stateful.getStatesDefinition().transitions[self.action]
 
     @Lazy
     def stateObject(self):
@@ -122,23 +127,26 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
         return template.macros['change_state']
 
     @Lazy
+    def title(self):
+        return self.virtualTargetObject.title
+
+    @Lazy
     def schema(self):
         # TODO: create schema directly, use field information specified
         # in transition
-        commentsField = Field('comments', u'Comments', 'textarea',
-                              description=u'Enter comments.')
+        commentsField = Field('comments', _(u'label_transition_comments'), 
+                              'textarea',
+                              description=_(u'desc_transition_comments'))
         fields = [commentsField]
         return Schema(name='change_state', request=self.request, 
                       manager=self, *fields)
-        #schemaFactory = ISchemaFactory(self.adapted)
-        #return schemaFactory(self.typeInterface, manager=self,
-        #                     request=self.request)
 
 
 class ChangeState(EditObject, ChangeStateBase):
 
     def update(self):
         print '***', self.request.form
+        self.stateful.doTransition(self.action)
         return True
 
 

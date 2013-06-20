@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-06-05 12:00 CET\n"
+"PO-Revision-Date: 2013-06-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -1025,13 +1025,25 @@ msgid "Restrict to objects with certain states"
 msgstr "Auf Objekte mit bestimmtem Status beschränken"
 
 msgid "Workflow"
-msgstr "Statusdefinition/Workflow"
+msgstr "Workflow"
 
 msgid "States"
 msgstr "Statuswerte"
 
+msgid "States Definition"
+msgstr "Workflowdefinition"
+
+msgid "State Transition"
+msgstr "Workflow-Statusänderung"
+
+msgid "Transition"
+msgstr "Aktion"
+
 msgid "State information for $definition: $title"
 msgstr "Status ($definition): $title"
+
+msgid "Available Transitions"
+msgstr "Übergänge"
 
 msgid "classification_quality"
 msgstr "Klassifizierung"
@@ -1044,6 +1056,12 @@ msgstr "Aufgabe"
 
 msgid "publishable_task"
 msgstr "Aufgabe/Zugriff"
+
+msgid "label_transition_comments"
+msgstr "Bemerkung"
+
+msgid "desc_transition_comments"
+msgstr "Notizen zum Statusübergang."
 
 # state names
 
