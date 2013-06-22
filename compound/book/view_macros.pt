@@ -42,11 +42,15 @@
   <metal:text define-macro="textresources">
     <div tal:repeat="related item/textResources">
       <div class="span-4">
-        <metal:text define-macro="default_text">
-          <div tal:attributes="class python:
-                      item.getCssClassForResource(related)"
-               tal:content="structure related/render" />
-        </metal:text>
+        <div metal:define-macro="default_text"
+             tal:attributes="class python:
+                      item.getCssClassForResource(related)">
+          <img class="flow-left" style="padding-top: 5px"
+               tal:define="icon python:item.getIconForResource(related)"
+               tal:condition="icon"
+               tal:attributes="src icon" />
+          <span tal:content="structure related/render" />
+        </div>
       </div>
       <div class="span-2 last" style="padding-top: 0.4em">
         <div class="object-actions" style="padding-top: 0"

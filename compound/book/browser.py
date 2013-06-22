@@ -26,6 +26,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.traversing.api import getName
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
 from loops.browser.lobo import standard
 from loops.browser.concept import ConceptView
@@ -118,11 +119,29 @@ class Base(object):
                 self.images[idx].append(img)
         return result
 
-    def getCssClassForResource(self, r):
+    def getDocumentTypeForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
             if c.conceptType == self.documentTypeType:
-                return getName(c)
-        return 'textelement'
+                return c
+
+    def getOptionsForResource(self, r, name):
+        dt = self.getDocumentTypeForResource(r)
+        if dt is not None:
+            return IOptions(adapted(dt))(name)
+
+    def getIconForResource(self, r):
+        icon = self.getOptionsForResource(r, 'icon')
+        if icon:
+            return '/'.join((self.controller.resourceBase, icon[0]))
+
+    def getCssClassForResource(self, r):
+        dt = self.getDocumentTypeForResource(r)
+        if dt is None:
+            return 'textelement'
+        css = IOptions(adapted(dt))('cssclass')
+        if css:
+            return css
+        return getName(dt)
 
     def getMacroForResource(self, r):
         return self.book_macros['default_text']
