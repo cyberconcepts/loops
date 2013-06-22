@@ -1,5 +1,5 @@
 type(u'documenttype', u'Dokumentenart', options=u'qualifier:assign',
-    typeInterface='loops.interfaces.IOptions',
+    typeInterface=u'loops.interfaces.IOptions',
     viewName=u'')
 
 # book types

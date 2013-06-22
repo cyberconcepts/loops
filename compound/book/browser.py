@@ -129,6 +129,10 @@ class Base(object):
         if dt is not None:
             return IOptions(adapted(dt))(name)
 
+    def getTitleForResource(self, r):
+        if self.getOptionsForResource(r, 'showtitle'):
+            return r.title
+
     def getIconForResource(self, r):
         icon = self.getOptionsForResource(r, 'icon')
         if icon:

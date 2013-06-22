@@ -45,6 +45,9 @@
         <div metal:define-macro="default_text"
              tal:attributes="class python:
                       item.getCssClassForResource(related)">
+          <h3 tal:define="ttitle python:item.getTitleForResource(related)"
+              tal:condition="ttitle"
+              tal:content="ttitle" />
           <img class="flow-left" style="padding-top: 5px"
                tal:define="icon python:item.getIconForResource(related)"
                tal:condition="icon"
