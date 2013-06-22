@@ -34,6 +34,7 @@ from cybertools.typology.type import BaseType, TypeManager
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import ITypeConcept
+from loops.interfaces import IOptions
 from loops.interfaces import IResourceAdapter, IFile, IExternalFile, IImage
 from loops.interfaces import ITextDocument, INote
 from loops.concept import Concept
@@ -272,7 +273,8 @@ class TypeInterfaceSourceList(object):
 
     implements(schema.interfaces.IIterableSource)
 
-    typeInterfaces = (ITypeConcept, IFile, IExternalFile, ITextDocument, INote)
+    typeInterfaces = (ITypeConcept, IFile, IExternalFile, ITextDocument, INote,
+                      IOptions)
 
     def __init__(self, context):
         self.context = context
