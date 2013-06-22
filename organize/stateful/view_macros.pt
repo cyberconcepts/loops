@@ -80,7 +80,7 @@
         <span i18n:translate=""
               tal:content="stf/state" />
         <img tal:define="stateObject stf/getStateObject"
-             tal:attributes="src string:/@@/${stateObject/stateIcon}" />
+             tal:attributes="src string:$resourceBase/${stateObject/stateIcon}" />
       </div>
       <div><b i18n:translate="">Available Transitions</b>:
         <ul>
