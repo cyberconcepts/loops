@@ -75,13 +75,14 @@
         <span i18n:translate=""
               tal:content="stf/statesDefinition" />
       </div>
-      <div>
+      <div tal:define="stateObject stf/getStateObject">
         <b i18n:translate="">State</b>:
-        <span i18n:translate=""
-              tal:content="stf/state" />
-        <img style="margin-bottom: -3px"
-             tal:define="stateObject stf/getStateObject"
-             tal:attributes="src string:$resourceBase/${stateObject/stateIcon}" />
+        <span style="white-space: nowrap">
+          <span i18n:translate=""
+                tal:content="stateObject/title" />
+          <img style="margin-bottom: -1px"
+               tal:attributes="src string:$resourceBase/${stateObject/stateIcon}" />
+        </span>
       </div>
       <div><b i18n:translate="">Available Transitions</b>:
         <ul>
