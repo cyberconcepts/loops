@@ -59,6 +59,7 @@ def taskStates():
         Transition('finish', 'finish', 'finished'),
         Transition('cancel', 'cancel', 'cancelled'),
         Transition('reopen', 're-open', 'draft'),
+        Transition('archive', 'archive', 'archived'),
         initialState='draft')
 
 

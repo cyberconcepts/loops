@@ -62,6 +62,10 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.4em;
 }
 
+a {
+    text-decoration: none;
+}
+
 a[href]:hover {
     text-decoration: none;
     color: #6060c0;
@@ -120,6 +124,10 @@ thead th {
     margin-bottom: 0.3em;
 }
 
+.infotext {
+    font-size: 90%;
+}
+
 .fields td {
     vertical-align: top;
 }
@@ -161,6 +169,10 @@ table.listing td {
     white-space: normal;
     vertical-align: middle;
     border-bottom: 1px dotted #dddddd;
+}
+
+table.listing tr.vpad td {
+    padding: 7px 2px 7px 2px;
 }
 
 fieldset.box table.listing td {
@@ -267,7 +279,8 @@ fieldset.box td {
 
 .top-actions {
     position: absolute;
-    top: 30px;
+    top: 40px;
+    margin-left: 10px;
 }
 
 .quicksearch input {
@@ -281,7 +294,7 @@ fieldset.box td {
 
 .page-actions {
     position: absolute;
-    top: 55px;
+    top: 75px;
     margin-left: 210px;
 }
 

@@ -112,7 +112,7 @@ class SurveyView(ConceptView):
                                mapping=dict(minAnswers=qugroup.minAnswers)),
                              target_language=lang)
         if info:
-            text = u'%s<br />(%s)' % (text, info)
+            text = u'<i>%s</i><br />(%s)' % (text, info)
         return text
 
     def getValues(self, question):

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -78,28 +78,28 @@ class OfficeFile(ExternalFileAdapter):
     @Lazy
     def docPropertyDom(self):
         fn = self.docFilename
-        dummy = dict(core=[], custom=[])
+        result = dict(core=[], custom=[])
         root, ext = os.path.splitext(fn)
         if not ext.lower() in self.fileExtensions:
-            return dummy
+            return result
         try:
             zf = ZipFile(fn, 'r')
         except IOError, e:
             from logging import getLogger
             self.logger.warn(e)
-            return dummy
+            return result
         if self.corePropFileName not in zf.namelist():
             self.logger.warn('Core properties not found in file %s.' %
                              self.externalAddress)
+        else:
+            result['core'] = etree.fromstring(zf.read(self.corePropFileName))
         if self.propFileName not in zf.namelist():
             self.logger.warn('Custom properties not found in file %s.' %
                              self.externalAddress)
-        propsXml = zf.read(self.propFileName)
-        corePropsXml = zf.read(self.corePropFileName)
-        # TODO: read core.xml, return both trees in dictionary
+        else:
+            result['custom'] = etree.fromstring(zf.read(self.propFileName))
         zf.close()
-        return {'custom': etree.fromstring(propsXml),
-                'core': etree.fromstring(corePropsXml)}
+        return result
 
     def getDocProperty(self, pname):
         for p in self.docPropertyDom['custom']:

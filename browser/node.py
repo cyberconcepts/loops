@@ -386,6 +386,8 @@ class NodeView(BaseView):
             ht = super(NodeView, self).headTitle
             if ht not in parts:
                 parts.append(ht)
+        if self.globalOptions('reverseHeadTitle'):
+            parts.reverse()
         return ' - ' .join(parts)
 
     @Lazy

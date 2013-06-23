@@ -185,7 +185,7 @@ sure that a principal object can be served by a corresponding factory):
   ...         'lastName': u'Sawyer',
   ...         'firstName': u'Tom',
   ...         'email': u'tommy@sawyer.com',
-  ...         'action': 'update',}
+  ...         'form.action': 'update',}
 
 and register it.
 

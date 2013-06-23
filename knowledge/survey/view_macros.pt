@@ -11,6 +11,9 @@
   </tal:description>
   <div tal:condition="feedback">
     <h3 i18n:translate="">Feedback</h3>
+    <div tal:define="header item/adapted/feedbackHeader"
+         tal:condition="header"
+         tal:content="structure python:item.renderText(header, 'text/restructured')" />
     <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
@@ -47,12 +50,12 @@
       <table class="listing">
         <tal:qugroup repeat="qugroup item/adapted/questionGroups">
           <tr><td colspan="6">&nbsp;</td></tr>
-          <tr>
+          <tr class="vpad">
             <td tal:define="infoText python:item.getInfoText(qugroup)">
               <b tal:content="qugroup/title" />
-              <div tal:condition="infoText">
+              <div class="infotext"
+                   tal:condition="infoText">
                 <span tal:content="structure infoText" />
-                <br />&nbsp;
               </div>
             </td>
             <td style="text-align: center"
@@ -63,7 +66,8 @@
                 style="text-align: right"
                 i18n:translate="">Does not apply</td>
           </tr>
-          <tr tal:repeat="question qugroup/questions">
+          <tr class="vpad"
+              tal:repeat="question qugroup/questions">
             <td tal:content="question/text" />
             <td style="white-space: nowrap; text-align: center"
                 tal:repeat="value python:item.getValues(question)">

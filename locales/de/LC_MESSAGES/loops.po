@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-04-06 12:00 CET\n"
+"PO-Revision-Date: 2013-06-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -85,6 +85,9 @@ msgstr "Thema bearbeiten..."
 
 msgid "Modify topic."
 msgstr "Thema ändern"
+
+msgid "Please correct the indicated errors."
+msgstr "Bitte berichtigen Sie die angezeigten Fehler."
 
 # blog
 
@@ -762,11 +765,26 @@ msgstr "Teilnehmerregistrierung"
 msgid "Register"
 msgstr "Benutzer registrieren"
 
+msgid "Register new member"
+msgstr "Neu registrieren"
+
+msgid "Login name already taken."
+msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."
+
 msgid "Your old password was not entered correctly."
 msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
 
 msgid "Password and password confirmation do not match."
 msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort überein."
+
+msgid "confirmation_mail_subject"
+msgstr "Benutzer-Registrierung"
+
+msgid "confirmation_mail_text"
+msgstr "Bitte clicken Sie auf den folgenden Link, um die Anmeldung abzuschließen."
+
+msgid "The user account has been created."
+msgstr "Ihr Benutzerkonto wurde eingerichtet."
 
 msgid "Your password has been changed."
 msgstr "Ihr Passwort wurde geändert."
@@ -1010,13 +1028,25 @@ msgid "Restrict to objects with certain states"
 msgstr "Auf Objekte mit bestimmtem Status beschränken"
 
 msgid "Workflow"
-msgstr "Statusdefinition/Workflow"
+msgstr "Workflow"
 
 msgid "States"
 msgstr "Statuswerte"
 
+msgid "States Definition"
+msgstr "Workflowdefinition"
+
+msgid "State Transition"
+msgstr "Workflow-Statusänderung"
+
+msgid "Transition"
+msgstr "Aktion"
+
 msgid "State information for $definition: $title"
 msgstr "Status ($definition): $title"
+
+msgid "Available Transitions"
+msgstr "Übergänge"
 
 msgid "classification_quality"
 msgstr "Klassifizierung"
@@ -1029,6 +1059,12 @@ msgstr "Aufgabe"
 
 msgid "publishable_task"
 msgstr "Aufgabe/Zugriff"
+
+msgid "label_transition_comments"
+msgstr "Bemerkung"
+
+msgid "desc_transition_comments"
+msgstr "Notizen zum Statusübergang."
 
 # state names
 

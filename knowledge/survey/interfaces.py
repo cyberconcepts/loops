@@ -38,6 +38,13 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         default=4,
         required=True)
 
+    feedbackHeader = schema.Text(
+        title=_(u'Feedback Header'),
+        description=_(u'Text that will appear at the top of the feedback page.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
     feedbackFooter = schema.Text(
         title=_(u'Feedback Footer'),
         description=_(u'Text that will appear at the end of the feedback page.'),
