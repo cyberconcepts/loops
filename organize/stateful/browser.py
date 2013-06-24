@@ -26,9 +26,13 @@ from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
 
 from cybertools.browser.action import Action, actions
+from cybertools.composer.schema.field import Field
+from cybertools.composer.schema.interfaces import ISchemaFactory
+from cybertools.composer.schema.schema import Schema
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.browser.form import ObjectForm, EditObject
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
@@ -48,7 +52,7 @@ def registerStatesPortlet(controller, view, statesDefs,
     cm = controller.macros
     stfs = [component.getAdapter(view.context, IStateful, name=std) 
                 for std in statesDefs]
-    cm.register(region, 'states', title=_(u'States'),
+    cm.register(region, 'states', title=_(u'Workflow'),
                 subMacro=template.macros['portlet_states'],
                 priority=priority, info=view, stfs=stfs)
 
@@ -79,13 +83,14 @@ class StateAction(Action):
 
     @Lazy
     def icon(self):
-        icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
-        return 'cybertools.icons/' + icon
+        return self.stateObject.stateIcon
+        #icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
+        #return 'cybertools.icons/' + icon
 
 
 def registerStatefulAction(std, msgFactory=_):
     actions.register('state.' + std, 'object', StateAction,
-            definition = std,
+            definition=std,
             cssClass='icon-action',
             msgFactory=msgFactory,
     )
@@ -94,11 +99,67 @@ for std in statefulActions:
     registerStatefulAction(std)
 
 
+class ChangeStateBase(object):
+
+    @Lazy
+    def stateful(self):
+        return component.getAdapter(self.view.virtualTargetObject, IStateful,
+                                    name=self.definition)
+
+    @Lazy
+    def definition(self):
+        return self.request.form.get('stdef') or u''
+
+    @Lazy
+    def action(self):
+        return self.request.form.get('action') or u''
+
+    @Lazy
+    def transition(self):
+        return self.stateful.getStatesDefinition().transitions[self.action]
+
+    @Lazy
+    def stateObject(self):
+        return self.stateful.getStateObject()
+
+
+class ChangeStateForm(ObjectForm, ChangeStateBase):
+
+    form_action = 'change_state_action'
+    data = {}
+
+    @Lazy
+    def macro(self):
+        return template.macros['change_state']
+
+    @Lazy
+    def title(self):
+        return self.virtualTargetObject.title
+
+    @Lazy
+    def schema(self):
+        # TODO: create schema directly, use field information specified
+        # in transition
+        commentsField = Field('comments', _(u'label_transition_comments'), 
+                              'textarea',
+                              description=_(u'desc_transition_comments'))
+        fields = [commentsField]
+        return Schema(name='change_state', request=self.request, 
+                      manager=self, *fields)
+
+
+class ChangeState(EditObject, ChangeStateBase):
+
+    def update(self):
+        print '***', self.request.form
+        self.stateful.doTransition(self.action)
+        return True
+
+
 #class StateQuery(ConceptView):
 class StateQuery(BaseView):
 
     template = template
-
     form_action = 'execute_search_action'
 
     @Lazy

@@ -40,11 +40,21 @@
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <metal:info use-macro="item/book_macros/children" />
   <metal:text define-macro="textresources">
-    <div tal:repeat="related item/textResources">
+    <div style="clear: both"
+         tal:repeat="related item/textResources">
       <div class="span-4">
-        <div tal:attributes="class python:
-                    item.getCssClassForResource(related)"
-             tal:content="structure related/render" />
+        <div metal:define-macro="default_text"
+             tal:attributes="class python:
+                      item.getCssClassForResource(related)">
+          <h3 tal:define="ttitle python:item.getTitleForResource(related)"
+              tal:condition="ttitle"
+              tal:content="ttitle" />
+          <img class="flow-left" style="padding-top: 5px"
+               tal:define="icon python:item.getIconForResource(related)"
+               tal:condition="icon"
+               tal:attributes="src icon" />
+          <span tal:content="structure related/render" />
+        </div>
       </div>
       <div class="span-2 last" style="padding-top: 0.4em">
         <div class="object-actions" style="padding-top: 0"

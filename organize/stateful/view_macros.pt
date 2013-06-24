@@ -68,32 +68,82 @@
 </metal:query>
 
 
-<!-- portlets -->
-
 <metal:actions define-macro="portlet_states">
     <div tal:repeat="stf macro/stfs">
       <div tal:condition="python:len(macro.stfs) > 1">
-        <span i18n:translate="">Workflow</span>
+        <span i18n:translate="">States Definition</span>
         <span i18n:translate=""
               tal:content="stf/statesDefinition" />
       </div>
-      <div>
-        <b i18n:translate="">State</b>:
-        <span i18n:translate=""
-              tal:content="stf/state" />
+      <div tal:define="stateObject stf/getStateObject">
+        <b i18n:translate="">State</b>:<br />
+        <span>
+          <img style="margin-bottom: -1px"
+               tal:attributes="src string:$resourceBase/${stateObject/stateIcon}" />
+          <span i18n:translate=""
+                tal:content="stateObject/title" />
+        </span>
       </div>
-      <div>
-        <div><b i18n:translate="">Available Transitions</b>:</div>
+      <div><b i18n:translate="">Available Transitions</b>:
         <ul>
           <li tal:repeat="action stf/getAvailableTransitionsForUser">
             <a i18n:translate=""
-               tal:attributes="href string:change_state.html"
+               tal:define="baseUrl view/virtualTargetUrl;
+                           url string:$baseUrl/change_state.html?action=${action/name}&stdef=${stf/statesDefinition}"
+               tal:attributes="href url;
+                               onClick string:objectDialog('change_state', '$url');;
+                                              return false;"
                tal:content="action/title" />
           </li>
         </ul>
       </div>
     </div>
 </metal:actions>
+
+
+<metal:dialog define-macro="change_state">
+  <form name="stateful_changeState" method="post">
+    <div dojoType="dijit.layout.BorderContainer"
+         style="width: 70em; height: 600px">
+      <div dojoType="dijit.layout.ContentPane" region="top">
+        <h1><span i18n:translate="">State Transition</span> -
+          <span tal:content="view/title" />
+        </h1>
+        <div>
+          <span i18n:translate="">State</span>:
+          <span i18n:translate=""
+                tal:content="view/stateful/state" /> -
+          <span i18n:translate="">Transition</span>:
+          <span i18n:translate=""
+                tal:content="view/transition/title" />
+        </div>
+        <input type="hidden" name="form.action" value="change_state">
+        <input type="hidden" name="stdef"
+               tal:attributes="value request/form/stdef|nothing">
+        <input type="hidden" name="action"
+               tal:attributes="value request/form/action|nothing">
+      </div>
+      <div dojoType="dijit.layout.ContentPane" region="center">
+        <table cellpadding="3" class="form">
+          <tbody><tr><td colspan="5" style="padding-right: 15px">
+                <div id="form.fields">
+                  <metal:fields use-macro="view/fieldRenderers/fields" />
+                </div>
+          </td></tr></tbody>
+        </table>
+      </div>
+      <div dojoType="dijit.layout.ContentPane" region="bottom">
+        <metal:buttons define-slot="buttons">
+          <input value="Save" type="submit" 
+                 onClick="submit();; return false"
+                 i18n:attributes="value">
+          <input type="button" value="Cancel" onClick="dialog.hide();"
+                 i18n:attributes="value">
+        </metal:buttons>
+      </div>
+    </div>
+  </form>
+</metal:dialog>
 
 
 </html>

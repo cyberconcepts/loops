@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Query management stuff.
-
-$Id$
 """
 
 from BTrees.IOBTree import IOBTree
@@ -33,6 +31,7 @@ from zope.intid.interfaces import IIntIds
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
+from loops.interfaces import IOptions
 from loops.security.common import canListObject
 from loops.type import TypeInterfaceSourceList
 from loops.versioning.util import getVersion
@@ -182,7 +181,7 @@ class ConceptQuery(BaseQuery):
 
 # QueryConcept: concept objects that allow querying the database.
 
-class IQueryConcept(IConceptSchema, ILoopsAdapter):
+class IQueryConcept(IConceptSchema, ILoopsAdapter, IOptions):
     """ The schema for the query type.
     """
 
@@ -192,13 +191,6 @@ class IQueryConcept(IConceptSchema, ILoopsAdapter):
                        'to be used for the query and for presenting '
                        'the results'),
         default=u'',
-        required=False)
-
-    options = schema.List(
-        title=_(u'Options'),
-        description=_(u'Additional settings.'),
-        value_type=schema.TextLine(),
-        default=[],
         required=False)
 
 

@@ -1,4 +1,5 @@
 type(u'documenttype', u'Dokumentenart', options=u'qualifier:assign',
+    typeInterface=u'loops.interfaces.IOptions',
     viewName=u'')
 
 # book types
@@ -26,6 +27,7 @@ concept(u'quote', u'Zitat', u'documenttype')
 concept(u'story', u'Geschichte', u'documenttype')
 concept(u'tip', u'Tipp', u'documenttype')
 concept(u'usecase', u'Fallbeispiel', u'documenttype')
+concept(u'warning', u'Warnung', u'documenttype')
 
 # book structure
 child(u'book', u'section', u'issubtype', usePredicate=u'ispartof')

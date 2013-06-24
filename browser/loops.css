@@ -59,6 +59,15 @@ textarea {
     margin-top: 0.5em;
 }
 
+/* elements taken from blueprint (Lobo) skin */
+.span-1, .span-2, .span-3, .span-4, .span-5, .span-6 {float: left;}
+.span-1 {width: 105px;}
+.span-2 {width: 230px;}
+.span-3 {width: 355px;}
+.span-4 {width: 480px;}
+.span-5 {width: 605px;}
+.span-6 {width: 730px;}
+
 table.listing {
     margin: 1px;
     margin-top: 6px;
