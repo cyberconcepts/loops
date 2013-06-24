@@ -40,7 +40,8 @@
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <metal:info use-macro="item/book_macros/children" />
   <metal:text define-macro="textresources">
-    <div tal:repeat="related item/textResources">
+    <div style="clear: both"
+         tal:repeat="related item/textResources">
       <div class="span-4">
         <div metal:define-macro="default_text"
              tal:attributes="class python:
