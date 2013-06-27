@@ -177,7 +177,7 @@ class Address(AdapterBase):
     _contextAttributes = list(IAddress) + list(IConcept)
 
     def getLines(self):
-        return getattr(self.context, '_lines', [])
+        return getattr(self.context, '_lines', None) or []
     def setLines(self, value):
         self.context._lines = value
     lines = property(getLines, setLines)
