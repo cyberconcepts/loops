@@ -7,8 +7,10 @@
        tal:attributes="class string:content-$level">
     <h3>
       <a tal:attributes="href python:view.getUrlForTarget(related)"
-         tal:content="related/title" /></h3>
+         tal:content="related/title" />
+    </h3>
     <div tal:content="structure related/renderedDescription" />
+    <!-- TODO: show next level (+/-) -->
   </div>
 </metal:children>
 
@@ -91,6 +93,7 @@
             <img tal:attributes="src image/src;
                                  alt image/title" /></a>
         </div>
+        <!-- TODO: links to files -->
       </div>
     </div>
   </metal:text>
