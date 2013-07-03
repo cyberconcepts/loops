@@ -150,7 +150,6 @@ class ChangeState(EditObject, ChangeStateBase):
         self.stateful.doTransition(self.action)
         notify(ObjectModifiedEvent(self.view.virtualTargetObject,
                         dict(transition=self.action, comments=comments)))
-                        #Attributes(IStateful, 'state', 'comments')))
         return True
 
 
