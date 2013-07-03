@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Recording changes to loops objects.
-
-$Id$
 """
 
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
@@ -53,6 +51,9 @@ class ChangeManager(BaseRecordManager):
 
     @Lazy
     def valid(self):
+        req = util.getRequest()
+        if req and req.form.get('organize.suppress_tracking'):
+            return False
         return (not (self.context is None or
                     self.storage is None or
                     self.personId is None)
