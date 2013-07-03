@@ -111,7 +111,8 @@
         <div>
           <span i18n:translate="">State</span>:
           <span i18n:translate=""
-                tal:content="view/stateful/state" /> -
+                tal:define="stateObject view/stateful/getStateObject"
+                tal:content="stateObject/title" /> -
           <span i18n:translate="">Transition</span>:
           <span i18n:translate=""
                 tal:content="view/transition/title" />
