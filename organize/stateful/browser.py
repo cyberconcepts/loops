@@ -134,10 +134,11 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
 
     @Lazy
     def schema(self):
-        # TODO: use field information specified in transition
+        # TODO: use field information specified in transition.schema
+        # schema = self.transition.schema
         commentsField = Field('comments', _(u'label_transition_comments'), 
-                              'textarea',
-                              description=_(u'desc_transition_comments'))
+                'textarea', description=_(u'desc_transition_comments'), 
+                storeData=False)
         fields = [commentsField]
         return Schema(name='change_state', request=self.request, 
                       manager=self, *fields)
@@ -146,6 +147,8 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
 class ChangeState(EditObject, ChangeStateBase):
 
     def update(self):
+        # TODO: get field information from self.schema,
+        # store data in context if field.storeData is set, always track
         comments = self.request.form.get('comments') or u''
         self.stateful.doTransition(self.action)
         notify(ObjectModifiedEvent(self.view.virtualTargetObject,
