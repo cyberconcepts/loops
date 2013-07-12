@@ -26,12 +26,15 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.traversing.api import getName
 
+from cybertools.composer.schema.schema import Schema
 from cybertools.stateful.definition import StatesDefinition
 from cybertools.stateful.definition import State, Transition
 from cybertools.stateful.interfaces import IStatesDefinition, IStateful
 from loops.common import adapted
+from loops.organize.stateful.base import commentsField
 from loops.organize.stateful.base import StatefulLoopsObject
 from loops.security.interfaces import ISecuritySetter
+from loops.util import _
 
 
 def setPermissionsForRoles(settings):
@@ -40,6 +43,10 @@ def setPermissionsForRoles(settings):
         setter.setRolePermissions(settings)
         setter.propagateSecurity()
     return setSecurity
+
+
+defaultSchema = Schema(commentsField, 
+                       name='change_state')
 
 
 @implementer(IStatesDefinition)
@@ -55,11 +62,11 @@ def taskStates():
               color='x'),
         State('archived', 'archived', ('reopen',),
               color='grey'),
-        Transition('release', 'release', 'active'),
-        Transition('finish', 'finish', 'finished'),
-        Transition('cancel', 'cancel', 'cancelled'),
-        Transition('reopen', 're-open', 'draft'),
-        Transition('archive', 'archive', 'archived'),
+        Transition('release', 'release', 'active', schema=defaultSchema),
+        Transition('finish', 'finish', 'finished', schema=defaultSchema),
+        Transition('cancel', 'cancel', 'cancelled', schema=defaultSchema),
+        Transition('reopen', 're-open', 'draft', schema=defaultSchema),
+        Transition('archive', 'archive', 'archived', schema=defaultSchema),
         initialState='draft')
 
 

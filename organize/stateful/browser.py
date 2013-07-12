@@ -28,8 +28,6 @@ from zope.i18n import translate
 from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 
 from cybertools.browser.action import Action, actions
-from cybertools.composer.schema.field import Field
-from cybertools.composer.schema.interfaces import ISchemaFactory
 from cybertools.composer.schema.schema import Schema
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
@@ -118,8 +116,18 @@ class ChangeStateBase(object):
     def stateObject(self):
         return self.stateful.getStateObject()
 
+    @Lazy
+    def schema(self):
+        schema = self.transition.schema
+        if schema is None:
+            return Schema()
+        else:
+            schema.manager = self
+            schema.request = self.request
+            return schema
 
-class ChangeStateForm(ObjectForm, ChangeStateBase):
+
+class ChangeStateForm(ChangeStateBase, ObjectForm):
 
     form_action = 'change_state_action'
     data = {}
@@ -132,27 +140,26 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
     def title(self):
         return self.virtualTargetObject.title
 
-    @Lazy
-    def schema(self):
-        # TODO: use field information specified in transition.schema
-        # schema = self.transition.schema
-        commentsField = Field('comments', _(u'label_transition_comments'), 
-                'textarea', description=_(u'desc_transition_comments'), 
-                storeData=False)
-        fields = [commentsField]
-        return Schema(name='change_state', request=self.request, 
-                      manager=self, *fields)
 
-
-class ChangeState(EditObject, ChangeStateBase):
+class ChangeState(ChangeStateBase, EditObject):
 
     def update(self):
-        # TODO: get field information from self.schema,
-        # store data in context if field.storeData is set, always track
-        comments = self.request.form.get('comments') or u''
+        formData = self.request.form
+        # store data in context (unless field.nostore)
+        self.object = self.context
+        formState = self.instance.applyTemplate(data=formData)
+        # TODO: check formState
+        # track all fields
+        trackData = dict(transition=self.action)
+        for f in self.fields:
+            if f.readonly:
+                continue
+            name = f.name
+            fi = formState.fieldInstances[name]
+            rawValue = fi.getRawValue(formData, name, u'')
+            trackData[name] = fi.unmarshall(rawValue)
         self.stateful.doTransition(self.action)
-        notify(ObjectModifiedEvent(self.view.virtualTargetObject,
-                        dict(transition=self.action, comments=comments)))
+        notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
         return True
 
 
