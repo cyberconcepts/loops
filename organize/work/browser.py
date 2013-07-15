@@ -230,6 +230,10 @@ class BaseWorkItemsView(object):
         return self.work_macros['workitems_query']
 
     @Lazy
+    def title(self):
+        return _(u'Work Items for $title', mapping=dict(title=self.context.title))
+
+    @Lazy
     def workItems(self):
         rm = self.loopsRoot.getRecordManager()
         if rm is not None:
