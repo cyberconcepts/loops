@@ -50,7 +50,7 @@ from loops.organize.tracking.browser import BaseTrackView
 from loops.organize.tracking.report import TrackDetails
 from loops.organize.work.base import WorkItem
 from loops.security.common import canAccessObject, canListObject, canWriteObject
-from loops.security.common import checkPermission
+from loops.security.common import canAccessRestricted, checkPermission
 from loops import util
 from loops.util import _
 
@@ -321,6 +321,9 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
     """
 
     columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
+
+    def checkPermissions(self):
+        return canAccessRestricted(self.context)
 
     def getCriteria(self):
         return self.baseCriteria

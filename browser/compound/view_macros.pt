@@ -3,7 +3,9 @@
 
 <metal:data define-macro="standard">
   <tal:part repeat="item item/getParts">
-    <metal:part use-macro="item/macro" />
+    <tal:check condition="item/checkPermissions">
+      <metal:part use-macro="item/macro" />
+    </tal:check>
   </tal:part>
 </metal:data>
 
