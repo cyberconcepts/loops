@@ -1,0 +1,11 @@
+<html i18n:domain="loops">
+
+
+<metal:data define-macro="standard">
+  <tal:part repeat="item item/getParts">
+    <metal:part use-macro="item/macro" />
+  </tal:part>
+</metal:data>
+
+
+</html>

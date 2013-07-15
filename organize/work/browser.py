@@ -43,6 +43,7 @@ from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.common import adapted
+from loops.organize.interfaces import IPerson
 from loops.organize.party import getPersonForUser
 from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.browser import BaseTrackView
@@ -312,7 +313,7 @@ class RelatedTaskWorkItems(AllWorkItems):
 
 
 class PersonWorkItems(BaseWorkItemsView, ConceptView):
-    """ A query view showing work items for a person, the query's parent.
+    """ A view showing work items for a person or the context object's parents.
     """
 
     columns = set(['Task', 'Title', 'Day', 'Start', 'End', 'Duration', 'Info'])
@@ -322,9 +323,12 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
 
     def listWorkItems(self):
         criteria = self.getCriteria()
-        for target in self.context.getParents([self.defaultPredicate]):
-            un = criteria.setdefault('userName', [])
-            un.append(util.getUidForObject(target))
+        un = criteria.setdefault('userName', [])
+        if IPerson.providedBy(self.adapted):
+            un.append(util.getUidForObject(self.context))
+        else:
+            for target in self.context.getParents([self.defaultPredicate]):
+                un.append(util.getUidForObject(target))
         return sorted(self.query(**criteria), key=lambda x: x.track.timeStamp)
 
 

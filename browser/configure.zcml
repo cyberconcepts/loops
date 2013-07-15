@@ -765,6 +765,7 @@
       attribute="cleanup"
       permission="zope.ManageSite" />
 
+  <include package=".compound" />
   <include package=".skin" />
   <include package=".lobo" />
   <include package=".mobile" />
