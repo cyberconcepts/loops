@@ -23,7 +23,9 @@ Views and actions for states management.
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.event import notify
 from zope.i18n import translate
+from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 
 from cybertools.browser.action import Action, actions
 from cybertools.composer.schema.field import Field
@@ -138,8 +140,7 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
 
     @Lazy
     def schema(self):
-        # TODO: create schema directly, use field information specified
-        # in transition
+        # TODO: use field information specified in transition
         commentsField = Field('comments', _(u'label_transition_comments'), 
                               'textarea',
                               description=_(u'desc_transition_comments'))
@@ -151,8 +152,10 @@ class ChangeStateForm(ObjectForm, ChangeStateBase):
 class ChangeState(EditObject, ChangeStateBase):
 
     def update(self):
-        print '***', self.request.form
+        comments = self.request.form.get('comments') or u''
         self.stateful.doTransition(self.action)
+        notify(ObjectModifiedEvent(self.view.virtualTargetObject,
+                        dict(transition=self.action, comments=comments)))
         return True
 
 
