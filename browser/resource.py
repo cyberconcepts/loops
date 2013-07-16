@@ -132,6 +132,9 @@ class ResourceView(BaseView):
     def macro(self):
         if 'image/' in self.context.contentType:
             return self.template.macros['image']
+        #elif 'audio/' in self.context.contentType:
+        #    self.registerDojoAudio()
+        #    return self.template.macros['audio']
         else:
             return self.template.macros['download']
 

@@ -4,7 +4,14 @@
     i18n_domain="loops">
 
   <zope:adapter
-        factory="loops.knowledge.qualification.base.Competence" />
+        factory="loops.knowledge.qualification.base.Competence"
+        trusted="True" />
+  <zope:class class="loops.knowledge.qualification.base.Competence">
+    <require permission="zope.View"
+             interface="loops.knowledge.qualification.interfaces.ICompetence" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.knowledge.qualification.interfaces.ICompetence" />
+  </zope:class>
 
   <!-- views -->
 
