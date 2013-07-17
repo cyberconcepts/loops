@@ -235,6 +235,7 @@ class ConceptView(BaseView):
                         subMacro=concept_macros.macros['parents'],
                         priority=20, info=self)
 
+    # the part-based layout is now implemented in loops.browser.compound
     def getParts(self):
         parts = (self.params.get('parts') or [])   # deprecated!
         if not parts:

@@ -1,0 +1,13 @@
+<html i18n:domain="loops">
+
+
+<metal:data define-macro="standard">
+  <tal:part repeat="item item/getParts">
+    <tal:check condition="item/checkPermissions">
+      <metal:part use-macro="item/macro" />
+    </tal:check>
+  </tal:part>
+</metal:data>
+
+
+</html>

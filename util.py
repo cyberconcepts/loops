@@ -145,4 +145,7 @@ def saveRequest(request):
     local_data.request = request
 
 def getRequest():
-    return local_data.request
+    try:
+        return local_data.request
+    except AttributeError:
+        return None

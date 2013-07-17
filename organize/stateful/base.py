@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Basic implementations for stateful objects and adapters.
-
-$Id$
 """
 
 from zope.app.catalog.interfaces import ICatalog
@@ -27,6 +25,7 @@ from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts, adapter
 
+from cybertools.composer.schema.field import Field
 from cybertools.meta.interfaces import IOptions
 from cybertools.stateful.base import Stateful as BaseStateful
 from cybertools.stateful.base import StatefulAdapter, IndexInfo
@@ -34,6 +33,7 @@ from cybertools.stateful.interfaces import IStatesDefinition, ITransitionEvent
 from loops.common import adapted
 from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops import util
+from loops.util import _
 
 
 class Stateful(BaseStateful):
@@ -93,3 +93,10 @@ def handleTransition(obj, event):
     if next != previous:
         cat = component.getUtility(ICatalog)
         cat.index_doc(int(util.getUidForObject(obj)), obj)
+
+
+# predefined fields for transition forms
+
+commentsField = Field('comments', _(u'label_transition_comments'), 'textarea', 
+                      description=_(u'desc_transition_comments'), 
+                      nostore=True)

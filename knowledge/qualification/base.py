@@ -26,6 +26,7 @@ from zope.component import adapts
 from zope.interface import implementer, implements
 
 from loops.common import AdapterBase
+from loops.interfaces import IConcept
 from loops.knowledge.qualification.interfaces import ICompetence
 from loops.type import TypeInterfaceSourceList
 

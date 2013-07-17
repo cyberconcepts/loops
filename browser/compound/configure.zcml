@@ -1,0 +1,14 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="loops">
+
+  <zope:adapter
+      name="compound.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.compound.standard.CompoundView"
+      permission="zope.View" />
+
+</configure>
