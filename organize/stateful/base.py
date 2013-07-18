@@ -54,6 +54,10 @@ class StatefulLoopsObject(Stateful, StatefulAdapter):
     def typePredicate(self):
         return self.loopsRoot.getConceptManager().getTypePredicate()
 
+    @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
 
 class SimplePublishable(StatefulLoopsObject):
 
