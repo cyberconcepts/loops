@@ -68,7 +68,7 @@ class LoopsType(BaseType):
         tp = self.typeProvider
         typeName = tp is None and 'unknown' or str(getName(tp))
         if self.isForeignReference:
-            root = '/'.join(getPath(self.root))
+            root = getPath(self.root)
         else:
             root = 'loops'
         return ':'.join((root, self.qualifiers[0], typeName,))
