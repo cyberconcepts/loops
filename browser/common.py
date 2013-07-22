@@ -49,7 +49,7 @@ from zope.security import canAccess
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
-from zope.traversing.api import getName, getParent
+from zope.traversing.api import getName, getParent, traverse
 
 from cybertools.ajax.dojo import dojoMacroTemplate
 from cybertools.browser.view import GenericView
@@ -70,7 +70,7 @@ from loops.organize.tracking import access
 from loops.resource import Resource
 from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
-from loops.type import ITypeConcept
+from loops.type import ITypeConcept, LoopsTypeInfo
 from loops import util
 from loops.util import _, saveRequest
 from loops import version
@@ -531,11 +531,29 @@ class BaseView(GenericView, I18NView):
     def conceptTypes(self):
         return util.KeywordVocabulary(self.listTypes(('concept',), ('hidden',)))
 
+    def parentTypesFromOtherSites(self):
+        result = []
+        typeNames = self.typeOptions('parent_link_types') or []
+        for path in self.typeOptions('parent_link_sites') or []:
+            site = traverse(self.loopsRoot, path, None)
+            if site is None:
+                continue
+            cm = site.getConceptManager()
+            for tname in typeNames:
+                t = cm.get(tname)
+                if t is not None:
+                    type = LoopsTypeInfo(t)
+                    type.isForeignReference = True
+                    result.append(type)
+        return result
+
     def listTypesForSearch(self, include=None, exclude=None, sortOn='title'):
         types = [dict(token=t.tokenForSearch, title=t.title)
                     for t in ITypeManager(self.context).listTypes(include, exclude)]
         if sortOn:
             types.sort(key=lambda x: x[sortOn])
+        for t in self.parentTypesFromOtherSites():
+            types.append(dict(token=t.tokenForSearch, title=t.title))
         return types
 
     def typesForSearch(self):
