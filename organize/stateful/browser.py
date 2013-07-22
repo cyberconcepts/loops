@@ -145,8 +145,8 @@ class ChangeState(ChangeStateBase, EditObject):
 
     def update(self):
         formData = self.request.form
-        # store data in context (unless field.nostore)
-        self.object = self.context
+        # store data in target object (unless field.nostore)
+        self.object = self.target
         formState = self.instance.applyTemplate(data=formData)
         # TODO: check formState
         # track all fields
