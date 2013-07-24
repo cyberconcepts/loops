@@ -533,8 +533,8 @@ class BaseView(GenericView, I18NView):
 
     def parentTypesFromOtherSites(self):
         result = []
-        typeNames = self.typeOptions('parent_link_types') or []
-        for path in self.typeOptions('parent_link_sites') or []:
+        typeNames = self.typeOptions('foreign_parent_types') or []
+        for path in self.typeOptions('foreign_parent_sites') or []:
             site = traverse(self.loopsRoot, path, None)
             if site is None:
                 continue
