@@ -25,12 +25,14 @@ $Id$
 """
 
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.container.contained import NameChooser
 from zope.cachedescriptors.property import Lazy
 from zope.security.interfaces import Unauthorized
+from zope.traversing.api import getParent
 
 from loops.browser.node import NodeView
 from loops.browser.resource import ResourceView, resource_macros
-from loops.common import adapted
+from loops.common import adapted, normalizeName
 from loops.util import _
 from loops import util
 
@@ -62,7 +64,7 @@ class MediaAssetView(ResourceView):
         if useAttachment:
             filename = obj.localFilename or getName(self.context)
             #filename = urllib.quote(filename)
-            filename = NameChooser(getParent(self.context)).normalizeName(filename)
+            filename = NameChooser(getParent(self.context)).chooseName(filename, self.context)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         return data
