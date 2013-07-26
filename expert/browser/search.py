@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,14 +19,12 @@
 """
 Definition of basic view classes and other browser related stuff for the
 loops.expert package.
-
-$Id$
 """
 
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from zope.traversing.api import getName, getParent
+from zope.traversing.api import getName, getParent, traverse
 
 from cybertools.browser.form import FormController
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
@@ -150,12 +148,16 @@ class Search(ConceptView):
             if not isinstance(types, (list, tuple)):
                 types = [types]
             for type in types:
+                site = self.loopsRoot
+                if type.startswith('/'):
+                    parts = type.split(':')
+                    site = traverse(self.loopsRoot, parts[0], site)
                 result = self.executeQuery(title=title or None, type=type,
                                                  exclude=('hidden',))
                 fv = FilterView(self.context, self.request)
                 result = fv.apply(result)
                 for o in result:
-                    if o.getLoopsRoot() == self.loopsRoot:
+                    if o.getLoopsRoot() == site:
                         adObj = adapted(o, self.languageInfo)
                         if filterMethod is not None and not filterMethod(adObj):
                             continue
