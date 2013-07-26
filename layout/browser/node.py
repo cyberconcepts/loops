@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Layout node views.
-
-$Id$
 """
 
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
@@ -66,6 +64,9 @@ class LayoutNodeView(Page, BaseView):
         if self.target is not None:
             targetView = component.getMultiAdapter((self.target, self.request),
                                                    name='layout')
-            return ' - '.join((self.context.title, targetView.title))
+            parts = [self.context.title, targetView.title]
         else:
-            return self.context.title
+            parts = [self.context.title]
+        if self.globalOptions('reverseHeadTitle'):
+            parts.reverse()
+        return ' - '.join(parts)
