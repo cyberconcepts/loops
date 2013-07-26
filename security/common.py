@@ -74,6 +74,9 @@ def canListObject(obj, noCheck=False):
         return True
     return canAccess(obj, 'title')
 
+def canAccessRestricted(obj):
+    return checkPermission('loops.ViewRestricted', obj)
+
 def canWriteObject(obj):
     return canWrite(obj, 'title') or canAssignAsParent(obj) 
 

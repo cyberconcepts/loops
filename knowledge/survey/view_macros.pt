@@ -3,11 +3,18 @@
 
 
 <metal:block define-macro="survey"
-              tal:define="feedback item/results">
-  <metal:title use-macro="item/conceptMacros/concepttitle" />
+              tal:define="feedback item/results;
+                          errors item/errors">
+  <metal:title use-macro="item/conceptMacros/concepttitle_only" />
+  <tal:description condition="not:feedback">
+    <metal:title use-macro="item/conceptMacros/conceptdescription" />
+  </tal:description>
   <div tal:condition="feedback">
     <h3 i18n:translate="">Feedback</h3>
-    <table>
+    <div tal:define="header item/adapted/feedbackHeader"
+         tal:condition="header"
+         tal:content="structure python:item.renderText(header, 'text/restructured')" />
+    <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
         <th i18n:translate="">Response</th>
@@ -19,42 +26,74 @@
         <td tal:content="fbitem/score" />
       </tr>
     </table>
-    <br />
+    <div class="button" id="show_questionnaire">
+      <a href="" onclick="back(); return false"
+         i18n:translate="">
+        Back to Questionnaire</a>
+      <br />
+    </div>
+    <div tal:define="footer item/adapted/feedbackFooter"
+         tal:condition="footer"
+         tal:content="structure python:item.renderText(footer, 'text/restructured')" />
   </div>
-  <h3 i18n:translate="">Questionnaire</h3>
-  <form method="post">
-    <table>
-      <tr>
-        <th></th>
-        <th>
-          <table>
-            <tr>
-              <td i18n:translate="">Does not apply</td>
-              <td style="text-align: right"
-                  i18n:translate="">Fully applies</td>
-            </tr>
-          </table>
-        </th>
-      </tr>
-      <tr tal:repeat="question item/adapted/questions">
-        <td tal:content="question/text" />
-        <td style="white-space: nowrap">
-          <span tal:repeat="value python:item.getValues(question)">&nbsp;
-            <input type="radio"
-                   i18n:attributes="title"         
-                   tal:attributes="
-                        name string:question_${question/uid};
-                        value value/value;
-                        checked value/checked;
-                        title string:survey_value_${value/value}" />&nbsp;
-          </span>
-        </td>
-      </tr>
-    </table>
-    <br />
-    <input type="submit" name="submit" value="Evaluate Questionnaire"
-           i18n:attributes="value" />
-  </form>
+  <div id="questionnaire"
+       tal:condition="not:feedback">
+    <h3 i18n:translate="">Questionnaire</h3>
+    <div class="error"
+         tal:condition="errors">
+      <div tal:repeat="error errors">
+        <span i18n:translate=""
+              tal:content="error" />
+      </div>
+    </div>
+    <form method="post">
+      <table class="listing">
+        <tal:qugroup repeat="qugroup item/adapted/questionGroups">
+          <tr><td colspan="6">&nbsp;</td></tr>
+          <tr class="vpad">
+            <td tal:define="infoText python:item.getInfoText(qugroup)">
+              <b tal:content="qugroup/title" />
+              <div class="infotext"
+                   tal:condition="infoText">
+                <span tal:content="structure infoText" />
+              </div>
+            </td>
+            <td style="text-align: center"
+                i18n:translate="">No answer</td>
+            <td colspan="2"
+                i18n:translate="">Fully applies</td>
+            <td colspan="2"
+                style="text-align: right"
+                i18n:translate="">Does not apply</td>
+          </tr>
+          <tr class="vpad"
+              tal:repeat="question qugroup/questions">
+            <td tal:content="question/text" />
+            <td style="white-space: nowrap; text-align: center"
+                tal:repeat="value python:item.getValues(question)">
+                <input type="radio"
+                       i18n:attributes="title"
+                       tal:condition="value/radio"      
+                       tal:attributes="
+                            name string:question_${question/uid};
+                            value value/value;
+                            checked value/checked;
+                            title string:survey_value_${value/value}" />
+                <span tal:condition="not:value/radio"
+                      title="Obligatory question, must be answered"
+                      i18n:attributes="title">***
+                </span>
+            </td>
+          </tr>
+        </tal:qugroup>
+      </table>
+      <input type="submit" name="submit" value="Evaluate Questionnaire"
+             i18n:attributes="value" />
+      <input type="button" name="reset_responses" value="Reset Responses Entered"
+             i18n:attributes="value"
+             onclick="setRadioButtons('none'); return false" />
+    </form>
+  </div>
 </metal:block>
 
 

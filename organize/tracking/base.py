@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,9 @@
 
 """
 Base class(es) for track/record managers.
-
-$Id$
 """
 
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.meta.interfaces import IOptions
@@ -47,6 +46,10 @@ class BaseRecordManager(object):
         return self.context.getLoopsRoot()
 
     @Lazy
+    def uid(self):
+        return util.getUidForObject(self.context)
+
+    @Lazy
     def storage(self):
         records = self.loopsRoot.getRecordManager()
         if records is not None:
@@ -63,6 +66,8 @@ class BaseRecordManager(object):
         else:
             principal = getPrincipalForUserId(userId, context=self.context)
         if principal is not None:
+            if IUnauthenticatedPrincipal.providedBy(principal):
+                return None
             person = getPersonForUser(self.context, principal=principal)
             if person is None:
                 return principal.id

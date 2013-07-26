@@ -3,18 +3,6 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="loops">
 
-  <!-- type adapters -->
-
-  <zope:adapter factory="loops.compound.book.base.Page" 
-                provides="loops.compound.book.interfaces.IPage"
-                trusted="True" />
-  <zope:class class="loops.compound.book.base.Page">
-    <require permission="zope.View"
-             interface="loops.compound.book.interfaces.IPage" />
-    <require permission="zope.ManageContent"
-             set_schema="loops.compound.book.interfaces.IPage" />
-  </zope:class>
-
   <!-- Views -->
 
   <zope:adapter
@@ -22,7 +10,7 @@
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.BookOverview"
+        factory="loops.compound.book.browser.BookView"
         permission="zope.View" />
 
   <zope:adapter
@@ -34,69 +22,11 @@
         permission="zope.View" />
 
   <zope:adapter
-        name="page_layout"
+        name="book_topic_view"
         for="loops.interfaces.IConcept
              loops.browser.skin.Lobo"
         provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.PageLayout"
-        permission="zope.View" />
-
-  <!-- parts -->
-
-  <zope:adapter
-        name="lobo_headline"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.Headline"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_keyquestions"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.KeyQuestions"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_maintext"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.MainText"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_story"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.Story"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_tip"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.Tip"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_usecase"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.UseCase"
-        permission="zope.View" />
-
-  <zope:adapter
-        name="lobo_quote"
-        for="loops.compound.book.interfaces.IPage
-             loops.browser.skin.Lobo"
-        provides="zope.interface.Interface"
-        factory="loops.compound.book.browser.Quote"
+        factory="loops.compound.book.browser.TopicView"
         permission="zope.View" />
 
 </configure>

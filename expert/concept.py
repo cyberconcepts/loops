@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Query concepts management stuff.
-
-$Id$
 """
 
 from BTrees.IOBTree import IOBTree
@@ -29,6 +27,7 @@ from zope.interface import Interface, Attribute, implements
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import traverse
 
 from cybertools.typology.interfaces import IType
 from loops.common import AdapterBase
@@ -66,6 +65,11 @@ class BaseQuery(object):
         return self.context.context.getLoopsRoot()
 
     def queryConcepts(self, title=None, type=None, **kw):
+        site = self.loopsRoot
+        if type.startswith('/'):
+            parts = type.split(':')
+            site = traverse(self.loopsRoot, parts[0], site)
+            type = 'loops:' + ':'.join(parts[1:])
         if type.endswith('*'):
             start = type[:-1]
             end = start + '\x7f'
@@ -76,7 +80,7 @@ class BaseQuery(object):
             result = cat.searchResults(loops_type=(start, end), loops_title=title)
         else:
             result = cat.searchResults(loops_type=(start, end))
-        result = set(r for r in result if r.getLoopsRoot() == self.loopsRoot
+        result = set(r for r in result if r.getLoopsRoot() == site
                      and canListObject(r))
         if 'exclude' in kw:
             r1 = set()

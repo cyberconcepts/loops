@@ -195,7 +195,11 @@ class NodeView(BaseView):
                         subMacro=calendar_macros.macros['main'],
                         priority=90)
         # force early portlet registrations by target by setting up target view
-        self.virtualTarget
+        if self.virtualTarget is not None:
+            std = self.virtualTarget.typeOptions('portlet_states')
+            if std:
+                from loops.organize.stateful.browser import registerStatesPortlet
+                registerStatesPortlet(self.controller, self.virtualTarget, std)
 
     @Lazy
     def usersPresent(self):
@@ -381,6 +385,8 @@ class NodeView(BaseView):
             ht = super(NodeView, self).headTitle
             if ht not in parts:
                 parts.append(ht)
+        if self.globalOptions('reverseHeadTitle'):
+            parts.reverse()
         return ' - ' .join(parts)
 
     @Lazy

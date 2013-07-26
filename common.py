@@ -113,6 +113,9 @@ class AdapterBase(object):
         self.context = context
         self.__parent__ = context # to get the permission stuff right
 
+    def __hash__(self):
+        return hash(self.context)
+
     def __getattr__(self, attr):
         self.checkAttr(attr)
         return getattr(self.context, '_' + attr, None)

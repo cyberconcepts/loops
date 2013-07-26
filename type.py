@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Type management stuff.
-
-$Id$
 """
 
 from zope import component, schema
@@ -28,12 +26,13 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getPath
 
 from cybertools.typology.type import BaseType, TypeManager
 from cybertools.typology.interfaces import ITypeManager
 from loops.interfaces import ILoopsObject, IConcept, IResource
 from loops.interfaces import ITypeConcept
+from loops.interfaces import IOptions
 from loops.interfaces import IResourceAdapter, IFile, IExternalFile, IImage
 from loops.interfaces import ITextDocument, INote
 from loops.concept import Concept
@@ -49,10 +48,15 @@ class LoopsType(BaseType):
                           #document=Document)
     containerMapping = dict(concept='concepts', resource='resources')
 
+    isForeignReference = False
+
     @Lazy
     def title(self):
         tp = self.typeProvider
-        return tp is None and u'Unknown Type' or tp.title
+        title = tp is None and u'Unknown Type' or tp.title
+        if self.isForeignReference:
+            title += (' (Site: %s)' % getName(self.root))
+        return title
 
     @Lazy
     def token(self):
@@ -63,7 +67,11 @@ class LoopsType(BaseType):
     def tokenForSearch(self):
         tp = self.typeProvider
         typeName = tp is None and 'unknown' or str(getName(tp))
-        return ':'.join(('loops', self.qualifiers[0], typeName,))
+        if self.isForeignReference:
+            root = getPath(self.root)
+        else:
+            root = 'loops'
+        return ':'.join((root, self.qualifiers[0], typeName,))
 
     @Lazy
     def typeInterface(self):
@@ -272,7 +280,8 @@ class TypeInterfaceSourceList(object):
 
     implements(schema.interfaces.IIterableSource)
 
-    typeInterfaces = (ITypeConcept, IFile, IExternalFile, ITextDocument, INote)
+    typeInterfaces = (ITypeConcept, IFile, IExternalFile, ITextDocument, INote,
+                      IOptions)
 
     def __init__(self, context):
         self.context = context

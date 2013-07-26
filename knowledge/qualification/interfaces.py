@@ -23,11 +23,11 @@ Interfaces for knowledge management and elearning with loops.
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
 
 
-class ICompetence(IConceptSchema):
+class ICompetence(ILoopsAdapter):
     """ The competence of a person.
 
         Maybe assigned to the person via a 'knows' relation or

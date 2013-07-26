@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2013-03-07 12:00 CET\n"
+"PO-Revision-Date: 2013-07-15 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -85,6 +85,9 @@ msgstr "Thema bearbeiten..."
 
 msgid "Modify topic."
 msgstr "Thema ändern"
+
+msgid "Please correct the indicated errors."
+msgstr "Bitte berichtigen Sie die angezeigten Fehler."
 
 # blog
 
@@ -175,11 +178,29 @@ msgstr "Glossareintrag anlegen."
 msgid "Answer Range"
 msgstr "Abstufung Bewertungen"
 
+msgid "Feedback Footer"
+msgstr "Auswertungs-Hinweis"
+
+msgid "Text that will appear at the end of the feedback page."
+msgstr "Text, der am Ende der Auswertungsseite erscheinen soll."
+
 msgid "Number of items (answer options) to select from."
 msgstr "Anzahl der Abstufungen, aus denen bei der Antwort gewählt werden kann."
 
-msgid "Negativ"
-msgstr "Negativbewertung"
+msgid "Minimum Number of Answers"
+msgstr "Mindestanzahl an Antworten"
+
+msgid "Minumum number of questions that have to be answered. Empty means all questions have to be answered."
+msgstr "Anzahl der Fragen, die mindestens beantwortet werden müssen. Keine Angabe: Es müssen alle Fragen beantwortet werden."
+
+msgid "Required"
+msgstr "Pflichtfrage"
+
+msgid "Question must be answered."
+msgstr "Frage muss unbedingt beantwortet werden."
+
+msgid "Negative"
+msgstr "Negative Polarität"
 
 msgid "Value inversion: High selection means low value."
 msgstr "Invertierung der Bewertung: Hohe gewählte Stufe bedeutet niedriger Wert."
@@ -196,26 +217,53 @@ msgstr "Kategorie"
 msgid "Response"
 msgstr "Beurteilung"
 
+msgid "No answer"
+msgstr "Keine Antwort"
+
 msgid "Does not apply"
 msgstr "Trifft nicht zu"
 
 msgid "Fully applies"
 msgstr "Trifft voll zu"
 
+msgid "survey_value_none"
+msgstr "Keine Antwort"
+
 msgid "survey_value_0"
-msgstr "trifft für unser Unternehmen überhaupt nicht zu"
+msgstr "Trifft für unser Unternehmen überhaupt nicht zu"
 
 msgid "survey_value_1"
-msgstr "trifft eher nicht zu"
+msgstr "Trifft eher nicht zu"
 
 msgid "survey_value_2"
-msgstr "trifft eher zu"
+msgstr "Trifft eher zu"
 
 msgid "survey_value_3"
-msgstr "trifft für unser Unternehmen voll und ganz zu"
+msgstr "Trifft für unser Unternehmen voll und ganz zu"
 
 msgid "Evaluate Questionnaire"
 msgstr "Fragebogen auswerten"
+
+msgid "Reset Responses Entered"
+msgstr "Eingaben zurücksetzen"
+
+msgid "Back to Questionnaire"
+msgstr "Zurück zum Fragebogen"
+
+msgid "Please answer at least $minAnswers questions."
+msgstr "Bitte beantworten Sie mindestens $minAnswers Fragen."
+
+msgid "Please answer all questions."
+msgstr "Bitte beantworten Sie alle Fragen."
+
+msgid "Please answer the obligatory questions."
+msgstr "Bitte beantworten Sie die Pflichtfragen."
+
+msgid "Please answer the minimum number of questions."
+msgstr "Bitte beantworten Sie die angegebene Mindestanzahl an Fragen je Fragengruppe."
+
+msgid "Obligatory question, must be answered"
+msgstr "Pflichtfrage, muss beantwortet werden"
 
 # competence (qualification)
 
@@ -495,6 +543,9 @@ msgstr "Unterbegriffe"
 msgid "Resources"
 msgstr "Ressourcen"
 
+msgid "Text Elements"
+msgstr "Texte"
+
 msgid "Title"
 msgstr "Titel"
 
@@ -660,6 +711,9 @@ msgstr "Zugeordnete Begriffe"
 msgid "more..."
 msgstr "Mehr..."
 
+msgid "More..."
+msgstr "Mehr..."
+
 msgid "Versioning"
 msgstr "Versionierung"
 
@@ -708,11 +762,26 @@ msgstr "Teilnehmerregistrierung"
 msgid "Register"
 msgstr "Benutzer registrieren"
 
+msgid "Register new member"
+msgstr "Neu registrieren"
+
+msgid "Login name already taken."
+msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."
+
 msgid "Your old password was not entered correctly."
 msgstr "Sie haben Ihr altes Passwort nicht korrekt eingegeben."
 
 msgid "Password and password confirmation do not match."
 msgstr "Die Passwort-Wiederholung stimmt nicht mit dem eingegebenen Passwort überein."
+
+msgid "confirmation_mail_subject"
+msgstr "Benutzer-Registrierung"
+
+msgid "confirmation_mail_text"
+msgstr "Bitte clicken Sie auf den folgenden Link, um die Anmeldung abzuschließen."
+
+msgid "The user account has been created."
+msgstr "Ihr Benutzerkonto wurde eingerichtet."
 
 msgid "Your password has been changed."
 msgstr "Ihr Passwort wurde geändert."
@@ -893,6 +962,9 @@ msgstr "Kalender"
 msgid "Work Items"
 msgstr "Aktivitäten"
 
+msgid "Work Items for $title"
+msgstr "Aktivitäten für $title"
+
 msgid "Day"
 msgstr "Tag"
 
@@ -956,13 +1028,25 @@ msgid "Restrict to objects with certain states"
 msgstr "Auf Objekte mit bestimmtem Status beschränken"
 
 msgid "Workflow"
-msgstr "Statusdefinition/Workflow"
+msgstr "Workflow"
 
 msgid "States"
 msgstr "Statuswerte"
 
+msgid "States Definition"
+msgstr "Workflowdefinition"
+
+msgid "State Transition"
+msgstr "Workflow-Statusänderung"
+
+msgid "Transition"
+msgstr "Aktion"
+
 msgid "State information for $definition: $title"
 msgstr "Status ($definition): $title"
+
+msgid "Available Transitions"
+msgstr "Übergänge"
 
 msgid "classification_quality"
 msgstr "Klassifizierung"
@@ -975,6 +1059,12 @@ msgstr "Aufgabe"
 
 msgid "publishable_task"
 msgstr "Aufgabe/Zugriff"
+
+msgid "label_transition_comments"
+msgstr "Bemerkung"
+
+msgid "desc_transition_comments"
+msgstr "Notizen zum Statusübergang."
 
 # state names
 

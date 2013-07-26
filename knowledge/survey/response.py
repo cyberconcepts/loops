@@ -29,20 +29,34 @@ from loops.knowledge.survey.interfaces import IResponse, IResponses
 from loops.organize.tracking.base import BaseRecordManager
 
 
+class Responses(BaseRecordManager):
+
+    implements(IResponses)
+
+    storageName = 'survey_responses'
+
+    def __init__(self, context):
+        self.context = context
+
+    def save(self, data):
+        if self.personId:
+            self.storage.saveUserTrack(self.uid, 0, self.personId, data, 
+                                        update=True, overwrite=True)
+
+    def load(self):
+        if self.personId:
+            tracks = self.storage.getUserTracks(self.uid, 0, self.personId)
+            if tracks:
+                return tracks[0].data
+        return {}
+
+    def getAllTracks(self):
+        return self.storage.query(taskId=self.uid)
+
+
 class Response(Track):
-    """ A survey response.
-    """
 
     implements(IResponse)
 
     typeName = 'Response'
-    typeInterface = IResponse
-
-
-class Responses(BaseRecordManager):
-    """ A tracking storage adapter for survey responses.
-    """
-
-    implements(IResponses)
-    adapts(ITrackingStorage)
 

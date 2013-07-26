@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Recording changes to loops objects.
-
-$Id$
 """
 
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
@@ -53,6 +51,9 @@ class ChangeManager(BaseRecordManager):
 
     @Lazy
     def valid(self):
+        req = util.getRequest()
+        if req and req.form.get('organize.suppress_tracking'):
+            return False
         return (not (self.context is None or
                     self.storage is None or
                     self.personId is None)
@@ -70,6 +71,12 @@ class ChangeManager(BaseRecordManager):
         if relation is not None:
             data['predicate'] = util.getUidForObject(relation.predicate)
             data['second'] = util.getUidForObject(relation.second)
+        event = kw.get('event')
+        if event is not None:
+            desc = getattr(event, 'descriptions', ())
+            for item in desc:
+                if isinstance(item, dict):
+                    data.update(item)
         if update:
             self.storage.updateTrack(last, data)
         else:
@@ -90,16 +97,18 @@ class ChangeRecord(Track):
 
 @adapter(ILoopsObject, IObjectModifiedEvent)
 def recordModification(obj, event):
-    ChangeManager(obj).recordModification()
+    ChangeManager(obj).recordModification(event=event)
 
 @adapter(ILoopsObject, IObjectAddedEvent)
 def recordAdding(obj, event):
-    ChangeManager(obj).recordModification('add')
+    ChangeManager(obj).recordModification('add', event=event)
 
 @adapter(ILoopsObject, IAssignmentEvent)
 def recordAssignment(obj, event):
-    ChangeManager(obj).recordModification('assign', relation=event.relation)
+    ChangeManager(obj).recordModification('assign', 
+                            event=event, relation=event.relation)
 
 @adapter(ILoopsObject, IDeassignmentEvent)
 def recordDeassignment(obj, event):
-    ChangeManager(obj).recordModification('deassign', relation=event.relation)
+    ChangeManager(obj).recordModification('deassign', 
+                            event=event, relation=event.relation)

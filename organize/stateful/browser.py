@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,12 +23,16 @@ Views and actions for states management.
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.event import notify
 from zope.i18n import translate
+from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 
 from cybertools.browser.action import Action, actions
+from cybertools.composer.schema.schema import Schema
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.browser.form import ObjectForm, EditObject
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
@@ -41,6 +45,16 @@ statefulActions = ('classification_quality',
                    'simple_publishing',
                    'task_states',
                    'publishable_task',)
+
+
+def registerStatesPortlet(controller, view, statesDefs,
+                          region='portlet_right', priority=98):
+    cm = controller.macros
+    stfs = [component.getAdapter(view.context, IStateful, name=std) 
+                for std in statesDefs]
+    cm.register(region, 'states', title=_(u'Workflow'),
+                subMacro=template.macros['portlet_states'],
+                priority=priority, info=view, stfs=stfs)
 
 
 class StateAction(Action):
@@ -67,22 +81,92 @@ class StateAction(Action):
 
     @Lazy
     def icon(self):
-        icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
-        return 'cybertools.icons/' + icon
+        return self.stateObject.stateIcon
+        #icon = self.stateObject.icon or 'led%s.png' % self.stateObject.color
+        #return 'cybertools.icons/' + icon
 
 
 for std in statefulActions:
     actions.register('state.' + std, 'object', StateAction,
-            definition = std,
+            definition=std,
             cssClass='icon-action',
     )
+
+
+class ChangeStateBase(object):
+
+    @Lazy
+    def stateful(self):
+        return component.getAdapter(self.view.virtualTargetObject, IStateful,
+                                    name=self.definition)
+
+    @Lazy
+    def definition(self):
+        return self.request.form.get('stdef') or u''
+
+    @Lazy
+    def action(self):
+        return self.request.form.get('action') or u''
+
+    @Lazy
+    def transition(self):
+        return self.stateful.getStatesDefinition().transitions[self.action]
+
+    @Lazy
+    def stateObject(self):
+        return self.stateful.getStateObject()
+
+    @Lazy
+    def schema(self):
+        schema = self.transition.schema
+        if schema is None:
+            return Schema()
+        else:
+            schema.manager = self
+            schema.request = self.request
+            return schema
+
+
+class ChangeStateForm(ChangeStateBase, ObjectForm):
+
+    form_action = 'change_state_action'
+    data = {}
+
+    @Lazy
+    def macro(self):
+        return template.macros['change_state']
+
+    @Lazy
+    def title(self):
+        return self.virtualTargetObject.title
+
+
+class ChangeState(ChangeStateBase, EditObject):
+
+    def update(self):
+        formData = self.request.form
+        # store data in target object (unless field.nostore)
+        self.object = self.target
+        formState = self.instance.applyTemplate(data=formData)
+        # TODO: check formState
+        # track all fields
+        trackData = dict(transition=self.action)
+        for f in self.fields:
+            if f.readonly:
+                continue
+            name = f.name
+            fi = formState.fieldInstances[name]
+            rawValue = fi.getRawValue(formData, name, u'')
+            trackData[name] = fi.unmarshall(rawValue)
+        self.stateful.doTransition(self.action)
+        notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
+        return True
 
 
 #class StateQuery(ConceptView):
 class StateQuery(BaseView):
 
     template = template
-
     form_action = 'execute_search_action'
 
     @Lazy

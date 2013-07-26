@@ -158,4 +158,5 @@ class TargetLayoutInstance(NodeLayoutInstance):
         target = self.viewAnnotations.get('target')
         if target is None:
             target = adapted(self.context.target)
+            #self.viewAnnotations['target'] = target    # TODO: has to be tested!
         return target

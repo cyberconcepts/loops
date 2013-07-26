@@ -51,6 +51,8 @@
           </th>
         </tr></tbody>
 
+        <tbody metal:define-slot="custom_header" />
+
         <tbody><tr><td colspan="5" style="padding-right: 15px">
               <div id="form.fields">
                 <metal:fields use-macro="view/fieldRenderers/fields" />
@@ -59,7 +61,7 @@
 
         <tbody>
           <tr metal:use-macro="view/template/macros/assignments" />
-          <tal:custom define="customMacro view/customMacro"
+          <tal:custom define="customMacro view/customMacro|nothing"
                       condition="customMacro">
             <tr metal:use-macro="customMacro" />
           </tal:custom>
@@ -119,6 +121,8 @@
                      tal:attributes="value typeToken" />
         </th></tr></tbody>
 
+        <tbody metal:define-slot="custom_header" />
+
         <tbody><tr><td colspan="5">
               <div id="form.fields">
                 <metal:fields use-macro="view/fieldRenderers/fields" />
@@ -127,7 +131,7 @@
 
         <tbody>
           <tr metal:use-macro="view/template/macros/assignments" />
-          <tal:custom define="customMacro view/customMacro"
+          <tal:custom define="customMacro view/customMacro|nothing"
                       condition="customMacro">
             <tr metal:use-macro="customMacro" />
           </tal:custom>

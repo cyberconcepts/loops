@@ -1,5 +1,42 @@
 <html i18n:domain="loops">
 
+
+<metal:block define-macro="register">
+  <metal:data use-macro="view/form_macros/edit">
+    <metal:custom fill-slot="custom_header">
+      <tbody>
+        <tr><td colspan="5">
+          <tal:info content="structure item/infoText" />
+        </td></tr>
+      </tbody>
+    </metal:custom>
+  </metal:data>
+</metal:block>
+
+
+<metal:block define-macro="confirm">
+  <metal:data use-macro="view/form_macros/edit">
+    <metal:custom fill-slot="custom_header">
+      <tbody>
+        <tr><td colspan="5">
+          <tal:info content="structure item/infoText" />
+        </td></tr>
+        <tr><td colspan="5">
+          <input type="hidden" name="login"
+                 tal:attributes="value item/data/loginName" />
+          <input type="hidden" name="id"
+                 tal:attributes="value item/data/id" />
+          <table><tr>
+            <td i18n:translate="">Login Name</td>
+            <td tal:content="item/data/loginName" />
+          </tr></table>
+        </td></tr>
+      </tbody>
+    </metal:custom>
+  </metal:data>
+</metal:block>
+
+
 <metal:task define-macro="task">
   <metal:data use-macro="view/concept_macros/conceptdata">
   </metal:data>

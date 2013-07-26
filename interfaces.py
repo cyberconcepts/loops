@@ -690,9 +690,21 @@ class IIndexAttributes(Interface):
         """
 
 
+# reusable interface elements
+
+class IOptions(Interface):
+
+    options = schema.List(
+        title=_(u'Options'),
+        description=_(u'Additional settings.'),
+        value_type=schema.TextLine(),
+        default=[],
+        required=False)
+
+
 # types stuff
 
-class ITypeConcept(IConceptSchema, ILoopsAdapter):
+class ITypeConcept(IConceptSchema, ILoopsAdapter, IOptions):
     """ Concepts of type 'type' should be adaptable to this interface.
     """
 
@@ -723,13 +735,6 @@ class ITypeConcept(IConceptSchema, ILoopsAdapter):
         description=_(u'Name of a special view be used for presenting '
                        'objects of this type.'),
         default=u'',
-        required=False)
-
-    options = schema.List(
-        title=_(u'Options'),
-        description=_(u'Additional settings.'),
-        value_type=schema.TextLine(),
-        default=[],
         required=False)
 
     # storage = schema.Choice()

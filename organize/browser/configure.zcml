@@ -29,6 +29,18 @@
 
   <browser:page
       for="loops.interfaces.INode"
+      name="selfservice_registration.html"
+      class="loops.organize.browser.member.SecureMemberRegistration"
+      permission="zope.View" />
+
+  <browser:page
+      for="loops.interfaces.INode"
+      name="selfservice_confirmation.html"
+      class="loops.organize.browser.member.ConfirmMemberRegistration"
+      permission="zope.View" />
+
+  <browser:page
+      for="loops.interfaces.INode"
       name="change_password.html"
       class="loops.organize.browser.member.PasswordChange"
       permission="zope.View" />

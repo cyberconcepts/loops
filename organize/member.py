@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -62,19 +62,29 @@ class MemberRegistrationManager(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def personType(self):
+        concepts = self.context.getConceptManager()
+        return adapted(concepts[self.person_typeName])
+
+    def getPrincipalFolderFromOption(self):
+        options = IOptions(self.personType)
+        pfName = options(self.principalfolder_key,
+                         (self.default_principalfolder,))[0]
+        return getPrincipalFolder(self.context, pfName)
+
     def register(self, userId, password, lastName, firstName=u'',
                  groups=[], useExisting=False, pfName=None, **kw):
-        concepts = self.context.getConceptManager()
-        personType = adapted(concepts[self.person_typeName])
-        options = IOptions(personType)
+        options = IOptions(self.personType)
         if pfName is None:
             pfName = options(self.principalfolder_key,
                              (self.default_principalfolder,))[0]
-        self.createPrincipal(pfName, userId, password, lastName, firstName, useExisting=useExisting)
-        if len(groups)==0:
+        self.createPrincipal(pfName, userId, password, lastName, firstName, 
+                             useExisting=useExisting)
+        if not groups:
             groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)
-        self.createPersonForPrincipal(pfName, userId, lastName, firstName,
+        return self.createPersonForPrincipal(pfName, userId, lastName, firstName,
                                       useExisting, **kw)
 
     def createPrincipal(self, pfName, userId, password, lastName,

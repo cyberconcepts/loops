@@ -24,7 +24,7 @@ from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
 from cybertools.knowledge.survey import interfaces
-from loops.interfaces import IConceptSchema
+from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
 
 
@@ -38,15 +38,42 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         default=4,
         required=True)
 
+    feedbackHeader = schema.Text(
+        title=_(u'Feedback Header'),
+        description=_(u'Text that will appear at the top of the feedback page.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
+    feedbackFooter = schema.Text(
+        title=_(u'Feedback Footer'),
+        description=_(u'Text that will appear at the end of the feedback page.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
 
 class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
     """ A group of questions within a questionnaire.
     """
 
+    minAnswers = schema.Int(
+        title=_(u'Minimum Number of Answers'),
+        description=_(u'Minumum number of questions that have to be answered. '
+            'Empty means all questions have to be answered.'),
+        default=None,
+        required=False)
+
 
 class IQuestion(IConceptSchema, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
+
+    required = schema.Bool(
+        title=_(u'Required'),
+        description=_(u'Question must be answered.'),
+        default=False,
+        required=False)
 
     revertAnswerOptions = schema.Bool(
         title=_(u'Negative'),
