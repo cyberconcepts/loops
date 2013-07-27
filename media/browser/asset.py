@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,12 +20,9 @@
 Views for displaying media assets.
 
 Authors: Johann Schimpf, Erich Seifert.
-
-$Id$
 """
 
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.container.contained import NameChooser
 from zope.cachedescriptors.property import Lazy
 from zope.security.interfaces import Unauthorized
 from zope.traversing.api import getParent
@@ -64,7 +61,7 @@ class MediaAssetView(ResourceView):
         if useAttachment:
             filename = obj.localFilename or getName(self.context)
             #filename = urllib.quote(filename)
-            filename = NameChooser(getParent(self.context)).chooseName(filename, self.context)
+            filename = normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         return data
