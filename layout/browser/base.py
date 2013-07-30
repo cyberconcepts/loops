@@ -29,8 +29,9 @@ from zope.traversing.browser import absoluteURL
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.i18n.browser import LanguageInfo
+from loops.browser.concept import ConceptView as BaseConceptView
 from loops.browser.util import normalizeForUrl as normalize
 from loops import util
 
@@ -72,6 +73,10 @@ class BaseView(object):
     @Lazy
     def virtualTargetView(self):
         return self.viewAnnotations.get('targetView')
+
+    @Lazy
+    def baseConceptView(self):
+        return BaseConceptView(baseObject(self.context), self.request)
 
     @Lazy
     def node(self):
