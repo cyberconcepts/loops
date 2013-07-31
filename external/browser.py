@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 view class(es) for import/export.
-
-$Id$
 """
 
 from cStringIO import StringIO
@@ -44,6 +42,8 @@ class ExportImport(object):
 
     def __init__(self, context, request):
         self.context = removeSecurityProxy(context)
+        request.form['organize.suppress_tracking'] = True
+        util.saveRequest(request)
         self.request = request
         self.message = u''
 
