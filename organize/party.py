@@ -44,6 +44,7 @@ from loops.predicate import RelationAdapter
 from loops.predicate import PredicateInterfaceSourceList
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
 from loops.security.common import assignPersonRole, removePersonRole
+from loops.security.common import getCurrentPrincipal
 from loops.security.interfaces import ISecuritySetter
 from loops.type import TypeInterfaceSourceList
 from loops import util
@@ -57,7 +58,10 @@ PredicateInterfaceSourceList.predicateInterfaces += (IHasRole,)
 
 def getPersonForUser(context, request=None, principal=None):
     if principal is None:
-        principal = getattr(request, 'principal', None)
+        if request is None:
+            principal = getCurrentPrincipal()
+        else:
+            principal = getattr(request, 'principal', None)
     if principal is None:
         return None
     loops = context.getLoopsRoot()
