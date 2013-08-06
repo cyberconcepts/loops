@@ -61,12 +61,12 @@ class LayoutNodeView(Page, BaseView):
 
     @Lazy
     def headTitle(self):
+        parts = [self.context.title]
         if self.target is not None:
             targetView = component.getMultiAdapter((self.target, self.request),
                                                    name='layout')
-            parts = [self.context.title, targetView.title]
-        else:
-            parts = [self.context.title]
+            if targetView.title not in parts:
+                parts.append(targetView.title)
         if self.globalOptions('reverseHeadTitle'):
             parts.reverse()
         return ' - '.join(parts)
