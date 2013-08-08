@@ -313,7 +313,8 @@
     <metal:buttons define-slot="buttons">
               <input value="Save" type="submit"
                      i18n:attributes="value"
-                     tal:attributes="onClick python: view.closeAction(True) or
+                     tal:attributes="value view/label_submit | string:Save;
+                                     onClick python: view.closeAction(True) or
                             'submit();; return false'">
               <input type="button" value="Cancel" onClick="dlg.hide();"
                      i18n:attributes="value"
