@@ -166,6 +166,7 @@ class ChangeState(ChangeStateBase, EditObject):
             trackData[name] = fi.unmarshall(rawValue)
         self.stateful.doTransition(self.action)
         notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
+        self.request.response.redirect(self.request.getURL())
         return True
 
 
