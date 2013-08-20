@@ -84,7 +84,7 @@
                 tal:content="stateObject/title" />
         </span>
       </div>
-      <div><b i18n:translate="">Available Transitions</b>:
+      <div tal:condition="stf/getAvailableTransitionsForUser"><b i18n:translate="">Available Transitions</b>:
         <ul>
           <li tal:repeat="action stf/getAvailableTransitionsForUser">
             <a i18n:translate=""
