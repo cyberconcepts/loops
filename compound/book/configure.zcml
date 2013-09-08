@@ -8,7 +8,7 @@
   <zope:adapter
         name="book_overview"
         for="loops.interfaces.IConcept
-             loops.browser.skin.Lobo"
+             zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.compound.book.browser.BookView"
         permission="zope.View" />
@@ -16,7 +16,7 @@
   <zope:adapter
         name="section_view"
         for="loops.interfaces.IConcept
-             loops.browser.skin.Lobo"
+             zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.compound.book.browser.SectionView"
         permission="zope.View" />
@@ -24,7 +24,7 @@
   <zope:adapter
         name="book_topic_view"
         for="loops.interfaces.IConcept
-             loops.browser.skin.Lobo"
+             zope.publisher.interfaces.browser.IBrowserRequest"
         provides="zope.interface.Interface"
         factory="loops.compound.book.browser.TopicView"
         permission="zope.View" />

@@ -130,7 +130,8 @@ class Base(object):
             return IOptions(adapted(dt))(name)
 
     def getTitleForResource(self, r):
-        if self.getOptionsForResource(r, 'showtitle'):
+        if (IOptions(adapted(r.context.resourceType))('show_title_in_section') or 
+                self.getOptionsForResource(r, 'show_title_in_section')):
             return r.title
 
     def getIconForResource(self, r):
