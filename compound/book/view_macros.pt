@@ -10,9 +10,25 @@
          tal:content="related/title" />
     </h3>
     <div tal:content="structure related/renderedDescription" />
-    <!-- TODO: show next level (+/-) -->
+    <tal:nested condition="python:related.getOptions('show_nested_children')">
+        <metal:children use-macro="item/book_macros/nested_children" />
+    </tal:nested>
   </div>
 </metal:children>
+
+
+<metal:nested define-macro="nested_children">
+  <div tal:repeat="related related/children"
+       tal:define="level python:level + 1"
+       tal:attributes="class string:nested content-$level">
+    <h3>
+      <a tal:attributes="href python:view.getUrlForTarget(related)"
+         tal:content="related/title" />
+    </h3>
+    <div tal:content="structure related/renderedDescription" />
+  </div>
+</metal:nested>
+
 
 <metal:book define-macro="book">
   <metal:info use-macro="view/concept_macros/concepttitle" />

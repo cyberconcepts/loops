@@ -302,6 +302,10 @@ fieldset.box td {
     margin-top: -1px;
 }
 
+.nested {
+    margin-left: 2em;
+}
+
 .content-1 h1, h1 {
     padding-top: 0.5em;
     font-size: 180%;

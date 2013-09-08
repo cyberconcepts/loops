@@ -609,7 +609,6 @@ class BaseView(GenericView, I18NView):
         for opt in (self.options, self.typeOptions, self.globalOptions):
             if isinstance(opt, DummyOptions):
                 continue
-            #import pdb; pdb.set_trace()
             v = opt
             for key in keys.split('.'):
                 if isinstance(v, list):
