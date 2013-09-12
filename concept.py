@@ -242,6 +242,9 @@ class Concept(Contained, Persistent):
         return predicate
 
     def assignChild(self, concept, predicate=None, order=0, relevance=1.0):
+        self.createChildRelation(concept, predicate, order, relevance)
+
+    def createChildRelation(self, concept, predicate=None, order=0, relevance=1.0):
         predicate = self.checkPredicate(concept, predicate)
         registry = component.getUtility(IRelationRegistry)
         rel = ConceptRelation(self, concept, predicate)
@@ -252,6 +255,7 @@ class Concept(Contained, Persistent):
         # TODO (?): avoid duplicates
         registry.register(rel)
         notify(AssignmentEvent(self, rel))
+        return rel
 
     def setChildren(self, predicate, concepts):
         existing = self.getChildren([predicate])

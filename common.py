@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -366,7 +366,7 @@ class RelationSet(object):
 
 class ParentRelationSet(RelationSet):
 
-    def add(self, related, order=0, relevance=1.0):
+    def add(self, related, order=0, relevance=1.0, attrs={}):
         related = baseObject(related)
         self.context.deassignParent(related, [self.predicate],  # avoid duplicates
                                     noSecurityCheck=self.noSecurityCheck)
@@ -401,10 +401,17 @@ class ParentRelationSet(RelationSet):
 
 class ChildRelationSet(RelationSet):
 
-    def add(self, related, order=0, relevance=1.0):
+    def add(self, related, order=0, relevance=1.0, **attrs):
         related = baseObject(related)
-        self.context.deassignChild(related, [self.predicate])   # avoid duplicates
-        self.context.assignChild(related, self.predicate, order, relevance)
+        if not attrs:   # no duplicates when relation has no attributes
+            self.context.deassignChild(related, [self.predicate])
+        rel = self.context.createChildRelation(
+                                related, self.predicate, order, relevance)
+        if attrs:
+            from loops.predicate import adaptedRelation
+            adrel = adaptedRelation(rel)
+            for k, v in attrs.items():
+                setattr(adrel, k, v)
 
     def remove(self, related):
         related = baseObject(related)
@@ -458,15 +465,25 @@ class RelationSetProperty(object):
                             noSecurityCheck=self.noSecurityCheck)
 
     def __set__(self, inst, value):
-        value = [baseObject(c) for c in value]
+        objects = []
+        attrs = []
+        hasAttrs = False
+        for c in value:
+            if isinstance(c, dict):
+                objects.append(baseObject(c.pop('object')))
+                attrs.append(c)
+                hasAttrs = True
+            else:
+                objects.append(baseObject(c))
+                attrs.append({})
         rs = self.factory(inst, self.predicateName)
         current = [baseObject(c) for c in rs]
         for c in current:
-            if c not in value:
+            if hasAttrs or c not in objects:
                 rs.remove(c)
-        for v in value:
-            if v not in current:
-                rs.add(v)
+        for idx, v in enumerate(objects):
+            if hasAttrs or v not in current:
+                rs.add(v, **attrs[idx])
 
 
 class ParentRelationSetProperty(RelationSetProperty):
