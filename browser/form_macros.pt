@@ -265,7 +265,7 @@
           <label style="display: inline"
                  for="version.create"><span i18n:translate="">
             New version</span></label>
-          <tal:level condition="python: len(view.versionLevels) > 1">:
+          <tal:level condition="python: len(list(view.versionLevels)) > 1">:
             <select name="version.level">
               <option tal:repeat="level view/versionLevels"
                       i18n:translate=""
@@ -278,11 +278,11 @@
 </metal:versioning>
 
 
-<metal:states define-macro="states">
+<metal:states define-macro="states"
+              tal:define="states view/states"
+              tal:condition="states">
     <tr><td colspan="5" i18n:translate="" class="headline">States</td></tr>
-    <metal:states define-macro="states_info"
-                  tal:define="states view/states"
-                  tal:condition="states">
+    <metal:states define-macro="states_info">
       <tr tal:repeat="st states">
         <tal:state define="stObj st/getStateObject;
                            stDef st/statesDefinition;

@@ -712,8 +712,11 @@ class BaseView(GenericView, I18NView):
         if IResource.providedBy(self.target):
             statesDefs = self.globalOptions('organize.stateful.resource', ())
         else:
+            typeOptions = self.typeOptions('organize.stateful')
+            if typeOptions is None:
+                typeOptions = []
             statesDefs = (self.globalOptions('organize.stateful.concept', []) +
-                          self.typeOptions('organize.stateful', []))
+                          typeOptions)
         for std in statesDefs:
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
