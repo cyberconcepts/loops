@@ -253,7 +253,8 @@ class BaseWorkItemsView(object):
             tsTo += 3600 * 24 - 1    # include full end date
         if tsFrom or tsTo:
             result['timeFromTo'] = (tsFrom, tsTo)
-        state = form.get('wi_state') or self.options.wi_state
+        state = (form.get('wi_state') or 
+                    self.options.wi_state or self.typeOptions.wi_state)
         if not state:
             result['state'] = ['planned', 'accepted', 'running', 'done', 
                     'done_x', 'finished', 'delegated', 'moved', 'cancelled']
