@@ -52,6 +52,7 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent, traverse
 
 from cybertools.ajax.dojo import dojoMacroTemplate
+from cybertools.browser.action import actions
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
 from cybertools.meta.element import Element
@@ -720,10 +721,21 @@ class BaseView(GenericView, I18NView):
         """ Return a list of actions that provide the view and edit actions
             available for the context object.
         """
-        actions = []
+        acts = []
+        optKey = 'action.' + category
+        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
+        if actNames:
+            acts = list(actions.get(category, actNames,
+                                    view=self, page=page, target=target))
         if category in self.actions:
-            actions.extend(self.actions[category](self, page=page, target=target))
-        return actions
+            acts.extend(self.actions[category](self, page, target))
+        optKey = 'append_action.' + category
+        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
+        if actNames:
+            acts.extend(list(actions.get(category, actNames,
+                                    view=self, page=page, target=target)))
+        return acts
+
 
     def getAdditionalActions(self, category='object', page=None, target=None):
         """ Provide additional actions; override by subclass.
