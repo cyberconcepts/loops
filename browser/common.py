@@ -702,10 +702,10 @@ class BaseView(GenericView, I18NView):
         if not checkPermission(self.viewStatesPermission, self.context):
             return result
         if IResource.providedBy(self.target):
-            statesDefs = self.globalOptions('organize.stateful.resource', ())
+            statesDefs = (self.globalOptions('organize.stateful.resource') or [])
         else:
-            statesDefs = ((self.globalOptions('organize.stateful.concept') or []) +
-                          (self.typeOptions('organize.stateful') or []))
+            statesDefs = (self.globalOptions('organize.stateful.concept') or [])
+        statesDefs += (self.typeOptions('organize.stateful') or [])
         for std in statesDefs:
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
