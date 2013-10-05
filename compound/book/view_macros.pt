@@ -1,32 +1,39 @@
 <html i18n:domain="loops">
 
 
-<metal:children define-macro="children">
-  <div tal:repeat="related item/children"
-       tal:define="level python:level + 1"
-       tal:attributes="class string:content-$level">
-    <h3>
-      <a tal:attributes="href python:view.getUrlForTarget(related)"
-         tal:content="related/title" />
-    </h3>
-    <div tal:content="structure related/renderedDescription" />
-    <tal:nested condition="python:related.getOptions('show_nested_children')">
-        <metal:children use-macro="item/book_macros/nested_children" />
-    </tal:nested>
-  </div>
+<metal:children define-macro="children"
+                tal:define="children children|python:list(item.children())">
+  <tal:child repeat="related children">
+    <div tal:define="children python:list(related.children());
+                     resources python:list(related.resources());
+                     hideEmpty python:item.getOptions('hide_empty_children');
+                     level python:level + 1"
+         tal:condition="python:not hideEmpty or children or resources"
+         tal:attributes="class string:content-$level">
+      <h3><a tal:attributes="href python:view.getUrlForTarget(related)"
+           tal:content="related/title" />
+      </h3>
+      <div tal:content="structure related/renderedDescription" />
+      <tal:nested condition="python:related.getOptions('show_nested_children')">
+          <metal:children use-macro="item/book_macros/nested_children" />
+      </tal:nested>
+    </div>
+  </tal:child>
 </metal:children>
 
 
-<metal:nested define-macro="nested_children">
-  <div tal:repeat="related related/children"
-       tal:define="level python:level + 1"
-       tal:attributes="class string:nested content-$level">
-    <h3>
-      <a tal:attributes="href python:view.getUrlForTarget(related)"
-         tal:content="related/title" />
-    </h3>
-    <div tal:content="structure related/renderedDescription" />
-  </div>
+<metal:nested define-macro="nested_children"
+              tal:define="children children|python:list(item.children())">
+  <tal:child repeat="related children">
+    <div tal:define="level python:level + 1"
+         tal:attributes="class string:nested content-$level">
+      <h3>
+        <a tal:attributes="href python:view.getUrlForTarget(related)"
+           tal:content="related/title" />
+      </h3>
+      <div tal:content="structure related/renderedDescription" />
+    </div>
+  </tal:child>
 </metal:nested>
 
 
@@ -120,15 +127,17 @@
 </metal:section>
 
 
-<metal:topic define-macro="topic">
+<metal:topic define-macro="topic"
+             tal:define="children children|python:list(item.children());
+                         textResources textResources|item/textResources">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <h2 i18n:translate=""
-      tal:condition="python: list(item.children())">Children</h2>
+      tal:condition="children">Children</h2>
   <metal:children use-macro="item/book_macros/children" />
   <h2 i18n:translate=""
-      tal:condition="item/textResources">Text Elements</h2>
+      tal:condition="textResources">Text Elements</h2>
   <div>
-    <div tal:repeat="related item/textResources"
+    <div tal:repeat="related textResources"
          tal:define="level python:level + 1"
          tal:attributes="class string:content-$level">
       <h3>
