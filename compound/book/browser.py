@@ -95,6 +95,20 @@ class Base(object):
         if self.editable:
             return 'index.html'
 
+    def checkState(self, stateful):
+        if stateful is None:
+            return True
+        if stateful.statesDefinition == 'simple_publishing':
+            return stateful.state in ('published',)
+        return True
+
+    def children(self):
+        for c in self.getChildren():
+            for stf in c.states or [None]:
+                if self.checkState(stf):
+                    yield c
+                    break
+
     def getResources(self):
         relViews = super(Base, self).getResources()
         return relViews
@@ -106,9 +120,12 @@ class Base(object):
         idx = 0
         for rv in self.getResources():
             if rv.context.contentType.startswith('text/'):
-                idx += 1
-                result.append(rv)
-                self.images.append([])
+                for stf in rv.states or [None]:
+                    if self.checkState(stf):
+                        idx += 1
+                        result.append(rv)
+                        self.images.append([])
+                        break
             else:
                 self.registerDojoLightbox()
                 url = self.nodeView.getUrlForTarget(rv.context)
