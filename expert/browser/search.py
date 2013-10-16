@@ -70,7 +70,9 @@ class QuickSearchResults(NodeView):
         fv = FilterView(self.context, self.request)
         result = fv.apply(result)
         result.sort(key=lambda x: x.title.lower())
-        return self.viewIterator(result)
+        for v in self.viewIterator(result):
+            if v.checkState():
+                yield v
 
 
 class Search(ConceptView):

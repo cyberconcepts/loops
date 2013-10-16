@@ -698,8 +698,16 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def states(self):
+        return self.getStates()
+
+    @Lazy
+    def allStates(self):
+        return self.getStates(False)
+
+    def getStates(self, forDisplay=True):
         result = []
-        if not checkPermission(self.viewStatesPermission, self.context):
+        if forDisplay and not checkPermission(self.viewStatesPermission, self.context):
+            # do not display state information
             return result
         if IResource.providedBy(self.target):
             statesDefs = (self.globalOptions('organize.stateful.resource') or [])
@@ -710,6 +718,16 @@ class BaseView(GenericView, I18NView):
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
         return result
+
+    def checkState(self):
+        if not self.allStates:
+            return True
+        for stf in self.allStates:
+            option = self.globalOptions(
+                            'organize.stateful.restrict.' + stf.statesDefinition)
+            if option:
+                return stf.state in option
+        return True
 
     # controlling actions and editing
 
