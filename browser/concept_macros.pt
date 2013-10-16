@@ -64,10 +64,12 @@
     </h1>
     <metal:block use-macro="view/concept_macros/filter_input" />
   </metal:title>
-  <p metal:define-macro="conceptdescription"
+  <metal:desc define-macro="conceptdescription"
      tal:define="description description|item/renderedDescription"
      tal:condition="description">
-    <i tal:content="structure description">Description</i></p>
+    <div class="description"
+       tal:content="structure description">Description</div>
+  </metal:desc>
 </metal:title>
 
 

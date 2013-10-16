@@ -13,7 +13,8 @@
       <h3><a tal:attributes="href python:view.getUrlForTarget(related)"
            tal:content="related/title" />
       </h3>
-      <div tal:content="structure related/renderedDescription" />
+      <div class="description"
+           tal:content="structure related/renderedDescription" />
       <tal:nested condition="python:related.getOptions('show_nested_children')">
           <metal:children use-macro="item/book_macros/nested_children" />
       </tal:nested>
