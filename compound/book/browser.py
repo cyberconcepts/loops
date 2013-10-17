@@ -159,7 +159,9 @@ class Base(object):
 
     def getParentsForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
-            if c != self.context and c.conceptType != self.documentTypeType:
+            if (c != self.context and 
+                    c.conceptType != self.documentTypeType and
+                    self.getViewForObject(c).checkState()):
                 yield c
 
 
