@@ -50,7 +50,7 @@ statefulActions = ('classification_quality',
 def registerStatesPortlet(controller, view, statesDefs,
                           region='portlet_right', priority=98):
     cm = controller.macros
-    stfs = [component.getAdapter(view.context, IStateful, name=std) 
+    stfs = [component.getAdapter(view.context, IStateful, name=std)
                 for std in statesDefs]
     cm.register(region, 'states', title=_(u'Workflow'),
                 subMacro=template.macros['portlet_states'],

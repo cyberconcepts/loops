@@ -89,7 +89,7 @@
           <li tal:repeat="action stf/getAvailableTransitionsForUser">
             <a i18n:translate=""
                tal:define="baseUrl view/virtualTargetUrl;
-                           url string:$baseUrl/change_state.html?action=${action/name}&stdef=${stf/statesDefinition}"
+                           url string:$baseUrl/${stf/formUrl|string:change_state.html}?action=${action/name}&stdef=${stf/statesDefinition}"
                tal:attributes="href url;
                                onClick string:objectDialog('change_state', '$url');;
                                               return false;"

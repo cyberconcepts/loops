@@ -299,7 +299,7 @@ class CreateObjectForm(ObjectForm):
     def title(self):
         if self.fixedType:
             #return _(u'Create %s') % self.typeConcept.title
-            return _(u'Create $type', 
+            return _(u'Create $type',
                      mapping=dict(type=self.typeConcept.title))
         else:
             return _(self.defaultTitle)
@@ -749,7 +749,7 @@ class EditConcept(EditObject):
             if sibRelations:
                 maxOrder = max([r.order for r in sibRelations])
                 if maxOrder > 0:
-                    return obj.assignParent(concept, predicate, 
+                    return obj.assignParent(concept, predicate,
                                             order=maxOrder+1)
         obj.assignParent(concept, predicate)
 
