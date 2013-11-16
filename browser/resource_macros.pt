@@ -12,9 +12,11 @@
       <h1><a tal:omit-tag="python: level > 1"
              tal:attributes="href request/URL"
              tal:content="item/title">Title</a></h1>
-      <p tal:define="description description|item/renderedDescription"
-         tal:condition="description">
-        <i tal:content="structure description">Description</i></p>
+      <tal:desc define="description description|item/renderedDescription"
+                condition="description">
+        <div class="description" 
+             tal:content="structure description">Description</div>
+      </tal:desc>
       <metal:fields define-slot="fields" />
       <div class="content-1" id="1.body"
            tal:attributes="id id;"
@@ -53,7 +55,8 @@
            tal:content="item/title">Title</a></h1><br />
     <img tal:attributes="src
                 string:${view/url}/.${view/targetId}/view?version=this" />
-    <p><i tal:content="structure item/renderedDescription">Description</i></p>
+    <div class="description"
+         tal:content="structure item/renderedDescription">Description</div>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
@@ -63,8 +66,10 @@
   <div tal:attributes="ondblclick python: item.openEditWindow('edit.html')">
     <div metal:use-macro="views/node_macros/object_actions" />
     <h1 tal:content="item/title">Title</h1>
-    <p><i tal:content="structure item/renderedDescription">Description</i>&nbsp;</p>
-    <p>
+    <div class="description"
+         tal:content="structure item/renderedDescription">Description</div>
+    <br />
+    <div>
       <span class="button">
         <a i18n:translate=""
            tal:attributes="href
@@ -90,7 +95,7 @@
          Open for editing
         </a>
       </span>
-    </p>
+    </div>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>

@@ -257,7 +257,7 @@ def normalizeName(baseName):
         except UnicodeDecodeError:
             result.append('_')
             continue
-        if c in '._':
+        if c in '._-':
             # separator and special characters to keep
             result.append(c)
             continue

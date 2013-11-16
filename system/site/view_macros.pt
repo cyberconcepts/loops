@@ -11,7 +11,8 @@
         <li><a tal:attributes="href row/url"
                  tal:content="row/title">My Site</a>
           <tal:description condition="row/description"><br />
-            <i tal:content="structure row/renderedDescription" />
+            <div class="description"
+                 tal:content="structure row/renderedDescription" />
           </tal:description>
         </li>
       </tal:site>

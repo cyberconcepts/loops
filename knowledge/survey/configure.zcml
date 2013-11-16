@@ -12,6 +12,8 @@
   <zope:class class="loops.knowledge.survey.base.Questionnaire">
     <require permission="zope.View"
              interface="loops.knowledge.survey.interfaces.IQuestionnaire" />
+    <require permission="zope.View"
+             attributes="context" />
     <require permission="zope.ManageContent"
              set_schema="loops.knowledge.survey.interfaces.IQuestionnaire" />
   </zope:class>
@@ -23,6 +25,8 @@
   <zope:class class="loops.knowledge.survey.base.QuestionGroup">
     <require permission="zope.View"
              interface="loops.knowledge.survey.interfaces.IQuestionGroup" />
+    <require permission="zope.View"
+             attributes="context" />
     <require permission="zope.ManageContent"
              set_schema="loops.knowledge.survey.interfaces.IQuestionGroup" />
   </zope:class>
@@ -34,6 +38,8 @@
   <zope:class class="loops.knowledge.survey.base.Question">
     <require permission="zope.View"
              interface="loops.knowledge.survey.interfaces.IQuestion" />
+    <require permission="zope.View"
+             attributes="context" />
     <require permission="zope.ManageContent"
              set_schema="loops.knowledge.survey.interfaces.IQuestion" />
   </zope:class>
@@ -45,6 +51,8 @@
   <zope:class class="loops.knowledge.survey.base.FeedbackItem">
     <require permission="zope.View"
              interface="loops.knowledge.survey.interfaces.IFeedbackItem" />
+    <require permission="zope.View"
+             attributes="context" />
     <require permission="zope.ManageContent"
              set_schema="loops.knowledge.survey.interfaces.IFeedbackItem" />
   </zope:class>

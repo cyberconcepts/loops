@@ -112,7 +112,8 @@ class BaseMemberRegistration(NodeView):
 
     @Lazy
     def macro(self):
-        return schema_macros.macros['form']
+        #return schema_macros.macros['form']
+        return organize_macros.macros['register']
 
     def checkPermissions(self):
         personType = adapted(self.conceptManager['person'])

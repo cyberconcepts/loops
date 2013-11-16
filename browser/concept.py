@@ -535,17 +535,6 @@ class ConceptView(BaseView):
         for node in self.context.getClients():
             yield NodeView(node, self.request)
 
-    def getActions(self, category='object', page=None, target=None):
-        acts = []
-        optKey = 'action.' + category
-        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
-        if actNames:
-            acts = list(actions.get(category, actNames,
-                                    view=self, page=page, target=target))
-        if category in self.actions:
-            acts.extend(self.actions[category](self, page, target))
-        return acts
-
     def getPortletActions(self, page=None, target=None):
         if self.portlet_actions:
             return actions.get('portlet', self.portlet_actions,

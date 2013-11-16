@@ -3,3 +3,4 @@
 *.pydevproject
 *.sublime-project
 *.sublime-workspace
+.settings

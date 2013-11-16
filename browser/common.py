@@ -52,6 +52,7 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent, traverse
 
 from cybertools.ajax.dojo import dojoMacroTemplate
+from cybertools.browser.action import actions
 from cybertools.browser.view import GenericView
 from cybertools.meta.interfaces import IOptions
 from cybertools.meta.element import Element
@@ -617,7 +618,6 @@ class BaseView(GenericView, I18NView):
         for opt in (self.options, self.typeOptions, self.globalOptions):
             if isinstance(opt, DummyOptions):
                 continue
-            #import pdb; pdb.set_trace()
             v = opt
             for key in keys.split('.'):
                 if isinstance(v, list):
@@ -706,21 +706,36 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def states(self):
+        return self.getStates()
+
+    @Lazy
+    def allStates(self):
+        return self.getStates(False)
+
+    def getStates(self, forDisplay=True):
         result = []
-        if not checkPermission(self.viewStatesPermission, self.context):
+        if forDisplay and not checkPermission(self.viewStatesPermission, self.context):
+            # do not display state information
             return result
         if IResource.providedBy(self.target):
-            statesDefs = self.globalOptions('organize.stateful.resource', ())
+            statesDefs = (self.globalOptions('organize.stateful.resource') or [])
         else:
-            typeOptions = self.typeOptions('organize.stateful')
-            if typeOptions is None:
-                typeOptions = []
-            statesDefs = (self.globalOptions('organize.stateful.concept', []) +
-                          typeOptions)
+            statesDefs = (self.globalOptions('organize.stateful.concept') or [])
+        statesDefs += (self.typeOptions('organize.stateful') or [])
         for std in statesDefs:
             stf = component.getAdapter(self.target, IStateful, name=std)
             result.append(stf)
         return result
+
+    def checkState(self):
+        if not self.allStates:
+            return True
+        for stf in self.allStates:
+            option = self.globalOptions(
+                            'organize.stateful.restrict.' + stf.statesDefinition)
+            if option:
+                return stf.state in option
+        return True
 
     # controlling actions and editing
 
@@ -732,10 +747,21 @@ class BaseView(GenericView, I18NView):
         """ Return a list of actions that provide the view and edit actions
             available for the context object.
         """
-        actions = []
+        acts = []
+        optKey = 'action.' + category
+        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
+        if actNames:
+            acts = list(actions.get(category, actNames,
+                                    view=self, page=page, target=target))
         if category in self.actions:
-            actions.extend(self.actions[category](self, page=page, target=target))
-        return actions
+            acts.extend(self.actions[category](self, page, target))
+        optKey = 'append_action.' + category
+        actNames = (self.options(optKey) or []) + (self.typeOptions(optKey) or [])
+        if actNames:
+            acts.extend(list(actions.get(category, actNames,
+                                    view=self, page=page, target=target)))
+        return acts
+
 
     def getAdditionalActions(self, category='object', page=None, target=None):
         """ Provide additional actions; override by subclass.

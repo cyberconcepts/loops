@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Base classes for layout-based views.
-
-$Id$
 """
 
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
@@ -29,9 +27,11 @@ from zope.proxy import removeAllProxies
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.i18n.browser import LanguageInfo
+from loops.browser.concept import ConceptView as BaseConceptView
 from loops.browser.util import normalizeForUrl as normalize
 from loops import util
 
@@ -73,6 +73,10 @@ class BaseView(object):
     @Lazy
     def virtualTargetView(self):
         return self.viewAnnotations.get('targetView')
+
+    @Lazy
+    def baseConceptView(self):
+        return BaseConceptView(baseObject(self.context), self.request)
 
     @Lazy
     def node(self):
@@ -169,4 +173,8 @@ class BaseView(object):
 
     def getMetaDescription(self):
         return self.context.title
+
+    @Lazy
+    def globalOptions(self):
+        return IOptions(self.loopsRoot)
 

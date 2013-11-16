@@ -70,7 +70,9 @@ class QuickSearchResults(NodeView):
         fv = FilterView(self.context, self.request)
         result = fv.apply(result)
         result.sort(key=lambda x: x.title.lower())
-        return self.viewIterator(result)
+        for v in self.viewIterator(result):
+            if v.checkState():
+                yield v
 
 
 class Search(ConceptView):
@@ -257,8 +259,6 @@ class Search(ConceptView):
         return self.viewIterator(result)
 
     def checkStates(self, obj):
-        if not IResource.providedBy(obj):
-            return True
         for std, states in self.selectedStates.items():
             if std.startswith('state.resource.'):
                 std = std[len('state.resource.'):]

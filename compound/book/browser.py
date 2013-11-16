@@ -95,6 +95,11 @@ class Base(object):
         if self.editable:
             return 'index.html'
 
+    def children(self):
+        for c in self.getChildren():
+            if c.checkState():
+                yield c
+
     def getResources(self):
         relViews = super(Base, self).getResources()
         return relViews
@@ -106,9 +111,10 @@ class Base(object):
         idx = 0
         for rv in self.getResources():
             if rv.context.contentType.startswith('text/'):
-                idx += 1
-                result.append(rv)
-                self.images.append([])
+                if rv.checkState():
+                        idx += 1
+                        result.append(rv)
+                        self.images.append([])
             else:
                 self.registerDojoLightbox()
                 url = self.nodeView.getUrlForTarget(rv.context)
@@ -130,7 +136,8 @@ class Base(object):
             return IOptions(adapted(dt))(name)
 
     def getTitleForResource(self, r):
-        if self.getOptionsForResource(r, 'showtitle'):
+        if (IOptions(adapted(r.context.resourceType))('show_title_in_section') or 
+                self.getOptionsForResource(r, 'show_title_in_section')):
             return r.title
 
     def getIconForResource(self, r):
@@ -152,7 +159,9 @@ class Base(object):
 
     def getParentsForResource(self, r):
         for c in r.context.getConcepts([self.defaultPredicate]):
-            if c != self.context and c.conceptType != self.documentTypeType:
+            if (c != self.context and 
+                    c.conceptType != self.documentTypeType and
+                    self.getViewForObject(c).checkState()):
                 yield c
 
 

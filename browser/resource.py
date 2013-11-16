@@ -47,7 +47,7 @@ from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import BaseRelationView, ConceptRelationView
 from loops.browser.concept import ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
-from loops.common import adapted, NameChooser
+from loops.common import adapted, NameChooser, normalizeName
 from loops.interfaces import IBaseResource, IDocument, ITextDocument
 from loops.interfaces import IMediaAsset as legacy_IMediaAsset
 from loops.interfaces import ITypeConcept
@@ -214,7 +214,8 @@ class ResourceView(BaseView):
             if self.typeOptions('no_normalize_download_filename'):
                 filename = '"%s"' % filename
             else:
-                filename = NameChooser(getParent(self.context)).normalizeName(filename)
+                #filename = NameChooser(getParent(self.context)).normalizeName(filename)
+                filename = normalizeName(filename)
             response.setHeader('Content-Disposition',
                                'attachment; filename=%s' % filename)
         response.setHeader('Content-Length', len(data))

@@ -64,10 +64,12 @@
     </h1>
     <metal:block use-macro="view/concept_macros/filter_input" />
   </metal:title>
-  <p metal:define-macro="conceptdescription"
+  <metal:desc define-macro="conceptdescription"
      tal:define="description description|item/renderedDescription"
      tal:condition="description">
-    <i tal:content="structure description">Description</i></p>
+    <div class="description"
+       tal:content="structure description">Description</div>
+  </metal:desc>
 </metal:title>
 
 
@@ -130,7 +132,8 @@
 <metal:children define-macro="conceptchildren">
     <div tal:attributes="class string:content-$level;
                          ondblclick python: item.openEditWindow('configure.html')"
-         tal:define="children python: list(item.unique(item.children()))"
+         tal:define="list_nested request/list_nested|nothing;
+                     children children|python:list(item.unique(item.children()))"
          tal:condition="children">
       <h2 i18n:translate=""
           tal:condition="show_headline|python:True">Children</h2>
@@ -163,7 +166,7 @@
                 <td valign="top">
                   <a tal:attributes="href python: view.getUrlForTarget(related);
                                      title related/relationInfo">
-                    <span tal:replace="related/title">Resource Title</span>
+                    <span tal:replace="related/title">Concept Title</span>
                   </a>
                 </td>
                 <td class="center"><span tal:content="related/typeTitle"
@@ -178,6 +181,14 @@
                   <div metal:use-macro="views/node_macros/object_actions" />
                   <input type="hidden" name="child_tokens:list"
                          tal:attributes="value related/uidToken" />
+                </td>
+              </tr>
+              <tr tal:define="children python:list(related.unique(related.children()));
+                              resources python:list(related.resources())"
+                  tal:condition="python:list_nested and (children or resources)">
+                <td tal:condition="item/showCheckboxes|nothing" />
+                <td colspan="5">
+                  <metal:list use-macro="item/template/macros/list_nested" />
                 </td>
               </tr>
             </tal:item>
@@ -317,6 +328,20 @@
   <div tal:define="show_headline nothing">
     <metal:fields use-macro="item/template/macros/concepttitle" /><br />
     <metal:fields use-macro="item/template/macros/conceptchildren" />
+  </div>
+</metal:listing>
+
+
+<metal:listing define-macro="list_nested">
+  <div style="margin-left: 20px"
+       tal:define="item nocall:related;
+                   level python:level + 1">
+    <tal:children condition="children">
+      <metal:list use-macro="item/template/macros/conceptchildren" />
+    </tal:children>
+    <tal:resources condition="resources">
+      <metal:list use-macro="item/template/macros/conceptresources" />
+    </tal:resources>
   </div>
 </metal:listing>
 

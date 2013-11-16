@@ -11,7 +11,8 @@
             tal:attributes="src
                     string:${url}/@@mediaasset.html?version=this&v=medium" /></a>
     </p>
-    <p><i tal:content="structure item/renderedDescription">Description</i></p>
+    <div class="description"
+         tal:content="structure item/renderedDescription">Description</div>
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>
