@@ -114,6 +114,8 @@ class ReportInstance(BaseReport):
                     if k in crit.parts.keys():
                         crit.parts[k].comparisonValue = v
             parts = Jeep(crit.parts)
+        if getattr(self, 'limitsCount', ''):
+            limits = None
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
