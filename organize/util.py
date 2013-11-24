@@ -134,7 +134,9 @@ def getGroupsForPrincipal(principal=None):
     if principal is None:
         principal = getCurrentPrincipal()
     gf = getGroupsFolder()
-    return gf.getGroupsForPrincipal(principal.id)
+    prefix = 'gloops.'
+    return [(g.startswith(prefix) and g[len(prefix):] or g)
+            for g in gf.getGroupsForPrincipal(principal.id)]
 
 
 def getTrackingStorage(obj, name):
