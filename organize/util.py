@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Utilities for the loops.organize package.
-
-$Id$
 """
 
 from zope import interface, component, schema
@@ -31,6 +29,7 @@ from zope.app.security.settings import Allow, Deny, Unset
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.traversing.api import getParents
 from loops.common import adapted
+from loops.security.common import getCurrentPrincipal
 from loops.type import getOptionsDict
 
 defaultAuthPluginId = 'loops'
@@ -129,6 +128,13 @@ def getRolesForPrincipal(id, context):
                 elif setting == Deny and role not in denied:
                     denied.append(role)
     return result
+
+
+def getGroupsForPrincipal(principal=None):
+    if principal is None:
+        principal = getCurrentPrincipal()
+    gf = getGroupsFolder()
+    return gf.getGroupsForPrincipal(principal.id)
 
 
 def getTrackingStorage(obj, name):
