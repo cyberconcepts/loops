@@ -78,6 +78,11 @@ class TrackDateField(Field):
         return timeStamp2ISO(value)[:10]
 
 
+class TrackDateTimeField(TrackDateField):
+
+    part = 'dateTime'
+
+
 class TrackTimeField(TrackDateField):
 
     part = 'time'
