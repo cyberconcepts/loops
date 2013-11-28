@@ -156,7 +156,8 @@ class ChangeState(ChangeStateBase, EditObject):
         formState = self.instance.applyTemplate(data=formData)
         # TODO: check formState
         # track all fields
-        trackData = dict(transition=self.action)
+        trackData = dict(transition=self.action, 
+                         states_definition=self.definition)
         for f in self.fields:
             if f.readonly:
                 continue
