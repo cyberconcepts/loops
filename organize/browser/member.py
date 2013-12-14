@@ -138,7 +138,7 @@ class BaseMemberRegistration(NodeView):
         name = '.'.join((self.text_names_prefix, self.info_key))
         text = self.resourceManager.get(name)
         if text:
-            return self.renderText(text.data)
+            return self.renderText(text.data, text.contentType)
         return u''
 
     @Lazy

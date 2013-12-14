@@ -68,6 +68,7 @@ from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
 from loops.organize.tracking import access
+from loops.organize.util import getRolesForPrincipal
 from loops.resource import Resource
 from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
@@ -780,7 +781,16 @@ class BaseView(GenericView, I18NView):
 
     @Lazy
     def showObjectActions(self):
-        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
+        principal = self.request.principal
+        if IUnauthenticatedPrincipal.providedBy(principal):
+            return False
+        perms = self.globalOptions('action.object.permissions')
+        if perms:
+            for p in perms:
+                if checkPermission(p, self.context):
+                    return True
+            return False
+        return True
 
     def checkAction(self, name, category, target):
         if name in ('create_resource',):

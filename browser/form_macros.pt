@@ -25,30 +25,29 @@
       <tal:title condition="not:view/isInnerHtml">
         <h1 tal:content="request/view_title|view/title"
             i18n:translate="">Edit Information Object</h1>
-        <br />
       </tal:title>
 
       <table cellpadding="3" class="form">
-        <tbody>
-          <tr tal:condition="view/isInnerHtml">
+        <tbody tal:condition="view/isInnerHtml">
+          <tr>
             <th colspan="5" class="headline"
                 tal:attributes="colspan python: useI18N and 4 or 5">
               <span tal:content="request/view_title|view/title"
                     i18n:translate="">Edit Information Object</span>
             </th>
-          <th tal:condition="useI18N"
-              style="vertical-align: bottom; text-align: right;
-                     padding-right: 1em">
-            <select name="loops.language" id="loops.language"
-                    tal:attributes="onChange
-                            string:return replaceFieldsNodeForLanguage(
-                                    'form.fields', 'loops.language',
-                                    '${view/virtualTargetUrl}/$innerForm')">
-              <option tal:repeat="lang languages"
-                      tal:content="lang"
-                      tal:attributes="selected python: lang == language;">en</option>
-            </select>
-          </th>
+            <th tal:condition="useI18N"
+                style="vertical-align: bottom; text-align: right;
+                       padding-right: 1em">
+              <select name="loops.language" id="loops.language"
+                      tal:attributes="onChange
+                              string:return replaceFieldsNodeForLanguage(
+                                      'form.fields', 'loops.language',
+                                      '${view/virtualTargetUrl}/$innerForm')">
+                <option tal:repeat="lang languages"
+                        tal:content="lang"
+                        tal:attributes="selected python: lang == language;">en</option>
+              </select>
+            </th>
         </tr></tbody>
 
         <tbody metal:define-slot="custom_header" />
