@@ -993,7 +993,8 @@ class SimpleTerms(object):
         self.terms = dict(source)
 
     def getTerm(self, value):
-        token, title = value
+        token = value[0]
+        title = len(value) > 1 and value[1] or token
         return SimpleTerm(token, token, title)
 
     def getValue(self, token):
