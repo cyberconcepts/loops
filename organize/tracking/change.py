@@ -26,6 +26,7 @@ from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapter
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent, IObjectCreatedEvent
+from zope.traversing.api import getName
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.tracking.btree import Track, getTimeStamp
@@ -54,10 +55,14 @@ class ChangeManager(BaseRecordManager):
         req = util.getRequest()
         if req and req.form.get('organize.suppress_tracking'):
             return False
-        return (not (self.context is None or
-                    self.storage is None or
-                    self.personId is None)
-                and self.options('organize.tracking.changes'))
+        if self.context is None or self.storage is None or self.personId is None:
+            return False
+        opt = self.options('organize.tracking.changes')
+        if isinstance(opt, (list, tuple)):
+            type = self.context.getType()
+            return type and getName(type) in opt
+        else: 
+            return bool(opt)
 
     def recordModification(self, action='modify', **kw):
         if not self.valid:
