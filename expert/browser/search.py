@@ -141,7 +141,8 @@ class Search(ConceptView):
             title = None
         types = request.get('searchType')
         data = []
-        if title or (types and types != u'loops:concept:*'):
+        if title or (types and types not in 
+                        (u'loops:concept:*', 'loops:concept:account')):
             if title is not None:
                 title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
                 #title = title.split(' ', 1)[0]
