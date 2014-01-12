@@ -27,6 +27,7 @@ from zope.cachedescriptors.property import Lazy
 from zope.traversing.api import getName, getParent, traverse
 
 from cybertools.browser.form import FormController
+from cybertools.meta.interfaces import IOptions
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
@@ -131,6 +132,32 @@ class Search(ConceptView):
                   'dojo.require("dojox.data.QueryReadStore");')
         cm.register('js-execute', jsCall, jsCall=jsCall)
 
+    def getTypes(self):
+        """ Return a list of type tokens from the request after checking if
+            they fulfill certain requirements, e.g. on the length of the 
+            name (title, text) criteria given.
+        """
+        types = self.request.form.get('searchType')
+        title = self.request.form.get('name') or ''
+        if title.endswith('*'):
+            title = title[:-1]
+        if not isinstance(types, (list, tuple)):
+            types = [types]
+        if 'loops:concept:*' in types:
+            types.remove('loops:concept:*')
+        for t in list(types):
+            typeName = t.split(':')[-1]
+            if typeName == '*':
+                continue
+            type = self.conceptManager.get(typeName.lower())
+            if type is not None:
+                opt = IOptions(adapted(type))
+                minlen = opt('loops.expert.search.minlen_text')
+                if minlen:
+                    if len(title) < int(minlen[0]):
+                        types.remove(t)
+        return types
+
     def listConcepts(self, filterMethod=None):
         """ Used for dijit.FilteringSelect.
         """
@@ -141,8 +168,10 @@ class Search(ConceptView):
             title = None
         types = request.get('searchType')
         data = []
-        if title or (types and types not in 
-                        (u'loops:concept:*', 'loops:concept:account')):
+        types = self.getTypes()
+        if title or types:
+        #if title or (types and types not in 
+        #                (u'loops:concept:*', 'loops:concept:account')):
             if title is not None:
                 title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
                 #title = title.split(' ', 1)[0]
