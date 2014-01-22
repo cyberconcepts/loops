@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -59,8 +59,10 @@ class ChangeManager(BaseRecordManager):
             return False
         opt = self.options('organize.tracking.changes')
         if isinstance(opt, (list, tuple)):
-            type = self.context.getType()
-            return type and getName(type) in opt
+            if hasattr(self.context, 'getType'):
+                type = self.context.getType()
+                return type and getName(type) in opt
+            return False
         else: 
             return bool(opt)
 
