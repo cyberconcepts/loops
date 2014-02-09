@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ class DecimalField(Field):
     styleData = dict(Field.style.data, **styleData)
     style = TableCellStyle(**styleData)
     cssClass = 'number'
+    dbtype = 'float'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -93,6 +94,7 @@ class DecimalField(Field):
 class IntegerField(Field):
     
     renderer = cssClass = 'right'
+    dbtype = 'integer'
 
     def getSortValue(self, row):
         value = self.getValue(row)
@@ -104,6 +106,7 @@ class DateField(Field):
 
     format = ('date', 'short')
     renderer = cssClass = 'center'
+    dbtype = 'date'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
