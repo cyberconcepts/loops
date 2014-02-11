@@ -87,6 +87,13 @@ class CommentsView(NodeView):
 class CommentDetails(TrackDetails):
 
     @Lazy
+    def poster(self):
+        name = self.track.data.get('name')
+        if name:
+            return name
+        return self.user['title']
+
+    @Lazy
     def subject(self):
         return self.track.data['subject']
 
@@ -115,6 +122,8 @@ class CreateComment(EditObject):
 
     @Lazy
     def personId(self):
+        if self.view.isAnonymous:
+            return self.request.form.get('email')
         p = getPersonForUser(self.context, self.request)
         if p is not None:
             return util.getUidForObject(p)
@@ -136,8 +145,11 @@ class CreateComment(EditObject):
         if ts is None:
             ts = addObject(rm, TrackingStorage, 'comments', trackFactory=Comment)
         uid = util.getUidForObject(self.object)
-        ts.saveUserTrack(uid, 0, self.personId, dict(
-                subject=subject, text=text))
+        data = dict(subject=subject, text=text)
+        for k in ('name', 'email'):
+            if k in form:
+                data[k] = form[k]
+        ts.saveUserTrack(uid, 0, self.personId, data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
         return False
