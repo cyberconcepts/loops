@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -50,10 +50,17 @@ class CommentsView(NodeView):
 
     @Lazy
     def allowed(self):
-        if self.isAnonymous:
+        if self.virtualTargetObject is None:
             return False
-        return (self.virtualTargetObject is not None and
-                    self.globalOptions('organize.allowComments'))
+        opts = (self.globalOptions('organize.allowComments') or
+                self.typeOptions('organize.allowComments'))
+        if not opts:
+            return False
+        if opts is True:
+            opts = []
+        if self.isAnonymous and not 'all' in opts:
+            return False
+        return True
 
     @Lazy
     def addUrl(self):
