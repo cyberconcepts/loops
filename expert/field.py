@@ -263,6 +263,7 @@ class SubReportField(Field):
     template = None
     renderer = 'subreport'
     reportFactory = SubReport
+    dbtype = 'subreport'
 
     def getReportInstance(self, row):
         baseReport = row.parent.context
