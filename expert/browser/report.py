@@ -31,6 +31,7 @@ from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.common import adapted, AdapterBase
 from loops.expert.report import IReportInstance
+from loops.interfaces import IConcept
 from loops.organize.personal.browser.filter import FilterView
 from loops.security.common import canWriteObject, checkPermission
 from loops import util
@@ -171,7 +172,8 @@ class ResultsConceptView(ConceptView):
 
     @Lazy
     def reportType(self):
-        return (self.getOptions('report_type') or [None])[0]
+        if IConcept.providedBy(self.context):
+            return (self.getOptions('report_type') or [None])[0]
 
     @Lazy
     def report(self):
