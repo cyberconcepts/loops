@@ -282,7 +282,8 @@
        tal:condition="python: 'print' in pageActions"
        title="Print this page"
        i18n:attributes="title">
-    <a href="javascript:print()">
+    <a href="#"
+       onclick="print(); return false;">
       <img tal:attributes="src string:$resourceBase/cybertools.icons/printer.png"
            i18n:attributes="alt"
            alt="Print" />
