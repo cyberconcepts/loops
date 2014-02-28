@@ -12,6 +12,10 @@
              set_schema="cybertools.tracking.comment.interfaces.IComment" />
   </zope:class>
 
+  <zope:utility
+        factory="loops.organize.comment.base.commentStates"
+        name="organize.commentStates" />
+
   <!-- views -->
 
   <browser:page
