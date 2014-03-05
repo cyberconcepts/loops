@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -222,23 +222,26 @@ class VersionableResource(object):
 
 
 def cleanupVersions(context, event):
-    """ Called upon deletion of a resource.
+    """ Called upon deletion of a resource or concept.
     """
     vContext = IVersionable(context, None)
     if vContext is None:
         return
-    rm = context.getLoopsRoot().getResourceManager()
+    #rm = context.getLoopsRoot().getResourceManager()
+    rm = getParent(context)
     if context == vContext.master:
         toBeDeleted = []
         for v in vContext.versions.values():
             if v != context:
                 toBeDeleted.append(getName(v))
         for name in toBeDeleted:
+            # TODO: notify(ObjectRemovedEvent(rm[name]))
             del rm[name]
     else:
         vId = vContext.versionId
-        vMaster = IVersionable(vContext.master)
-        del vMaster.versions[vId]
+        vMaster = vContext.versionableMaster
+        if vId in vMaster.versions:
+            del vMaster.versions[vId]
         if vMaster.getVersioningAttribute('currentVersion', None) == context:
             newCurrent = sorted(vMaster.versions.items())[-1][1]
             vMaster.setVersioningAttribute('currentVersion', newCurrent)

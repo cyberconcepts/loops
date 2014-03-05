@@ -1,10 +1,7 @@
-<!-- $Id$ -->
-
 <configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="zope">
 
   <zope:adapter factory="loops.versioning.versionable.VersionableResource"
                 trusted="True" />
@@ -19,8 +16,12 @@
   <zope:subscriber
         for="loops.interfaces.IResource
              zope.app.container.interfaces.IObjectRemovedEvent"
-        handler="loops.versioning.versionable.cleanupVersions"
-        />
+        handler="loops.versioning.versionable.cleanupVersions" />
+
+  <zope:subscriber
+        for="loops.interfaces.IConcept
+             zope.app.container.interfaces.IObjectRemovedEvent"
+        handler="loops.versioning.versionable.cleanupVersions" />
 
   <!-- user interface -->
 
@@ -28,7 +29,6 @@
       name="listversions"
       for="loops.interfaces.IResource"
       class="loops.versioning.browser.ListVersions"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
 </configure>
