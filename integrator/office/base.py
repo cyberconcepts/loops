@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ from lxml import etree
 import os
 import shutil
 from time import strptime
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipfile
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -52,11 +52,21 @@ class OfficeFile(ExternalFileAdapter):
 
     implements(IOfficeFile)
 
+    _adapterAttributes = (ExternalFileAdapter._adapterAttributes + 
+                            ('documentPropertiesAccessible',))
+
     propertyMap = {u'Revision:': 'version'}
     propFileName = 'docProps/custom.xml'
     corePropFileName = 'docProps/core.xml'
     fileExtensions = ('.docm', '.docx', 'dotm', 'dotx', 'pptx', 'potx', 'ppsx',
                       '.xlsm', '.xlsx', '.xltm', '.xltx')
+
+    def getDocumentPropertiesAccessible(self):
+        return getattr(self.context, '_documentPropertiesAccessible', True)
+    def setDocumentPropertiesAccessible(self, value):
+        self.context._documentPropertiesAccessible = value
+    documentPropertiesAccessible = property(
+                getDocumentPropertiesAccessible, setDocumentPropertiesAccessible)
 
     @Lazy
     def logger(self):
@@ -84,9 +94,10 @@ class OfficeFile(ExternalFileAdapter):
             return result
         try:
             zf = ZipFile(fn, 'r')
-        except IOError, e:
+        except (IOError, BadZipfile), e:
             from logging import getLogger
             self.logger.warn(e)
+            self.documentPropertiesAccessible = False
             return result
         if self.corePropFileName not in zf.namelist():
             self.logger.warn('Core properties not found in file %s.' %
@@ -123,6 +134,8 @@ class OfficeFile(ExternalFileAdapter):
         attributes = {}
         # get dc:description from core.xml
         desc = self.getCoreProperty('description')
+        if not self.documentPropertiesAccessible:
+            return
         if desc is not None:
             attributes['comments'] = desc
         dom = self.docPropertyDom['custom']
