@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -188,7 +188,7 @@ class ResourceView(BaseView):
             return DocumentView(context, self.request)
         return self
 
-    def show(self, useAttachment=False):
+    def show(self, useAttachment=False, filename=None):
         """ show means: "download"..."""
         # TODO: control access, e.g. to protected images
         # if self.adapted.isProtected():
@@ -205,12 +205,17 @@ class ResourceView(BaseView):
                 from loops.media.browser.asset import MediaAssetView
                 view = MediaAssetView(context, self.request)
                 return view.show(useAttachment)
+        else:
+            response.setHeader('Cache-Control', '')
+            response.setHeader('Pragma', '')
         ti = IType(context).typeInterface
         if ti is not None:
             context = ti(context)
         data = context.data
         if useAttachment:
-            filename = adapted(self.context).localFilename or getName(self.context)
+            if filename is None:
+                filename = (adapted(self.context).localFilename or 
+                                getName(self.context))
             if self.typeOptions('no_normalize_download_filename'):
                 filename = '"%s"' % filename
             else:
