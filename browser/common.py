@@ -794,6 +794,8 @@ class BaseView(GenericView, I18NView):
 
     def checkAction(self, name, category, target):
         if name in ('create_resource',):
+            if target is not None and target.options.showCreateResource:
+                return True
             return not self.globalOptions('hideCreateResource')
         return True
 
