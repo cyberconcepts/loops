@@ -6,7 +6,7 @@
                    reportView nocall:item"
        tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />
-      <form method="post" name="report_data">
+      <form method="post" name="report_data" class="report-meta">
         <tal:hidden define="params item/dynamicParams"
                     tal:condition="nothing">
           <input type="hidden"

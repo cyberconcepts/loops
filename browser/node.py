@@ -158,7 +158,7 @@ class NodeView(BaseView):
             # check if there are any available actions;
             # store list of actions in macro object (evaluate only once)
             actions = [act for act in self.getAllowedActions('portlet',
-                                            target=self.virtualTarget) 
+                                            target=self.virtualTarget)
                             if act.condition]
             if actions:
                 cm.register('portlet_right', 'actions', title=_(u'Actions'),
@@ -551,14 +551,14 @@ class NodeView(BaseView):
         self.registerDojoFormAll()
         if target is None:
             target = self.virtualTarget
-            #target = self.getViewForTarget(self.virtualTargetObject, 
+            #target = self.getViewForTarget(self.virtualTargetObject,
             #                               setup=False)
         if category in self.actions:
             actions.extend(self.actions[category](self, target=target))
         if target is not None and self.setupTarget:
             actions.extend(target.getActions(
                                     category, page=self, target=target))
-        if target is not None and target.context != self.virtualTargetObject:  
+        if target is not None and target.context != self.virtualTargetObject:
             # self view must be used directly for target
             actions.extend(self.view.getAdditionalActions(
                                     category, self, target))

@@ -89,7 +89,7 @@ class RelationFieldInstance(FieldInstance, BaseRelationFieldInstance):
 
     def marshall(self, value):
         if value:
-            return dict(title=value.title, 
+            return dict(title=value.title,
                         uid=util.getUidForObject(baseObject(value)))
 
     def display(self, value):

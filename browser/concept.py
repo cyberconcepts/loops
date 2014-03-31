@@ -199,7 +199,7 @@ class BaseRelationView(BaseView):
 
     @Lazy
     def relationInfo(self):
-        predInfo = ', ' .join(p.title for p in self.predicates 
+        predInfo = ', ' .join(p.title for p in self.predicates
                                 if p != self.defaultPredicate)
         return ' | '.join(t for t in (self.description, predInfo) if t)
 
@@ -210,7 +210,7 @@ class ConceptView(BaseView):
     templateName = 'concept.standard'
     macroName = 'conceptdata'
     partPrefix = 'part_'
-    defaultParts = ('title', 'fields', 
+    defaultParts = ('title', 'fields',
                     'children', 'resources', 'workitems', 'comments',)
 
     def childViewFactory(self, *args, **kw):
