@@ -23,6 +23,7 @@ Definition of view classes and other browser related stuff for comments.
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.security import checkPermission
 
 from cybertools.browser.action import actions
 from cybertools.tracking.btree import TrackingStorage
@@ -32,6 +33,7 @@ from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.organize.comment.base import Comment
 from loops.organize.party import getPersonForUser
+from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.report import TrackDetails
 from loops.security.common import canAccessObject
 from loops.setup import addObject
@@ -82,6 +84,14 @@ class CommentsView(NodeView):
         for tr in ts.query(taskId=util.getUidForObject(target)):
             result.append(CommentDetails(self, tr))
         return result
+
+    def getActionsFor(self, comment):
+        if not checkPermission('loops.ViewRestricted', self.context):
+            return []
+        stateAct = StateAction(self, 
+                        definition='organize.commentStates', 
+                        stateful=comment.track)
+        return [stateAct]
 
 
 class CommentDetails(TrackDetails):

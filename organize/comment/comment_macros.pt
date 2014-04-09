@@ -14,6 +14,13 @@
     <tal:comment tal:repeat="comment items">
       <br />
       <div class="comment">
+        <div class="object-actions"
+             tal:define="actions python:comments.getActionsFor(comment)"
+             tal:condition="actions">
+          <tal:actions repeat="action actions">
+            <metal:action use-macro="action/macro" />
+          </tal:actions>
+        </div>
         <h3>
           <span tal:content="comment/subject">Subject</span></h3>
         <div class="info">
