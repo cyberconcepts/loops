@@ -22,6 +22,7 @@ Base classes for comments/discussions.
 
 from zope.component import adapts
 from zope.interface import implementer, implements
+from zope.traversing.api import getParent
 
 from cybertools.stateful.definition import StatesDefinition
 from cybertools.stateful.definition import State, Transition
@@ -38,7 +39,7 @@ def commentStates():
     return StatesDefinition('commentStates',
         State('new', 'new', ('accept', 'reject'), color='red'),
         State('public', 'public', ('retract', 'reject'), color='green'),
-        State('rejected', 'rejected', ('accept'), color='grey'),
+        State('rejected', 'rejected', ('accept',), color='grey'),
         Transition('accept', 'accept', 'public'),
         Transition('reject', 'reject', 'rejected'),
         Transition('retract', 'retract', 'new'),
@@ -60,4 +61,12 @@ class Comment(Stateful, Track):
     def __init__(self, taskId, runId, userName, data):
         super(Comment, self).__init__(taskId, runId, userName, data)
         self.state = self.getState()    # make initial state persistent
+
+    @property
+    def title(self):
+        return self.data['subject']
+
+    def doTransition(self, action):
+        super(Comment, self).doTransition(action)
+        getParent(self).indexTrack(None, self, 'state')
 

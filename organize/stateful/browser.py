@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ from loops.browser.form import ObjectForm, EditObject
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
+from loops import util
 from loops.util import _
 
 
@@ -97,8 +98,10 @@ class ChangeStateBase(object):
 
     @Lazy
     def stateful(self):
-        return component.getAdapter(self.view.virtualTargetObject, IStateful,
-                                    name=self.definition)
+        target = self.view.virtualTargetObject
+        if IStateful.providedBy(target):
+            return target
+        return component.getAdapter(target, IStateful, name=self.definition)
 
     @Lazy
     def definition(self):
@@ -110,7 +113,8 @@ class ChangeStateBase(object):
 
     @Lazy
     def transition(self):
-        return self.stateful.getStatesDefinition().transitions[self.action]
+        if self.action:
+            return self.stateful.getStatesDefinition().transitions[self.action]
 
     @Lazy
     def stateObject(self):
@@ -143,8 +147,17 @@ class ChangeStateForm(ChangeStateBase, ObjectForm):
 
 class ChangeState(ChangeStateBase, EditObject):
 
+    @Lazy
+    def stateful(self):
+        target = self.target
+        if IStateful.providedBy(target):
+            return target
+        return component.getAdapter(target, IStateful, name=self.definition)
+
     def update(self):
         formData = self.request.form
+        if 'target_uid' in formData:
+            self.target = util.getObjectForUid(formData['target_uid'])
         # store data in target object (unless field.nostore)
         self.object = self.target
         formState = self.instance.applyTemplate(data=formData)
@@ -159,7 +172,7 @@ class ChangeState(ChangeStateBase, EditObject):
             rawValue = fi.getRawValue(formData, name, u'')
             trackData[name] = fi.unmarshall(rawValue)
         self.stateful.doTransition(self.action)
-        notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
+        notify(ObjectModifiedEvent(self.target, trackData))
         return True
 
 

@@ -88,9 +88,17 @@ class CommentsView(NodeView):
     def getActionsFor(self, comment):
         if not checkPermission('loops.ViewRestricted', self.context):
             return []
+        trackUid = util.getUidForObject(comment.track)
+        url = '%s/.%s/change_state.html' % (
+                    self.page.virtualTargetUrl, trackUid)
+        onClick = ("objectDialog('change_state', "
+                    "'%s?dialog=change_state"
+                    "&target_uid=%s'); return false;" % (url, trackUid))
         stateAct = StateAction(self, 
                         definition='organize.commentStates', 
-                        stateful=comment.track)
+                        stateful=comment.track,
+                        url=url,
+                        onClick=onClick)
         return [stateAct]
 
 

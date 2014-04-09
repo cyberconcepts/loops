@@ -114,16 +114,33 @@
                 tal:define="stateObject view/stateful/getStateObject"
                 tal:content="stateObject/title" /> -
           <span i18n:translate="">Transition</span>:
-          <span i18n:translate=""
-                tal:content="view/transition/title" />
+          <tal:transition condition="view/transition">
+            <span i18n:translate=""
+                  tal:content="view/transition/title" />
+            <input type="hidden" name="action"
+                   tal:attributes="value request/form/action|nothing">
+          </tal:transition>
+          <tal:transition condition="not:view/transition">
+            <tal:trans repeat="trans view/stateful/getAvailableTransitions">
+              <label i18n:translate=""
+                     tal:attributes="for string:transition.${trans/name}"
+                     tal:content="trans/title" />
+              <input type="radio" name="action"
+                     tal:attributes="value trans/name;
+                                     id string:transition.${trans/name}" />
+            </tal:trans>
+          </tal:transition>
         </div>
         <input type="hidden" name="form.action" value="change_state">
         <input type="hidden" name="stdef"
                tal:attributes="value request/form/stdef|nothing">
-        <input type="hidden" name="action"
-               tal:attributes="value request/form/action|nothing">
+        <input type="hidden" name="target_uid"
+               tal:define="uid request/target_uid|nothing"
+               tal:condition="uid"
+               tal:attributes="value uid" />
       </div>
-      <div dojoType="dijit.layout.ContentPane" region="center">
+      <div dojoType="dijit.layout.ContentPane" region="center"
+           tal:condition="view/transition">
         <table cellpadding="3" class="form">
           <tbody><tr><td colspan="5" style="padding-right: 15px">
                 <div id="form.fields">
