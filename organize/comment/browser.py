@@ -86,6 +86,8 @@ class CommentsView(NodeView):
         return result
 
     def getActionsFor(self, comment):
+        if not self.globalOptions('organize.showCommentState'):
+            return []
         if not checkPermission('loops.ViewRestricted', self.context):
             return []
         trackUid = util.getUidForObject(comment.track)
