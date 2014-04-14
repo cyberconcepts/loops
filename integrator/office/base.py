@@ -89,11 +89,15 @@ class OfficeFile(ExternalFileAdapter):
     def docPropertyDom(self):
         fn = self.docFilename
         result = dict(core=[], custom=[])
+        if not os.path.exists(fn):
+            # may happen before file has been created
+            return result
         root, ext = os.path.splitext(fn)
         if not ext.lower() in self.fileExtensions:
             return result
         try:
             zf = ZipFile(fn, 'r')
+            self.documentPropertiesAccessible = True
         except (IOError, BadZipfile), e:
             from logging import getLogger
             self.logger.warn(e)
