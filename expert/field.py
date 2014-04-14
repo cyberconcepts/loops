@@ -92,7 +92,7 @@ class DecimalField(Field):
 
 
 class IntegerField(Field):
-    
+
     renderer = cssClass = 'right'
     dbtype = 'integer'
 
@@ -135,11 +135,11 @@ class StateField(Field):
         elif row.context is None:
             return None
         else:
-            stf = component.getAdapter(baseObject(row.context), IStateful, 
+            stf = component.getAdapter(baseObject(row.context), IStateful,
                                         name=self.statesDefinition)
         stateObject = stf.getStateObject()
         icon = stateObject.icon or 'led%s.png' % stateObject.color
-        return dict(title=self.translate(stateObject.title), 
+        return dict(title=self.translate(stateObject.title),
                     icon='cybertools.icons/' + icon)
 
     def translate(self, text):
@@ -277,4 +277,4 @@ class SubReportField(Field):
         rs = ri.getResults()
         ri.view.resultSets[ri.name] = rs
         return rs
-    
+
