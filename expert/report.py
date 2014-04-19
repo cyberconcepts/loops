@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
 from cybertools.composer.report.base import Report as BaseReport
-from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
+from cybertools.composer.report.base import LeafQueryCriteria
+from cybertools.composer.report.base import CompoundQueryCriteria
 from cybertools.composer.report.interfaces import IReport as IBaseReport
 from cybertools.composer.report.interfaces import IReportParams
 from cybertools.composer.report.result import ResultSet, Row
