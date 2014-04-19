@@ -34,7 +34,7 @@ class CommentsOverview(ReportConceptView):
 
 timeStamp = TrackDateField('timeStamp', u'Timestamp',
                 description=u'The date and time the comment was posted.',
-                part='dateTime',
+                part='dateTime', descending=True,
                 executionSteps=['sort', 'output'])
 target = TargetField('taskId', u'Target',
                 description=u'The resource or concept the comment was posted at.',

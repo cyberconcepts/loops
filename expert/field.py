@@ -217,6 +217,7 @@ class TrackDateField(Field):
     fieldType = 'date'
     part = 'date'
     format = 'short'
+    descending = False
     cssClass = 'right'
 
     def getValue(self, row):
@@ -238,6 +239,12 @@ class TrackDateField(Field):
         if not value:
             return ''
         return timeStamp2ISO(value)[:10]
+
+    def getSortValue(self, row):
+        value = self.getRawValue(row)
+        if value and self.descending:
+            return -value
+        return value or None
 
 
 class TrackTimeField(TrackDateField):
