@@ -16,6 +16,7 @@
         <div metal:use-macro="item/report_macros/params" />
         <div metal:define-macro="buttons">
           <input type="submit" name="report_execute" value="Execute Report"
+                 tal:condition="item/queryFields"
                  i18n:attributes="value" />
         </div>
       </form>

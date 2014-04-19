@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,13 +30,13 @@ from cybertools.composer.report.field import CalculatedField
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
 from cybertools.organize.interfaces import IWorkItems
 from cybertools.util.date import timeStamp2Date, timeStamp2ISO
-from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
                             TextField, HtmlTextField, UrlField
 from loops.expert.field import SubReport, SubReportField
+from loops.expert.field import TrackDateField, TrackTimeField
 from loops.expert.report import ReportInstance
 from loops import util
 
@@ -49,39 +49,6 @@ class WorkStatementView(ReportConceptView):
 
 
 # fields
-
-class TrackDateField(Field):
-
-    fieldType = 'date'
-    part = 'date'
-    format = 'short'
-    cssClass = 'right'
-
-    def getValue(self, row):
-        value = self.getRawValue(row)
-        if not value:
-            return None
-        return timeStamp2Date(value)
-
-    def getDisplayValue(self, row):
-        value = self.getValue(row)
-        if value:
-            view = row.parent.context.view
-            return formatDate(value, self.part, self.format,
-                              view.languageInfo.language)
-        return u''
-
-    def getSelectValue(self, row):
-        value = self.getRawValue(row)
-        if not value:
-            return ''
-        return timeStamp2ISO(value)[:10]
-
-
-class TrackTimeField(TrackDateField):
-
-    part = 'time'
-
 
 class DurationField(Field):
 

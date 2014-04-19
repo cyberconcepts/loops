@@ -78,6 +78,12 @@ Viewing comments
   ('My comment', u'... ...', u'john')
 
 
+Reporting
+=========
+
+  >>> from loops.organize.comment.report import CommentsOverview
+
+
 Fin de partie
 =============
 

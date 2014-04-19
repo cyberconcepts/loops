@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,11 @@ from zope.component import adapts
 from zope.interface import Interface, Attribute, implements
 from zope.cachedescriptors.property import Lazy
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import getName
 
 from cybertools.composer.report.base import Report as BaseReport
-from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
+from cybertools.composer.report.base import LeafQueryCriteria
+from cybertools.composer.report.base import CompoundQueryCriteria
 from cybertools.composer.report.interfaces import IReport as IBaseReport
 from cybertools.composer.report.interfaces import IReportParams
 from cybertools.composer.report.result import ResultSet, Row
@@ -53,6 +55,8 @@ class IReport(ILoopsAdapter, IReportParams):
         source='loops.expert.reportTypeSource',
         required=True)
 
+    name = Attribute('The name of the report.')
+
 
 class IReportInstance(IBaseReport):
     """ The report-type-specific object (an adapter on the report) that
@@ -68,6 +72,10 @@ class Report(AdapterBase):
 
     _contextAttributes = list(IReport)
 
+    @Lazy
+    def name(self):
+        return getName(self.context)
+
 TypeInterfaceSourceList.typeInterfaces += (IReport,)
 
 
@@ -79,9 +87,11 @@ class ReportInstance(BaseReport):
     rowFactory = Row
 
     view = None     # set upon creation
+    #headerRowFactory = Row
 
     def __init__(self, context):
         self.context = context
+        self.name = self.type
 
     def getResultsRenderer(self, name, macros):
         return macros[name]
@@ -105,6 +115,8 @@ class ReportInstance(BaseReport):
                     if k in crit.parts.keys():
                         crit.parts[k].comparisonValue = v
             parts = Jeep(crit.parts)
+        if getattr(self, 'limitsCount', ''):
+            limits = None
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
@@ -160,4 +172,16 @@ class ReportTypeSourceList(object):
 class DefaultConceptReportInstance(ReportInstance):
 
     label = u'Default Concept Report'
+
+
+# specialized rows
+
+class TrackRow(Row):
+
+    @staticmethod
+    def getContextAttr(obj, attr):
+        if attr in obj.context.metadata_attributes:
+            return getattr(obj.context, attr)
+        return obj.context.data.get(attr)
+
 

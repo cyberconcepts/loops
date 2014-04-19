@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ from cybertools.composer.report.field import Field as BaseField
 from cybertools.composer.report.result import ResultSet
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from cybertools.util.date import timeStamp2Date
+from cybertools.util.format import formatDate
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
 from loops import util
@@ -207,6 +208,41 @@ class TargetField(RelationField):
         if value is None:
             return None
         return util.getObjectForUid(value)
+
+
+# track fields
+
+class TrackDateField(Field):
+
+    fieldType = 'date'
+    part = 'date'
+    format = 'short'
+    cssClass = 'right'
+
+    def getValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return None
+        return timeStamp2Date(value)
+
+    def getDisplayValue(self, row):
+        value = self.getValue(row)
+        if value:
+            view = row.parent.context.view
+            return formatDate(value, self.part, self.format,
+                              view.languageInfo.language)
+        return u''
+
+    def getSelectValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return ''
+        return timeStamp2ISO(value)[:10]
+
+
+class TrackTimeField(TrackDateField):
+
+    part = 'time'
 
 
 # sub-report stuff
