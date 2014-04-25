@@ -4,6 +4,8 @@ type(u'competence', u'Kompetenz', viewName=u'',
 type(u'person', u'Person', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.IPerson', 
     options=u'action.portlet:createQualification,editPerson')
+type(u'report', u'Report', viewName=u'', 
+    typeInterface='loops.expert.report.IReport')
 type(u'task', u'Aufgabe', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.ITask', 
     options=u'action.portlet:createTask,editTask')
@@ -25,6 +27,10 @@ concept(u'requires', u'requires', u'predicate')
 
 concept(u'issubtype', u'is Subtype', u'predicate', options=u'hide_children',
     predicateInterface='loops.interfaces.IIsSubtype')
+
+# reports
+concept(u'qualification_overview', u'Qualification Overview', u'report',
+    reportType=u'qualification_overview')
 
 # structure
 child(u'general', u'competence', u'standard')

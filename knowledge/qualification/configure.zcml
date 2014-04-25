@@ -15,4 +15,26 @@
 
   <!-- views -->
 
+  <zope:adapter
+        name="qualifications.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.knowledge.qualification.browser.Qualifications"
+        permission="zope.View" />
+
+  <!-- reports -->
+
+  <zope:adapter 
+      name="qualification_overview"
+      factory="loops.knowledge.qualification.report.QualificationOverview"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.knowledge.qualification.report.QualificationOverview">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
 </configure>

@@ -17,19 +17,27 @@
 #
 
 """
-Definition of view classes and other browser related stuff for the
-loops.knowledge.qualification package.
+Qualification management report definitions.
 """
 
-from zope import interface, component
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.cachedescriptors.property import Lazy
+from cybertools.util.jeep import Jeep
+from loops.expert.report import ReportInstance
+from loops.organize.work.report import WorkRow
+from loops.organize.work.report import deadline, day, task, party, state
+from loops.organize.work.report import workTitle, workDescription
 
-from loops.expert.browser.report import ResultsConceptView
-from loops.knowledge.browser import template, knowledge_macros
 
+class QualificationOverview(ReportInstance):
 
-class Qualifications(ResultsConceptView):
+    type = "qualification_overview"
+    label = u'Qualification Overview'
 
-    reportName = 'qualification_overview'
+    rowFactory = WorkRow
 
+    fields = Jeep((day, deadline, party, task, workTitle, state))
+
+    taskTypeNames = ('folder','query', 'competence',)
+    defaultOutputFields = fields
+
+    def getTasks(self, parts):
+        return []

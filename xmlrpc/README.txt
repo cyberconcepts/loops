@@ -35,7 +35,7 @@ ZCML setup):
 Let's look what setup has provided us with:
 
   >>> len(concepts)
-  22
+  24
 
 Now let's add a few more concepts:
 
@@ -73,7 +73,7 @@ applied in an explicit assignment.
 
   >>> sorted(t['name'] for t in xrf.getConceptTypes())
   [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
-   u'predicate', u'task', u'textdocument', u'topic', u'type']
+   u'predicate', u'report', u'task', u'textdocument', u'topic', u'type']
   >>> sorted(t['name'] for t in xrf.getPredicates())
   [u'depends', u'issubtype', u'knows', u'ownedby', u'provides', u'requires', 
    u'standard']
@@ -96,7 +96,7 @@ All methods that retrieve one object also returns its children and parents:
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
   [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
-   u'predicate', u'task', u'textdocument', u'topic', u'type']
+   u'predicate', u'report', u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = defaultPred['parents']
   >>> len(pa)
@@ -115,7 +115,7 @@ We can also retrieve children and parents explicitely:
   u'hasType'
   >>> sorted(c['name'] for c in ch[0]['objects'])
   [u'competence', u'customer', u'domain', u'file', u'note', u'person', 
-   u'predicate', u'task', u'textdocument', u'topic', u'type']
+   u'predicate', u'report', u'task', u'textdocument', u'topic', u'type']
 
   >>> pa = xrf.getParents('5')
   >>> len(pa)
@@ -174,14 +174,14 @@ Updating the concept map
 
   >>> topicId = xrf.getObjectByName('topic')['id']
   >>> xrf.createConcept(topicId, u'zope2', u'Zope 2')
-  {'description': u'', 'title': u'Zope 2', 'type': '36', 'id': '72',
+  {'description': u'', 'title': u'Zope 2', 'type': '38', 'id': '76',
    'name': u'zope2'}
 
 The name of the concept is checked by a name chooser; if the corresponding
 parameter is empty, the name will be generated from the title.
 
   >>> xrf.createConcept(topicId, u'', u'Python')
-  {'description': u'', 'title': u'Python', 'type': '36', 'id': '74',
+  {'description': u'', 'title': u'Python', 'type': '38', 'id': '78',
    'name': u'python'}
 
 If we try to deassign a ``hasType`` relation nothing will happen; a
