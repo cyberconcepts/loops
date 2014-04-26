@@ -110,7 +110,7 @@ class LoopsType(BaseType):
     @Lazy
     def typeProvider(self):
         # TODO: unify this type attribute naming...
-        return self.context.resourceType
+        return getattr(self.context, 'resourceType', None)
 
     @Lazy
     def options(self):
