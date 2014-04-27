@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,12 +20,13 @@
 Classes for form presentation and processing.
 """
 
+from urllib import urlencode
+from zope.app.container.contained import ObjectRemovedEvent
 from zope import component, interface, schema
 from zope.component import adapts
 from zope.event import notify
 from zope.interface import Interface
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
-
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import ObjectAddedEvent
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -35,7 +36,7 @@ from zope.publisher.browser import FileUpload
 from zope.publisher.interfaces import BadRequest
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.security.proxy import isinstance, removeSecurityProxy
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParent
 
 from cybertools.ajax import innerHtml
 from cybertools.browser.form import FormController
@@ -66,6 +67,25 @@ from loops.type import ITypeConcept, ConceptTypeInfo
 from loops import util
 from loops.util import _
 from loops.versioning.interfaces import IVersionable
+
+
+# delete object
+
+class DeleteObject(NodeView):
+
+    isTopLevel = True
+
+    def __call__(self):
+        # todo: check permission; check security code
+        form = self.request.form
+        obj = util.getObjectForUid(form['uid'])
+        container = getParent(obj)
+        notify(ObjectRemovedEvent(obj))
+        del container[getName(obj)]
+        message = 'The object requested has been deleted.'
+        params = [('loops.message', message.encode('UTF-8'))]
+        nextUrl = '%s?%s' % (self.request.URL[-1], urlencode(params))
+        return self.request.response.redirect(nextUrl)
 
 
 # forms

@@ -62,6 +62,7 @@ class StateAction(Action):
 
     url = None
     definition = None
+    cssClass = 'icon-action'
 
     @Lazy
     def stateful(self):

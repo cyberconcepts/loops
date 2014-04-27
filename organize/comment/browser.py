@@ -27,7 +27,7 @@ from zope.security import checkPermission
 
 from cybertools.browser.action import actions
 from cybertools.tracking.btree import TrackingStorage
-from loops.browser.action import DialogAction
+from loops.browser.action import Action, DialogAction
 from loops.browser.common import BaseView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
@@ -101,7 +101,20 @@ class CommentsView(NodeView):
                         stateful=comment.track,
                         url=url,
                         onClick=onClick)
-        return [stateAct]
+        actions = [stateAct]
+        if not checkPermission('loops.EditRestricted', self.context):
+            return actions
+        baseUrl = self.page.virtualTargetUrl
+        url = '%s/delete_object?uid=%s' % (baseUrl, trackUid)
+        onClick = _("return confirm('Do you really want to delete this object?')")
+        delAct = Action(self, 
+                        url=url,
+                        description=_('Delete Comment'),
+                        icon='cybertools.icons/delete.png',
+                        cssClass='icon-action',
+                        onClick=onClick)
+        actions.append(delAct)
+        return actions
 
 
 class CommentDetails(TrackDetails):
