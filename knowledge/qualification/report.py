@@ -20,11 +20,14 @@
 Qualification management report definitions.
 """
 
+from zope.cachedescriptors.property import Lazy
+
 from cybertools.util.jeep import Jeep
 from loops.expert.report import ReportInstance
 from loops.organize.work.report import WorkRow
 from loops.organize.work.report import deadline, day, task, party, state
 from loops.organize.work.report import workTitle, workDescription
+from loops import util
 
 
 class QualificationOverview(ReportInstance):
@@ -34,10 +37,25 @@ class QualificationOverview(ReportInstance):
 
     rowFactory = WorkRow
 
-    fields = Jeep((day, deadline, party, task, workTitle, state))
+    fields = Jeep((task, party, workTitle, day, state)) # +deadline?
 
-    taskTypeNames = ('folder','query', 'competence',)
     defaultOutputFields = fields
 
-    def getTasks(self, parts):
-        return []
+    def getOptions(self, option):
+        return self.view.options(option)
+
+    @Lazy
+    def states(self):
+        return self.getOptions('report_select_state' or ('planned',))
+
+    def selectObjects(self, parts):
+        result = []
+        workItems = self.recordManager['work']
+        pred = self.conceptManager['querytarget']
+        types = self.view.context.getChildren([pred])
+        for t in types:
+            for c in t.getChildren([self.view.typePredicate]):
+                uid = util.getUidForObject(c)
+                for wi in workItems.query(taskId=uid, state=self.states):
+                    result.append(wi)
+        return result

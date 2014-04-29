@@ -26,6 +26,7 @@
 
 
 <div metal:define-macro="results">
+  <br />
   <table class="report"
          tal:define="results reportView/results">
     <tr>
@@ -34,7 +35,8 @@
             tal:attributes="class col/cssClass"
             i18n:translate="" />
     </tr>
-    <tr tal:repeat="row results">
+    <tr tal:repeat="row results"
+        tal:attributes="class python:(repeat['row'].index() % 2) and 'even' or 'odd'">
         <td tal:repeat="col results/displayedColumns"
             tal:attributes="class col/cssClass">
             <metal:column use-macro="python:
