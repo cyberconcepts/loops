@@ -55,6 +55,11 @@ class SurveyView(ConceptView):
         if self.editable:
             return 'index.html'
 
+    @Lazy
+    def showFeedbackText(self):
+        sft = self.adapted.showFeedbackText
+        return sft is None and True or sft
+
     def results(self):
         result = []
         response = None

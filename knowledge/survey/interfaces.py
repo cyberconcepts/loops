@@ -38,6 +38,20 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         default=4,
         required=True)
 
+    showFeedbackText = schema.Bool(
+        title=_(u'Show Feedback Text'),
+        description=_(u'If not set no feedback text will be shown on '
+                        u'the results page.'),
+        default=True,
+        required=False)
+
+    showTeamResults = schema.Bool(
+        title=_(u'Show Team Results'),
+        description=_(u'If set the team-related columns will be shown on '
+                        u'the results page.'),
+        default=False,
+        required=False)
+
     feedbackHeader = schema.Text(
         title=_(u'Feedback Header'),
         description=_(u'Text that will appear at the top of the feedback page.'),

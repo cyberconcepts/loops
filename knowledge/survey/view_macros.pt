@@ -17,13 +17,25 @@
     <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
-        <th i18n:translate="">Response</th>
+        <th tal:condition="item/showFeedbackText"
+            i18n:translate="">Response</th>
         <th i18n:translate="">%</th>
+        <tal:team condition="item/adapted/showTeamResults">
+          <th i18n:translate="">Rank</th>
+          <th i18n:translate="">Team Score %</th>
+          <th i18n:translate="">Team Rank</th>
+        </tal:team>
       </tr>
       <tr tal:repeat="fbitem feedback">
         <td tal:content="fbitem/category" />
-        <td tal:content="fbitem/text" />
+        <td tal:condition="item/showFeedbackText"
+            tal:content="fbitem/text" />
         <td tal:content="fbitem/score" />
+        <tal:team condition="item/adapted/showTeamResults">
+          <td />
+          <td />
+          <td />
+        </tal:team>
       </tr>
     </table>
     <div class="button" id="show_questionnaire">
