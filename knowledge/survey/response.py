@@ -43,9 +43,11 @@ class Responses(BaseRecordManager):
             self.storage.saveUserTrack(self.uid, 0, self.personId, data, 
                                         update=True, overwrite=True)
 
-    def load(self):
-        if self.personId:
-            tracks = self.storage.getUserTracks(self.uid, 0, self.personId)
+    def load(self, personId=None):
+        if personId is None:
+            personId = self.personId
+        if personId:
+            tracks = self.storage.getUserTracks(self.uid, 0, personId)
             if tracks:
                 return tracks[0].data
         return {}

@@ -19,22 +19,30 @@
         <th i18n:translate="">Category</th>
         <th tal:condition="item/showFeedbackText"
             i18n:translate="">Response</th>
-        <th i18n:translate="">%</th>
+        <th class="center"
+            i18n:translate="">%</th>
         <tal:team condition="item/adapted/showTeamResults">
-          <th i18n:translate="">Rank</th>
-          <th i18n:translate="">Team Score %</th>
-          <th i18n:translate="">Team Rank</th>
+          <th class="center"
+              i18n:translate="">Rank</th>
+          <th class="center"
+              i18n:translate="">Team Score %</th>
+          <th class="center"
+              tal:condition="nothing"
+              i18n:translate="">Team Rank</th>
         </tal:team>
       </tr>
       <tr tal:repeat="fbitem feedback">
         <td tal:content="fbitem/category" />
         <td tal:condition="item/showFeedbackText"
             tal:content="fbitem/text" />
-        <td tal:content="fbitem/score" />
+        <td class="center"
+            tal:content="fbitem/score" />
         <tal:team condition="item/adapted/showTeamResults">
-          <td />
-          <td />
-          <td />
+          <td class="center"
+              tal:content="fbitem/rank" />
+          <td class="center"
+              tal:content="fbitem/average" />
+          <td tal:condition="nothing" />
         </tal:team>
       </tr>
     </table>

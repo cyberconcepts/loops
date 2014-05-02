@@ -60,9 +60,30 @@ class SurveyView(ConceptView):
         sft = self.adapted.showFeedbackText
         return sft is None and True or sft
 
+    def getTeamData(self, respManager, myResponse):
+        result = [myResponse]
+        pred = self.conceptManager.get('ismember')
+        if pred is None:
+            return result
+        personId = respManager.personId
+        person = self.getObjectForUid(personId)
+        inst = person.getParents([pred])
+        if inst:
+            for c in inst[0].getChildren([pred]):
+                uid = self.getUidForObject(c)
+                if uid != personId:
+                    data = respManager.load(uid)
+                    if data:
+                        resp = Response(self.adapted, None)
+                        for qu in self.adapted.questions:
+                            resp.values[qu] = data[qu.uid]
+                        result.append(resp)
+        return result
+
     def results(self):
-        result = []
+        values = []
         response = None
+        respManager = Responses(self.context)
         form = self.request.form
         if 'submit' in form:
             self.data = {}
@@ -75,15 +96,25 @@ class SurveyView(ConceptView):
                         value = int(value)
                         self.data[uid] = value
                         response.values[question] = value
-            Responses(self.context).save(self.data)
+            respManager.save(self.data)
             self.errors = self.check(response)
             if self.errors:
                 return []
+        ranks = averages = []
         if response is not None:
-            result = response.getGroupedResult()
-        return [dict(category=r[0].title, text=r[1].text, 
+            if self.adapted.showTeamResults:
+                values, ranks, averages = response.getTeamResult(
+                                            self.getTeamData(respManager, response))
+            else:
+                values = response.getGroupedResult()
+        result = [dict(category=r[0].title, text=r[1].text, 
                             score=int(round(r[2] * 100)))
-                        for r in result]
+                        for r in values]
+        if ranks or averages:
+            for idx, qgdata in enumerate(result):
+                qgdata['rank'] = ranks[idx]
+                qgdata['average'] = int(round(averages[idx] * 100))
+        return result
 
     def check(self, response):
         errors = []
