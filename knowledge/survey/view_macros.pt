@@ -20,7 +20,7 @@
         <th tal:condition="item/showFeedbackText"
             i18n:translate="">Response</th>
         <th class="center"
-            i18n:translate="">%</th>
+            i18n:translate="">Score %</th>
         <tal:team condition="item/adapted/showTeamResults">
           <th class="center"
               i18n:translate="">Rank</th>

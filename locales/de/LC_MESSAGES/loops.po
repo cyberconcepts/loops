@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2014-02-11 12:00 CET\n"
+"PO-Revision-Date: 2014-05-07 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -264,6 +264,18 @@ msgstr "Bitte beantworten Sie die angegebene Mindestanzahl an Fragen je Fragengr
 
 msgid "Obligatory question, must be answered"
 msgstr "Pflichtfrage, muss beantwortet werden"
+
+msgid "Score %"
+msgstr "Bewertung %"
+
+msgid "Team Score %"
+msgstr "Durchschnitt Team %"
+
+msgid "Rank"
+msgstr "Rang im Team"
+
+msgid "Team Rank"
+msgstr "Rang des Teams"
 
 # competence (qualification)
 
