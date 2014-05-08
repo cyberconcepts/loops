@@ -60,8 +60,9 @@ class SurveyView(ConceptView):
         sft = self.adapted.showFeedbackText
         return sft is None and True or sft
 
-    def getTeamData(self, respManager, myResponse):
-        result = [myResponse]
+    def getTeamData(self, respManager):
+        #result = [myResponse]
+        result = []
         pred = self.conceptManager.get('ismember')
         if pred is None:
             return result
@@ -71,46 +72,53 @@ class SurveyView(ConceptView):
         if inst:
             for c in inst[0].getChildren([pred]):
                 uid = self.getUidForObject(c)
-                if uid != personId:
-                    data = respManager.load(uid)
-                    if data:
-                        resp = Response(self.adapted, None)
-                        for qu in self.adapted.questions:
-                            resp.values[qu] = data[qu.uid]
-                        result.append(resp)
+                data = respManager.load(uid)
+                if data:
+                    resp = Response(self.adapted, None)
+                    for qu in self.adapted.questions:
+                        resp.values[qu] = data[qu.uid]
+                    qgAvailable = True
+                    for qg in self.adapted.questionGroups:
+                        if qg.uid in data:
+                            resp.values[qg] = data[qg.uid]
+                        else:
+                            qgAvailable = False
+                    if not qgAvailable:
+                        values = resp.getGroupedResult()
+                        for qugroup, info, score in values:
+                            resp.values[qugroup] = score
+                    result.append(resp)
         return result
 
     def results(self):
-        values = []
-        response = None
-        respManager = Responses(self.context)
         form = self.request.form
-        if 'submit' in form:
-            self.data = {}
-            response = Response(self.adapted, None)
-            for key, value in form.items():
-                if key.startswith('question_'):
+        if 'submit' not in form:
+            return []
+        respManager = Responses(self.context)
+        data = {}
+        response = Response(self.adapted, None)
+        for key, value in form.items():
+            if key.startswith('question_'):
+                if value != 'none':
                     uid = key[len('question_'):]
                     question = adapted(self.getObjectForUid(uid))
-                    if value != 'none':
-                        value = int(value)
-                        self.data[uid] = value
-                        response.values[question] = value
-            respManager.save(self.data)
-            self.errors = self.check(response)
-            if self.errors:
-                return []
-        ranks = averages = []
-        if response is not None:
-            if self.adapted.showTeamResults:
-                values, ranks, averages = response.getTeamResult(
-                                            self.getTeamData(respManager, response))
-            else:
-                values = response.getGroupedResult()
+                    value = int(value)
+                    data[uid] = value
+                    response.values[question] = value
+        values = response.getGroupedResult()
+        for qugroup, info, score in values:
+            data[self.getUidForObject(qugroup)] = score
+        respManager.save(data)
+        self.data = data
+        self.errors = self.check(response)
+        if self.errors:
+            return []
         result = [dict(category=r[0].title, text=r[1].text, 
                             score=int(round(r[2] * 100)))
                         for r in values]
-        if ranks or averages:
+        if self.adapted.showTeamResults:
+            teamData = self.getTeamData(respManager)
+            ranks, averages = response.getTeamResult(values, teamData)
             for idx, qgdata in enumerate(result):
                 qgdata['rank'] = ranks[idx]
                 qgdata['average'] = int(round(averages[idx] * 100))
