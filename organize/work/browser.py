@@ -342,6 +342,10 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
 
 class UserWorkItems(PersonWorkItems):
 
+    @Lazy
+    def title(self):
+        return self.adapted.title
+
     def listWorkItems(self):
         criteria = self.getCriteria()
         p = getPersonForUser(self.context, self.request)
