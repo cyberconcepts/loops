@@ -721,6 +721,8 @@ class BaseView(GenericView, I18NView):
         return result
 
     def checkState(self):
+        if checkPermission('loops.ManageSite', self.context):
+            return True
         if not self.allStates:
             return True
         for stf in self.allStates:

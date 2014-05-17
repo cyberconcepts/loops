@@ -464,7 +464,9 @@ class ConceptView(BaseView):
         rels = self.context.getResourceRelations()
         for r in rels:
             if fv.check(r.first):
-                yield ResourceRelationView(r, self.request, contextIsSecond=True)
+                view = ResourceRelationView(r, self.request, contextIsSecond=True)
+                if view.checkState():
+                    yield view
 
     def resources(self):
         return self.getResources()
