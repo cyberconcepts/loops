@@ -13,21 +13,21 @@
     <h3 i18n:translate="">Feedback</h3>
     <div tal:define="header item/adapted/feedbackHeader"
          tal:condition="header"
-         tal:content="structure python:item.renderText(header, 'text/restructured')" />
+         tal:content="structure python:
+                        item.renderText(header, 'text/restructured')" />
     <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
         <th tal:condition="item/showFeedbackText"
             i18n:translate="">Response</th>
         <th class="center"
-            i18n:translate="">Score %</th>
+            i18n:translate="">Score</th>
+        <th class="center"
+            i18n:translate="">Rank</th>
         <tal:team condition="item/adapted/showTeamResults">
           <th class="center"
-              i18n:translate="">Rank</th>
+              i18n:translate="">Team Score</th>
           <th class="center"
-              i18n:translate="">Team Score %</th>
-          <th class="center"
-              tal:condition="nothing"
               i18n:translate="">Team Rank</th>
         </tal:team>
       </tr>
@@ -37,12 +37,13 @@
             tal:content="fbitem/text" />
         <td class="center"
             tal:content="fbitem/score" />
+        <td class="center"
+            tal:content="fbitem/rank" />
         <tal:team condition="item/adapted/showTeamResults">
           <td class="center"
-              tal:content="fbitem/rank" />
-          <td class="center"
               tal:content="fbitem/average" />
-          <td tal:condition="nothing" />
+          <td class="center"
+              tal:content="fbitem/teamRank" />
         </tal:team>
       </tr>
     </table>

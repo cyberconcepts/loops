@@ -76,7 +76,8 @@ class SurveyView(ConceptView):
                 if data:
                     resp = Response(self.adapted, None)
                     for qu in self.adapted.questions:
-                        resp.values[qu] = data[qu.uid]
+                        if qu.uid in data:
+                            resp.values[qu] = data[qu.uid]
                     qgAvailable = True
                     for qg in self.adapted.questionGroups:
                         if qg.uid in data:
@@ -85,8 +86,8 @@ class SurveyView(ConceptView):
                             qgAvailable = False
                     if not qgAvailable:
                         values = resp.getGroupedResult()
-                        for qugroup, info, score in values:
-                            resp.values[qugroup] = score
+                        for v in values:
+                            resp.values[v['group']] = v['score']
                     result.append(resp)
         return result
 
@@ -106,22 +107,22 @@ class SurveyView(ConceptView):
                     data[uid] = value
                     response.values[question] = value
         values = response.getGroupedResult()
-        for qugroup, info, score in values:
-            data[self.getUidForObject(qugroup)] = score
+        for v in values:
+            data[self.getUidForObject(v['group'])] = v['score']
         respManager.save(data)
         self.data = data
         self.errors = self.check(response)
         if self.errors:
             return []
-        result = [dict(category=r[0].title, text=r[1].text, 
-                            score=int(round(r[2] * 100)))
-                        for r in values]
+        result = [dict(category=r['group'].title, text=r['feedback'].text, 
+                       score=int(round(r['score'] * 100)), rank=r['rank']) 
+                    for r in values]
         if self.adapted.showTeamResults:
             teamData = self.getTeamData(respManager)
-            ranks, averages = response.getTeamResult(values, teamData)
-            for idx, qgdata in enumerate(result):
-                qgdata['rank'] = ranks[idx]
-                qgdata['average'] = int(round(averages[idx] * 100))
+            values = response.getTeamResult(values, teamData)
+            for idx, r in enumerate(values):
+                result[idx]['average'] = int(round(r['average'] * 100))
+                result[idx]['teamRank'] = r['rank']
         return result
 
     def check(self, response):
