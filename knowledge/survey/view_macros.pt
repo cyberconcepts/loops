@@ -24,10 +24,12 @@
                               col['name'] != 'text' and 'center' or None"
             tal:content="col/label" />
       </tr>
-      <tr tal:repeat="fbitem feedback">
-        <td tal:content="fbitem/category" />
+      <tr style="vertical-align: top"tal:repeat="fbitem feedback">
+        <td  style="vertical-align: top"
+             tal:content="fbitem/category" />
         <tal:cols repeat="col item/feedbackColumns">
-          <td tal:define="name col/name"
+          <td style="vertical-align: top"
+              tal:define="name col/name"
               tal:attributes="class python:name != 'text' and 'center' or None"
               tal:content="fbitem/?name" />
         </tal:cols>
