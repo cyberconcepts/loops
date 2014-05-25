@@ -60,6 +60,22 @@ class SurveyView(ConceptView):
         sft = self.adapted.showFeedbackText
         return sft is None and True or sft
 
+    @Lazy
+    def feedbackColumns(self):
+        cols = self.adapted.feedbackColumns
+        if not cols:
+            cols = [
+                dict(name='text', label=u'Response'),
+                dict(name='score', label=u'Score')]
+        return cols
+
+    @Lazy
+    def showTeamResults(self):
+        for c in self.feedbackColumns:
+            if c['name'] in ('average', 'teamRank'):
+                return True
+        return False
+
     def getTeamData(self, respManager):
         #result = [myResponse]
         result = []
@@ -117,10 +133,10 @@ class SurveyView(ConceptView):
         result = [dict(category=r['group'].title, text=r['feedback'].text, 
                        score=int(round(r['score'] * 100)), rank=r['rank']) 
                     for r in values]
-        if self.adapted.showTeamResults:
+        if self.showTeamResults:
             teamData = self.getTeamData(respManager)
-            values = response.getTeamResult(values, teamData)
-            for idx, r in enumerate(values):
+            teamValues = response.getTeamResult(values, teamData)
+            for idx, r in enumerate(teamValues):
                 result[idx]['average'] = int(round(r['average'] * 100))
                 result[idx]['teamRank'] = r['rank']
         return result

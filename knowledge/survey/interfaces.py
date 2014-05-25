@@ -23,6 +23,7 @@ Interfaces for surveys used in knowledge management.
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from cybertools.composer.schema.grid.interfaces import Records
 from cybertools.knowledge.survey import interfaces
 from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
@@ -38,19 +39,16 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         default=4,
         required=True)
 
-    showFeedbackText = schema.Bool(
-        title=_(u'Show Feedback Text'),
-        description=_(u'If not set no feedback text will be shown on '
-                        u'the results page.'),
-        default=True,
+    feedbackColumns = Records(
+        title=_(u'Feedback Columns'),
+        description=_(u'Column definitions for the results table '
+                        u'on the feedback page.'),
+        default=[],
         required=False)
 
-    showTeamResults = schema.Bool(
-        title=_(u'Show Team Results'),
-        description=_(u'If set the team-related columns will be shown on '
-                        u'the results page.'),
-        default=False,
-        required=False)
+    feedbackColumns.column_types = [
+            schema.Text(__name__='name', title=u'Column Name',),
+            schema.Text(__name__='label', title=u'Column Label'),]
 
     feedbackHeader = schema.Text(
         title=_(u'Feedback Header'),

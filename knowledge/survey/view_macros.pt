@@ -18,33 +18,19 @@
     <table class="listing">
       <tr>
         <th i18n:translate="">Category</th>
-        <th tal:condition="item/showFeedbackText"
-            i18n:translate="">Response</th>
-        <th class="center"
-            i18n:translate="">Score</th>
-        <th class="center"
-            i18n:translate="">Rank</th>
-        <tal:team condition="item/adapted/showTeamResults">
-          <th class="center"
-              i18n:translate="">Team Score</th>
-          <th class="center"
-              i18n:translate="">Team Rank</th>
-        </tal:team>
+        <th tal:repeat="col item/feedbackColumns"
+            i18n:translate=""
+            tal:attributes="class python: 
+                              col['name'] != 'text' and 'center' or None"
+            tal:content="col/label" />
       </tr>
       <tr tal:repeat="fbitem feedback">
         <td tal:content="fbitem/category" />
-        <td tal:condition="item/showFeedbackText"
-            tal:content="fbitem/text" />
-        <td class="center"
-            tal:content="fbitem/score" />
-        <td class="center"
-            tal:content="fbitem/rank" />
-        <tal:team condition="item/adapted/showTeamResults">
-          <td class="center"
-              tal:content="fbitem/average" />
-          <td class="center"
-              tal:content="fbitem/teamRank" />
-        </tal:team>
+        <tal:cols repeat="col item/feedbackColumns">
+          <td tal:define="name col/name"
+              tal:attributes="class python:name != 'text' and 'center' or None"
+              tal:content="fbitem/?name" />
+        </tal:cols>
       </tr>
     </table>
     <div class="button" id="show_questionnaire">
