@@ -24,7 +24,8 @@
                               col['name'] != 'text' and 'center' or None"
             tal:content="col/label" />
       </tr>
-      <tr style="vertical-align: top"tal:repeat="fbitem feedback">
+      <tr style="vertical-align: top"
+          tal:repeat="fbitem feedback">
         <td  style="vertical-align: top"
              tal:content="fbitem/category" />
         <tal:cols repeat="col item/feedbackColumns">
