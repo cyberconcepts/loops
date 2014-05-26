@@ -170,6 +170,9 @@ class WorkItemDetails(TrackDetails):
     @Lazy
     def allowedToEditWorkItem(self):
         #if checkPermission('loops.ManageSite', self.object):
+        if (self.object is None and 
+                checkPermission('zope.ManageContent', self.view.node)):
+            return True
         if checkPermission('zope.ManageContent', self.object):
             return True
         return self.user['object'] == getPersonForUser(self.object, self.view.request)

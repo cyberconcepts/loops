@@ -36,8 +36,9 @@
           <td class="nowrap center" tal:content="row/end">20:00</td>
           <td class="nowrap center" tal:content="row/duration">2:30</td>
           <td tal:condition="python: 'Task' in work.columns">
-            <a tal:attributes="href row/objectData/url"
-               tal:content="row/objectData/title">Task</a></td>
+            <a tal:define="data row/objectData"
+               tal:attributes="href data/url"
+               tal:content="data/title">Task</a></td>
           <td tal:condition="python: 'User' in work.columns">
             <a tal:attributes="href row/user/url"
               tal:content="row/user/title">John</a></td>
