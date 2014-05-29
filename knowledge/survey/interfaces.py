@@ -39,6 +39,26 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         default=4,
         required=True)
 
+    answerOptions = Records(
+        title=_(u'Answer Options'),
+        description=_(u'Values to select from with corresponding column '
+                        u'labels and descriptions. There should be at '
+                        u'least answer range items with numeric values.'),
+        default=[],
+        required=False)
+
+    answerOptions.column_types = [
+            schema.Text(__name__='value', title=u'Value',),
+            schema.Text(__name__='label', title=u'Label'),
+            schema.Text(__name__='description', title=u'Description'),]
+
+    noGrouping = schema.Bool(
+        title=_(u'No Grouping of Questions'),
+        description=_(u'The questions should be presented in a linear manner, '
+                        u'not grouped by categories or question groups.'),
+        default=False,
+        required=False)
+
     feedbackColumns = Records(
         title=_(u'Feedback Columns'),
         description=_(u'Column definitions for the results table '

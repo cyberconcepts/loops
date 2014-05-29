@@ -56,6 +56,21 @@ class SurveyView(ConceptView):
             return 'index.html'
 
     @Lazy
+    def answerOptions(self):
+        opts = self.adapted.answerOptions
+        if not opts:
+            opts = [
+                dict(value='none', label=u'No answer', 
+                        description=u'survey_value_none'),
+                dict(value=3, label=u'Fully applies', 
+                        description=u'survey_value_3'),
+                dict(value=2, label=u'', description=u'survey_value_2'),
+                dict(value=1, label=u'', description=u'survey_value_1'),
+                dict(value=0, label=u'Does not apply', 
+                        description=u'survey_value_0'),]
+        return opts
+
+    @Lazy
     def showFeedbackText(self):
         sft = self.adapted.showFeedbackText
         return sft is None and True or sft
@@ -77,7 +92,6 @@ class SurveyView(ConceptView):
         return False
 
     def getTeamData(self, respManager):
-        #result = [myResponse]
         result = []
         pred = self.conceptManager.get('ismember')
         if pred is None:
@@ -119,7 +133,8 @@ class SurveyView(ConceptView):
                 if value != 'none':
                     uid = key[len('question_'):]
                     question = adapted(self.getObjectForUid(uid))
-                    value = int(value)
+                    if value.isdigit():
+                        value = int(value)
                     data[uid] = value
                     response.values[question] = value
         values = response.getGroupedResult()
@@ -167,7 +182,8 @@ class SurveyView(ConceptView):
         text = qugroup.description
         info = None
         if qugroup.minAnswers in (u'', None):
-            info = translate(_(u'Please answer all questions.'), target_language=lang)
+            info = translate(_(u'Please answer all questions.'), 
+                target_language=lang)
         elif qugroup.minAnswers > 0:
             info = translate(_(u'Please answer at least $minAnswers questions.',
                                mapping=dict(minAnswers=qugroup.minAnswers)),
@@ -182,10 +198,19 @@ class SurveyView(ConceptView):
             self.data = Responses(self.context).load()
         if self.data:
             setting = self.data.get(question.uid)
-        noAnswer = [dict(value='none', checked=(setting == None),
-                         radio=(not question.required))]
-        return noAnswer + [dict(value=i, checked=(setting == i), radio=True) 
-                                for i in reversed(range(question.answerRange))]
+        if setting is None:
+            setting = 'none'
+        setting = str(setting)
+        result = []
+        for opt in self.answerOptions:
+            value = str(opt['value'])
+            result.append(dict(value=value, checked=(setting == value)))
+        return result
+      
+        #noAnswer = [dict(value='none', checked=(setting == None),
+        #                 radio=(not question.required))]
+        #return noAnswer + [dict(value=i, checked=(setting == i), radio=True) 
+        #                        for i in reversed(range(question.answerRange))]
 
 
 class SurveyCsvExport(NodeView):
@@ -198,7 +223,8 @@ class SurveyCsvExport(NodeView):
     @Lazy
     def questions(self):
         result = []
-        for idx1, qug in enumerate(adapted(self.virtualTargetObject).questionGroups):
+        for idx1, qug in enumerate(
+                    adapted(self.virtualTargetObject).questionGroups):
             for idx2, qu in enumerate(qug.questions):
                 result.append((idx1, idx2, qug, qu))
         return result
