@@ -204,13 +204,9 @@ class SurveyView(ConceptView):
         result = []
         for opt in self.answerOptions:
             value = str(opt['value'])
-            result.append(dict(value=value, checked=(setting == value)))
+            result.append(dict(value=value, checked=(setting == value), 
+                                title=opt['description']))
         return result
-      
-        #noAnswer = [dict(value='none', checked=(setting == None),
-        #                 radio=(not question.required))]
-        #return noAnswer + [dict(value=i, checked=(setting == i), radio=True) 
-        #                        for i in reversed(range(question.answerRange))]
 
 
 class SurveyCsvExport(NodeView):

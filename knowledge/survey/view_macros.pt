@@ -87,7 +87,7 @@
                             name string:question_${question/uid};
                             value value/value;
                             checked value/checked;
-                            title string:survey_value_${value/value}" />
+                            title value/title" />
             </td>
           </tr>
         </tal:qugroup>
