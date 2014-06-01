@@ -11,8 +11,14 @@ body {
     display: none;
 }
 
+.container {
+    width: auto;
+    margin: 0;
+    border: 0;
+}
+
 #content {
-/*  width: 100%; */
-    width: 80%;
+    width: auto;
     color: Black;
 }
+
