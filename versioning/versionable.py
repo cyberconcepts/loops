@@ -168,7 +168,9 @@ class VersionableResource(object):
             for name in ('data', 'externalAddress',):
                 attrs.remove(name)
         for attr in attrs:
-            setattr(adaptedObj, attr, getattr(adaptedContext, attr))
+            value = getattr(adaptedContext, attr)
+            if not callable(value):
+                setattr(adaptedObj, attr, value)
         if IExternalFile.providedBy(adaptedObj):
             adaptedObj.storageParams = adaptedContext.storageParams
             adaptedObj.storageName = adaptedContext.storageName
