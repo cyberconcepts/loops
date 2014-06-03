@@ -44,6 +44,7 @@ class SurveyView(ConceptView):
 
     data = None
     errors = None
+    minBatchSize = 10
 
     @Lazy
     def macro(self):
@@ -54,6 +55,26 @@ class SurveyView(ConceptView):
     def tabview(self):
         if self.editable:
             return 'index.html'
+
+    @Lazy
+    def groups(self):
+        result = []
+        if self.adapted.noGrouping:
+            questions = list(self.adapted.questions)
+            questions.sort(key=lambda x: x.title)
+            size = len(questions)
+            nb = size / self.minBatchSize
+            rem = size % self.minBatchSize
+            bs = self.minBatchSize + ((rem + self.minBatchSize) / nb)
+            for idx in range(0, size, bs):
+                result.append(dict(title=u'Question', infoText=None, 
+                                   questions=questions[idx:idx+bs]))
+        else:
+            for group in self.adapted.questionGroups:
+                result.append(dict(title=group.title, 
+                                   infoText=self.getInfoText(group),
+                                   questions=group.questions))
+        return result
 
     @Lazy
     def answerOptions(self):

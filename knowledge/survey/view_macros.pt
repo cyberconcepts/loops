@@ -61,11 +61,14 @@
     </div>
     <form method="post">
       <table class="listing">
-        <tal:qugroup repeat="qugroup item/adapted/questionGroups">
-          <tr><td colspan="6">&nbsp;</td></tr>
+        <tal:group repeat="group item/groups">
+          <tr>
+            <td>&nbsp;</td>
+            <td tal:repeat="opt item/answerOptions">&nbsp;</td></tr>
           <tr class="vpad">
-            <td tal:define="infoText python:item.getInfoText(qugroup)">
-              <b tal:content="qugroup/title" />
+            <td tal:define="infoText group/infoText">
+              <b i18n:translate=""
+                 tal:content="group/title" />
               <div class="infotext"
                    tal:condition="infoText">
                 <span tal:content="structure infoText" />
@@ -77,7 +80,7 @@
                 tal:content="opt/label" />
           </tr>
           <tr class="vpad"
-              tal:repeat="question qugroup/questions">
+              tal:repeat="question group/questions">
             <td tal:content="question/text" />
             <td style="white-space: nowrap; text-align: center"
                 tal:repeat="value python:item.getValues(question)">
@@ -90,7 +93,7 @@
                             title value/title" />
             </td>
           </tr>
-        </tal:qugroup>
+        </tal:group>
       </table>
       <input type="submit" name="submit" value="Evaluate Questionnaire"
              i18n:attributes="value" />
