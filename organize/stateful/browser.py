@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ from cybertools.stateful.interfaces import IStateful, IStatesDefinition
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
+from loops.common import adapted
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
@@ -144,7 +145,7 @@ class ChangeStateForm(ChangeStateBase, ObjectForm):
 
     @Lazy
     def title(self):
-        return self.virtualTargetObject.title
+        return adapted(self.virtualTargetObject).title
 
 
 class ChangeState(ChangeStateBase, EditObject):
