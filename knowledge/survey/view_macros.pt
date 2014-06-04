@@ -37,9 +37,15 @@
         </tal:cols>
       </tr>
     </table>
+    <p tal:define="teamData item/teamData"
+       tal:condition="teamData">
+      <b><span i18n:translate="">Team Size</span>:
+        <span tal:content="python:len(teamData)" /></b><br />&nbsp;
+    </p>
     <div class="button" id="show_questionnaire">
-      <a href="" onclick="back(); return false"
-         i18n:translate="">
+      <a href="" xxonclick="back(); return false"
+         i18n:translate=""
+         tal:attributes="href view/virtualTargetUrl">
         Back to Questionnaire</a>
       <br />
     </div>
@@ -56,7 +62,7 @@
          tal:condition="errors">
       <div tal:repeat="error errors">
         <span i18n:translate=""
-              tal:content="error" />
+              tal:content="error/text" />
       </div>
     </div>
     <form method="post">
@@ -79,20 +85,21 @@
                 i18n:translate=""
                 tal:content="opt/label" />
           </tr>
-          <tr class="vpad"
-              tal:repeat="question group/questions">
-            <td tal:content="question/text" />
-            <td style="white-space: nowrap; text-align: center"
-                tal:repeat="value python:item.getValues(question)">
-                <input type="radio"
-                       i18n:attributes="title"
-                       tal:attributes="
-                            name string:question_${question/uid};
-                            value value/value;
-                            checked value/checked;
-                            title value/title" />
-            </td>
-          </tr>
+          <tal:question repeat="question group/questions">
+            <tr tal:attributes="class python:item.getCssClass(question)">
+              <td tal:content="question/text" />
+              <td style="white-space: nowrap; text-align: center"
+                  tal:repeat="value python:item.getValues(question)">
+                  <input type="radio"
+                         i18n:attributes="title"
+                         tal:attributes="
+                              name string:question_${question/uid};
+                              value value/value;
+                              checked value/checked;
+                              title value/title" />
+              </td>
+            </tr>
+          </tal:question>
         </tal:group>
       </table>
       <input type="submit" name="submit" value="Evaluate Questionnaire"

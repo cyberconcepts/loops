@@ -45,6 +45,7 @@ class SurveyView(ConceptView):
     data = None
     errors = None
     minBatchSize = 10
+    teamData = None
 
     @Lazy
     def macro(self):
@@ -170,8 +171,8 @@ class SurveyView(ConceptView):
                        score=int(round(r['score'] * 100)), rank=r['rank']) 
                     for r in values]
         if self.showTeamResults:
-            teamData = self.getTeamData(respManager)
-            teamValues = response.getTeamResult(values, teamData)
+            self.teamData = self.getTeamData(respManager)
+            teamValues = response.getTeamResult(values, self.teamData)
             for idx, r in enumerate(teamValues):
                 result[idx]['average'] = int(round(r['average'] * 100))
                 result[idx]['teamRank'] = r['rank']
@@ -182,7 +183,8 @@ class SurveyView(ConceptView):
         values = response.values
         for qu in self.adapted.questions:
             if qu.required and qu not in values:
-                errors.append('Please answer the obligatory questions.')
+                errors.append(dict(uid=qu.uid,
+                    text='Please answer the obligatory questions.'))
                 break
         qugroups = {}
         for qugroup in self.adapted.questionGroups:
@@ -194,7 +196,12 @@ class SurveyView(ConceptView):
             if minAnswers in (u'', None):
                 minAnswers = len(qugroup.questions)
             if count < minAnswers:
-                errors.append('Please answer the minimum number of questions.')
+                if self.adapted.noGrouping:
+                    errors.append(dict(uid=qugroup.uid,
+                        text='Please answer the highlighted questions.'))
+                else:
+                    errors.append(dict(uid=qugroup.uid,
+                        text='Please answer the minimum number of questions.'))
                 break
         return errors
 
@@ -228,6 +235,12 @@ class SurveyView(ConceptView):
             result.append(dict(value=value, checked=(setting == value), 
                                 title=opt['description']))
         return result
+
+    def getCssClass(self, question):
+        cls = ''
+        if self.errors and self.data.get(question.uid) is None:
+            cls = 'error '
+        return cls + 'vpad'
 
 
 class SurveyCsvExport(NodeView):

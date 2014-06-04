@@ -277,6 +277,9 @@ msgstr "Bitte beantworten Sie die Pflichtfragen."
 msgid "Please answer the minimum number of questions."
 msgstr "Bitte beantworten Sie die angegebene Mindestanzahl an Fragen je Fragengruppe."
 
+msgid "Please answer the highlighted questions."
+msgstr "Bitte beantworten Sie die markierten Fragen."
+
 msgid "Obligatory question, must be answered"
 msgstr "Pflichtfrage, muss beantwortet werden"
 
@@ -291,6 +294,9 @@ msgstr "Rang"
 
 msgid "Team Rank"
 msgstr "Rang Team"
+
+msgid "Team Size"
+msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
 
 # competence (qualification)
 
