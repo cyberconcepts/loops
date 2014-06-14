@@ -682,6 +682,9 @@ class BaseView(GenericView, I18NView):
         if not self.useVersioning:
             return None
         target = self.target
+        if not IResource.providedBy(target):
+            # no standard versioning yet for concepts
+            return None
         versionable = IVersionable(target, None)
         if versionable is None:
             return ''
