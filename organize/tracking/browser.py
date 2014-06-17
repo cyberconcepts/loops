@@ -21,9 +21,11 @@ View classes for tracks.
 """
 
 from zope import component
+from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName
 
@@ -33,6 +35,8 @@ from loops.browser.action import DialogAction
 from loops.browser.form import ObjectForm, EditObject
 from loops.organize.party import getPersonForUser
 from loops import util
+
+track_edit_template = ViewPageTemplateFile('edit_track.pt')
 
 
 class BaseTrackView(TrackView):
@@ -101,6 +105,30 @@ class BaseTrackView(TrackView):
             return util.getUidForObject(p)
         return self.request.principal.id
 
+
+class EditForm(BaseTrackView):
+
+    template = track_edit_template
+
+    def update(self):
+        form = self.request.form
+        if not form.get('form_submitted'):
+            return True
+        data = {}
+        print '*** update', form
+        for row in form.get('data') or []:
+            key = row['key']
+            if not key:
+                continue
+            value = row['value']
+            # TODO: unmarshall value if necessary
+            data[key] = value
+        context = removeSecurityProxy(self.context)
+        context.data = data
+        return True
+
+
+# specialized views
 
 class ChangeView(BaseTrackView):
 

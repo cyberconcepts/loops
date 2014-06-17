@@ -83,6 +83,13 @@
       permission="zope.View" />
 
   <browser:page
+      name="edit.html"
+      for="cybertools.tracking.interfaces.ITrack"
+      class="loops.organize.tracking.browser.EditForm"
+      permission="loops.ManageSite"
+      menu="zmi_views" title="Edit" />
+
+  <browser:page
       for="loops.organize.tracking.access.IAccessRecord"
       name="index.html"
       class="loops.organize.tracking.browser.AccessView"

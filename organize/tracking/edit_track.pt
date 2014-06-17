@@ -1,0 +1,73 @@
+<tal:tag condition="view/update">
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="loops">
+<body>
+
+<div metal:fill-slot="body">
+  <form action="." tal:attributes="action request/URL" method="post">
+    <input type="hidden" name="form_submitted" value="true" />
+    <h1>Edit Track <span tal:content="view/id" /></h1>
+    <div class="row">
+      <table>
+        <tr>
+          <td>Task:</td>
+          <td><a tal:omit-tag="not:view/taskUrl"
+                 tal:attributes="href view/taskUrl"
+                 tal:content="view/taskTitle" /></td></tr>
+        <tr>
+          <td>Run:</td>
+          <td tal:content="view/run"></td></tr>
+        <tr>
+          <td>User:</td>
+          <td><a tal:define="userUrl view/userUrl|nothing"
+                 tal:omit-tag="not:userUrl"
+                 tal:attributes="href userUrl"
+                 tal:content="view/userTitle" /></td></tr>
+        <tr>
+          <td>Timestamp:</td>
+          <td tal:content="view/timeStamp"></td></tr>
+        <tr tal:repeat="key view/additionalMetadataFields">
+          <td><span tal:replace="key" />:</td>
+          <td><a tal:define="target python: view.getMetadataTarget(key)"
+                 tal:omit-tag="not:target/url"
+                 tal:attributes="href target/url"
+                 tal:content="python: target['title'] or '???'" /></td></tr>
+      </table>
+    </div>
+    <h2>Data</h2>
+    <div class="row">
+      <table width="100%">
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+        <tr tal:repeat="row python:sorted(context.data.items())">
+          <td>
+            <input name="data.key:records"
+                   tal:attributes="value python:row[0]" /></td>
+          <td style="width: 100%">
+            <input name="data.value:records"
+                   style="width: 100%"
+                   tal:attributes="value python:row[1]" /></td>
+        </tr>
+        <tr>
+          <td>
+            <input name="data.key:records" /></td>
+          <td style="width: 100%">
+            <input name="data.value:records"
+                   style="width: 100%" /></td>
+        </tr>
+      </table>
+      <div class="row">
+        <div class="controls">
+          <input type="submit" name="UPDATE_SUBMIT" value="Change"
+                 i18n:attributes="value submit-button;" />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>
+</tal:tag>
