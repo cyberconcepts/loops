@@ -31,7 +31,7 @@ from cybertools.knowledge.survey.questionnaire import Response
 from cybertools.util.date import formatTimeStamp
 from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
-from loops.common import adapted
+from loops.common import adapted, baseObject
 from loops.knowledge.survey.response import Responses
 from loops.organize.party import getPersonForUser
 from loops.util import getObjectForUid
@@ -248,7 +248,7 @@ class SurveyCsvExport(NodeView):
     encoding = 'ISO8859-15'
 
     def encode(self, text):
-        text.encode(self.encoding)
+        return text.encode(self.encoding)
 
     @Lazy
     def questions(self):
@@ -261,24 +261,30 @@ class SurveyCsvExport(NodeView):
 
     @Lazy
     def columns(self):
-        infoCols = ['Name', 'Timestamp']
+        infoCols = ['Institution', 'Name', 'Timestamp']
         dataCols = ['%02i-%02i' % (item[0], item[1]) for item in self.questions]
         return infoCols + dataCols
 
     def getRows(self):
+        memberPred = self.conceptManager.get('ismember')
         for tr in Responses(self.virtualTargetObject).getAllTracks():
             p = adapted(getObjectForUid(tr.userName))
-            name = p and p.title or u'???'
+            name = self.encode(p and p.title or u'???')
+            inst = u''
+            if memberPred is not None:
+                for i in baseObject(p).getParents([memberPred]):
+                    inst = self.encode(i.title)
+                    break
             ts = formatTimeStamp(tr.timeStamp)
             cells = [tr.data.get(qu.uid, -1) 
                         for (idx1, idx2, qug, qu) in self.questions]
-            yield [name, ts] + cells
+            yield [inst, name, ts] + cells
 
     def __call__(self):
         f = StringIO()
         writer = csv.writer(f, delimiter=',')
         writer.writerow(self.columns)
-        for row in self.getRows():
+        for row in sorted(self.getRows()):
             writer.writerow(row)
         text = f.getvalue()
         self.setDownloadHeader(text)

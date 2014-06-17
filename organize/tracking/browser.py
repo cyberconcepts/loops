@@ -115,7 +115,6 @@ class EditForm(BaseTrackView):
         if not form.get('form_submitted'):
             return True
         data = {}
-        print '*** update', form
         for row in form.get('data') or []:
             key = row['key']
             if not key:
