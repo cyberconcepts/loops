@@ -124,6 +124,14 @@ class IPasswordChange(IPasswordEntry):
                     required=True,)
 
 
+class IPasswordReset(Interface):
+
+    loginName = schema.TextLine(title=_(u'User ID'),
+                    description=_(u'Your login name.'),
+                    required=True,)
+    loginName.nostore = True
+
+
 class IMemberRegistration(IBasePerson, IPasswordEntry):
     """ Schema for registering a new member (user + person).
     """
