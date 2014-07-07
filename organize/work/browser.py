@@ -107,6 +107,11 @@ class WorkItemDetails(TrackDetails):
         return self.formatTimeStamp(self.track.timeStamp, 'date')
 
     @Lazy
+    def endDay(self):
+        endDay = self.formatTimeStamp(self.track.end, 'date')
+        return endDay != self.startDay and endDay or ''
+
+    @Lazy
     def created(self):
         return self.formatTimeStamp(self.track.created, 'dateTime')
 
@@ -436,6 +441,13 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return ''
 
     @Lazy
+    def endDate(self):
+        ts = self.track.end or self.defaultTimeStamp
+        if ts:
+            return time.strftime('%Y-%m-%d', time.localtime(ts))
+        return ''
+
+    @Lazy
     def startTime(self):
         ts = self.track.start or self.defaultTimeStamp
         if ts:
@@ -569,11 +581,12 @@ class CreateWorkItem(EditObject, BaseTrackView):
             setValue('task')
         result['deadline'] = parseDate(form.get('deadline'))
         startDate = form.get('start_date', '').strip()
+        endDate = form.get('end_date', '').strip() or startDate
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
         endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'
         if startDate:
             result['start'] = parseDateTime('T'.join((startDate, startTime)))
-            result['end'] = parseDateTime('T'.join((startDate, endTime)))
+            result['end'] = parseDateTime('T'.join((endDate, endTime)))
         result['duration'] = parseTime(form.get('duration'))
         result['effort'] = parseTime(form.get('effort'))
         return action, result
@@ -663,5 +676,9 @@ def formatTimeDelta(value):
     if not value:
         return u''
     h, m = divmod(int(value) / 60, 60)
+    if h > 24:
+        #d, h = divmod(h / 24, 24)
+        #return u'%id %02i:%02i' % (d, h, m) 
+        return str(int(round(h / 24.0)))
     return u'%02i:%02i' % (h, m)
 

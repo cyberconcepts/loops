@@ -173,6 +173,17 @@
                    dojoType="dijit.form.TimeTextBox"
                    tal:attributes="value view/endTime" /></div>
         </div>
+        <div id="daterange"
+             tal:condition="python:'daterange' in workItemType.fields">
+          <label i18n:translate="" for="daterange-input">Start - End</label>
+          <div id="daterange-input">
+            <input type="text" name="start_date" style="width: 8em"
+                   dojoType="dijit.form.DateTextBox"
+                   tal:attributes="value view/date" />
+            <input type="text" name="end_date" style="width: 8em"
+                   dojoType="dijit.form.DateTextBox"
+                   tal:attributes="value view/endDate" />
+        </div>
         <div id="duration-effort"
              tal:condition="python:
                               'duration-effort' in workItemType.fields">
@@ -238,7 +249,9 @@
       <td><span i18n:translate="">Start - End</span>:</td>
       <td><span tal:content="item/startDay" />
           <span tal:content="item/start" /> -
-          <span tal:content="item/end" /></td>
+          <span tal:content="item/endDay" />
+          <span tal:content="item/end" />
+      </td>
     </tr>
     <tr>
       <td><span i18n:translate="">Duration/Effort</span>:</td>
