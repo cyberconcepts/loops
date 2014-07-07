@@ -37,6 +37,7 @@ from loops.expert.field import Field, TargetField, DateField, StateField, \
                             TextField, HtmlTextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.field import TrackDateField, TrackTimeField
+from loops.expert.field import WorkItemStateField
 from loops.expert.report import ReportInstance
 from loops import util
 
@@ -122,7 +123,7 @@ duration = DurationField('duration', u'Duration',
 effort = DurationField('effort', u'Effort',
                 description=u'The effort of the work.',
                 executionSteps=['output', 'totals'])
-state = StateField('state', u'State',
+state = WorkItemStateField('state', u'State',
                 description=u'The state of the work.',
                 cssClass='center',
                 statesDefinition='workItemStates',

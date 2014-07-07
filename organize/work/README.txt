@@ -229,7 +229,7 @@ The user interface is a ReportConceptView subclass that is directly associated w
   08/12/28 19:00 20:15
     {'url': '.../home/.36', 'title': u'loops Development'}
     {'url': '.../home/.33', 'title': u'john'}  01:15 00:15
-    {'icon': 'cybertools.icons/ledgreen.png', 'title': u'finished'}
+    {'actions': [...]}
 
   >>> results.totals.data
   {'effort': 900}

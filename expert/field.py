@@ -32,6 +32,7 @@ from cybertools.util.date import timeStamp2Date
 from cybertools.util.format import formatDate
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
+from loops.organize.work.browser import WorkItemDetails
 from loops import util
 
 
@@ -109,7 +110,7 @@ class DateField(Field):
 
 class StateField(Field):
 
-    statesDefinition = 'workItemStates'
+    statesDefinition = None
     renderer = 'state'
 
     def getDisplayValue(self, row):
@@ -124,6 +125,18 @@ class StateField(Field):
         icon = stateObject.icon or 'led%s.png' % stateObject.color
         return dict(title=util._(stateObject.title), 
                     icon='cybertools.icons/' + icon)
+
+
+class WorkItemStateField(Field):
+
+    statesDefinition = 'workItemStates'
+    renderer = 'workitem_state'
+
+    def getDisplayValue(self, row):
+        if row.context is None:
+            return None
+        details = WorkItemDetails(row.parent.context.view, row.context)
+        return dict(actions=details.actions())
 
 
 class VocabularyField(Field):
