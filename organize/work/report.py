@@ -98,6 +98,14 @@ day = TrackDateField('day', u'Day',
                 description=u'The day the work was done.',
                 cssClass='center',
                 executionSteps=['sort', 'output'])
+dayStart = TrackDateField('dayStart', u'Start Day',
+                description=u'The day the unit of work was started.',
+                cssClass='center',
+                executionSteps=['sort', 'output'])
+dayEnd = TrackDateField('dayEnd', u'End Day',
+                description=u'The day the unit of work was finished.',
+                cssClass='center',
+                executionSteps=['sort', 'output'])
 timeStart = TrackTimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
                 executionSteps=['sort', 'output'])
@@ -145,6 +153,12 @@ class WorkRow(BaseRow):
     def getDay(self, attr):
         return self.context.timeStamp
 
+    def getStart(self, attr):
+        return self.context.start
+
+    def getEnd(self, attr):
+        return self.context.end
+
     def getDuration(self, attr):
         value = self.context.data.get('duration')
         if value is None:
@@ -157,7 +171,9 @@ class WorkRow(BaseRow):
             value = self.getDuration(attr)
         return value
 
-    attributeHandlers = dict(day=getDay, dayFrom=getDay, dayTo=getDay,
+    attributeHandlers = dict(day=getDay, 
+                             dayStart=getStart, dayEnd=getEnd,
+                             dayFrom=getDay, dayTo=getDay,
                              duration=getDuration, effort=getEffort)
 
 

@@ -26,6 +26,7 @@ from cybertools.util.jeep import Jeep
 from loops.expert.report import ReportInstance
 from loops.organize.work.report import WorkRow
 from loops.organize.work.report import deadline, day, task, party, state
+from loops.organize.work.report import dayStart, dayEnd
 from loops.organize.work.report import workTitle, workDescription
 from loops import util
 
@@ -37,7 +38,7 @@ class QualificationOverview(ReportInstance):
 
     rowFactory = WorkRow
 
-    fields = Jeep((task, party, workTitle, day, state)) # +deadline?
+    fields = Jeep((task, party, workTitle, dayStart, dayEnd, state)) # +deadline?
 
     defaultOutputFields = fields
 

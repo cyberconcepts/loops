@@ -97,7 +97,7 @@
 
   <browser:page
       name="work.html"
-      for="loops.organize.interfaces.ITask"
+      for="loops.organize.interfaces.IConceptSchema"
       class="loops.organize.work.report.WorkStatementView"
       permission="zope.View" />
 
