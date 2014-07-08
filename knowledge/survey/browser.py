@@ -44,7 +44,7 @@ class SurveyView(ConceptView):
 
     data = None
     errors = None
-    minBatchSize = 10
+    batchSize = 12
     teamData = None
 
     @Lazy
@@ -64,9 +64,8 @@ class SurveyView(ConceptView):
             questions = list(self.adapted.questions)
             questions.sort(key=lambda x: x.title)
             size = len(questions)
-            nb = size / self.minBatchSize
-            rem = size % self.minBatchSize
-            bs = self.minBatchSize + ((rem + self.minBatchSize) / nb)
+            #nb, rem = divmod(size, self.batchSize)
+            bs = self.batchSize
             for idx in range(0, size, bs):
                 result.append(dict(title=u'Question', infoText=None, 
                                    questions=questions[idx:idx+bs]))
