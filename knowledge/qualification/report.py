@@ -33,7 +33,7 @@ from loops import util
 
 class QualificationOverview(ReportInstance):
 
-    type = "qualification_overview"
+    type = 'qualification_overview'
     label = u'Qualification Overview'
 
     rowFactory = WorkRow
@@ -60,3 +60,40 @@ class QualificationOverview(ReportInstance):
                 for wi in workItems.query(taskId=uid, state=self.states):
                     result.append(wi)
         return result
+
+
+class Qualifications(QualificationOverview):
+
+    type = 'qualifications'
+    label = u'Qualifications'
+
+    taskTypeNames = ('competence',)
+
+    def getOptions(self, option):
+        return self.view.typeOptions(option)
+
+    def selectObjects(self, parts):
+        result = []
+        workItems = self.recordManager['work']
+        target = self.view.context
+        tasks = [target] + self.getAllSubtasks(target)
+        for t in tasks:
+                uid = util.getUidForObject(t)
+                for wi in workItems.query(taskId=uid, state=self.states):
+                    result.append(wi)
+        return result
+
+    def getAllSubtasks(self, concept):
+        result = []
+        for c in concept.getChildren([self.view.defaultPredicate]):
+            if c.conceptType in self.taskTypes:
+                result.append(c)
+            result.extend(self.getAllSubtasks(c))
+        return result
+
+    @Lazy
+    def taskTypes(self):
+        return [c for c in [self.conceptManager.get(name)
+                                for name in self.taskTypeNames]
+                  if c is not None]
+

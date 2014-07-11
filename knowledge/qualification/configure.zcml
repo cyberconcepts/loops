@@ -37,4 +37,16 @@
              set_schema="loops.expert.report.IReportInstance" />
   </zope:class>
 
+  <zope:adapter 
+      name="qualifications"
+      factory="loops.knowledge.qualification.report.Qualifications"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.knowledge.qualification.report.Qualifications">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
 </configure>
