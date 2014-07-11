@@ -216,6 +216,12 @@ class RelationField(Field):
 
 class TargetField(RelationField):
 
+    def getSortValue(self, row):
+        value = self.getRawValue(row)
+        if value is not None:
+            value = util.getObjectForUid(value)
+            return value.title
+
     def getValue(self, row):
         value = self.getRawValue(row)
         if value is None:

@@ -41,6 +41,8 @@ class QualificationOverview(ReportInstance):
     fields = Jeep((task, party, workTitle, dayStart, dayEnd, state)) # +deadline?
 
     defaultOutputFields = fields
+    defaultSortCriteria = (party, task,)
+
 
     def getOptions(self, option):
         return self.view.options(option)
@@ -96,4 +98,21 @@ class Qualifications(QualificationOverview):
         return [c for c in [self.conceptManager.get(name)
                                 for name in self.taskTypeNames]
                   if c is not None]
+
+
+class PersonQualifications(QualificationOverview):
+
+    type = 'person_qualifications'
+    label = u'Qualifications for Person'
+
+    defaultSortCriteria = (task,)
+
+    def getOptions(self, option):
+        return self.view.typeOptions(option)
+
+    def selectObjects(self, parts):
+        workItems = self.recordManager['work']
+        person = self.view.context
+        uid = util.getUidForObject(person)
+        return workItems.query(userName=uid, state=self.states)
 
