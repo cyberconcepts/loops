@@ -191,6 +191,17 @@ class ResultsConceptView(ConceptView):
         return self.result_macros[col.renderer]
 
 
+class EmbeddedResultsConceptView(ResultsConceptView):
+
+    @Lazy
+    def macro(self):
+        return self.result_macros['embedded_content']
+
+    @Lazy
+    def title(self):
+        return self.report.title
+
+
 class ReportConceptView(ResultsConceptView, ReportView):
     """ View on a concept using a report.
     """

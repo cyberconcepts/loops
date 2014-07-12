@@ -25,6 +25,16 @@
 </div>
 
 
+<div metal:define-macro="embedded_content"
+     tal:define="report item/reportInstance;
+                 reportView nocall:item">
+  <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/concepttitle_only" />
+  </div>
+  <div metal:use-macro="item/resultsRenderer" />
+</div>
+
+
 <div metal:define-macro="results">
   <br />
   <table class="report"

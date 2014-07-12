@@ -91,4 +91,12 @@
         factory="loops.expert.browser.report.ResultsConceptView"
         permission="zope.View" />
 
+  <zope:adapter
+        name="concept_results_embedded.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.EmbeddedResultsConceptView"
+        permission="zope.View" />
+
 </configure>
