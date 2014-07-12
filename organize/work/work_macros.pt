@@ -182,7 +182,7 @@
                    tal:attributes="value view/date" />
             <input type="text" name="end_date" style="width: 8em"
                    dojoType="dijit.form.DateTextBox"
-                   tal:attributes="value view/endDate" />
+                   tal:attributes="value view/endDate" /></div>
         </div>
         <div id="duration-effort"
              tal:condition="python:
