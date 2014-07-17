@@ -220,7 +220,8 @@ class TargetField(RelationField):
         value = self.getRawValue(row)
         if value is not None:
             value = util.getObjectForUid(value)
-            return value.title
+            if value is not None:
+                return value.title
 
     def getValue(self, row):
         value = self.getRawValue(row)
