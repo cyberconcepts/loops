@@ -239,7 +239,7 @@
     </tr>
     <tr>
       <td><span i18n:translate="">Task</span>:</td>
-      <td tal:content="item/object/title"></td>
+      <td tal:content="item/object/title|nothing"></td>
     </tr>
     <tr>
       <td><span i18n:translate="">Deadline</span>:</td>
