@@ -25,11 +25,71 @@ from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.browser.action import actions
+from loops.browser.action import DialogAction
+from loops.browser.concept import ConceptView
 from loops.expert.browser.report import ResultsConceptView
-from loops.knowledge.browser import template, knowledge_macros
+from loops.organize.party import getPersonForUser
+from loops.util import _
+
+template = ViewPageTemplateFile('qualification_macros.pt')
+
+
+actions.register('createJobPosition', 'portlet', DialogAction,
+        title=_(u'Create Job...'),
+        description=_(u'Create a new job / position.'),
+        viewName='create_concept.html',
+        dialogName='createPosition',
+        typeToken='.loops/concepts/jobposition',
+        fixedType=True,
+        innerForm='inner_concept_form.html',
+        permission='loops.AssignAsParent',
+)
 
 
 class Qualifications(ResultsConceptView):
 
     reportName = 'qualification_overview'
+
+
+class QualificationBaseView(object):
+
+    template = template
+    templateName = 'knowledge.qualification'
+
+    @Lazy
+    def institutionType(self):
+        return self.conceptManager['institution']
+
+    @Lazy
+    def jobPositionType(self):
+        return self.conceptManager['jobposition']
+
+    @Lazy
+    def isMemberPredicate(self):
+        return self.conceptManager['ismember']
+
+
+class JobPositionsOverview(QualificationBaseView, ConceptView):
+
+    macroName = 'jobpositions'
+
+    @Lazy
+    def positions(self):
+        result = []
+        p = getPersonForUser(self.context, self.request)
+        if p is not None:
+            for parent in p.getParents([self.isMemberPredicate]):
+                if parent.conceptType == self.institutionType:
+                    for child in parent.getChildren([self.defaultPredicate]):
+                        if child.conceptType == self.jobPositionType:
+                            result.append(child)
+        return result
+
+
+class IPSkillsForm(QualificationBaseView, ConceptView):
+    """ Form for entering interpersonal skills required for a certain position.
+    """
+
+    macroName = 'ipskillsform'
 

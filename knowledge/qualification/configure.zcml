@@ -23,6 +23,22 @@
         factory="loops.knowledge.qualification.browser.Qualifications"
         permission="zope.View" />
 
+  <zope:adapter
+        name="jobpositions.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.knowledge.qualification.browser.JobPositionsOverview"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="ipskillsform.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.knowledge.qualification.browser.IPSkillsForm"
+        permission="zope.View" />
+
   <!-- reports -->
 
   <zope:adapter 

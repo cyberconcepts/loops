@@ -1,0 +1,17 @@
+<html i18n:domain="loops">
+
+
+<metal:jobpositions define-macro="jobpositions">
+  <metal:block use-macro="view/concept_macros/concepttitle" />
+  <h2 i18n:translate="">Jobs / Positions</h2>
+  <metal:block use-macro="view/concept_macros/conceptchildren" />
+  <table>
+    <tr><th></th></tr>
+    <tr tal:repeat="pos item/positions">
+      <td tal:content="pos/title"></td>
+    </tr>
+  </table>
+</metal:jobpositions>
+
+
+</html>
