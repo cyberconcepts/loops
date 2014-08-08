@@ -1,12 +1,6 @@
 type(u'competence', u'Qualifikation', viewName=u'', 
     typeInterface=u'loops.knowledge.qualification.interfaces.ICompetence', 
     options=u'action.portlet:create_subtype,edit_concept')
-type(u'ipskill', u'Kompetenz', viewName=u'', 
-    options=u'action.portlet:edit_concept')
-type(u'ipskillsrequired', u'Soll-Profil', viewName=u'', 
-    options=u'action.portlet:edit_concept')
-type(u'jobposition', u'Stelle', viewName=u'', 
-    options=u'action.portlet:edit_concept')
 type(u'person', u'Person', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.IPerson', 
     options=u'action.portlet:createQualification,editPerson')
@@ -41,9 +35,6 @@ concept(u'qualification_overview', u'Qualification Overview', u'report',
 # structure
 child(u'general', u'competence', u'standard')
 child(u'general', u'depends', u'standard')
-child(u'general', u'ipskill', u'standard')
-child(u'general', u'ipskillsrequired', u'standard')
-child(u'general', u'jobposition', u'standard')
 child(u'general', u'knows', u'standard')
 child(u'general', u'person', u'standard')
 child(u'general', u'provides', u'standard')

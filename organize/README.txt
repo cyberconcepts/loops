@@ -427,7 +427,7 @@ Send Email to Members
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.127\n\n'
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.118\n\n'
 
 
 Show Presence of Other Users
