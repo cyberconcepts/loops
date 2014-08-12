@@ -50,7 +50,7 @@ statefulActions = ('classification_quality',
 
 def registerStatesPortlet(controller, view, statesDefs,
                           region='portlet_right', priority=98):
-    if view.hideStatesPortlet:
+    if view.viewAnnotations.get('hideStatesPortlet'):
         return
     cm = controller.macros
     stfs = [component.getAdapter(view.context, IStateful, name=std)
