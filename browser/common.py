@@ -140,6 +140,7 @@ class BaseView(GenericView, I18NView):
     icon = None
     modeName = 'view'
     isToplevel = False
+    hideStatesPortlet = False
 
     def __init__(self, context, request):
         context = baseObject(context)
