@@ -16,12 +16,13 @@
         <div metal:use-macro="item/report_macros/params" />
         <div metal:define-macro="buttons">
           <input type="submit" name="report_execute" value="Execute Report"
-                 i18n:attributes="value"
-                 tal:condition="item/queryFields" />
+                 tal:attributes="value item/reportExecuteTitle|string:Execute Report"
+                 i18n:attributes="value" />
           <input type="submit"
                  tal:condition="item/reportDownload"
                  tal:attributes="name string:${item/reportDownload}:method;
-                                 value item/reportDownloadTitle" />
+                                 value item/reportDownloadTitle"
+                 i18n:attributes="value"  />
         </div>
         <br />
       </form>
@@ -42,7 +43,8 @@
     <tr tal:repeat="field item/queryFields">
       <tal:field define="fieldType field/fieldType;
                          crit python:criteria and criteria.get(field.name)">
-        <td><b><span tal:content="field/title" />: </b></td>
+        <td><b><span tal:content="field/title"
+                     i18n:translate="" />:&nbsp;</b></td>
         <td><metal:field use-macro="item/report_macros/?fieldType" /></td>
       </tal:field>
     </tr>
@@ -75,6 +77,32 @@
 <metal:field define-macro="selection">
   <metal:use use-macro="item/report_macros/textline" />
 </metal:field>
+
+
+<metal:input define-macro="relation"
+             tal:define="name field/name">
+    <div dojoType="dojox.data.QueryReadStore"
+         tal:attributes="url string:${field/storeUrl}&project=${item/adapted/uid};
+                         jsId string:${name}_search_store" >
+    </div>
+    <input type="hidden"
+           name="nodeUrl"
+           id="nodeUrl"
+           tal:attributes="value item/view/nodeView/url" />
+    <div tal:attributes="id string:${name}_values">
+      <div>
+        <input dojoType="dijit.form.FilteringSelect"
+               autoComplete="False"
+               labelAttr="label"
+               searchDelay="400"
+               scrollOnFocus="false"
+               tal:attributes="store string:${name}_search_store;
+                               name string:${name}_search;
+                               id string:${name}_search;
+                               onChange string:setEnhancedRelation('$name');" />
+      </div>
+    </div>
+</metal:input>
 
 
 </html>

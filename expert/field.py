@@ -104,6 +104,7 @@ class IntegerField(Field):
 
 class DateField(Field):
 
+    fieldType='date',
     format = ('date', 'short')
     renderer = cssClass = 'center'
     dbtype = 'date'
@@ -211,6 +212,7 @@ class IntegerUrlField(IntegerField, UrlField):
 
 class RelationField(Field):
 
+    fieldType = 'relation'
     renderer = 'target'
     displayAttribute = 'title'
 

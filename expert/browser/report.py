@@ -48,7 +48,8 @@ class ReportView(ConceptView):
 
     @Lazy
     def report_macros(self):
-        return self.controller.getTemplateMacros('report', report_template)
+        return self.controller.mergeTemplateMacros('report', report_template)
+        #return self.controller.getTemplateMacros('report', report_template)
 
     @Lazy
     def macro(self):
