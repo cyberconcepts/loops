@@ -73,7 +73,10 @@ class DataTable(AdapterBase):
     _adapterAttributes = AdapterBase._adapterAttributes + ('columns', 'data')
 
     def getColumns(self):
-        return getattr(self.context, '_columns', ['key', 'value'])
+        cols = getattr(self.context, '_columns', None)
+        if not cols:
+            cols = getattr(baseObject(self.type), '_columns', None)
+        return cols or ['key', 'value']
     def setColumns(self, value):
         self.context._columns = value
     columns = property(getColumns, setColumns)

@@ -438,6 +438,7 @@ class CreateConceptForm(CreateObjectForm):
             return c
         ad = ti(c)
         ad.__is_dummy__ = True
+        ad.__type__ = adapted(self.typeConcept)
         return ad
 
     @Lazy
