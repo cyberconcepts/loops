@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 
-"Project-Id-Version: 0.13.0\n"
+"Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2014-07-30 12:00 CET\n"
+"PO-Revision-Date: 2014-08-08 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -299,15 +299,6 @@ msgid "Team Size"
 msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
 
 # compentence and qualification management
-
-msgid "Jobs / Positions"
-msgstr "Stellen"
-
-msgid "Create Job..."
-msgstr "Stelle anlegen..."
-
-msgid "Create a new job / position"
-msgstr "Eine neue Stelle anlegen..."
 
 msgid "Validity Period (Months)"
 msgstr "Gültigkeitszeitraum (Monate)"
