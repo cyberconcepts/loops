@@ -226,3 +226,12 @@ class ReportConceptView(ResultsConceptView, ReportView):
         if ri.userSettings:
             return [f for f in qf if f in ri.userSettings]
         return qf
+
+
+class ReportParamsView(ReportConceptView):
+    """ Report view allowing to enter parameters before executing the report.
+    """
+
+    @Lazy
+    def macro(self):
+        return self.report_macros['main_params']
