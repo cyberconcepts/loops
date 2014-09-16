@@ -98,7 +98,10 @@
 
 
 <metal:input define-macro="relation"
-             tal:define="name field/name">
+             tal:define="name field/name;
+                         value crit/comparisonValue|nothing;
+                         uid value/uid|nothing;
+                         title value/longName|value/title|nothing;">
     <div dojoType="dojox.data.QueryReadStore"
          tal:attributes="url string:${field/storeUrl}&project=${item/adapted/uid};
                          jsId string:${name}_search_store" >
@@ -120,6 +123,10 @@
                                onChange string:setEnhancedRelation('$name');" />
       </div>
     </div>
+    <script lang="javascript"
+            tal:condition="value"
+            tal:content="string:setEnhancedRelation('$name', '$uid', '$title');">
+    </script>
 </metal:input>
 
 
