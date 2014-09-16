@@ -58,28 +58,48 @@
              tal:define="criteria 
                   item/reportInstance/queryCriteria/parts|nothing">
   <table>
-    <tr tal:repeat="field item/queryFields">
-      <tal:field define="fieldType field/fieldType;
-                         crit python:criteria and criteria.get(field.name)">
-        <td><b><span tal:content="field/title"
-                     i18n:translate="" />:&nbsp;</b></td>
-        <td><metal:field use-macro="item/report_macros/?fieldType" /></td>
-      </tal:field>
+    <tr>
+      <tal:column repeat="field item/queryFields">
+        <td style="padding-right: 5pt">
+          <tal:field define="fieldType field/fieldType;
+                             name field/name;
+                             crit python:criteria and criteria.get(name);
+                             value crit/comparisonValue|nothing">
+            <b><span tal:content="field/title"
+                         i18n:translate="" />:&nbsp;</b><br />
+            <metal:field use-macro="item/report_macros/?fieldType" />
+          </tal:field>
+        </td>
+      </tal:column>
     </tr>
   </table>
   <br />
 </metal:block>
 
 
+<table metal:define-macro="field_group">
+  <tr tal:repeat="field field/subfields"> 
+    <tal:field define="fieldType field/fieldType;
+                       name field/name;
+                       crit python:criteria and criteria.get(name);
+                       value crit/comparisonValue|nothing">
+      <td><b><span tal:content="field/title"
+                   i18n:translate="" />:&nbsp;</b></td>
+      <td><metal:field use-macro="item/report_macros/?fieldType" /></td>
+    </tal:field>
+  </tr>
+</table>
+
+
 <metal:field define-macro="textline">
-  <input tal:attributes="name string:${field/name};
-                         value crit/comparisonValue|nothing" />
+  <input tal:attributes="name name;
+                         value value" />
 </metal:field>
 
 
 <metal:field define-macro="number">
-  <input tal:attributes="name string:query.field.${field/name};
-                         value crit/comparisonValue|nothing" />
+  <input tal:attributes="name name;
+                         value value" />
 </metal:field>
 
 
@@ -87,8 +107,8 @@
   <input dojoType="dijit.form.DateTextBox" style="width: 8em"
          constraints="{datePattern: 'd.M.y',
                        min: '1980-01-01', max: '2020-12-31'}"
-         tal:attributes="name string:${field/name};
-                         value crit/comparisonValue|nothing" />
+         tal:attributes="name name;
+                         value value" />
 </metal:field>
 
 
@@ -97,18 +117,15 @@
 </metal:field>
 
 
-<metal:input define-macro="relation"
-             tal:define="name field/name;
-                         value crit/comparisonValue|nothing;
-                         uid value/uid|nothing;
-                         title value/longName|value/title|nothing;">
+<div style="width: 170px"
+     metal:define-macro="relation"
+     tal:define="uid value/uid|nothing;
+                 title value/longName|value/title|nothing;">
     <div dojoType="dojox.data.QueryReadStore"
          tal:attributes="url string:${field/storeUrl}&project=${item/adapted/uid};
                          jsId string:${name}_search_store" >
     </div>
-    <input type="hidden"
-           name="nodeUrl"
-           id="nodeUrl"
+    <input type="hidden" name="nodeUrl" id="nodeUrl"
            tal:attributes="value item/view/nodeView/url" />
     <div tal:attributes="id string:${name}_values">
       <div>
@@ -127,7 +144,7 @@
             tal:condition="value"
             tal:content="string:setEnhancedRelation('$name', '$uid', '$title');">
     </script>
-</metal:input>
+</div>
 
 
 </html>
