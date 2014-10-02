@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 Media asset file adapter.
 
 Original authors: Johann Schimpf, Erich Seifert.
-
-$Id$
 """
 
 from datetime import datetime
@@ -35,9 +33,11 @@ from zope.interface import implements
 from cybertools.media.asset import MediaAssetFile
 from cybertools.storage.interfaces import IExternalStorage
 import cybertools.util.date
+from loops.common import adapted
 from loops.media.interfaces import IMediaAsset
 from loops.resource import ExternalFileAdapter
 from loops.type import TypeInterfaceSourceList
+from loops.versioning.interfaces import IVersionable
 
 transformPrefix = 'asset_transform.'
 
@@ -95,8 +95,9 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
         return ExternalFileAdapter.getData(self)
 
     def getModified(self):
+        master = adapted(IVersionable(self.context).master)
         d = getattr(self.context, '_modified', None)
-        if not d:
+        if not d or self != master:
             dp = self.getDataPath()
             if dp is not None:
                 name, ext = os.path.splitext(os.path.basename(dp))
