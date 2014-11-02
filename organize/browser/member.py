@@ -191,7 +191,9 @@ class MemberRegistration(BaseMemberRegistration, CreateForm):
         result = regMan.register(login, pw,
                                  form.get('lastName'), form.get('firstName'),
                                  email=form.get('email'),
-                                 phoneNumbers=[x for x in phoneNumbers if x])
+                                 phoneNumbers=[x for x in phoneNumbers if x],
+                                 salutation=form.get('salutation'),
+                                 academicTitle=form.get('academicTitle'))
         if isinstance(result, dict):
             fi = formState.fieldInstances[result['fieldName']]
             fi.setError(result['error'], self.formErrors)
@@ -214,6 +216,8 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
     @Lazy
     def schema(self):
         schema = super(SecureMemberRegistration, self).schema
+        schema.fields.remove('salutation')
+        schema.fields.remove('academicTitle')
         schema.fields.remove('birthDate')
         schema.fields.remove('password')
         schema.fields.remove('passwordConfirm')
