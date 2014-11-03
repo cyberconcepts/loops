@@ -52,11 +52,16 @@ class ChangeManager(BaseRecordManager):
 
     @Lazy
     def valid(self):
+        return self.isValid()
+
+    def isValid(self, data={}, **kw):
         req = util.getRequest()
         if req and req.form.get('organize.suppress_tracking'):
             return False
         if self.context is None or self.storage is None or self.personId is None:
             return False
+        if kw.get('force') or data.get('transition'):
+            return True
         opt = self.options('organize.tracking.changes')
         if isinstance(opt, (list, tuple)):
             if hasattr(self.context, 'getType'):
@@ -67,23 +72,23 @@ class ChangeManager(BaseRecordManager):
             return bool(opt)
 
     def recordModification(self, action='modify', **kw):
-        if not self.valid:
-            return
-        uid = util.getUidForObject(self.context)
-        last = self.storage.getLastUserTrack(uid, 0, self.personId)
-        update = (last is not None and last.data.get('action') == action and
-                  last.metadata['timeStamp'] >= getTimeStamp() - 5)
         data = dict(action=action)
-        relation = kw.get('relation')
-        if relation is not None:
-            data['predicate'] = util.getUidForObject(relation.predicate)
-            data['second'] = util.getUidForObject(relation.second)
         event = kw.get('event')
         if event is not None:
             desc = getattr(event, 'descriptions', ())
             for item in desc:
                 if isinstance(item, dict):
                     data.update(item)
+        if not self.isValid(data, **kw):
+            return
+        uid = util.getUidForObject(self.context)
+        last = self.storage.getLastUserTrack(uid, 0, self.personId)
+        update = (last is not None and last.data.get('action') == action and
+                  last.metadata['timeStamp'] >= getTimeStamp() - 5)
+        relation = kw.get('relation')
+        if relation is not None:
+            data['predicate'] = util.getUidForObject(relation.predicate)
+            data['second'] = util.getUidForObject(relation.second)
         if update:
             self.storage.updateTrack(last, data)
         else:
