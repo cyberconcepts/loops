@@ -272,8 +272,8 @@ class Search(ConceptView):
             for state in states:
                 if stf.state == state:
                     break
-                else:
-                    return False
+            else:
+                return False
         return True
 
 
