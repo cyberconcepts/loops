@@ -153,6 +153,7 @@ class ChangeStateForm(ChangeStateBase, ObjectForm):
 class ChangeState(ChangeStateBase, EditObject):
 
     def update(self):
+        self.stateful.doTransition(self.action)
         formData = self.request.form
         # store data in target object (unless field.nostore)
         self.object = self.target
@@ -168,7 +169,6 @@ class ChangeState(ChangeStateBase, EditObject):
             fi = formState.fieldInstances[name]
             rawValue = fi.getRawValue(formData, name, u'')
             trackData[name] = fi.unmarshall(rawValue)
-        self.stateful.doTransition(self.action)
         notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
         self.request.response.redirect(self.request.getURL())
         return True
