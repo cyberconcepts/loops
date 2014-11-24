@@ -28,7 +28,7 @@ from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 from cybertools.composer.report.field import Field as BaseField
 from cybertools.composer.report.result import ResultSet
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
-from cybertools.util.date import timeStamp2Date
+from cybertools.util.date import timeStamp2Date, timeStamp2ISO
 from cybertools.util.format import formatDate
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
