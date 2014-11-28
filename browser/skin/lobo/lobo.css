@@ -109,6 +109,14 @@ thead th {
     background: none;
 }
 
+/* printing */
+
+@media print {
+    .noprint {
+        display: none;
+    }
+}
+
 /* class-specific */
 
 .breadcrumbs td {
