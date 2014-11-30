@@ -43,6 +43,7 @@ from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.common import adapted
+from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson
 from loops.organize.party import getPersonForUser
 from loops.organize.stateful.browser import StateAction
@@ -410,10 +411,11 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         task = self.task
         if task is None:
             task = self.target
-        options = IOptions(adapted(task.conceptType))
-        typeNames = options.workitem_types
-        if typeNames:
-            return [workItemTypes[name] for name in typeNames]
+        if IConcept.providedBy(task):
+            options = IOptions(adapted(task.conceptType))
+            typeNames = options.workitem_types
+            if typeNames:
+                return [workItemTypes[name] for name in typeNames]
         return workItemTypes
 
     @Lazy
@@ -483,6 +485,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         task = self.task
         if task is None:
             task = self.target
+        if not IConcept.providedBy(task):
+            return []
         options = IOptions(adapted(task.conceptType))
         return options.hidden_workitem_actions or []
 
