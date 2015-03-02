@@ -213,14 +213,36 @@ class ObjectForm(NodeView):
         return ITypeManager(self.target)
 
     @Lazy
+    def targetType(self):
+        return self.target.getType()
+
+    @Lazy
     def presetTypesForAssignment(self):
-        types = list(self.typeManager.listTypes(include=('assign',)))
+        types = []
+        tn = getName(self.targetType)
+        for t in self.typeManager.listTypes(include=('assign',)):
+            # check if type is appropriate for the object to be created
+            opt = IOptions(adapted(t.context))('qualifier_assign_to')
+            #print '***', t.context.__name__, opt, tn
+            if not opt or tn in opt:
+                types.append(t)
         assigned = [r.context.conceptType for r in self.assignments]
         types = [t for t in types if t.typeProvider not in assigned]
         return [dict(title=t.title, token=t.tokenForSearch) for t in types]
 
     def conceptsForType(self, token):
         result = ConceptQuery(self).query(type=token)
+        # check typeOption: include only matching instances
+        include = []
+        type = self.conceptManager[token.split(':')[-1]]
+        #print '###', token, repr(type)
+        opt = IOptions(adapted(type))('qualifier_assign_check_parents')
+        if opt:
+            for p in self.target.getAllParents([self.defaultPredicate]):
+                for c in p.object.getChildren([self.defaultPredicate]):
+                    include.append(c)
+        if include:
+            result = [c for c in result if c in include]
         fv = FilterView(self.context, self.request)
         result = fv.apply(result)
         result.sort(key=lambda x: x.title)
@@ -324,6 +346,10 @@ class CreateObjectForm(ObjectForm):
         typeToken = self.typeToken
         if typeToken:
             return self.loopsRoot.loopsTraverse(typeToken)
+
+    @Lazy
+    def targetType(self):
+        return self.typeConcept
 
     @Lazy
     def adapted(self):
