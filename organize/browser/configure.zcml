@@ -152,4 +152,12 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Prefix" />
 
+  <!-- utilities -->
+
+  <browser:page
+      for="loops.interfaces.ILoops"
+      name="fix_person_roles"
+      class="loops.organize.browser.member.FixPersonRoles"
+      permission="zope.ManageServices" />
+
 </configure>

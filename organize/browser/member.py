@@ -500,3 +500,15 @@ class PasswordReset(PasswordChange):
         mailhost = component.getUtility(IMailDelivery, 'Mail')
         mailhost.send(sender, recipients, msg.as_string())
 
+
+class FixPersonRoles(object):
+
+    def __call__(self):
+        concepts = self.context['concepts']
+        for p in concepts['person'].getChildren([concepts['hasType']]):
+            person = adapted(p)
+            userId = person.userId
+            print '***', userId
+            person.userId = userId
+        return 'blubb'
+
