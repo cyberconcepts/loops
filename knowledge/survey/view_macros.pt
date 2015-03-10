@@ -83,7 +83,7 @@
             <td tal:repeat="opt item/answerOptions"
                 style="text-align: center"
                 i18n:translate=""
-                tal:content="opt/label" />
+                tal:content="opt/label|string:" />
           </tr>
           <tal:question repeat="question group/questions">
             <tr tal:attributes="class python:item.getCssClass(question)">
