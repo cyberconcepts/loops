@@ -23,6 +23,12 @@
         factory="loops.knowledge.qualification.browser.Qualifications"
         permission="zope.View" />
 
+  <browser:page
+      name="qualifications.csv"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.knowledge.qualification.browser.QualificationsCSVExport"
+      permission="zope.View" />
+
   <!-- reports -->
 
   <zope:adapter 

@@ -101,6 +101,12 @@
       class="loops.organize.work.report.WorkStatementView"
       permission="zope.View" />
 
+  <browser:page
+      name="work.csv"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.organize.work.report.WorkStatementCSVExport"
+      permission="zope.View" />
+
   <zope:adapter 
       name="meeting_minutes"
       factory="loops.organize.work.report.MeetingMinutes"

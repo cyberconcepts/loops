@@ -22,6 +22,7 @@ Field definitions for reports.
 
 from zope.app.form.browser.interfaces import ITerms
 from zope import component
+from zope.i18n import translate
 from zope.i18n.locales import locales
 from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
@@ -92,6 +93,11 @@ class DateField(Field):
     format = ('date', 'short')
     cssClass = 'center'
 
+    def getValue(self, row):
+        if getattr(row.parent.context.view, 'reportMode', None) == 'export':
+            return self.getDisplayValue(row)
+        super(DateField, self).getValue(row)
+
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
         if not value:
@@ -131,6 +137,15 @@ class WorkItemStateField(Field):
 
     statesDefinition = 'workItemStates'
     renderer = 'workitem_state'
+
+    def getValue(self, row):
+        view = row.parent.context.view
+        if getattr(view, 'reportMode', None) == 'export':
+            stateObject = row.context.getStateObject()
+            lang = view.languageInfo.language
+            return translate(util._(stateObject.title), target_language=lang)
+        return super(WorkItemStateField, self).getValue(row)
+
 
     def getDisplayValue(self, row):
         if row.context is None:
@@ -241,14 +256,18 @@ class TrackDateField(Field):
     cssClass = 'right'
 
     def getValue(self, row):
+        reportMode = getattr(row.parent.context.view, 'reportMode', None)
+        if reportMode == 'export':
+            return self.getDisplayValue(row)
         value = self.getRawValue(row)
         if not value:
             return None
         return timeStamp2Date(value)
 
     def getDisplayValue(self, row):
-        value = self.getValue(row)
+        value = self.getRawValue(row)
         if value:
+            value = timeStamp2Date(value)
             view = row.parent.context.view
             return formatDate(value, self.part, self.format,
                               view.languageInfo.language)

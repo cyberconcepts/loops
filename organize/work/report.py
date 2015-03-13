@@ -32,6 +32,7 @@ from cybertools.organize.interfaces import IWorkItems
 from cybertools.util.date import timeStamp2Date, timeStamp2ISO
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
+from loops.expert.browser.export import ReportConceptCSVExport
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
                             TextField, HtmlTextField, UrlField
@@ -45,6 +46,11 @@ from loops import util
 # reporting views
 
 class WorkStatementView(ReportConceptView):
+
+    reportName = 'work_statement'
+
+
+class WorkStatementCSVExport(ReportConceptCSVExport):
 
     reportName = 'work_statement'
 

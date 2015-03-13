@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,18 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from loops.browser.concept import ConceptView
+from loops.expert.browser.export import ReportConceptCSVExport
 from loops.expert.browser.report import ResultsConceptView
 from loops.organize.party import getPersonForUser
 from loops.util import _
 
 
 class Qualifications(ResultsConceptView):
+
+    reportName = 'qualification_overview'
+
+
+class QualificationsCSVExport(ReportConceptCSVExport):
 
     reportName = 'qualification_overview'
 
