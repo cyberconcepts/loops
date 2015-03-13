@@ -26,7 +26,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from loops.browser.concept import ConceptView
-from loops.expert.browser.export import ReportConceptCSVExport
+from loops.expert.browser.export import ResultsConceptCSVExport
 from loops.expert.browser.report import ResultsConceptView
 from loops.organize.party import getPersonForUser
 from loops.util import _
@@ -37,7 +37,7 @@ class Qualifications(ResultsConceptView):
     reportName = 'qualification_overview'
 
 
-class QualificationsCSVExport(ReportConceptCSVExport):
+class QualificationsCSVExport(ResultsConceptCSVExport):
 
     reportName = 'qualification_overview'
 

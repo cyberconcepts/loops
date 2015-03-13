@@ -190,6 +190,12 @@ class ResultsConceptView(ConceptView):
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
 
+    @Lazy
+    def downloadLink(self, format='csv'):
+        opt = self.options('download_' + format)
+        if opt:
+            return opt[0]
+
 
 class EmbeddedResultsConceptView(ResultsConceptView):
 

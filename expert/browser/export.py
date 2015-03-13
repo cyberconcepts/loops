@@ -24,12 +24,13 @@ import csv
 from cStringIO import StringIO
 from zope.i18n import translate
 
-from loops.expert.browser.report import ReportConceptView
+from loops.common import normalizeName
+from loops.expert.browser.report import ResultsConceptView
 from loops.interfaces import ILoopsObject
 from loops.util import _
 
 
-class ReportConceptCSVExport(ReportConceptView):
+class ResultsConceptCSVExport(ResultsConceptView):
 
     isToplevel = True
     reportMode = 'export'
@@ -38,7 +39,7 @@ class ReportConceptCSVExport(ReportConceptView):
     encoding = 'UTF-8'
 
     def getFileName(self):
-        return 'output'
+        return normalizeName(self.context.title)
 
     def getColumnTitle(self, field):
         lang = self.languageInfo.language

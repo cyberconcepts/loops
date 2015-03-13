@@ -37,6 +37,13 @@
 
 <div metal:define-macro="results">
   <br />
+  <tal:download condition="item/downloadLink">
+    <div class="button">
+      <a i18n:translate=""
+         tal:attributes="href item/downloadLink">Download Data</a>
+    </div>
+    <br />
+  </tal:download>
   <table class="report"
          tal:define="results reportView/results">
     <tr>
