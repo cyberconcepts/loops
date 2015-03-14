@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -84,6 +84,14 @@ class WorkItemDetails(TrackDetails):
     @Lazy
     def deadline(self):
         return self.formatTimeStamp(self.track.deadline, 'date')
+
+    @Lazy
+    def deadlineTime(self):
+        return self.formatTimeStamp(self.track.deadline, 'time')
+
+    @Lazy
+    def deadlineWithTime(self):
+        return self.globalOptions('organize.work.deadline_with_time')
 
     @Lazy
     def start(self):
@@ -430,6 +438,17 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return ''
 
     @Lazy
+    def deadlineTime(self):
+        ts = self.track.deadline# or getTimeStamp()
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
+
+    @Lazy
+    def deadlineWithTime(self):
+        return self.globalOptions('organize.work.deadline_with_time')
+
+    @Lazy
     def defaultTimeStamp(self):
         if self.workItemType.prefillDate:
             return getTimeStamp()
@@ -583,7 +602,14 @@ class CreateWorkItem(EditObject, BaseTrackView):
             setValue('party')
         if action == 'move':
             setValue('task')
-        result['deadline'] = parseDate(form.get('deadline'))
+        #result['deadline'] = parseDate(form.get('deadline'))
+        deadline = form.get('deadline')
+        if deadline:
+            deadlineTime = (form.get('deadline_time', '').
+                                strip().replace('T', '') or '00:00:00')
+            result['deadline'] = parseDateTime('T'.join((deadline, deadlineTime)))
+        else:
+            result['deadline'] = None
         startDate = form.get('start_date', '').strip()
         endDate = form.get('end_date', '').strip() or startDate
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
