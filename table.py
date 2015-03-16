@@ -106,6 +106,9 @@ class DataTable(AdapterBase):
             result.append(item)
         return result
 
+    def getRowsByValue(self, column, value):
+        return [r for r in self.dataAsRecords if r[column] == value]
+
 
 TypeInterfaceSourceList.typeInterfaces += (IDataTable,)
 
