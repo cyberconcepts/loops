@@ -524,7 +524,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return [dict(name=util.getUidForObject(p), title=p.title)
                     for p in persons]
 
-    taskTypes = ['task', 'event', 'agendaitem']
+    @Lazy
+    def taskTypes(self):
+        return (self.globalOptions('organize.work.task_types') or
+                ['task', 'event', 'agendaitem'])
 
     @Lazy
     def followUpTask(self):
@@ -543,6 +546,16 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
                 tasks.extend(ttype.getChildren([self.typePredicate]))
         return [dict(name=util.getUidForObject(t), title=t.title)
                     for t in tasks]
+
+    @Lazy
+    def priorities(self):
+        prio = self.conceptManager.get('organize.work.priorities')
+        return prio and adapted(prio).dataAsRecords or []
+
+    @Lazy
+    def activities(self):
+        act = self.conceptManager.get('organize.work.activities')
+        return act and adapted(act).dataAsRecords or []
 
     @Lazy
     def duration(self):
@@ -610,6 +623,8 @@ class CreateWorkItem(EditObject, BaseTrackView):
             result['deadline'] = parseDateTime('T'.join((deadline, deadlineTime)))
         else:
             result['deadline'] = None
+        result['priority'] = form.get('priority')
+        result['activity'] = form.get('activity')
         startDate = form.get('start_date', '').strip()
         endDate = form.get('end_date', '').strip() or startDate
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'

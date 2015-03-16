@@ -150,19 +150,48 @@
                       view.getUidForObject(view.followUpTask)" />
         </span>
       </div>
-      <div>
-        <div id="deadline"
-             tal:condition="python:'deadline' in workItemType.fields">
-          <label i18n:translate="" for="deadline-input">Deadline</label>
-          <div id="deadline-input">
-            <input type="text" name="deadline" style="width: 8em"
-                   dojoType="dijit.form.DateTextBox"
-                   tal:attributes="value view/deadline" />
-            <input type="text" name="deadline_time" style="width: 6em"
-                   dojoType="dijit.form.TimeTextBox"
-                   tal:condition="view/deadlineWithTime"
-                   tal:attributes="value view/deadlineTime" />
-          </div>
+      <div id="deadline"
+           tal:condition="python:'deadline' in workItemType.fields">
+        <label i18n:translate="" for="deadline-input">Deadline</label>
+        <div id="deadline-input">
+          <input type="text" name="deadline" style="width: 8em"
+                 dojoType="dijit.form.DateTextBox"
+                 tal:attributes="value view/deadline" />
+          <input type="text" name="deadline_time" style="width: 6em"
+                 dojoType="dijit.form.TimeTextBox"
+                 tal:condition="view/deadlineWithTime"
+                 tal:attributes="value view/deadlineTime" />
+        </div>
+        <div id="priority-activity"
+             tal:condition="python:'priority' in workItemType.fields or
+                                   'activity' in workItemType.fields">
+          <table style="width: auto">
+            <tr>
+              <td tal:condition="python:'priority' in workItemType.fields">
+                <label i18n:translate="" for="priority">Priority</label></td>
+              <td tal:condition="python:'activity' in workItemType.fields">
+                <label i18n:translate="" for="activity">Activity</label></td>
+            </tr>
+            <tr>
+              <td tal:condition="python:'priority' in workItemType.fields">
+                <select name="priority" id="priority"
+                        tal:define="value view/track/data/priority|nothing">
+                  <option tal:repeat="prio view/priorities"
+                          tal:attributes="value prio/name;
+                                          selected python:prio['name'] == value"
+                          tal:content="prio/title" />
+                </select>
+              </td>
+              <td tal:condition="python:'activity' in workItemType.fields">
+                <select name="activity" id="activity"
+                        tal:define="value view/track/data/activity|nothing">
+                  <option tal:repeat="act view/activities"
+                          tal:attributes="value act/name;
+                                          selected python:act['name'] == value"
+                          tal:content="act/title" />
+                </select>
+              </td>
+          </table>
         </div>
         <div id="start-end"
              tal:condition="python:'start-end' in workItemType.fields">
