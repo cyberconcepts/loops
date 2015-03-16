@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ template = ViewPageTemplateFile('view_macros.pt')
 statefulActions = ('classification_quality',
                    'simple_publishing',
                    'task_states',
-                   'publishable_task',)
+                   'publishable_task',
+                   'contact_states',)
 
 
 def registerStatesPortlet(controller, view, statesDefs,
