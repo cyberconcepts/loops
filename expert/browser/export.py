@@ -22,6 +22,7 @@ View classes for export of report results.
 
 import csv
 from cStringIO import StringIO
+from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
 
 from loops.common import normalizeName
@@ -36,7 +37,16 @@ class ResultsConceptCSVExport(ResultsConceptView):
     reportMode = 'export'
 
     delimiter = ';'
-    encoding = 'UTF-8'
+    #encoding = 'UTF-8'
+    #encoding = 'ISO8859-15'
+    #encoding = 'CP852'
+
+    @Lazy
+    def encoding(self):
+        enc = self.globalOptions('csv_encoding')
+        if enc:
+            return enc[0]
+        return 'UTF-8'
 
     def getFileName(self):
         return normalizeName(self.context.title)
