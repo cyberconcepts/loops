@@ -549,13 +549,19 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def priorities(self):
-        prio = self.conceptManager.get('organize.work.priorities')
-        return prio and adapted(prio).dataAsRecords or []
+        if 'priority' in self.workItemType.fields:
+            prio = self.conceptManager.get('organize.work.priorities')
+            if prio: 
+                return adapted(prio).dataAsRecords()
+        return []
 
     @Lazy
     def activities(self):
-        act = self.conceptManager.get('organize.work.activities')
-        return act and adapted(act).dataAsRecords or []
+        if 'activity' in self.workItemType.fields:
+            act = self.conceptManager.get('organize.work.activities')
+            if act: 
+                return adapted(act).dataAsRecords()
+        return []
 
     @Lazy
     def duration(self):

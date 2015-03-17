@@ -913,7 +913,7 @@ relates ISO country codes with the full name of the country.
   >>> sorted(adapted(concepts['countries']).data.items())
   [('at', ['Austria']), ('de', ['Germany'])]
 
-  >>> countries.dataAsRecords
+  >>> countries.dataAsRecords()
   [{'value': 'Austria', 'key': 'at'}, {'value': 'Germany', 'key': 'de'}]
 
   >>> countries.getRowsByValue('value', 'Germany')

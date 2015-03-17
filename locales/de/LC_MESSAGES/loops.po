@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-03-13 12:00 CET\n"
+"PO-Revision-Date: 2015-03-17 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -1009,6 +1009,21 @@ msgstr "Kalender"
 msgid "Work Items"
 msgstr "Aktivitäten"
 
+msgid "Work Item Type"
+msgstr "Art der Aktivität"
+
+msgid "Unit of Work"
+msgstr "Standard-Aktivität"
+
+msgid "Scheduled Event"
+msgstr "Termin"
+
+msgid "Deadline"
+msgstr "Deadline"
+
+msgid "Check-up"
+msgstr "Überprüfung"
+
 msgid "Work Items for $title"
 msgstr "Aktivitäten für $title"
 
@@ -1038,6 +1053,12 @@ msgstr "Dauer/Aufwand"
 
 msgid "Duration / Effort (hh:mm)"
 msgstr "Dauer / Aufwand (hh:mm)"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Activity"
+msgstr "Tätigkeit"
 
 msgid "Action"
 msgstr "Aktion"

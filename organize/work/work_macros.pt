@@ -163,29 +163,30 @@
                  tal:attributes="value view/deadlineTime" />
         </div>
         <div id="priority-activity"
-             tal:condition="python:'priority' in workItemType.fields or
-                                   'activity' in workItemType.fields">
+             tal:define="priorities view/priorities;
+                         activities view/activities"
+             tal:condition="python:priorities or activities">
           <table style="width: auto">
             <tr>
-              <td tal:condition="python:'priority' in workItemType.fields">
+              <td tal:condition="priorities">
                 <label i18n:translate="" for="priority">Priority</label></td>
-              <td tal:condition="python:'activity' in workItemType.fields">
+              <td tal:condition="activities">
                 <label i18n:translate="" for="activity">Activity</label></td>
             </tr>
             <tr>
-              <td tal:condition="python:'priority' in workItemType.fields">
+              <td tal:condition="priorities">
                 <select name="priority" id="priority"
                         tal:define="value view/track/data/priority|nothing">
-                  <option tal:repeat="prio view/priorities"
+                  <option tal:repeat="prio priorities"
                           tal:attributes="value prio/name;
                                           selected python:prio['name'] == value"
                           tal:content="prio/title" />
                 </select>
               </td>
-              <td tal:condition="python:'activity' in workItemType.fields">
+              <td tal:condition="activities">
                 <select name="activity" id="activity"
                         tal:define="value view/track/data/activity|nothing">
-                  <option tal:repeat="act view/activities"
+                  <option tal:repeat="act activities"
                           tal:attributes="value act/name;
                                           selected python:act['name'] == value"
                           tal:content="act/title" />

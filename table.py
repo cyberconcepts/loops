@@ -93,7 +93,6 @@ class DataTable(AdapterBase):
         self.context._data = OOBTree(data)
     data = property(getData, setData)
 
-    @property
     def dataAsRecords(self):
         result = []
         for k, v in sorted(self.data.items()):
@@ -107,7 +106,7 @@ class DataTable(AdapterBase):
         return result
 
     def getRowsByValue(self, column, value):
-        return [r for r in self.dataAsRecords if r[column] == value]
+        return [r for r in self.dataAsRecords() if r[column] == value]
 
 
 TypeInterfaceSourceList.typeInterfaces += (IDataTable,)
