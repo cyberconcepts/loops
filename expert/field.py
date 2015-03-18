@@ -39,6 +39,9 @@ from loops import util
 
 class Field(BaseField):
 
+    def getContext(self, row):
+        return row.context
+
     def getSelectValue(self, row):
         return self.getValue(row)
 
@@ -120,12 +123,13 @@ class StateField(Field):
     renderer = 'state'
 
     def getDisplayValue(self, row):
-        if IStateful.providedBy(row.context):
-            stf = row.context
-        elif row.context is None:
+        context = self.getContext(row)
+        if IStateful.providedBy(context):
+            stf = context
+        elif context is None:
             return None
         else:
-            stf = component.getAdapter(row.context, IStateful, 
+            stf = component.getAdapter(context, IStateful, 
                                         name=self.statesDefinition)
         stateObject = stf.getStateObject()
         icon = stateObject.icon or 'led%s.png' % stateObject.color

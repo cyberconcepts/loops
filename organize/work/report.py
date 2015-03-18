@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,13 +22,15 @@ Work report definitions.
 
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from zope.component import adapter
+from zope.component import adapter, getAdapter
 
 from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.composer.report.field import CalculatedField
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
+from cybertools.meta.interfaces import IOptions
 from cybertools.organize.interfaces import IWorkItems
+from cybertools.stateful.interfaces import IStateful
 from cybertools.util.date import timeStamp2Date, timeStamp2ISO
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
@@ -75,6 +77,19 @@ class DurationField(Field):
         if not value:
             return u''
         return u'%02i:%02i' % divmod(value * 60, 60)
+
+
+class PartyStateField(StateField):
+
+    def getContext(self, row):
+        if row.context is None:
+            return None
+        party = util.getObjectForUid(row.context.party)
+        ptype = adapted(party.conceptType)
+        stdefs = IOptions(ptype)('organize.stateful') or []
+        if self.statesDefinition in stdefs:
+            return party
+        return None
 
 
 # common fields
@@ -142,6 +157,11 @@ state = WorkItemStateField('state', u'State',
                 cssClass='center',
                 statesDefinition='workItemStates',
                 executionSteps=['query', 'output'])
+partyState = PartyStateField('partyState', u'Party State',
+                description=u'State of the party, mainly for selection.',
+                cssClass='center',
+                statesDefinition='contact_states',
+                executionSteps=['query', 'output'])
 
 
 # basic definitions and work report instance
@@ -177,10 +197,19 @@ class WorkRow(BaseRow):
             value = self.getDuration(attr)
         return value
 
+    def xx_getPartyState(self, attr):
+        party = util.getObjectForUid(self.context.party)
+        ptype = adapted(party.conceptType)
+        for std in IOptions(ptype)('organize.stateful') or []:
+            stf = getAdapter(party, IStateful, name=std)
+            return stf.state
+        return None
+
     attributeHandlers = dict(day=getDay, 
                              dayStart=getStart, dayEnd=getEnd,
                              dayFrom=getDay, dayTo=getDay,
-                             duration=getDuration, effort=getEffort)
+                             duration=getDuration, effort=getEffort,)
+                             #partyState=getPartyState)
 
 
 class WorkReportInstance(ReportInstance):

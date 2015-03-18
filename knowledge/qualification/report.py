@@ -28,6 +28,7 @@ from loops.organize.work.report import WorkRow
 from loops.organize.work.report import deadline, day, task, party, state
 from loops.organize.work.report import dayStart, dayEnd
 from loops.organize.work.report import workTitle, workDescription
+from loops.organize.work.report import partyState
 from loops import util
 
 
@@ -38,7 +39,8 @@ class QualificationOverview(ReportInstance):
 
     rowFactory = WorkRow
 
-    fields = Jeep((task, party, workTitle, dayStart, dayEnd, state)) # +deadline?
+    fields = Jeep((task, party, workTitle, dayStart, dayEnd, state,))
+                   #partyState,)) # +deadline?
 
     defaultOutputFields = fields
     defaultSortCriteria = (party, task,)
