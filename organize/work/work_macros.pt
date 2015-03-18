@@ -162,78 +162,78 @@
                  tal:condition="view/deadlineWithTime"
                  tal:attributes="value view/deadlineTime" />
         </div>
-        <div id="priority-activity"
-             tal:define="priorities view/priorities;
-                         activities view/activities"
-             tal:condition="python:priorities or activities">
-          <table style="width: auto">
-            <tr>
-              <td tal:condition="priorities">
-                <label i18n:translate="" for="priority">Priority</label></td>
-              <td tal:condition="activities">
-                <label i18n:translate="" for="activity">Activity</label></td>
-            </tr>
-            <tr>
-              <td tal:condition="priorities">
-                <select name="priority" id="priority"
-                        tal:define="value view/track/data/priority|nothing">
-                  <option tal:repeat="prio priorities"
-                          tal:attributes="value prio/name;
-                                          selected python:prio['name'] == value"
-                          tal:content="prio/title" />
-                </select>
-              </td>
-              <td tal:condition="activities">
-                <select name="activity" id="activity"
-                        tal:define="value view/track/data/activity|nothing">
-                  <option tal:repeat="act activities"
-                          tal:attributes="value act/name;
-                                          selected python:act['name'] == value"
-                          tal:content="act/title" />
-                </select>
-              </td>
-          </table>
-        </div>
-        <div id="start-end"
-             tal:condition="python:'start-end' in workItemType.fields">
-          <label i18n:translate="" for="start-end-input">Start - End</label>
-          <div id="start-end-input">
-            <input type="text" name="start_date" style="width: 8em"
-                   dojoType="dijit.form.DateTextBox"
-                   tal:attributes="value view/date" />
-            <input type="text" name="start_time" style="width: 6em"
-                   dojoType="dijit.form.TimeTextBox"
-                   tal:attributes="value view/startTime" /> -
-            <input type="text" name="end_time" style="width: 6em"
-                   dojoType="dijit.form.TimeTextBox"
-                   tal:attributes="value view/endTime" /></div>
-        </div>
-        <div id="daterange"
-             tal:condition="python:'daterange' in workItemType.fields">
-          <label i18n:translate="" for="daterange-input">Start - End</label>
-          <div id="daterange-input">
-            <input type="text" name="start_date" style="width: 8em"
-                   dojoType="dijit.form.DateTextBox"
-                   tal:attributes="value view/date" />
-            <input type="text" name="end_date" style="width: 8em"
-                   dojoType="dijit.form.DateTextBox"
-                   tal:attributes="value view/endDate" /></div>
-        </div>
-        <div id="duration-effort"
-             tal:condition="python:
-                              'duration-effort' in workItemType.fields">
-          <label i18n:translate=""
-                 for="duration-effort-input">Duration / Effort (hh:mm)</label>
-          <div id="duration-effort-input">
-            <input type="text" name="duration" style="width: 5em"
-                   dojoType="dijit.form.ValidationTextBox"
-                   regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
-                   tal:attributes="value view/duration" /> /
-            <input type="text" name="effort" style="width: 5em"
-                   dojoType="dijit.form.ValidationTextBox"
-                   regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
-                   tal:attributes="value view/effort" /></div>
-        </div>
+      </div>
+      <div id="priority-activity"
+           tal:define="priorities view/priorities;
+                       activities view/activities"
+           tal:condition="python:priorities or activities">
+        <table style="width: auto">
+          <tr>
+            <td tal:condition="priorities">
+              <label i18n:translate="" for="priority">Priority</label></td>
+            <td tal:condition="activities">
+              <label i18n:translate="" for="activity">Activity</label></td>
+          </tr>
+          <tr>
+            <td tal:condition="priorities">
+              <select name="priority" id="priority"
+                      tal:define="value view/track/data/priority|nothing">
+                <option tal:repeat="prio priorities"
+                        tal:attributes="value prio/name;
+                                        selected python:prio['name'] == value"
+                        tal:content="prio/title" />
+              </select>
+            </td>
+            <td tal:condition="activities">
+              <select name="activity" id="activity"
+                      tal:define="value view/track/data/activity|nothing">
+                <option tal:repeat="act activities"
+                        tal:attributes="value act/name;
+                                        selected python:act['name'] == value"
+                        tal:content="act/title" />
+              </select>
+            </td>
+        </table>
+      </div>
+      <div id="start-end"
+           tal:condition="python:'start-end' in workItemType.fields">
+        <label i18n:translate="" for="start-end-input">Start - End</label>
+        <div id="start-end-input">
+          <input type="text" name="start_date" style="width: 8em"
+                 dojoType="dijit.form.DateTextBox"
+                 tal:attributes="value view/date" />
+          <input type="text" name="start_time" style="width: 6em"
+                 dojoType="dijit.form.TimeTextBox"
+                 tal:attributes="value view/startTime" /> -
+          <input type="text" name="end_time" style="width: 6em"
+                 dojoType="dijit.form.TimeTextBox"
+                 tal:attributes="value view/endTime" /></div>
+      </div>
+      <div id="daterange"
+           tal:condition="python:'daterange' in workItemType.fields">
+        <label i18n:translate="" for="daterange-input">Start - End</label>
+        <div id="daterange-input">
+          <input type="text" name="start_date" style="width: 8em"
+                 dojoType="dijit.form.DateTextBox"
+                 tal:attributes="value view/date" />
+          <input type="text" name="end_date" style="width: 8em"
+                 dojoType="dijit.form.DateTextBox"
+                 tal:attributes="value view/endDate" /></div>
+      </div>
+      <div id="duration-effort"
+           tal:condition="python:
+                            'duration-effort' in workItemType.fields">
+        <label i18n:translate=""
+               for="duration-effort-input">Duration / Effort (hh:mm)</label>
+        <div id="duration-effort-input">
+          <input type="text" name="duration" style="width: 5em"
+                 dojoType="dijit.form.ValidationTextBox"
+                 regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                 tal:attributes="value view/duration" /> /
+          <input type="text" name="effort" style="width: 5em"
+                 dojoType="dijit.form.ValidationTextBox"
+                 regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
+                 tal:attributes="value view/effort" /></div>
       </div>
       <div>
         <label i18n:translate="" for="comment">Comment</label>
