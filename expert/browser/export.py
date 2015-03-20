@@ -69,8 +69,7 @@ class ResultsConceptCSVExport(ResultsConceptView):
                 value = f.getValue(row)
                 if ILoopsObject.providedBy(value):
                     value = value.title
-                if isinstance(value, unicode):
-                    value = value.encode(self.encoding)
+                value = encode(value, self.encoding)
                 data[f.name] = value
             writer.writerow(data)
         text = output.getvalue()
@@ -86,3 +85,20 @@ class ResultsConceptCSVExport(ResultsConceptView):
         response.setHeader('Pragma', '')
         response.setHeader('Content-Type', 'text/csv')
         response.setHeader('Content-Length', len(text))
+
+
+def encode(text, encoding):
+    if not isinstance(text, unicode):
+        return text
+    try:
+        return text.encode(encoding)
+    except UnicodeEncodeError:
+        result = []
+        for c in text:
+            try:
+                result.append(c.encode(encoding))
+            except UnicodeEncodeError:
+                result.append('?')
+        return ''.join(result)
+    return '???'
+

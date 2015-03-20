@@ -193,6 +193,8 @@ class ResultsConceptView(ConceptView):
     @Lazy
     def downloadLink(self, format='csv'):
         opt = self.options('download_' + format)
+        if not opt:
+            opt = self.typeOptions('download_' + format)
         if opt:
             return opt[0]
 

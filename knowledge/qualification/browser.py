@@ -34,10 +34,9 @@ from loops.util import _
 
 class Qualifications(ResultsConceptView):
 
-    reportName = 'qualification_overview'
+    # obsolete because we can directly use ResultsConceptView
 
+    #reportName = 'qualification_overview'
 
-class QualificationsCSVExport(ResultsConceptCSVExport):
-
-    reportName = 'qualification_overview'
+    pass    # report assigned to query via hasReport relation
 
