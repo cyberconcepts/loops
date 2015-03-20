@@ -81,6 +81,18 @@ class DurationField(Field):
 
 class PartyStateField(StateField):
 
+    def getValue(self, row):
+        context = row.context
+        if context is None:
+            return None
+        party = util.getObjectForUid(context.party)
+        ptype = adapted(party.conceptType)
+        stdefs = IOptions(ptype)('organize.stateful') or []
+        if self.statesDefinition in stdefs:
+            stf = getAdapter(party, IStateful, 
+                             name=self.statesDefinition)
+            return stf.state
+
     def getContext(self, row):
         if row.context is None:
             return None

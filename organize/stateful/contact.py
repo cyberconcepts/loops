@@ -40,12 +40,12 @@ def contactStates():
     return StatesDefinition('contact_states',
         State('prospective', 'prospective', ('activate', 'inactivate',),
               color='blue'),
-        State('active', 'active', ('retract', 'inactivate',),
+        State('active', 'active', ('reset', 'inactivate',),
               color='green'),
-        State('inactive', 'inactive', ('activate',),
+        State('inactive', 'inactive', ('activate', 'reset'),
               color='x'),
         Transition('activate', 'activate', 'active'),
-        Transition('retract', 'retract', 'prospective'),
+        Transition('reset', 'reset', 'prospective'),
         Transition('inactivate', 'inactivate', 'inactive'),
         initialState='active')
 

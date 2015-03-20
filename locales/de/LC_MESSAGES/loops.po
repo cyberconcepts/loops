@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-03-17 12:00 CET\n"
+"PO-Revision-Date: 2015-03-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -1134,6 +1134,9 @@ msgstr "Bemerkung"
 msgid "desc_transition_comments"
 msgstr "Notizen zum Statusübergang."
 
+msgid "contact_states"
+msgstr "Kontaktstatus"
+
 # state names
 
 msgid "accepted"
@@ -1201,6 +1204,12 @@ msgstr "unklassifiziert"
 
 msgid "verified"
 msgstr "verifiziert"
+
+msgid "prospective"
+msgstr "künftig"
+
+msgid "inactive"
+msgstr "inaktiv"
 
 # transitions
 
@@ -1275,6 +1284,15 @@ msgstr "verifizieren"
 
 msgid "work"
 msgstr "bearbeiten"
+
+msgid "activate"
+msgstr "aktivieren"
+
+msgid "inactivate"
+msgstr "inaktiv setzen"
+
+msgid "reset"
+msgstr "zurücksetzen"
 
 # calendar
 

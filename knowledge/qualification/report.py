@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ Qualification management report definitions.
 
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.util.jeep import Jeep
 from loops.expert.report import ReportInstance
 from loops.organize.work.report import WorkRow
@@ -39,12 +40,11 @@ class QualificationOverview(ReportInstance):
 
     rowFactory = WorkRow
 
-    fields = Jeep((task, party, workTitle, dayStart, dayEnd, state,))
-                   #partyState,)) # +deadline?
+    fields = Jeep((task, party, workTitle, dayStart, dayEnd, state,
+                   partyState,)) # +deadline?
 
-    defaultOutputFields = fields
+    defaultOutputFields = Jeep(list(fields)[:-1])
     defaultSortCriteria = (party, task,)
-
 
     def getOptions(self, option):
         return self.view.options(option)
@@ -52,6 +52,14 @@ class QualificationOverview(ReportInstance):
     @Lazy
     def states(self):
         return self.getOptions('report_select_state' or ('planned',))
+
+    @property
+    def queryCriteria(self):
+        crit = self.context.queryCriteria or []
+        f = self.fields.partyState
+        crit.append(
+            LeafQueryCriteria(f.name, f.operator, 'active', f))
+        return CompoundQueryCriteria(crit)    
 
     def selectObjects(self, parts):
         result = []
@@ -111,6 +119,11 @@ class PersonQualifications(QualificationOverview):
 
     def getOptions(self, option):
         return self.view.typeOptions(option)
+
+    @property
+    def queryCriteria(self):
+        crit = self.context.queryCriteria or []
+        return CompoundQueryCriteria(crit)    
 
     def selectObjects(self, parts):
         workItems = self.recordManager['work']
