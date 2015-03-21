@@ -3,7 +3,8 @@
 
 <div metal:define-macro="main">
   <div tal:define="report item/reportInstance;
-                   reportView nocall:item"
+                   reportView nocall:item;
+                   renderer item/resultsRenderer"
        tal:attributes="class string:content-$level;">
       <metal:block use-macro="view/concept_macros/concepttitle" />
       <form method="post" name="report_data">
@@ -20,7 +21,12 @@
                  i18n:attributes="value" />
         </div>
       </form>
-    <div metal:use-macro="item/resultsRenderer" />
+    <tal:list condition="renderer">
+      <div metal:use-macro="renderer" />
+    </tal:list>
+    <tal:list condition="not:renderer">
+      <div metal:use-macro="view/concept_macros/conceptchildren" />
+    </tal:list>
   </div>
 </div>
 

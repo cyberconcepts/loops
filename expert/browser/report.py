@@ -45,6 +45,8 @@ class ReportView(ConceptView):
     """ A view for defining (editing) a report.
     """
 
+    resultsRenderer = None  # to be defined by subclass
+
     @Lazy
     def report_macros(self):
         return self.controller.getTemplateMacros('report', report_template)
@@ -56,6 +58,25 @@ class ReportView(ConceptView):
     @Lazy
     def dynamicParams(self):
         return self.request.form
+
+    @Lazy
+    def report(self):
+        return self.adapted
+
+    @Lazy
+    def reportInstance(self):
+        instance = component.getAdapter(self.report, IReportInstance,
+                                        name=self.report.reportType)
+        instance.view = self
+        return instance
+
+    @Lazy
+    def queryFields(self):
+        ri = self.reportInstance
+        qf = ri.getAllQueryFields()
+        if ri.userSettings:
+            return [f for f in qf if f in ri.userSettings]
+        return qf
 
 
 class ResultsView(NodeView):
@@ -104,13 +125,6 @@ class ResultsView(NodeView):
     @Lazy
     def report(self):
         return adapted(self.virtualTargetObject)
-
-    @Lazy
-    def reportInstance(self):
-        instance = component.getAdapter(self.report, IReportInstance,
-                                        name=self.report.reportType)
-        instance.view = self
-        return instance
 
     #@Lazy
     def results(self):
@@ -221,11 +235,3 @@ class ReportConceptView(ResultsConceptView, ReportView):
     @Lazy
     def macro(self):
         return self.report_macros['main']
-
-    @Lazy
-    def queryFields(self):
-        ri = self.reportInstance
-        qf = ri.getAllQueryFields()
-        if ri.userSettings:
-            return [f for f in qf if f in ri.userSettings]
-        return qf
