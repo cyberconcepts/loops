@@ -35,38 +35,50 @@
 </div>
 
 
-<div metal:define-macro="results">
+<div metal:define-macro="results"
+     tal:define="tableName string:results">
   <br />
   <tal:download condition="item/downloadLink">
     <div class="button">
       <a i18n:translate=""
-         tal:attributes="href item/downloadLink">Download Data</a>
+         tal:define="params python:item.getSortParams(tableName)"
+         tal:attributes="href string:${item/downloadLink}$params">Download Data</a>
     </div>
     <br />
   </tal:download>
   <table class="report"
          tal:define="results reportView/results">
     <tr>
-        <th tal:repeat="col results/displayedColumns"
-            tal:content="col/title"
-            tal:attributes="class col/cssClass"
-            i18n:translate="" />
+      <th style="white-space: nowrap"
+          tal:repeat="col results/displayedColumns">
+        <a tal:define="colName col/name"
+           tal:attributes="href python:
+                  item.getSortUrl(tableName, colName)"
+           tal:omit-tag="python:not item.isSortableColumn(tableName, colName)">
+          <span tal:content="col/title"
+                tal:attributes="class col/cssClass"
+                i18n:translate="" />
+          <img tal:define="src python:item.getSortImage(tableName, colName)"
+               tal:condition="src"
+               tal:attributes="src src" />
+        </a>
+      </th>
     </tr>
     <tr tal:repeat="row results"
         tal:attributes="class python:(repeat['row'].index() % 2) and 'even' or 'odd'">
-        <td tal:repeat="col results/displayedColumns"
-            tal:attributes="class col/cssClass">
-            <metal:column use-macro="python:
-                            reportView.getColumnRenderer(col)" />
-        </td>
+      <td tal:repeat="col results/displayedColumns"
+          tal:attributes="class col/cssClass">
+          <metal:column use-macro="python:
+                          reportView.getColumnRenderer(col)" />
+      </td>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <td tal:repeat="col results/displayedColumns"
-            tal:attributes="class col/cssClass">
-            <metal:column use-macro="python:
-                            reportView.getColumnRenderer(col)" />
-        </td>
+      <td tal:repeat="col results/displayedColumns"
+          tal:attributes="class col/cssClass">
+          <metal:column use-macro="python:
+                          reportView.getColumnRenderer(col)" />
+      </td>
     </tr>
   </table>
 </div>

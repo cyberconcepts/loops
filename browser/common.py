@@ -132,7 +132,55 @@ class EditForm(form.EditForm):
         return parentUrl + '/contents.html'
 
 
-class BaseView(GenericView, I18NView):
+class SortableMixin(object):
+
+    @Lazy
+    def sortInfo(self):
+        result = {}
+        for k, v in self.request.form.items():
+            if k.startswith('sortinfo_'):
+                tableName = k[len('sortinfo_'):]
+                if ',' in v:
+                    fn, dir = v.split(',')
+                else:
+                    fn = v
+                    dir = 'asc'
+                result[tableName] = dict(colName=fn, ascending=(dir=='asc'))
+        return result
+
+    def isSortableColumn(self, tableName, colName):
+        return False    # overwrite in subclass
+
+    def getSortUrl(self, tableName, colName):
+        url = str(self.request.URL)
+        paramChar = '?' in url and '&' or '?'
+        si = self.sortInfo.get(tableName)
+        if si is not None and si.get('colName') == colName:
+            dir = si['ascending'] and 'desc' or 'asc'
+        else:
+            dir = 'asc'
+        return '%s%ssortinfo_%s=%s,%s' % (url, paramChar, tableName, colName, dir)
+
+    def getSortParams(self, tableName):
+        url = str(self.request.URL)
+        paramChar = '?' in url and '&' or '?'
+        si = self.sortInfo.get(tableName)
+        if si is not None:
+            colName = si['colName']
+            dir = si['ascending'] and 'asc' or 'desc'
+            return '%ssortinfo_%s=%s,%s' % (paramChar, tableName, colName, dir)
+        return ''
+
+    def getSortImage(self, tableName, colName):
+        si = self.sortInfo.get(tableName)
+        if si is not None and si.get('colName') == colName:
+            if si['ascending']:
+                return '/@@/cybertools.icons/arrowdown.gif'
+            else:
+                return '/@@/cybertools.icons/arrowup.gif'
+
+
+class BaseView(GenericView, I18NView, SortableMixin):
 
     actions = {}
     portlet_actions = []

@@ -192,6 +192,13 @@ class ResultsConceptView(ConceptView):
         ri = component.getAdapter(self.report, IReportInstance,
                                   name=reportType)
         ri.view = self
+        if not ri.sortCriteria:
+            si = self.sortInfo.get('results')
+            if si is not None:
+                fnames = (si['colName'],)
+                ri.sortCriteria = [f for f in ri.getSortFields() 
+                                     if f.name in fnames]
+                ri.sortDescending = not si['ascending']
         return ri
 
     def results(self):
@@ -211,6 +218,12 @@ class ResultsConceptView(ConceptView):
             opt = self.typeOptions('download_' + format)
         if opt:
             return opt[0]
+
+    def isSortableColumn(self, tableName, colName):
+        if tableName == 'results':
+            if colName in [f.name for f in self.reportInstance.getSortFields()]:
+                return True
+        return False
 
 
 class EmbeddedResultsConceptView(ResultsConceptView):

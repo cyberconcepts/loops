@@ -120,7 +120,9 @@ class ReportInstance(BaseReport):
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
-                         sortCriteria=self.getSortCriteria(), queryCriteria=qc,
+                         sortCriteria=self.getSortCriteria(), 
+                         sortDescending=self.sortDescending,
+                         queryCriteria=qc,
                          limits=limits)
 
     def selectObjects(self, parts):
