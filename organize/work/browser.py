@@ -28,6 +28,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent
 
@@ -732,4 +733,26 @@ def formatTimeDelta(value):
         #return u'%id %02i:%02i' % (d, h, m) 
         return str(int(round(h / 24.0)))
     return u'%02i:%02i' % (h, m)
+
+
+class FixCheckupWorkItems(object):
+
+    def __call__(self):
+        context = removeSecurityProxy(self.context)
+        rm = context['records']['work']
+        count = 0
+        workItems = list(rm.values())
+        for wi in workItems:
+            if wi.state in ('done',):
+                if wi.workItemType != 'checkup':
+                    print '*** done, but not checkup', wi.__name__
+                    continue
+                wi.state = 'running'
+                wi.reindex('state')
+                if wi.end == wi.start:
+                    del wi.data['end']
+                count += 1
+        msg = '*** checked: %i, updated: %i.' % (len(workItems), count)
+        print msg
+        return msg
 

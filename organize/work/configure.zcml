@@ -132,6 +132,14 @@
       attribute="embed"
       permission="zope.View" />
 
+  <!-- repair -->
+
+  <browser:page
+      name="fix_checkup_workitems.fix"
+      for="loops.interfaces.ILoops"
+      class="loops.organize.work.browser.FixCheckupWorkItems"
+      permission="zope.View" />
+
   <!-- setup -->
 
   <zope:adapter factory="loops.organize.work.setup.SetupManager"
