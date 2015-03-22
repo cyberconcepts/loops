@@ -51,10 +51,11 @@
     <tr>
       <th style="white-space: nowrap"
           tal:repeat="col results/displayedColumns">
-        <a tal:define="colName col/name"
-           tal:attributes="href python:
-                  item.getSortUrl(tableName, colName)"
-           tal:omit-tag="python:not item.isSortableColumn(tableName, colName)">
+        <a title="tooltip_sort_column"
+           tal:define="colName col/name"
+           tal:omit-tag="python:not item.isSortableColumn(tableName, colName)"
+           tal:attributes="href python:item.getSortUrl(tableName, colName)"
+           i18n:attributes="title">
           <span tal:content="col/title"
                 tal:attributes="class col/cssClass"
                 i18n:translate="" />

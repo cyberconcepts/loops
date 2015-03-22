@@ -154,7 +154,7 @@ party = TargetField('userName', u'Party',
                 executionSteps=['query', 'sort', 'output'])
 workTitle = Field('title', u'Title',
                 description=u'The short description of the work.',
-                executionSteps=['output'])
+                executionSteps=['sort', 'output'])
 workDescription = Field('description', u'Description',
                 description=u'The long description of the work.',
                 executionSteps=['output'])
@@ -209,19 +209,10 @@ class WorkRow(BaseRow):
             value = self.getDuration(attr)
         return value
 
-    def xx_getPartyState(self, attr):
-        party = util.getObjectForUid(self.context.party)
-        ptype = adapted(party.conceptType)
-        for std in IOptions(ptype)('organize.stateful') or []:
-            stf = getAdapter(party, IStateful, name=std)
-            return stf.state
-        return None
-
     attributeHandlers = dict(day=getDay, 
                              dayStart=getStart, dayEnd=getEnd,
                              dayFrom=getDay, dayTo=getDay,
                              duration=getDuration, effort=getEffort,)
-                             #partyState=getPartyState)
 
 
 class WorkReportInstance(ReportInstance):
