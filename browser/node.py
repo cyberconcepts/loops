@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ class NodeView(BaseView):
             return []
         menu = self.menu
         data = [dict(label=menu.title, url=menu.url)]
-        menuItem = self.nearestMenuItem
+        menuItem = self.getNearestMenuItem(all=True)
         if menuItem != menu.context:
             data.append(dict(label=menuItem.title,
                              url=absoluteURL(menuItem, self.request)))
@@ -400,10 +400,13 @@ class NodeView(BaseView):
 
     @Lazy
     def nearestMenuItem(self):
+        return self.getNearestMenuItem()
+
+    def getNearestMenuItem(self, all=False):
         menu = self.menuObject
         menuItem = None
         for p in [self.context] + self.parents:
-            if not p.isMenuItem():
+            if not all and not p.isMenuItem():
                 menuItem = None
             elif menuItem is None:
                 menuItem = p

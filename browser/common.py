@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -376,6 +376,10 @@ class BaseView(GenericView, I18NView, SortableMixin):
     @Lazy
     def isPartOfPredicate(self):
         return self.conceptManager.get('ispartof')
+
+    @Lazy
+    def queryTargetPredicate(self):
+        return self.conceptManager.get('querytarget')
 
     @Lazy
     def memberPredicate(self):

@@ -283,7 +283,15 @@ class ConceptView(BaseView):
         return self.title
 
     @Lazy
+    def showInBreadcrumbs(self):
+        return self.options('show_in_breadcrumbs')
+
+    @Lazy
     def breadcrumbsParent(self):
+        for p in self.context.getParents([self.defaultPredicate]):
+            view = self.nodeView.getViewForTarget(p)
+            if view.showInBreadcrumbs:
+                return view
         return None
 
     def getData(self, omit=('title', 'description')):
