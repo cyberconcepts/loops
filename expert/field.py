@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,15 @@ class Field(BaseField):
 
     def getSelectValue(self, row):
         return self.getValue(row)
+
+
+class StringField(Field):
+
+    def getSelectValue(self, row):
+        return self.getValue(row).strip()
+
+    def getSortValue(self, row):
+        return self.getValue(row).strip()
 
 
 class TextField(Field):

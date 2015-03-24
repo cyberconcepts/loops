@@ -145,7 +145,8 @@ class SortableMixin(object):
                 else:
                     fn = v
                     dir = 'asc'
-                result[tableName] = dict(colName=fn, ascending=(dir=='asc'))
+                result[tableName] = dict(
+                    colName=fn, ascending=(dir=='asc'), fparam=v)
         return result
 
     def isSortableColumn(self, tableName, colName):

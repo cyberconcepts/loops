@@ -22,6 +22,7 @@ View class(es) for work items.
 
 from datetime import date
 import time
+from urllib import urlencode
 from zope import component
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -657,6 +658,12 @@ class CreateWorkItem(EditObject, BaseTrackView):
         #notify(ObjectModifiedEvent(obj))
         url = self.view.virtualTargetUrl
         #url = self.request.URL
+        # append sortinfo parameters:
+        urlParams = {}
+        for k, v in self.view.sortInfo.items():
+            urlParams['sortinfo_' + k] = v['fparam']
+        if urlParams:
+            url = '%s?%s' % (url, urlencode(urlParams))
         self.request.response.redirect(url)
         return False
 

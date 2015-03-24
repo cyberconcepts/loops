@@ -37,7 +37,7 @@ from loops.common import adapted, baseObject
 from loops.expert.browser.export import ResultsConceptCSVExport
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
-                            TextField, HtmlTextField, UrlField
+                            StringField, TextField, HtmlTextField, UrlField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.field import TrackDateField, TrackTimeField
 from loops.expert.field import WorkItemStateField
@@ -152,10 +152,10 @@ party = TargetField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
                 fieldType='selection',
                 executionSteps=['query', 'sort', 'output'])
-workTitle = Field('title', u'Title',
+workTitle = StringField('title', u'Title',
                 description=u'The short description of the work.',
                 executionSteps=['sort', 'output'])
-workDescription = Field('description', u'Description',
+workDescription = StringField('description', u'Description',
                 description=u'The long description of the work.',
                 executionSteps=['output'])
 duration = DurationField('duration', u'Duration',
