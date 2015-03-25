@@ -149,8 +149,8 @@ class SortableMixin(object):
                     dir = 'asc'
                 result[tableName] = dict(
                     colName=fn, ascending=(dir=='asc'), fparam=v)
-        result = favorite.update(getPersonForUser(
-                        self.context, self.request), self.target, 'sort', result)
+        result = favorite.updateSortInfo(getPersonForUser(
+                        self.context, self.request), self.target, result)
         return result
 
     def isSortableColumn(self, tableName, colName):

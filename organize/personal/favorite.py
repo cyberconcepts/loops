@@ -89,7 +89,7 @@ class Favorite(Track):
         return self.data.get('type') or 'favorite'
 
 
-def update(person, task, type, data):
+def updateSortInfo(person, task, data):
     if person is not None:
         favorites = task.getLoopsRoot().getRecordManager().get('favorites')
         if favorites is None:
@@ -112,3 +112,18 @@ def update(person, task, type, data):
                 Favorites(favorites).add(task, person, 
                                          dict(type='sort', sortInfo=data))
     return data
+
+
+def setInstitution(person, inst):
+    if person is not None:
+        favorites = inst.getLoopsRoot().getRecordManager().get('favorites')
+        if favorites is None:
+            return
+        personUid = util.getUidForObject(person)
+        taskUid = util.getUidForObject(inst)
+        for fav in favorites.query(userName=personUid):
+            if fav.type == 'institution':
+                fav.taskId = taskUid
+                favorites.indexTrack(None, fav, 'taskId')
+        else:
+            Favorites(favorites).add(inst, person, dict(type='institution'))
