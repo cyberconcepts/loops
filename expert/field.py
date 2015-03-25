@@ -249,7 +249,8 @@ class TargetField(RelationField):
         if value is not None:
             value = util.getObjectForUid(value)
             if value is not None:
-                return value.title
+                if value.title is not None:
+                   return value.title.split()
 
     def getValue(self, row):
         value = self.getRawValue(row)
