@@ -659,11 +659,11 @@ class CreateWorkItem(EditObject, BaseTrackView):
         url = self.view.virtualTargetUrl
         #url = self.request.URL
         # append sortinfo parameters:
-        urlParams = {}
-        for k, v in self.view.sortInfo.items():
-            urlParams['sortinfo_' + k] = v['fparam']
-        if urlParams:
-            url = '%s?%s' % (url, urlencode(urlParams))
+        #urlParams = {}
+        #for k, v in self.view.sortInfo.items():
+        #    urlParams['sortinfo_' + k] = v['fparam']
+        #if urlParams:
+        #    url = '%s?%s' % (url, urlencode(urlParams))
         self.request.response.redirect(url)
         return False
 

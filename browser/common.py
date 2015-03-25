@@ -67,6 +67,8 @@ from loops.common import adapted, baseObject
 from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
+from loops.organize.personal import favorite
+from loops.organize.party import getPersonForUser
 from loops.organize.tracking import access
 from loops.organize.util import getRolesForPrincipal
 from loops.resource import Resource
@@ -147,6 +149,8 @@ class SortableMixin(object):
                     dir = 'asc'
                 result[tableName] = dict(
                     colName=fn, ascending=(dir=='asc'), fparam=v)
+        result = favorite.update(getPersonForUser(
+                        self.context, self.request), self.target, 'sort', result)
         return result
 
     def isSortableColumn(self, tableName, colName):

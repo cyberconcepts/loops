@@ -74,9 +74,8 @@
       <input type="hidden" name="form.action" value="create_workitem" />
       <input type="hidden" name="id"
              tal:attributes="value request/form/id|nothing" />
-      <p tal:content="view/sortInfo/results/fparam|string:???" />
-      <input type="hidden" name="sortinfo_results"
-             tal:attributes="value view/sortInfo/results/fparam|nothing" />
+      <!--<input type="hidden" name="sortinfo_results"
+             tal:attributes="value view/sortInfo/results/fparam|nothing" />-->
       <div class="heading" i18n:translate="">Add Work Item</div>
       <div>
         <tal:type condition="view/showTypes">
