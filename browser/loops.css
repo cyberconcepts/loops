@@ -238,18 +238,21 @@ fieldset.box td {
     font-weight: bold;
     color: #444;
     padding-top: 0.4em;
+    border-bottom: none;
 }
 
 .content-4 h1, .content-3 h2, .content-2 h3, .content-1 h4, h4 {
     font-size: 130%;
     font-weight: normal;
     padding-top: 0.3em;
+    border-bottom: none;
 }
 
 .content-5 h1, .content-4 h2, .content-3 h3, content-2 h4, h5 {
     font-size: 120%;
     /* border: none; */
     padding-top: 0.2em;
+    border-bottom: none;
 }
 
 .box {
