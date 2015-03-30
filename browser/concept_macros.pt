@@ -370,4 +370,20 @@
 </metal:actions>
 
 
+<metal:sortable define-macro="sortable_column_header">
+        <a title="tooltip_sort_column"
+           tal:define="colName col/name"
+           tal:omit-tag="python:not item.isSortableColumn(tableName, colName)"
+           tal:attributes="href python:item.getSortUrl(tableName, colName)"
+           i18n:attributes="title">
+          <span tal:content="col/title"
+                tal:attributes="class col/cssClass|nothing"
+                i18n:translate="" />
+          <img tal:define="src python:item.getSortImage(tableName, colName)"
+               tal:condition="src"
+               tal:attributes="src src" />
+        </a>
+</metal:sortable>
+
+
 </html>

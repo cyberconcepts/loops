@@ -457,7 +457,7 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
-    def getResources(self):
+    def getResources(self, relView=None, sort='default'):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -466,13 +466,15 @@ class ConceptView(BaseView):
                 tokens = form.get('resources_tokens')
                 if tokens:
                     self.reorderResources(tokens)
-        from loops.browser.resource import ResourceRelationView
+        if relView is None:
+            from loops.browser.resource import ResourceRelationView
+            relView = ResourceRelationView
         from loops.organize.personal.browser.filter import FilterView
         fv = FilterView(self.context, self.request)
-        rels = self.context.getResourceRelations()
+        rels = self.context.getResourceRelations(sort=sort)
         for r in rels:
             if fv.check(r.first):
-                view = ResourceRelationView(r, self.request, contextIsSecond=True)
+                view = relView(r, self.request, contextIsSecond=True)
                 if view.checkState():
                     yield view
 
