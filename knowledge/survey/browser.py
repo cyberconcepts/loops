@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -51,6 +51,16 @@ class SurveyView(ConceptView):
     def macro(self):
         self.registerDojo()
         return template.macros['survey']
+
+    @Lazy
+    def title(self):
+        title = self.context.title
+        personId = self.request.form.get('person')
+        if personId:
+            person = adapted(getObjectForUid(personId))
+            if person is not None:
+                return '%s: %s' % (title, person.title)
+        return title
 
     @Lazy
     def tabview(self):
@@ -147,6 +157,8 @@ class SurveyView(ConceptView):
         if 'submit' not in form:
             return []
         respManager = Responses(self.context)
+        respManager.personId = (self.request.form.get('person') or 
+                                respManager.getPersonId())
         data = {}
         response = Response(self.adapted, None)
         for key, value in form.items():
@@ -222,7 +234,10 @@ class SurveyView(ConceptView):
     def getValues(self, question):
         setting = None
         if self.data is None:
-            self.data = Responses(self.context).load()
+            respManager = Responses(self.context)
+            respManager.personId = (self.request.form.get('person') or 
+                                    respManager.getPersonId())
+            self.data = respManager.load()
         if self.data:
             setting = self.data.get(question.uid)
         if setting is None:

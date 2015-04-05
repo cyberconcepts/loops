@@ -253,6 +253,16 @@ class BaseView(GenericView, I18NView, SortableMixin):
         return result
 
     @Lazy
+    def urlParamString(self):
+        return self.getUrlParamString()
+
+    def getUrlParamString(self):
+        qs = self.request.get('QUERY_STRING')
+        if qs:
+            return '?' + qs
+        return ''
+
+    @Lazy
     def principalId(self):
         principal = self.request.principal
         return principal and principal.id or ''

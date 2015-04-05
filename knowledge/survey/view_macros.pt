@@ -45,7 +45,7 @@
     <div class="button" id="show_questionnaire">
       <a href="" xxonclick="back(); return false"
          i18n:translate=""
-         tal:attributes="href view/virtualTargetUrl">
+         tal:attributes="href string:${request/URL}${item/urlParamString}">
         Back to Questionnaire</a>
       <br />
     </div>
@@ -67,6 +67,10 @@
     </div>
     <form method="post">
       <table class="listing">
+        <input type="hidden" name="person"
+               tal:define="personId request/person|nothing"
+               tal:condition="personId"
+               tal:attributes="value personId" />
         <tal:group repeat="group item/groups">
           <tr>
             <td>&nbsp;</td>

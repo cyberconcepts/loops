@@ -51,7 +51,7 @@
     <h1 tal:define="tabview item/tabview|nothing"
         tal:attributes="ondblclick item/openEditWindow">
       <a tal:omit-tag="python: level > 1"
-         tal:attributes="href request/URL"
+         tal:attributes="href string:${request/URL}${item/urlParamString}"
          tal:content="item/title">Title</a>
       <a title="Show tabular view"
          i18n:attributes="title"

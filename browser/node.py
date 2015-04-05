@@ -120,6 +120,9 @@ class NodeView(BaseView):
                                     url=absoluteURL(p, self.request)))
         if self.virtualTarget:
             data.extend(self.virtualTarget.breadcrumbs())
+        if data and not '?' in data[-1]['url']:
+            if self.urlParamString:
+                data[-1]['url'] += self.urlParamString
         return data
 
     def viewModes(self):
