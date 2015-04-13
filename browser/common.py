@@ -22,7 +22,7 @@ Common base class for loops browser view classes.
 
 from cgi import parse_qs, parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
-from datetime import datetime
+from datetime import date, datetime
 import re
 from time import strptime
 from urllib import urlencode
@@ -61,6 +61,7 @@ from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.date import toLocalTime
+from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
@@ -205,6 +206,10 @@ class BaseView(GenericView, I18NView, SortableMixin):
         except ForbiddenAttribute:  # ignore when testing
             pass
         saveRequest(request)
+
+    def todayFormatted(self):
+        return formatDate(date.today(), 'date', 'short',
+                          self.languageInfo.language)
 
     def checkPermissions(self):
         return canAccessObject(self.context)
