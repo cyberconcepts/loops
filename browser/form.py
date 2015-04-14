@@ -325,8 +325,11 @@ class CreateObjectForm(ObjectForm):
 
     @Lazy
     def defaultTypeToken(self):
-        return (self.controller.params.get('form.create.defaultTypeToken')
-                or '.loops/concepts/textdocument')
+        setting = self.controller.params.get('form.create.defaultTypeToken')
+        if setting:
+            return setting
+        opt = self.globalOptions('form.create.default_type_token')
+        return opt and opt[0] or '.loops/concepts/textdocument'
 
     @Lazy
     def typeToken(self):
