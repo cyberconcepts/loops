@@ -370,7 +370,8 @@
 </metal:actions>
 
 
-<metal:sortable define-macro="sortable_column_header">
+<metal:sortable define-macro="sortable_column_header"
+                tal:define="tableName tableName|nothing">
         <a title="tooltip_sort_column"
            tal:define="colName col/name"
            tal:omit-tag="python:not item.isSortableColumn(tableName, colName)"
