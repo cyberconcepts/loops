@@ -97,7 +97,7 @@ def updateSortInfo(person, task, data):
         personUid = util.getUidForObject(person)
         taskUid = util.getUidForObject(task)
         for fav in favorites.query(userName=personUid, taskId=taskUid):
-            if fav.data['type'] == 'sort':
+            if fav.data.get('type') == 'sort':
                 fdata = fav.data['sortInfo']
                 if not data:
                     data = fdata
