@@ -284,7 +284,8 @@ class ConceptView(BaseView):
 
     @Lazy
     def showInBreadcrumbs(self):
-        return self.options('show_in_breadcrumbs')
+        return (self.options('show_in_breadcrumbs') or 
+                self.typeOptions('show_in_breadcrumbs'))
 
     @Lazy
     def breadcrumbsParent(self):
