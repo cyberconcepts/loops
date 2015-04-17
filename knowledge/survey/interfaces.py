@@ -33,6 +33,13 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
     """ A collection of questions for setting up a survey.
     """
 
+    questionnaireHeader = schema.Text(
+        title=_(u'Questionnaire Header'),
+        description=_(u'Text that will appear at the top of the questionnaire.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
     defaultAnswerRange = schema.Int(
         title=_(u'Answer Range'),
         description=_(u'Number of items (answer options) to select from.'),

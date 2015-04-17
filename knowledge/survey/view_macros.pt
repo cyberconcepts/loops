@@ -7,7 +7,10 @@
                           errors item/errors">
   <metal:title use-macro="item/conceptMacros/concepttitle_only" />
   <tal:description condition="not:feedback">
-    <metal:title use-macro="item/conceptMacros/conceptdescription" />
+    <div tal:define="header item/adapted/questionnaireHeader"
+         tal:condition="header"
+         tal:content="structure python:
+                        item.renderText(header, 'text/restructured')" />
   </tal:description>
 
   <div tal:condition="feedback">

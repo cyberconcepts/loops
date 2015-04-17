@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-03-22 12:00 CET\n"
+"PO-Revision-Date: 2015-04-17 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -197,6 +197,18 @@ msgstr "Keine Gruppierung der Fragen"
 
 msgid "The questions should be presented in a linear manner, not grouped by categories or question groups."
 msgstr "Die Fragen sollen in linearer Reihenfolge ausgegeben und nicht nach Fragengruppen bzw. Kategorien gruppiert werden."
+
+msgid "Questionnaire Header"
+msgstr "Infotext zum Fragebogen"
+
+msgid "Text that will appear at the top of the questionnaire."
+msgstr "Text, der vor dem Fragebogen erscheinen soll"
+
+msgid "Feedback Header"
+msgstr "Infotext zur Auswertung"
+
+msgid "Text that will appear at the top of the feedback page."
+msgstr "Text, der oben auf der Auswertungsseite erscheinen soll."
 
 msgid "Feedback Footer"
 msgstr "Auswertungs-Hinweis"
