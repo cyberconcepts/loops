@@ -107,6 +107,7 @@ class Base(object):
     @Lazy
     def textResources(self):
         self.images = [[]]
+        self.otherResources = []
         result = []
         idx = 0
         for rv in self.getResources():
@@ -115,7 +116,7 @@ class Base(object):
                         idx += 1
                         result.append(rv)
                         self.images.append([])
-            else:
+            elif rv.context.contentType.startswith('image/'):
                 self.registerDojoLightbox()
                 url = self.nodeView.getUrlForTarget(rv.context)
                 src = '%s/mediaasset.html?v=small' % url
@@ -123,6 +124,8 @@ class Base(object):
                 img = dict(src=src, fullImageUrl=fullSrc, title=rv.title,
                            description=rv.description, url=url, object=rv)
                 self.images[idx].append(img)
+            else:
+                self.otherResources.append(rv)
         return result
 
     def getDocumentTypeForResource(self, r):
