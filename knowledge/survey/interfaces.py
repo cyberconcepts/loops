@@ -26,7 +26,7 @@ from zope import interface, component, schema
 from cybertools.composer.schema.grid.interfaces import Records
 from cybertools.knowledge.survey import interfaces
 from loops.interfaces import IConceptSchema, ILoopsAdapter
-from loops.util import _
+from loops.util import _, KeywordVocabulary
 
 
 class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
@@ -107,6 +107,16 @@ class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
 class IQuestion(IConceptSchema, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
+
+    questionType = schema.Choice(
+            title=_(u'Question Type'),
+            description=_(u'Select the type of the question.'),
+            source=KeywordVocabulary((
+                    ('value_selection', _(u'Value Selection')),
+                    ('text', _(u'Text')),
+                )),
+            default='value_selection',
+            required=True)
 
     required = schema.Bool(
         title=_(u'Required'),

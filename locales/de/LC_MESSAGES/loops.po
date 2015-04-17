@@ -225,6 +225,15 @@ msgstr "Mindestanzahl an Antworten"
 msgid "Minumum number of questions that have to be answered. Empty means all questions have to be answered."
 msgstr "Anzahl der Fragen, die mindestens beantwortet werden müssen. Keine Angabe: Es müssen alle Fragen beantwortet werden."
 
+msgid "Question Type"
+msgstr "Fragentyp"
+
+msgid "Select the type of the question."
+msgstr "Bitte den Typ der Frage auswählen."
+
+msgid "Value Selection"
+msgstr "Auswahl Bewertung"
+
 msgid "Required"
 msgstr "Pflichtfrage"
 

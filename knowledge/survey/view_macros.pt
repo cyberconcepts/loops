@@ -93,19 +93,10 @@
                 tal:content="opt/label|string:" />
           </tr>
           <tal:question repeat="question group/questions">
-            <tr tal:attributes="class python:item.getCssClass(question)">
-              <td tal:content="question/text" />
-              <td style="white-space: nowrap; text-align: center"
-                  tal:repeat="value python:item.getValues(question)">
-                  <input type="radio"
-                         i18n:attributes="title"
-                         tal:attributes="
-                              name string:question_${question/uid};
-                              value value/value;
-                              checked value/checked;
-                              title value/title" />
-              </td>
-            </tr>
+            <tal:question define="qutype python:
+                              question.questionType or 'value_selection'">
+              <metal:question use-macro="item/template/macros/?qutype" />
+            </tal:question>
           </tal:question>
         </tal:group>
       </table>
@@ -116,6 +107,36 @@
              onclick="setRadioButtons('none'); return false" />
     </form>
   </div>
+</metal:block>
+
+
+<metal:block define-macro="value_selection">
+  <tr tal:attributes="class python:item.getCssClass(question)">
+    <td tal:content="question/text" />
+    <td style="white-space: nowrap; text-align: center"
+        tal:repeat="value python:item.getValues(question)">
+        <input type="radio"
+               i18n:attributes="title"
+               tal:attributes="name string:question_${question/uid};
+                               value value/value;
+                               checked value/checked;
+                               title value/title" />
+    </td>
+  </tr>
+</metal:block>
+
+
+<metal:block define-macro="text">
+  <tr tal:attributes="class python:item.getCssClass(question)">
+    <td>
+      <div tal:content="question/text" />
+      <textarea style="width: 90%; margin-left: 20px"
+                tal:content="python:item.getTextValue(question)"
+                tal:attributes="name string:question_${question/uid}">
+      </textarea>
+    </td>
+    <td tal:repeat="opt item/answerOptions" />
+  </tr>
 </metal:block>
 
 

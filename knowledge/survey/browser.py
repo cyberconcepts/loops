@@ -47,6 +47,8 @@ class SurveyView(ConceptView):
     batchSize = 12
     teamData = None
 
+    template = template
+
     @Lazy
     def macro(self):
         self.registerDojo()
@@ -137,6 +139,8 @@ class SurveyView(ConceptView):
                 if data:
                     resp = Response(self.adapted, None)
                     for qu in self.adapted.questions:
+                        if qu.questionType != 'value_selection':
+                            continue
                         if qu.uid in data:
                             resp.values[qu] = data[qu.uid]
                     qgAvailable = True
@@ -231,13 +235,16 @@ class SurveyView(ConceptView):
             text = u'<i>%s</i><br />(%s)' % (text, info)
         return text
 
-    def getValues(self, question):
-        setting = None
+    def loadData(self):
         if self.data is None:
             respManager = Responses(self.context)
             respManager.personId = (self.request.form.get('person') or 
                                     respManager.getPersonId())
             self.data = respManager.load()
+
+    def getValues(self, question):
+        setting = None
+        self.loadData()
         if self.data:
             setting = self.data.get(question.uid)
         if setting is None:
@@ -249,6 +256,11 @@ class SurveyView(ConceptView):
             result.append(dict(value=value, checked=(setting == value), 
                                 title=opt['description']))
         return result
+
+    def getTextValue(self, question):
+        self.loadData()
+        if self.data:
+            return self.data.get(question.uid)
 
     def getCssClass(self, question):
         cls = ''
