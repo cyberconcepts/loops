@@ -105,6 +105,10 @@ class LoopsType(BaseType):
 
     @Lazy
     def defaultContainer(self):
+        if self.typeProvider:
+            cont = ITypeConcept(self.typeProvider).conceptManager
+            if cont and cont in self.root:
+                return self.root[cont]
         return self.root[self.containerMapping.get(self.qualifiers[0], 'concept')]
 
     @Lazy
