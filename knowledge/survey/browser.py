@@ -254,7 +254,7 @@ class SurveyView(ConceptView):
         for opt in self.answerOptions:
             value = str(opt['value'])
             result.append(dict(value=value, checked=(setting == value), 
-                                title=opt['description']))
+                               title=opt.get('description') or u''))
         return result
 
     def getTextValue(self, question):
