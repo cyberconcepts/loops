@@ -91,7 +91,7 @@
                 style="text-align: center"
                 i18n:translate=""
                 i18n:attributes="title"
-                tal:attributes="title opt/description"
+                tal:attributes="title opt/description|string:"
                 tal:content="opt/label|string:" />
           </tr>
           <tal:question repeat="question group/questions">
