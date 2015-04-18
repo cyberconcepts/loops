@@ -21,6 +21,7 @@ Base classes for security setters, i.e. adapters that provide standardized
 methods for setting role permissions and other security-related stuff.
 """
 
+from logging import getLogger
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.interfaces import \
                     IRolePermissionMap, IRolePermissionManager, \
@@ -42,6 +43,8 @@ from loops.security.common import allRolesExceptOwner, acquiringPredicateNames
 from loops.security.common import getOption
 from loops.security.interfaces import ISecuritySetter
 from loops.versioning.interfaces import IVersionable
+
+logger = getLogger('loops.security')
 
 
 class BaseSecuritySetter(object):
@@ -142,16 +145,16 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
     def acquireRolePermissions(self):
         settings = {}
-        rpm = self.rolePermissionManager
-        for p, r, s in rpm.getRolesAndPermissions():
-            settings[(p, r)] = s
-        for p in self.parents:
-            if p == self.baseObject:
+        #rpm = IRolePermissionMap(self.baseObject)
+        #for p, r, s in rpm.getRolesAndPermissions():
+        #    settings[(p, r)] = s
+        for parent in self.parents:
+            if parent == self.baseObject:
                 continue
-            if getOption(p, 'security.no_propagate', checkType=False):
+            if getOption(parent, 'security.no_propagate', checkType=False):
                 continue
-            secProvider = p
-            wi = p.workspaceInformation
+            secProvider = parent
+            wi = parent.workspaceInformation
             if wi:
                 if wi.propagateRolePermissions == 'none':
                     continue
@@ -161,6 +164,10 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
             for p, r, s in rpm.getRolesAndPermissions():
                 current = settings.get((p, r))
                 if current is None or overrides(s, current):
+                    if self.globalOptions('security.log_acquired_setting'):
+                        logger.info('*** %s: %s, %s: current %s; new from %s: %s' %
+                                (self.baseObject.__name__, p, r, current,
+                                 parent.__name__, s))
                     settings[(p, r)] = s
         self.setDefaultRolePermissions()
         self.setRolePermissions(settings)
