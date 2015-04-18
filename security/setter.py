@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
 from loops.security.common import allRolesExceptOwner, acquiringPredicateNames
+from loops.security.common import getOption
 from loops.security.interfaces import ISecuritySetter
 from loops.versioning.interfaces import IVersionable
 
@@ -56,8 +57,16 @@ class BaseSecuritySetter(object):
         return baseObject(self.context)
 
     @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
+    @Lazy
     def conceptManager(self):
         return self.baseObject.getLoopsRoot().getConceptManager()
+
+    @Lazy
+    def options(self):
+        return IOptions(self.adapted)
 
     @Lazy
     def typeOptions(self):
@@ -133,8 +142,13 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
     def acquireRolePermissions(self):
         settings = {}
+        rpm = self.rolePermissionManager
+        for p, r, s in rpm.getRolesAndPermissions():
+            settings[(p, r)] = s
         for p in self.parents:
             if p == self.baseObject:
+                continue
+            if getOption(p, 'security.no_propagate', checkType=False):
                 continue
             secProvider = p
             wi = p.workspaceInformation

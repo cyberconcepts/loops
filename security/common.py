@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -71,6 +71,8 @@ def getOption(obj, option, checkType=True):
     opts = component.queryAdapter(adapted(obj), IOptions)
     if opts is not None:
         opt = opts(option, None)
+        if opt is True:
+            return opt
         if opt:
             return opt[0]
     if not checkType:
@@ -79,7 +81,9 @@ def getOption(obj, option, checkType=True):
     if typeMethod is not None:
         opts = component.queryAdapter(adapted(typeMethod()), IOptions)
         if opts is not None:
-            opt = opts(option, [None])
+            opt = opts(option, None)
+            if opt is True:
+                return opt
             if opt:
                 return opt[0]
     return None
