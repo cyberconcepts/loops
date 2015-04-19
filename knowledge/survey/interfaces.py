@@ -40,6 +40,16 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         missing_value=u'',
         required=False)
 
+    questionnaireType = schema.Choice(
+        title=_(u'Questionnaire Type'),
+        description=_(u'Select the type of the questionnaire.'),
+        source=KeywordVocabulary((
+                ('standard', _(u'Standard Questionnaire')),
+                ('pref_selection', _(u'Preference Selection')),
+            )),
+        default='standard',
+        required=True)
+
     defaultAnswerRange = schema.Int(
         title=_(u'Answer Range'),
         description=_(u'Number of items (answer options) to select from.'),
@@ -63,6 +73,12 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         title=_(u'No Grouping of Questions'),
         description=_(u'The questions should be presented in a linear manner, '
                         u'not grouped by categories or question groups.'),
+        default=False,
+        required=False)
+
+    teamBasedEvaluation = schema.Bool(
+        title=_(u'Team-based Evaluation'),
+        description=_(u'.'),
         default=False,
         required=False)
 
@@ -109,14 +125,14 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
     """
 
     questionType = schema.Choice(
-            title=_(u'Question Type'),
-            description=_(u'Select the type of the question.'),
-            source=KeywordVocabulary((
-                    ('value_selection', _(u'Value Selection')),
-                    ('text', _(u'Text')),
-                )),
-            default='value_selection',
-            required=True)
+        title=_(u'Question Type'),
+        description=_(u'Select the type of the question.'),
+        source=KeywordVocabulary((
+                ('value_selection', _(u'Value Selection')),
+                ('text', _(u'Text')),
+            )),
+        default='value_selection',
+        required=True)
 
     required = schema.Bool(
         title=_(u'Required'),

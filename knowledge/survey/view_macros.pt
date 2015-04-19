@@ -4,7 +4,8 @@
 
 <metal:block define-macro="survey"
               tal:define="feedback item/results;
-                          errors item/errors">
+                          errors item/errors;
+                          dummy item/update">
   <metal:title use-macro="item/conceptMacros/concepttitle_only" />
   <tal:description condition="not:feedback">
     <div tal:define="header item/adapted/questionnaireHeader"
@@ -60,6 +61,9 @@
 
   <div id="questionnaire"
        tal:condition="not:feedback">
+    <tal:inst condition="item/adapted/teamBasedEvaluation">
+      <metal:inst use-macro="item/knowledge_macros/select_institution" />
+    </tal:inst>
     <h3 i18n:translate="">Questionnaire</h3>
     <div class="error"
          tal:condition="errors">

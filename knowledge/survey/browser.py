@@ -32,6 +32,7 @@ from cybertools.util.date import formatTimeStamp
 from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from loops.common import adapted, baseObject
+from loops.knowledge.browser import InstitutionMixin
 from loops.knowledge.survey.response import Responses
 from loops.organize.party import getPersonForUser
 from loops.util import getObjectForUid
@@ -40,7 +41,7 @@ from loops.util import _
 
 template = ViewPageTemplateFile('view_macros.pt')
 
-class SurveyView(ConceptView):
+class SurveyView(InstitutionMixin, ConceptView):
 
     data = None
     errors = None
@@ -68,6 +69,11 @@ class SurveyView(ConceptView):
     def tabview(self):
         if self.editable:
             return 'index.html'
+
+    def update(self):
+        instUid = self.request.form.get('select_institution')
+        if instUid:
+            return self.setInstitution(instUid)
 
     @Lazy
     def groups(self):
@@ -129,11 +135,12 @@ class SurveyView(ConceptView):
         pred = self.conceptManager.get('ismember')
         if pred is None:
             return result
-        personId = respManager.personId
-        person = self.getObjectForUid(personId)
-        inst = person.getParents([pred])
+        #personId = respManager.personId
+        #person = self.getObjectForUid(personId)
+        #inst = person.getParents([pred])
+        inst = self.institution
         if inst:
-            for c in inst[0].getChildren([pred]):
+            for c in inst.getChildren([pred]):
                 uid = self.getUidForObject(c)
                 data = respManager.load(uid)
                 if data:
