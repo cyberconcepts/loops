@@ -151,7 +151,8 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
         for parent in self.parents:
             if parent == self.baseObject:
                 continue
-            if getOption(parent, 'security.no_propagate', checkType=False):
+            if getOption(parent, 'security.no_propagate_rolepermissions', 
+                         checkType=False):
                 continue
             secProvider = parent
             wi = parent.workspaceInformation
@@ -234,14 +235,20 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
 
     adapts(IConceptSchema)
 
+    @Lazy
+    def noPropagateRolePermissions(self):
+        return getOption(self.baseObject, 'security.no_propagate_rolepermissions', 
+                         checkType=False)
+
     def setAcquiredSecurity(self, relation, revert=False, updated=None):
         if updated and relation.second in updated:
             return
         if relation.predicate not in self.acquiringPredicates:
             return
         setter = ISecuritySetter(adapted(relation.second))
-        setter.setDefaultRolePermissions()
-        setter.acquireRolePermissions()
+        if not self.noPropagateRolePermissions:
+            setter.setDefaultRolePermissions()
+            setter.acquireRolePermissions()
         setter.acquirePrincipalRoles()
         #wi = baseObject(self.context).workspaceInformation
         #if wi and not wi.propagateParentSecurity:
