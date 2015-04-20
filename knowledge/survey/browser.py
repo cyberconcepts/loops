@@ -44,7 +44,7 @@ template = ViewPageTemplateFile('view_macros.pt')
 class SurveyView(InstitutionMixin, ConceptView):
 
     data = None
-    errors = None
+    errors = message = None
     batchSize = 12
     teamData = None
 
@@ -167,7 +167,12 @@ class SurveyView(InstitutionMixin, ConceptView):
 
     def results(self):
         form = self.request.form
-        if 'submit' not in form:
+        action = None
+        for k in ('submit', 'save'):
+            if k in form:
+                action = k
+                break
+        if action is None:
             return []
         respManager = Responses(self.context)
         respManager.personId = (self.request.form.get('person') or 
@@ -187,6 +192,9 @@ class SurveyView(InstitutionMixin, ConceptView):
         for v in values:
             data[self.getUidForObject(v['group'])] = v['score']
         respManager.save(data)
+        if action == 'save':
+            self.message = u'Your data have been saved.'
+            return []
         self.data = data
         self.errors = self.check(response)
         if self.errors:

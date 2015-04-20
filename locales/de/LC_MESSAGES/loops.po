@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-04-17 12:00 CET\n"
+"PO-Revision-Date: 2015-04-20 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -288,11 +288,17 @@ msgstr "Trifft für unser Unternehmen voll und ganz zu"
 msgid "Evaluate Questionnaire"
 msgstr "Fragebogen auswerten"
 
+msgid "Save Data"
+msgstr "Daten speichern"
+
 msgid "Reset Responses Entered"
 msgstr "Eingaben zurücksetzen"
 
 msgid "Back to Questionnaire"
 msgstr "Zurück zum Fragebogen"
+
+msgid "Your data have been saved."
+msgstr "Ihre Daten wurden gespeichert."
 
 msgid "Please answer at least $minAnswers questions."
 msgstr "Bitte beantworten Sie mindestens $minAnswers Fragen."

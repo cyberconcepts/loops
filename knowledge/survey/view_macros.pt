@@ -5,6 +5,7 @@
 <metal:block define-macro="survey"
               tal:define="feedback item/results;
                           errors item/errors;
+                          message item/message;
                           dummy item/update">
   <metal:title use-macro="item/conceptMacros/concepttitle_only" />
   <tal:description condition="not:feedback">
@@ -72,6 +73,10 @@
               tal:content="error/text" />
       </div>
     </div>
+    <div class="message"
+         tal:condition="message"
+         i18n:translate=""
+         tal:content="message" />
     <form method="post">
       <table class="listing">
         <input type="hidden" name="person"
@@ -107,6 +112,8 @@
         </tal:group>
       </table>
       <input type="submit" name="submit" value="Evaluate Questionnaire"
+             i18n:attributes="value" />
+      <input type="submit" name="save" value="Save Data"
              i18n:attributes="value" />
       <input type="button" name="reset_responses" value="Reset Responses Entered"
              i18n:attributes="value"
