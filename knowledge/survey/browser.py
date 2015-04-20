@@ -50,6 +50,8 @@ class SurveyView(InstitutionMixin, ConceptView):
 
     template = template
 
+    adminMaySelectAllInstitutions = False
+
     @Lazy
     def macro(self):
         self.registerDojo()

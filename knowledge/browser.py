@@ -78,14 +78,17 @@ class InstitutionMixin(object):
 
     knowledge_macros = knowledge_macros
 
+    adminMaySelectAllInstitutions = True
+
     @Lazy
     def institutionType(self):
         return self.conceptManager['institution']
 
     @Lazy
     def institutions(self):
-        if checkPermission('loops.ManageWorkspaces', self.context):
-            return self.getAllInstitutions()
+        if self.adminMaySelectAllInstitutions:
+            if checkPermission('loops.ManageWorkspaces', self.context):
+                return self.getAllInstitutions()
         result = []
         p = getPersonForUser(self.context, self.request)
         if p is None:
