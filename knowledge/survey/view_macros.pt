@@ -4,6 +4,9 @@
 
 <metal:block define-macro="survey"
               tal:define="feedback item/results;
+                          report request/report|nothing;
+                          reportMacro python:
+                              'report_' + (report or 'standard');
                           errors item/errors;
                           message item/message;
                           dummy item/update">
@@ -16,48 +19,7 @@
   </tal:description>
 
   <div tal:condition="feedback">
-    <h3 i18n:translate="">Feedback</h3>
-    <div tal:define="header item/adapted/feedbackHeader"
-         tal:condition="header"
-         tal:content="structure python:
-                        item.renderText(header, 'text/restructured')" />
-    <table class="listing">
-      <tr>
-        <th i18n:translate="">Category</th>
-        <th tal:repeat="col item/feedbackColumns"
-            i18n:translate=""
-            tal:attributes="class python: 
-                              col['name'] != 'text' and 'center' or None"
-            tal:content="col/label" />
-      </tr>
-      <tr style="vertical-align: top"
-          tal:repeat="fbitem feedback">
-        <td  style="vertical-align: top"
-             tal:content="fbitem/category" />
-        <tal:cols repeat="col item/feedbackColumns">
-          <td style="vertical-align: top"
-              tal:define="name col/name"
-              tal:attributes="class python:name != 'text' and 'center' or None"
-              tal:content="fbitem/?name" />
-        </tal:cols>
-      </tr>
-    </table>
-    <p tal:define="teamData item/teamData"
-       tal:condition="teamData">
-      <b><span i18n:translate="">Team Size</span>:
-        <span tal:content="python:len(teamData)" /></b><br />&nbsp;
-    </p>
-    <div class="button" id="show_questionnaire">
-      <a href="" xxonclick="back(); return false"
-         i18n:translate=""
-         tal:attributes="href string:${request/URL}${item/urlParamString}">
-        Back to Questionnaire</a>
-      <br />
-    </div>
-    <div tal:define="footer item/adapted/feedbackFooter"
-         tal:condition="footer"
-         tal:content="structure python:
-                        item.renderText(footer, 'text/restructured')" />
+      <metal:block use-macro="item/template/macros/?reportMacro" />
   </div>
 
   <div id="questionnaire"
@@ -65,6 +27,16 @@
     <tal:inst condition="item/adapted/teamBasedEvaluation">
       <metal:inst use-macro="item/knowledge_macros/select_institution" />
     </tal:inst>
+    <div class="button"
+         tal:define="reports item/teamReports"
+         tal:condition="reports">
+      <b i18n:translate="label_survey_show_report">Show Report</b>: &nbsp;
+      <a tal:repeat="report reports"
+         tal:attributes="href string:${request/URL}?report=${report/name}"
+         i18n:translate=""
+         tal:content="report/label" />
+      <br /><br />
+    </div>
     <h3 i18n:translate="">Questionnaire</h3>
     <div class="error"
          tal:condition="errors">
@@ -150,6 +122,60 @@
     </td>
     <td tal:repeat="opt item/answerOptions" />
   </tr>
+</metal:block>
+
+
+<metal:block define-macro="report_standard">
+    <h3 i18n:translate="">Feedback</h3>
+    <div tal:define="header item/adapted/feedbackHeader"
+         tal:condition="header"
+         tal:content="structure python:
+                        item.renderText(header, 'text/restructured')" />
+    <table class="listing">
+      <tr>
+        <th i18n:translate="">Category</th>
+        <th tal:repeat="col item/feedbackColumns"
+            i18n:translate=""
+            tal:attributes="class python: 
+                              col['name'] != 'text' and 'center' or None"
+            tal:content="col/label" />
+      </tr>
+      <tr style="vertical-align: top"
+          tal:repeat="fbitem feedback">
+        <td  style="vertical-align: top"
+             tal:content="fbitem/category" />
+        <tal:cols repeat="col item/feedbackColumns">
+          <td style="vertical-align: top"
+              tal:define="name col/name"
+              tal:attributes="class python:name != 'text' and 'center' or None"
+              tal:content="fbitem/?name|string:" />
+        </tal:cols>
+      </tr>
+    </table>
+    <p tal:define="teamData item/teamData"
+       tal:condition="teamData">
+      <b><span i18n:translate="">Team Size</span>:
+        <span tal:content="python:len(teamData)" /></b><br />&nbsp;
+    </p>
+    <div class="button" id="show_questionnaire">
+      <a href="" xxonclick="back(); return false"
+         i18n:translate=""
+         tal:attributes="href string:${request/URL}${item/urlParamString}">
+        Back to Questionnaire</a>
+      <br />
+    </div>
+    <div tal:define="footer item/adapted/feedbackFooter"
+         tal:condition="footer"
+         tal:content="structure python:
+                        item.renderText(footer, 'text/restructured')" />
+</metal:block>
+
+
+<metal:block define-macro="report_questions">
+    <h3 i18n:translate="label_survey_report_questions"></h3>
+    <div>
+      Not yet implemented
+    </div>
 </metal:block>
 
 

@@ -35,6 +35,7 @@ from loops.common import adapted, baseObject
 from loops.knowledge.browser import InstitutionMixin
 from loops.knowledge.survey.response import Responses
 from loops.organize.party import getPersonForUser
+from loops.security.common import checkPermission
 from loops.util import getObjectForUid
 from loops.util import _
 
@@ -71,6 +72,23 @@ class SurveyView(InstitutionMixin, ConceptView):
     def tabview(self):
         if self.editable:
             return 'index.html'
+
+    def getUrlParamString(self):
+        qs = super(SurveyView, self).getUrlParamString()
+        if qs.startswith('?report='):
+            return ''
+        return qs
+
+    @Lazy
+    def report(self):
+        return self.request.form.get('report')
+
+    def teamReports(self):
+        if self.adapted.teamBasedEvaluation:
+            if checkPermission('loops.ViewRestricted', self.context):
+                return [dict(name='standard', label='label_survey_report_standard'),
+                        dict(name='questions', 
+                             label='label_survey_report_questions')]
 
     def update(self):
         instUid = self.request.form.get('select_institution')
@@ -123,7 +141,11 @@ class SurveyView(InstitutionMixin, ConceptView):
             cols = [
                 dict(name='text', label=u'Response'),
                 dict(name='score', label=u'Score')]
+        if self.report == 'standard':
+            cols = [c for c in cols if c['name'] in self.teamColumns]
         return cols
+
+    teamColumns = ['category', 'average', 'stddev', 'teamRank', 'text']
 
     @Lazy
     def showTeamResults(self):
@@ -137,9 +159,6 @@ class SurveyView(InstitutionMixin, ConceptView):
         pred = self.conceptManager.get('ismember')
         if pred is None:
             return result
-        #personId = respManager.personId
-        #person = self.getObjectForUid(personId)
-        #inst = person.getParents([pred])
         inst = self.institution
         instUid = self.getUidForObject(inst)
         if inst:
@@ -167,6 +186,8 @@ class SurveyView(InstitutionMixin, ConceptView):
         return result
 
     def results(self):
+        if self.report:
+            return self.teamResults(self.report)
         form = self.request.form
         action = None
         for k in ('submit', 'save'):
@@ -208,10 +229,25 @@ class SurveyView(InstitutionMixin, ConceptView):
                     for r in values]
         if self.showTeamResults:
             self.teamData = self.getTeamData(respManager)
-            teamValues = response.getTeamResult(values, self.teamData)
+            groups = [r['group'] for r in values]
+            teamValues = response.getTeamResult(groups, self.teamData)
             for idx, r in enumerate(teamValues):
                 result[idx]['average'] = int(round(r['average'] * 100))
                 result[idx]['teamRank'] = r['rank']
+        return result
+
+    def teamResults(self, report):
+        result = []
+        respManager = Responses(self.context)
+        self.teamData = self.getTeamData(respManager)
+        response = Response(self.adapted, None)
+        groups = self.adapted.questionGroups
+        teamValues = response.getTeamResult(groups, self.teamData)
+        for idx, r in enumerate(teamValues):
+            item = dict(category=r['group'].title,
+                        average=int(round(r['average'] * 100)),
+                        teamRank=r['rank'])
+            result.append(item)
         return result
 
     def check(self, response):

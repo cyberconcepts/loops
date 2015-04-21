@@ -3,7 +3,7 @@
 
 <metal:institution define-macro="select_institution">
   <form method="post">
-    <div style="font-size: 120%; padding-bottom: 10px">
+    <div style="font-size: 120%; padding: 10px 0 10px 0">
       <span i18n:translate="">Organisation/Team</span>:
       <b tal:content="item/institution/title" />
       <img tal:condition="python:len(item.institutions) > 1"
