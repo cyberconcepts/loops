@@ -342,6 +342,9 @@ msgstr "Rang Team"
 msgid "Average"
 msgstr "Durchschnitt"
 
+msgid "Deviation"
+msgstr "Abweichung"
+
 msgid "Team Size"
 msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
 

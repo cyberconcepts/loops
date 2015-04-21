@@ -178,10 +178,12 @@
           <tr>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
+            <!--<td>&nbsp;</td>-->
           </tr>
           <tr class="vpad">
             <td><b tal:content="group/title" /></td>
             <td i18n:translate="">Average</td>
+            <!--<td i18n:translate="">Deviation</td>-->
           </tr>
           <tr tal:repeat="question group/questions">
             <tal:question 
@@ -197,6 +199,9 @@
               <td class="center">
                 <span tal:condition="python:qutype == 'value_selection'"
                       tal:content="data/average" /></td>
+              <!--<td class="center">
+                <span tal:condition="python:qutype == 'value_selection'"
+                      tal:content="data/stddev" /></td>-->
             </tal:question>
           </tr>
         </tal:group>

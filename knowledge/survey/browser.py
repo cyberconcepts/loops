@@ -23,6 +23,7 @@ surveys and self-assessments.
 
 import csv
 from cStringIO import StringIO
+import math
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
@@ -269,8 +270,12 @@ class SurveyView(InstitutionMixin, ConceptView):
             average = float(sum(values)) / len(values)
             if question.revertAnswerOptions:
                 average = question.answerRange - average - 1
+            devs = [(average - v) for v in values]
+            stddev = math.sqrt(sum(d * d for d in devs) / len(values))
             average = average * 100 / (question.answerRange - 1)
+            stddev = stddev * 100 / (question.answerRange - 1)
             result['average'] = int(round(average))
+            result['stddev'] = int(round(stddev))
         texts = [r.texts.get(question) for r in self.teamData]
         result['texts'] = '<br />'.join([unicode(t) for t in texts if t])
         return result
