@@ -141,10 +141,11 @@ class SurveyView(InstitutionMixin, ConceptView):
         #person = self.getObjectForUid(personId)
         #inst = person.getParents([pred])
         inst = self.institution
+        instUid = self.getUidForObject(inst)
         if inst:
             for c in inst.getChildren([pred]):
                 uid = self.getUidForObject(c)
-                data = respManager.load(uid)
+                data = respManager.load(uid, instUid)
                 if data:
                     resp = Response(self.adapted, None)
                     for qu in self.adapted.questions:
@@ -177,6 +178,9 @@ class SurveyView(InstitutionMixin, ConceptView):
         respManager = Responses(self.context)
         respManager.personId = (self.request.form.get('person') or 
                                 respManager.getPersonId())
+        if self.adapted.teamBasedEvaluation and self.institution:
+            respManager.institutionId = self.getUidForObject(
+                                            baseObject(self.institution))
         data = {}
         response = Response(self.adapted, None)
         for key, value in form.items():
@@ -257,6 +261,9 @@ class SurveyView(InstitutionMixin, ConceptView):
             respManager = Responses(self.context)
             respManager.personId = (self.request.form.get('person') or 
                                     respManager.getPersonId())
+            if self.adapted.teamBasedEvaluation and self.institution:
+                respManager.institutionId = self.getUidForObject(
+                                                baseObject(self.institution))
             self.data = respManager.load()
 
     def getValues(self, question):

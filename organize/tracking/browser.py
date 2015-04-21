@@ -66,7 +66,15 @@ class BaseTrackView(TrackView):
             obj = util.getObjectForUid(uid)
             if obj is not None:
                 return obj
-        return uid
+        result = []
+        for id in uid.split('.'):
+            if id.isdigit():
+                obj = util.getObjectForUid(id)
+                if obj is not None:
+                    result.append(obj.title)
+                    continue
+            result.append(id)
+        return ' / '.join(result)
 
     @Lazy
     def authentication(self):
