@@ -266,8 +266,11 @@ class SurveyView(InstitutionMixin, ConceptView):
         values = [r.values.get(question) for r in self.teamData]
         values = [v for v in values if v is not None]
         if values:
-            average = round(float(sum(values)) / len(values), 2)
-            result['average'] = average
+            average = float(sum(values)) / len(values)
+            if question.revertAnswerOptions:
+                average = question.answerRange - average - 1
+            average = average * 100 / (question.answerRange - 1)
+            result['average'] = int(round(average))
         texts = [r.texts.get(question) for r in self.teamData]
         result['texts'] = '<br />'.join([unicode(t) for t in texts if t])
         return result

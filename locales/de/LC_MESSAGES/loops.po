@@ -339,6 +339,9 @@ msgstr "Rang"
 msgid "Team Rank"
 msgstr "Rang Team"
 
+msgid "Average"
+msgstr "Durchschnitt"
+
 msgid "Team Size"
 msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
 
