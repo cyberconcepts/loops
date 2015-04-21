@@ -158,8 +158,7 @@
         <span tal:content="python:len(teamData)" /></b><br />&nbsp;
     </p>
     <div class="button" id="show_questionnaire">
-      <a href="" xxonclick="back(); return false"
-         i18n:translate=""
+      <a i18n:translate=""
          tal:attributes="href string:${request/URL}${item/urlParamString}">
         Back to Questionnaire</a>
       <br />
@@ -174,7 +173,43 @@
 <metal:block define-macro="report_questions">
     <h3 i18n:translate="label_survey_report_questions"></h3>
     <div>
-      Not yet implemented
+      <table class="listing">
+        <tal:group repeat="group item/groups">
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr class="vpad">
+            <td><b tal:content="group/title" /></td>
+            <td i18n:translate="">Average</td>
+          </tr>
+          <tr tal:repeat="question group/questions">
+            <tal:question 
+                  define="qutype python:
+                              question.questionType or 'value_selection';
+                          data python:item.getTeamResultsForQuestion(question)">
+              <td>
+                <div tal:content="question/text" />
+                <div style="width: 90%; margin-left: 20px"
+                     tal:condition="python:qutype == 'text'"
+                     tal:content="structure data/texts" />
+              </td>
+              <td class="center">
+                <span tal:condition="python:qutype == 'value_selection'"
+                      tal:content="data/average" /></td>
+            </tal:question>
+          </tr>
+        </tal:group>
+      </table>
+      <p tal:define="teamData item/teamData"
+         tal:condition="teamData">
+        <b><span i18n:translate="">Team Size</span>:
+          <span tal:content="python:len(teamData)" /></b><br />&nbsp;
+      </p>
+      <div class="button" id="show_questionnaire">
+        <a i18n:translate=""
+           tal:attributes="href string:${request/URL}${item/urlParamString}">
+          Back to Questionnaire</a></div>
     </div>
 </metal:block>
 

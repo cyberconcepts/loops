@@ -156,22 +156,26 @@ class SurveyView(InstitutionMixin, ConceptView):
 
     def getTeamData(self, respManager):
         result = []
-        pred = self.conceptManager.get('ismember')
-        if pred is None:
+        pred = [self.conceptManager.get('ismember'),
+                self.conceptManager.get('ismaster')]
+        if None in pred:
             return result
         inst = self.institution
         instUid = self.getUidForObject(inst)
         if inst:
-            for c in inst.getChildren([pred]):
+            for c in inst.getChildren(pred):
                 uid = self.getUidForObject(c)
                 data = respManager.load(uid, instUid)
                 if data:
                     resp = Response(self.adapted, None)
                     for qu in self.adapted.questions:
-                        if qu.questionType != 'value_selection':
-                            continue
-                        if qu.uid in data:
-                            resp.values[qu] = data[qu.uid]
+                        if qu.questionType in (None, 'value_selection'):
+                            if qu.uid in data:
+                                value = data[qu.uid]
+                                if isinstance(value, int) or value.isdigit():
+                                    resp.values[qu] = int(value)
+                        else:
+                            resp.texts[qu] = data.get(qu.uid) or u''
                     qgAvailable = True
                     for qg in self.adapted.questionGroups:
                         if qg.uid in data:
@@ -244,10 +248,28 @@ class SurveyView(InstitutionMixin, ConceptView):
         groups = self.adapted.questionGroups
         teamValues = response.getTeamResult(groups, self.teamData)
         for idx, r in enumerate(teamValues):
-            item = dict(category=r['group'].title,
+            group = r['group']
+            item = dict(category=group.title,
                         average=int(round(r['average'] * 100)),
                         teamRank=r['rank'])
+            if group.feedbackItems:
+                wScore = r['average'] * len(group.feedbackItems) - 0.00001
+                item['text'] = group.feedbackItems[int(wScore)].text
             result.append(item)
+        return result
+
+    def getTeamResultsForQuestion(self, question):
+        result = dict(average=0.0, stddev=0.0)
+        if self.teamData is None:
+            respManager = Responses(self.context)
+            self.teamData = self.getTeamData(respManager)
+        values = [r.values.get(question) for r in self.teamData]
+        values = [v for v in values if v is not None]
+        if values:
+            average = round(float(sum(values)) / len(values), 2)
+            result['average'] = average
+        texts = [r.texts.get(question) for r in self.teamData]
+        result['texts'] = '<br />'.join([unicode(t) for t in texts if t])
         return result
 
     def check(self, response):
