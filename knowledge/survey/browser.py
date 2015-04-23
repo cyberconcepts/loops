@@ -109,9 +109,9 @@ class SurveyView(InstitutionMixin, ConceptView):
             for idxg, g in enumerate(groups):
                 qus = []
                 for idxq, qu in enumerate(g):
-                    questions.append((idxg + 3 * idxq, qu))
+                    questions.append((idxg + 3 * idxq, idxg, qu))
             questions.sort()
-            questions = [item[1] for item in questions]
+            questions = [item[2] for item in questions]
             size = len(questions)
             for idx in range(0, size, 3):
                 result.append(dict(title=u'Question', infoText=None, 
@@ -313,6 +313,14 @@ class SurveyView(InstitutionMixin, ConceptView):
         #self.errors = self.check(response)
         if self.errors:
             return []
+        for group in self.adapted.questionGroups:
+            score = 0
+            for qu in group.questions:
+                value = data.get(qu.uid) or 0
+                if qu.revertAnswerOptions:
+                    value = -value
+                score += value
+            result.append(dict(category=group.title, score=score))
         return result
 
     def check(self, response):
