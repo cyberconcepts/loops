@@ -84,6 +84,10 @@ class SurveyView(InstitutionMixin, ConceptView):
     def report(self):
         return self.request.form.get('report')
 
+    @Lazy
+    def questionnaireType(self):
+        return self.adapted.questionnaireType
+
     def teamReports(self):
         if self.adapted.teamBasedEvaluation:
             if checkPermission('loops.ViewRestricted', self.context):
@@ -99,11 +103,24 @@ class SurveyView(InstitutionMixin, ConceptView):
     @Lazy
     def groups(self):
         result = []
+        if self.questionnaireType == 'pref_selection':
+            groups = [g.questions for g in self.adapted.questionGroups]
+            questions = []
+            for idxg, g in enumerate(groups):
+                qus = []
+                for idxq, qu in enumerate(g):
+                    questions.append((idxg + 3 * idxq, qu))
+            questions.sort()
+            questions = [item[1] for item in questions]
+            size = len(questions)
+            for idx in range(0, size, 3):
+                result.append(dict(title=u'Question', infoText=None, 
+                                   questions=questions[idx:idx+3]))
+            return [g for g in result if len(g['questions']) == 3]
         if self.adapted.noGrouping:
             questions = list(self.adapted.questions)
             questions.sort(key=lambda x: x.title)
             size = len(questions)
-            #nb, rem = divmod(size, self.batchSize)
             bs = self.batchSize
             for idx in range(0, size, bs):
                 result.append(dict(title=u'Question', infoText=None, 
@@ -207,6 +224,8 @@ class SurveyView(InstitutionMixin, ConceptView):
         if self.adapted.teamBasedEvaluation and self.institution:
             respManager.institutionId = self.getUidForObject(
                                             baseObject(self.institution))
+        if self.adapted.questionnaireType == 'pref_selection':
+            return self.prefsResults(respManager, form, action)
         data = {}
         response = Response(self.adapted, None)
         for key, value in form.items():
@@ -280,6 +299,22 @@ class SurveyView(InstitutionMixin, ConceptView):
         result['texts'] = '<br />'.join([unicode(t) for t in texts if t])
         return result
 
+    def prefsResults(self, respManager, form, action):
+        result = []
+        data = {}
+        for key, value in form.items():
+            if key.startswith('group_') and value:
+                data[value] = 1
+        respManager.save(data)
+        if action == 'save':
+            self.message = u'Your data have been saved.'
+            return []
+        self.data = data
+        #self.errors = self.check(response)
+        if self.errors:
+            return []
+        return result
+
     def check(self, response):
         errors = []
         values = response.values
@@ -348,6 +383,11 @@ class SurveyView(InstitutionMixin, ConceptView):
         return result
 
     def getTextValue(self, question):
+        self.loadData()
+        if self.data:
+            return self.data.get(question.uid)
+
+    def getPrefsValue(self, question):
         self.loadData()
         if self.data:
             return self.data.get(question.uid)

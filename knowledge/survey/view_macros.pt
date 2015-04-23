@@ -4,6 +4,9 @@
 
 <metal:block define-macro="survey"
               tal:define="feedback item/results;
+                          questType item/questionnaireType;
+                          questMacro python:
+                              'quest_' + (questType or 'standard');
                           report request/report|nothing;
                           reportMacro python:
                               'report_' + (report or 'standard');
@@ -21,9 +24,14 @@
   <div tal:condition="feedback">
       <metal:block use-macro="item/template/macros/?reportMacro" />
   </div>
-
   <div id="questionnaire"
        tal:condition="not:feedback">
+      <metal:block use-macro="item/template/macros/?questMacro" />
+  </div>
+</metal:block>
+
+
+<metal:block define-macro="quest_standard">
     <tal:inst condition="item/adapted/teamBasedEvaluation">
       <metal:inst use-macro="item/knowledge_macros/select_institution" />
     </tal:inst>
@@ -91,7 +99,64 @@
              i18n:attributes="value"
              onclick="setRadioButtons('none'); return false" />
     </form>
-  </div>
+</metal:block>
+
+
+<metal:block define-macro="quest_pref_selection">
+    <h3 i18n:translate="">Questionnaire</h3>
+    <div class="error"
+         tal:condition="errors">
+      <div tal:repeat="error errors">
+        <span i18n:translate=""
+              tal:content="error/text" />
+      </div>
+    </div>
+    <div class="message"
+         tal:condition="message"
+         i18n:translate=""
+         tal:content="message" />
+    <form method="post">
+      <table class="listing">
+        <input type="hidden" name="person"
+               tal:define="personId request/person|nothing"
+               tal:condition="personId"
+               tal:attributes="value personId" />
+        <tal:group repeat="group item/groups">
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td></tr>
+          <tr class="vpad">
+            <td tal:define="infoText group/infoText">
+              <b i18n:translate=""
+                 tal:content="group/title" />
+              <div class="infotext"
+                   tal:condition="infoText">
+                <span tal:content="structure infoText" />
+              </div>
+            </td>
+            <td />
+          </tr>
+          <tal:question repeat="question group/questions">
+            <tr tal:attributes="class python:item.getCssClass(question)">
+              <td tal:content="question/text" />
+              <td tal:define="value python:item.getPrefsValue(question)">
+                <input type="radio"
+                       tal:attributes="name string:group_${repeat/group/index};
+                                       value question/uid;
+                                       checked value" />
+              </td>
+            </tr>
+          </tal:question>
+        </tal:group>
+      </table>
+      <input type="submit" name="submit" value="Evaluate Questionnaire"
+             i18n:attributes="value" />
+      <input type="submit" name="save" value="Save Data"
+             i18n:attributes="value" />
+      <input type="button" name="reset_responses" value="Reset Responses Entered"
+             i18n:attributes="value"
+             onclick="setRadioButtons('none'); return false" />
+    </form>
 </metal:block>
 
 
