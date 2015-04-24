@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -67,10 +67,13 @@ class UserId(schema.TextLine):
                                    mapping={'userId': userId}))
         person = getPersonForUser(context, principal=principal)
         if person is not None and person != context:
-            raiseValidationError(
-                _(u'There is alread a person ($person) assigned to user $userId.',
-                  mapping=dict(person=zapi.getName(person),
-                               userId=userId)))
+            name = zapi.getName(person)
+            if name:
+                raiseValidationError(
+                    _(u'There is already a person ($person) '
+                      u'assigned to user $userId.',
+                      mapping=dict(person=name,
+                                   userId=userId)))
 
 
 class LoginName(schema.TextLine):
@@ -82,7 +85,7 @@ class LoginName(schema.TextLine):
         super(LoginName, self)._validate(userId)
         if userId in getPrincipalFolder(self.context):
             raiseValidationError(
-                _(u'There is alread a user with ID $userId.',
+                _(u'There is already a user with ID $userId.',
                   mapping=dict(userId=userId)))
 
 
