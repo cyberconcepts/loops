@@ -411,6 +411,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def titleSelection(self):
         result = []
+        if self.title:
+            return result
         dt = adapted(self.conceptManager.get('organize.work.texts'))
         if dt is None or not dt.data:
             return result
