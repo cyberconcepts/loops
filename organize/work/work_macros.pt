@@ -70,7 +70,8 @@
     <form method="post" id="addWorkitem_form" class="dialog"
           xx_dojoType="dijit.form.Form"
           tal:define="workItemTypes view/workItemTypes;
-                      workItemType view/workItemType">
+                      workItemType view/workItemType;
+                      dummy view/setupView">
       <input type="hidden" name="form.action" value="create_workitem" />
       <input type="hidden" name="id"
              tal:attributes="value request/form/id|nothing" />
@@ -94,8 +95,17 @@
                  tal:attributes="value python:workItemTypes[0].name" />
         </tal:type>
         <label i18n:translate="" for="title">Title</label>
-        <div>
-          <input name="title" id="title" style="width: 60em"
+        <div tal:define="titleSelection view/titleSelection">
+          <select tal:condition="titleSelection"
+                  data-dojo-type="dijit/form/ComboBox" required
+                  name="title" id="title" style="width: 100%"
+                  tal:attributes="value view/title" >
+            <option selected></option>
+            <option tal:repeat="text view/titleSelection"
+                    tal:content="text"></option>
+          </select>
+          <input tal:condition="not:titleSelection"
+                 name="title" id="title" style="width: 60em"
                  dojoType="dijit.form.ValidationTextBox" required
                  tal:attributes="value view/title" /></div>
       </div>

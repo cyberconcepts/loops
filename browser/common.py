@@ -989,6 +989,12 @@ class BaseView(GenericView, I18NView, SortableMixin):
         jsCall = 'dojo.require("dojox.image.Lightbox");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
 
+    def registerDojoComboBox(self):
+        self.registerDojo()
+        jsCall = ('dojo.require("dijit.form.ComboBox");')
+        self.controller.macros.register('js-execute', 
+                'dojo.require.ComboBox', jsCall=jsCall)
+
     def registerDojoFormAll(self):
         self.registerDojo()
         self.registerDojoEditor()

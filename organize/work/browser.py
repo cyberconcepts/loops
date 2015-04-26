@@ -380,6 +380,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     def checkPermissions(self):
         return canAccessObject(self.task or self.target)
 
+    def setupView(self):
+        self.setupController()
+        self.registerDojoComboBox()
+
     @Lazy
     def macro(self):
         return self.template.macros['create_workitem']
@@ -403,6 +407,20 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         if len(types) == 1:
             track.workItemType = types[0].name
         return track
+
+    @Lazy
+    def titleSelection(self):
+        result = []
+        dt = adapted(self.conceptManager.get('organize.work.texts'))
+        if dt is None or not dt.data:
+            return result
+        names = ([getName(self.target)] + 
+                 [getName(p.object) 
+                    for p in self.target.getAllParents(ignoreTypes=True)])
+        for name, text in dt.data.values():
+            if not name or name in names:
+                result.append(text)
+        return result
 
     @Lazy
     def title(self):
