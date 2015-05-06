@@ -75,6 +75,7 @@ from loops.organize.util import getRolesForPrincipal
 from loops.resource import Resource
 from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
+from loops.security.common import canEditRestricted
 from loops.type import ITypeConcept, LoopsTypeInfo
 from loops import util
 from loops.util import _, saveRequest
@@ -866,6 +867,10 @@ class BaseView(GenericView, I18NView, SortableMixin):
     @Lazy
     def canAccessRestricted(self):
         return checkPermission('loops.ViewRestricted', self.context)
+
+    @Lazy
+    def canEditRestricted(self):
+        return canEditRestricted(self.context)
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
