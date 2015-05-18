@@ -47,6 +47,15 @@ function showIfIn(node, conditions) {
     })
 }
 
+function setIfIn(node, conditions) {
+    dojo.forEach(conditions, function(cond) {
+        if (node.value == cond[0]) {
+            target = dojo.byId(cond[1]);
+            target.value = cond[2];
+        }
+    })
+}
+
 function destroyWidgets(node) {
     dojo.forEach(dojo.query('[widgetId]', node), function(n) {
         w = dijit.byNode(n);

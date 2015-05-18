@@ -120,12 +120,21 @@
         <label i18n:translate="" for="action">Action</label>
         <select name="workitem.action" id="action"
                 onChange="showIfIn(this, [['move', 'target_task'],
-                                          ['delegate', 'target_party']])">
+                                          ['delegate', 'target_party']]);
+                          setIfIn(this, [['start', 'start_date', 
+                                                 this.form.default_date.value],
+                                         ['start', 'start_time', 
+                                                 this.form.default_time.value],
+                                         ['start', 'end_time', '']])">
           <option tal:repeat="action view/actions"
                   tal:attributes="value action/name"
                   tal:content="action/title"
                   i18n:translate="" />
         </select>
+        <input type="hidden" name="default_date" id="default_date"
+               tal:attributes="value view/defaultDate" />
+        <input type="hidden" name="default_time" id="default_time"
+               tal:attributes="value view/defaultTime" />
         <span id="target_party" style="display: none">&nbsp;
           <label i18n:translate="delegate_to_party" for="input_party"
                  style="display: inline">to</label>
@@ -212,12 +221,15 @@
         <label i18n:translate="" for="start-end-input">Start - End</label>
         <div id="start-end-input">
           <input type="text" name="start_date" style="width: 8em"
+                 id="start_date"
                  dojoType="dijit.form.DateTextBox"
                  tal:attributes="value view/date" />
           <input type="text" name="start_time" style="width: 6em"
+                 id="start_time"
                  dojoType="dijit.form.TimeTextBox"
                  tal:attributes="value view/startTime" /> -
           <input type="text" name="end_time" style="width: 6em"
+                 id="end_time"
                  dojoType="dijit.form.TimeTextBox"
                  tal:attributes="value view/endTime" /></div>
       </div>

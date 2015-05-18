@@ -477,6 +477,16 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return None
 
     @Lazy
+    def defaultDate(self):
+        return format.formatDate(date.today(), 'date', 'medium',
+                                 self.languageInfo.language)
+        #return time.strftime('%Y-%m-%d', time.localtime(getTimeStamp()))
+
+    @Lazy
+    def defaultTime(self):
+        return time.strftime('%H:%M', time.localtime(getTimeStamp()))
+
+    @Lazy
     def date(self):
         ts = self.track.start or self.defaultTimeStamp
         if ts:
