@@ -122,10 +122,12 @@
                 onChange="showIfIn(this, [['move', 'target_task'],
                                           ['delegate', 'target_party']]);
                           setIfIn(this, [['start', 'start_date', 
-                                                 this.form.default_date.value],
+                                              this.form.default_date.value],
                                          ['start', 'start_time', 
-                                                 this.form.default_time.value],
-                                         ['start', 'end_time', '']])">
+                                              this.form.default_date.value],
+                                         ['start', 'end_time', null],
+                                         ['start', 'duration', ''],
+                                         ['start', 'effort', '']])">
           <option tal:repeat="action view/actions"
                   tal:attributes="value action/name"
                   tal:content="action/title"
@@ -133,8 +135,6 @@
         </select>
         <input type="hidden" name="default_date" id="default_date"
                tal:attributes="value view/defaultDate" />
-        <input type="hidden" name="default_time" id="default_time"
-               tal:attributes="value view/defaultTime" />
         <span id="target_party" style="display: none">&nbsp;
           <label i18n:translate="delegate_to_party" for="input_party"
                  style="display: inline">to</label>
@@ -224,12 +224,10 @@
                  id="start_date"
                  dojoType="dijit.form.DateTextBox"
                  tal:attributes="value view/date" />
-          <input type="text" name="start_time" style="width: 6em"
-                 id="start_time"
+          <input type="text" name="start_time" id="start_time" style="width: 6em"
                  dojoType="dijit.form.TimeTextBox"
                  tal:attributes="value view/startTime" /> -
-          <input type="text" name="end_time" style="width: 6em"
-                 id="end_time"
+          <input type="text" name="end_time" id="end_time" style="width: 6em"
                  dojoType="dijit.form.TimeTextBox"
                  tal:attributes="value view/endTime" /></div>
       </div>
@@ -250,11 +248,11 @@
         <label i18n:translate=""
                for="duration-effort-input">Duration / Effort (hh:mm)</label>
         <div id="duration-effort-input">
-          <input type="text" name="duration" style="width: 5em"
+          <input type="text" name="duration" id="duration" style="width: 5em"
                  dojoType="dijit.form.ValidationTextBox"
                  regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
                  tal:attributes="value view/duration" /> /
-          <input type="text" name="effort" style="width: 5em"
+          <input type="text" name="effort" id="effort" style="width: 5em"
                  dojoType="dijit.form.ValidationTextBox"
                  regexp="-{0,1}[0-9]{1,2}(:[0-5][0-9]){0,1}"
                  tal:attributes="value view/effort" /></div>

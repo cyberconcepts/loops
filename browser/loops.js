@@ -50,8 +50,8 @@ function showIfIn(node, conditions) {
 function setIfIn(node, conditions) {
     dojo.forEach(conditions, function(cond) {
         if (node.value == cond[0]) {
-            target = dojo.byId(cond[1]);
-            target.value = cond[2];
+            target = dijit.byId(cond[1]);
+            target.setValue(cond[2]);
         }
     })
 }
