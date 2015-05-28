@@ -76,11 +76,13 @@
                 <span tal:content="structure infoText" />
               </div>
             </td>
-            <td tal:repeat="opt item/answerOptions"
-                style="text-align: center"
+            <td tal:repeat="opt python:[opt for opt in item.answerOptions
+                                            if opt.get('colspan') != '0']"
                 i18n:translate=""
                 i18n:attributes="title"
-                tal:attributes="title opt/description|string:"
+                tal:attributes="title opt/description|string:;
+                                class python:opt.get('cssclass') or 'center';
+                                colspan python:opt.get('colspan')"
                 tal:content="opt/label|string:" />
           </tr>
           <tal:question repeat="question group/questions">

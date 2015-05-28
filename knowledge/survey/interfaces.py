@@ -67,7 +67,9 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
     answerOptions.column_types = [
             schema.Text(__name__='value', title=u'Value',),
             schema.Text(__name__='label', title=u'Label'),
-            schema.Text(__name__='description', title=u'Description'),]
+            schema.Text(__name__='description', title=u'Description'),
+            schema.Text(__name__='colspan', title=u'ColSpan'),
+            schema.Text(__name__='cssclass', title=u'CSS Class'),]
 
     noGrouping = schema.Bool(
         title=_(u'No Grouping of Questions'),
