@@ -61,7 +61,7 @@
       for="cybertools.tracking.interfaces.ITrackingStorage"
       name="index.html"
       class="cybertools.tracking.browser.TrackingStorageView"
-      permission="zope.View" />
+      permission="loops.ManageSite" />
 
   <browser:menuItem
       menu="zmi_views"
@@ -74,13 +74,13 @@
       for="cybertools.tracking.interfaces.ITrack"
       name="index.html"
       class="loops.organize.tracking.browser.BaseTrackView"
-      permission="zope.View" />
+      permission="loops.ManageSite" />
 
   <browser:page
       for="loops.organize.tracking.change.IChangeRecord"
       name="index.html"
       class="loops.organize.tracking.browser.ChangeView"
-      permission="zope.View" />
+      permission="loops.ManageSite" />
 
   <browser:page
       name="edit.html"
@@ -93,7 +93,7 @@
       for="loops.organize.tracking.access.IAccessRecord"
       name="index.html"
       class="loops.organize.tracking.browser.AccessView"
-      permission="zope.View" />
+      permission="loops.ManageSite" />
 
   <browser:menuItem
       menu="zmi_views"
