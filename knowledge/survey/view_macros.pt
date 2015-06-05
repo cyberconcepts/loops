@@ -243,7 +243,8 @@
             <tal:question 
                   define="qutype python:
                               question.questionType or 'value_selection';
-                          data python:item.getTeamResultsForQuestion(question)">
+                          data python:
+                            item.getTeamResultsForQuestion(question, item.adapted)">
               <td>
                 <div tal:content="question/text" />
                 <div style="width: 90%; margin-left: 20px"

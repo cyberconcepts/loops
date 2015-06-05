@@ -278,21 +278,22 @@ class SurveyView(InstitutionMixin, ConceptView):
             result.append(item)
         return result
 
-    def getTeamResultsForQuestion(self, question):
+    def getTeamResultsForQuestion(self, question, questionnaire):
         result = dict(average=0.0, stddev=0.0)
         if self.teamData is None:
             respManager = Responses(self.context)
             self.teamData = self.getTeamData(respManager)
+        answerRange = question.answerRange or questionnaire.defaultAnswerRange
         values = [r.values.get(question) for r in self.teamData]
         values = [v for v in values if v is not None]
         if values:
             average = float(sum(values)) / len(values)
             if question.revertAnswerOptions:
-                average = question.answerRange - average - 1
+                average = answerRange - average - 1
             devs = [(average - v) for v in values]
             stddev = math.sqrt(sum(d * d for d in devs) / len(values))
-            average = average * 100 / (question.answerRange - 1)
-            stddev = stddev * 100 / (question.answerRange - 1)
+            average = average * 100 / (answerRange - 1)
+            stddev = stddev * 100 / (answerRange - 1)
             result['average'] = int(round(average))
             result['stddev'] = int(round(stddev))
         texts = [r.texts.get(question) for r in self.teamData]
