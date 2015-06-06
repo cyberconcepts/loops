@@ -98,8 +98,8 @@
       <input type="submit" name="save" value="Save Data"
              i18n:attributes="value" />
       <input type="button" name="reset_responses" value="Reset Responses Entered"
-             i18n:attributes="value"
-             onclick="setRadioButtons('none'); return false" />
+             i18n:attributes="value; onclick"
+             onclick="if (confirm('Do you really want to reset all response data?')) setRadioButtons('none'); return false" />
     </form>
 </metal:block>
 
@@ -143,8 +143,8 @@
       <input type="submit" name="save" value="Save Data"
              i18n:attributes="value" />
       <input type="button" name="reset_responses" value="Reset Responses Entered"
-             i18n:attributes="value"
-             onclick="setRadioButtons('none'); return false" />
+             i18n:attributes="value; onclick"
+             onclick="if (confirm('Do you really want to reset all response data?')) setRadioButtons('none'); return false" />
     </form>
 </metal:block>
 

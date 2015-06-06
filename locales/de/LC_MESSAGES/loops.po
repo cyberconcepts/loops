@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-04-26 12:00 CET\n"
+"PO-Revision-Date: 2015-06-06 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -347,6 +347,9 @@ msgstr "Abweichung"
 
 msgid "Team Size"
 msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
+
+msgid "if (confirm('Do you really want to reset all response data?')) setRadioButtons('none'); return false"
+msgstr "if (confirm('Wollen Sie wirklich alle eingegebenen Daten zurücksetzen?')) setRadioButtons('none'); return false"
 
 # compentence and qualification management
 
