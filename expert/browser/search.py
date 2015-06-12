@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -91,7 +91,8 @@ class Search(ConceptView):
 
     @Lazy
     def showActions(self):
-        return checkPermission('loops.ManageSite', self.context)
+        perm = (self.globalOptions('delete_permission') or ['loops.ManageSite'])[0]
+        return checkPermission(perm, self.context)
         #return canWriteObject(self.context)
 
     @property
@@ -166,12 +167,10 @@ class Search(ConceptView):
         title = request.get('name')
         if title == '*':
             title = None
-        types = request.get('searchType')
+        #types = request.get('searchType')
         data = []
         types = self.getTypes()
-        if title or types:
-        #if title or (types and types not in 
-        #                (u'loops:concept:*', 'loops:concept:account')):
+        if title or (types and types != u'loops:concept:*'):
             if title is not None:
                 title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
                 #title = title.split(' ', 1)[0]
@@ -302,8 +301,8 @@ class Search(ConceptView):
             for state in states:
                 if stf.state == state:
                     break
-                else:
-                    return False
+            else:
+                return False
         return True
 
 

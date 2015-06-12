@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 View class for resource objects.
 """
 
+import os.path
 import urllib
 from zope.cachedescriptors.property import Lazy
 from zope import component
@@ -47,7 +48,7 @@ from loops.browser.common import EditForm, BaseView
 from loops.browser.concept import BaseRelationView, ConceptRelationView
 from loops.browser.concept import ConceptConfigureView
 from loops.browser.node import NodeView, node_macros
-from loops.common import adapted, NameChooser, normalizeName
+from loops.common import adapted, baseObject, NameChooser, normalizeName
 from loops.interfaces import IBaseResource, IDocument, ITextDocument
 from loops.interfaces import IMediaAsset as legacy_IMediaAsset
 from loops.interfaces import ITypeConcept
@@ -216,6 +217,16 @@ class ResourceView(BaseView):
             if filename is None:
                 filename = (adapted(self.context).localFilename or 
                                 getName(self.context))
+                if self.typeOptions('use_title_for_download_filename'):
+                    base, ext = os.path.splitext(filename)
+                    filename = context.title
+                    vr = IVersionable(baseObject(context))
+                    if len(vr.versions) > 0:
+                        filename = vr.generateName(filename, ext, vr.versionId)
+                    else:
+                        if not filename.endswith(ext):
+                            filename += ext
+                    filename = filename.encode('UTF-8')
             if self.typeOptions('no_normalize_download_filename'):
                 filename = '"%s"' % filename
             else:

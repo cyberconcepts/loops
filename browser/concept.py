@@ -283,7 +283,16 @@ class ConceptView(BaseView):
         return self.title
 
     @Lazy
+    def showInBreadcrumbs(self):
+        return (self.options('show_in_breadcrumbs') or 
+                self.typeOptions('show_in_breadcrumbs'))
+
+    @Lazy
     def breadcrumbsParent(self):
+        for p in self.context.getParents([self.defaultPredicate]):
+            view = self.nodeView.getViewForTarget(p)
+            if view.showInBreadcrumbs:
+                return view
         return None
 
     def getData(self, omit=('title', 'description')):
@@ -449,7 +458,7 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
-    def getResources(self):
+    def getResources(self, relView=None, sort='default'):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -458,13 +467,17 @@ class ConceptView(BaseView):
                 tokens = form.get('resources_tokens')
                 if tokens:
                     self.reorderResources(tokens)
-        from loops.browser.resource import ResourceRelationView
+        if relView is None:
+            from loops.browser.resource import ResourceRelationView
+            relView = ResourceRelationView
         from loops.organize.personal.browser.filter import FilterView
         fv = FilterView(self.context, self.request)
-        rels = self.context.getResourceRelations()
+        rels = self.context.getResourceRelations(sort=sort)
         for r in rels:
             if fv.check(r.first):
-                yield ResourceRelationView(r, self.request, contextIsSecond=True)
+                view = relView(r, self.request, contextIsSecond=True)
+                if view.checkState():
+                    yield view
 
     def resources(self):
         return self.getResources()

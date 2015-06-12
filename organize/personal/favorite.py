@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Base classes for a notification framework.
-
-$Id$
 """
 
 from zope.component import adapts
@@ -39,17 +37,20 @@ class Favorites(object):
     def __init__(self, context):
         self.context = context
 
-    def list(self, person, sortKey=None):
-        for item in self.listTracks(person, sortKey):
+    def list(self, person, sortKey=None, type='favorite'):
+        for item in self.listTracks(person, sortKey, type):
             yield item.taskId
 
-    def listTracks(self, person, sortKey=None):
+    def listTracks(self, person, sortKey=None, type='favorite'):
         if person is None:
             return
         personUid = util.getUidForObject(person)
         if sortKey is None:
             sortKey = lambda x: -x.timeStamp
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
+            if type is not None:
+                if item.type != type:
+                    continue
             yield item
 
     def add(self, obj, person, data=None):
@@ -57,21 +58,23 @@ class Favorites(object):
             return False
         uid = util.getUidForObject(obj)
         personUid = util.getUidForObject(person)
-        if self.context.query(userName=personUid, taskId=uid):
-            return False
         if data is None:
-            data = {}
+            data = {'type': 'favorite'}
+        for track in self.context.query(userName=personUid, taskId=uid):
+            if track.type == data['type']:    # already present
+                return False
         return self.context.saveUserTrack(uid, 0, personUid, data)
 
-    def remove(self, obj, person):
+    def remove(self, obj, person, type='favorite'):
         if None in (obj, person):
             return False
         uid = util.getUidForObject(obj)
         personUid = util.getUidForObject(person)
         changed = False
-        for t in self.context.query(userName=personUid, taskId=uid):
-            changed = True
-            self.context.removeTrack(t)
+        for track in self.context.query(userName=personUid, taskId=uid):
+            if track.type == type:
+                changed = True
+                self.context.removeTrack(track)
         return changed
 
 
@@ -81,3 +84,46 @@ class Favorite(Track):
 
     typeName = 'Favorite'
 
+    @property
+    def type(self):
+        return self.data.get('type') or 'favorite'
+
+
+def updateSortInfo(person, task, data):
+    if person is not None:
+        favorites = task.getLoopsRoot().getRecordManager().get('favorites')
+        if favorites is None:
+            return data
+        personUid = util.getUidForObject(person)
+        taskUid = util.getUidForObject(task)
+        for fav in favorites.query(userName=personUid, taskId=taskUid):
+            if fav.data.get('type') == 'sort':
+                fdata = fav.data['sortInfo']
+                if not data:
+                    data = fdata
+                else:
+                    if data != fdata:
+                        newData = fav.data
+                        newData['sortInfo'] = data
+                        fav.data = newData
+                break
+        else:
+            if data:
+                Favorites(favorites).add(task, person, 
+                                         dict(type='sort', sortInfo=data))
+    return data
+
+
+def setInstitution(person, inst):
+    if person is not None:
+        favorites = inst.getLoopsRoot().getRecordManager().get('favorites')
+        if favorites is None:
+            return
+        personUid = util.getUidForObject(person)
+        taskUid = util.getUidForObject(inst)
+        for fav in favorites.query(userName=personUid):
+            if fav.type == 'institution':
+                fav.taskId = taskUid
+                favorites.indexTrack(None, fav, 'taskId')
+        else:
+            Favorites(favorites).add(inst, person, dict(type='institution'))

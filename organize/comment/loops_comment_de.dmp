@@ -1,0 +1,6 @@
+type(u'report', u'Report', options=u'',
+    typeInterface='loops.expert.report.IReport', viewName=u'')
+concept(u'comments_overview', u'\xdcbersicht Kommentare', u'report',
+    reportType=u'comments_overview')
+concept(u'comments', u'Kommentare', u'query', options=u'', 
+    viewName=u'list_comments.html')

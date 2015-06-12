@@ -20,6 +20,7 @@ body {
 
 #portlets {
     margin-top: 1em;
+    background-color: #ffffff;
 }
 
 ul.view-modes {
@@ -106,6 +107,14 @@ table {
 
 thead th {
     background: none;
+}
+
+/* printing */
+
+@media print {
+    .noprint {
+        display: none;
+    }
 }
 
 /* class-specific */

@@ -25,29 +25,61 @@
 </div>
 
 
-<div metal:define-macro="results">
+<div metal:define-macro="embedded_content"
+     tal:define="report item/reportInstance;
+                 reportView nocall:item">
+  <div tal:attributes="class string:content-$level;">
+      <metal:block use-macro="view/concept_macros/concepttitle_only" />
+  </div>
+  <div metal:use-macro="item/resultsRenderer" />
+</div>
+
+
+<div metal:define-macro="results"
+     tal:define="tableName string:results">
+  <br />
+  <tal:download condition="item/downloadLink">
+    <div class="button">
+      <a i18n:translate=""
+         tal:define="params python:item.getSortParams(tableName)"
+         tal:attributes="href string:${item/downloadLink}$params">Download Data</a>
+    </div>
+    <br />
+  </tal:download>
   <table class="report"
          tal:define="results reportView/results">
     <tr>
-        <th tal:repeat="col results/displayedColumns"
-            tal:content="col/title"
-            tal:attributes="class col/cssClass"
-            i18n:translate="" />
+      <th style="white-space: nowrap"
+          tal:repeat="col results/displayedColumns">
+        <a title="tooltip_sort_column"
+           tal:define="colName col/name"
+           tal:omit-tag="python:not item.isSortableColumn(tableName, colName)"
+           tal:attributes="href python:item.getSortUrl(tableName, colName)"
+           i18n:attributes="title">
+          <span tal:content="col/title"
+                tal:attributes="class col/cssClass"
+                i18n:translate="" />
+          <img tal:define="src python:item.getSortImage(tableName, colName)"
+               tal:condition="src"
+               tal:attributes="src src" />
+        </a>
+      </th>
     </tr>
-    <tr tal:repeat="row results">
-        <td tal:repeat="col results/displayedColumns"
-            tal:attributes="class col/cssClass">
-            <metal:column use-macro="python:
-                            reportView.getColumnRenderer(col)" />
-        </td>
+    <tr tal:repeat="row results"
+        tal:attributes="class python:(repeat['row'].index() % 2) and 'even' or 'odd'">
+      <td tal:repeat="col results/displayedColumns"
+          tal:attributes="class col/cssClass">
+          <metal:column use-macro="python:
+                          reportView.getColumnRenderer(col)" />
+      </td>
     </tr>
     <tr tal:define="row nocall:results/totals"
         tal:condition="nocall:row">
-        <td tal:repeat="col results/displayedColumns"
-            tal:attributes="class col/cssClass">
-            <metal:column use-macro="python:
-                            reportView.getColumnRenderer(col)" />
-        </td>
+      <td tal:repeat="col results/displayedColumns"
+          tal:attributes="class col/cssClass">
+          <metal:column use-macro="python:
+                          reportView.getColumnRenderer(col)" />
+      </td>
     </tr>
   </table>
 </div>
@@ -74,6 +106,17 @@
          tal:attributes="src string:$resourceBase${value/icon};
                          alt value/title;
                          title value/title" />
+  </tal:column>
+</metal:state>
+
+
+<metal:state define-macro="workitem_state">
+  <tal:column define="value python:col.getDisplayValue(row)"
+              condition="value">
+    <tal:action repeat="action value/actions">
+      <metal:action tal:condition="action"
+                    use-macro="action/macro" />
+    </tal:action>
   </tal:column>
 </metal:state>
 

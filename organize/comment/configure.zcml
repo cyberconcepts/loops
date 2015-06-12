@@ -12,6 +12,10 @@
              set_schema="cybertools.tracking.comment.interfaces.IComment" />
   </zope:class>
 
+  <zope:utility
+        factory="loops.organize.comment.base.commentStates"
+        name="organize.commentStates" />
+
   <!-- views -->
 
   <browser:page
@@ -32,5 +36,27 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       factory="loops.organize.comment.browser.CreateComment"
       permission="zope.View" />
+
+  <!-- reporting -->
+
+  <zope:adapter
+      name="list_comments.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.organize.comment.report.CommentsOverview"
+      permission="zope.View" />
+
+  <zope:adapter 
+      name="comments_overview"
+      factory="loops.organize.comment.report.CommentsReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.organize.comment.report.CommentsReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
 
 </configure>

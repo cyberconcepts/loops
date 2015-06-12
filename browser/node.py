@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ class NodeView(BaseView):
             return []
         menu = self.menu
         data = [dict(label=menu.title, url=menu.url)]
-        menuItem = self.nearestMenuItem
+        menuItem = self.getNearestMenuItem(all=True)
         if menuItem != menu.context:
             data.append(dict(label=menuItem.title,
                              url=absoluteURL(menuItem, self.request)))
@@ -121,6 +121,9 @@ class NodeView(BaseView):
                                     url=absoluteURL(p, self.request)))
         if self.virtualTarget:
             data.extend(self.virtualTarget.breadcrumbs())
+        if data and not '?' in data[-1]['url']:
+            if self.urlParamString:
+                data[-1]['url'] += self.urlParamString
         return data
 
     def viewModes(self):
@@ -401,10 +404,13 @@ class NodeView(BaseView):
 
     @Lazy
     def nearestMenuItem(self):
+        return self.getNearestMenuItem()
+
+    def getNearestMenuItem(self, all=False):
         menu = self.menuObject
         menuItem = None
         for p in [self.context] + self.parents:
-            if not p.isMenuItem():
+            if not all and not p.isMenuItem():
                 menuItem = None
             elif menuItem is None:
                 menuItem = p
@@ -441,7 +447,7 @@ class NodeView(BaseView):
     def targetView(self, name='index.html', methodName='show'):
         if name == 'index.html':    # only when called for default view
             tv = self.viewAnnotations.get('targetView')
-            if tv is not None:
+            if tv is not None and callable(tv):
                 return tv()
         if '?' in name:
             name, params = name.split('?', 1)

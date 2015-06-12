@@ -45,6 +45,12 @@
       class="loops.organize.browser.member.PasswordChange"
       permission="zope.View" />
 
+  <browser:page
+      for="loops.interfaces.INode"
+      name="reset_password.html"
+      class="loops.organize.browser.member.PasswordReset"
+      permission="zope.View" />
+
   <zope:adapter
       name="task.html"
       for="loops.interfaces.IConcept
@@ -145,5 +151,13 @@
       fields="prefix"
       permission="zope.ManageServices"
       menu="zmi_views" title="Prefix" />
+
+  <!-- utilities -->
+
+  <browser:page
+      for="loops.interfaces.ILoops"
+      name="fix_person_roles"
+      class="loops.organize.browser.member.FixPersonRoles"
+      permission="zope.ManageServices" />
 
 </configure>

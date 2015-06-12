@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ Base classes for security setters, i.e. adapters that provide standardized
 methods for setting role permissions and other security-related stuff.
 """
 
+from logging import getLogger
 from zope.app.security.settings import Allow, Deny, Unset
 from zope import component
 from zope.component import adapts
@@ -39,8 +40,11 @@ from loops.interfaces import IConceptSchema, IBaseResourceSchema, ILoopsAdapter
 from loops.organize.util import getPrincipalFolder, getGroupsFolder, getGroupId
 from loops.security.common import overrides, setRolePermission, setPrincipalRole
 from loops.security.common import allRolesExceptOwner, acquiringPredicateNames
+from loops.security.common import getOption
 from loops.security.interfaces import ISecuritySetter
 from loops.versioning.interfaces import IVersionable
+
+logger = getLogger('loops.security')
 
 
 class BaseSecuritySetter(object):
@@ -56,8 +60,16 @@ class BaseSecuritySetter(object):
         return baseObject(self.context)
 
     @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
+    @Lazy
     def conceptManager(self):
         return self.baseObject.getLoopsRoot().getConceptManager()
+
+    @Lazy
+    def options(self):
+        return IOptions(self.adapted)
 
     @Lazy
     def typeOptions(self):
@@ -133,11 +145,17 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
 
     def acquireRolePermissions(self):
         settings = {}
-        for p in self.parents:
-            if p == self.baseObject:
+        #rpm = IRolePermissionMap(self.baseObject)
+        #for p, r, s in rpm.getRolesAndPermissions():
+        #    settings[(p, r)] = s
+        for parent in self.parents:
+            if parent == self.baseObject:
                 continue
-            secProvider = p
-            wi = p.workspaceInformation
+            if getOption(parent, 'security.no_propagate_rolepermissions', 
+                         checkType=False):
+                continue
+            secProvider = parent
+            wi = parent.workspaceInformation
             if wi:
                 if wi.propagateRolePermissions == 'none':
                     continue
@@ -147,6 +165,10 @@ class LoopsObjectSecuritySetter(BaseSecuritySetter):
             for p, r, s in rpm.getRolesAndPermissions():
                 current = settings.get((p, r))
                 if current is None or overrides(s, current):
+                    if self.globalOptions('security.log_acquired_setting'):
+                        logger.info('*** %s: %s, %s: current %s; new from %s: %s' %
+                                (self.baseObject.__name__, p, r, current,
+                                 parent.__name__, s))
                     settings[(p, r)] = s
         self.setDefaultRolePermissions()
         self.setRolePermissions(settings)
@@ -213,14 +235,20 @@ class ConceptSecuritySetter(LoopsObjectSecuritySetter):
 
     adapts(IConceptSchema)
 
+    @Lazy
+    def noPropagateRolePermissions(self):
+        return getOption(self.baseObject, 'security.no_propagate_rolepermissions', 
+                         checkType=False)
+
     def setAcquiredSecurity(self, relation, revert=False, updated=None):
         if updated and relation.second in updated:
             return
         if relation.predicate not in self.acquiringPredicates:
             return
         setter = ISecuritySetter(adapted(relation.second))
-        setter.setDefaultRolePermissions()
-        setter.acquireRolePermissions()
+        if not self.noPropagateRolePermissions:
+            setter.setDefaultRolePermissions()
+            setter.acquireRolePermissions()
         setter.acquirePrincipalRoles()
         #wi = baseObject(self.context).workspaceInformation
         #if wi and not wi.propagateParentSecurity:

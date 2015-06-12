@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.traversing.api import getName
 from zope.traversing.interfaces import IPhysicallyLocatable
 
+from cybertools.meta.interfaces import IOptions
 from loops.common import adapted
 from loops.interfaces import ILoopsObject, IConcept
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
@@ -66,13 +67,39 @@ workspaceGroupsFolderName = 'gloops_ws'
 
 # checking and querying functions
 
+def getOption(obj, option, checkType=True):
+    opts = component.queryAdapter(adapted(obj), IOptions)
+    if opts is not None:
+        opt = opts(option, None)
+        if opt is True:
+            return opt
+        if opt:
+            return opt[0]
+    if not checkType:
+        return None
+    typeMethod = getattr(obj, 'getType', None)
+    if typeMethod is not None:
+        opts = component.queryAdapter(adapted(typeMethod()), IOptions)
+        if opts is not None:
+            opt = opts(option, None)
+            if opt is True:
+                return opt
+            if opt:
+                return opt[0]
+    return None
+
 def canAccessObject(obj):
-    return canAccess(obj, 'title')
+    if not canAccess(obj, 'title'):
+        return False
+    perm = getOption(obj, 'access_permission')
+    if not perm:
+        return True
+    return checkPermission(perm, obj)
 
 def canListObject(obj, noCheck=False):
     if noCheck:
         return True
-    return canAccess(obj, 'title')
+    return canAccessObject(obj)
 
 def canAccessRestricted(obj):
     return checkPermission('loops.ViewRestricted', obj)

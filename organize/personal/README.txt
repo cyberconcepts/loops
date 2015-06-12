@@ -75,7 +75,7 @@ So we are now ready to query the favorites.
 
   >>> favs = list(favorites.query(userName=johnCId))
   >>> favs
-  [<Favorite ['27', 1, '33', '...']: {}>]
+  [<Favorite ['27', 1, '33', '...']: {'type': 'favorite'}>]
 
   >>> list(favAdapted.list(johnC))
   ['27']

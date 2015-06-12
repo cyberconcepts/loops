@@ -187,6 +187,12 @@ Task States
   >>> from loops.organize.stateful.task import taskStates, publishableTask
 
 
+Contact States
+===========
+
+  >>> from loops.organize.stateful.contact import contactStates
+
+
 Fin de partie
 =============
 

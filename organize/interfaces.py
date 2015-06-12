@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ class LoginName(schema.TextLine):
         super(LoginName, self)._validate(userId)
         if userId in getPrincipalFolder(self.context):
             raiseValidationError(
-                _(u'There is alread a user with ID $userId.',
+                _(u'There is already a user with ID $userId.',
                   mapping=dict(userId=userId)))
 
 
@@ -122,6 +122,14 @@ class IPasswordChange(IPasswordEntry):
     oldPassword = schema.Password(title=_(u'Old password'),
                     description=_(u'Enter old password.'),
                     required=True,)
+
+
+class IPasswordReset(Interface):
+
+    loginName = schema.TextLine(title=_(u'User ID'),
+                    description=_(u'Your login name.'),
+                    required=True,)
+    loginName.nostore = True
 
 
 class IMemberRegistration(IBasePerson, IPasswordEntry):

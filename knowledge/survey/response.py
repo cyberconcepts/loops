@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,18 +34,32 @@ class Responses(BaseRecordManager):
     implements(IResponses)
 
     storageName = 'survey_responses'
+    personId = None
+    institutionId = None
 
     def __init__(self, context):
         self.context = context
 
     def save(self, data):
         if self.personId:
-            self.storage.saveUserTrack(self.uid, 0, self.personId, data, 
+            id = self.personId
+            if self.institutionId:
+                id += '.' + self.institutionId
+            self.storage.saveUserTrack(self.uid, 0, id, data, 
                                         update=True, overwrite=True)
 
-    def load(self):
-        if self.personId:
-            tracks = self.storage.getUserTracks(self.uid, 0, self.personId)
+    def load(self, personId=None, institutionId=None):
+        if personId is None:
+            personId = self.personId
+        if institutionId is None:
+            institutionId = self.institutionId
+        if personId:
+            id = personId
+            if institutionId:
+                id += '.' + institutionId
+            tracks = self.storage.getUserTracks(self.uid, 0, id)
+            if not tracks:  # then try without institution
+                tracks = self.storage.getUserTracks(self.uid, 0, personId)
             if tracks:
                 return tracks[0].data
         return {}

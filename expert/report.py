@@ -88,6 +88,7 @@ class ReportInstance(BaseReport):
     #headerRowFactory = Row
 
     view = None     # set upon creation
+    #headerRowFactory = Row
 
     def __init__(self, context):
         self.context = context
@@ -120,7 +121,9 @@ class ReportInstance(BaseReport):
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
-                         sortCriteria=self.getSortCriteria(), queryCriteria=qc,
+                         sortCriteria=self.getSortCriteria(), 
+                         sortDescending=self.sortDescending,
+                         queryCriteria=qc,
                          limits=limits)
 
     def selectObjects(self, parts):
@@ -172,4 +175,16 @@ class ReportTypeSourceList(object):
 class DefaultConceptReportInstance(ReportInstance):
 
     label = u'Default Concept Report'
+
+
+# specialized rows
+
+class TrackRow(Row):
+
+    @staticmethod
+    def getContextAttr(obj, attr):
+        if attr in obj.context.metadata_attributes:
+            return getattr(obj.context, attr)
+        return obj.context.data.get(attr)
+
 

@@ -96,6 +96,7 @@
         </a>
       </span>
     </div>
+    <metal:custom define-slot="custom_info" />
     <metal:fields use-macro="view/comment_macros/comments" />
   </div>
 </metal:block>

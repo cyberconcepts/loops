@@ -45,6 +45,9 @@ to assign comments to this document.
   >>> home = views['home']
   >>> home.target = resources['d001.txt']
 
+  >>> from loops.organize.comment.base import commentStates
+  >>> component.provideUtility(commentStates(), name='organize.commentStates')
+
 Creating comments
 -----------------
 
@@ -73,6 +76,12 @@ Viewing comments
   >>> item = items[0]
   >>> item.subject, item.timeStamp, item.user['title']
   ('My comment', u'... ...', u'john')
+
+
+Reporting
+=========
+
+  >>> from loops.organize.comment.report import CommentsOverview
 
 
 Fin de partie

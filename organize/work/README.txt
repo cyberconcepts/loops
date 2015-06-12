@@ -229,10 +229,22 @@ The user interface is a ReportConceptView subclass that is directly associated w
   08/12/28 19:00 20:15
     {'url': '.../home/.36', 'title': u'loops Development'}
     {'url': '.../home/.33', 'title': u'john'}  01:15 00:15
-    {'icon': 'cybertools.icons/ledgreen.png', 'title': u'finished'}
+    {'actions': [...]}
 
   >>> results.totals.data
   {'effort': 900}
+
+Export of work data
+-------------------
+
+  >>> from loops.organize.work.report import WorkStatementCSVExport
+  >>> reportView = WorkStatementCSVExport(task01, TestRequest())
+  >>> reportView.nodeView = nodeView
+
+  >>> output = reportView()
+  >>> print output
+  Day;Start;End;Task;Party;Title;Duration;Effort;State
+  08/12/28;19:00;20:15;loops Development;john;;1.25;0.25;finished
 
 
 Meeting Minutes

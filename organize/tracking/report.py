@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -264,6 +264,9 @@ class TrackDetails(BaseView):
     @Lazy
     def objectData(self):
         obj = self.object
+        if obj is None:
+            return dict(object=None, title='-', type='-', url='', 
+                        version=None, canAccess=False)
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         view = self.view.getViewForObject(obj)

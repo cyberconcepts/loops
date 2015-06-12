@@ -1,6 +1,27 @@
 <html i18n:domain="loops">
 
 
+<metal:institution define-macro="select_institution">
+  <form method="post">
+    <div style="font-size: 120%; padding: 10px 0 10px 0">
+      <span i18n:translate="">Organisation/Team</span>:
+      <b tal:content="item/institution/title" />
+      <img tal:condition="python:len(item.institutions) > 1"
+           src="/@@/cybertools.icons/application_edit.png"
+           onclick="dojo.byId('select_institution').style.display = 'inline'" />
+      <select name="select_institution" id="select_institution"
+              style="display: none"
+              onchange="submit()">
+        <option tal:repeat="inst item/institutions"
+                tal:content="inst/title"
+                tal:attributes="value inst/uid;
+                                selected python:inst['object'] == item.institution" />
+      </select>
+    </div>
+  </form>
+</metal:institution>
+
+
 <metal:providers define-macro="requirement_providers">
   <metal:block use-macro="view/concept_macros/conceptdata" />
   <div>

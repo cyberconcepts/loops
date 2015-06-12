@@ -73,7 +73,10 @@ class DataTable(AdapterBase):
     _adapterAttributes = AdapterBase._adapterAttributes + ('columns', 'data')
 
     def getColumns(self):
-        return getattr(self.context, '_columns', ['key', 'value'])
+        cols = getattr(self.context, '_columns', None)
+        if not cols:
+            cols = getattr(baseObject(self.type), '_columns', None)
+        return cols or ['key', 'value']
     def setColumns(self, value):
         self.context._columns = value
     columns = property(getColumns, setColumns)
@@ -89,6 +92,21 @@ class DataTable(AdapterBase):
     def setData(self, data):
         self.context._data = OOBTree(data)
     data = property(getData, setData)
+
+    def dataAsRecords(self):
+        result = []
+        for k, v in sorted(self.data.items()):
+            item = {}
+            for idx, c in enumerate(self.columns):
+                if idx == 0:
+                    item[c] = k
+                else:
+                    item[c] = v[idx-1]
+            result.append(item)
+        return result
+
+    def getRowsByValue(self, column, value):
+        return [r for r in self.dataAsRecords() if r[column] == value]
 
 
 TypeInterfaceSourceList.typeInterfaces += (IDataTable,)

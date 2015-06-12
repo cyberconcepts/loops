@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -57,6 +57,8 @@ PredicateInterfaceSourceList.predicateInterfaces += (IHasRole,)
 
 
 def getPersonForUser(context, request=None, principal=None):
+    if context is None:
+        return None
     if principal is None:
         if request is None:
             principal = getCurrentPrincipal()
@@ -95,9 +97,11 @@ class Person(AdapterBase, BasePerson):
                 return
             person = getPersonForUser(self.context, principal=principal)
             if person is not None and person != self.context:
-                raise ValueError(
-                    'Error when creating user %s: There is already a person (%s) assigned to user %s.'
-                    % (getName(self.context), getName(person), userId))
+                name = getName(person)
+                if name:
+                    raise ValueError(
+                        'There is already a person (%s) assigned to user %s.'
+                        % (getName(person), userId))
             pa = annotations(principal)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)

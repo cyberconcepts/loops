@@ -97,8 +97,14 @@
 
   <browser:page
       name="work.html"
-      for="loops.organize.interfaces.ITask"
+      for="loops.organize.interfaces.IConceptSchema"
       class="loops.organize.work.report.WorkStatementView"
+      permission="zope.View" />
+
+  <browser:page
+      name="work.csv"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.organize.work.report.WorkStatementCSVExport"
       permission="zope.View" />
 
   <zope:adapter 
@@ -124,6 +130,14 @@
       for="loops.interfaces.IConceptSchema"
       class="loops.organize.work.meeting.MeetingMinutesDocument"
       attribute="embed"
+      permission="zope.View" />
+
+  <!-- repair -->
+
+  <browser:page
+      name="fix_checkup_workitems.fix"
+      for="loops.interfaces.ILoops"
+      class="loops.organize.work.browser.FixCheckupWorkItems"
       permission="zope.View" />
 
   <!-- setup -->

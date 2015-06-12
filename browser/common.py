@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ Common base class for loops browser view classes.
 
 from cgi import parse_qs, parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
-from datetime import datetime
+from datetime import date, datetime
 import re
 from time import strptime
 from urllib import urlencode
@@ -61,17 +61,21 @@ from cybertools.stateful.interfaces import IStateful
 from cybertools.text import mimetypes
 from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.date import toLocalTime
+from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.browser.util import normalizeForUrl
 from loops.common import adapted, baseObject
 from loops.config.base import DummyOptions
 from loops.i18n.browser import I18NView
 from loops.interfaces import IResource, IView, INode, ITypeConcept
+from loops.organize.personal import favorite
+from loops.organize.party import getPersonForUser
 from loops.organize.tracking import access
 from loops.organize.util import getRolesForPrincipal
 from loops.resource import Resource
 from loops.security.common import checkPermission
 from loops.security.common import canAccessObject, canListObject, canWriteObject
+from loops.security.common import canEditRestricted
 from loops.type import ITypeConcept, LoopsTypeInfo
 from loops import util
 from loops.util import _, saveRequest
@@ -132,7 +136,58 @@ class EditForm(form.EditForm):
         return parentUrl + '/contents.html'
 
 
-class BaseView(GenericView, I18NView):
+class SortableMixin(object):
+
+    @Lazy
+    def sortInfo(self):
+        result = {}
+        for k, v in self.request.form.items():
+            if k.startswith('sortinfo_'):
+                tableName = k[len('sortinfo_'):]
+                if ',' in v:
+                    fn, dir = v.split(',')
+                else:
+                    fn = v
+                    dir = 'asc'
+                result[tableName] = dict(
+                    colName=fn, ascending=(dir=='asc'), fparam=v)
+        result = favorite.updateSortInfo(getPersonForUser(
+                        self.context, self.request), self.target, result)
+        return result
+
+    def isSortableColumn(self, tableName, colName):
+        return False    # overwrite in subclass
+
+    def getSortUrl(self, tableName, colName):
+        url = str(self.request.URL)
+        paramChar = '?' in url and '&' or '?'
+        si = self.sortInfo.get(tableName)
+        if si is not None and si.get('colName') == colName:
+            dir = si['ascending'] and 'desc' or 'asc'
+        else:
+            dir = 'asc'
+        return '%s%ssortinfo_%s=%s,%s' % (url, paramChar, tableName, colName, dir)
+
+    def getSortParams(self, tableName):
+        url = str(self.request.URL)
+        paramChar = '?' in url and '&' or '?'
+        si = self.sortInfo.get(tableName)
+        if si is not None:
+            colName = si['colName']
+            dir = si['ascending'] and 'asc' or 'desc'
+            return '%ssortinfo_%s=%s,%s' % (paramChar, tableName, colName, dir)
+        return ''
+
+    def getSortImage(self, tableName, colName):
+        si = self.sortInfo.get(tableName)
+        if si is not None and si.get('colName') == colName:
+            if si['ascending']:
+                return '/@@/cybertools.icons/arrowdown.gif'
+            else:
+                return '/@@/cybertools.icons/arrowup.gif'
+
+
+class BaseView(GenericView, I18NView, SortableMixin):
 
     actions = {}
     portlet_actions = []
@@ -152,6 +207,10 @@ class BaseView(GenericView, I18NView):
         except ForbiddenAttribute:  # ignore when testing
             pass
         saveRequest(request)
+
+    def todayFormatted(self):
+        return formatDate(date.today(), 'date', 'short',
+                          self.languageInfo.language)
 
     def checkPermissions(self):
         return canAccessObject(self.context)
@@ -203,6 +262,16 @@ class BaseView(GenericView, I18NView):
             if view is not None:
                 result.append(view)
         return result
+
+    @Lazy
+    def urlParamString(self):
+        return self.getUrlParamString()
+
+    def getUrlParamString(self):
+        qs = self.request.get('QUERY_STRING')
+        if qs:
+            return '?' + qs
+        return ''
 
     @Lazy
     def principalId(self):
@@ -336,6 +405,10 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def isPartOfPredicate(self):
         return self.conceptManager.get('ispartof')
+
+    @Lazy
+    def queryTargetPredicate(self):
+        return self.conceptManager.get('querytarget')
 
     @Lazy
     def memberPredicate(self):
@@ -732,6 +805,8 @@ class BaseView(GenericView, I18NView):
         return result
 
     def checkState(self):
+        if checkPermission('loops.ManageSite', self.context):
+            return True
         if not self.allStates:
             return True
         for stf in self.allStates:
@@ -805,6 +880,10 @@ class BaseView(GenericView, I18NView):
     @Lazy
     def canAccessRestricted(self):
         return checkPermission('loops.ViewRestricted', self.context)
+
+    @Lazy
+    def canEditRestricted(self):
+        return canEditRestricted(self.context)
 
     def openEditWindow(self, viewName='edit.html'):
         if self.editable:
@@ -927,6 +1006,12 @@ class BaseView(GenericView, I18NView):
         self.registerDojo()
         jsCall = 'dojo.require("dojox.image.Lightbox");'
         self.controller.macros.register('js-execute', jsCall, jsCall=jsCall)
+
+    def registerDojoComboBox(self):
+        self.registerDojo()
+        jsCall = ('dojo.require("dijit.form.ComboBox");')
+        self.controller.macros.register('js-execute', 
+                'dojo.require.ComboBox', jsCall=jsCall)
 
     def registerDojoFormAll(self):
         self.registerDojo()

@@ -130,7 +130,8 @@
 
 <metal:topic define-macro="topic"
              tal:define="children children|python:list(item.children());
-                         textResources textResources|item/textResources">
+                         textResources textResources|item/textResources;
+                         resources item/otherResources">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <h2 i18n:translate=""
       tal:condition="children">Children</h2>
@@ -151,8 +152,18 @@
           <a i18n:translate=""
               tal:attributes="href python:view.getUrlForTarget(related.context)">
             more...</a></p>
+        <div tal:repeat="image python:
+                            item.images[repeat['related'].index() + 1]">
+          <a dojoType="dojox.image.Lightbox" group="mediasset"
+             i18n:attributes="title"
+             tal:attributes="href image/fullImageUrl;
+                             title image/title">
+            <img tal:attributes="src image/src;
+                                 alt image/title" /></a>
+        </div>
     </div>
   </div>
+  <metal:info use-macro="view/concept_macros/conceptresources" />
 </metal:topic>
 
 

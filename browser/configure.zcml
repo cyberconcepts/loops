@@ -561,6 +561,14 @@
       factory="loops.browser.concept.TabbedPage"
       permission="zope.View" />
 
+  <!-- delete object action -->
+
+  <page
+      name="delete_object"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.DeleteObject"
+      permission="zope.ManageContent" />
+
   <!-- dialogs/forms (end-user views) -->
 
   <page

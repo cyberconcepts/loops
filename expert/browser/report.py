@@ -46,6 +46,8 @@ class ReportView(ConceptView):
     """ A view for defining (editing) a report.
     """
 
+    resultsRenderer = None  # to be defined by subclass
+
     @Lazy
     def report_macros(self):
         return self.controller.mergeTemplateMacros('report', report_template)
@@ -58,6 +60,25 @@ class ReportView(ConceptView):
     @Lazy
     def dynamicParams(self):
         return self.request.form
+
+    @Lazy
+    def report(self):
+        return self.adapted
+
+    @Lazy
+    def reportInstance(self):
+        instance = component.getAdapter(self.report, IReportInstance,
+                                        name=self.report.reportType)
+        instance.view = self
+        return instance
+
+    @Lazy
+    def queryFields(self):
+        ri = self.reportInstance
+        qf = ri.getAllQueryFields()
+        if ri.userSettings:
+            return [f for f in qf if f in ri.userSettings]
+        return qf
 
 
 class ResultsView(NodeView):
@@ -106,13 +127,6 @@ class ResultsView(NodeView):
     @Lazy
     def report(self):
         return adapted(self.virtualTargetObject)
-
-    @Lazy
-    def reportInstance(self):
-        instance = component.getAdapter(self.report, IReportInstance,
-                                        name=self.report.reportType)
-        instance.view = self
-        return instance
 
     #@Lazy
     def results(self):
@@ -193,6 +207,13 @@ class ResultsConceptView(ConceptView):
         ri = component.getAdapter(self.report, IReportInstance,
                                   name=reportType)
         ri.view = self
+        if not ri.sortCriteria:
+            si = self.sortInfo.get('results')
+            if si is not None:
+                fnames = (si['colName'],)
+                ri.sortCriteria = [f for f in ri.getSortFields() 
+                                     if f.name in fnames]
+                ri.sortDescending = not si['ascending']
         return ri
 
     def results(self):
@@ -206,6 +227,31 @@ class ResultsConceptView(ConceptView):
 
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
+
+    @Lazy
+    def downloadLink(self, format='csv'):
+        opt = self.options('download_' + format)
+        if not opt:
+            opt = self.typeOptions('download_' + format)
+        if opt:
+            return opt[0]
+
+    def isSortableColumn(self, tableName, colName):
+        if tableName == 'results':
+            if colName in [f.name for f in self.reportInstance.getSortFields()]:
+                return True
+        return False
+
+
+class EmbeddedResultsConceptView(ResultsConceptView):
+
+    @Lazy
+    def macro(self):
+        return self.result_macros['embedded_content']
+
+    @Lazy
+    def title(self):
+        return self.report.title
 
 
 class ReportConceptView(ResultsConceptView, ReportView):
