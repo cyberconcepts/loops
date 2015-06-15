@@ -275,7 +275,9 @@ class TrackDetails(BaseView):
         else:
             title = view.listingTitle
         versionable = IVersionable(self.object, None)
-        version = versionable is not None and versionable.versionId or ''
+        version = ((versionable is not None and 
+                    not (versionable.notVersioned) and 
+                    versionable.versionId) or '')
         return dict(object=obj, title=title,
                     type=self.longTypeTitle, url=url, version=version,
                     canAccess=canAccessObject(obj))
