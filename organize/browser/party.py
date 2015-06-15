@@ -133,6 +133,10 @@ class SendEmailForm(NodeView):
 
     __call__ = innerHtml
 
+    def checkPermissions(self):
+        return (not self.isAnonymous and 
+                super(SendEmailForm, self).checkPermissions())
+
     @property
     def macro(self):
         return organize_macros.macros['send_email']
@@ -180,6 +184,10 @@ class SendEmailForm(NodeView):
 
 
 class SendEmail(FormController):
+
+    def checkPermissions(self):
+        return (not self.isAnonymous and 
+                super(SendEmail, self).checkPermissions())
 
     def update(self):
         form = self.request.form
