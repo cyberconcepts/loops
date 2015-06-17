@@ -184,7 +184,8 @@ class ResultsConceptView(ConceptView):
         if not reports:
             type = self.context.conceptType
             reports = type.getParents([self.hasReportPredicate])
-        return adapted(reports[0])
+        if reports:
+            return adapted(reports[0])
 
     @Lazy
     def reportInstance(self):
