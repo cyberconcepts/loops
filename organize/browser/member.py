@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ from datetime import datetime
 from email.MIMEText import MIMEText
 from zope import interface, component
 from zope.app.authentication.principalfolder import InternalPrincipal
+from zope.app.authentication.principalfolder import PrincipalInfo
 from zope.app.form.browser.textwidgets import PasswordWidget as BasePasswordWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.principalannotation import annotations
@@ -47,9 +48,11 @@ from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.concept import Concept
 from loops.organize.interfaces import ANNOTATION_KEY, IMemberRegistrationManager
-from loops.organize.interfaces import IMemberRegistration, IPasswordChange
+from loops.organize.interfaces import IMemberRegistration, IPasswordEntry
+from loops.organize.interfaces import IPasswordChange, IPasswordReset
 from loops.organize.party import getPersonForUser, Person
 from loops.organize.util import getInternalPrincipal, getPrincipalForUserId
+from loops.organize.util import getPrincipalFolder
 import loops.browser.util
 from loops.util import _
 
@@ -86,7 +89,8 @@ class BaseMemberRegistration(NodeView):
     template = form_macros
 
     formErrors = dict(
-        confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
+        confirm_nomatch=FormError(_(u'Password and password confirmation '
+                                    u'do not match.')),
         duplicate_loginname=FormError(_('Login name already taken.')),
     )
 
@@ -187,7 +191,9 @@ class MemberRegistration(BaseMemberRegistration, CreateForm):
         result = regMan.register(login, pw,
                                  form.get('lastName'), form.get('firstName'),
                                  email=form.get('email'),
-                                 phoneNumbers=[x for x in phoneNumbers if x])
+                                 phoneNumbers=[x for x in phoneNumbers if x],
+                                 salutation=form.get('salutation'),
+                                 academicTitle=form.get('academicTitle'))
         if isinstance(result, dict):
             fi = formState.fieldInstances[result['fieldName']]
             fi.setError(result['error'], self.formErrors)
@@ -210,6 +216,8 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
     @Lazy
     def schema(self):
         schema = super(SecureMemberRegistration, self).schema
+        schema.fields.remove('salutation')
+        schema.fields.remove('academicTitle')
         schema.fields.remove('birthDate')
         schema.fields.remove('password')
         schema.fields.remove('passwordConfirm')
@@ -366,7 +374,8 @@ class PasswordChange(NodeView, Form):
     message = _(u'Your password has been changed.')
 
     formErrors = dict(
-        confirm_nomatch=FormError(_(u'Password and password confirmation do not match.')),
+        confirm_nomatch=FormError(_(u'Password and password confirmation '
+                                    u'do not match.')),
         wrong_oldpw=FormError(_(u'Your old password was not entered correctly.')),
     )
 
@@ -421,4 +430,85 @@ class PasswordChange(NodeView, Form):
             formState.fieldInstances.append(fi)
             formState.severity = max(formState.severity, fi.severity)
         return formState
+
+
+class PasswordReset(PasswordChange):
+
+    interface = IPasswordReset
+    message = _(u'Password Reset: You will receive an email with '
+                u'a link to change your password.')
+
+    formErrors = dict(
+        confirm_notfound=FormError(_(u'Invalid user account.')),
+    )
+
+    label = label_submit = _(u'Reset Password')
+
+    @Lazy
+    def data(self):
+        data = dict(loginName=u'')
+        return data
+
+    def update(self):
+        form = self.request.form
+        if not form.get('action'):
+            return True
+        formState = self.formState = self.validate(form)
+        if formState.severity > 0:
+            return True
+        loginName = form.get('loginName')
+        person = principal = None
+        regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
+        authenticator = regMan.getPrincipalFolderFromOption()
+        if authenticator is not None:
+            userId = authenticator.prefix + loginName
+            principal = getPrincipalForUserId(userId)
+            if principal is not None:
+                person = getPersonForUser(self.context, principal=principal)
+        if person is None:
+            fi = formState.fieldInstances['loginName']
+            fi.setError('confirm_notfound', self.formErrors)
+            formState.severity = max(formState.severity, fi.severity)
+            return True
+        person = adapted(person)
+        pa = self.getPrincipalAnnotation(principal)
+        pa['id'] = generateName()
+        pa['timestamp'] = datetime.utcnow()
+        self.notifyEmail(loginName, person.email, pa['id'])
+        url = '%s?messsage=%s' % (self.url, self.message)
+        self.request.response.redirect(url)
+        return False
+
+    def getPrincipalAnnotation(self, principal):
+        return annotations(principal).get(ANNOTATION_KEY, None)
+
+    def notifyEmail(self, userid, recipient, id):
+        baseUrl = absoluteURL(self.context.getMenu(), self.request)
+        url = u'%s/selfservice_confirmation.html?login=%s&id=%s' % (
+                                    baseUrl, userid, id,)
+        recipients = [recipient]
+        subject = _(u'password_reset_mail_subject')
+        message = _(u'password_reset_mail_text') + u':\n\n'
+        message = (message + url).encode('UTF-8')
+        senderInfo = self.globalOptions('email.sender')
+        sender = senderInfo and senderInfo[0] or 'info@loops.cy55.de'
+        sender = sender.encode('UTF-8')
+        msg = MIMEText(message, 'plain', 'utf-8')
+        msg['Subject'] = subject.encode('UTF-8')
+        msg['From'] = sender
+        msg['To'] = ', '.join(recipients)
+        mailhost = component.getUtility(IMailDelivery, 'Mail')
+        mailhost.send(sender, recipients, msg.as_string())
+
+
+class FixPersonRoles(object):
+
+    def __call__(self):
+        concepts = self.context['concepts']
+        for p in concepts['person'].getChildren([concepts['hasType']]):
+            person = adapted(p)
+            userId = person.userId
+            print '***', userId
+            person.userId = userId
+        return 'blubb'
 
