@@ -123,7 +123,7 @@
 
   <containerViews
       for="loops.interfaces.ILoops"
-      index="zope.View"
+      index="zope.ManageSite"
       contents="loops.ManageSite"
       add="loops.ManageSite" />
 
@@ -363,7 +363,7 @@
 
   <containerViews
       for="loops.interfaces.IViewManager"
-      index="zope.View"
+      index="zope.ManageSite"
       add="loops.ManageSite" />
 
   <menuItem
