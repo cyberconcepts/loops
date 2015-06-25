@@ -997,7 +997,7 @@ class BaseView(GenericView, I18NView, SortableMixin):
     def registerDojoComboBox(self):
         self.registerDojo()
         jsCall = ('dojo.require("dijit.form.ComboBox");')
-        self.controller.macros.register('js-execute', 
+        self.controller.macros.register('js-execute',
                 'dojo.require.ComboBox', jsCall=jsCall)
 
     def registerDojoFormAll(self):
@@ -1043,7 +1043,7 @@ class LoggedIn(object):
             code = 'error'
         message = self.messages[code]
         return self.request.response.redirect(self.nextUrl(message, code))
-	
+
     def nextUrl(self, message, code):
         camefrom = self.request.form.get('camefrom', '').strip('?')
         url = camefrom or self.request.URL[-1]
@@ -1053,6 +1053,7 @@ class LoggedIn(object):
             params = parse_qsl(qs)
         params = [(k, v) for k, v in params if k != 'loops.messages.top:record']
         params.append(('loops.messages.top:record', message.encode('UTF-8')))
+        url = url.encode('utf-8')
         return '%s?%s' % (url, urlencode(params))
 
 # vocabulary stuff
