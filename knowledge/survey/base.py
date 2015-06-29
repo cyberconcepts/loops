@@ -65,12 +65,18 @@ class QuestionGroup(AdapterBase, QuestionGroup):
                 'questionnaire', 'questions', 'feedbackItems')
     _noexportAttributes = _adapterAttributes
 
-    @property
-    def questionnaire(self):
+    def getQuestionnaires(self):
+        result = []
         for p in self.context.getParents():
             ap = adapted(p)
             if IQuestionnaire.providedBy(ap):
-                return ap
+                result.append(ap)            
+        return result
+
+    @property
+    def questionnaire(self):
+        for qu in self.getQuestionnaires():
+            return qu
 
     @property
     def subobjects(self):
