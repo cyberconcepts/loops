@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,9 @@ class Questionnaire(AdapterBase, Questionnaire):
 
     @property
     def questionGroups(self):
+        return self.getQuestionGroups()
+
+    def getQuestionGroups(self):
         return [adapted(c) for c in self.context.getChildren()]
 
     @property
