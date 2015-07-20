@@ -53,7 +53,10 @@ class Questionnaire(AdapterBase, Questionnaire):
 
     @property
     def questions(self):
-        for qug in self.questionGroups:
+        return self.getQuestions()
+
+    def getQuestions(self, personId=None):
+        for qug in self.getQuestionGroups(personId):
             for qu in qug.questions:
                 #qu.questionnaire = self
                 yield qu

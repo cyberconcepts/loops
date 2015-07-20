@@ -122,7 +122,7 @@ class SurveyView(InstitutionMixin, ConceptView):
                                    questions=questions[idx:idx+3]))
             return [g for g in result if len(g['questions']) == 3]
         if self.adapted.noGrouping:
-            questions = list(self.adapted.questions)
+            questions = list(self.adapted.getQuestions(self.personId))
             questions.sort(key=lambda x: x.title)
             size = len(questions)
             bs = self.batchSize
