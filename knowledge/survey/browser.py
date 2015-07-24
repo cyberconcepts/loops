@@ -269,7 +269,7 @@ class SurveyView(InstitutionMixin, ConceptView):
         respManager = Responses(self.context)
         self.teamData = self.getTeamData(respManager)
         response = Response(self.adapted, None)
-        groups = self.adapted.getQuestionGroups(self.pesonId)
+        groups = self.adapted.getQuestionGroups(self.personId)
         teamValues = response.getTeamResult(groups, self.teamData)
         for idx, r in enumerate(teamValues):
             group = r['group']
