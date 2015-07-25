@@ -26,6 +26,7 @@ from logging import getLogger
 import os, re, stat
 
 from zope.app.container.interfaces import INameChooser
+from zope.app.container.contained import ObjectRemovedEvent
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -134,6 +135,9 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def remove(self, obj):
         del self.resourceManager[getName(obj)]
+        notify(ObjectRemovedEvent(obj))
+        getLogger('loops.integrator.collection').info(
+                        'object removed: %s.' % getName(obj))
 
     @Lazy
     def resourceManager(self):
