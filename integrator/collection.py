@@ -86,7 +86,7 @@ class ExternalCollectionAdapter(AdapterBase):
                     print '###', vaddr, vobj, vid
                     versions.add(vaddr)
         new = []
-        oldFound = []
+        oldFound = set([])
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
         #print '*** old', old, versions, self.lastUpdated
@@ -98,7 +98,7 @@ class ExternalCollectionAdapter(AdapterBase):
             if addr in old:
                 # may be it would be better to return a file's hash
                 # for checking for changes...
-                oldFound.append(addr)
+                oldFound.add(addr)
                 if self.lastUpdated is None or (mdate and mdate > self.lastUpdated):
                     changeCount +=1
                     obj = old[addr]
@@ -115,9 +115,9 @@ class ExternalCollectionAdapter(AdapterBase):
                         self.updateMessage = message
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
-                if changeCount % 100 == 0:
-                    self.logger.info('Updated: %i.' % changeCount)
-                    transaction.commit()
+                    if changeCount % 100 == 0:
+                        self.logger.info('Updated: %i.' % changeCount)
+                        transaction.commit()
             else:
                 new.append(addr)
         self.logger.info('%i objects updated.' % changeCount)
