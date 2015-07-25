@@ -150,8 +150,8 @@ class ExternalCollectionAdapter(AdapterBase):
 
     def remove(self, obj):
         logger.info('Removing object: %s.' % getName(obj))
-        del self.resourceManager[getName(obj)]
         notify(ObjectRemovedEvent(obj))
+        del self.resourceManager[getName(obj)]
 
     @Lazy
     def resourceManager(self):
