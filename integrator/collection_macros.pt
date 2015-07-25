@@ -2,7 +2,7 @@
 
 
 <metal:block define-macro="render_collection"
-             tal:define="dummy item/update">
+             tal:condition="item/update">
 
   <metal:block use-macro="view/concept_macros/conceptdata">
     <metal:fill tal:condition="item/editable"
