@@ -24,6 +24,7 @@ file system.
 from datetime import datetime
 from logging import getLogger
 import os, re, stat
+import transaction
 
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.contained import ObjectRemovedEvent
@@ -67,6 +68,7 @@ class ExternalCollectionAdapter(AdapterBase):
 
     newResources = None
     updateMessage = None
+    logger = getLogger('loops.integrator.collection')
 
     def getExclude(self):
         return getattr(self.context, '_exclude', None) or []
@@ -88,6 +90,7 @@ class ExternalCollectionAdapter(AdapterBase):
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
         #print '*** old', old, versions, self.lastUpdated
+        changeCount = 0
         for addr, mdate in provider.collect(self):
             #print '***', addr, mdate
             if addr in versions:
@@ -97,6 +100,7 @@ class ExternalCollectionAdapter(AdapterBase):
                 # for checking for changes...
                 oldFound.append(addr)
                 if self.lastUpdated is None or (mdate and mdate > self.lastUpdated):
+                    changeCount +=1
                     obj = old[addr]
                     # update settings and regenerate scale variant for media asset
                     adobj = adapted(obj)
@@ -111,31 +115,40 @@ class ExternalCollectionAdapter(AdapterBase):
                         self.updateMessage = message
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
+                if changeCount % 100 == 0:
+                    self.logger.info('Updated: %i.' % changeCount)
+                    transaction.commit()
             else:
                 new.append(addr)
+        self.logger.info('%i objects updated.' % changeCount)
+        transaction.commit()
         if new:
             self.newResources = provider.createExtFileObjects(self, new)
             for r in self.newResources:
                 self.context.assignResource(r)
+        self.logger.info('%i objects created.' % len(new))
+        transaction.commit()
         for addr in old:
             if str(addr) not in oldFound:
                 # not part of the collection any more
                 # TODO: only remove from collection but keep object?
                 self.remove(old[addr])
+        transaction.commit()
         for r in self.context.getResources():
             adobj = adapted(r)
             if self.metaInfo != adobj.metaInfo and (
                                     not adobj.metaInfo or self.overwriteMetaInfo):
                     adobj.metaInfo = self.metaInfo
         self.lastUpdated = datetime.today()
+        self.logger.info('External collection updated.')
+        transaction.commit()
 
     def clear(self):
         for obj in self.context.getResources():
             self.remove(obj)
 
     def remove(self, obj):
-        getLogger('loops.integrator.collection').info(
-                        'Removing object: %s.' % getName(obj))
+        self.logger.info('Removing object: %s.' % getName(obj))
         del self.resourceManager[getName(obj)]
         notify(ObjectRemovedEvent(obj))
 
