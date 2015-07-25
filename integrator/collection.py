@@ -53,6 +53,8 @@ from loops.versioning.interfaces import IVersionable
 
 TypeInterfaceSourceList.typeInterfaces += (IExternalCollection,)
 
+logger = getLogger('loops.integrator.collection')
+
 
 class ExternalCollectionAdapter(AdapterBase):
     """ A concept adapter for accessing an external collection.
@@ -68,8 +70,7 @@ class ExternalCollectionAdapter(AdapterBase):
 
     newResources = None
     updateMessage = None
-    logger = getLogger('loops.integrator.collection')
-
+    
     def getExclude(self):
         return getattr(self.context, '_exclude', None) or []
     def setExclude(self, value):
@@ -115,18 +116,18 @@ class ExternalCollectionAdapter(AdapterBase):
                         self.updateMessage = message
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
-                    if changeCount % 100 == 0:
-                        self.logger.info('Updated: %i.' % changeCount)
+                    if changeCount % 10 == 0:
+                        logger.info('Updated: %i.' % changeCount)
                         transaction.commit()
             else:
                 new.append(addr)
-        self.logger.info('%i objects updated.' % changeCount)
+        logger.info('%i objects updated.' % changeCount)
         transaction.commit()
         if new:
             self.newResources = provider.createExtFileObjects(self, new)
             for r in self.newResources:
                 self.context.assignResource(r)
-        self.logger.info('%i objects created.' % len(new))
+        logger.info('%i objects created.' % len(new))
         transaction.commit()
         for addr in old:
             if str(addr) not in oldFound:
@@ -140,7 +141,7 @@ class ExternalCollectionAdapter(AdapterBase):
                                     not adobj.metaInfo or self.overwriteMetaInfo):
                     adobj.metaInfo = self.metaInfo
         self.lastUpdated = datetime.today()
-        self.logger.info('External collection updated.')
+        logger.info('External collection updated.')
         transaction.commit()
 
     def clear(self):
@@ -148,7 +149,7 @@ class ExternalCollectionAdapter(AdapterBase):
             self.remove(obj)
 
     def remove(self, obj):
-        self.logger.info('Removing object: %s.' % getName(obj))
+        logger.info('Removing object: %s.' % getName(obj))
         del self.resourceManager[getName(obj)]
         notify(ObjectRemovedEvent(obj))
 
@@ -204,7 +205,7 @@ class DirectoryCollectionProvider(object):
                                 for k, v in self.extFileTypeMapping.items())
         container = client.context.getLoopsRoot().getResourceManager()
         directory = self.getDirectory(client)
-        for addr in addresses:
+        for idx, addr in enumerate(addresses):
             name = self.generateName(container, addr)
             title = self.generateTitle(addr)
             contentType = guess_content_type(addr,
@@ -217,9 +218,8 @@ class DirectoryCollectionProvider(object):
                 if extFileType is None:
                     extFileType = extFileTypes['image/*']
             if extFileType is None:
-                getLogger('loops.integrator.collection.DirectoryCollectionProvider'
-                            ).warn('No external file type found for %r, '
-                                   'content type: %r' % (name, contentType))
+                logger.warn('No external file type found for %r, '
+                            'content type: %r' % (name, contentType))
             obj = addAndConfigureObject(
                             container, Resource, name,
                             title=title,
@@ -236,6 +236,9 @@ class DirectoryCollectionProvider(object):
                 message = client.updateMessage or u''
                 message += u'<br />'.join(adobj.processingErrors)
                 client.updateMessage = message
+            if idx and idx % 10 == 0:
+                logger.info('Created: %i.' % idx)
+                transaction.commit()
             yield obj
 
     def getDirectory(self, client):
