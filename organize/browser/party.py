@@ -186,7 +186,7 @@ class SendEmail(FormController):
         subject = form.get('subject') or u''
         message = form.get('mailbody') or u''
         recipients = form.get('recipients') or []
-        recipients += (form.get('addrRecipients') or u'').split('\n')
+        recipients += (form.get('addrecipients') or u'').split('\n')
         # TODO: remove duplicates
         person = getPersonForUser(self.context, self.request)
         sender = person and adapted(person).email or 'loops@unknown.com'
