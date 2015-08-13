@@ -1,6 +1,8 @@
 # types
 type(u'query', u'Abfrage', options=u'',
     typeInterface='loops.expert.concept.IQueryConcept', viewName=u'')
+type(u'datatable', u'Datentabelle', options=u'action.portlet:edit_concept',
+    typeInterface='loops.table.IDataTable', viewName=u'')
 type(u'task', u'Aufgabe', options=u'',
     typeInterface='loops.knowledge.interfaces.ITask', viewName=u'')
 type(u'domain', u'Bereich', options=u'', typeInterface=u'', viewName=u'')
