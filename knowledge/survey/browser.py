@@ -52,7 +52,7 @@ class SurveyView(InstitutionMixin, ConceptView):
 
     template = template
 
-    adminMaySelectAllInstitutions = False
+    #adminMaySelectAllInstitutions = False
 
     @Lazy
     def macro(self):
@@ -190,7 +190,7 @@ class SurveyView(InstitutionMixin, ConceptView):
                 data = respManager.load(uid, instUid)
                 if data:
                     resp = Response(self.adapted, self.personId)
-                    for qu in self.adapted.questions:
+                    for qu in self.adapted.getQuestions(self.personId):
                         if qu.questionType in (None, 'value_selection'):
                             if qu.uid in data:
                                 value = data[qu.uid]
@@ -331,7 +331,7 @@ class SurveyView(InstitutionMixin, ConceptView):
     def check(self, response):
         errors = []
         values = response.values
-        for qu in self.adapted.questions:
+        for qu in self.adapted.getQuestions(self.personId):
             if qu.required and qu not in values:
                 errors.append(dict(uid=qu.uid,
                     text='Please answer the obligatory questions.'))
