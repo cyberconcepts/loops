@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -46,11 +46,17 @@ class Questionnaire(AdapterBase, Questionnaire):
 
     @property
     def questionGroups(self):
+        return self.getQuestionGroups()
+
+    def getQuestionGroups(self, personId=None):
         return [adapted(c) for c in self.context.getChildren()]
 
     @property
     def questions(self):
-        for qug in self.questionGroups:
+        return self.getQuestions()
+
+    def getQuestions(self, personId=None):
+        for qug in self.getQuestionGroups(personId):
             for qu in qug.questions:
                 #qu.questionnaire = self
                 yield qu
@@ -65,12 +71,18 @@ class QuestionGroup(AdapterBase, QuestionGroup):
                 'questionnaire', 'questions', 'feedbackItems')
     _noexportAttributes = _adapterAttributes
 
-    @property
-    def questionnaire(self):
+    def getQuestionnaires(self):
+        result = []
         for p in self.context.getParents():
             ap = adapted(p)
             if IQuestionnaire.providedBy(ap):
-                return ap
+                result.append(ap)            
+        return result
+
+    @property
+    def questionnaire(self):
+        for qu in self.getQuestionnaires():
+            return qu
 
     @property
     def subobjects(self):

@@ -24,6 +24,7 @@ from persistent.mapping import PersistentMapping
 from zope import interface, component
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
@@ -60,10 +61,10 @@ def getPersonForUser(context, request=None, principal=None):
     if context is None:
         return None
     if principal is None:
-        if request is None:
-            principal = getCurrentPrincipal()
-        else:
+        if request is not None:
             principal = getattr(request, 'principal', None)
+        else:
+            principal = getPrincipal(context)
     if principal is None:
         return None
     loops = context.getLoopsRoot()
@@ -76,6 +77,15 @@ def getPersonForUser(context, request=None, principal=None):
         else:
             return None
     return pa.get(util.getUidForObject(loops))
+
+
+def getPrincipal(context):
+    principal = getCurrentPrincipal()
+    if principal is not None:
+        if IUnauthenticatedPrincipal.providedBy(principal):
+            return None
+        return principal
+    return None
 
 
 class Person(AdapterBase, BasePerson):

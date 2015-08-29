@@ -954,7 +954,8 @@ class NodeTraverser(ItemTraverser):
         if context.nodeType == 'menu':
             setViewConfiguration(context, request)
         if name == '.loops':
-            return self.context.getLoopsRoot()
+            name = self.getTargetUid(request)
+            #return self.context.getLoopsRoot()
         if name.startswith('.'):
             name = self.cleanUpTraversalStack(request, name)[1:]
             target = self.getTarget(name)
@@ -981,17 +982,34 @@ class NodeTraverser(ItemTraverser):
         obj = super(NodeTraverser, self).publishTraverse(request, name)
         return obj
 
+    def getTargetUid(self, request):
+        parent = self.context.getLoopsRoot()
+        stack = request._traversal_stack
+        for i in range(2):
+            name = stack.pop()
+            obj = parent.get(name)
+            if not obj:
+                return name
+            parent = obj
+        return '.' + util.getUidForObject(obj)
+
     def cleanUpTraversalStack(self, request, name):
-        traversalStack = request._traversal_stack
-        while traversalStack and traversalStack[0].startswith('.'):
+        #traversalStack = request._traversal_stack
+        #while traversalStack and traversalStack[0].startswith('.'):
             # skip obsolete target references in the url
-            name = traversalStack.pop(0)
+        #    name = traversalStack.pop(0)
         traversedNames = request._traversed_names
-        if traversedNames:
-            lastTraversed = traversedNames[-1]
-            if lastTraversed.startswith('.') and lastTraversed != name:
+        for n in list(traversedNames):
+            if n.startswith('.'):
+                # remove obsolete target refs
+                traversedNames.remove(n)
+        #if traversedNames:
+        #    lastTraversed = traversedNames[-1]
+        #    if lastTraversed.startswith('.') and lastTraversed != name:
                 # let <base .../> tag show the current object
-                traversedNames[-1] = name
+        #        traversedNames[-1] = name
+        # let <base .../> tag show the current object
+        traversedNames.append(name)
         return name
 
     def getTarget(self, name):

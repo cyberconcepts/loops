@@ -1,0 +1,9 @@
+# update for old loops sites
+
+type(u'datatable', u'Datentabelle', options=u'action.portlet:edit_concept',
+    typeInterface='loops.table.IDataTable', viewName=u'')
+
+concept(u'issubtype', u'is Subtype', u'predicate')
+
+child(u'general', u'issubtype', u'datatable')
+child(u'system', u'issubtype', u'standard')

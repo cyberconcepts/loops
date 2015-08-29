@@ -52,7 +52,7 @@ class SurveyView(InstitutionMixin, ConceptView):
 
     template = template
 
-    adminMaySelectAllInstitutions = False
+    #adminMaySelectAllInstitutions = False
 
     @Lazy
     def macro(self):
@@ -62,9 +62,8 @@ class SurveyView(InstitutionMixin, ConceptView):
     @Lazy
     def title(self):
         title = self.context.title
-        personId = self.request.form.get('person')
-        if personId:
-            person = adapted(getObjectForUid(personId))
+        if self.personId:
+            person = adapted(getObjectForUid(self.personId))
             if person is not None:
                 return '%s: %s' % (title, person.title)
         return title
@@ -79,6 +78,10 @@ class SurveyView(InstitutionMixin, ConceptView):
         if qs.startswith('?report='):
             return ''
         return qs
+
+    @Lazy
+    def personId(self):
+        return self.request.form.get('person')
 
     @Lazy
     def report(self):
@@ -104,7 +107,8 @@ class SurveyView(InstitutionMixin, ConceptView):
     def groups(self):
         result = []
         if self.questionnaireType == 'pref_selection':
-            groups = [g.questions for g in self.adapted.questionGroups]
+            groups = [g.questions for g in 
+                self.adapted.getQuestionGroups(self.personId)]
             questions = []
             for idxg, g in enumerate(groups):
                 qus = []
@@ -118,7 +122,7 @@ class SurveyView(InstitutionMixin, ConceptView):
                                    questions=questions[idx:idx+3]))
             return [g for g in result if len(g['questions']) == 3]
         if self.adapted.noGrouping:
-            questions = list(self.adapted.questions)
+            questions = list(self.adapted.getQuestions(self.personId))
             questions.sort(key=lambda x: x.title)
             size = len(questions)
             bs = self.batchSize
@@ -126,7 +130,7 @@ class SurveyView(InstitutionMixin, ConceptView):
                 result.append(dict(title=u'Question', infoText=None, 
                                    questions=questions[idx:idx+bs]))
         else:
-            for group in self.adapted.questionGroups:
+            for group in self.adapted.getQuestionGroups(self.personId):
                 result.append(dict(title=group.title, 
                                    infoText=self.getInfoText(group),
                                    questions=group.questions))
@@ -185,8 +189,8 @@ class SurveyView(InstitutionMixin, ConceptView):
                 uid = self.getUidForObject(c)
                 data = respManager.load(uid, instUid)
                 if data:
-                    resp = Response(self.adapted, None)
-                    for qu in self.adapted.questions:
+                    resp = Response(self.adapted, self.personId)
+                    for qu in self.adapted.getQuestions(self.personId):
                         if qu.questionType in (None, 'value_selection'):
                             if qu.uid in data:
                                 value = data[qu.uid]
@@ -195,7 +199,7 @@ class SurveyView(InstitutionMixin, ConceptView):
                         else:
                             resp.texts[qu] = data.get(qu.uid) or u''
                     qgAvailable = True
-                    for qg in self.adapted.questionGroups:
+                    for qg in self.adapted.getQuestionGroups(self.personId):
                         if qg.uid in data:
                             resp.values[qg] = data[qg.uid]
                         else:
@@ -227,7 +231,7 @@ class SurveyView(InstitutionMixin, ConceptView):
         if self.adapted.questionnaireType == 'pref_selection':
             return self.prefsResults(respManager, form, action)
         data = {}
-        response = Response(self.adapted, None)
+        response = Response(self.adapted, self.personId)
         for key, value in form.items():
             if key.startswith('question_'):
                 if value != 'none':
@@ -265,7 +269,7 @@ class SurveyView(InstitutionMixin, ConceptView):
         respManager = Responses(self.context)
         self.teamData = self.getTeamData(respManager)
         response = Response(self.adapted, None)
-        groups = self.adapted.questionGroups
+        groups = self.adapted.getQuestionGroups(self.personId)
         teamValues = response.getTeamResult(groups, self.teamData)
         for idx, r in enumerate(teamValues):
             group = r['group']
@@ -314,7 +318,7 @@ class SurveyView(InstitutionMixin, ConceptView):
         #self.errors = self.check(response)
         if self.errors:
             return []
-        for group in self.adapted.questionGroups:
+        for group in self.adapted.getQuestionGroups(self.personId):
             score = 0
             for qu in group.questions:
                 value = data.get(qu.uid) or 0
@@ -327,13 +331,13 @@ class SurveyView(InstitutionMixin, ConceptView):
     def check(self, response):
         errors = []
         values = response.values
-        for qu in self.adapted.questions:
+        for qu in self.adapted.getQuestions(self.personId):
             if qu.required and qu not in values:
                 errors.append(dict(uid=qu.uid,
                     text='Please answer the obligatory questions.'))
                 break
         qugroups = {}
-        for qugroup in self.adapted.questionGroups:
+        for qugroup in self.adapted.getQuestionGroups(self.personId):
             qugroups[qugroup] = 0
         for qu in values:
             qugroups[qu.questionGroup] += 1
