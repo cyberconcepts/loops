@@ -21,6 +21,7 @@ View class(es) for resource classifiers.
 """
 
 from logging import getLogger
+import transaction
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -44,9 +45,13 @@ class ClassifierView(ConceptView):
         if 'update' in self.request.form:
             cta = adapted(self.context)
             if cta is not None:
-                for r in collectResources(self.context):
+                for idx, r in enumerate(collectResources(self.context)):
+                    if idx % 1000 == 0:
+                        logger.info('Committing, resource # %s' % idx)
+                        transaction.commit()
                     cta.process(r)
             logger.info('Finished processing')
+            transaction.commit()
         return True
 
 
