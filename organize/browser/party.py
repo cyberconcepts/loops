@@ -175,6 +175,10 @@ class SendEmailForm(NodeView):
 
     @Lazy
     def subject(self):
+        optionKey = 'organize.sendmail_subject'
+        option = self.globalOptions(optionKey) or self.typeOptions(optionKey)
+        if option:
+            return option[0]
         menu = self.context.getMenu()
         zdc = IZopeDublinCore(menu)
         zdc.languageInfo = self.languageInfo
