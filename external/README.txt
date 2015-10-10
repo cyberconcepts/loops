@@ -136,7 +136,7 @@ Writing object information to the external storage
   concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
        viewName=u'mystuff.html'...)...
   child(u'projects', u'customer', u'standard')...
-  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType='text/restructured')...
+  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType=u'')...
   resourceRelation(u'myquery', u'doc04.txt', u'standard')
   node('home', u'Home', '', u'menu')
   node('myquery', u'My Query', 'home', u'page', target=u'concepts/myquery')...
@@ -194,9 +194,9 @@ Extracting selected parts of the concept map
   concept(u'cust1', u'Customer 1', u'customer')
   concept(u'cust2', u'Customer 2', u'customer')
   concept(u'cust3', u'Customer 3', u'customer')
-  resource(u'd001.txt', u'Doc 001', u'textdocument', contentType='text/restructured')
-  resource(u'd003.txt', u'Doc 003', u'textdocument', contentType='text/restructured')
-  resource(u'd002.txt', u'Doc 002', u'textdocument', contentType='text/restructured')
+  resource(u'd001.txt', u'Doc 001', u'textdocument', contentType=u'')
+  resource(u'd003.txt', u'Doc 003', u'textdocument', contentType=u'')
+  resource(u'd002.txt', u'Doc 002', u'textdocument', contentType=u'')
   resourceRelation(u'cust1', u'd001.txt', u'standard')
   resourceRelation(u'cust1', u'd003.txt', u'standard')
   resourceRelation(u'cust3', u'd002.txt', u'standard')

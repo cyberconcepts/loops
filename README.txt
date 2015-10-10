@@ -737,7 +737,9 @@ on data provided in this form:
 
   >>> component.provideAdapter(NameChooser)
   >>> request = TestRequest(form={'title': u'Test Note',
-  ...                             'form.type': u'.loops/concepts/note'})
+  ...                             'form.type': u'.loops/concepts/note',
+  ...                             'contentType': u'text/restructured',
+  ...                             'linkUrl': u'http://'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
@@ -802,7 +804,7 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkText textline False None
 
   >>> view.data
-  {'linkUrl': u'http://', 'contentType': 'text/restructured', 'data': u'',
+  {'linkUrl': u'http://', 'contentType': u'text/restructured', 'data': u'',
    'linkText': u'', 'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
