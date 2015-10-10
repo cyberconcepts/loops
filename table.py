@@ -88,6 +88,13 @@ class DataTable(AdapterBase):
         if data is None:
             data = OOBTree()
             self.context._data = data
+        reclen = len(self.columns) - 1
+        for k, v in data.items():
+            v = v[:reclen]
+            missing = reclen - len(v)
+            if missing > 0:
+                v += (missing * [u''])
+            data[k] = v
         return data
     def setData(self, data):
         self.context._data = OOBTree(data)
@@ -102,6 +109,7 @@ class DataTable(AdapterBase):
                     item[c] = k
                 else:
                     item[c] = v[idx-1]
+                    #item[c] = len(v) > idx and v[idx-1] or u''
             result.append(item)
         return result
 

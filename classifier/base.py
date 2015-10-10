@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Adapters and others classes for analyzing resources.
-
-$Id$
 """
 
 from itertools import tee
@@ -41,6 +39,7 @@ from loops.resource import Resource
 from loops.setup import addAndConfigureObject
 from loops.type import TypeInterfaceSourceList
 
+logger = getLogger('Classifier')
 
 TypeInterfaceSourceList.typeInterfaces += (IClassifier,)
 
@@ -102,15 +101,15 @@ class Classifier(AdapterBase):
         if resource not in resources:
             concept.assignResource(resource, predicate)
             message = u'Assigning: %s %s %s'
+            self.log(message % (resource.title, predicate.title, concept.title), 5)
         else:
             message = u'Already assigned: %s %s %s'
-        self.log(message % (resource.title, predicate.title, concept.title), 4)
+            self.log(message % (resource.title, predicate.title, concept.title), 4)
 
     def log(self, message, level=5):
         if level >= self.logLevel:
             #print 'Classifier %s:' % getName(self.context), message
-            getLogger('Classifier').info(
-                u'%s: %s' % (getName(self.context), message))
+            logger.info(u'%s: %s' % (getName(self.context), message))
 
 
 class Extractor(object):

@@ -175,6 +175,10 @@ class SendEmailForm(NodeView):
 
     @Lazy
     def subject(self):
+        optionKey = 'organize.sendmail_subject'
+        option = self.globalOptions(optionKey) or self.typeOptions(optionKey)
+        if option:
+            return option[0]
         menu = self.context.getMenu()
         zdc = IZopeDublinCore(menu)
         zdc.languageInfo = self.languageInfo
@@ -184,6 +188,8 @@ class SendEmailForm(NodeView):
 
 
 class SendEmail(FormController):
+
+    bccToSender = False
 
     def checkPermissions(self):
         return (not self.isAnonymous and 
@@ -201,7 +207,10 @@ class SendEmail(FormController):
         msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
         msg['Subject'] = subject.encode('utf-8')
         msg['From'] = sender
-        msg['To'] = ', '.join(r.strip() for r in recipients if r.strip())
+        recipients = [r.strip() for r in recipients if r.strip()]
+        msg['To'] = ', '.join(recipients)
+        if self.bccToSender:
+            recipients.append(sender)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
         mailhost.send(sender, recipients, msg.as_string())
         return True

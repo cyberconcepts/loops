@@ -125,14 +125,15 @@
         <span tal:content="view/target/title"></span></div>
       <metal:content define-macro="mail_content">
         <div>
-          <label i18n:translate="" for="subject">Subject</label>
+          <label i18n:translate="" for="subject">Mail Subject</label>
           <div>
             <input name="subject" id="subject" style="width: 60em"
                    dojoType="dijit.form.ValidationTextBox" required
                    tal:attributes="value view/subject" /></div>
         </div>
         <div>
-          <label i18n:translate="" for="mailbody">Mail Body</label>
+          <label i18n:translate="" 
+                 for="mailbody">Mail Body</label>
           <div>
             <textarea name="mailbody" cols="80" rows="4" id="mailbody"
                       dojoType="dijit.form.SimpleTextarea" style="width: 60em"
@@ -155,7 +156,8 @@
           <span i18n:translate="">Toggle all</span></div>
       </div>
       <div>
-        <label i18n:translate="" for="addrecipients">Additional recipients</label>
+        <label i18n:translate="" 
+               for="addrecipients">Additional Recipients</label>
         <div>
           <textarea name="addrecipients" cols="80" rows="4" id="addrecipients"
                     dojoType="dijit.form.SimpleTextarea"

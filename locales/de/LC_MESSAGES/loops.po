@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-06-06 12:00 CET\n"
+"PO-Revision-Date: 2015-09-22 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -596,9 +596,6 @@ msgstr "Informationen über dieses Objekt"
 
 msgid "Information about this object."
 msgstr "Informationen über dieses Objekt."
-
-msgid "Send a link to this object by email."
-msgstr "Einen Link zu diesem Objekt per E-Mail versenden."
 
 msgid "Edit with external editor."
 msgstr "Mit 'External Editor' bearbeiten."
@@ -1416,3 +1413,27 @@ msgstr "Zeitraum"
 
 msgid "Technology"
 msgstr "Technik"
+
+# send mail
+
+msgid "Send a link to this object by email."
+msgstr "Einen Link zu diesem Objekt per E-Mail versenden."
+
+msgid "Send Link by Email"
+msgstr "Link per E-Mail versenden"
+
+msgid "Mail Subject"
+msgstr "Betreff"
+
+msgid "Mail Body"
+msgstr "Text"
+
+msgid "Recipients"
+msgstr "Empfänger"
+
+msgid "Additional Recipients"
+msgstr "Weitere Empfänger"
+
+msgid "Send email"
+msgstr "E-Mail senden"
+
