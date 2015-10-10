@@ -45,7 +45,7 @@ from cybertools.typology.interfaces import IType, ITypeManager
 from cybertools.util.jeep import Jeep
 
 from loops.base import ParentInfo
-from loops.common import adapted, AdapterBase
+from loops.common import adapted, baseObject, AdapterBase
 from loops.i18n.common import I18NValue
 from loops.interfaces import IConcept, IConceptRelation, IConceptView
 from loops.interfaces import IResource
@@ -459,7 +459,10 @@ class IndexAttributes(object):
         #if self.adapted != self.context:
         if isinstance(self.adapted, AdapterBase):
             #return component.queryAdapter(self.adapted, IIndexAttributes)
-            return IIndexAttributes(self.adapted, None)
+            iattr = IIndexAttributes(self.adapted, None)
+            if iattr.__class__ == self.__class__:
+                return None
+            return iattr
 
     def text(self):
         if self.adaptedIndexAttributes is not None:
@@ -483,14 +486,14 @@ class IndexAttributes(object):
             title = u''
         if isinstance(title, I18NValue):
             title = ' '.join(title.values())
-        return ' '.join((getName(context), title)).strip()
+        return ' '.join((getName(baseObject(context)), title)).strip()
 
     def date(self):
         if self.adaptedIndexAttributes is not None:
             return self.adaptedIndexAttributes.date()
 
     def creators(self):
-        cr = IZopeDublinCore(self.context).creators or []
+        cr = IZopeDublinCore(baseObject(self.context)).creators or []
         pau = component.getUtility(IAuthentication)
         creators = []
         for c in cr:
@@ -507,7 +510,7 @@ class IndexAttributes(object):
     def identifier(self):
         id = getattr(self.adapted, 'identifier', None)
         if id is None:
-            return getName(self.context)
+            return getName(baseObject(self.context))
         return id
 
     def keywords(self):
