@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -75,7 +73,7 @@ So we are now ready to query the favorites.
 
   >>> favs = list(favorites.query(userName=johnCId))
   >>> favs
-  [<Favorite ['27', 1, '33', '...']: {}>]
+  [<Favorite ['27', 1, '33', '...']: {'type': 'favorite'}>]
 
   >>> list(favAdapted.list(johnC))
   ['27']
@@ -115,6 +113,41 @@ Let's now trigger the saving of a favorite.
 
   >>> len(list(favorites.query(userName=johnCId)))
   1
+
+
+Notifications
+=============
+
+  >>> from loops.organize.personal.notification import Notifications
+  >>> from loops.common import adapted
+  
+  >>> person = adapted(setupData.johnC)
+  >>> d001 = resources['d001.txt']
+
+  >>> notifications = Notifications(person)
+
+We can now add a notification.
+
+  >>> notifications.add(d001, person, 'I send myself a letter.')
+
+  >>> notif = list(notifications.listTracks())[0]
+  >>> notif
+  <Favorite ['27', 1, '33', '...']: 
+   {'text': 'I send myself a letter.', 'type': 'notification', 'sender': '33'}>
+
+When the notification is marked as read the read timestamp will be set.
+
+  >>> notifications.read(notif)
+  >>> notif
+  <Favorite ['27', 1, '33', '...']: 
+   {'text': 'I send myself a letter.', 'read_ts': ..., 'type': 'notification',
+    'sender': '33'}>
+
+It's possible to store more than one notification concerning the same object.
+
+  >>> notifications.add(d001, person, 'I send myself another letter.')
+  >>> len(list(notifications.listTracks()))
+  2
 
 
 Filters - Show only Certain Parts of the Concept Map
