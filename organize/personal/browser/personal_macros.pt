@@ -45,3 +45,19 @@
          i18n:attributes="title">Add Filter</a>
     </div>
 </metal:actions>
+
+
+<metal:block define-macro="notifications">
+  <div tal:attributes="class string:content-$level;">
+    <metal:title use-macro="item/concept_macros/concepttitle" />
+    <table class="listing">
+      <tr class="header">
+        <th>Date/Time</th>
+        <th>Sender</th>
+        <th>Object</th>
+        <th>Text</th>
+        <th>Date/Time read</th>
+      </tr>
+    </table>
+  </div>
+</metal:block>

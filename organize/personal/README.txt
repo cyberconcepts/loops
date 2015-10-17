@@ -149,6 +149,12 @@ It's possible to store more than one notification concerning the same object.
   >>> len(list(notifications.listTracks()))
   2
 
+User interface
+--------------
+
+  >>> from loops.organize.personal.browser.notification import NotificationsListing
+  >>> view = NotificationsListing(home, TestRequest())
+
 
 Filters - Show only Certain Parts of the Concept Map
 ====================================================

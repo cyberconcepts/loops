@@ -29,4 +29,10 @@
     <page name="deactivateFilter.html" attribute="deactivate" />
   </browser:pages>
 
+  <browser:page
+      for="loops.interfaces.IConceptSchema"
+      name="list_notifications.html"
+      class="loops.organize.personal.browser.notification.NotificationsListing"
+      permission="zope.View" />
+
 </configure>
