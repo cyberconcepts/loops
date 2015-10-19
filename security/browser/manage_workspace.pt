@@ -1,6 +1,25 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zope">
 <body>
+
+<metal:slot fill-slot="breadcrumbs">
+  <div id="breadcrumbs" metal:define-macro="breadcrumbs">
+      <div tal:omit-tag="" i18n:translate="">Location:</div>&nbsp;<tal:block
+           repeat="breadcrumb view/context/__parent__/@@absolute_url/breadcrumbs"
+          ><a href=""
+                  tal:condition="repeat/breadcrumb/start"
+                  tal:attributes="
+                  href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                  i18n:translate="">[top]</a>
+          <a href=""
+               tal:condition="not:repeat/breadcrumb/start"
+               tal:content="string:${breadcrumb/name}"
+               tal:attributes="
+               href string:${breadcrumb/url}/@@SelectedManagementView.html">
+              breadcrumb item</a> / </tal:block>
+  </div>
+</metal:slot>
+
 <div metal:fill-slot="body" i18n:domain="zope"
      tal:define="groups_info view/getGroupsInfo">
   <h1 i18n:translate="">Define Workspace Properties</h1>
@@ -54,7 +73,7 @@
   <h2 i18n:translate="">Assign Permissions to Roles for Children of this Object</h2>
   <br />
   <metal:permissions use-macro="view/permission_macros/permission_form" />
-
 </div>
+
 </body>
 </html>

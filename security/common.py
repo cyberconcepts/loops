@@ -28,6 +28,7 @@ from zope.app.security.settings import Allow, Deny, Unset
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
+from zope.location.interfaces import IRoot
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
@@ -218,6 +219,16 @@ class WorkspaceInformation(Persistent):
 
     def getParent(self):
         return self.__parent__
+
+    def getParents(self):
+        parents = []
+        w = self.__parent__
+        while w is not None:
+            parents.append(w)
+            w = w.__parent__
+        if parents and IRoot.providedBy(parents[-1]):
+            return parents
+        raise TypeError("Not enough context information to get all parents")
 
 
 def getWorkspaceGroup(obj, predicate):
