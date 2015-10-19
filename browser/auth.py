@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #
 
 """
-$Id$
+Login, logout, unauthorized stuff.
 """
 
 from zope.app.security.interfaces import IAuthentication
@@ -25,14 +25,27 @@ from zope.app.security.interfaces import ILogout, IUnauthenticatedPrincipal
 from zope import component
 from zope.interface import implements
 
+from loops.browser.concept import ConceptView
 from loops.browser.node import NodeView
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 
+template = ViewPageTemplateFile('auth.pt')
+
+
+class LoginConcept(ConceptView):
+
+    template = template
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['login_form']
+
+
 class LoginForm(NodeView):
 
-    template = ViewPageTemplateFile('auth.pt')
+    template = template
 
     @Lazy
     def macro(self):
@@ -59,3 +72,20 @@ class Logout(object):
         return self.request.response.redirect(nextUrl)
 
 
+class Unauthorized(ConceptView):
+
+    isTopLevel = True
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        response = self.request.response
+        response.setStatus(403)
+        # make sure that squid does not keep the response in the cache
+        response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+        response.setHeader('Pragma', 'no-cache')
+        url = self.nodeView.topMenu.url
+        response.redirect(url + '/unauthorized')

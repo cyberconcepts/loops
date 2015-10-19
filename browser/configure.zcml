@@ -44,6 +44,8 @@
         class="loops.browser.auth.Logout"
         permission="zope.View" />
 
+  <!-- see also view/adapter "login.html" in section "query views" -->
+
   <!-- macros -->
 
   <page
@@ -536,6 +538,14 @@
   </pages>
 
   <!-- query views -->
+
+  <zope:adapter
+      name="login.html"
+      for="loops.interfaces.IConcept
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.interface.Interface"
+      factory="loops.browser.auth.LoginConcept"
+      permission="zope.View" />
 
   <zope:adapter
       name="list_children.html"
