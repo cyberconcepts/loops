@@ -75,7 +75,11 @@ class Loops(Folder):
         return self.get('records')
 
     def getLoopsUri(self, obj):
-        return str(loopsPrefix + getPath(obj)[len(getPath(self)):])
+        #return str(loopsPrefix + getPath(obj)[len(getPath(self)):])
+        uri = loopsPrefix + getPath(obj)[len(getPath(self)):]
+        #if isinstance(uri, unicode):
+        #    uri = uri.encode('UTF-8')
+        return uri
 
     def loopsTraverse(self, uri):
         prefix = loopsPrefix + '/'

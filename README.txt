@@ -50,7 +50,7 @@ top-level loops container and a concept manager:
   >>> cc1.title
   u''
   >>> loopsRoot.getLoopsUri(cc1)
-  '.loops/concepts/cc1'
+  u'.loops/concepts/cc1'
 
   >>> cc2 = Concept(u'Zope 3')
   >>> concepts['cc2'] = cc2
@@ -154,7 +154,7 @@ also the relationship to the context object using a combination
 of URIs to item and the predicate of the relationship:
 
   >>> [c.token for c in children]
-  ['.loops/concepts/cc2:.loops/concepts/standard']
+  [u'.loops/concepts/cc2:.loops/concepts/standard']
 
 There is also a concept configuration view that allows updating the
 underlying context object:
@@ -500,7 +500,7 @@ view; these views we have to provide as multi-adapters:
   [u'd001.txt', u'd002.txt', u'd003.txt', u'doc1', u'm1.m11.m111']
 
   >>> view.target.title, view.target.token
-  ('New Resource', '.loops/resources/m1.m11.m111')
+  ('New Resource', u'.loops/resources/m1.m11.m111')
 
 A node object provides the targetSchema of its target:
 

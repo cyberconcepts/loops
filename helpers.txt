@@ -109,7 +109,7 @@ So let's check the type of the type object:
   >>> type_type.title
   u'Type'
   >>> type_type.token
-  '.loops/concepts/type'
+  u'.loops/concepts/type'
   >>> type_type.tokenForSearch
   'loops:concept:type'
   >>> type_type.qualifiers
@@ -149,7 +149,7 @@ Now let's have a look at resources.
   >>> file1_type.title
   u'File'
   >>> file1_type.token
-  '.loops/concepts/file'
+  u'.loops/concepts/file'
   >>> file1_type.tokenForSearch
   'loops:resource:file'
   >>> file1_type.qualifiers
@@ -181,7 +181,7 @@ Now let's have a look at resources.
 
   >>> img1_type = IType(img1)
   >>> img1_type.token
-  '.loops/concepts/file'
+  u'.loops/concepts/file'
   >>> img1_type.tokenForSearch
   'loops:resource:file'
   >>> img1_type.title
