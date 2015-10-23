@@ -58,6 +58,10 @@
         <th>Text</th>
         <th>Date/Time read</th>
       </tr>
+      <tr tal:repeat="notif item/getNotifications">
+        <td colspan="5"
+            tal:content="notif" />
+      </tr>
     </table>
   </div>
 </metal:block>

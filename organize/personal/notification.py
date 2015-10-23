@@ -35,11 +35,11 @@ class Notifications(Favorites):
 
     def listTracks(self):
         return super(Notifications, self).listTracks(
-                        self.person, type='notification')
+                        baseObject(self.person), type='notification')
 
     def add(self, obj, sender, text):
         senderUid = util.getUidForObject(baseObject(sender))
-        super(Notifications, self).add(obj, self.person, 
+        super(Notifications, self).add(baseObject(obj), baseObject(self.person), 
                 dict(type='notification', sender=senderUid, text=text),
                 nodups=False)
 

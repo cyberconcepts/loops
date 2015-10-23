@@ -20,6 +20,7 @@
 Login, logout, unauthorized stuff.
 """
 
+from zope.app.exception.browser.unauthorized import Unauthorized as DefaultUnauth
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import ILogout, IUnauthenticatedPrincipal
 from zope import component
@@ -87,5 +88,8 @@ class Unauthorized(ConceptView):
         response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
         response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
         response.setHeader('Pragma', 'no-cache')
+        if self.nodeView is None:
+            v = DefaultUnauth(self.context, self.request)
+            return v()
         url = self.nodeView.topMenu.url
         response.redirect(url + '/unauthorized')

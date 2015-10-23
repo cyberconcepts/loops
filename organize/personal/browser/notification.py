@@ -25,6 +25,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
 from loops.browser.concept import ConceptView
+from loops.organize.personal.notification import Notifications
 from loops.organize.party import getPersonForUser
 from loops import util
 
@@ -42,3 +43,10 @@ class NotificationsListing(ConceptView):
     def person(self):
         return getPersonForUser(self.context, self.request)
 
+    @Lazy
+    def notifications(self):
+        return Notifications(self.person)
+
+    def getNotifications(self, unreadOnly=True):
+        tracks = self.notifications.listTracks()
+        return tracks
