@@ -24,7 +24,9 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from cybertools.util.date import formatTimeStamp
 from loops.browser.concept import ConceptView
+from loops.common import adapted, baseObject
 from loops.organize.personal.notification import Notifications
 from loops.organize.party import getPersonForUser
 from loops import util
@@ -50,3 +52,22 @@ class NotificationsListing(ConceptView):
     def getNotifications(self, unreadOnly=True):
         tracks = self.notifications.listTracks()
         return tracks
+
+    def getNotificationsFormatted(self, unreadOnly=True):
+        result = []
+        for track in self.getNotifications(unreadOnly):
+            data = track.data
+            s = util.getObjectForUid(data.get('sender'))
+            sender = dict(label=s.title, 
+                          url=self.nodeView.getUrlForTarget(baseObject(s)))
+            obj = util.getObjectForUid(track.taskId)
+            object = dict(label=obj.title, 
+                          url=self.nodeView.getUrlForTarget(baseObject(obj)))
+            read_ts = self.formatTimeStamp(data.get('read_ts'))
+            item = dict(timeStamp=self.formatTimeStamp(track.timeStamp),
+                        sender=sender,
+                        object=object,
+                        text=data.get('text') or u'',
+                        read_ts=read_ts)
+            result.append(item)
+        return result

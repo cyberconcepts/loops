@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ from zope.traversing.api import getName
 from cybertools.organize.party import Person as BasePerson
 from cybertools.relation.interfaces import IRelationRegistry
 from cybertools.typology.interfaces import IType
-from loops.common import AdapterBase
+from loops.common import AdapterBase, baseObject
 from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IAddress, IPerson, IHasRole
@@ -64,7 +64,7 @@ def getPersonForUser(context, request=None, principal=None):
             principal = getattr(request, 'principal', None)
     if principal is None:
         return None
-    loops = context.getLoopsRoot()
+    loops = baseObject(context).getLoopsRoot()
     pa = annotations(principal).get(ANNOTATION_KEY, None)
     if pa is None:
         return None

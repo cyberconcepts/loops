@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 View extension for support of i18n content.
 """
 
+from datetime import date, datetime
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.session.interfaces import ISession
@@ -28,6 +29,7 @@ from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.negotiator import negotiator
 
 from cybertools.meta.interfaces import IOptions
+from cybertools.util import format
 from loops.common import adapted
 
 
@@ -76,6 +78,8 @@ class I18NView(object):
     """ View mix-in class.
     """
 
+    timeStampFormat = 'short'
+
     @Lazy
     def languageInfo(self):
         return LanguageInfo(self.context, self.request)
@@ -113,4 +117,11 @@ class I18NView(object):
             session['language'] = lang
         self.setLanguage(lang)
         return self()
+
+    def formatTimeStamp(self, ts, f='dateTime'):
+        if not ts:
+            return u''
+        value = datetime.fromtimestamp(ts)
+        return format.formatDate(value, f, self.timeStampFormat,
+                                 self.languageInfo.language)
 

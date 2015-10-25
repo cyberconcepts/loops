@@ -58,9 +58,16 @@
         <th>Text</th>
         <th>Date/Time read</th>
       </tr>
-      <tr tal:repeat="notif item/getNotifications">
-        <td colspan="5"
-            tal:content="notif" />
+      <tr tal:repeat="notif item/getNotificationsFormatted">
+        <td tal:content="notif/timeStamp" />
+        <td tal:define="sender notif/sender">
+          <a tal:attributes="href sender/url"
+             tal:content="sender/label" /></td>
+        <td tal:define="object notif/object">
+          <a tal:attributes="href object/url"
+             tal:content="object/label" /></td>
+        <td tal:content="notif/text" />
+        <td tal:content="notif/read_ts" />
       </tr>
     </table>
   </div>

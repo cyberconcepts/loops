@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -153,6 +153,7 @@ class ChangeStateForm(ChangeStateBase, ObjectForm):
 class ChangeState(ChangeStateBase, EditObject):
 
     def update(self):
+        self.stateful.request = self.request
         self.stateful.doTransition(self.action)
         formData = self.request.form
         # store data in target object (unless field.nostore)
