@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-09-22 12:00 CET\n"
+"PO-Revision-Date: 2015-10-25 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -854,6 +854,9 @@ msgstr "Benutzer registrieren"
 
 msgid "Register new member"
 msgstr "Neu registrieren"
+
+msgid "Login name not allowed."
+msgstr "Die von Ihnen eingegebene Benutzerkennung enthält Sonderzeichen, z. B. Umlaute."
 
 msgid "Login name already taken."
 msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."

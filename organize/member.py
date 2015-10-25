@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -79,8 +79,10 @@ class MemberRegistrationManager(object):
         if pfName is None:
             pfName = options(self.principalfolder_key,
                              (self.default_principalfolder,))[0]
-        self.createPrincipal(pfName, userId, password, lastName, firstName, 
-                             useExisting=useExisting)
+        rc = self.createPrincipal(pfName, userId, password, 
+                         lastName, firstName, useExisting=useExisting)
+        if rc is not None:
+            return rc
         if not groups:
             groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)
@@ -90,6 +92,8 @@ class MemberRegistrationManager(object):
     def createPrincipal(self, pfName, userId, password, lastName,
                               firstName=u'', groups=[], useExisting=False,
                               overwrite=False, **kw):
+        if not self.checkPrincipalId(userId):
+            return dict(fieldName='loginName', error='illegal_loginname')            
         pFolder = getPrincipalFolder(self.context, pfName)
         if IPersonBasedAuthenticator.providedBy(pFolder):
              pFolder.setPassword(userId, password)
@@ -123,9 +127,17 @@ class MemberRegistrationManager(object):
             if gFolder is not None:
                 group = gFolder.get(gName)
                 if group is not None:
-                    members = list(group.principals)
+                    members = [p for p in group.principals 
+                                 if self.checkPrincipalId(p)]
                     members.append(pFolder.prefix + userId)
                     group.principals = members
+
+    def checkPrincipalId(self, pid):
+        try:
+            pid = str(pid)
+            return True
+        except UnicodeEncodeError:
+            return False
 
     def createPersonForPrincipal(self, pfName, userId, lastName, firstName=u'',
                                  useExisting=False, **kw):
