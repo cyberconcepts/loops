@@ -47,6 +47,22 @@
 </metal:actions>
 
 
+<metal:actions define-macro="notifications_portlet"
+               tal:define="view nocall:context/@@notifications_view;
+                           numNews python:len(view.getNotifications())">
+  <div tal:condition="not:numNews"
+       i18n:translate="">No new notifications</div>
+  <div tal:condition="python:numNews == 1">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      <span i18n:name="numNews" tal:content="numNews" /> new notification</a></div>
+  <div tal:condition="python:numNews > 1">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      <span i18n:name="numNews" tal:content="numNews" /> new notifications</a></div>
+</metal:actions>
+
+
 <metal:block define-macro="notifications">
   <div tal:attributes="class string:content-$level;">
     <metal:title use-macro="item/concept_macros/concepttitle" />
@@ -65,7 +81,7 @@
           <th i18n:translate="">Sender</th>
           <th i18n:translate="">Object</th>
           <th i18n:translate="">Message</th>
-          <th i18n:translate="">Date/Time read</th>
+          <th i18n:translate="">Date/Time Read</th>
         </tr>
         <tr tal:repeat="notif item/getNotificationsFormatted">
           <td tal:content="notif/timeStamp" />

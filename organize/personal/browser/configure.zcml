@@ -35,6 +35,12 @@
       class="loops.organize.personal.browser.notification.NotificationsListing"
       permission="zope.View" />
 
+  <browser:page
+      for="loops.interfaces.INode"
+      name="notifications_view"
+      class="loops.organize.personal.browser.notification.NotificationsView"
+      permission="zope.View" />
+
   <zope:adapter
       name="notification_read"
       for="loops.browser.node.NodeView

@@ -27,6 +27,7 @@ from zope.cachedescriptors.property import Lazy
 from cybertools.browser.form import FormController
 from cybertools.util.date import formatTimeStamp, getTimeStamp
 from loops.browser.concept import ConceptView
+from loops.browser.node import NodeView
 from loops.common import adapted, baseObject
 from loops.organize.personal.notification import Notifications
 from loops.organize.party import getPersonForUser
@@ -50,7 +51,7 @@ class NotificationsListing(ConceptView):
     def notifications(self):
         return Notifications(self.person)
 
-    def getNotifications(self, unreadOnly):
+    def getNotifications(self, unreadOnly=True):
         tracks = self.notifications.listTracks(unreadOnly)
         return tracks
 
@@ -76,6 +77,11 @@ class NotificationsListing(ConceptView):
                         read_ts=read_ts)
             result.append(item)
         return result
+
+
+class NotificationsView(NodeView, NotificationsListing):
+
+    pass
 
 
 class ReadNotification(FormController):
