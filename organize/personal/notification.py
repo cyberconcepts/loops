@@ -33,9 +33,12 @@ class Notifications(Favorites):
         self.context = (baseObject(person).
                             getLoopsRoot().getRecordManager()['favorites'])
 
-    def listTracks(self):
-        return super(Notifications, self).listTracks(
+    def listTracks(self, unreadOnly=False):
+        tracks = super(Notifications, self).listTracks(
                         baseObject(self.person), type='notification')
+        if unreadOnly:
+            tracks = [t for t in tracks if not t.data.get('read_ts')]
+        return tracks
 
     def add(self, obj, sender, text):
         senderUid = util.getUidForObject(baseObject(sender))

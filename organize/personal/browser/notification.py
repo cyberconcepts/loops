@@ -24,7 +24,8 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
-from cybertools.util.date import formatTimeStamp
+from cybertools.browser.form import FormController
+from cybertools.util.date import formatTimeStamp, getTimeStamp
 from loops.browser.concept import ConceptView
 from loops.common import adapted, baseObject
 from loops.organize.personal.notification import Notifications
@@ -49,11 +50,12 @@ class NotificationsListing(ConceptView):
     def notifications(self):
         return Notifications(self.person)
 
-    def getNotifications(self, unreadOnly=True):
-        tracks = self.notifications.listTracks()
+    def getNotifications(self, unreadOnly):
+        tracks = self.notifications.listTracks(unreadOnly)
         return tracks
 
-    def getNotificationsFormatted(self, unreadOnly=True):
+    def getNotificationsFormatted(self):
+        unreadOnly = not self.request.form.get('show_all')
         result = []
         for track in self.getNotifications(unreadOnly):
             data = track.data
@@ -61,8 +63,11 @@ class NotificationsListing(ConceptView):
             sender = dict(label=s.title, 
                           url=self.nodeView.getUrlForTarget(baseObject(s)))
             obj = util.getObjectForUid(track.taskId)
-            object = dict(label=obj.title, 
-                          url=self.nodeView.getUrlForTarget(baseObject(obj)))
+            ov = self.nodeView.getViewForTarget(obj)
+            url = '%s?form.action=notification_read&track=%s' % (
+                    self.nodeView.getUrlForTarget(obj), 
+                    util.getUidForObject(track))
+            object = dict(label=ov.title, url=url)
             read_ts = self.formatTimeStamp(data.get('read_ts'))
             item = dict(timeStamp=self.formatTimeStamp(track.timeStamp),
                         sender=sender,
@@ -71,3 +76,17 @@ class NotificationsListing(ConceptView):
                         read_ts=read_ts)
             result.append(item)
         return result
+
+
+class ReadNotification(FormController):
+
+    def update(self):
+        form = self.request.form
+        trackId = form.get('track')
+        track = util.getObjectForUid(trackId)
+        data = track.data
+        alreadyRead = data.get('read_ts')
+        if not alreadyRead:
+            data['read_ts'] = getTimeStamp()
+        track.data = data
+        return True
