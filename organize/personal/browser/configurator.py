@@ -30,6 +30,7 @@ from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
 from cybertools.meta.interfaces import IOptions
 from loops.browser.node import NodeView
 from loops.organize.party import getPersonForUser
+from loops.organize.personal.notification import Notifications
 from loops.util import _
 
 
@@ -104,6 +105,8 @@ class PortletConfigurator(ViewConfigurator):
             return []
         notif = self.view.globalOptions.organize.showNotifications
         if not notif:
+            return []
+        if not Notifications(self.person).listTracks(unreadOnly=False):
             return []
         if isinstance(notif, list):
             notifPage = notif[0]
