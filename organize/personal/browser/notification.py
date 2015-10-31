@@ -52,6 +52,8 @@ class NotificationsListing(ConceptView):
         return Notifications(self.person)
 
     def getNotifications(self, unreadOnly=True):
+        if self.person is None:
+            return []
         tracks = self.notifications.listTracks(unreadOnly)
         return tracks
 

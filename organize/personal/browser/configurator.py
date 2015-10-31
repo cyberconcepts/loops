@@ -106,7 +106,7 @@ class PortletConfigurator(ViewConfigurator):
         notif = self.view.globalOptions.organize.showNotifications
         if not notif:
             return []
-        if not Notifications(self.person).listTracks(unreadOnly=False):
+        if not list(Notifications(self.person).listTracks(unreadOnly=False)):
             return []
         if isinstance(notif, list):
             notifPage = notif[0]
