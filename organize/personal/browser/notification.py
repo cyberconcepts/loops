@@ -63,8 +63,11 @@ class NotificationsListing(ConceptView):
         for track in self.getNotifications(unreadOnly):
             data = track.data
             s = util.getObjectForUid(data.get('sender'))
-            sender = dict(label=s.title, 
-                          url=self.nodeView.getUrlForTarget(baseObject(s)))
+            if s is None:
+                sender = dict(label=u'???', url=u'')
+            else:
+                sender = dict(label=s.title, 
+                              url=self.nodeView.getUrlForTarget(baseObject(s)))
             obj = util.getObjectForUid(track.taskId)
             ov = self.nodeView.getViewForTarget(obj)
             url = '%s?form.action=notification_read&track=%s' % (
