@@ -68,7 +68,7 @@ class ChangeManager(BaseRecordManager):
                 type = self.context.getType()
                 return type and getName(type) in opt
             return False
-        else: 
+        else:
             return bool(opt)
 
     def recordModification(self, action='modify', **kw):
@@ -117,10 +117,10 @@ def recordAdding(obj, event):
 
 @adapter(ILoopsObject, IAssignmentEvent)
 def recordAssignment(obj, event):
-    ChangeManager(obj).recordModification('assign', 
+    ChangeManager(obj).recordModification('assign',
                             event=event, relation=event.relation)
 
 @adapter(ILoopsObject, IDeassignmentEvent)
 def recordDeassignment(obj, event):
-    ChangeManager(obj).recordModification('deassign', 
+    ChangeManager(obj).recordModification('deassign',
                             event=event, relation=event.relation)

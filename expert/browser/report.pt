@@ -25,7 +25,7 @@
 
 <div metal:define-macro="header">
       <metal:block use-macro="view/concept_macros/concepttitle" />
-      <form method="post" name="report_data" class="report-meta">
+      <form method="get" name="report_data" class="report-meta">
         <input type="hidden" name="show_results" value="True" />
         <tal:hidden define="params item/dynamicParams"
                     tal:condition="nothing">
