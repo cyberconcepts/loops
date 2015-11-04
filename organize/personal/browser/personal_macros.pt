@@ -50,8 +50,10 @@
 <metal:actions define-macro="notifications_portlet"
                tal:define="view nocall:context/@@notifications_view;
                            numNews python:len(view.getNotifications())">
-  <div tal:condition="not:numNews"
-       i18n:translate="">No new notifications</div>
+  <div tal:condition="not:numNews">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      No new notifications</a></div>
   <div tal:condition="python:numNews == 1">
     <a i18n:translate=""
        tal:attributes="href macro/url">
