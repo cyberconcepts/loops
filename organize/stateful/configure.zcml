@@ -36,6 +36,20 @@
   </zope:class>
 
   <zope:utility
+        factory="loops.organize.stateful.person.personStates"
+        name="person_states" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.person.StatefulPerson"
+        name="person_states" />
+  <zope:class class="loops.organize.stateful.person.StatefulPerson">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
+  <zope:utility
         factory="loops.organize.stateful.task.taskStates"
         name="task_states" />
 

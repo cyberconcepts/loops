@@ -47,28 +47,57 @@
 </metal:actions>
 
 
+<metal:actions define-macro="notifications_portlet"
+               tal:define="view nocall:context/@@notifications_view;
+                           numNews python:len(view.getNotifications())">
+  <div tal:condition="not:numNews">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      No new notifications</a></div>
+  <div tal:condition="python:numNews == 1">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      <span i18n:name="numNews" tal:content="numNews" /> new notification</a></div>
+  <div tal:condition="python:numNews > 1">
+    <a i18n:translate=""
+       tal:attributes="href macro/url">
+      <span i18n:name="numNews" tal:content="numNews" /> new notifications</a></div>
+</metal:actions>
+
+
 <metal:block define-macro="notifications">
   <div tal:attributes="class string:content-$level;">
     <metal:title use-macro="item/concept_macros/concepttitle" />
-    <table class="listing">
-      <tr class="header">
-        <th>Date/Time</th>
-        <th>Sender</th>
-        <th>Object</th>
-        <th>Text</th>
-        <th>Date/Time read</th>
-      </tr>
-      <tr tal:repeat="notif item/getNotificationsFormatted">
-        <td tal:content="notif/timeStamp" />
-        <td tal:define="sender notif/sender">
-          <a tal:attributes="href sender/url"
-             tal:content="sender/label" /></td>
-        <td tal:define="object notif/object">
-          <a tal:attributes="href object/url"
-             tal:content="object/label" /></td>
-        <td tal:content="notif/text" />
-        <td tal:content="notif/read_ts" />
-      </tr>
-    </table>
+    <form name="notifications" method="post">
+      <input type="checkbox" name="show_all" id="notifications.show_all"
+             title="Show all notifications"
+             i18n:attributes="title"
+             onclick="submit()"
+             tal:attributes="checked request/form/show_all|nothing" />
+      <label for="notifications.show_all"
+             i18n:translate="">Show all notifications</label>
+      <br />&nbsp;
+      <table class="listing">
+        <tr class="header">
+          <th i18n:translate="">Date/Time</th>
+          <th i18n:translate="">Sender</th>
+          <th i18n:translate="">Object</th>
+          <th i18n:translate="">Message</th>
+          <th i18n:translate="">Date/Time Read</th>
+        </tr>
+        <tr tal:repeat="notif item/getNotificationsFormatted">
+          <td tal:content="notif/timeStamp" />
+          <td tal:define="sender notif/sender">
+            <a tal:omit-tag="not:sender/url"
+               tal:attributes="href sender/url"
+               tal:content="sender/label" /></td>
+          <td tal:define="object notif/object">
+            <a tal:attributes="href object/url"
+               tal:content="object/label" /></td>
+          <td tal:content="notif/text" />
+          <td tal:content="notif/read_ts" />
+        </tr>
+      </table>
+    </form>
   </div>
 </metal:block>

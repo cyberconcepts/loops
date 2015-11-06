@@ -181,6 +181,12 @@ Querying objects by state
   [<...>]
 
 
+Person States
+=============
+
+  >>> from loops.organize.stateful.person import personStates
+
+
 Task States
 ===========
 

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 A view configurator provides configuration data for a view controller.
-
-$Id$
 """
 
 from zope import component
@@ -30,7 +28,9 @@ from zope.traversing.browser.absoluteurl import absoluteURL
 
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
 from cybertools.meta.interfaces import IOptions
+from loops.browser.node import NodeView
 from loops.organize.party import getPersonForUser
+from loops.organize.personal.notification import Notifications
 from loops.util import _
 
 
@@ -44,10 +44,11 @@ class PortletConfigurator(ViewConfigurator):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.view = NodeView(self.context, self.request)
 
     @property
     def viewProperties(self):
-        return self.favorites + self.filters
+        return self.favorites + self.filters + self.notifications
 
     @Lazy
     def records(self):
@@ -97,3 +98,27 @@ class PortletConfigurator(ViewConfigurator):
                     #url=absoluteURL(self.context, self.request) + '/@@filters.html',
         ))
         return [filters]
+
+    @property
+    def notifications(self):
+        if self.person is None:
+            return []
+        notif = self.view.globalOptions.organize.showNotifications
+        if not notif:
+            return []
+        if not list(Notifications(self.person).listTracks(unreadOnly=False)):
+            return []
+        if isinstance(notif, list):
+            notifPage = notif[0]
+        else:
+            notifPage = 'notifications'
+        portlet = MacroViewProperty(self.context, self.request)
+        portlet.setParams(dict(
+                    slot='portlet_left',
+                    identifier='loops.organize.notifications',
+                    title=_(u'Notifications'),
+                    subMacro=personal_macros.macros['notifications_portlet'],
+                    priority=10,
+                    url='%s/%s' % (self.view.menu.url, notifPage),
+        ))
+        return [portlet]

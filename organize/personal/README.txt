@@ -146,8 +146,13 @@ When the notification is marked as read the read timestamp will be set.
 It's possible to store more than one notification concerning the same object.
 
   >>> notifications.add(d001, person, 'I send myself another letter.')
-  >>> len(list(notifications.listTracks()))
+  >>> len(list(notifications.listTracks(unreadOnly=False)))
   2
+
+Only unread notifications are listed by default.
+
+  >>> len(list(notifications.listTracks()))
+  1
 
 User interface
 --------------
