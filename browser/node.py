@@ -20,6 +20,7 @@
 View class for Node objects.
 """
 
+import urllib
 from urlparse import urlparse, urlunparse
 from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
@@ -417,6 +418,12 @@ class NodeView(BaseView):
 
     def active(self, item):
         return item.context == self.context or item.context in self.parents
+
+    @Lazy
+    def logoutUrl(self):
+        nextUrl = urllib.urlencode(dict(nextUrl=self.menu.url))
+        return 'logout.html?' + nextUrl
+
 
     # virtual target support
 
