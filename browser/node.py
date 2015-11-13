@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -422,8 +422,11 @@ class NodeView(BaseView):
     @Lazy
     def logoutUrl(self):
         nextUrl = urllib.urlencode(dict(nextUrl=self.menu.url))
-        return 'logout.html?' + nextUrl
+        return '%s/logout.html?%s' % (self.menu.url, nextUrl)
 
+    @Lazy
+    def authenticationMethod(self):
+        return self.viewAnnotations.get('auth_method') or 'standard'
 
     # virtual target support
 

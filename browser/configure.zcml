@@ -34,10 +34,10 @@
 
   <!-- login/logout -->
 
-  <page for="loops.interfaces.INode"
+  <!--<page for="loops.interfaces.INode"
         name="login.html"
         class="loops.browser.auth.LoginForm"
-        permission="zope.View" />
+        permission="zope.View" />-->
 
   <page for="loops.interfaces.INode"
         name="logout.html"
