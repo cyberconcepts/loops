@@ -227,8 +227,14 @@ class Resource(Image, Contained):
         obj = getMaster(self)
         concept.deassignResource(obj, predicates)
 
-    # ISized interface
+    def assignParent(self, concept, predicate=None, order=0, relevance=1.0):
+        self.assignConcept(concept, predicate=predicate, order=order,
+                           relevance=relevance)
 
+    def deassignParent(self, parent, predicates=None, noSecurityCheck=False):
+        self.deassignConcept(parent, predicates=predicates)
+
+    # ISized interface
     def getSize(self):
         if self._size:
             return self._size
@@ -538,6 +544,17 @@ class IndexAttributes(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def adapted(self):
+        return adapted(self.context)
+
+    @Lazy
+    def adaptedIndexAttributes(self):
+        #if self.adapted != self.context:
+        if isinstance(self.adapted, ResourceAdapterBase):
+            #return component.queryAdapter(self.adapted, IIndexAttributes)
+            return IIndexAttributes(self.adapted, None)
+
     def text(self):
         actx = adapted(self.context)
         txt = transformToText(actx)
@@ -589,6 +606,11 @@ class IndexAttributes(object):
 
     def identifier(self):
         return getName(self.context)
+
+    def keywords(self):
+        if self.adaptedIndexAttributes is not None:
+            return self.adaptedIndexAttributes.keywords()
+
 
 def transformToText(obj, data=None, contentType=None):
     if data is None:
