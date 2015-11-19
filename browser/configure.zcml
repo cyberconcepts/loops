@@ -34,10 +34,10 @@
 
   <!-- login/logout -->
 
-  <page for="loops.interfaces.INode"
+  <!--<page for="loops.interfaces.INode"
         name="login.html"
         class="loops.browser.auth.LoginForm"
-        permission="zope.View" />
+        permission="zope.View" />-->
 
   <page for="loops.interfaces.INode"
         name="logout.html"
@@ -539,13 +539,13 @@
 
   <!-- query views -->
 
-  <zope:adapter
+  <!--<zope:adapter
       name="login.html"
       for="loops.interfaces.IConcept
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.interface.Interface"
       factory="loops.browser.auth.LoginConcept"
-      permission="zope.View" />
+      permission="zope.View" />-->
 
   <zope:adapter
       name="list_children.html"

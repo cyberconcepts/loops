@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 View class for Node objects.
 """
 
+import urllib
 from urlparse import urlparse, urlunparse
 from zope import component, interface, schema
 from zope.cachedescriptors.property import Lazy
@@ -417,6 +418,15 @@ class NodeView(BaseView):
 
     def active(self, item):
         return item.context == self.context or item.context in self.parents
+
+    @Lazy
+    def logoutUrl(self):
+        nextUrl = urllib.urlencode(dict(nextUrl=self.menu.url))
+        return '%s/logout.html?%s' % (self.menu.url, nextUrl)
+
+    @Lazy
+    def authenticationMethod(self):
+        return self.viewAnnotations.get('auth_method') or 'standard'
 
     # virtual target support
 

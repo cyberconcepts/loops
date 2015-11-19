@@ -327,8 +327,7 @@
 
 
 <metal:actions define-macro="personal">
-    <div><a href="logout.html?nextURL=login.html"
-            tal:attributes="href string:logout.html?nextURL=${view/menu/url}"
+    <div><a tal:attributes="href view/logoutUrl"
             i18n:translate="">Log out</a></div>
     <tal:actions repeat="action python:view.getAllowedActions('personal')">
       <metal:action use-macro="action/macro" />
