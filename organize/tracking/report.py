@@ -264,7 +264,7 @@ class TrackDetails(BaseView):
     @Lazy
     def objectData(self):
         obj = self.object
-        if obj is None:
+        if obj is None or not canAccessObject(obj):
             return dict(object=None, title='-', description='',
                         type='-', url='', 
                         version=None, canAccess=False)
@@ -283,7 +283,7 @@ class TrackDetails(BaseView):
                     versionable.versionId) or '')
         return dict(object=obj, title=title, description=desc,
                     type=self.longTypeTitle, url=url, version=version,
-                    canAccess=canAccessObject(obj))
+                    canAccess=True)
 
     @Lazy
     def user(self):
