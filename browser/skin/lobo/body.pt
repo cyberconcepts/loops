@@ -25,6 +25,7 @@
     </div>
 
     <div id="content" class="span-6"
+         tal:attributes="class content_class|string:span-6"
          metal:define-macro="content">
       <metal:breadcrumbs define-slot="breadcrumbs">
         <metal:tabs use-macro="views/node_macros/breadcrumbs" />
@@ -37,7 +38,9 @@
              tal:condition="msg"
              tal:content="msg" />
       </metal:message>
-      <metal:tabs use-macro="views/node_macros/view_modes" />
+      <metal:tabs define-slot="view_modes">
+        <metal:tabs use-macro="views/node_macros/view_modes" />
+      </metal:tabs>
       <metal:content define-slot="content">
         <tal:content define="item nocall:view/item;
                              level level|python: 1;
@@ -48,13 +51,18 @@
       </metal:content>
     </div>
 
-    <div id="portlets" class="span-2 last">
-      <tal:portlet repeat="macro controller/macros/portlet_left">
-        <metal:portlet use-macro="macro" />
-      </tal:portlet>
-      <tal:portlet repeat="macro controller/macros/portlet_right">
-        <metal:portlet use-macro="macro" />
-      </tal:portlet>
+    <div id="portlets" class="span-2 last"
+         tal:attributes="class portlets_class|string:span-2 last">
+      <metal:portlet define-slot="portlet-left" >
+        <tal:portlet repeat="macro controller/macros/portlet_left">
+          <metal:portlet use-macro="macro" />
+        </tal:portlet>
+      </metal:portlet>
+      <metal:portlet define-slot="portlet-right" >
+        <tal:portlet repeat="macro controller/macros/portlet_right">
+          <metal:portlet use-macro="macro" />
+        </tal:portlet>
+      </metal:portlet>
     </div>
 
     <div id="footer" class="footer clear"
