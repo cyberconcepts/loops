@@ -26,7 +26,7 @@
 
 <div metal:define-macro="header">
     <metal:block use-macro="view/concept_macros/concepttitle" />
-    <form method="post" name="report_data" class="report-meta">
+    <form method="get" name="report_data" class="report-meta">
       <input type="hidden" name="show_results" value="True" />
       <tal:hidden define="params item/dynamicParams"
                   tal:condition="nothing">
@@ -48,12 +48,14 @@
       </div>
       <br />
     </form>
-    <tal:list condition="renderer">
-      <div metal:use-macro="renderer" />
-    </tal:list>
-    <tal:list condition="not:renderer">
-      <div metal:use-macro="view/concept_macros/conceptchildren" />
-    </tal:list>
+    <tal:ignore condition="nothing">
+      <tal:list condition="renderer">
+        <div metal:use-macro="renderer" />
+      </tal:list>
+      <tal:list condition="not:renderer">
+        <div metal:use-macro="view/concept_macros/conceptchildren" />
+      </tal:list>
+    </tal:ignore>
 </div>
 
 

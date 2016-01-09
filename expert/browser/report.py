@@ -236,6 +236,10 @@ class ResultsConceptView(ConceptView):
         if opt:
             return opt[0]
 
+    #@Lazy
+    #def reportDownload(self):
+    #    return self.downloadLink
+
     def isSortableColumn(self, tableName, colName):
         if tableName == 'results':
             if colName in [f.name for f in self.reportInstance.getSortFields()]:

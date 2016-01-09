@@ -120,7 +120,7 @@ deadline = TrackDateField('deadline', u'Deadline',
 dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 fieldType='date',
-                operator=u'gt',
+                operator=u'ge',
                 executionSteps=['query'])
 dayTo = TrackDateField('dayTo', u'End Day',
                 description=u'The last day until which to select work.',
@@ -230,8 +230,15 @@ class WorkReportInstance(ReportInstance):
     userSettings = (dayFrom, dayTo, party)
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
-    states = ('done', 'done_x', 'finished')
+    defaultStates = ('done', 'done_x', 'finished')
     taskTypeNames = ('task', 'event', 'project')
+
+    def getOptions(self, option):
+        return self.view.options(option)
+
+    @Lazy
+    def states(self):
+        return self.getOptions('report_select_state') or self.defaultStates
 
     @property
     def queryCriteria(self):
@@ -265,16 +272,19 @@ class WorkReportInstance(ReportInstance):
             tasks.extend(self.getAllSubtasks(t))
         return tasks
 
-    def getAllSubtasks(self, concept):
+    def getAllSubtasks(self, concept, checked=None):
         result = []
+        if checked is None:
+            checked = set()
         for c in concept.getChildren([self.view.defaultPredicate]):
             if c.conceptType in self.taskTypes:
                 result.append(c)
-            result.extend(self.getAllSubtasks(c))
+            if c not in checked:
+                checked.add(c)
+                result.extend(self.getAllSubtasks(c, checked))
         return result
 
     def selectWorkItems(self, task, parts):
-        # TODO: take states from parts
         kw = dict(task=util.getUidForObject(baseObject(task)), 
                   state=self.states)
         userNameCrit = parts.get('userName')
@@ -292,6 +302,28 @@ class WorkReportInstance(ReportInstance):
     @Lazy
     def workItems(self):
         return IWorkItems(self.recordManager['work'])
+
+
+class PersonWorkReportInstance(WorkReportInstance):
+
+    type = "person_work_statement"
+    label = u'Person Work Statement'
+
+    @property
+    def queryCriteria(self):
+        form = self.view.request.form
+        crit = self.context.queryCriteria or []
+        for f in self.getAllQueryFields():
+            if f.name in form:
+                crit.append(
+                    LeafQueryCriteria(f.name, f.operator, form[f.name], f))
+        return CompoundQueryCriteria(crit)
+
+    def selectObjects(self, parts):
+        workItems = self.recordManager['work']
+        person = self.view.context
+        uid = util.getUidForObject(person)
+        return workItems.query(userName=uid, state=self.states)
 
 
 # meeting minutes

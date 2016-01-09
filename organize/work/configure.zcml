@@ -108,6 +108,18 @@
       permission="zope.View" />
 
   <zope:adapter 
+      name="person_work_statement"
+      factory="loops.organize.work.report.PersonWorkReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.organize.work.report.PersonWorkReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
+  <zope:adapter 
       name="meeting_minutes"
       factory="loops.organize.work.report.MeetingMinutes"
       provides="loops.expert.report.IReportInstance"

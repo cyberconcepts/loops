@@ -41,8 +41,9 @@
   <tal:download condition="item/downloadLink">
     <div class="button">
       <a i18n:translate=""
-         tal:define="params python:item.getSortParams(tableName)"
-         tal:attributes="href string:${item/downloadLink}$params">Download Data</a>
+         tal:define="dl string:${item/downloadLink}${item/urlParamString};
+                     params python:item.getSortParams(tableName)"
+         tal:attributes="href dl">Download Data</a>
     </div>
     <br />
   </tal:download>
