@@ -90,6 +90,8 @@ class NodeView(BaseView):
         if tv is not None:
             if tv.isToplevel:
                 return tv(*args, **kw)
+        if self.controller is not None:
+            self.controller.setMainPage()
         return super(NodeView, self).__call__(*args, **kw)
 
     @Lazy
