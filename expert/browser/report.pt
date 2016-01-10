@@ -24,6 +24,16 @@
 </div>
 
 
+<div metal:define-macro="embedded_report">
+  <div tal:define="report item/reportInstance;
+                   reportView nocall:item"
+       tal:attributes="class string:content-$level;">
+    <div metal:use-macro="item/report_macros/header" />
+    <div metal:use-macro="item/resultsRenderer" />
+  </div>
+</div>
+
+
 <div metal:define-macro="header">
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <form method="get" name="report_data" class="report-meta">

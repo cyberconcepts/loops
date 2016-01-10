@@ -262,8 +262,18 @@ table.records th, table.records td {
     border: 1px solid lightgrey;
 }
 
+table.report th {
+    border-bottom: 1px solid #bbbbbb;
+    font-weight: bold;
+}
+
 table.report td {
+    border-bottom: 1px dotted #dddddd;
     vertical-align: top;
+}
+
+.report-meta table {
+    width: auto;
 }
 
 dl.docutils dt {

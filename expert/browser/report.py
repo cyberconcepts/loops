@@ -279,6 +279,17 @@ class ReportConceptView(ResultsConceptView, ReportView):
         return qf
 
 
+class EmbeddedReportConceptView(ReportConceptView):
+
+    @Lazy
+    def macro(self):
+        return self.report_macros['embedded_report']
+
+    @Lazy
+    def title(self):
+        return self.report.title
+
+
 class ReportParamsView(ReportConceptView):
     """ Report view allowing to enter parameters before executing the report.
     """
