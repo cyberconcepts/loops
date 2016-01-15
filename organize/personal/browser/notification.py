@@ -55,6 +55,7 @@ class NotificationsListing(ConceptView):
         if self.person is None:
             return []
         tracks = self.notifications.listTracks(unreadOnly)
+        tracks = [t for t in tracks if util.getObjectForUid(t.taskId) is not None]
         return tracks
 
     def getNotificationsFormatted(self):
@@ -69,6 +70,8 @@ class NotificationsListing(ConceptView):
                 sender = dict(label=s.title, 
                               url=self.nodeView.getUrlForTarget(baseObject(s)))
             obj = util.getObjectForUid(track.taskId)
+            if obj is None:
+                continue
             ov = self.nodeView.getViewForTarget(obj)
             url = '%s?form.action=notification_read&track=%s' % (
                     self.nodeView.getUrlForTarget(obj), 
