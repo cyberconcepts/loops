@@ -98,6 +98,18 @@ class NodeView(BaseView):
     def macro(self):
         return self.template.macros['content']
 
+    @Lazy
+    def subparts(self):
+        def getParts(n):
+            t = n.targetObjectView
+            if t is None:
+                return []
+            return t.subparts
+        parts = getParts(self)
+        for n in self.textItems:
+            parts.extend(getParts(n))
+        return parts
+
     def update(self):
         result = super(NodeView, self).update()
         self.recordAccess()

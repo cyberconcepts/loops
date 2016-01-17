@@ -192,6 +192,7 @@ class BaseView(GenericView, I18NView, SortableMixin):
     actions = {}
     portlet_actions = []
     parts = ()
+    subparts = ()
     icon = None
     modeName = 'view'
     isToplevel = False
