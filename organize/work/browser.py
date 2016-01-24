@@ -517,7 +517,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def actions(self):
-        result = [dict(name=t.name, title=t.title)
+        defaults = self.globalOptions('organize.work.default_actions') or []
+        result = [dict(name=t.name, title=t.title, selected=t.name in defaults)
                     for t in self.track.getAvailableTransitions()
                     if t.name in self.workItemType.actions and
                        t.name not in self.hiddenActions]

@@ -130,7 +130,8 @@
                                          ['start', 'duration', ''],
                                          ['start', 'effort', '']])">
           <option tal:repeat="action view/actions"
-                  tal:attributes="value action/name"
+                  tal:attributes="value action/name;
+                                  selected action/selected"
                   tal:content="action/title"
                   i18n:translate="" />
         </select>

@@ -106,6 +106,7 @@ class NodeView(BaseView):
                 return []
             return t.subparts
         parts = getParts(self)
+        #return parts
         for n in self.textItems:
             parts.extend(getParts(n))
         return parts

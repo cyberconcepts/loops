@@ -138,12 +138,15 @@ The 'delegate' transition is omitted from the actions list because it is
 only available for privileged users.
 
   >>> form.actions
-  [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
-   {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
-   {'name': 'finish', 'title': 'finish'}, {'name': 'delegate', 'title': 'delegate'},
-   {'name': 'move', 'title': 'move'}, {'name': 'cancel', 'title': 'cancel'},
-   {'name': 'modify', 'title': 'modify'}]
-
+  [{'selected': False, 'name': 'plan', 'title': 'plan'}, 
+   {'selected': False, 'name': 'accept', 'title': 'accept'}, 
+   {'selected': False, 'name': 'start', 'title': 'start working'}, 
+   {'selected': False, 'name': 'work', 'title': 'work'}, 
+   {'selected': False, 'name': 'finish', 'title': 'finish'}, 
+   {'selected': False, 'name': 'delegate', 'title': 'delegate'}, 
+   {'selected': False, 'name': 'move', 'title': 'move'}, 
+   {'selected': False, 'name': 'cancel', 'title': 'cancel'}, 
+   {'selected': False, 'name': 'modify', 'title': 'modify'}]
 
 Work Item Queries
 =================
