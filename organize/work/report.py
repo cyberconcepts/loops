@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ Work report definitions.
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapter, getAdapter
+from zope.i18n.locales import locales
 
 from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
@@ -77,6 +78,14 @@ class DurationField(Field):
         if not value:
             return u''
         return u'%02i:%02i' % divmod(value * 60, 60)
+
+    def getExportValue(self, row, format, lang):
+        value = self.getValue(row)
+        if format == 'csv':
+            locale = locales.getLocale(lang)
+            fmt = locale.numbers.getFormatter('decimal')
+            return fmt.format(value, pattern=u'0.0000;-0.0000')            
+        return value
 
 
 class PartyStateField(StateField):

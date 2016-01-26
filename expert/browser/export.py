@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -66,7 +66,8 @@ class ResultsConceptCSVExport(ResultsConceptView):
         for row in results:
             data = {}
             for f in fields:
-                value = f.getValue(row)
+                lang = self.languageInfo.language
+                value = f.getExportValue(row, 'csv', lang)
                 if ILoopsObject.providedBy(value):
                     value = value.title
                 value = encode(value, self.encoding)
