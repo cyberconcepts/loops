@@ -137,6 +137,7 @@ class BaseView(GenericView, I18NView):
     actions = {}
     portlet_actions = []
     parts = ()
+    subparts = ()
     icon = None
     modeName = 'view'
     isToplevel = False
