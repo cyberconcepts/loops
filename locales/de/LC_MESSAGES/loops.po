@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 0.13.0\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2015-10-30 12:00 CET\n"
+"PO-Revision-Date: 2016-01-27 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -811,6 +811,9 @@ msgid "The user account has been created."
 msgstr "Ihr Benutzerkonto wurde eingerichtet."
 
 msgid "Your password has been changed."
+msgstr "Ihr Passwort wurde geändert."
+
+msgid "message_password_changed"
 msgstr "Ihr Passwort wurde geändert."
 
 msgid "Date/Time"

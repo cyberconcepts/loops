@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -91,11 +91,26 @@ class NodeView(BaseView):
         if tv is not None:
             if tv.isToplevel:
                 return tv(*args, **kw)
+        if self.controller is not None:
+            self.controller.setMainPage()
         return super(NodeView, self).__call__(*args, **kw)
 
     @Lazy
     def macro(self):
         return self.template.macros['content']
+
+    @Lazy
+    def subparts(self):
+        def getParts(n):
+            t = n.targetObjectView
+            if t is None:
+                return []
+            return t.subparts
+        parts = getParts(self)
+        #return parts
+        for n in self.textItems:
+            parts.extend(getParts(n))
+        return parts
 
     def update(self):
         result = super(NodeView, self).update()
