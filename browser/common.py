@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ Common base class for loops browser view classes.
 from cgi import parse_qs, parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
 from datetime import datetime
+from logging import getLogger
 import re
 from time import strptime
 from urllib import urlencode
@@ -149,6 +150,10 @@ class BaseView(GenericView, I18NView):
         self.context = removeSecurityProxy(context)
         try:
             if not self.checkPermissions():
+                logger = getLogger('loops.browser.common-153')
+                principal = request.principal and request.principal.id
+                msg = 'Unauthorized: %s, %s' % (self.contextInfo, principal)
+                logger.warn(msg)
                 raise Unauthorized(str(self.contextInfo))
         except ForbiddenAttribute:  # ignore when testing
             pass
