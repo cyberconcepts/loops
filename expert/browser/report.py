@@ -234,11 +234,11 @@ class ResultsConceptView(ConceptView):
         if not opt:
             opt = self.typeOptions('download_' + format)
         if opt:
-            return opt[0]
+            return '/'.join((self.nodeView.virtualTargetUrl, opt[0]))
 
-    #@Lazy
-    #def reportDownload(self):
-    #    return self.downloadLink
+    @Lazy
+    def reportDownload(self):
+        return self.downloadLink
 
     def isSortableColumn(self, tableName, colName):
         if tableName == 'results':

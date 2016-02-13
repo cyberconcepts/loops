@@ -20,6 +20,7 @@
 Work report definitions.
 """
 
+from datetime import date, timedelta
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapter, getAdapter
@@ -113,6 +114,10 @@ class PartyStateField(StateField):
         return None
 
 
+def yesterday(context):
+    return (date.today() - timedelta(1)).isoformat()
+
+
 # common fields
 
 tasks = Field('tasks', u'Tasks',
@@ -129,6 +134,7 @@ deadline = TrackDateField('deadline', u'Deadline',
 dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 fieldType='date',
+                default=yesterday,
                 operator=u'ge',
                 executionSteps=['query'])
 dayTo = TrackDateField('dayTo', u'End Day',
@@ -183,6 +189,8 @@ partyState = PartyStateField('partyState', u'Party State',
                 cssClass='center',
                 statesDefinition='contact_states',
                 executionSteps=['query', 'output'])
+# activity
+# process
 
 
 # basic definitions and work report instance
@@ -249,6 +257,19 @@ class WorkReportInstance(ReportInstance):
     def states(self):
         return self.getOptions('report_select_state') or self.defaultStates
 
+    def getFieldQueryCriteria(self, field, data):
+        if field.name in data:
+            return LeafQueryCriteria(
+                field.name, field.operator, data[field.name], field)
+        else:
+            default = field.default
+            if default is not None:
+                if callable(default):
+                    default = default(self)
+                if default:
+                    return LeafQueryCriteria(
+                        field.name, field.operator, default, field)
+
     @property
     def queryCriteria(self):
         form = self.view.request.form
@@ -259,9 +280,9 @@ class WorkReportInstance(ReportInstance):
             tasks = [util.getUidForObject(task) for task in tasks]
             crit = [LeafQueryCriteria(f.name, f.operator, tasks, f)]
         for f in self.getAllQueryFields():
-            if f.name in form:
-                crit.append(
-                    LeafQueryCriteria(f.name, f.operator, form[f.name], f))
+            fc = self.getFieldQueryCriteria(f, form)
+            if fc is not None:
+                crit.append(fc)
         return CompoundQueryCriteria(crit)
 
     def selectObjects(self, parts):
@@ -320,12 +341,11 @@ class PersonWorkReportInstance(WorkReportInstance):
 
     @property
     def queryCriteria(self):
-        form = self.view.request.form
         crit = self.context.queryCriteria or []
         for f in self.getAllQueryFields():
-            if f.name in form:
-                crit.append(
-                    LeafQueryCriteria(f.name, f.operator, form[f.name], f))
+            fc = self.getFieldQueryCriteria(f, self.view.request.form)
+            if fc is not None:
+                crit.append(fc)
         return CompoundQueryCriteria(crit)
 
     def selectObjects(self, parts):

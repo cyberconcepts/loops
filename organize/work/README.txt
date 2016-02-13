@@ -218,7 +218,8 @@ The executable report is a report instance that is an adapter to the
 The user interface is a ReportConceptView subclass that is directly associated with the task.
 
   >>> from loops.organize.work.report import WorkStatementView
-  >>> reportView = WorkStatementView(task01, TestRequest())
+  >>> input = dict(dayFrom='2008-01-01')
+  >>> reportView = WorkStatementView(task01, TestRequest(form=input))
   >>> reportView.nodeView = nodeView
 
   >>> results = reportView.results()
@@ -241,7 +242,7 @@ Export of work data
 -------------------
 
   >>> from loops.organize.work.report import WorkStatementCSVExport
-  >>> reportView = WorkStatementCSVExport(task01, TestRequest())
+  >>> reportView = WorkStatementCSVExport(task01, TestRequest(form=input))
   >>> reportView.nodeView = nodeView
 
   >>> output = reportView()

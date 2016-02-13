@@ -38,7 +38,7 @@
 <div metal:define-macro="results"
      tal:define="tableName string:results">
   <br />
-  <tal:download condition="item/downloadLink">
+  <tal:download condition="nothing">
     <div class="button">
       <a i18n:translate=""
          tal:define="dl string:${item/downloadLink}${item/urlParamString};

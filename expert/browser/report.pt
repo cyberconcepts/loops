@@ -38,22 +38,30 @@
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <form method="get" name="report_data" class="report-meta">
       <input type="hidden" name="show_results" value="True" />
-      <tal:hidden define="params item/dynamicParams"
-                  tal:condition="nothing">
+      <tal:hidden define="params item/dynamicParams">
         <input type="hidden"
                tal:repeat="name params"
+               tal:condition="nothing"
                tal:attributes="name name;
-                               value params/?name" /></tal:hidden>
+                               value params/?name" />
+        <input type="hidden"
+               tal:define="sortinfo request/sortinfo_results|nothing"
+               tal:condition="sortinfo"
+               tal:attributes="name string:sortinfo_results;
+                               value sortinfo" />
+      </tal:hidden>
       <div metal:use-macro="item/report_macros/params" />
       <div metal:define-macro="buttons">
         <input type="submit" name="report_execute" value="Execute Report"
+               onclick="this.form.action = ''"
                tal:attributes="value item/reportExecuteTitle|string:Execute Report"
                tal:condition="item/queryFields"
                i18n:attributes="value" />
-        <input type="submit"
+        <input type="submit" name="report_download"
                tal:condition="item/reportDownload"
-               tal:attributes="name string:${item/reportDownload}:method;
-                               value item/reportDownloadTitle"
+               tal:attributes="value item/reportDownloadTitle;
+                               onclick string:
+                      this.form.action = '${item/reportDownload}'"
                i18n:attributes="value"  />
       </div>
       <br />
