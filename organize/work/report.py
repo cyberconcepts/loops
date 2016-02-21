@@ -114,8 +114,12 @@ class PartyStateField(StateField):
         return None
 
 
-def yesterday(context):
-    return (date.today() - timedelta(1)).isoformat()
+def daysAgoByOption(context):
+    days = 7
+    opt = context.view.typeOptions('workitem_dayfrom_default')
+    if opt and opt[0].isdigit():
+        days = int(opt[0])
+    return (date.today() - timedelta(days)).isoformat()
 
 
 # common fields
@@ -134,7 +138,7 @@ deadline = TrackDateField('deadline', u'Deadline',
 dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 fieldType='date',
-                default=yesterday,
+                default=daysAgoByOption,
                 operator=u'ge',
                 executionSteps=['query'])
 dayTo = TrackDateField('dayTo', u'End Day',
