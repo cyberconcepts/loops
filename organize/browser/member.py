@@ -248,7 +248,7 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
         pw = generateName()
         email = form.get('email')
-        try:    
+        try:
             result = regMan.register(login, pw,
                                      form.get('lastName'), form.get('firstName'),
                                      email=email,)
