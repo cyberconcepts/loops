@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -605,6 +605,32 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def comment(self):
         return self.track.comment or u''
+
+    def onChangeAction(self):
+        js = [self.actionJs['setDefault'], 
+              self.actionJs['showIf'], 
+              self.actionJs['setIfStart']]
+        if self.state in ('done',):
+            js.append(self.actionJs['setIfFinish'])
+        return ';\n'.join(js)
+
+    actionJs = dict(setDefault="defValue = this.form.default_date.value",
+                    showIf="""
+showIfIn(this, [['move', 'target_task'],
+                ['delegate', 'target_party']])""",
+                    setIfStart="""
+setIf(this, 'start', [['start_date', defValue],
+                      ['start_time', defValue],
+                      ['end_time', null],
+                      ['duration', ''],
+                      ['effort', '']])""",
+                    setIfFinish="""
+setIf(this, 'finish', [['start_date', defValue],
+                       ['start_time', defValue],
+                       ['end_time', defValue],
+                       ['duration', ''],
+                       ['effort', '']])""",
+)
 
 
 class CreateWorkItem(EditObject, BaseTrackView):
