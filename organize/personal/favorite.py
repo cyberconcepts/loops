@@ -109,7 +109,7 @@ def updateSortInfo(person, task, data):
                 break
         else:
             if data:
-                Favorites(favorites).add(task, person, 
+                Favorites(favorites).add(task, person,
                                          dict(type='sort', sortInfo=data))
     return data
 
