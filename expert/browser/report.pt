@@ -141,7 +141,14 @@
 
 
 <metal:field define-macro="selection">
-  <metal:use use-macro="item/report_macros/textline" />
+  <select tal:attributes="name name">
+    <option />
+    <option tal:repeat="opt python:field.getVocabularyItems(
+                  context=item.adapted, request=request)"
+            tal:attributes="value opt/token;
+                            selected python:value == opt['token']"
+            tal:content="opt/title" />
+  </select>
 </metal:field>
 
 

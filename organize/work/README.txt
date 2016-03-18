@@ -232,7 +232,7 @@ The user interface is a ReportConceptView subclass that is directly associated w
   ...     print
   08/12/28 19:00 20:15
     {'url': '.../home/.36', 'title': u'loops Development'}
-    {'url': '.../home/.33', 'title': u'john'}  01:15 00:15
+    {'url': '.../home/.33', 'title': u'john'}   00:15
     {'actions': [...]}
 
   >>> results.totals.data
@@ -247,8 +247,8 @@ Export of work data
 
   >>> output = reportView()
   >>> print output
-  Day;Start;End;Task;Party;Title;Duration;Effort;State
-  08/12/28;19:00;20:15;loops Development;john;;1.2500;0.2500;finished
+  Day;Start;End;Task;Party;Title;LA;Effort;State
+  08/12/28;19:00;20:15;loops Development;john;;;0.2500;finished
 
 
 Meeting Minutes

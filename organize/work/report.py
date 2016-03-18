@@ -39,11 +39,13 @@ from loops.common import adapted, baseObject
 from loops.expert.browser.export import ResultsConceptCSVExport
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
-                            StringField, TextField, HtmlTextField, UrlField
+                            StringField, TextField, HtmlTextField, \
+                            UrlField, VocabularyField
 from loops.expert.field import SubReport, SubReportField
 from loops.expert.field import TrackDateField, TrackTimeField, TrackDateTimeField
 from loops.expert.field import WorkItemStateField
 from loops.expert.report import ReportInstance
+from loops.table import DataTableSourceBinder, DataTableSourceListByValue
 from loops import util
 
 
@@ -112,6 +114,28 @@ class PartyStateField(StateField):
         if self.statesDefinition in stdefs:
             return party
         return None
+
+
+class ActivityField(VocabularyField):
+
+    tableName = 'organize.work.activities'
+    vocabulary = DataTableSourceBinder(tableName, 
+                    sourceList=DataTableSourceListByValue)
+
+    def getDisplayValue(self, row):
+        if row.context is None:
+            return u'-'
+        value = row.context.data.get('activity', '')#[:3]
+        if not value:
+            return u''
+        dt = row.parent.context.view.conceptManager.get(self.tableName)
+        if dt is None:
+            return u''
+        for row in adapted(dt).data.values():
+            if row[0] == value:
+                value = row[3]
+                break
+        return value
 
 
 def daysAgoByOption(context):
@@ -193,7 +217,10 @@ partyState = PartyStateField('partyState', u'Party State',
                 cssClass='center',
                 statesDefinition='contact_states',
                 executionSteps=['query', 'output'])
-# activity
+activity = ActivityField('activity', u'LA',
+                description=u'The activity assigned to the work item.',
+                fieldType='selection',
+                executionSteps=['query', 'sort', 'output'])
 # process
 
 
@@ -233,7 +260,7 @@ class WorkRow(BaseRow):
     attributeHandlers = dict(day=getDay, 
                              dayStart=getStart, dayEnd=getEnd,
                              dayFrom=getDay, dayTo=getDay,
-                             duration=getDuration, effort=getEffort,)
+                             duration=getDuration, effort=getEffort)
 
 
 class WorkReportInstance(ReportInstance):
@@ -246,9 +273,11 @@ class WorkReportInstance(ReportInstance):
     fields = Jeep((dayFrom, dayTo, tasks,
                    day, timeStart, timeEnd, task, party, workTitle, 
                    #description,
-                   duration, effort, state))
+                   activity,
+                   #duration, 
+                   effort, state))
 
-    userSettings = (dayFrom, dayTo, party)
+    userSettings = (dayFrom, dayTo, party, activity)
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
     defaultStates = ('done', 'done_x', 'finished')

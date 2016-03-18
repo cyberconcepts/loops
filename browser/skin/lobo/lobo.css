@@ -262,6 +262,12 @@ table.records th, table.records td {
     border: 1px solid lightgrey;
 }
 
+table.report {
+    position: relative; 
+    z-index: 99; 
+    background: white;
+}
+
 table.report th {
     border-bottom: 1px solid #bbbbbb;
     font-weight: bold;

@@ -119,7 +119,7 @@ class IntegerField(Field):
 
 class DateField(Field):
 
-    fieldType='date',
+    fieldType='date'
     format = ('date', 'short')
     renderer = cssClass = 'center'
     dbtype = 'date'
@@ -192,6 +192,8 @@ class WorkItemStateField(Field):
 class VocabularyField(Field):
 
     vocabulary = None
+    sourceList = None
+    fieldType = 'selection'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -202,9 +204,11 @@ class VocabularyField(Field):
             if str(item['token']) == str(value):
                 return item['title']
 
-    def getVocabularyItems(self, row):
-        context = row.context
-        request = row.parent.context.view.request
+    def getVocabularyItems(self, row=None, context=None, request=None):
+        if context is  None:
+            context = row.context
+        if request is None:
+            request = row.parent.context.view.request
         voc = self.vocabulary
         if isinstance(voc, basestring):
             terms = self.getVocabularyTerms(voc, context, request)
@@ -213,7 +217,10 @@ class VocabularyField(Field):
             voc = voc.splitlines()
             return [dict(token=t, title=t) for t in voc if t.strip()]
         elif IContextSourceBinder.providedBy(voc):
-            source = voc(row.parent.context)
+            if row is not None:
+                source = voc(row.parent.context)
+            else:
+                source = voc(context)
             terms = component.queryMultiAdapter((source, request), ITerms)
             if terms is not None:
                 termsList = [terms.getTerm(value) for value in source]

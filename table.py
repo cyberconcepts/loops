@@ -138,22 +138,6 @@ def getRowValue(k, v):
 def getRowValueWithKey(k, v):
     return u' '.join((unicode(k), v[0]))
 
-class DataTableSourceBinder(object):
-
-    implements(IContextSourceBinder)
-
-    def __init__(self, tableName, valueProvider=getRowValue):
-        self.tableName = tableName
-        self.valueProvider = valueProvider
-
-    def __call__(self, instance):
-        if IInstance.providedBy(instance):
-            context = instance.view.nodeView.context
-        else:
-            context = baseObject(instance.context)
-        dt = context.getLoopsRoot().getConceptManager()[self.tableName]
-        return DataTableSourceList(adapted(dt), self.valueProvider)
-
 
 class DataTableSourceList(object):
 
@@ -170,3 +154,32 @@ class DataTableSourceList(object):
 
     def __len__(self):
         return len(self.context.data)
+
+
+class DataTableSourceListByValue(DataTableSourceList):
+
+    def __iter__(self):
+        items = [(k, v[0], v[1])
+                    for k, v in self.context.data.items()]
+        items.sort()
+        return iter([(i[1], i[2]) for i in items])
+
+
+class DataTableSourceBinder(object):
+
+    implements(IContextSourceBinder)
+
+    def __init__(self, tableName, valueProvider=getRowValue,
+                 sourceList=None):
+        self.tableName = tableName
+        self.valueProvider = valueProvider
+        self.sourceList = sourceList or DataTableSourceList
+
+    def __call__(self, instance):
+        if IInstance.providedBy(instance):
+            context = instance.view.nodeView.context
+        else:
+            context = baseObject(instance.context)
+        dt = context.getLoopsRoot().getConceptManager()[self.tableName]
+        return self.sourceList(adapted(dt), self.valueProvider)
+
