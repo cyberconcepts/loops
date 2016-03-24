@@ -1,24 +1,42 @@
 <metal:actions define-macro="favorites_portlet"
                tal:define="view nocall:context/@@favorites_view;
                            targetUid view/targetUid">
-    <div tal:repeat="item view/listFavorites">
-      <span style="float:right" class="delete-item">&nbsp;<a href="removeFavorite.html"
-          tal:attributes="href
-                string:${view/virtualTargetUrl}/removeFavorite.html?id=${item/uid};
-                          title string:Remove from favorites"
-          i18n:attributes="title">X</a>&nbsp;</span>
-      <a tal:attributes="href item/url;
-                         title item/description"
-         tal:content="item/title">Some object</a>
+  <form method="post">
+    <div dojoType="dojo.dnd.Source" withHandles="true" id="favorites_list">
+      <div class="dojoDndItem dojoDndHandle" style="padding: 0"
+           tal:repeat="item view/listFavorites">
+        <span style="float:right" class="delete-item">&nbsp;<a
+            tal:attributes="href
+                  string:${view/virtualTargetUrl}/removeFavorite.html?id=${item/uid};
+                            title string:Remove from favorites"
+            i18n:attributes="title">X</a>&nbsp;</span>
+        <a tal:attributes="href item/url;
+                           title item/description"
+           tal:content="item/title">Some object</a>
+        <input type="hidden" name="favorite_uids:list"
+               tal:attributes="value item/trackUid" />
+      </div>
     </div>
-    <div id="addFavorite" class="action"
-         tal:condition="targetUid">
-      <a i18n:translate=""
-         tal:attributes="href
-                string:${view/virtualTargetUrl}/addFavorite.html?id=$targetUid;
-                         title string:Add current object to favorites"
-         i18n:attributes="title">Add to Favorites</a>
+    <div>
+      <input type="submit" style="display: none"
+          name="favorites_change_order" id="favorites_change_order"
+          value="Save Changes"
+          i18n:attributes="value" />
+      <script language="javascript">
+      dojo.subscribe('/dnd/drop', function(data) {
+          if (data.node.id == 'favorites_list') {
+              dojo.byId('favorites_change_order').style.display = ''}});
+      </script>
     </div>
+  </form>
+  <div id="addFavorite" class="action"
+       tal:condition="targetUid">
+    <a i18n:translate=""
+       tal:attributes="href
+              string:${view/virtualTargetUrl}/addFavorite.html?id=$targetUid;
+                       title string:Add current object to favorites"
+       i18n:attributes="title">Add to Favorites</a>
+  </div>
 </metal:actions>
 
 

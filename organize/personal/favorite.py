@@ -41,12 +41,16 @@ class Favorites(object):
         for item in self.listTracks(person, sortKey, type):
             yield item.taskId
 
+    def listWithTracks(self, person, sortKey=None, type='favorite'):
+        for item in self.listTracks(person, sortKey, type):
+            yield util.getUidForObject(item), item.taskId
+
     def listTracks(self, person, sortKey=None, type='favorite'):
         if person is None:
             return
         personUid = util.getUidForObject(person)
         if sortKey is None:
-            sortKey = lambda x: -x.timeStamp
+            sortKey = lambda x: (x.data.get('order', 0), -x.timeStamp)
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
             if type is not None:
                 if item.type != type:
@@ -76,6 +80,14 @@ class Favorites(object):
                 changed = True
                 self.context.removeTrack(track)
         return changed
+
+    def reorder(self, uids):
+        for idx, uid in enumerate(uids):
+            track = util.getObjectForUid(uid)
+            if track is not None:
+                data = track.data
+                data['order'] = idx
+                track.data = data
 
 
 class Favorite(Track):
