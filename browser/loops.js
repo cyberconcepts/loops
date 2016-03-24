@@ -65,6 +65,17 @@ function setIf(node, cond, acts) {
     }
 }
 
+function setIfN(node, conds, acts) {
+    dojo.forEach(conds, function(cond) {
+        if (node.value == cond) {
+            dojo.forEach(acts, function(act) {
+                target = dijit.byId(act[0]);
+                target.setValue(act[1]);
+            })
+        }
+    })
+}
+
 function destroyWidgets(node) {
     dojo.forEach(dojo.query('[widgetId]', node), function(n) {
         w = dijit.byNode(n);

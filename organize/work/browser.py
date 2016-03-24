@@ -611,7 +611,7 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
               self.actionJs['showIf'], 
               self.actionJs['setIfStart']]
         if self.state in ('done',):
-            js.append(self.actionJs['setIfFinish'])
+            js.append(self.actionJs['setIfWF'])
         return ';\n'.join(js)
 
     actionJs = dict(setDefault="defValue = this.form.default_date.value",
@@ -624,10 +624,11 @@ setIf(this, 'start', [['start_date', defValue],
                       ['end_time', null],
                       ['duration', ''],
                       ['effort', '']])""",
-                    setIfFinish="""
-setIf(this, 'finish', [['start_date', defValue],
-                       ['start_time', defValue],
-                       ['end_time', defValue],
+                    setIfWF="""
+setIfN(this, ['work', 'finish'], [
+                       ['start_date', defValue],
+                       ['start_time', null],
+                       ['end_time', null],
                        ['duration', ''],
                        ['effort', '']])""",
 )
