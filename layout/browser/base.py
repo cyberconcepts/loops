@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -85,6 +85,10 @@ class BaseView(object):
     @Lazy
     def title(self):
         return self.context.title
+
+    @Lazy
+    def headTitle(self):
+        return self.title
 
     @Lazy
     def description(self):
