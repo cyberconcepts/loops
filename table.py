@@ -178,6 +178,8 @@ class DataTableSourceBinder(object):
     def __call__(self, instance):
         if IInstance.providedBy(instance):
             context = instance.view.nodeView.context
+        elif IConcept.providedBy(instance):
+            context = baseObject(instance)
         else:
             context = baseObject(instance.context)
         dt = context.getLoopsRoot().getConceptManager()[self.tableName]
