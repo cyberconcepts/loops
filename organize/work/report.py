@@ -85,6 +85,7 @@ class DurationField(Field):
     def getExportValue(self, row, format, lang):
         value = self.getValue(row)
         if format == 'csv':
+            return '%i' % round(value * 60)
             locale = locales.getLocale(lang)
             fmt = locale.numbers.getFormatter('decimal')
             return fmt.format(value, pattern=u'0.0000;-0.0000')            

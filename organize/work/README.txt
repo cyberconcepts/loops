@@ -248,7 +248,7 @@ Export of work data
   >>> output = reportView()
   >>> print output
   Day;Start;End;Task;Party;Title;LA;Effort;State
-  08/12/28;19:00;20:15;loops Development;john;;;0.2500;finished
+  08/12/28;19:00;20:15;loops Development;john;;;15;finished
 
 
 Meeting Minutes
