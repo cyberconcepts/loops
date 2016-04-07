@@ -51,8 +51,6 @@ class BaseRecordManager(object):
 
     @Lazy
     def storage(self):
-        if self.context is None:
-            return None
         records = self.loopsRoot.getRecordManager()
         if records is not None:
             return records.get(self.storageName)

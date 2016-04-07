@@ -64,8 +64,6 @@ class Responses(BaseRecordManager):
                 id += '.' + institutionId
             if referrerId:
                 id += '.' + referrerId
-            if self.storage is None:    # may happen after deletions
-                return {}
             tracks = self.storage.getUserTracks(self.uid, 0, id)
             if not tracks:  # then try without institution
                 tracks = self.storage.getUserTracks(self.uid, 0, personId)
