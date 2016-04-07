@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,8 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         description=_(u'Select the type of the questionnaire.'),
         source=KeywordVocabulary((
                 ('standard', _(u'Standard Questionnaire')),
+                ('person', _(u'Person-related Questionnaire')),
+                ('team', _(u'Team-related Questionnaire')),
                 ('pref_selection', _(u'Preference Selection')),
             )),
         default='standard',
@@ -83,6 +85,8 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         description=_(u'.'),
         default=False,
         required=False)
+
+    #teamBasedEvaluation = Attribute('Team-based Evaluation')
 
     feedbackColumns = Records(
         title=_(u'Feedback Columns'),

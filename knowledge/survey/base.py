@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -41,8 +41,17 @@ class Questionnaire(AdapterBase, Questionnaire):
 
     _contextAttributes = list(IQuestionnaire)
     _adapterAttributes = AdapterBase._adapterAttributes + (
+                'teamBasedEvaluation', 
                 'questionGroups', 'questions', 'responses',)
     _noexportAttributes = _adapterAttributes
+
+    def getTeamBasedEvaluation(self):
+        return (self.questionnaireType == 'team' or
+                    getattr(self.context, '_teamBasedEvaluation', False))
+    def setTeamBasedEvaluation(self, value):
+        if not value and getattr(self.context, '_teamBasedEvaluation', False):
+            self.context._teamBasedEvaluation = False
+    teamBasedEvaluation = property(getTeamBasedEvaluation, setTeamBasedEvaluation)
 
     @property
     def questionGroups(self):

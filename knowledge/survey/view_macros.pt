@@ -104,6 +104,16 @@
 </metal:block>
 
 
+<metal:block define-macro="quest_person">
+  <metal:block use-macro="item/template/macros/quest_standard" />
+</metal:block>
+
+
+<metal:block define-macro="quest_team">
+  <metal:block use-macro="item/template/macros/quest_standard" />
+</metal:block>
+
+
 <metal:block define-macro="quest_pref_selection">
     <h3 i18n:translate="">Questionnaire</h3>
     <div class="error"

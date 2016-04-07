@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -228,6 +228,8 @@ class SurveyView(InstitutionMixin, ConceptView):
         if self.adapted.teamBasedEvaluation and self.institution:
             respManager.institutionId = self.getUidForObject(
                                             baseObject(self.institution))
+        if self.adapted.questionnaireType == 'person':
+            respManager.referrerId = respManager.getPersonId()
         if self.adapted.questionnaireType == 'pref_selection':
             return self.prefsResults(respManager, form, action)
         data = {}
@@ -378,6 +380,8 @@ class SurveyView(InstitutionMixin, ConceptView):
             if self.adapted.teamBasedEvaluation and self.institution:
                 respManager.institutionId = self.getUidForObject(
                                                 baseObject(self.institution))
+            if self.adapted.questionnaireType == 'person':
+                respManager.referrerId = respManager.getPersonId()
             self.data = respManager.load()
 
     def getValues(self, question):
