@@ -29,7 +29,7 @@ from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _, KeywordVocabulary
 
 
-class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
+class IQuestionnaire(ILoopsAdapter, interfaces.IQuestionnaire):
     """ A collection of questions for setting up a survey.
     """
 
@@ -114,7 +114,7 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         required=False)
 
 
-class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
+class IQuestionGroup(ILoopsAdapter, interfaces.IQuestionGroup):
     """ A group of questions within a questionnaire.
     """
 
@@ -126,7 +126,7 @@ class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
         required=False)
 
 
-class IQuestion(IConceptSchema, interfaces.IQuestion):
+class IQuestion(ILoopsAdapter, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
 
@@ -153,7 +153,7 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
         required=False)
 
 
-class IFeedbackItem(IConceptSchema, interfaces.IFeedbackItem):
+class IFeedbackItem(ILoopsAdapter, interfaces.IFeedbackItem):
     """ Some text (e.g. a recommendation) or some other kind of information
         that may be deduced from the res)ponses to a questionnaire.
     """
