@@ -609,7 +609,7 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     def onChangeAction(self):
         js = [self.actionJs['setDefault'], 
               self.actionJs['showIf'], 
-              self.actionJs['setIfStart']]
+              self.actionJs['setIfSD']]
         if self.state in ('done',):
             js.append(self.actionJs['setIfWF'])
         return ';\n'.join(js)
@@ -618,19 +618,20 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
                     showIf="""
 showIfIn(this, [['move', 'target_task'],
                 ['delegate', 'target_party']])""",
-                    setIfStart="""
-setIf(this, 'start', [['start_date', defValue],
-                      ['start_time', defValue],
-                      ['end_time', null],
-                      ['duration', ''],
-                      ['effort', '']])""",
+                    setIfSD="""
+setIfN(this, ['start', 'delegate'], [
+                        ['start_date', defValue],
+                        ['start_time', defValue],
+                        ['end_time', null],
+                        ['duration', ''],
+                        ['effort', '']])""",
                     setIfWF="""
 setIfN(this, ['work', 'finish'], [
-                       ['start_date', defValue],
-                       ['start_time', null],
-                       ['end_time', null],
-                       ['duration', ''],
-                       ['effort', '']])""",
+                        ['start_date', defValue],
+                        ['start_time', null],
+                        ['end_time', null],
+                        ['duration', ''],
+                        ['effort', '']])""",
 )
 
 
