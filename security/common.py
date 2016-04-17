@@ -28,12 +28,13 @@ from zope.app.security.settings import Allow, Deny, Unset
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
+from zope.location.interfaces import ILocation
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.interfaces import IRolePermissionManager
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParents
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from cybertools.meta.interfaces import IOptions
@@ -245,6 +246,21 @@ class WorkspaceInformation(Persistent):
 
     def getParent(self):
         return self.__parent__
+
+    def getParents(self):
+        p = self.getParent()
+        return [p] + getParents(p)
+
+
+class LocationWSI(object):
+
+    implements(ILocation)
+    component.adapts(WorkspaceInformation)
+
+    def __init__(self, context):
+        self.context = context
+        self.__name__ = context.__name__
+        self.__parent__ = context.__parent__
 
 
 def getWorkspaceGroup(obj, predicate):
