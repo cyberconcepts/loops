@@ -142,5 +142,8 @@ class DataTableSourceList(object):
                     for k, v in self.context.data.items()]
         return iter(sorted(items, key=lambda x: x[1]))
 
+    def __contains__(self, value):
+        return value in self.context.data
+
     def __len__(self):
         return len(self.context.data)

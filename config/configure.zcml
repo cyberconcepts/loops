@@ -27,6 +27,11 @@
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
+  <zope:adapter factory="loops.config.base.ConceptAdapterOptions" trusted="True" />
+  <zope:class class="loops.config.base.ConceptAdapterOptions">
+    <allow interface="cybertools.meta.interfaces.IOptions" />
+  </zope:class>
+
   <!-- backward compatibility -->
   <zope:adapter factory="loops.config.base.QueryOptions" trusted="True"
                 for="loops.query.IQueryConcept" />

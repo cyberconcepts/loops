@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 Adapters and others classes for analyzing resources.
-
-$Id$
 """
 
 import os
@@ -33,6 +31,7 @@ from cybertools.meta.config import GlobalOptions as BaseGlobalOptions
 from cybertools.meta.interfaces import IOptions
 from cybertools.meta.namespace import Executor, ExecutionError
 from cybertools.typology.interfaces import IType
+from loops.common import AdapterBase
 from loops.interfaces import ILoops, ILoopsObject, ITypeConcept, IPredicate
 #from loops.query import IQueryConcept
 from loops.expert.concept import IQueryConcept
@@ -73,8 +72,8 @@ class LoopsOptions(Options):
 
     def parseContextOptions(self):
         def result():
-            options = getattr(self.context, 'options', [])
-            for opt in  options:
+            options = getattr(self.context, 'options', None) or []
+            for opt in options:
                 parts = opt.split(':', 1)
                 key = parts[0].strip()
                 if len(parts) == 1:
@@ -126,6 +125,11 @@ class QueryOptions(LoopsOptions):
 class PredicateOptions(LoopsOptions):
 
     adapts(IPredicate)
+
+
+class ConceptAdapterOptions(LoopsOptions):
+
+    adapts(AdapterBase)
 
 
 class DummyOptions(Options):
