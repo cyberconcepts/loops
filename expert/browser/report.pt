@@ -7,7 +7,9 @@
                    renderer item/resultsRenderer"
        tal:attributes="class string:content-$level;">
     <div metal:use-macro="item/report_macros/header" />
-    <div metal:use-macro="item/resultsRenderer" />
+    <tal:renderer condition="renderer">
+      <div metal:use-macro="renderer" />
+    </tal:renderer>
   </div>
 </div>
 
