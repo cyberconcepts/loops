@@ -58,6 +58,10 @@ class ReportView(ConceptView):
         return self.report_macros['main']
 
     @Lazy
+    def tabTitle(self):
+        return self.report.title
+
+    @Lazy
     def dynamicParams(self):
         return self.request.form
 

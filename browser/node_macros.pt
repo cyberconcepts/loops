@@ -267,17 +267,19 @@
 
 
 <metal:actions define-macro="view_modes">
-  <ul class="view-modes"
-      tal:define="viewModes view/viewModes"
-      tal:condition="viewModes">
-    <li tal:repeat="mode viewModes"
-        tal:attributes="class mode/cssClass">
-      <a tal:attributes="href mode/url;
-                         title mode/description"
-         tal:content="mode/title"
-         i18n:translate="" />
-    </li>
-  </ul>
+  <div style="margin-bottom: 10px"
+       tal:define="viewModes view/viewModes"
+       tal:condition="viewModes">
+    <ul class="view-modes">
+      <li tal:repeat="mode viewModes"
+          tal:attributes="class mode/cssClass">
+        <a tal:attributes="href mode/url;
+                           title mode/description"
+           tal:content="mode/title"
+           i18n:translate="" />
+      </li>
+    </ul>
+  </div>
 </metal:actions>
 
 

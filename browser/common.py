@@ -460,6 +460,10 @@ class BaseView(GenericView, I18NView, SortableMixin):
         return self.adapted.description
 
     @Lazy
+    def tabTitle(self):
+        return u'Info'
+
+    @Lazy
     def additionalInfos(self):
         return []
 

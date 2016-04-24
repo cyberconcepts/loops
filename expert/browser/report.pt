@@ -45,6 +45,11 @@
                tal:attributes="name name;
                                value params/?name" />
         <input type="hidden"
+               tal:define="viewName request/loops.viewName|nothing"
+               tal:condition="viewName"
+               tal:attributes="name string:loops.viewName;
+                               value viewName" />
+        <input type="hidden"
                tal:define="sortinfo request/sortinfo_results|nothing"
                tal:condition="sortinfo"
                tal:attributes="name string:sortinfo_results;
