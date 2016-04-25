@@ -71,6 +71,15 @@ class Responses(BaseRecordManager):
                 return tracks[0].data
         return {}
 
+    def loadRange(self, personId):
+        tracks = self.storage.getUserTracks(self.uid, 0, personId)
+        data = {}
+        for tr in tracks:
+            for k, v in tr.data.items():
+                item = data.setdefault(k, [])
+                item.append(v)
+        return data
+
     def getAllTracks(self):
         return self.storage.query(taskId=self.uid)
 
