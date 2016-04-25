@@ -49,7 +49,7 @@ class Responses(BaseRecordManager):
             if self.referrerId:
                 id += '.' + self.referrerId
             self.storage.saveUserTrack(self.uid, 0, id, data, 
-                                        update=True, overwrite=True)
+                                        update=True, overwrite=False)
 
     def load(self, personId=None, referrerId=None, institutionId=None):
         if personId is None:
