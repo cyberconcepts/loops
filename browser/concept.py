@@ -273,7 +273,7 @@ class ConceptView(BaseView):
             active = (activeMode is None and p == current)
             if active:
                 activeMode = p
-            url = '%s?loops.viewName=%s' % (self.request.URL, p)
+            url = '%s?loops.viewName=%s' % (self.targetUrl, p)
             modes.append(ViewMode(p, view.tabTitle, url, active))
         if activeMode is None:
             modes[0].active = True
