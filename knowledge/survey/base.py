@@ -57,8 +57,11 @@ class Questionnaire(AdapterBase, Questionnaire):
     def questionGroups(self):
         return self.getQuestionGroups()
 
-    def getQuestionGroups(self, personId=None):
+    def getAllQuestionGroups(self, personId=None):
         return [adapted(c) for c in self.context.getChildren()]
+
+    def getQuestionGroups(self, personId=None):
+        return self.getAllQuestionGroups()
 
     @property
     def questions(self):
