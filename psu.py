@@ -43,7 +43,7 @@ def setup(root):
     #password = (getattr(config, 'shell_pw', None) or
     #            raw_input('Enter manager password: '))
     user = 'zope.manager'
-    passwort = raw_input('Enter manager password: ')
+    password = raw_input('Enter manager password: ')
     login(Principal(user, password, u'Manager'))
 
 
