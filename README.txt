@@ -940,6 +940,12 @@ Security
   >>> from loops.security.browser import admin, audit
 
 
+Paster Shell Utilities - Repair Scripts
+=======================================
+
+  >>> from loops.repair.base import removeRecords
+
+
 Import/Export
 =============
 
