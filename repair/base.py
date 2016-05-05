@@ -72,7 +72,7 @@ def stop_condition(info):
 def loop(message, objects, fct, **kw):
     def _fct(obj, info):
         params = info.get('fctparams', {})
-        fct(obj, **params)
+        fct(obj, info, **params)
     info = startup(message, **kw)
     for obj in objects:
         update(_fct, obj, info)

@@ -30,10 +30,11 @@ from loops.util import getObjectForUid, getUidForObject
 
 
 sc = Jeep()     # shortcuts
-
+rf = None       # root folder
 
 def setup(root):
-    global sm, smdefault, intids, pau, sc
+    global rf, sm, smdefault, intids, pau, sc
+    rf = root
     setSite(root)
     sm = component.getSiteManager(root)
     smdefault = sm['default']
