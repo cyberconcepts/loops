@@ -56,6 +56,11 @@ class WorkStatementView(ReportConceptView):
     reportName = 'work_statement'
 
 
+class WorkPlanView(ReportConceptView):
+
+    reportName = 'work_plan'
+
+
 class WorkStatementCSVExport(ResultsConceptCSVExport):
 
     reportName = 'work_statement'
@@ -366,6 +371,14 @@ class WorkReportInstance(ReportInstance):
     @Lazy
     def workItems(self):
         return IWorkItems(self.recordManager['work'])
+
+
+class WorkPlanReportInstance(WorkReportInstance):
+
+    type = "work_plan"
+    label = u'Work Plan'
+
+    defaultStates = ('planned', 'accepted',)
 
 
 class PersonWorkReportInstance(WorkReportInstance):

@@ -1,0 +1,4 @@
+concept(u'work_statement', u'Leistungsabrechnung', u'report',
+    report_type=u'work_report')
+concept(u'work_plan', u'Aktivitätenplanung', u'report',
+    report_type=u'work_plan_report')

@@ -95,10 +95,28 @@
              set_schema="loops.expert.report.IReportInstance" />
   </zope:class>
 
+  <zope:adapter 
+      name="work_plan_report"
+      factory="loops.organize.work.report.WorkPlanReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.organize.work.report.WorkPlanReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
   <browser:page
       name="work.html"
       for="loops.organize.interfaces.IConceptSchema"
       class="loops.organize.work.report.WorkStatementView"
+      permission="zope.View" />
+
+  <browser:page
+      name="work_plan.html"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.organize.work.report.WorkPlanView"
       permission="zope.View" />
 
   <browser:page
