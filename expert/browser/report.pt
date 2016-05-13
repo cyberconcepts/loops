@@ -56,6 +56,10 @@
                tal:condition="sortinfo"
                tal:attributes="name string:sortinfo_results;
                                value sortinfo" />
+        <input type="hidden" name="report_name"
+               tal:define="reportName item/reportName"
+               tal:condition="reportName"
+               tal:attributes="value reportName" />
       </tal:hidden>
       <div metal:use-macro="item/report_macros/params" />
       <div metal:define-macro="buttons">

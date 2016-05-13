@@ -346,7 +346,7 @@ class WorkReportInstance(ReportInstance):
         if checked is None:
             checked = set()
         for c in concept.getChildren([self.view.defaultPredicate]):
-            if c.conceptType in self.taskTypes:
+            if c.conceptType in self.taskTypes and c not in checked:
                 result.append(c)
             if c not in checked:
                 checked.add(c)

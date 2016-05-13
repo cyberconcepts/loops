@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 View classes for reporting.
 """
 
+from logging import getLogger
 from urllib import urlencode
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -158,6 +159,8 @@ class ResultsConceptView(ConceptView):
     """ View on a concept using the results of a report.
     """
 
+    logger = getLogger ('ResultsConceptView')
+
     reportName = None   # define in subclass if applicable
     reportDownload = None
     reportType = None   # set for using special report instance adapter
@@ -188,6 +191,9 @@ class ResultsConceptView(ConceptView):
 
     @Lazy
     def reportName(self):
+        rn = self.request.form.get('report_name')
+        if rn is not None:
+            return rn
         return (self.getOptions('report_name') or [None])[0]
 
     @Lazy
@@ -198,7 +204,10 @@ class ResultsConceptView(ConceptView):
     @Lazy
     def report(self):
         if self.reportName:
-            return adapted(self.conceptManager[self.reportName])
+            report = adapted(self.conceptManager.get(self.reportName))
+            if report is None:
+                self.logger.warn("Report '%s' not found." % self.reportName)
+            return report
         reports = self.context.getParents([self.hasReportPredicate])
         if not reports:
             type = self.context.conceptType
