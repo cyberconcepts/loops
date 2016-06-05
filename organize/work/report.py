@@ -378,7 +378,7 @@ class WorkPlanReportInstance(WorkReportInstance):
     type = "work_plan"
     label = u'Work Plan'
 
-    defaultStates = ('planned', 'accepted',)
+    defaultStates = ('planned', 'accepted', 'done')
 
 
 class PersonWorkReportInstance(WorkReportInstance):
