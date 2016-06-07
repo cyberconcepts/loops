@@ -560,11 +560,20 @@ class NodeView(BaseView):
         """ Return URL of given target view given as .XXX URL.
         """
         if isinstance(target, BaseView):
+            miu = self.getMenuItemUrlForTarget(target.context)
+            if miu is not None:
+                return miu
             return self.makeTargetUrl(self.url, target.uniqueId, target.title)
         else:
             target = baseObject(target)
             return self.makeTargetUrl(self.url, util.getUidForObject(target),
                                       target.title)
+
+    def getMenuItemUrlForTarget(self, tobj):
+        for node in tobj.getClients():
+            if node.getMenu() == self.menuObject:
+                return absoluteURL(node, self.request)
+
 
     def getActions(self, category='object', page=None, target=None):
         actions = []
