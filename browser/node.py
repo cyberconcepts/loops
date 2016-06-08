@@ -571,7 +571,7 @@ class NodeView(BaseView):
 
     def getMenuItemUrlForTarget(self, tobj):
         for node in tobj.getClients():
-            if node.getMenu() == self.menuObject:
+            if node.nodeType == 'page' and node.getMenu() == self.menuObject:
                 return absoluteURL(node, self.request)
 
 
