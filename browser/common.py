@@ -42,7 +42,6 @@ from zope.formlib.namedtemplate import NamedTemplate
 from zope.interface import Interface, implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import applySkin
-from zope.publisher.http import URLGetter as BaseURLGetter
 from zope.publisher.interfaces.browser import IBrowserSkinType, IBrowserView
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
@@ -188,12 +187,6 @@ class SortableMixin(object):
                 return '/@@/cybertools.icons/arrowup.gif'
 
 
-class URLGetter(BaseURLGetter):
-
-    def __str__(self):
-        return self.__request.getURL().rstrip('/@@index.html')
-
-
 class BaseView(GenericView, I18NView, SortableMixin):
 
     actions = {}
@@ -215,10 +208,6 @@ class BaseView(GenericView, I18NView, SortableMixin):
         except ForbiddenAttribute:  # ignore when testing
             pass
         saveRequest(request)
-
-    @property
-    def requestUrl(self):
-        return URLGetter(self.request)
 
     def todayFormatted(self):
         return formatDate(date.today(), 'date', 'short',
