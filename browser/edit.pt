@@ -17,7 +17,7 @@
   <div metal:fill-slot="body">
   <div metal:define-macro="body">
 
-    <form action="." tal:attributes="action view/requestUrl" method="post"
+    <form action="." tal:attributes="action request/URL" method="post"
           enctype="multipart/form-data">
 
       <input type="hidden" name="form_submitted" value="true" />

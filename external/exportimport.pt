@@ -19,7 +19,7 @@
     </div>
 
     <form action="." method="post"
-          tal:attributes="action string:${view/requestUrl/-1}/export_loops.html">
+          tal:attributes="action string:${request/URL/-1}/export_loops.html">
       <input type="hidden" name="loops.action" value="export" />
       <div>&nbsp;</div>
       <h4>Export Site</h4>
@@ -93,7 +93,7 @@
     </form>
 
     <form action="." method="post" enctype="multipart/form-data"
-          tal:attributes="action view/requestUrl">
+          tal:attributes="action request/URL">
       <input type="hidden" name="loops.action" value="upload" />
       <div>&nbsp;</div>
       <h4>Import Site</h4>

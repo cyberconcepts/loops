@@ -9,7 +9,7 @@
 <div metal:define-macro="form">
 
 <form action="." metal:define-macro="master"
-      tal:attributes="action view/requestUrl" method="post"
+      tal:attributes="action request/URL" method="post"
       class="edit-form" enctype="multipart/form-data"
       id="zc.page.browser_form">
 

@@ -15,7 +15,7 @@
     <tal:checkmove define="dummy view/checkMoveAction">
 
     <form name="contents" method="post" action="."
-          tal:attributes="action view/requestUrl"
+          tal:attributes="action request/URL"
           tal:define="container_contents view/listContentInfo">
       <metal:keep-batch define-macro="keep_batch_params">
         <tal:param repeat="param python:('b_page', 'b_size', 'b_overlap', 'b_orphan')">

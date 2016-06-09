@@ -4,7 +4,7 @@
 <body>
 
 <div metal:fill-slot="body">
-  <form action="." tal:attributes="action view/requestUrl" method="post">
+  <form action="." tal:attributes="action request/URL" method="post">
     <input type="hidden" name="form_submitted" value="true" />
     <h1>Edit Track <span tal:content="view/id" /></h1>
     <div class="row">
