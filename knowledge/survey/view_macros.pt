@@ -40,7 +40,7 @@
          tal:condition="reports">
       <b i18n:translate="label_survey_show_report">Show Report</b>: &nbsp;
       <a tal:repeat="report reports"
-         tal:attributes="href string:${request/URL}?report=${report/name}"
+         tal:attributes="href string:${view/requestUrl}?report=${report/name}"
          i18n:translate=""
          tal:content="report/label" />
       <br /><br />
@@ -223,7 +223,7 @@
     </p>
     <div class="button" id="show_questionnaire">
       <a i18n:translate=""
-         tal:attributes="href string:${request/URL}${item/urlParamString}">
+         tal:attributes="href string:${view/requestUrl}${item/urlParamString}">
         Back to Questionnaire</a>
       <br />
     </div>
@@ -278,7 +278,7 @@
       </p>
       <div class="button" id="show_questionnaire">
         <a i18n:translate=""
-           tal:attributes="href string:${request/URL}${item/urlParamString}">
+           tal:attributes="href string:${view/requestUrl}${item/urlParamString}">
           Back to Questionnaire</a></div>
     </div>
 </metal:block>

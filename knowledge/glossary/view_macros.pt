@@ -9,7 +9,7 @@
           class="navlink">
       <a href="#"
          tal:omit-tag="python: letter not in data.keys()"
-         tal:attributes="href string:${request/URL/-1}#$letter"
+         tal:attributes="href string:${view/requestUrl/-1}#$letter"
          tal:content="letter">A</a>
     </span>
   </div>
@@ -17,7 +17,7 @@
   <div tal:repeat="letter data/keys">
     <div class="subtitle"><a name="A" href="#top"
            tal:attributes="name letter;
-                           href string:${request/URL/-1}#top"
+                           href string:${view/requestUrl/-1}#top"
            tal:content="letter">A</a>
     </div>
     <div tal:repeat="related data/?letter|python:[]">

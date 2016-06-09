@@ -18,7 +18,7 @@
     <form metal:define-macro="listing_form"
           method="post" action="."
           tal:define="formName formName|string:listing"
-          tal:attributes="action request/URL;
+          tal:attributes="action view/requestUrl;
                           name formName"
           tal:condition="items">
       <input type="hidden" name="action" value="remove"
@@ -117,7 +117,7 @@
             i18n:translate=""
             style="padding: 0 4px 0 4px">Create Object</legend>
     <form method="post" name="listing" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action view/requestUrl">
       <input type="hidden" name="action" value="create" />
       <div class="row">
         <span i18n:translate="">Name</span>
@@ -169,7 +169,7 @@
 
 <metal:search define-macro="search">
   <form method="post" name="listing" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action view/requestUrl">
       <input type="hidden" name="action" value="search" />
       <div class="row"
            tal:define="searchTerm request/searchTerm | nothing;

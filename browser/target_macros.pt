@@ -10,7 +10,7 @@
           method="post" name="listing" action="."
           tal:define="target nocall:view/target"
           tal:condition="python: target or items"
-          tal:attributes="action request/URL">
+          tal:attributes="action view/requestUrl">
       <input type="hidden" name="action" value="assign"
              tal:attributes="value action" />
       <table class="listing" summary="Currently assigned"
@@ -83,7 +83,7 @@
   <fieldset>
     <legend i18n:translate="">Create Target</legend>
     <form method="post" name="listing" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action view/requestUrl">
       <input type="hidden" name="action" value="create" />
       <div class="row">
         <span i18n:translate="">Name</span>
@@ -114,7 +114,7 @@
 
 <metal:search define-macro="search">
   <form method="post" name="listing" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action view/requestUrl">
       <input type="hidden" name="action" value="search" />
       <div class="row"
            tal:define="searchTerm request/searchTerm | nothing;
