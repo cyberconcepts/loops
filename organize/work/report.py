@@ -344,7 +344,8 @@ class WorkReportInstance(ReportInstance):
     def getAllSubtasks(self, concept, checked=None):
         result = []
         if checked is None:
-            checked = set()
+            #checked = set()
+            checked = set([concept])
         for c in concept.getChildren([self.view.defaultPredicate]):
             if c.conceptType in self.taskTypes and c not in checked:
                 result.append(c)
