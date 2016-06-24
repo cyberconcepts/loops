@@ -27,6 +27,7 @@ from zope.proxy import removeAllProxies
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 
+from cybertools.browser.view import URLGetter
 from cybertools.meta.interfaces import IOptions
 from cybertools.util import format
 from loops.common import adapted, baseObject
@@ -41,6 +42,10 @@ class BaseView(object):
     def __init__(self, context, request):
         self.context = removeSecurityProxy(context)  # this is the adapted concept!
         self.request = request
+
+    @property
+    def requestUrl(self):
+        return URLGetter(self.request)
 
     @Lazy
     def loopsRoot(self):
