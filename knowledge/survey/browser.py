@@ -246,12 +246,16 @@ class SurveyView(InstitutionMixin, ConceptView):
         values = response.getGroupedResult()
         for v in values:
             data[self.getUidForObject(v['group'])] = v['score']
+        self.data = data
+        self.errors = self.check(response)
+        if action == 'submit' and not self.errors:
+            data['state'] = 'active'
+        else:
+            data['state'] = 'draft'
         respManager.save(data)
         if action == 'save':
             self.message = u'Your data have been saved.'
             return []
-        self.data = data
-        self.errors = self.check(response)
         if self.errors:
             return []
         result = [dict(category=r['group'].title, text=r['feedback'].text, 
