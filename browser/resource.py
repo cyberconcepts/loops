@@ -197,6 +197,7 @@ class ResourceView(BaseView):
         context = self.context
         ct = context.contentType
         response = self.request.response
+        response.setHeader('X-Robots-Tag', 'noindex, nofollow')
         self.recordAccess('show', target=self.uniqueId)
         if ct.startswith('image/'):
             #response.setHeader('Cache-Control', 'public,max-age=86400')
@@ -215,7 +216,7 @@ class ResourceView(BaseView):
         data = context.data
         if useAttachment:
             if filename is None:
-                filename = (adapted(self.context).localFilename or 
+                filename = (adapted(self.context).localFilename or
                                 getName(self.context))
                 if self.typeOptions('use_title_for_download_filename'):
                     base, ext = os.path.splitext(filename)
@@ -482,4 +483,3 @@ class NoteView(DocumentView):
     def linkUrl(self):
         ad = self.typeAdapter
         return ad and ad.linkUrl or ''
-
