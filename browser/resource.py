@@ -197,7 +197,9 @@ class ResourceView(BaseView):
         context = self.context
         ct = context.contentType
         response = self.request.response
-        response.setHeader('X-Robots-Tag', 'noindex, nofollow')
+        if self.typeOptions('x_robots_tag_header', None) is not None:
+            tagVal = ', '.join(self.typeOptions('x_robots_tag_header'))
+            response.setHeader('X-Robots-Tag', tagVal)
         self.recordAccess('show', target=self.uniqueId)
         if ct.startswith('image/'):
             #response.setHeader('Cache-Control', 'public,max-age=86400')
