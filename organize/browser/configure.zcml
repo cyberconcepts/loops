@@ -96,6 +96,12 @@
   <!-- specialized forms -->
 
   <browser:page
+      name="create_person.html"
+      for="loops.interfaces.INode"
+      class="loops.organize.browser.party.CreatePersonForm"
+      permission="zope.View" />
+
+  <browser:page
       name="edit_person.html"
       for="loops.interfaces.INode"
       class="loops.organize.browser.party.EditPersonForm"
