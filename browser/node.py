@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -111,7 +111,9 @@ class NodeView(BaseView):
             parts.extend(getParts(n))
         return parts
 
-    def update(self):
+    def update(self, topLevel=True):
+        if topLevel and self.view != self:
+            return self.view.update(False)
         result = super(NodeView, self).update()
         self.recordAccess()
         return result
@@ -410,8 +412,9 @@ class NodeView(BaseView):
 
     @Lazy
     def menuItems(self):
-        return [NodeView(child, self.request)
+        items = [NodeView(child, self.request).view
                     for child in self.context.getMenuItems()]
+        return [item for item in items if item.isVisible]
 
     @Lazy
     def parents(self):
@@ -438,6 +441,10 @@ class NodeView(BaseView):
 
     def active(self, item):
         return item.context == self.context or item.context in self.parents
+
+    @Lazy
+    def authenticationMethod(self):
+        return self.viewAnnotations.get('auth_method') or 'standard'
 
     # virtual target support
 
