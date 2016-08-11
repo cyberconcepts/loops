@@ -83,7 +83,7 @@
     <a tal:omit-tag="python:
                   not getattr(item, 'showLinks', True) or not value['url']"
        tal:attributes="href value/url"
-       tal:content="value/title" />
+       tal:content="structure value/title" />
   </tal:column>
 </metal:target>
 
