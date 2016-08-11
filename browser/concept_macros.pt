@@ -183,14 +183,17 @@
                          tal:attributes="value related/uidToken" />
                 </td>
               </tr>
-              <tr tal:define="children python:list(related.unique(related.children()));
-                              resources python:list(related.resources())"
-                  tal:condition="python:list_nested and (children or resources)">
-                <td tal:condition="item/showCheckboxes|nothing" />
-                <td colspan="5">
-                  <metal:list use-macro="item/template/macros/list_nested" />
-                </td>
-              </tr>
+              <tal:nested condition="list_nested">
+                <tr tal:define="children python:
+                        list(related.unique(related.children()));
+                                resources python:list(related.resources())"
+                    tal:condition="python:children or resources">
+                  <td tal:condition="item/showCheckboxes|nothing" />
+                  <td colspan="5">
+                    <metal:list use-macro="item/template/macros/list_nested" />
+                  </td>
+                </tr>
+              </tal:nested>
             </tal:item>
           </tal:items>
           </tbody>
