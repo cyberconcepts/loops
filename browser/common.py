@@ -196,6 +196,7 @@ class BaseView(GenericView, I18NView, SortableMixin):
     icon = None
     modeName = 'view'
     isToplevel = False
+    isVisible = True
 
     def __init__(self, context, request):
         context = baseObject(context)

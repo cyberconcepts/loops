@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ from cybertools.ajax import innerHtml
 from cybertools.browser.action import actions
 from cybertools.browser.form import FormController
 from loops.browser.action import DialogAction
-from loops.browser.form import EditConceptForm
+from loops.browser.form import CreateConceptForm, EditConceptForm
 from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.organize.party import getPersonForUser
@@ -44,7 +44,8 @@ organize_macros = ViewPageTemplateFile('view_macros.pt')
 actions.register('createPerson', 'portlet', DialogAction,
         title=_(u'Create Person...'),
         description=_(u'Create a new person.'),
-        viewName='create_concept.html',
+        #viewName='create_concept.html',
+        viewName='create_person.html',
         dialogName='createPerson',
         typeToken='.loops/concepts/person',
         fixedType=True,
@@ -115,18 +116,25 @@ actions.register('send_email', 'object', DialogAction,
 )
 
 
-class EditPersonForm(EditConceptForm):
+class PersonForm(object):
 
     @Lazy
     def presetTypesForAssignment(self):
         types = list(self.typeManager.listTypes(include=('workspace',)))
-        #assigned = [r.context for r in self.assignments]
-        #types = [t for t in types if t.typeProvider not in assigned]
         predicates = [n for n in ['standard', 'ismember', 'ismaster', 'isowner']
                         if n in self.conceptManager]
         return [dict(title=t.title, token=t.tokenForSearch, predicates=predicates)
                         for t in types]
 
+
+class CreatePersonForm(PersonForm, CreateConceptForm):
+
+    pass
+
+
+class EditPersonForm(PersonForm, EditConceptForm):
+
+    pass
 
 
 class SendEmailForm(NodeView):
