@@ -67,14 +67,14 @@ class NotificationsListing(ConceptView):
             if s is None:
                 sender = dict(label=u'???', url=u'')
             else:
-                sender = dict(label=s.title, 
+                sender = dict(label=s.title,
                               url=self.nodeView.getUrlForTarget(baseObject(s)))
             obj = util.getObjectForUid(track.taskId)
             if obj is None:
                 continue
             ov = self.nodeView.getViewForTarget(obj)
             url = '%s?form.action=notification_read&track=%s' % (
-                    self.nodeView.getUrlForTarget(obj), 
+                    self.nodeView.getUrlForTarget(obj),
                     util.getUidForObject(track))
             object = dict(label=ov.title, url=url)
             read_ts = self.formatTimeStamp(data.get('read_ts'))
@@ -82,7 +82,8 @@ class NotificationsListing(ConceptView):
                         sender=sender,
                         object=object,
                         text=data.get('text') or u'',
-                        read_ts=read_ts)
+                        read_ts=read_ts,
+                        uid=util.getUidForObject(track))
             result.append(item)
         return result
 
