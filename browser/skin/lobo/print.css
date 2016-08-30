@@ -11,6 +11,10 @@ body {
     display: none;
 }
 
+.breadcrumbs {
+    display: none;
+}
+
 .container {
     width: auto;
     margin: 0;
