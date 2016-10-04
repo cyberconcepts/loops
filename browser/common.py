@@ -615,6 +615,11 @@ class BaseView(GenericView, I18NView):
     def typeOptions(self):
         if self.typeProvider is None:
             return DummyOptions()
+        if getattr(self.adapted, '__is_dummy__', None):
+            typeToken = getattr(self, 'typeToken', None)
+            if typeToken is not None:
+                typeProvider = self.loopsRoot.loopsTraverse(typeToken)
+                return IOptions(adapted(typeProvider))
         return IOptions(adapted(self.typeProvider))
 
     @Lazy
