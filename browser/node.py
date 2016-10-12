@@ -555,7 +555,7 @@ class NodeView(BaseView):
     @Lazy
     def typeProvider(self):
         if self.virtualTargetObject is not None:
-            return IType(self.virtualTargetObject).typeProvider
+            return IType(baseObject(self.virtualTargetObject)).typeProvider
         return None
 
     # target viewing and editing support
