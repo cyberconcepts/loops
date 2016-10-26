@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -550,7 +550,10 @@ class IndexAttributes(object):
             return u''
         data = actx.data
         if type(data) != unicode:
-            data = data.decode('UTF-8')
+            try:
+                data = data.decode('UTF-8')
+            except UnicodeDecodeError:
+                data = data.decode('ISO8859-15')
         return data
 
     def xx_text(self):
