@@ -71,7 +71,7 @@
       <tal:row define="object row/objectData;
                        url object/url"
                condition="object/canAccess">
-        <td tal:attributes="title object/object/description">
+        <td tal:attributes="title object/description">
           <a tal:omit-tag="not:url"
              tal:attributes="href string:$url?version=this"
              tal:content="object/title" /></td>
