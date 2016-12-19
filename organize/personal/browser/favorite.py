@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 A view (to be used by listings, portlets, ...) for favorites.
-
-$Id$
 """
 
 from zope import component
@@ -28,6 +26,7 @@ from zope.cachedescriptors.property import Lazy
 
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
 from loops.browser.node import NodeView
+from loops.common import adapted
 from loops.organize.party import getPersonForUser
 from loops.organize.personal.interfaces import IFavorites
 from loops import util
@@ -61,10 +60,11 @@ class FavoriteView(NodeView):
         for uid in self.favorites.list(self.person):
             obj = util.getObjectForUid(uid)
             if obj is not None:
+                adobj = adapted(obj)
                 yield dict(url=self.getUrlForTarget(obj),
                            uid=uid,
-                           title=obj.title,
-                           description=obj.description,
+                           title=adobj.favTitle,
+                           description=adobj.description,
                            object=obj)
 
     def add(self):
