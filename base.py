@@ -1,7 +1,5 @@
-# -*- coding: UTF-8 -*-
-# -*- Mode: Python; py-indent-offset: 4 -*-
 #
-#  Copyright (c) 2006 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,8 +17,7 @@
 #
 
 """
-
-$Id$
+Implementation of loops root object.
 """
 
 from zope.app.container.btree import BTreeContainer
@@ -43,9 +40,9 @@ class Loops(Folder):
     #def getSiteManager(self):
     #    return self.__parent__.getSiteManager()
 
-    @property
-    def _SampleContainer__data(self):
-        return self.data
+    #@property
+    #def _SampleContainer__data(self):
+    #    return self.data
 
     _skinName = ''
     def getSkinName(self): return self._skinName
