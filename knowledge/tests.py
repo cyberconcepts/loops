@@ -1,11 +1,9 @@
-# tests.py - loops.knowledge package
 
 import os
 import unittest, doctest
 from zope.app.testing import ztapi
 from zope import component
 from zope.interface.verify import verifyClass
-from zope.testing.doctestunit import DocFileSuite
 
 from loops.expert.report import IReport, Report
 from loops.knowledge.qualification.base import Competence
@@ -42,7 +40,7 @@ def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
-                DocFileSuite('README.txt', optionflags=flags),
+                doctest.DocFileSuite('README.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':
