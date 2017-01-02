@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '2.0'
+version = '2.2.1'
 
 setup(name='loops',
       version=version,
@@ -10,9 +10,9 @@ setup(name='loops',
 linked objects for organizational process services""",
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
-      author='Helmut Merz',
-      author_email='helmutm@cy55.de',
-      url='',
+      author='cyberconcepts.org team',
+      author_email='team@cyberconcepts.org',
+      url='https://www.cyberconcepts.org',
       license='GPL',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -82,8 +82,7 @@ class NodeView(BaseView):
         super(NodeView, self).__init__(context, request)
         self.viewAnnotations.setdefault('nodeView', self)
         self.viewAnnotations.setdefault('node', self.context)
-        viewConfig = getViewConfiguration(context, request)
-        self.setSkin(viewConfig.get('skinName'))
+        self.setSkin(self.viewConfig.get('skinName'))
 
     def __call__(self, *args, **kw):
         tv = self.viewAnnotations.get('targetView')
@@ -93,6 +92,26 @@ class NodeView(BaseView):
         if self.controller is not None:
             self.controller.setMainPage()
         return super(NodeView, self).__call__(*args, **kw)
+
+    @Lazy
+    def viewConfig(self):
+        return getViewConfiguration(self.context, self.request)
+
+    @Lazy
+    def viewConfigOptions(self):
+        result = {}
+        for opt in self.viewConfig['options']:
+            if ':' in opt:
+                k, v = opt.split(':', 1)
+                result[k] = v.split(',')
+            else:
+                result[opt] = True
+        return result
+
+    #@Lazy
+    def copyright(self):
+        cr = self.viewConfigOptions.get('copyright')
+        return cr and cr[0] or 'cyberconcepts.org team'
 
     @Lazy
     def macro(self):

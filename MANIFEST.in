@@ -1,0 +1,11 @@
+global-include *.cfg
+global-include *.css *.js
+global-include *.gif *.jpg *.png
+global-include *.dmp
+global-include *.md *.txt
+global-include *.mo *.po *.pot
+global-include *.pdf
+global-include *.pt
+global-include *.zcml
+
+graft loops/integrator/testdata
