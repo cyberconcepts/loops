@@ -105,7 +105,7 @@ class NodeView(BaseView):
     @Lazy
     def viewConfigOptions(self):
         result = {}
-        for opt in self.viewConfig['options']:
+        for opt in self.viewConfig.get('options') or []:
             if ':' in opt:
                 k, v = opt.split(':', 1)
                 result[k] = v.split(',')
@@ -113,9 +113,12 @@ class NodeView(BaseView):
                 result[opt] = True
         return result
 
-    #@Lazy
+    @Lazy
     def copyright(self):
         cr = self.viewConfigOptions.get('copyright')
+        if cr:
+            return cr[0]
+        cr = self.globalOptions('copyright')
         return cr and cr[0] or 'cyberconcepts.org team'
 
     @Lazy
