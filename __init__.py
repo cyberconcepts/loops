@@ -2,15 +2,16 @@
 
 # intid monkey patch for avoiding ForbiddenAttribute error
 
+from zope import component
+from zope.intid.interfaces import IIntIds
 from zope import intid
 from zope.security.proxy import removeSecurityProxy
 
-class IntIds(intid.IntIds):
+def queryId(self, ob, default=None):
+    try:
+        return self.getId(removeSecurityProxy(ob))
+    except KeyError:
+        return default
 
-    def queryId(self, ob, default=None):
-        try:
-            return self.getId(removeSecurityProxy(ob))
-        except KeyError:
-            return default
+intid.IntIds.queryId = queryId
 
-intid.IntIds = IntIds
