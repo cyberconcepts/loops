@@ -85,6 +85,11 @@ class NodeView(BaseView):
         self.setSkin(self.viewConfig.get('skinName'))
 
     def __call__(self, *args, **kw):
+        if self.nodeType == 'raw':
+            vn = self.context.viewName
+            if vn:
+                self.request.response.setHeader('content-type', vn)
+            return self.context.body
         tv = self.viewAnnotations.get('targetView')
         if tv is not None:
             if tv.isToplevel:
