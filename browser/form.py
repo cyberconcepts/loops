@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 Classes for form presentation and processing.
 """
 
-from urllib import urlencode
+from urllib import urlencode, unquote_plus
 from zope.app.container.contained import ObjectRemovedEvent
 from zope import component, interface, schema
 from zope.component import adapts
@@ -182,7 +182,8 @@ class ObjectForm(NodeView):
                 field = self.schema.fields.get(k)
                 if field:
                     fi = field.getFieldInstance(self.instance)
-                    data[k] = fi.marshall(fi.unmarshall(form[k]))
+                    input = unquote_plus(form[k])
+                    data[k] = fi.marshall(fi.unmarshall(input))
                     #data[k] = toUnicode(form[k])
         return data
 
