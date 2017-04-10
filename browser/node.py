@@ -20,6 +20,7 @@
 View class for Node objects.
 """
 
+from logging import getLogger
 import urllib
 from urlparse import urlparse, urlunparse
 from zope import component, interface, schema
@@ -38,6 +39,7 @@ from zope.lifecycleevent import Attributes
 from zope.formlib.form import Form, FormFields
 from zope.proxy import removeAllProxies
 from zope.publisher.defaultview import getDefaultViewName
+from zope.publisher.interfaces import NotFound
 from zope.security import canAccess, canWrite, checkPermission
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getParent, getParents, getPath
@@ -66,6 +68,7 @@ from loops import util
 from loops.util import _
 from loops.versioning.util import getVersion
 
+logger = getLogger('loops.browser.node')
 
 node_macros = ViewPageTemplateFile('node_macros.pt')
 info_macros = ViewPageTemplateFile('info.pt')
@@ -997,7 +1000,12 @@ class NodeTraverser(ItemTraverser):
                 viewAnnotations['targetView'] = view
                 view.logInfo('NodeTraverser:targetView = %r' % view)
                 return self.context
-        obj = super(NodeTraverser, self).publishTraverse(request, name)
+        try:
+            obj = super(NodeTraverser, self).publishTraverse(request, name)
+        except NotFound, e:
+            logger.warn('NodeTraverser: NotFound: URL = %s, name = %r' % 
+                            (request.URL, name))
+            raise
         return obj
 
     def cleanUpTraversalStack(self, request, name):
