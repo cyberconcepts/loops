@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -147,8 +147,11 @@ class ActivityField(VocabularyField):
 def daysAgoByOption(context):
     days = 7
     opt = context.view.typeOptions('workitem_dayfrom_default')
-    if opt and opt[0].isdigit():
-        days = int(opt[0])
+    if opt:
+        if opt is True or not opt[0].isdigit():
+            return None
+        else:
+            days = int(opt[0])
     return (date.today() - timedelta(days)).isoformat()
 
 
