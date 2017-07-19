@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 Notifications listing.
 """
 
+import datetime
 from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -31,6 +32,7 @@ from loops.browser.node import NodeView
 from loops.common import adapted, baseObject
 from loops.organize.personal.notification import Notifications
 from loops.organize.party import getPersonForUser
+from loops.organize.work.browser import parseDate
 from loops import util
 
 
@@ -60,8 +62,13 @@ class NotificationsListing(ConceptView):
 
     def getNotificationsFormatted(self):
         unreadOnly = not self.request.form.get('show_all')
+        dateFrom = self.request.form.get('notifications_from')
+        if dateFrom:
+            dateFrom = parseDate(dateFrom)
         result = []
         for track in self.getNotifications(unreadOnly):
+            if dateFrom and track.timeStamp < dateFrom:
+                continue
             data = track.data
             s = util.getObjectForUid(data.get('sender'))
             if s is None:
@@ -86,6 +93,11 @@ class NotificationsListing(ConceptView):
                         uid=util.getUidForObject(track))
             result.append(item)
         return result
+
+    @Lazy
+    def defaultStartDate(self):
+        value = datetime.date.today() - datetime.timedelta(90)
+        return value.isoformat()[:10]
 
 
 class NotificationsView(NodeView, NotificationsListing):
