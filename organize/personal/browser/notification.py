@@ -67,9 +67,9 @@ class NotificationsListing(ConceptView):
             dateFrom = parseDate(dateFrom)
         result = []
         for track in self.getNotifications(unreadOnly):
-            if dateFrom and track.timeStamp < dateFrom:
-                continue
             data = track.data
+            if dateFrom and track.timeStamp < dateFrom and data.get('read_ts'):
+                continue
             s = util.getObjectForUid(data.get('sender'))
             if s is None:
                 sender = dict(label=u'???', url=u'')
