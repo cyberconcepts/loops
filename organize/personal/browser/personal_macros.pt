@@ -57,11 +57,17 @@
   <div tal:condition="python:numNews == 1">
     <a i18n:translate=""
        tal:attributes="href macro/url">
-      <span i18n:name="numNews" tal:content="numNews" /> new notification</a></div>
+      <span i18n:name="numNews" tal:content="numNews" /> new notification</a>
+    <img src="/++resource++cybertools.icons/email.png"
+         alt="new notifications" />
+  </div>
   <div tal:condition="python:numNews > 1">
     <a i18n:translate=""
        tal:attributes="href macro/url">
-      <span i18n:name="numNews" tal:content="numNews" /> new notifications</a></div>
+      <span i18n:name="numNews" tal:content="numNews" /> new notifications</a>
+    <img src="/++resource++cybertools.icons/email.png"
+         alt="new notifications" />
+  </div>
 </metal:actions>
 
 

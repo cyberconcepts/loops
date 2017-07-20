@@ -1003,7 +1003,7 @@ class NodeTraverser(ItemTraverser):
         try:
             obj = super(NodeTraverser, self).publishTraverse(request, name)
         except NotFound, e:
-            logger.warn('NodeTraverser: NotFound: URL = %s, name = %r' % 
+            logger.warn('NodeTraverser: NotFound: URL = %s, name = %r' %
                             (request.URL, name))
             raise
         return obj
