@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ Utility functions.
 
 import os
 from zope import component
+from zope.catalog.interfaces import ICatalog
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
@@ -82,6 +83,21 @@ def toUnicode(value, encoding='UTF-8'):
             return value.decode('ISO8859-15')
     else:
         return value
+
+
+def getCatalog(context):
+    from loops.common import baseObject
+    context = baseObject(context)
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog, context=context):
+        return cat
+
+def reindex(obj, catalog=None):
+    from loops.common import baseObject
+    obj = baseObject(obj)
+    if catalog is None:
+        catalog = getCatalog(obj)
+    if catalog is not None:
+        catalog.index_doc(int(getUidForObject(obj)), obj)
 
 
 def getObjectForUid(uid, intIds=None):
