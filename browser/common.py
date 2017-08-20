@@ -873,9 +873,9 @@ class BaseView(GenericView, I18NView):
                     djConfig='parseOnLoad: true, usePlainJson: true, '
                              #'isDebug: true, '
                              'locale: "%s"' % self.languageInfo.language)
-        jsCall = ('dojo.require("dojo.parser"); '
-                  'dojo.registerModulePath("jocy", "/@@/cybertools.jocy"); '
-                  'dojo.require("jocy.data");')
+        jsCall = ('dojo.require("dojo.parser"); ')
+                  #'dojo.registerModulePath("jocy", "/@@/cybertools.jocy"); '
+                  #'dojo.require("jocy.data");')
         cm.register('js-execute', 'dojo_registration', jsCall=jsCall)
         cm.register('css', identifier='Lightbox.css', position=0,
                     resourceName='ajax.dojo/dojox/image/resources/Lightbox.css',
