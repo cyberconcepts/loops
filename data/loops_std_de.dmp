@@ -31,7 +31,8 @@ type(u'event', u'Termin', options=u'',
 type(u'textdocument', u'Text', options=u'', 
     typeInterface='loops.interfaces.ITextDocument', viewName=u'')
 type(u'topic', u'Thema', options=u'action.portlet:createTopic,editTopic',
-    typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
+    typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'',
+    options=u'action.portlet:editTopic,createTopic')
 type(u'type', u'Typ', options=u'', 
     typeInterface='loops.interfaces.ITypeConcept', viewName=u'')
 
