@@ -30,9 +30,8 @@ type(u'event', u'Termin', options=u'',
     viewName=u'task.html')
 type(u'textdocument', u'Text', options=u'', 
     typeInterface='loops.interfaces.ITextDocument', viewName=u'')
-type(u'topic', u'Thema', options=u'action.portlet:createTopic,editTopic',
-    typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'',
-    options=u'action.portlet:editTopic,createTopic')
+type(u'topic', u'Thema', options=u'action.portlet:editTopic,createTopic',
+    typeInterface='loops.knowledge.interfaces.ITopic', viewName=u'')
 type(u'type', u'Typ', options=u'', 
     typeInterface='loops.interfaces.ITypeConcept', viewName=u'')
 
