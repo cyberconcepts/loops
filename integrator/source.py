@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ from zope import interface, component
 from zope.interface import implements
 from zope.component import adapts
 
-from loops.common import adapted
+from loops.common import adapted, AdapterBase
 from loops.interfaces import ILoopsObject
 from loops.integrator.interfaces import IExternalSourceInfo
 
@@ -47,7 +47,9 @@ class ExternalSourceInfo(object):
     def getExternalIdentifier(self):
         # first try to find adapter on adapted concept or resource
         adobj = adapted(self.context)
-        if adobj != self.context:
+        #if adobj != self.context:
+        #if not adobj is self.context:
+        if isinstance(adobj, AdapterBase):
             adaptedSourceInfo = IExternalSourceInfo(adobj, None)
             if adaptedSourceInfo is not None:
                 return adaptedSourceInfo.externalIdentifier

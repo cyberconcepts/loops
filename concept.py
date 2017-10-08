@@ -463,7 +463,10 @@ class IndexAttributes(object):
         #if self.adapted != self.context:
         if isinstance(self.adapted, AdapterBase):
             #return component.queryAdapter(self.adapted, IIndexAttributes)
-            return IIndexAttributes(self.adapted, None)
+            iattr = IIndexAttributes(self.adapted, None)
+            if iattr.__class__ == self.__class__:
+                return None
+            return iattr
 
     def text(self):
         if self.adaptedIndexAttributes is not None:
