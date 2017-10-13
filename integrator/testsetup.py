@@ -1,7 +1,5 @@
 """
 Set up a loops site for testing.
-
-$Id$
 """
 
 import os
@@ -43,8 +41,8 @@ class TestSite(BaseTestSite):
         component.provideUtility(fullPathStorage(), IExternalStorage, name='fullpath')
 
         catalog = component.getUtility(ICatalog)
-        catalog['loops_externalidentifier'] = FieldIndex('externalIdentifier',
-                                IExternalSourceInfo, False)
+        #catalog['loops_externalidentifier'] = FieldIndex('externalIdentifier',
+        #                        IExternalSourceInfo, False)
 
         tType = concepts.getTypeConcept()
         tExtFile = addAndConfigureObject(concepts, Concept, 'extfile',

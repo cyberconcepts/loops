@@ -192,6 +192,8 @@ class TestSite(object):
         component.provideUtility(catalog, ICatalog)
         catalog['loops_title'] = TextIndex('title', IIndexAttributes, True)
         catalog['loops_text'] = TextIndex('text', IIndexAttributes, True)
+        catalog['loops_externalidentifier'] = FieldIndex(
+                    'externalIdentifier', IIndexAttributes, False)
         catalog['loops_identifier'] = FieldIndex('identifier', IIndexAttributes, True)
         catalog['loops_type'] = FieldIndex('tokenForSearch', IType, False)
         catalog['loops_keywords'] = KeywordIndex('keywords', IIndexAttributes, True)
