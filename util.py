@@ -21,12 +21,17 @@ Utility functions.
 """
 
 import os
+from zope.publisher.browser import BrowserView
 from zope import component
-from zope.interface import directlyProvides, directlyProvidedBy
+from zope.interface import directlyProvides, directlyProvidedBy, implements
 from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.renderer.interfaces import ISource, IHTMLRenderer
+from zope.app.renderer import SourceFactory
 from zope.schema import vocabulary
 from zope import thread
+import markdown
 
 import cybertools
 from loops.browser.util import html_quote
@@ -35,12 +40,31 @@ _ = MessageFactory('loops')
 
 
 renderingFactories = {
+    'text/markdown': 'loops.util.markdown',
     'text/plain': 'zope.source.plaintext',
     'text/stx': 'zope.source.stx',
     'text/structured': 'zope.source.stx',
     'text/rest': 'zope.source.rest',
     'text/restructured': 'zope.source.rest',
 }
+
+class IMarkdownSource(ISource):
+    """Marker interface for a restructured text source. Note that an
+    implementation of this interface should always derive from unicode or
+    behave like a unicode class."""
+
+
+MarkdownSourceFactory = SourceFactory(
+    IMarkdownSource, _("Markdown(md))"),
+    _("Markdown(md) Source"))
+
+class MarkdownToHTMLRenderer(BrowserView):
+
+    implements(IHTMLRenderer)
+    component.adapts(IMarkdownSource, IBrowserRequest)
+
+    def render(self, settings_overrides={}):
+        return markdown.markdown(self.context)
 
 
 class KeywordVocabulary(vocabulary.SimpleVocabulary):
