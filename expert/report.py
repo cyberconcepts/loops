@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ from cybertools.composer.report.interfaces import IReportParams
 from cybertools.composer.report.result import ResultSet, Row
 from cybertools.util.jeep import Jeep
 from loops.common import AdapterBase
+from loops.expert.concept import IQueryConcept, QueryConcept
 from loops.interfaces import ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
 from loops import util
@@ -43,7 +44,7 @@ from loops.util import _
 
 # interfaces
 
-class IReport(ILoopsAdapter, IReportParams):
+class IReport(ILoopsAdapter, IReportParams, IQueryConcept):
     """ The report adapter for the persistent object (concept) that stores
         the report in the concept map.
     """
@@ -66,7 +67,7 @@ class IReportInstance(IBaseReport):
 
 # report concept adapter and instances
 
-class Report(AdapterBase):
+class Report(QueryConcept):
 
     implements(IReport)
 

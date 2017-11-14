@@ -188,7 +188,7 @@ First we have to make sure that there is a report concept type available.
 In addition we need a predicate that connects one or more tasks with a report.
 
   >>> from loops.expert.report import IReport, Report
-  >>> component.provideAdapter(Report)
+  >>> component.provideAdapter(Report, provides=IReport)
   >>> tReport = addAndConfigureObject(concepts, Concept, 'report',
   ...                   title=u'Report', conceptType=concepts.getTypeConcept(),
   ...                   typeInterface=IReport)

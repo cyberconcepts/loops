@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,13 +22,18 @@ View classes for export of report results.
 
 import csv
 from cStringIO import StringIO
+import os
+import time
 from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
+from zope.traversing.api import getName
 
+from cybertools.meta.interfaces import IOptions
+from cybertools.util.date import formatTimeStamp
 from loops.common import normalizeName
 from loops.expert.browser.report import ResultsConceptView
 from loops.interfaces import ILoopsObject
-from loops.util import _
+from loops.util import _, getVarDirectory
 
 
 class ResultsConceptCSVExport(ResultsConceptView):
@@ -55,10 +60,34 @@ class ResultsConceptCSVExport(ResultsConceptView):
         lang = self.languageInfo.language
         return translate(_(field.title), target_language=lang)
 
+    def getFilepaths(self, name):
+        repName = getName(self.report.context)
+        ts = formatTimeStamp(None, format='%y%m%d%H%M%S')
+        name = '-'.join((ts, repName))
+        return (name + '.csv', 
+                name + '.xlsx', 
+                repName + '.ods')
+
+    def renderCsv(self, name, src, tgt, tpl):
+        callable = os.path.join('~', 'bin', name)
+        command = ' '.join((callable, src, tgt, tpl))
+        #print '***', command
+        os.popen(command).read()
+
     def __call__(self):
         fields = self.displayedColumns
         fieldNames = [f.name for f in fields]
-        output = StringIO()
+        csvRenderer = IOptions(self.report)('csv_renderer')
+        if not csvRenderer:
+            csvRenderer = self.globalOptions('csv_renderer')
+        if csvRenderer:
+            csvRenderer = csvRenderer[0]
+            outfn, inpfn, tplfn = self.getFilepaths(csvRenderer)
+            outpath = os.path.join(getVarDirectory(), 'export', 'excel', outfn)
+            inpath = os.path.join(getVarDirectory(), 'export', 'excel', inpfn)
+            output = open(outpath, 'w')
+        else:
+            output = StringIO()
         writer = csv.DictWriter(output, fieldNames, delimiter=self.delimiter)
         output.write(self.delimiter.join(
                         [self.getColumnTitle(f) for f in fields]) + '\n')
@@ -73,18 +102,28 @@ class ResultsConceptCSVExport(ResultsConceptView):
                 value = encode(value, self.encoding)
                 data[f.name] = value
             writer.writerow(data)
-        text = output.getvalue()
-        self.setDownloadHeader(text)
+        if csvRenderer:
+            output.close()
+            self.renderCsv(csvRenderer, outfn, inpfn, tplfn)
+            input = open(inpath, 'rb')
+            text = input.read()
+            input.close()
+            self.setDownloadHeader(text)
+                #'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                #'xlsx')
+        else:
+            text = output.getvalue()
+            self.setDownloadHeader(text)
         return text
 
-    def setDownloadHeader(self, text):
+    def setDownloadHeader(self, text, ctype='text/csv', ext='csv'):
         response = self.request.response
         response.setHeader('Content-Disposition',
-                           'attachment; filename=%s.csv' %
-                                    self.getFileName())
+                           'attachment; filename=%s.%s' %
+                                (self.getFileName(), ext))
         response.setHeader('Cache-Control', '')
         response.setHeader('Pragma', '')
-        response.setHeader('Content-Type', 'text/csv')
+        response.setHeader('Content-Type', ctype)
         response.setHeader('Content-Length', len(text))
 
 
