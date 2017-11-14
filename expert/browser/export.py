@@ -26,6 +26,7 @@ import os
 import time
 from zope.cachedescriptors.property import Lazy
 from zope.i18n import translate
+from zope.i18nmessageid import Message
 from zope.traversing.api import getName
 
 from cybertools.meta.interfaces import IOptions
@@ -58,7 +59,12 @@ class ResultsConceptCSVExport(ResultsConceptView):
 
     def getColumnTitle(self, field):
         lang = self.languageInfo.language
-        return translate(_(field.title), target_language=lang)
+        title = field.title
+        if not isinstance(title, Message):
+            title = _(title)
+        #return translate(_(field.title), target_language=lang)
+        return encode(translate(title, target_language=lang), 
+                      self.encoding)
 
     def getFilepaths(self, name):
         repName = getName(self.report.context)
