@@ -184,6 +184,8 @@ class SectionView(Base, ConceptView):
 
 class TopicView(Base, ConceptView):
 
+    breadcrumbsParent = ConceptView.breadcrumbsParent
+
     @Lazy
     def macro(self):
         return book_template.macros['topic']
