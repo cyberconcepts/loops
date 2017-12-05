@@ -276,11 +276,17 @@ class ResourceView(BaseView):
             #return util.toUnicode(wp.render(self.request))
         return super(ResourceView, self).renderText(text, contentType)
 
+    showMore = True
+
     def renderShortText(self):
         return self.renderDescription() or self.createShortText(self.render())
 
     def createShortText(self, text=None):
-        return extractFirstPart(text or self.render())
+        text = (text or self.render()).strip()
+        shortText = extractFirstPart(text)
+        if shortText == text:
+            self.showMore = False
+        return shortText
 
     def download(self):
         """ Force download, e.g. of a PDF file """

@@ -146,11 +146,12 @@
         <a tal:attributes="href python:view.getUrlForTarget(related.context)"
            tal:content="related/title" />
       </h3>
-      <div>
-        <div tal:replace="structure related/renderShortText" />
+      <div tal:define="shortText related/renderShortText">
+        <div tal:replace="structure shortText" />
         <p>
           <a i18n:translate=""
-              tal:attributes="href python:view.getUrlForTarget(related.context)">
+             tal:condition="related/showMore"
+             tal:attributes="href python:view.getUrlForTarget(related.context)">
             more...</a></p>
         <div tal:repeat="image python:
                             item.images[repeat['related'].index() + 1]">
