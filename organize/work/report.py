@@ -75,6 +75,7 @@ class DurationField(Field):
 
     def getValue(self, row):
         value = self.getRawValue(row) or 0
+        value = float(value)
         if value and 'totals' in self.executionSteps:
             data = row.parent.totals.data
             data[self.name] = data.get(self.name, 0) + value

@@ -236,7 +236,7 @@ The user interface is a ReportConceptView subclass that is directly associated w
     {'actions': [...]}
 
   >>> results.totals.data
-  {'effort': 900}
+  {'effort': 900.0}
 
 Export of work data
 -------------------
