@@ -70,15 +70,16 @@ class WorkStatementCSVExport(ResultsConceptCSVExport):
 
 class DurationField(Field):
 
+    factor = 1
     cssClass = 'right'
 
     def getValue(self, row):
-        value = self.getRawValue(row)
+        value = self.getRawValue(row) or 0
         if value and 'totals' in self.executionSteps:
             data = row.parent.totals.data
             data[self.name] = data.get(self.name, 0) + value
         if value:
-            value /= 3600.0
+            value = value * self.factor / 3600.0
         return value
 
     def getDisplayValue(self, row):
