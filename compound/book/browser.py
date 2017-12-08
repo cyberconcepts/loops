@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ from loops.browser.concept import ConceptRelationView as \
     BaseConceptRelationView
 from loops.browser.resource import ResourceView as BaseResourceView
 from loops.common import adapted, baseObject
+from loops.util import _
 
 
 standard_template = standard.standard_template
@@ -53,42 +54,6 @@ class Base(object):
     @Lazy
     def sectionType(self):
         return self.conceptManager['section']
-
-    @Lazy
-    def isPartOfPredicate(self):
-        return self.conceptManager['ispartof']
-
-    @Lazy
-    def showNavigation(self):
-        return self.typeOptions.show_navigation
-
-    @Lazy
-    def breadcrumbsParent(self):
-        for p in self.context.getParents([self.isPartOfPredicate]):
-            return self.nodeView.getViewForTarget(p)
-
-    @Lazy
-    def neighbours(self):
-        pred = succ = None
-        parent = self.breadcrumbsParent
-        if parent is not None:
-            myself = None
-            children = list(parent.context.getChildren([self.isPartOfPredicate]))
-            for idx, c in enumerate(children):
-                if c == self.context:
-                    if idx > 0:
-                        pred = self.nodeView.getViewForTarget(children[idx-1])
-                    if idx < len(children) - 1:
-                        succ = self.nodeView.getViewForTarget(children[idx+1])
-        return pred, succ
-
-    @Lazy
-    def predecessor(self):
-        return self.neighbours[0]
-
-    @Lazy
-    def successor(self):
-        return self.neighbours[1]
 
     @Lazy
     def tabview(self):
@@ -181,10 +146,46 @@ class SectionView(Base, ConceptView):
     def macro(self):
         return book_template.macros['section']
 
+    @Lazy
+    def isPartOfPredicate(self):
+        return self.conceptManager['ispartof']
+
+    @Lazy
+    def breadcrumbsParent(self):
+        for p in self.context.getParents([self.isPartOfPredicate]):
+            return self.nodeView.getViewForTarget(p)
+
+    @Lazy
+    def showNavigation(self):
+        return self.typeOptions.show_navigation
+
+    @Lazy
+    def neighbours(self):
+        pred = succ = None
+        parent = self.breadcrumbsParent
+        if parent is not None:
+            myself = None
+            children = list(parent.context.getChildren([self.isPartOfPredicate]))
+            for idx, c in enumerate(children):
+                if c == self.context:
+                    if idx > 0:
+                        pred = self.nodeView.getViewForTarget(children[idx-1])
+                    if idx < len(children) - 1:
+                        succ = self.nodeView.getViewForTarget(children[idx+1])
+        return pred, succ
+
+    @Lazy
+    def predecessor(self):
+        return self.neighbours[0]
+
+    @Lazy
+    def successor(self):
+        return self.neighbours[1]
+
 
 class TopicView(Base, ConceptView):
 
-    breadcrumbsParent = ConceptView.breadcrumbsParent
+    tabTitle = _(u'title_bookTopicView')
 
     @Lazy
     def macro(self):
