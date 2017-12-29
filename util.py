@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,10 @@ from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory
 from zope.schema import vocabulary
 from zope import thread
-import markdown
+try:
+    import markdown
+except ImportError:
+    markdown = None
 
 import cybertools
 from loops.browser.util import html_quote
@@ -40,13 +43,15 @@ _ = MessageFactory('loops')
 
 
 renderingFactories = {
-    'text/markdown': 'loops.util.markdown',
     'text/plain': 'zope.source.plaintext',
     'text/stx': 'zope.source.stx',
     'text/structured': 'zope.source.stx',
     'text/rest': 'zope.source.rest',
     'text/restructured': 'zope.source.rest',
 }
+
+if markdown:
+    renderingFactories['text/markdown'] = 'loops.util.markdown'
 
 class IMarkdownSource(ISource):
     """Marker interface for a restructured text source. Note that an
