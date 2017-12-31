@@ -31,10 +31,15 @@ from zope.traversing.api import getName
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.util.date import formatTimeStamp
-from loops.common import normalizeName
+from loops.common import adapted, normalizeName
 from loops.expert.browser.report import ResultsConceptView
 from loops.interfaces import ILoopsObject
 from loops.util import _, getVarDirectory
+
+try:
+    from main.config import office_data
+except ImportError:
+    office_data = None
 
 
 class ResultsConceptCSVExport(ResultsConceptView):
@@ -62,36 +67,45 @@ class ResultsConceptCSVExport(ResultsConceptView):
         title = field.title
         if not isinstance(title, Message):
             title = _(title)
-        #return translate(_(field.title), target_language=lang)
         return encode(translate(title, target_language=lang), 
                       self.encoding)
 
-    def getFilepaths(self, name):
+    def getFilenames(self):
+        """@return (data_fn, result_fn)"""
         repName = getName(self.report.context)
         ts = formatTimeStamp(None, format='%y%m%d%H%M%S')
         name = '-'.join((ts, repName))
         return (name + '.csv', 
-                name + '.xlsx', 
-                repName + '.ods')
+                name + '.xlsx')
 
-    def renderCsv(self, name, src, tgt, tpl):
-        callable = os.path.join('~', 'bin', name)
-        command = ' '.join((callable, src, tgt, tpl))
-        #print '***', command
-        os.popen(command).read()
+    def getOfficeTemplatePath(self):
+        for res in self.report.context.getResources():
+            return adapted(res).getDataPath()
+
+    def renderCsv(self, scriptfn, datapath, tplpath, respath):
+        callable = os.path.join(office_data['script_path'], scriptfn)
+        command = ' '.join((callable, datapath, tplpath, respath))
+        print '***', command
+        #os.popen(command).read()
 
     def __call__(self):
         fields = self.displayedColumns
         fieldNames = [f.name for f in fields]
-        csvRenderer = IOptions(self.report)('csv_renderer')
+        reportOptions = IOptions(self.report)
+        csvRenderer = reportOptions('csv_renderer')
         if not csvRenderer:
             csvRenderer = self.globalOptions('csv_renderer')
         if csvRenderer:
+            tplpath = self.getOfficeTemplatePath()
+            print '***', csvRenderer, office_data, tplpath
+            if None in (tplpath, office_data):
+                csvRenderer = None
+        if csvRenderer:
             csvRenderer = csvRenderer[0]
-            outfn, inpfn, tplfn = self.getFilepaths(csvRenderer)
-            outpath = os.path.join(getVarDirectory(), 'export', 'excel', outfn)
-            inpath = os.path.join(getVarDirectory(), 'export', 'excel', inpfn)
-            output = open(outpath, 'w')
+            datafn, resfn = self.getFilenames()
+            datapath = os.path.join(office_data['data_path'], datafn)
+            respath = os.path.join(office_data['result_path'], resfn)
+            output = open(datapath, 'w')
         else:
             output = StringIO()
         writer = csv.DictWriter(output, fieldNames, delimiter=self.delimiter)
@@ -110,13 +124,13 @@ class ResultsConceptCSVExport(ResultsConceptView):
             writer.writerow(data)
         if csvRenderer:
             output.close()
-            self.renderCsv(csvRenderer, outfn, inpfn, tplfn)
-            input = open(inpath, 'rb')
+            self.renderCsv(csvRenderer, datapath, tplpath, respath)
+            input = open(respath, 'rb')
             text = input.read()
             input.close()
-            self.setDownloadHeader(text)
-                #'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                #'xlsx')
+            self.setDownloadHeader(text,
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'xlsx')
         else:
             text = output.getvalue()
             self.setDownloadHeader(text)

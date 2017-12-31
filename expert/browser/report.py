@@ -49,6 +49,7 @@ class ReportView(ConceptView):
 
     resultsRenderer = None  # to be defined by subclass
     reportDownload = None
+    reportName = None
 
     @Lazy
     def report_macros(self):
