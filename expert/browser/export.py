@@ -85,8 +85,8 @@ class ResultsConceptCSVExport(ResultsConceptView):
     def renderCsv(self, scriptfn, datapath, tplpath, respath):
         callable = os.path.join(office_data['script_path'], scriptfn)
         command = ' '.join((callable, datapath, tplpath, respath))
-        print '***', command
-        #os.popen(command).read()
+        #print '***', command
+        os.popen(command).read()
 
     def __call__(self):
         fields = self.displayedColumns
@@ -97,7 +97,7 @@ class ResultsConceptCSVExport(ResultsConceptView):
             csvRenderer = self.globalOptions('csv_renderer')
         if csvRenderer:
             tplpath = self.getOfficeTemplatePath()
-            print '***', csvRenderer, office_data, tplpath
+            #print '***', csvRenderer, office_data, tplpath
             if None in (tplpath, office_data):
                 csvRenderer = None
         if csvRenderer:
