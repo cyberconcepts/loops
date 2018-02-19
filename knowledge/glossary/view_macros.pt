@@ -14,7 +14,7 @@
     </span>
   </div>
   <div>
-    <span tal:repeat="letter python:data.keys()"
+    <span tal:repeat="letter python:sorted(data.keys())"
           class="navlink">
       <a href="#"
          tal:attributes="href string:${view/requestUrl/-1}#$letter"
