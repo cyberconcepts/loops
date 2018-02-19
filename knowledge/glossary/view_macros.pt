@@ -4,7 +4,7 @@
              tal:define="data item/childrenAlphaGroups">
   <metal:title use-macro="item/conceptMacros/concepttitle" />
   <div><a name="top">&nbsp;</a></div>
-  <div>
+  <div tal:condition="nothing">
     <span tal:repeat="letter python: [chr(c) for c in range(ord('A'), ord('Z')+1)]"
           class="navlink">
       <a href="#"
@@ -13,8 +13,16 @@
          tal:content="letter">A</a>
     </span>
   </div>
+  <div>
+    <span tal:repeat="letter python:data.keys()"
+          class="navlink">
+      <a href="#"
+         tal:attributes="href string:${view/requestUrl/-1}#$letter"
+         tal:content="letter">A</a>
+    </span>
+  </div>
   <div>&nbsp;</div>
-  <div tal:repeat="letter data/keys">
+  <div tal:repeat="letter python:data.keys()">
     <div class="subtitle"><a name="A" href="#top"
            tal:attributes="name letter;
                            href string:${view/requestUrl/-1}#top"

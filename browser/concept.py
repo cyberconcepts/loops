@@ -415,7 +415,8 @@ class ConceptView(BaseView):
     children = getChildren
 
     def childrenAlphaGroups(self, predicates=None):
-        result = Jeep()
+        #result = Jeep()
+        result = {}
         rels = self.getChildren(predicates=predicates or [self.defaultPredicate],
                                 topLevelOnly=False, sort=False)
         rels = sorted(rels, key=lambda r: r.title.lower())
