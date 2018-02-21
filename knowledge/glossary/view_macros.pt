@@ -22,7 +22,7 @@
     </span>
   </div>
   <div>&nbsp;</div>
-  <div tal:repeat="letter python:data.keys()">
+  <div tal:repeat="letter python:sorted(data.keys())">
     <div class="subtitle"><a name="A" href="#top"
            tal:attributes="name letter;
                            href string:${view/requestUrl/-1}#top"
