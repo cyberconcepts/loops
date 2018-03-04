@@ -109,8 +109,11 @@ class ResultsConceptCSVExport(ResultsConceptView):
         else:
             output = StringIO()
         writer = csv.DictWriter(output, fieldNames, delimiter=self.delimiter)
-        output.write(self.delimiter.join(
-                        [self.getColumnTitle(f) for f in fields]) + '\n')
+        if csvRenderer:
+            output.write(self.delimiter.join([f.name for f in fields]) + '\n')
+        else:
+            output.write(self.delimiter.join(
+                [self.getColumnTitle(f) for f in fields]) + '\n')
         results = self.reportInstance.getResults()
         for row in results:
             data = {}
