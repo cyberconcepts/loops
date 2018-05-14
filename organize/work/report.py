@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2018 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -124,6 +124,22 @@ class PartyStateField(StateField):
         return None
 
 
+class PartyQueryField(TargetField):
+
+    def getVocabularyItems(self, row=None, context=None, request=None):
+        #if context is  None:
+        #    context = row.context
+        #if request is None:
+        #    request = row.parent.context.view.request
+        concepts = context.getLoopsRoot().getConceptManager()
+        sourceQuery = concepts.get('participants')
+        if sourceQuery is None:
+            return []
+        persons = sourceQuery.getChildren()
+        return [dict(token=util.getUidForObject(p), title=p.title) 
+                for p in persons]
+
+
 class ActivityField(VocabularyField):
 
     tableName = 'organize.work.activities'
@@ -202,10 +218,14 @@ timeEnd = TrackTimeField('end', u'End',
 task = TargetField('taskId', u'Task',
                 description=u'The task to which work items belong.',
                 executionSteps=['sort', 'output'])
-party = TargetField('userName', u'Party',
+party = PartyQueryField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
                 fieldType='selection',
-                executionSteps=['sort', 'output'])
+                executionSteps=['sort', 'output', 'query'])
+#partyQuery = TargetField('userName', u'Party',
+#                description=u'The party (usually a person) who did the work.',
+#                fieldType='selection',
+#                executionSteps=['query'])
 workTitle = StringField('title', u'Title',
                 description=u'The short description of the work.',
                 executionSteps=['sort', 'output'])
