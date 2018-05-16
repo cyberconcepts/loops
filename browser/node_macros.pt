@@ -271,6 +271,17 @@
                          title mode/description"
          tal:content="mode/title"
          i18n:translate="" />
+      <ul class="sub-view-modes"
+          tal:define="subModes mode/subViewModes|nothing"
+          tal:condition="subModes">
+        <li tal:repeat="mode subModes"
+            tal:attributes="class mode/cssClass">
+          <a tal:attributes="href mode/url;
+                             title mode/description;"
+             tal:content="mode/title"
+             i18n:translate=""></a>
+        </li>
+      </ul>
     </li>
   </ul>
 </metal:actions>

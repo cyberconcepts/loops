@@ -95,16 +95,20 @@ class NameField(schema.ASCIILine):
 class ViewMode(object):
 
     def __init__(self, name='view', title=None, url=None, active=False,
-                 description=u''):
+                 description=u'', subViewModes=Jeep()):
         self.name = name
         self.title = title
         self.url = url
         self.active = active
         self.description = description
+        self.subViewModes = subViewModes
 
     @property
     def cssClass(self):
-        return self.active and u'active' or u'inactive'
+        result = self.active and u'active' or u'inactive'
+        if self.subViewModes:
+            result += u' sub-modes'
+        return result
 
 
 class IAddForm(Interface):
