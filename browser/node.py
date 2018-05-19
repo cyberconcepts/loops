@@ -394,6 +394,10 @@ class NodeView(BaseView):
     def editable(self):
         return canWrite(self.context, 'body')
 
+    def hasTopPage(self, name):
+        page = self.topMenu.context.get(name)
+        return page is not None
+
     # menu stuff
 
     @Lazy
