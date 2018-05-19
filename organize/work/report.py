@@ -127,10 +127,6 @@ class PartyStateField(StateField):
 class PartyQueryField(TargetField):
 
     def getVocabularyItems(self, row=None, context=None, request=None):
-        #if context is  None:
-        #    context = row.context
-        #if request is None:
-        #    request = row.parent.context.view.request
         concepts = context.getLoopsRoot().getConceptManager()
         sourceQuery = concepts.get('participants')
         if sourceQuery is None:
