@@ -52,7 +52,7 @@
                      tal:attributes="value item/token" />
             </td>
             <td>
-              <a tal:content="item/title"
+              <a tal:content="item/title|string:???"
                  tal:attributes="href string:${item/url}/@@SelectedManagementView.html">
                 Title
               </a>
