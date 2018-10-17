@@ -2,7 +2,7 @@
 
 
 <metal:info define-macro="object_info"
-            tal:define="item nocall:view/item">
+            tal:define="item nocall:view/targetItem">
   <table class="object_info" width="400">
     <tr>
       <td colspan="2"><h2 i18n:translate="">Object Information</h2><br /></td>
@@ -52,7 +52,7 @@
 
 
 <metal:info define-macro="meta_info"
-            tal:define="item nocall:view/item">
+            tal:define="item nocall:view/targetItem">
   <table class="object_info" width="400">
     <tr>
       <td colspan="2">
