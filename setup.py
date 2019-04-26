@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2019 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -260,7 +260,7 @@ class SetupManager(object):
         return addAndConfigureObject(container, class_, name, **kw)
 
 
-def addObject(container, class_, name, **kw):
+def addObject(container, class_, name, notifyModified=True, **kw):
     created = False
     if name in container:
         obj = container[name]
@@ -275,14 +275,15 @@ def addObject(container, class_, name, **kw):
             setattr(obj, attr, value)
     if created:
         notify(ObjectCreatedEvent(obj))
-    notify(ObjectModifiedEvent(obj))
+    if notifyModified:
+        notify(ObjectModifiedEvent(obj))
     return obj
 
-def addAndConfigureObject(container, class_, name, **kw):
+def addAndConfigureObject(container, class_, name, notifyModified=True, **kw):
     basicAttributes = ('title', 'description', 'conceptType', 'resourceType',
                        'nodeType', 'body')
     basicKw = dict([(k, kw[k]) for k in kw if k in basicAttributes])
-    obj = addObject(container, class_, name, **basicKw)
+    obj = addObject(container, class_, name, notifyModified=False, **basicKw)
     adapted = obj
     if class_ in (Concept, Resource):
         ti = IType(obj).typeInterface
@@ -291,7 +292,8 @@ def addAndConfigureObject(container, class_, name, **kw):
     adapterAttributes = [k for k in kw if k not in basicAttributes]
     for attr in adapterAttributes:
         setattr(adapted, attr, kw[attr])
-    notify(ObjectModifiedEvent(obj))
+    if notifyModified:
+        notify(ObjectModifiedEvent(obj))
     return obj
 
 
