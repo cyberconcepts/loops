@@ -632,7 +632,7 @@ Let's add some more nodes and reorder them:
   >>> m114 = Node()
   >>> m11['m114'] = m114
   >>> m11.keys()
-  ['m111', 'm112', 'm113', 'm114']
+  [u'm111', u'm112', u'm113', u'm114']
 
 A special management view provides methods for moving objects down, up,
 to the bottom, and to the top.
@@ -641,10 +641,10 @@ to the bottom, and to the top.
   >>> view = OrderedContainerView(m11, TestRequest())
   >>> view.move_bottom(('m113',))
   >>> m11.keys()
-  ['m111', 'm112', 'm114', 'm113']
+  [u'm111', u'm112', u'm114', u'm113']
   >>> view.move_up(('m114',), 1)
   >>> m11.keys()
-  ['m111', 'm114', 'm112', 'm113']
+  [u'm111', u'm114', u'm112', u'm113']
 
 
 Breadcrumbs
