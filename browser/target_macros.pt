@@ -45,17 +45,16 @@
                                 checked python: targetToken == token" />
                 </td>
                 <td>
-                  <a href="#"
-                     tal:omit-tag="not:nocall:item"
+                  <a tal:omit-tag="not:nocall:item"
                      tal:content="title"
+                     tal:define="baseUrl item/url|string:"
                      tal:attributes="href
-                        string:${item/url|nothing}/@@SelectedManagementView.html">
+                        string:$baseUrl/@@SelectedManagementView.html">
                     Title
                   </a>
                 </td>
                 <td>
                   <a tal:condition="type"
-                     href="#"
                      tal:attributes="href
                         string:${item/typeUrl}/@@SelectedManagementView.html"
                      tal:omit-tag="not:item/typeUrl">
