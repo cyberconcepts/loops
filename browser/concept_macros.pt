@@ -10,7 +10,9 @@
 
 <metal:data define-macro="conceptdata">
   <div tal:attributes="class string:content-$level;">
-      <metal:block use-macro="view/concept_macros/concepttitle" />
+      <tal:block condition="not:title_shown|python:False">
+        <metal:block use-macro="view/concept_macros/concepttitle"/>
+      </tal:block>
       <metal:slot define-slot="fields">
         <metal:block use-macro="view/concept_macros/conceptfields" />
       </metal:slot>
