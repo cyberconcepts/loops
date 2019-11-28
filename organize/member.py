@@ -100,6 +100,8 @@ class MemberRegistrationManager(object):
                 if userId in pFolder:
                     principal = pFolder[userId]
                     principal.password = password
+                    if title:
+                        principal.title = title
                 else:
                     pFolder[userId] = principal
             elif useExisting:
