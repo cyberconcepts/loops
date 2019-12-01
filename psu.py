@@ -10,6 +10,7 @@
 #   obj = psu.byuid('578457950')
 #
 
+import os
 from transaction import commit, abort
 from zope.app.authentication.principalfolder import Principal
 from zope.app.component.hooks import setSite
@@ -25,10 +26,13 @@ from zope.publisher.browser import TestRequest as BaseTestRequest
 from zope.security.management import getInteraction, newInteraction, endInteraction
 from zope.interface import Interface
 
+from cybertools.util.date import date2TimeStamp, strptime
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
 from loops.util import getObjectForUid, getUidForObject, getCatalog, reindex
 #from xxx import config
+
+os.environ['NLS_LANG'] = 'German_Germany.UTF8'
 
 
 sc = Jeep()     # shortcuts
@@ -118,20 +122,117 @@ def get(container, obj):
             return None
     return adapted(obj)
 
-# catalog / indexing
+# startup, loop, finish...
 
-def getCatalog(context):
-    context = baseObject(context)
-    for cat in component.getAllUtilitiesRegisteredFor(ICatalog, context=context):
-        return cat
-    print '*** No catalog found!'
+def startup(msg, **kw):
+    print '***', msg
+    step = kw.pop('step', 10)
+    return Jeep(count=0, step=step, message=msg, **kw)
 
-def reindex(obj, catalog=None):
-    obj = baseObject(obj)
-    if catalog is None:
-        catalog = getCatalog(obj)
-    if catalog is not None:
-        catalog.index_doc(int(getUidForObject(obj)), obj)
+def update(fct, obj, info):
+    info.count += 1
+    start = info.get('start')
+    if start and info.count < start:
+        return
+    if info.count % info.step == 0:
+        try:
+            objInfo = obj.__name__
+        except:
+            try:
+                objInfo = obj.context.__name__
+            except:
+                objInfo = obj
+        print '*** Processing object # %i: %s' % (info.count, objInfo)
+        if info.get('updated'):
+            print '*** updated: %i.' % info.updated
+        if info.get('errors'):
+            print '*** errors: %i.' % info.error
+        commit()
+    return fct(obj, info)
+
+def finish(info):
+    print '*** count: %i.' % info.count
+    if info.get('updated'):
+        print '*** updated: %i.' % info.updated
+    if info.get('errors'):
+        print '*** errors: %i.' % info.error
+    commit()
+
+def stop_condition(info):
+    stop = info.get('stop')
+    return stop is not None and info.count > stop
+
+def loop(message, objects, fct, **kw):
+    def _fct(obj, info):
+        params = info.get('fctparams', {})
+        fct(obj, info, **params)
+    info = startup(message, **kw)
+    for obj in objects:
+        update(_fct, obj, info)
+        if stop_condition(info):
+            break
+    finish(info)
+
+
+# indexing
+
+def reindex_objects(objs, **kw):
+    catalog = util.getCatalog(objs[0])
+    def do_reindex(obj, info):
+        util.reindex(obj, catalog)
+    loop('reindex %s objects' % len(objs), objs, do_reindex, **kw)
+
+# auxiliary functions
+
+def get_type_instances(name):
+    return sc.concepts[name].getChildren([sc.hasType])
+
+def notify_modification(c, info):
+    notifyModification(c)
+
+
+# some common repair tasks
+
+def update_type_instances(**kw):
+    info = startup('Notify Type Instances', **kw)
+    ctype = kw.pop('type')
+    for c in get_type_instances(ctype):
+        update(notify_modification, c, info)
+        if stop_condition(info):
+            break
+    finish(info)
+
+def update_type_instances_title_from_adapted(**kw):
+    info = startup('Update Type Instances Title', **kw)
+    ctype = kw.pop('type')
+    for c in get_type_instances(ctype):
+        update(update_type_title_from_adapted, c, info)
+        if stop_condition(info):
+            break
+    finish(info)
+
+def update_type_title_from_adapted(c, info):
+    c.title = adapted(c).title
+    notifyModification(c)
+
+
+def removeRecords(container, **kw):
+    """Remove records from container selected by the criteria given."""
+    info = startup('Remove records', container=container, **kw)
+    date = kw.pop('date', None)
+    if date:
+        kw['timeFromTo'] = (
+            date2TimeStamp(strptime(date + ' 00:00:00')),
+            date2TimeStamp(strptime(date + ' 23:59:59')))
+    for obj in container.query(**kw):
+        update(remove, obj, info)
+        if stop_condition(info):
+            break
+    finish(info)
+
+def remove(obj, info):
+    notifyRemoved(obj)
+    del info.container[obj.__name__]
 
 
 # helper functions and classes
