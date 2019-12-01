@@ -182,7 +182,8 @@ def reindex_objects(objs, **kw):
         util.reindex(obj, catalog)
     loop('reindex %s objects' % len(objs), objs, do_reindex, **kw)
 
-# auxiliary functions
+
+# some common repair tasks
 
 def get_type_instances(name):
     return sc.concepts[name].getChildren([sc.hasType])
@@ -190,49 +191,29 @@ def get_type_instances(name):
 def notify_modification(c, info):
     notifyModification(c)
 
-
-# some common repair tasks
-
 def update_type_instances(**kw):
-    info = startup('Notify Type Instances', **kw)
-    ctype = kw.pop('type')
-    for c in get_type_instances(ctype):
-        update(notify_modification, c, info)
-        if stop_condition(info):
-            break
-    finish(info)
+    objs = get_type_instances(kw.pop('type'))
+    loop('Notify Type Instances', objs, notify_modification, **kw)
 
 def update_type_instances_title_from_adapted(**kw):
-    info = startup('Update Type Instances Title', **kw)
-    ctype = kw.pop('type')
-    for c in get_type_instances(ctype):
-        update(update_type_title_from_adapted, c, info)
-        if stop_condition(info):
-            break
-    finish(info)
-
-def update_type_title_from_adapted(c, info):
-    c.title = adapted(c).title
-    notifyModification(c)
-
+    def update_type_title_from_adapted(c, info):
+        c.title = adapted(c).title
+        notifyModification(c)
+    objs = get_type_instances(kw.pop('type'))
+    loop('Update Type Instances Title', objs, update_type_title_from_adapted, **kw)
 
 def removeRecords(container, **kw):
     """Remove records from container selected by the criteria given."""
-    info = startup('Remove records', container=container, **kw)
+    def remove(obj, info):
+        notifyRemoved(obj)
+        del container[obj.__name__]
+    info = startup('Remove records', **kw)
     date = kw.pop('date', None)
     if date:
         kw['timeFromTo'] = (
             date2TimeStamp(strptime(date + ' 00:00:00')),
             date2TimeStamp(strptime(date + ' 23:59:59')))
-    for obj in container.query(**kw):
-        update(remove, obj, info)
-        if stop_condition(info):
-            break
-    finish(info)
-
-def remove(obj, info):
-    notifyRemoved(obj)
-    del info.container[obj.__name__]
+    loop('Remove records', container.query(**kw), remove, **kw)
 
 
 # helper functions and classes
