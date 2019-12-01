@@ -5,8 +5,9 @@
 #
 # then:
 #
-#   from loops import psu
-#   psu.setup(root)
+#   from cco.common import psu
+#   from custom.config import myproject as config
+#   psu.setup(root, 'path/to/loopsRoot', config)
 #   obj = psu.byuid('578457950')
 #
 
@@ -38,7 +39,7 @@ os.environ['NLS_LANG'] = 'German_Germany.UTF8'
 sc = Jeep()     # shortcuts
 
 def setup(root, loopsRootPath=[], config=None):
-    global sm, smdefault, catalog, intids, pau, sc
+    global sm, smdefault, intids, pau, loopsRoot, sc
     setSite(root)
     sm = component.getSiteManager(root)
     smdefault = sm['default']
