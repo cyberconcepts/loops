@@ -75,14 +75,15 @@ def notifyRemoved(obj):
     obj = baseObject(obj)
     notify(ObjectRemovedEvent(obj))
 
-def delete(container, name):
+def delete(container, name, docommit=True):
     obj = container.get(name)
     if obj is None:
         print '*** Object', name, 'not found!'
         return
     notifyRemoved(obj)
     del container[name]
-    commit()
+    if docommit:
+        commit()
 
 def rename(container, old, new, docommit=True):
     obj = container.get(old)
