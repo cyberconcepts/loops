@@ -36,21 +36,25 @@ os.environ['NLS_LANG'] = 'German_Germany.UTF8'
 
 
 sc = Jeep()     # shortcuts
-rf = None       # root folder
 
-def setup(root):
+def setup(root, loopsRootPath=[], config=None):
     global sm, smdefault, catalog, intids, pau, sc
     setSite(root)
     sm = component.getSiteManager(root)
     smdefault = sm['default']
     intids = smdefault['IntIds']
     pau = smdefault['PluggableAuthentication']
-    #user = getattr(config, 'shell_user', 'zope.manager')
-    #password = (getattr(config, 'shell_pw', None) or
-    #            raw_input('Enter manager password: '))
-    user = 'zope.manager'
-    password = raw_input('Enter manager password: ')
+    user = getattr(config, 'shell_user', 'zope.manager')
+    password = (getattr(config, 'shell_pw', None) or
+                raw_input('Enter manager password: '))
     login(Principal(user, password, u'Manager'))
+    loopsRoot = root
+    for name in loopsRootPath.split('/'):
+        if name:
+            loopsRoot = loopsRoot[name]
+    sc.concepts = loopsRoot['concepts']
+    for name in ('standard', 'hasType',):
+        sc[name] = sc.concepts[name]
 
 
 def byuid(uid):
