@@ -74,10 +74,6 @@ class PersonalInfo(ConceptView):
         return organize_macros.macros['conceptdata']
 
     @Lazy
-    def concept_macros(self):
-        return concept_macros
-
-    @Lazy
     def view(self):
         return self
 
