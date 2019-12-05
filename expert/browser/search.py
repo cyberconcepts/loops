@@ -21,6 +21,8 @@ Definition of basic view classes and other browser related stuff for the
 loops.expert package.
 """
 
+import json
+
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
@@ -134,7 +136,7 @@ class Search(ConceptView):
 
     def getTypes(self):
         """ Return a list of type tokens from the request after checking if
-            they fulfill certain requirements, e.g. on the length of the 
+            they fulfill certain requirements, e.g. on the length of the
             name (title, text) criteria given.
         """
         types = self.request.form.get('searchType')
@@ -170,7 +172,7 @@ class Search(ConceptView):
         data = []
         types = self.getTypes()
         if title or types:
-        #if title or (types and types not in 
+        #if title or (types and types not in
         #                (u'loops:concept:*', 'loops:concept:account')):
             if title is not None:
                 title = title.replace('(', ' ').replace(')', ' ').replace(' -', ' ')
@@ -207,13 +209,14 @@ class Search(ConceptView):
         data.sort(key=lambda x: x['sort'])
         if not title:
             data.insert(0, {'label': '', 'name': '', 'id': ''})
-        json = []
+        jsonData = dict(itentifier='id')
+        jsonItems = []
         for item in data[:100]:
-            json.append("{label: '%s', name: '%s', id: '%s'}" %
-                          (item['label'], item['name'], item['id']))
-        json = "{identifier: 'id', items: [%s]}" % ', '.join(json)
-        #print '***', json
-        return json
+            jsonItems.append(dict(label=item['label'],
+                                  name=item['name'],
+                                  id=item['id']))
+        jsonData['items'] = jsonItems
+        return json.dumps(jsonData)
 
     def executeQuery(self, **kw):
         return ConceptQuery(self).query(**kw)
