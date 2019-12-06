@@ -209,7 +209,7 @@ class Search(ConceptView):
         data.sort(key=lambda x: x['sort'])
         if not title:
             data.insert(0, {'label': '', 'name': '', 'id': ''})
-        jsonData = dict(itentifier='id')
+        jsonData = dict(identifier='id')
         jsonItems = []
         for item in data[:100]:
             jsonItems.append(dict(label=item['label'],
