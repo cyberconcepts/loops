@@ -16,8 +16,10 @@ from zope.app.component.hooks import setSite
 from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
 from zope.cachedescriptors.property import Lazy
 from zope.catalog.interfaces import ICatalog
+from zope.copypastemove.interfaces import IContainerItemRenamer
 from zope import component
 from zope.event import notify
+from zope.exceptions.interfaces import DuplicationError
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.publisher.browser import TestRequest as BaseTestRequest
 from zope.security.management import getInteraction, newInteraction, endInteraction
@@ -25,7 +27,7 @@ from zope.interface import Interface
 
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
-from loops.util import getObjectForUid, getUidForObject
+from loops.util import getObjectForUid, getUidForObject, getCatalog, reindex
 #from xxx import config
 
 
@@ -33,8 +35,7 @@ sc = Jeep()     # shortcuts
 rf = None       # root folder
 
 def setup(root):
-    global rf, sm, smdefault, intids, pau, sc
-    rf = root
+    global sm, smdefault, catalog, intids, pau, sc
     setSite(root)
     sm = component.getSiteManager(root)
     smdefault = sm['default']
@@ -79,15 +80,22 @@ def delete(container, name):
     del container[name]
     commit()
 
-def rename(container, old, new):
+def rename(container, old, new, docommit=True):
     obj = container.get(old)
     if obj is None:
         print '*** Object', old, 'not found!'
         return
-    container[new] = obj
-    #notifyAdded(obj)
+    renamer = IContainerItemRenamer(container)
+    if new != old:
+        try:
+            renamer.renameItem(old, new)
+        except DuplicationError:
+            print '*** Object', new, 'already exists!'
+    # container[new] = obj
+    # notifyAdded(obj)
     notifyModification(obj)
-    commit()
+    if docommit:
+        commit()
 
 def move(source, target, name):
     obj = source.get(name)
