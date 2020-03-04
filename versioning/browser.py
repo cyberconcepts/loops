@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 """
 View classes for versioning.
-
-$Id$
 """
 
 from zope import interface, component
@@ -51,8 +49,11 @@ class ListVersions(BaseView):
     def versions(self):
         versionable = IVersionable(self.context)
         versions = versionable.versions
+        cls = getattr(self.controller, 'versionViewClass', None)
         for v in sorted(versions):
-            if isinstance(versions[v], Resource):
+            if cls is not None:
+                yield(cls(versions[v], self.request))
+            elif isinstance(versions[v], Resource):
                 from loops.browser.resource import ResourceView
                 yield ResourceView(versions[v], self.request)
             else:

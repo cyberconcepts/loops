@@ -73,7 +73,10 @@ class DataTable(AdapterBase):
     _adapterAttributes = AdapterBase._adapterAttributes + ('columns', 'data')
 
     def getColumns(self):
-        return getattr(self.context, '_columns', ['key', 'value'])
+        cols = getattr(self.context, '_columns', None)
+        if not cols:
+            cols = getattr(baseObject(self.type), '_columns', None)
+        return cols or ['key', 'value']
     def setColumns(self, value):
         self.context._columns = value
     columns = property(getColumns, setColumns)
@@ -85,10 +88,33 @@ class DataTable(AdapterBase):
         if data is None:
             data = OOBTree()
             self.context._data = data
+        reclen = len(self.columns) - 1
+        for k, v in data.items():
+            v = v[:reclen]
+            missing = reclen - len(v)
+            if missing > 0:
+                v += (missing * [u''])
+            data[k] = v
         return data
     def setData(self, data):
         self.context._data = OOBTree(data)
     data = property(getData, setData)
+
+    def dataAsRecords(self):
+        result = []
+        for k, v in sorted(self.data.items()):
+            item = {}
+            for idx, c in enumerate(self.columns):
+                if idx == 0:
+                    item[c] = k
+                else:
+                    item[c] = v[idx-1]
+                    #item[c] = len(v) > idx and v[idx-1] or u''
+            result.append(item)
+        return result
+
+    def getRowsByValue(self, column, value):
+        return [r for r in self.dataAsRecords() if r[column] == value]
 
 
 TypeInterfaceSourceList.typeInterfaces += (IDataTable,)
@@ -112,22 +138,6 @@ def getRowValue(k, v):
 def getRowValueWithKey(k, v):
     return u' '.join((unicode(k), v[0]))
 
-class DataTableSourceBinder(object):
-
-    implements(IContextSourceBinder)
-
-    def __init__(self, tableName, valueProvider=getRowValue):
-        self.tableName = tableName
-        self.valueProvider = valueProvider
-
-    def __call__(self, instance):
-        if IInstance.providedBy(instance):
-            context = instance.view.nodeView.context
-        else:
-            context = baseObject(instance.context)
-        dt = context.getLoopsRoot().getConceptManager()[self.tableName]
-        return DataTableSourceList(adapted(dt), self.valueProvider)
-
 
 class DataTableSourceList(object):
 
@@ -147,3 +157,34 @@ class DataTableSourceList(object):
 
     def __len__(self):
         return len(self.context.data)
+
+
+class DataTableSourceListByValue(DataTableSourceList):
+
+    def __iter__(self):
+        items = [(k, v[0], v[1])
+                    for k, v in self.context.data.items()]
+        items.sort()
+        return iter([(i[1], i[2]) for i in items])
+
+
+class DataTableSourceBinder(object):
+
+    implements(IContextSourceBinder)
+
+    def __init__(self, tableName, valueProvider=getRowValue,
+                 sourceList=None):
+        self.tableName = tableName
+        self.valueProvider = valueProvider
+        self.sourceList = sourceList or DataTableSourceList
+
+    def __call__(self, instance):
+        if IInstance.providedBy(instance):
+            context = instance.view.nodeView.context
+        elif IConcept.providedBy(instance):
+            context = baseObject(instance)
+        else:
+            context = baseObject(instance.context)
+        dt = context.getLoopsRoot().getConceptManager()[self.tableName]
+        return self.sourceList(adapted(dt), self.valueProvider)
+

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,19 +18,25 @@
 
 """
 Definition of view classes and other browser related stuff for the
-loops.knowledge package.
+loops.knowledge.qualification package.
 """
 
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+from loops.browser.concept import ConceptView
+from loops.expert.browser.export import ResultsConceptCSVExport
 from loops.expert.browser.report import ResultsConceptView
-from loops.knowledge.browser import template, knowledge_macros
-from loops.knowledge.qualification.base import QualificationRecord
+from loops.organize.party import getPersonForUser
+from loops.util import _
 
 
-class PersonQualificationView(ResultsConceptView):
+class Qualifications(ResultsConceptView):
 
-    pass
+    # obsolete because we can directly use ResultsConceptView
+
+    #reportName = 'qualification_overview'
+
+    pass    # report assigned to query via hasReport relation
 

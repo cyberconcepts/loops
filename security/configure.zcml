@@ -14,6 +14,8 @@
              permission="zope.Security"/>
   </zope:class>
 
+  <zope:adapter factory="loops.security.common.LocationWSI" />
+
   <zope:adapter
         for="loops.interfaces.IConcept"
         factory="zope.securitypolicy.rolepermission.AnnotationRolePermissionManager"
@@ -30,15 +32,16 @@
   <zope:adapter factory="loops.security.setter.ConceptSecuritySetter" />
   <zope:adapter factory="loops.security.setter.ResourceSecuritySetter" />
 
-  <!-- suppress for performance reasons -->
-  <!--
+  <!-- might be commented out for performance reasons;
+       TODO: control execution via global (or type?) options -->
   <zope:subscriber handler="loops.security.common.setDefaultSecurity" />
   <zope:subscriber handler="loops.security.common.grantAcquiredSecurity" />
   <zope:subscriber handler="loops.security.common.revokeAcquiredSecurity" />
 
-  <zope:subscriber handler="loops.security.common.addGroupMembershipOnAssignment" />
-  <zope:subscriber handler="loops.security.common.removeGroupMembershipOnDeassignment" />
-  -->
+  <zope:subscriber 
+        handler="loops.security.common.addGroupMembershipOnAssignment" />
+  <zope:subscriber 
+        handler="loops.security.common.removeGroupMembershipOnDeassignment" />
 
   <!-- views -->
 

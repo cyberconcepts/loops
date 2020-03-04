@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,15 +23,17 @@ Definition of view classes and other browser related stuff for comments.
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.security import checkPermission
 
 from cybertools.browser.action import actions
 from cybertools.tracking.btree import TrackingStorage
-from loops.browser.action import DialogAction
+from loops.browser.action import Action, DialogAction
 from loops.browser.common import BaseView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.organize.comment.base import Comment
 from loops.organize.party import getPersonForUser
+from loops.organize.stateful.browser import StateAction
 from loops.organize.tracking.report import TrackDetails
 from loops.security.common import canAccessObject
 from loops.setup import addObject
@@ -50,10 +52,17 @@ class CommentsView(NodeView):
 
     @Lazy
     def allowed(self):
-        if self.isAnonymous:
+        if self.virtualTargetObject is None:
             return False
-        return (self.virtualTargetObject is not None and
-                    self.globalOptions('organize.allowComments'))
+        opts = (self.globalOptions('organize.allowComments') or
+                self.typeOptions('organize.allowComments'))
+        if not opts:
+            return False
+        if opts is True:
+            opts = []
+        if self.isAnonymous and not 'all' in opts:
+            return False
+        return True
 
     @Lazy
     def addUrl(self):
@@ -76,8 +85,46 @@ class CommentsView(NodeView):
             result.append(CommentDetails(self, tr))
         return result
 
+    def getActionsFor(self, comment):
+        if not self.globalOptions('organize.showCommentState'):
+            return []
+        if not checkPermission('loops.ViewRestricted', self.context):
+            return []
+        trackUid = util.getUidForObject(comment.track)
+        url = '%s/.%s/change_state.html' % (
+                    self.page.virtualTargetUrl, trackUid)
+        onClick = ("objectDialog('change_state', "
+                    "'%s?dialog=change_state"
+                    "&target_uid=%s'); return false;" % (url, trackUid))
+        stateAct = StateAction(self, 
+                        definition='organize.commentStates', 
+                        stateful=comment.track,
+                        url=url,
+                        onClick=onClick)
+        actions = [stateAct]
+        if not checkPermission('loops.EditRestricted', self.context):
+            return actions
+        baseUrl = self.page.virtualTargetUrl
+        url = '%s/delete_object?uid=%s' % (baseUrl, trackUid)
+        onClick = _("return confirm('Do you really want to delete this object?')")
+        delAct = Action(self, 
+                        url=url,
+                        description=_('Delete Comment'),
+                        icon='cybertools.icons/delete.png',
+                        cssClass='icon-action',
+                        onClick=onClick)
+        actions.append(delAct)
+        return actions
+
 
 class CommentDetails(TrackDetails):
+
+    @Lazy
+    def poster(self):
+        name = self.track.data.get('name')
+        if name:
+            return name
+        return self.user['title']
 
     @Lazy
     def subject(self):
@@ -108,6 +155,8 @@ class CreateComment(EditObject):
 
     @Lazy
     def personId(self):
+        if self.view.isAnonymous:
+            return self.request.form.get('email')
         p = getPersonForUser(self.context, self.request)
         if p is not None:
             return util.getUidForObject(p)
@@ -129,8 +178,11 @@ class CreateComment(EditObject):
         if ts is None:
             ts = addObject(rm, TrackingStorage, 'comments', trackFactory=Comment)
         uid = util.getUidForObject(self.object)
-        ts.saveUserTrack(uid, 0, self.personId, dict(
-                subject=subject, text=text))
+        data = dict(subject=subject, text=text)
+        for k in ('name', 'email'):
+            if k in form:
+                data[k] = form[k]
+        ts.saveUserTrack(uid, 0, self.personId, data)
         url = self.view.virtualTargetUrl + '?version=this'
         self.request.response.redirect(url)
         return False

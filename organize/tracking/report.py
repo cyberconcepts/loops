@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -264,18 +264,26 @@ class TrackDetails(BaseView):
     @Lazy
     def objectData(self):
         obj = self.object
+        if obj is None or not canAccessObject(obj):
+            return dict(object=None, title='-', description='',
+                        type='-', url='', 
+                        version=None, canAccess=False)
         node = self.view.nodeView
         url = node is not None and node.getUrlForTarget(obj) or ''
         view = self.view.getViewForObject(obj)
         if view is None:
             title = obj.title
+            desc = obj.description
         else:
             title = view.listingTitle
+            desc = view.description
         versionable = IVersionable(self.object, None)
-        version = versionable is not None and versionable.versionId or ''
-        return dict(object=obj, title=title,
+        version = ((versionable is not None and 
+                    not (versionable.notVersioned) and 
+                    versionable.versionId) or '')
+        return dict(object=obj, title=title, description=desc,
                     type=self.longTypeTitle, url=url, version=version,
-                    canAccess=canAccessObject(obj))
+                    canAccess=True)
 
     @Lazy
     def user(self):

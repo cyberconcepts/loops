@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2018 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,24 +20,32 @@
 Work report definitions.
 """
 
+from datetime import date, timedelta
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
-from zope.component import adapter
+from zope.component import adapter, getAdapter
+from zope.i18n.locales import locales
 
 from cybertools.composer.report.base import Report
 from cybertools.composer.report.base import LeafQueryCriteria, CompoundQueryCriteria
 from cybertools.composer.report.field import CalculatedField
 from cybertools.composer.report.result import ResultSet, Row as BaseRow
+from cybertools.meta.interfaces import IOptions
 from cybertools.organize.interfaces import IWorkItems
+from cybertools.stateful.interfaces import IStateful
 from cybertools.util.date import timeStamp2Date, timeStamp2ISO
-from cybertools.util.format import formatDate
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
+from loops.expert.browser.export import ResultsConceptCSVExport
 from loops.expert.browser.report import ReportConceptView
 from loops.expert.field import Field, TargetField, DateField, StateField, \
-                            TextField, HtmlTextField, UrlField
+                            StringField, TextField, HtmlTextField, \
+                            UrlField, VocabularyField
 from loops.expert.field import SubReport, SubReportField
+from loops.expert.field import TrackDateField, TrackTimeField, TrackDateTimeField
+from loops.expert.field import WorkItemStateField
 from loops.expert.report import ReportInstance
+from loops.table import DataTableSourceBinder, DataTableSourceListByValue
 from loops import util
 
 
@@ -48,57 +56,31 @@ class WorkStatementView(ReportConceptView):
     reportName = 'work_statement'
 
 
+class WorkPlanView(ReportConceptView):
+
+    reportName = 'work_plan'
+
+
+class WorkStatementCSVExport(ResultsConceptCSVExport):
+
+    reportName = 'work_statement'
+
+
 # fields
-
-class TrackDateField(Field):
-
-    fieldType = 'date'
-    part = 'date'
-    format = 'short'
-    cssClass = 'right'
-
-    def getValue(self, row):
-        value = self.getRawValue(row)
-        if not value:
-            return None
-        return timeStamp2Date(value)
-
-    def getDisplayValue(self, row):
-        value = self.getValue(row)
-        if value:
-            view = row.parent.context.view
-            return formatDate(value, self.part, self.format,
-                              view.languageInfo.language)
-        return u''
-
-    def getSelectValue(self, row):
-        value = self.getRawValue(row)
-        if not value:
-            return ''
-        return timeStamp2ISO(value)[:10]
-
-
-class TrackDateTimeField(TrackDateField):
-
-    part = 'dateTime'
-
-
-class TrackTimeField(TrackDateField):
-
-    part = 'time'
-
 
 class DurationField(Field):
 
+    factor = 1
     cssClass = 'right'
 
     def getValue(self, row):
-        value = self.getRawValue(row)
+        value = self.getRawValue(row) or 0
+        value = float(value)
         if value and 'totals' in self.executionSteps:
             data = row.parent.totals.data
             data[self.name] = data.get(self.name, 0) + value
         if value:
-            value /= 3600.0
+            value = value * self.factor / 3600.0
         return value
 
     def getDisplayValue(self, row):
@@ -106,6 +88,85 @@ class DurationField(Field):
         if not value:
             return u''
         return u'%02i:%02i' % divmod(value * 60, 60)
+
+    def getExportValue(self, row, format, lang):
+        value = self.getValue(row)
+        if format == 'csv':
+            return '%i' % round(value * 60)
+            locale = locales.getLocale(lang)
+            fmt = locale.numbers.getFormatter('decimal')
+            return fmt.format(value, pattern=u'0.0000;-0.0000')            
+        return value
+
+
+class PartyStateField(StateField):
+
+    def getValue(self, row):
+        context = row.context
+        if context is None:
+            return None
+        party = util.getObjectForUid(context.party)
+        ptype = adapted(party.conceptType)
+        stdefs = IOptions(ptype)('organize.stateful') or []
+        if self.statesDefinition in stdefs:
+            stf = getAdapter(party, IStateful, 
+                             name=self.statesDefinition)
+            return stf.state
+
+    def getContext(self, row):
+        if row.context is None:
+            return None
+        party = util.getObjectForUid(row.context.party)
+        ptype = adapted(party.conceptType)
+        stdefs = IOptions(ptype)('organize.stateful') or []
+        if self.statesDefinition in stdefs:
+            return party
+        return None
+
+
+class PartyQueryField(TargetField):
+
+    def getVocabularyItems(self, row=None, context=None, request=None):
+        concepts = context.getLoopsRoot().getConceptManager()
+        sourceQuery = concepts.get('participants')
+        if sourceQuery is None:
+            return []
+        persons = sourceQuery.getChildren()
+        return [dict(token=util.getUidForObject(p), title=p.title) 
+                for p in persons]
+
+
+class ActivityField(VocabularyField):
+
+    tableName = 'organize.work.activities'
+    vocabulary = DataTableSourceBinder(tableName, 
+                    sourceList=DataTableSourceListByValue)
+
+    def getDisplayValue(self, row):
+        if row.context is None:
+            return u'-'
+        value = row.context.data.get('activity', '')#[:3]
+        if not value:
+            return u''
+        dt = row.parent.context.view.conceptManager.get(self.tableName)
+        if dt is None:
+            return u''
+        for row in adapted(dt).data.values():
+            if row[0] == value:
+                value = row[3]
+                break
+        return value
+
+
+def daysAgoByOption(context):
+    days = 7
+    opt = context.view.typeOptions('workitem_dayfrom_default')
+    if opt:
+        if opt is True or not opt[0].isdigit():
+            return None
+        else:
+            days = int(opt[0])
+    return (date.today() - timedelta(days)).isoformat()
 
 
 # common fields
@@ -124,7 +185,8 @@ deadline = TrackDateField('deadline', u'Deadline',
 dayFrom = TrackDateField('dayFrom', u'Start Day',
                 description=u'The first day from which to select work.',
                 fieldType='date',
-                operator=u'gt',
+                default=daysAgoByOption,
+                operator=u'ge',
                 executionSteps=['query'])
 dayTo = TrackDateField('dayTo', u'End Day',
                 description=u'The last day until which to select work.',
@@ -135,6 +197,14 @@ day = TrackDateField('day', u'Day',
                 description=u'The day the work was done.',
                 cssClass='center',
                 executionSteps=['sort', 'output'])
+dayStart = TrackDateField('dayStart', u'Start Day',
+                description=u'The day the unit of work was started.',
+                cssClass='center',
+                executionSteps=['sort', 'output'])
+dayEnd = TrackDateField('dayEnd', u'End Day',
+                description=u'The day the unit of work was finished.',
+                cssClass='center',
+                executionSteps=['sort', 'output'])
 timeStart = TrackTimeField('start', u'Start',
                 description=u'The time the unit of work was started.',
                 executionSteps=['sort', 'output'])
@@ -143,15 +213,19 @@ timeEnd = TrackTimeField('end', u'End',
                 executionSteps=['output'])
 task = TargetField('taskId', u'Task',
                 description=u'The task to which work items belong.',
-                executionSteps=['output'])
-party = TargetField('userName', u'Party',
+                executionSteps=['sort', 'output'])
+party = PartyQueryField('userName', u'Party',
                 description=u'The party (usually a person) who did the work.',
                 fieldType='selection',
-                executionSteps=['query', 'sort', 'output'])
-workTitle = Field('title', u'Title',
+                executionSteps=['sort', 'output', 'query'])
+#partyQuery = TargetField('userName', u'Party',
+#                description=u'The party (usually a person) who did the work.',
+#                fieldType='selection',
+#                executionSteps=['query'])
+workTitle = StringField('title', u'Title',
                 description=u'The short description of the work.',
-                executionSteps=['output'])
-workDescription = Field('description', u'Description',
+                executionSteps=['sort', 'output'])
+workDescription = StringField('description', u'Description',
                 description=u'The long description of the work.',
                 executionSteps=['output'])
 duration = DurationField('duration', u'Duration',
@@ -160,11 +234,21 @@ duration = DurationField('duration', u'Duration',
 effort = DurationField('effort', u'Effort',
                 description=u'The effort of the work.',
                 executionSteps=['output', 'totals'])
-state = StateField('state', u'State',
+state = WorkItemStateField('state', u'State',
                 description=u'The state of the work.',
                 cssClass='center',
                 statesDefinition='workItemStates',
                 executionSteps=['query', 'output'])
+partyState = PartyStateField('partyState', u'Party State',
+                description=u'State of the party, mainly for selection.',
+                cssClass='center',
+                statesDefinition='contact_states',
+                executionSteps=['query', 'output'])
+activity = ActivityField('activity', u'LA',
+                description=u'The activity assigned to the work item.',
+                fieldType='selection',
+                executionSteps=['query', 'sort', 'output'])
+# process
 
 
 # basic definitions and work report instance
@@ -182,6 +266,12 @@ class WorkRow(BaseRow):
     def getDay(self, attr):
         return self.context.timeStamp
 
+    def getStart(self, attr):
+        return self.context.start
+
+    def getEnd(self, attr):
+        return self.context.end
+
     def getDuration(self, attr):
         value = self.context.data.get('duration')
         if value is None:
@@ -194,7 +284,9 @@ class WorkRow(BaseRow):
             value = self.getDuration(attr)
         return value
 
-    attributeHandlers = dict(day=getDay, dayFrom=getDay, dayTo=getDay,
+    attributeHandlers = dict(day=getDay, 
+                             dayStart=getStart, dayEnd=getEnd,
+                             dayFrom=getDay, dayTo=getDay,
                              duration=getDuration, effort=getEffort)
 
 
@@ -208,13 +300,35 @@ class WorkReportInstance(ReportInstance):
     fields = Jeep((dayFrom, dayTo, tasks,
                    day, timeStart, timeEnd, task, party, workTitle, 
                    #description,
-                   duration, effort, state))
+                   activity,
+                   #duration, 
+                   effort, state))
 
-    userSettings = (dayFrom, dayTo, party)
+    userSettings = (dayFrom, dayTo, party, activity)
     defaultOutputFields = fields
     defaultSortCriteria = (day, timeStart,)
-    states = ('done', 'done_x', 'finished')
+    defaultStates = ('done', 'done_x', 'finished')
     taskTypeNames = ('task', 'event', 'project')
+
+    def getOptions(self, option):
+        return self.view.options(option)
+
+    @Lazy
+    def states(self):
+        return self.getOptions('report_select_state') or self.defaultStates
+
+    def getFieldQueryCriteria(self, field, data):
+        if field.name in data:
+            return LeafQueryCriteria(
+                field.name, field.operator, data[field.name], field)
+        else:
+            default = field.default
+            if default is not None:
+                if callable(default):
+                    default = default(self)
+                if default:
+                    return LeafQueryCriteria(
+                        field.name, field.operator, default, field)
 
     @property
     def queryCriteria(self):
@@ -226,9 +340,9 @@ class WorkReportInstance(ReportInstance):
             tasks = [util.getUidForObject(task) for task in tasks]
             crit = [LeafQueryCriteria(f.name, f.operator, tasks, f)]
         for f in self.getAllQueryFields():
-            if f.name in form:
-                crit.append(
-                    LeafQueryCriteria(f.name, f.operator, form[f.name], f))
+            fc = self.getFieldQueryCriteria(f, form)
+            if fc is not None:
+                crit.append(fc)
         return CompoundQueryCriteria(crit)
 
     def selectObjects(self, parts):
@@ -248,16 +362,20 @@ class WorkReportInstance(ReportInstance):
             tasks.extend(self.getAllSubtasks(t))
         return tasks
 
-    def getAllSubtasks(self, concept):
+    def getAllSubtasks(self, concept, checked=None):
         result = []
+        if checked is None:
+            #checked = set()
+            checked = set([concept])
         for c in concept.getChildren([self.view.defaultPredicate]):
-            if c.conceptType in self.taskTypes:
+            if c.conceptType in self.taskTypes and c not in checked:
                 result.append(c)
-            result.extend(self.getAllSubtasks(c))
+            if c not in checked:
+                checked.add(c)
+                result.extend(self.getAllSubtasks(c, checked))
         return result
 
     def selectWorkItems(self, task, parts):
-        # TODO: take states from parts
         kw = dict(task=util.getUidForObject(baseObject(task)), 
                   state=self.states)
         userNameCrit = parts.get('userName')
@@ -275,6 +393,35 @@ class WorkReportInstance(ReportInstance):
     @Lazy
     def workItems(self):
         return IWorkItems(self.recordManager['work'])
+
+
+class WorkPlanReportInstance(WorkReportInstance):
+
+    type = "work_plan"
+    label = u'Work Plan'
+
+    defaultStates = ('planned', 'accepted', 'done')
+
+
+class PersonWorkReportInstance(WorkReportInstance):
+
+    type = "person_work_statement"
+    label = u'Person Work Statement'
+
+    @property
+    def queryCriteria(self):
+        crit = self.context.queryCriteria or []
+        for f in self.getAllQueryFields():
+            fc = self.getFieldQueryCriteria(f, self.view.request.form)
+            if fc is not None:
+                crit.append(fc)
+        return CompoundQueryCriteria(crit)
+
+    def selectObjects(self, parts):
+        workItems = self.recordManager['work']
+        person = self.view.context
+        uid = util.getUidForObject(person)
+        return workItems.query(userName=uid, state=self.states)
 
 
 # meeting minutes

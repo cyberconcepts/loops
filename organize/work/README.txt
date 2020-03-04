@@ -138,12 +138,15 @@ The 'delegate' transition is omitted from the actions list because it is
 only available for privileged users.
 
   >>> form.actions
-  [{'name': 'plan', 'title': 'plan'}, {'name': 'accept', 'title': 'accept'},
-   {'name': 'start', 'title': 'start working'}, {'name': 'work', 'title': 'work'},
-   {'name': 'finish', 'title': 'finish'}, {'name': 'delegate', 'title': 'delegate'},
-   {'name': 'move', 'title': 'move'}, {'name': 'cancel', 'title': 'cancel'},
-   {'name': 'modify', 'title': 'modify'}]
-
+  [{'selected': False, 'name': 'plan', 'title': 'plan'}, 
+   {'selected': False, 'name': 'accept', 'title': 'accept'}, 
+   {'selected': False, 'name': 'start', 'title': 'start working'}, 
+   {'selected': False, 'name': 'work', 'title': 'work'}, 
+   {'selected': False, 'name': 'finish', 'title': 'finish'}, 
+   {'selected': False, 'name': 'delegate', 'title': 'delegate'}, 
+   {'selected': False, 'name': 'move', 'title': 'move'}, 
+   {'selected': False, 'name': 'cancel', 'title': 'cancel'}, 
+   {'selected': False, 'name': 'modify', 'title': 'modify'}]
 
 Work Item Queries
 =================
@@ -185,7 +188,7 @@ First we have to make sure that there is a report concept type available.
 In addition we need a predicate that connects one or more tasks with a report.
 
   >>> from loops.expert.report import IReport, Report
-  >>> component.provideAdapter(Report)
+  >>> component.provideAdapter(Report, provides=IReport)
   >>> tReport = addAndConfigureObject(concepts, Concept, 'report',
   ...                   title=u'Report', conceptType=concepts.getTypeConcept(),
   ...                   typeInterface=IReport)
@@ -215,7 +218,8 @@ The executable report is a report instance that is an adapter to the
 The user interface is a ReportConceptView subclass that is directly associated with the task.
 
   >>> from loops.organize.work.report import WorkStatementView
-  >>> reportView = WorkStatementView(task01, TestRequest())
+  >>> input = dict(dayFrom='2008-01-01')
+  >>> reportView = WorkStatementView(task01, TestRequest(form=input))
   >>> reportView.nodeView = nodeView
 
   >>> results = reportView.results()
@@ -228,11 +232,23 @@ The user interface is a ReportConceptView subclass that is directly associated w
   ...     print
   08/12/28 19:00 20:15
     {'url': '.../home/.36', 'title': u'loops Development'}
-    {'url': '.../home/.33', 'title': u'john'}  01:15 00:15
-    {'icon': 'cybertools.icons/ledgreen.png', 'title': u'finished'}
+    {'url': '.../home/.33', 'title': u'john'}   00:15
+    {'actions': [...]}
 
   >>> results.totals.data
-  {'effort': 900}
+  {'effort': 900.0}
+
+Export of work data
+-------------------
+
+  >>> from loops.organize.work.report import WorkStatementCSVExport
+  >>> reportView = WorkStatementCSVExport(task01, TestRequest(form=input))
+  >>> reportView.nodeView = nodeView
+
+  >>> output = reportView()
+  >>> print output
+  Day;Start;End;Task;Party;Title;LA;Effort;State
+  08/12/28;19:00;20:15;loops Development;john;;;15;finished
 
 
 Meeting Minutes

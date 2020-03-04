@@ -228,6 +228,23 @@ We need a principal for testing the login stuff:
   >>> pwcView.update()
   False
 
+Reset Password
+--------------
+
+Invalidates the user account by generating a new password. A mail ist sent to
+the email address of the person with a link for re-activating the account
+and enter a new password.
+
+  >>> data = {'loginName': u'dummy',
+  ...         'action': 'update'}
+
+  >>> request = TestRequest(form=data)
+
+  >>> from loops.organize.browser.member import PasswordReset
+  >>> pwrView = PasswordReset(menu, request)
+  >>> pwrView.update()
+  True
+
 
 Pure Person-based Authentication
 ================================
@@ -410,7 +427,7 @@ Send Email to Members
   >>> form.subject
   u"loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.113\n\n'
+  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.118\n\n'
 
 
 Show Presence of Other Users

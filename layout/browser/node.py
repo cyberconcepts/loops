@@ -65,8 +65,9 @@ class LayoutNodeView(Page, BaseView):
         if self.target is not None:
             targetView = component.getMultiAdapter((self.target, self.request),
                                                    name='layout')
-            if targetView.title not in parts:
-                parts.append(targetView.title)
+            title = getattr(targetView, 'headTitle', targetView.title)
+            if title not in parts:
+                parts.append(title)
         if self.globalOptions('reverseHeadTitle'):
             parts.reverse()
         return ' - '.join(parts)

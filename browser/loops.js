@@ -47,6 +47,35 @@ function showIfIn(node, conditions) {
     })
 }
 
+function setIfIn(node, conditions) {
+    dojo.forEach(conditions, function(cond) {
+        if (node.value == cond[0]) {
+            target = dijit.byId(cond[1]);
+            target.setValue(cond[2]);
+        }
+    })
+}
+
+function setIf(node, cond, acts) {
+    if (node.value == cond) {
+        dojo.forEach(acts, function(act) {
+            target = dijit.byId(act[0]);
+            target.setValue(act[1]);
+        })
+    }
+}
+
+function setIfN(node, conds, acts) {
+    dojo.forEach(conds, function(cond) {
+        if (node.value == cond) {
+            dojo.forEach(acts, function(act) {
+                target = dijit.byId(act[0]);
+                target.setValue(act[1]);
+            })
+        }
+    })
+}
+
 function destroyWidgets(node) {
     dojo.forEach(dojo.query('[widgetId]', node), function(n) {
         w = dijit.byNode(n);
@@ -103,7 +132,7 @@ function submitReplacing(targetId, formId, url) {
         mimetype: "text/html",
         load: function(response, ioArgs) {
             replaceNode(response, targetId);
-            return resonse;
+            return response;
         }
     })
 }
@@ -115,7 +144,7 @@ function xhrSubmitPopup(formId, url) {
         mimetype: "text/html",
         load: function(response, ioArgs) {
             window.close();
-            return resonse;
+            return response;
         }
     });
 }

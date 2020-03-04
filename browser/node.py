@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -86,10 +86,14 @@ class NodeView(BaseView):
         super(NodeView, self).__init__(context, request)
         self.viewAnnotations.setdefault('nodeView', self)
         self.viewAnnotations.setdefault('node', self.context)
-        viewConfig = getViewConfiguration(context, request)
-        self.setSkin(viewConfig.get('skinName'))
+        self.setSkin(self.viewConfig.get('skinName'))
 
     def __call__(self, *args, **kw):
+        if self.nodeType == 'raw':
+            vn = self.context.viewName
+            if vn:
+                self.request.response.setHeader('content-type', vn)
+            return self.context.body
         tv = self.viewAnnotations.get('targetView')
         if tv is not None:
             if tv.isToplevel:
@@ -97,6 +101,29 @@ class NodeView(BaseView):
         if self.controller is not None:
             self.controller.setMainPage()
         return super(NodeView, self).__call__(*args, **kw)
+
+    @Lazy
+    def viewConfig(self):
+        return getViewConfiguration(self.context, self.request)
+
+    @Lazy
+    def viewConfigOptions(self):
+        result = {}
+        for opt in self.viewConfig.get('options') or []:
+            if ':' in opt:
+                k, v = opt.split(':', 1)
+                result[k] = v.split(',')
+            else:
+                result[opt] = True
+        return result
+
+    @Lazy
+    def copyright(self):
+        cr = self.viewConfigOptions.get('copyright')
+        if cr:
+            return cr[0]
+        cr = self.globalOptions('copyright')
+        return cr and cr[0] or 'cyberconcepts.org team'
 
     @Lazy
     def macro(self):
@@ -115,7 +142,9 @@ class NodeView(BaseView):
             parts.extend(getParts(n))
         return parts
 
-    def update(self):
+    def update(self, topLevel=True):
+        if topLevel and self.view != self:
+            return self.view.update(False)
         result = super(NodeView, self).update()
         self.recordAccess()
         return result
@@ -129,7 +158,7 @@ class NodeView(BaseView):
             return []
         menu = self.menu
         data = [dict(label=menu.title, url=menu.url)]
-        menuItem = self.nearestMenuItem
+        menuItem = self.getNearestMenuItem(all=True)
         if menuItem != menu.context:
             data.append(dict(label=menuItem.title,
                              url=absoluteURL(menuItem, self.request)))
@@ -140,6 +169,9 @@ class NodeView(BaseView):
                                     url=absoluteURL(p, self.request)))
         if self.virtualTarget:
             data.extend(self.virtualTarget.breadcrumbs())
+        if data and not '?' in data[-1]['url']:
+            if self.urlParamString:
+                data[-1]['url'] += self.urlParamString
         return data
 
     def viewModes(self):
@@ -366,6 +398,10 @@ class NodeView(BaseView):
     def editable(self):
         return canWrite(self.context, 'body')
 
+    def hasTopPage(self, name):
+        page = self.topMenu.context.get(name)
+        return page is not None
+
     # menu stuff
 
     @Lazy
@@ -411,8 +447,9 @@ class NodeView(BaseView):
 
     @Lazy
     def menuItems(self):
-        return [NodeView(child, self.request)
+        items = [NodeView(child, self.request).view
                     for child in self.context.getMenuItems()]
+        return [item for item in items if item.isVisible]
 
     @Lazy
     def parents(self):
@@ -420,10 +457,13 @@ class NodeView(BaseView):
 
     @Lazy
     def nearestMenuItem(self):
+        return self.getNearestMenuItem()
+
+    def getNearestMenuItem(self, all=False):
         menu = self.menuObject
         menuItem = None
         for p in [self.context] + self.parents:
-            if not p.isMenuItem():
+            if not all and not p.isMenuItem():
                 menuItem = None
             elif menuItem is None:
                 menuItem = p
@@ -469,7 +509,7 @@ class NodeView(BaseView):
     def targetView(self, name='index.html', methodName='show'):
         if name == 'index.html':    # only when called for default view
             tv = self.viewAnnotations.get('targetView')
-            if tv is not None:
+            if tv is not None and callable(tv):
                 return tv()
         if '?' in name:
             name, params = name.split('?', 1)
@@ -567,11 +607,20 @@ class NodeView(BaseView):
         """ Return URL of given target view given as .XXX URL.
         """
         if isinstance(target, BaseView):
+            miu = self.getMenuItemUrlForTarget(target.context)
+            if miu is not None:
+                return miu
             return self.makeTargetUrl(self.url, target.uniqueId, target.title)
         else:
             target = baseObject(target)
             return self.makeTargetUrl(self.url, util.getUidForObject(target),
                                       target.title)
+
+    def getMenuItemUrlForTarget(self, tobj):
+        for node in tobj.getClients():
+            if node.nodeType == 'page' and node.getMenu() == self.menuObject:
+                return absoluteURL(node, self.request)
+
 
     def getActions(self, category='object', page=None, target=None):
         actions = []
@@ -976,7 +1025,8 @@ class NodeTraverser(ItemTraverser):
         if context.nodeType == 'menu':
             setViewConfiguration(context, request)
         if name == '.loops':
-            return self.context.getLoopsRoot()
+            name = self.getTargetUid(request)
+            #return self.context.getLoopsRoot()
         if name.startswith('.'):
             name = self.cleanUpTraversalStack(request, name)[1:]
             target = self.getTarget(name)
@@ -1008,17 +1058,34 @@ class NodeTraverser(ItemTraverser):
             raise
         return obj
 
+    def getTargetUid(self, request):
+        parent = self.context.getLoopsRoot()
+        stack = request._traversal_stack
+        for i in range(2):
+            name = stack.pop()
+            obj = parent.get(name)
+            if not obj:
+                return name
+            parent = obj
+        return '.' + util.getUidForObject(obj)
+
     def cleanUpTraversalStack(self, request, name):
-        traversalStack = request._traversal_stack
-        while traversalStack and traversalStack[0].startswith('.'):
+        #traversalStack = request._traversal_stack
+        #while traversalStack and traversalStack[0].startswith('.'):
             # skip obsolete target references in the url
-            name = traversalStack.pop(0)
+        #    name = traversalStack.pop(0)
         traversedNames = request._traversed_names
-        if traversedNames:
-            lastTraversed = traversedNames[-1]
-            if lastTraversed.startswith('.') and lastTraversed != name:
+        for n in list(traversedNames):
+            if n.startswith('.'):
+                # remove obsolete target refs
+                traversedNames.remove(n)
+        #if traversedNames:
+        #    lastTraversed = traversedNames[-1]
+        #    if lastTraversed.startswith('.') and lastTraversed != name:
                 # let <base .../> tag show the current object
-                traversedNames[-1] = name
+        #        traversedNames[-1] = name
+        # let <base .../> tag show the current object
+        traversedNames.append(name)
         return name
 
     def getTarget(self, name):

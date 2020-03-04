@@ -44,11 +44,15 @@ class PyReader(object):
 
 class InputProcessor(dict):
 
+    _constants = dict(True=True, False=False)
+
     def __init__(self):
         self.elements = []
-        self['__builtins__'] = {}   # security!
+        self['__builtins__'] = dict()   # security!
 
     def __getitem__(self, key):
+        if key in self._constants:
+            return self._constants[key]
         def factory(*args, **kw):
             element = elementTypes[key](*args, **kw)
             if key in toplevelElements:

@@ -21,6 +21,7 @@ Definition of the Concept class.
 """
 
 from cStringIO import StringIO
+from logging import getLogger
 from persistent import Persistent
 from zope import component, schema
 from zope.app.container.btree import BTreeContainer
@@ -62,6 +63,8 @@ from loops.security.common import canListObject
 from loops import util
 from loops.versioning.util import getMaster
 from loops.view import TargetRelation
+
+logger = getLogger('loops.resource')
 
 _ = MessageFactory('loops')
 
@@ -568,7 +571,10 @@ class IndexAttributes(object):
             return u''
         data = actx.data
         if type(data) != unicode:
-            data = data.decode('UTF-8')
+            try:
+                data = data.decode('UTF-8')
+            except UnicodeDecodeError:
+                data = data.decode('ISO8859-15')
         return data
 
     def xx_text(self):
@@ -628,7 +634,12 @@ def transformToText(obj, data=None, contentType=None):
         if rfa is None:
             if isinstance(data, unicode):
                 data = data.encode('UTF-8')
-            return transform(StringIO(data))
+            try:
+                return transform(StringIO(data))
+            except:
+                import traceback
+                logger.warn(traceback.format_exc())
+                return u''
         else:
             return transform(rfa)
 

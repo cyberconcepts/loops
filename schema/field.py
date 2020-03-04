@@ -82,7 +82,7 @@ class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
         return [util.getObjectForUid(v) for v in value]
 
     def getRenderer(self, name):
-        return relation_macros.macros[name]
+        return relation_macros.macros.get(name)
 
 
 class RelationFieldInstance(FieldInstance, BaseRelationFieldInstance):

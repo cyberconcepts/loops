@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2007 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,16 +18,19 @@
 
 """
 View class(es) for resource classifiers.
-
-$Id$
 """
 
+from logging import getLogger
+import transaction
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.traversing.api import getName
 
 from loops.browser.concept import ConceptView
 from loops.common import adapted
+
+logger = getLogger('ClassifierView')
 
 
 class ClassifierView(ConceptView):
@@ -42,12 +45,18 @@ class ClassifierView(ConceptView):
         if 'update' in self.request.form:
             cta = adapted(self.context)
             if cta is not None:
-                for r in collectResources(self.context):
+                for idx, r in enumerate(collectResources(self.context)):
+                    if idx % 1000 == 0:
+                        logger.info('Committing, resource # %s' % idx)
+                        transaction.commit()
                     cta.process(r)
+            logger.info('Finished processing')
+            transaction.commit()
         return True
 
 
 def collectResources(concept, checkedConcepts=None, result=None):
+    logger.info('Start collecting resources for %s' % getName(concept))
     if result is None:
         result = []
     if checkedConcepts is None:
@@ -59,4 +68,5 @@ def collectResources(concept, checkedConcepts=None, result=None):
         if c not in checkedConcepts:
             checkedConcepts.append(c)
             collectResources(c, checkedConcepts, result)
+    logger.info('Collected %s resources' % len(result))
     return result

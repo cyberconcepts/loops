@@ -57,15 +57,22 @@ class FavoriteView(NodeView):
     def listFavorites(self):
         if self.favorites is None:
             return
-        for uid in self.favorites.list(self.person):
+        self.registerDojoDnd()
+        form = self.request.form
+        if 'favorites_change_order' in form:
+            uids = form.get('favorite_uids')
+            if uids:
+                self.favorites.reorder(uids)
+        for trackUid, uid in self.favorites.listWithTracks(self.person):
             obj = util.getObjectForUid(uid)
             if obj is not None:
                 adobj = adapted(obj)
                 yield dict(url=self.getUrlForTarget(obj),
                            uid=uid,
-                           title=adobj.favTitle,
-                           description=adobj.description,
-                           object=obj)
+                           title=obj.title,
+                           description=obj.description,
+                           object=obj,
+                           trackUid=trackUid)
 
     def add(self):
         if self.favorites is None:

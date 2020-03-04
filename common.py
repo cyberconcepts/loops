@@ -235,16 +235,18 @@ class NameChooser(BaseNameChooser):
         return name
 
     def generateNameFromTitle(self, obj):
-        title = obj.title
-        if len(title) > 15:
-            words = title.split()
-            if len(words) > 1:
-                title = '_'.join((words[0], words[-1]))
-        return self.normalizeName(title)
+        return generateNameFromTitle(obj.title)
 
     def normalizeName(self, baseName):
         return normalizeName(baseName)
 
+
+def generateNameFromTitle(title):
+        if len(title) > 15:
+            words = title.split()
+            if len(words) > 1:
+                title = '_'.join((words[0], words[-1]))
+        return normalizeName(title)
 
 def normalizeName(baseName):
     specialCharacters = {

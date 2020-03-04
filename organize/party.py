@@ -24,6 +24,7 @@ from persistent.mapping import PersistentMapping
 from zope import interface, component
 from zope.app.principalannotation import annotations
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.component import adapts
 from zope.interface import implements
 from zope.cachedescriptors.property import Lazy
@@ -57,11 +58,13 @@ PredicateInterfaceSourceList.predicateInterfaces += (IHasRole,)
 
 
 def getPersonForUser(context, request=None, principal=None):
+    if context is None:
+        return None
     if principal is None:
-        if request is None:
-            principal = getCurrentPrincipal()
-        else:
+        if request is not None:
             principal = getattr(request, 'principal', None)
+        else:
+            principal = getPrincipal(context)
     if principal is None:
         return None
     loops = baseObject(context).getLoopsRoot()
@@ -74,6 +77,15 @@ def getPersonForUser(context, request=None, principal=None):
         else:
             return None
     return pa.get(util.getUidForObject(loops))
+
+
+def getPrincipal(context):
+    principal = getCurrentPrincipal()
+    if principal is not None:
+        if IUnauthenticatedPrincipal.providedBy(principal):
+            return None
+        return principal
+    return None
 
 
 class Person(AdapterBase, BasePerson):
@@ -95,9 +107,11 @@ class Person(AdapterBase, BasePerson):
                 return
             person = getPersonForUser(self.context, principal=principal)
             if person is not None and person != self.context:
-                raise ValueError(
-                    'Error when creating user %s: There is already a person (%s) assigned to user %s.'
-                    % (getName(self.context), getName(person), userId))
+                name = getName(person)
+                if name:
+                    raise ValueError(
+                        'There is already a person (%s) assigned to user %s.'
+                        % (getName(person), userId))
             pa = annotations(principal)
             loopsId = util.getUidForObject(self.context.getLoopsRoot())
             ann = pa.get(ANNOTATION_KEY)

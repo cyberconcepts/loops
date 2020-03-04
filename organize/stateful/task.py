@@ -54,7 +54,7 @@ def taskStates():
     return StatesDefinition('task_states',
         State('draft', 'draft', ('release', 'cancel',),
               color='blue'),
-        State('active', 'active', ('finish', 'cancel',),
+        State('active', 'active', ('finish', 'reopen', 'cancel',),
               color='yellow'),
         State('finished', 'finished', ('reopen', 'archive',),
               color='green'),

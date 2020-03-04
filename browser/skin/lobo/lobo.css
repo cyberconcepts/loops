@@ -20,6 +20,7 @@ body {
 
 #portlets {
     margin-top: 1em;
+    background-color: #ffffff;
 }
 
 ul.view-modes {
@@ -106,6 +107,14 @@ table {
 
 thead th {
     background: none;
+}
+
+/* printing */
+
+@media print {
+    .noprint {
+        display: none;
+    }
 }
 
 /* class-specific */
@@ -253,8 +262,24 @@ table.records th, table.records td {
     border: 1px solid lightgrey;
 }
 
+table.report {
+    position: relative; 
+    z-index: 99; 
+    background: white;
+}
+
+table.report th {
+    border-bottom: 1px solid #bbbbbb;
+    font-weight: bold;
+}
+
 table.report td {
+    border-bottom: 1px dotted #dddddd;
     vertical-align: top;
+}
+
+.report-meta table {
+    width: auto;
 }
 
 dl.docutils dt {

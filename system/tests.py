@@ -1,7 +1,6 @@
 
 import unittest, doctest
 from zope.interface.verify import verifyClass
-#from loops.versioning import versionable
 
 class Test(unittest.TestCase):
     "Basic tests for the system sub-package."

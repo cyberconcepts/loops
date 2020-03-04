@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-# -*- Mode: Python; py-indent-offset: 4 -*-
 #
 #  Copyright (c) 2019 Helmut Merz helmutm@cy55.de
 #
@@ -19,7 +17,7 @@
 #
 
 """
-The loops container class.
+Implementation of loops root object.
 """
 
 from zope.app.container.btree import BTreeContainer

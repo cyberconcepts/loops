@@ -91,6 +91,20 @@
              set_schema="cybertools.stateful.interfaces.IStateful" />
   </zope:class>
 
+  <zope:utility
+        factory="loops.organize.stateful.contact.contactStates"
+        name="contact_states" />
+
+  <zope:adapter
+        factory="loops.organize.stateful.contact.StatefulContact"
+        name="contact_states" />
+  <zope:class class="loops.organize.stateful.contact.StatefulContact">
+    <require permission="zope.View"
+             interface="cybertools.stateful.interfaces.IStateful" />
+    <require permission="zope.ManageContent"
+             set_schema="cybertools.stateful.interfaces.IStateful" />
+  </zope:class>
+
   <!-- views and form controllers -->
 
   <browser:page

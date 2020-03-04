@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -28,15 +28,16 @@ from zope.app.security.settings import Allow, Deny, Unset
 from zope.cachedescriptors.property import Lazy
 from zope.interface import implements
 from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
-from zope.location.interfaces import IRoot
+from zope.location.interfaces import IRoot, ILocation
 from zope.security import canAccess, canWrite
 from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.interfaces import IRolePermissionManager
-from zope.traversing.api import getName
+from zope.traversing.api import getName, getParents
 from zope.traversing.interfaces import IPhysicallyLocatable
 
+from cybertools.meta.interfaces import IOptions
 from loops.common import adapted
 from loops.interfaces import ILoopsObject, IConcept
 from loops.interfaces import IAssignmentEvent, IDeassignmentEvent
@@ -67,13 +68,39 @@ workspaceGroupsFolderName = 'gloops_ws'
 
 # checking and querying functions
 
+def getOption(obj, option, checkType=True):
+    opts = component.queryAdapter(adapted(obj), IOptions)
+    if opts is not None:
+        opt = opts(option, None)
+        if opt is True:
+            return opt
+        if opt:
+            return opt[0]
+    if not checkType:
+        return None
+    typeMethod = getattr(obj, 'getType', None)
+    if typeMethod is not None:
+        opts = component.queryAdapter(adapted(typeMethod()), IOptions)
+        if opts is not None:
+            opt = opts(option, None)
+            if opt is True:
+                return opt
+            if opt:
+                return opt[0]
+    return None
+
 def canAccessObject(obj):
-    return canAccess(obj, 'title')
+    if not canAccess(obj, 'title'):
+        return False
+    perm = getOption(obj, 'access_permission')
+    if not perm:
+        return True
+    return checkPermission(perm, obj)
 
 def canListObject(obj, noCheck=False):
     if noCheck:
         return True
-    return canAccess(obj, 'title')
+    return canAccessObject(obj)
 
 def canAccessRestricted(obj):
     return checkPermission('loops.ViewRestricted', obj)
@@ -221,14 +248,19 @@ class WorkspaceInformation(Persistent):
         return self.__parent__
 
     def getParents(self):
-        parents = []
-        w = self.__parent__
-        while w is not None:
-            parents.append(w)
-            w = w.__parent__
-        if parents and IRoot.providedBy(parents[-1]):
-            return parents
-        raise TypeError("Not enough context information to get all parents")
+        p = self.getParent()
+        return [p] + getParents(p)
+
+
+class LocationWSI(object):
+
+    implements(ILocation)
+    component.adapts(WorkspaceInformation)
+
+    def __init__(self, context):
+        self.context = context
+        self.__name__ = context.__name__
+        self.__parent__ = context.__parent__
 
 
 def getWorkspaceGroup(obj, predicate):

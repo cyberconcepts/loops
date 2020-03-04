@@ -41,12 +41,16 @@ class Favorites(object):
         for item in self.listTracks(person, sortKey, type):
             yield item.taskId
 
+    def listWithTracks(self, person, sortKey=None, type='favorite'):
+        for item in self.listTracks(person, sortKey, type):
+            yield util.getUidForObject(item), item.taskId
+
     def listTracks(self, person, sortKey=None, type='favorite'):
         if person is None:
             return
         personUid = util.getUidForObject(person)
         if sortKey is None:
-            sortKey = lambda x: -x.timeStamp
+            sortKey = lambda x: (x.data.get('order', 100), -x.timeStamp)
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
             if type is not None:
                 if item.type != type:
@@ -59,7 +63,7 @@ class Favorites(object):
         uid = util.getUidForObject(obj)
         personUid = util.getUidForObject(person)
         if data is None:
-            data = {'type': 'favorite'}
+            data = {'type': 'favorite', 'order': 100}
         if nodups:
             for track in self.context.query(userName=personUid, taskId=uid):
                 if track.type == data['type']:    # already present
@@ -77,6 +81,18 @@ class Favorites(object):
                 changed = True
                 self.context.removeTrack(track)
         return changed
+
+    def reorder(self, uids):
+        offset = 0
+        for idx, uid in enumerate(uids):
+            track = util.getObjectForUid(uid)
+            if track is not None:
+                data = track.data
+                order = data.get('order', 100)
+                if order < idx or (order >= 100 and order < idx + 100):
+                    offset = 100
+                data['order'] = idx + offset
+                track.data = data
 
 
 class Favorite(Track):
@@ -110,7 +126,7 @@ def updateSortInfo(person, task, data):
                 break
         else:
             if data:
-                Favorites(favorites).add(task, person, 
+                Favorites(favorites).add(task, person,
                                          dict(type='sort', sortInfo=data))
     return data
 

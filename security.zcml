@@ -47,7 +47,7 @@
   <grant role="loops.SiteManager" permission="loops.ManageTypes" />
   <grant role="loops.SiteManager" permission="loops.ManageWorkspaces" />
   <grant role="loops.SiteManager" permission="loops.AssignAsParent" />
-  <grant role="loops.SiteManager" permission="loops.xmlrpc.ManageConcepts" />
+  <!--<grant role="loops.SiteManager" permission="loops.xmlrpc.ManageConcepts" />-->
   <grant role="loops.SiteManager" permission="zope.ManageContent" />
   <grant role="loops.SiteManager" permission="zope.dublincore.change" />
   <grant role="loops.SiteManager" permission="zope.View" />

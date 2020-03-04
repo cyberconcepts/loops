@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 View classes for reporting.
 """
 
+from logging import getLogger
 from urllib import urlencode
 from zope import interface, component
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -46,6 +47,10 @@ class ReportView(ConceptView):
     """ A view for defining (editing) a report.
     """
 
+    resultsRenderer = None  # to be defined by subclass
+    reportDownload = None
+    reportName = None
+
     @Lazy
     def report_macros(self):
         return self.controller.mergeTemplateMacros('report', report_template)
@@ -56,8 +61,31 @@ class ReportView(ConceptView):
         return self.report_macros['main']
 
     @Lazy
+    def tabTitle(self):
+        return self.report.title
+
+    @Lazy
     def dynamicParams(self):
         return self.request.form
+
+    @Lazy
+    def report(self):
+        return self.adapted
+
+    @Lazy
+    def reportInstance(self):
+        instance = component.getAdapter(self.report, IReportInstance,
+                                        name=self.report.reportType)
+        instance.view = self
+        return instance
+
+    @Lazy
+    def queryFields(self):
+        ri = self.reportInstance
+        qf = ri.getAllQueryFields()
+        if ri.userSettings:
+            return [f for f in qf if f in ri.userSettings]
+        return qf
 
 
 class ResultsView(NodeView):
@@ -107,13 +135,6 @@ class ResultsView(NodeView):
     def report(self):
         return adapted(self.virtualTargetObject)
 
-    @Lazy
-    def reportInstance(self):
-        instance = component.getAdapter(self.report, IReportInstance,
-                                        name=self.report.reportType)
-        instance.view = self
-        return instance
-
     #@Lazy
     def results(self):
         return self.reportInstance.getResults(self.params)
@@ -138,6 +159,8 @@ class ResultsView(NodeView):
 class ResultsConceptView(ConceptView):
     """ View on a concept using the results of a report.
     """
+
+    logger = getLogger ('ResultsConceptView')
 
     reportName = None   # define in subclass if applicable
     reportDownload = None
@@ -169,6 +192,9 @@ class ResultsConceptView(ConceptView):
 
     @Lazy
     def reportName(self):
+        rn = self.request.form.get('report_name')
+        if rn is not None:
+            return rn
         return (self.getOptions('report_name') or [None])[0]
 
     @Lazy
@@ -179,7 +205,10 @@ class ResultsConceptView(ConceptView):
     @Lazy
     def report(self):
         if self.reportName:
-            return adapted(self.conceptManager[self.reportName])
+            report = adapted(self.conceptManager.get(self.reportName))
+            if report is None:
+                self.logger.warn("Report '%s' not found." % self.reportName)
+            return report
         reports = self.context.getParents([self.hasReportPredicate])
         if not reports:
             type = self.context.conceptType
@@ -193,6 +222,13 @@ class ResultsConceptView(ConceptView):
         ri = component.getAdapter(self.report, IReportInstance,
                                   name=reportType)
         ri.view = self
+        if not ri.sortCriteria:
+            si = self.sortInfo.get('results')
+            if si is not None:
+                fnames = (si['colName'],)
+                ri.sortCriteria = [f for f in ri.getSortFields() 
+                                     if f.name in fnames]
+                ri.sortDescending = not si['ascending']
         return ri
 
     def results(self):
@@ -206,6 +242,35 @@ class ResultsConceptView(ConceptView):
 
     def getColumnRenderer(self, col):
         return self.result_macros[col.renderer]
+
+    @Lazy
+    def downloadLink(self, format='csv'):
+        opt = self.options('download_' + format)
+        if not opt:
+            opt = self.typeOptions('download_' + format)
+        if opt:
+            return '/'.join((self.nodeView.virtualTargetUrl, opt[0]))
+
+    @Lazy
+    def reportDownload(self):
+        return self.downloadLink
+
+    def isSortableColumn(self, tableName, colName):
+        if tableName == 'results':
+            if colName in [f.name for f in self.reportInstance.getSortFields()]:
+                return True
+        return False
+
+
+class EmbeddedResultsConceptView(ResultsConceptView):
+
+    @Lazy
+    def macro(self):
+        return self.result_macros['embedded_content']
+
+    @Lazy
+    def title(self):
+        return self.report.title
 
 
 class ReportConceptView(ResultsConceptView, ReportView):
@@ -227,6 +292,17 @@ class ReportConceptView(ResultsConceptView, ReportView):
         if ri.userSettings:
             return [f for f in qf if f in ri.userSettings]
         return qf
+
+
+class EmbeddedReportConceptView(ReportConceptView):
+
+    @Lazy
+    def macro(self):
+        return self.report_macros['embedded_report']
+
+    @Lazy
+    def title(self):
+        return self.report.title
 
 
 class ReportParamsView(ReportConceptView):

@@ -402,7 +402,7 @@ class IDocumentSchema(IResourceSchema):
     contentType = schema.Choice(
                 title=_(u'Content Type'),
                 description=_(u'Content type (format) of the data field'),
-                values=('text/restructured', 'text/structured', 'text/html',
+                values=('text/markdown', 'text/restructured', 'text/structured', 'text/html',
                         'text/plain', 'text/xml', 'text/css'),
                 default='text/restructured',
                 required=True)
@@ -968,5 +968,3 @@ class IViewConfiguratorSchema(Interface):
         value_type=schema.TextLine(),
         default=[],
         required=False)
-
-
