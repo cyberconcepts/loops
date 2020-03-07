@@ -177,7 +177,7 @@ of the concepts' titles:
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  u"{identifier: 'id', items: [{label: 'Zope (Thema)', name: 'Zope', id: '...'}, {label: 'Zope 2 (Thema)', name: 'Zope 2', id: '...'}, {label: 'Zope 3 (Thema)', name: 'Zope 3', id: '...'}]}"
+  '{"items": [{"id": "...", "name": "Zope", "label": "Zope (Thema)"}, {"id": "...", "name": "Zope 2", "label": "Zope 2 (Thema)"}, {"id": "...", "name": "Zope 3", "label": "Zope 3 (Thema)"}], "identifier": "id"}'
 
 Preset Concept Types on Search Forms
 ------------------------------------

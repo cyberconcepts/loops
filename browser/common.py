@@ -20,13 +20,14 @@
 Common base class for loops browser view classes.
 """
 
-from cgi import parse_qs, parse_qsl
+from cgi import parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
 from datetime import date, datetime
 from logging import getLogger
 import re
 from time import strptime
 from urllib import urlencode
+from urlparse import parse_qs
 from zope import component
 from zope.app.form.browser.interfaces import ITerms
 from zope.app.i18n.interfaces import ITranslationDomain
