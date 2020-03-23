@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,24 +18,55 @@
 
 """
 Base classes for comments/discussions.
-
-$Id$
 """
 
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer, implements
+from zope.traversing.api import getParent
 
+from cybertools.stateful.definition import StatesDefinition
+from cybertools.stateful.definition import State, Transition
+from cybertools.stateful.interfaces import IStatesDefinition
 from cybertools.tracking.btree import Track
 from cybertools.tracking.interfaces import ITrackingStorage
-from cybertools.tracking.comment.interfaces import IComment
+from loops.organize.comment.interfaces import IComment
+from loops.organize.stateful.base import Stateful
 from loops import util
 
 
-class Comment(Track):
+@implementer(IStatesDefinition)
+def commentStates():
+    return StatesDefinition('commentStates',
+        State('new', 'new', ('accept', 'reject'), color='red'),
+        State('public', 'public', ('retract', 'reject'), color='green'),
+        State('rejected', 'rejected', ('accept',), color='grey'),
+        Transition('accept', 'accept', 'public'),
+        Transition('reject', 'reject', 'rejected'),
+        Transition('retract', 'retract', 'new'),
+        initialState='new')
+
+
+class Comment(Stateful, Track):
 
     implements(IComment)
 
+    metadata_attributes = Track.metadata_attributes + ('state',)
+    index_attributes = metadata_attributes
     typeName = 'Comment'
+    typeInterface = IComment
+    statesDefinition = 'organize.commentStates'
 
     contentType = 'text/restructured'
+
+    def __init__(self, taskId, runId, userName, data):
+        super(Comment, self).__init__(taskId, runId, userName, data)
+        self.state = self.getState()    # make initial state persistent
+
+    @property
+    def title(self):
+        return self.data['subject']
+
+    def doTransition(self, action):
+        super(Comment, self).doTransition(action)
+        getParent(self).indexTrack(None, self, 'state')
 

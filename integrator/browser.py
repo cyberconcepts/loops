@@ -44,5 +44,7 @@ class ExternalCollectionView(ConceptView):
             cta.update()
             if cta.updateMessage is not None:
                 self.request.form['message'] = cta.updateMessage
+            if 'no_show_page' in self.request.form:
+                return False
         return True
 

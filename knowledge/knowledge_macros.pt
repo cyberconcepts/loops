@@ -1,6 +1,27 @@
 <html i18n:domain="loops">
 
 
+<metal:institution define-macro="select_institution">
+  <form method="post">
+    <div style="font-size: 120%; padding: 10px 0 10px 0">
+      <span i18n:translate="">Organisation/Team</span>:
+      <b tal:content="item/institution/title" />
+      <img tal:condition="python:len(item.institutions) > 1"
+           src="/@@/cybertools.icons/application_edit.png"
+           onclick="dojo.byId('select_institution').style.display = 'inline'" />
+      <select name="select_institution" id="select_institution"
+              style="display: none"
+              onchange="submit()">
+        <option tal:repeat="inst item/institutions"
+                tal:content="inst/title"
+                tal:attributes="value inst/uid;
+                                selected python:inst['object'] == item.institution" />
+      </select>
+    </div>
+  </form>
+</metal:institution>
+
+
 <metal:providers define-macro="requirement_providers">
   <metal:block use-macro="view/concept_macros/conceptdata" />
   <div>
@@ -32,28 +53,32 @@
 
 <metal:candidates define-macro="requirement_candidates">
   <metal:block use-macro="view/concept_macros/conceptdata" />
-  <h3 i18n:translate="">Candidates for Task</h3>
-  <table class="listing">
-    <tr>
-      <th i18n:translate="">Candidate</th>
-      <th i18n:translate=""
-          title="coverage"
-          i18n:attributes="title description_fit">Fit</th>
-      <th i18n:translate="">Knowledge</th>
-    </tr>
-    <tr tal:repeat="candidate item/adapted/getCandidates">
-      <td tal:define="person candidate/person">
-        <b tal:omit-tag="python:candidate['fit'] < 1.0">
-          <a tal:attributes="href python:view.getUrlForTarget(person.context)"
-             tal:content="person/title" /></b></td>
-      <td tal:content="candidate/fit" />
-      <td>
-        <tal:knowledge tal:repeat="ke candidate/required">
-          <a tal:attributes="href python:view.getUrlForTarget(ke.context)"
-             tal:content="ke/title" /><tal:sep condition="not:repeat/ke/end">, </tal:sep>
-        </tal:knowledge></td>
-    </tr>
-  </table>
+  <div class="candidates" 
+       tal:define="candidates item/adapted/getCandidates"
+       tal:condition="candidates">
+    <h3 i18n:translate="">Candidates for Task</h3>
+    <table class="listing">
+      <tr>
+        <th i18n:translate="">Candidate</th>
+        <th i18n:translate=""
+            title="coverage"
+            i18n:attributes="title description_fit">Fit</th>
+        <th i18n:translate="">Knowledge</th>
+      </tr>
+      <tr tal:repeat="candidate item/adapted/getCandidates">
+        <td tal:define="person candidate/person">
+          <b tal:omit-tag="python:candidate['fit'] < 1.0">
+            <a tal:attributes="href python:view.getUrlForTarget(person.context)"
+               tal:content="person/title" /></b></td>
+        <td tal:content="candidate/fit" />
+        <td>
+          <tal:knowledge tal:repeat="ke candidate/required">
+            <a tal:attributes="href python:view.getUrlForTarget(ke.context)"
+               tal:content="ke/title" /><tal:sep condition="not:repeat/ke/end">, </tal:sep>
+          </tal:knowledge></td>
+      </tr>
+    </table>
+  </div>
 </metal:candidates>
 
 

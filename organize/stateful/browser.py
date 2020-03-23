@@ -37,6 +37,7 @@ from loops.common import adapted
 from loops.expert.query import And, Or, State, Type, getObjects
 from loops.expert.browser.search import search_template
 from loops.security.common import checkPermission
+from loops import util
 from loops.util import _
 
 
@@ -46,7 +47,8 @@ statefulActions = ('classification_quality',
                    'simple_publishing',
                    'person_states',
                    'task_states',
-                   'publishable_task',)
+                   'publishable_task',
+                   'contact_states',)
 
 
 def registerStatesPortlet(controller, view, statesDefs,
@@ -66,6 +68,7 @@ class StateAction(Action):
     url = None
     definition = None
     msgFactory = _
+    cssClass = 'icon-action'
 
     @Lazy
     def stateful(self):
@@ -107,8 +110,10 @@ class ChangeStateBase(object):
 
     @Lazy
     def stateful(self):
-        return component.getAdapter(self.view.virtualTargetObject, IStateful,
-                                    name=self.definition)
+        target = self.view.virtualTargetObject
+        if IStateful.providedBy(target):
+            return target
+        return component.getAdapter(target, IStateful, name=self.definition)
 
     @Lazy
     def definition(self):
@@ -120,7 +125,8 @@ class ChangeStateBase(object):
 
     @Lazy
     def transition(self):
-        return self.stateful.getStatesDefinition().transitions[self.action]
+        if self.action:
+            return self.stateful.getStatesDefinition().transitions[self.action]
 
     @Lazy
     def stateObject(self):
@@ -153,10 +159,18 @@ class ChangeStateForm(ChangeStateBase, ObjectForm):
 
 class ChangeState(ChangeStateBase, EditObject):
 
+    @Lazy
+    def stateful(self):
+        target = self.target
+        if IStateful.providedBy(target):
+            return target
+        return component.getAdapter(target, IStateful, name=self.definition)
+
     def update(self):
         self.stateful.request = self.request
-        self.stateful.doTransition(self.action)
         formData = self.request.form
+        if 'target_uid' in formData:
+            self.target = util.getObjectForUid(formData['target_uid'])
         # store data in target object (unless field.nostore)
         self.object = self.target
         formState = self.instance.applyTemplate(data=formData)
@@ -171,8 +185,9 @@ class ChangeState(ChangeStateBase, EditObject):
             fi = formState.fieldInstances[name]
             rawValue = fi.getRawValue(formData, name, u'')
             trackData[name] = fi.unmarshall(rawValue)
-        notify(ObjectModifiedEvent(self.view.virtualTargetObject, trackData))
-        self.request.response.redirect(self.request.getURL())
+        self.stateful.doTransition(self.action)
+        notify(ObjectModifiedEvent(self.target, trackData))
+        #self.request.response.redirect(self.request.getURL())
         return True
 
 

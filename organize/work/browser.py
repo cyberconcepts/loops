@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,12 +22,14 @@ View class(es) for work items.
 
 from datetime import date
 import time
+from urllib import urlencode
 from zope import component
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.api import getName, getParent
 
@@ -43,6 +45,7 @@ from loops.browser.concept import ConceptView
 from loops.browser.form import ObjectForm, EditObject
 from loops.browser.node import NodeView
 from loops.common import adapted
+from loops.interfaces import IConcept
 from loops.organize.interfaces import IPerson
 from loops.organize.party import getPersonForUser
 from loops.organize.stateful.browser import StateAction
@@ -85,6 +88,14 @@ class WorkItemDetails(TrackDetails):
         return self.formatTimeStamp(self.track.deadline, 'date')
 
     @Lazy
+    def deadlineTime(self):
+        return self.formatTimeStamp(self.track.deadline, 'time')
+
+    @Lazy
+    def deadlineWithTime(self):
+        return self.globalOptions('organize.work.deadline_with_time')
+
+    @Lazy
     def start(self):
         result = self.formatTimeStamp(self.track.start, 'time')
         return result != '00:00' and result or ''
@@ -105,6 +116,11 @@ class WorkItemDetails(TrackDetails):
     @Lazy
     def startDay(self):
         return self.formatTimeStamp(self.track.timeStamp, 'date')
+
+    @Lazy
+    def endDay(self):
+        endDay = self.formatTimeStamp(self.track.end, 'date')
+        return endDay != self.startDay and endDay or ''
 
     @Lazy
     def created(self):
@@ -151,8 +167,8 @@ class WorkItemDetails(TrackDetails):
                       target=self.object,
                       addParams=dict(id=self.track.__name__))
         actions = [info, WorkItemStateAction(self)]
-        if self.isLastInRun and self.allowedToEditWorkItem:
-        #if self.allowedToEditWorkItem:
+        #if self.isLastInRun and self.allowedToEditWorkItem:
+        if self.allowedToEditWorkItem:
             self.view.registerDojoDateWidget()
             self.view.registerDojoNumberWidget()
             self.view.registerDojoTextarea()
@@ -169,12 +185,12 @@ class WorkItemDetails(TrackDetails):
 
     @Lazy
     def allowedToEditWorkItem(self):
-        # if not canAccessObject(self.object.task):
-        #     return False
-        if checkPermission('loops.ManageSite', self.object):
-            # or hasRole('loops.Master', self.object):
+        perm = (self.view.globalOptions('organize.work.permission_edit_workitem')
+                 or ['zope.ManageContent'])[0] # 'loops.ManageSite')
+        if (self.object is None and 
+                checkPermission(perm, self.view.node)):
             return True
-        if self.track.data.get('creator') == self.personId:
+        if checkPermission(perm, self.object):
             return True
         return self.user['object'] == getPersonForUser(self.object, self.view.request)
 
@@ -342,6 +358,10 @@ class PersonWorkItems(BaseWorkItemsView, ConceptView):
 
 class UserWorkItems(PersonWorkItems):
 
+    @Lazy
+    def title(self):
+        return self.adapted.title
+
     def listWorkItems(self):
         criteria = self.getCriteria()
         p = getPersonForUser(self.context, self.request)
@@ -360,6 +380,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     def checkPermissions(self):
         return canAccessObject(self.task or self.target)
+
+    def setupView(self):
+        self.setupController()
+        self.registerDojoComboBox()
 
     @Lazy
     def macro(self):
@@ -386,6 +410,22 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return track
 
     @Lazy
+    def titleSelection(self):
+        result = []
+        if self.title:
+            return result
+        dt = adapted(self.conceptManager.get('organize.work.texts'))
+        if dt is None or not dt.data:
+            return result
+        names = ([getName(self.target)] + 
+                 [getName(p.object) 
+                    for p in self.target.getAllParents(ignoreTypes=True)])
+        for name, text in dt.data.values():
+            if not name or name in names:
+                result.append(text)
+        return result
+
+    @Lazy
     def title(self):
         return self.track.title or u''
 
@@ -402,10 +442,11 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         task = self.task
         if task is None:
             task = self.target
-        options = IOptions(adapted(task.conceptType))
-        typeNames = options.workitem_types
-        if typeNames:
-            return [workItemTypes[name] for name in typeNames]
+        if IConcept.providedBy(task):
+            options = IOptions(adapted(task.conceptType))
+            typeNames = options.workitem_types
+            if typeNames:
+                return [workItemTypes[name] for name in typeNames]
         return workItemTypes
 
     @Lazy
@@ -420,14 +461,36 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return ''
 
     @Lazy
+    def deadlineTime(self):
+        ts = self.track.deadline# or getTimeStamp()
+        if ts:
+            return time.strftime('T%H:%M', time.localtime(ts))
+        return ''
+
+    @Lazy
+    def deadlineWithTime(self):
+        return self.globalOptions('organize.work.deadline_with_time')
+
+    @Lazy
     def defaultTimeStamp(self):
         if self.workItemType.prefillDate:
             return getTimeStamp()
         return None
 
     @Lazy
+    def defaultDate(self):
+        return time.strftime('%Y-%m-%dT%H:%M', time.localtime(getTimeStamp()))
+
+    @Lazy
     def date(self):
         ts = self.track.start or self.defaultTimeStamp
+        if ts:
+            return time.strftime('%Y-%m-%d', time.localtime(ts))
+        return ''
+
+    @Lazy
+    def endDate(self):
+        ts = self.track.end or self.defaultTimeStamp
         if ts:
             return time.strftime('%Y-%m-%d', time.localtime(ts))
         return ''
@@ -455,7 +518,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
 
     @Lazy
     def actions(self):
-        result = [dict(name=t.name, title=t.title)
+        defaults = self.globalOptions('organize.work.default_actions') or []
+        result = [dict(name=t.name, title=t.title, selected=t.name in defaults)
                     for t in self.track.getAvailableTransitions()
                     if t.name in self.workItemType.actions and
                        t.name not in self.hiddenActions]
@@ -468,6 +532,8 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         task = self.task
         if task is None:
             task = self.target
+        if not IConcept.providedBy(task):
+            return []
         options = IOptions(adapted(task.conceptType))
         return options.hidden_workitem_actions or []
 
@@ -486,7 +552,10 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
         return [dict(name=util.getUidForObject(p), title=p.title)
                     for p in persons]
 
-    taskTypes = ['task', 'event', 'agendaitem']
+    @Lazy
+    def taskTypes(self):
+        return (self.globalOptions('organize.work.task_types') or
+                ['task', 'event', 'agendaitem'])
 
     @Lazy
     def followUpTask(self):
@@ -507,6 +576,22 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
                     for t in tasks]
 
     @Lazy
+    def priorities(self):
+        if 'priority' in self.workItemType.fields:
+            prio = self.conceptManager.get('organize.work.priorities')
+            if prio: 
+                return adapted(prio).dataAsRecords()
+        return []
+
+    @Lazy
+    def activities(self):
+        if 'activity' in self.workItemType.fields:
+            act = self.conceptManager.get('organize.work.activities')
+            if act: 
+                return adapted(act).dataAsRecords()
+        return []
+
+    @Lazy
     def duration(self):
         if self.state == 'running':
             return u''
@@ -521,6 +606,34 @@ class CreateWorkItemForm(ObjectForm, BaseTrackView):
     @Lazy
     def comment(self):
         return self.track.comment or u''
+
+    def onChangeAction(self):
+        js = [self.actionJs['setDefault'], 
+              self.actionJs['showIf'], 
+              self.actionJs['setIfSD']]
+        if self.state in ('done',):
+            js.append(self.actionJs['setIfWF'])
+        return ';\n'.join(js)
+
+    actionJs = dict(setDefault="defValue = this.form.default_date.value",
+                    showIf="""
+showIfIn(this, [['move', 'target_task'],
+                ['delegate', 'target_party']])""",
+                    setIfSD="""
+setIfN(this, ['start', 'delegate'], [
+                        ['start_date', defValue],
+                        ['start_time', defValue],
+                        ['end_time', null],
+                        ['duration', ''],
+                        ['effort', '']])""",
+                    setIfWF="""
+setIfN(this, ['work', 'finish'], [
+                        ['start_date', defValue],
+                        ['start_time', null],
+                        ['end_time', null],
+                        ['duration', ''],
+                        ['effort', '']])""",
+)
 
 
 class CreateWorkItem(EditObject, BaseTrackView):
@@ -564,13 +677,23 @@ class CreateWorkItem(EditObject, BaseTrackView):
             setValue('party')
         if action == 'move':
             setValue('task')
-        result['deadline'] = parseDate(form.get('deadline'))
+        #result['deadline'] = parseDate(form.get('deadline'))
+        deadline = form.get('deadline')
+        if deadline:
+            deadlineTime = (form.get('deadline_time', '').
+                                strip().replace('T', '') or '00:00:00')
+            result['deadline'] = parseDateTime('T'.join((deadline, deadlineTime)))
+        else:
+            result['deadline'] = None
+        result['priority'] = form.get('priority')
+        result['activity'] = form.get('activity')
         startDate = form.get('start_date', '').strip()
+        endDate = form.get('end_date', '').strip() or startDate
         startTime = form.get('start_time', '').strip().replace('T', '') or '00:00:00'
         endTime = form.get('end_time', '').strip().replace('T', '') or '00:00:00'
         if startDate:
             result['start'] = parseDateTime('T'.join((startDate, startTime)))
-            result['end'] = parseDateTime('T'.join((startDate, endTime)))
+            result['end'] = parseDateTime('T'.join((endDate, endTime)))
         result['duration'] = parseTime(form.get('duration'))
         result['effort'] = parseTime(form.get('effort'))
         return action, result
@@ -589,6 +712,12 @@ class CreateWorkItem(EditObject, BaseTrackView):
         #notify(ObjectModifiedEvent(obj))
         url = self.view.virtualTargetUrl
         #url = self.request.URL
+        # append sortinfo parameters:
+        #urlParams = {}
+        #for k, v in self.view.sortInfo.items():
+        #    urlParams['sortinfo_' + k] = v['fparam']
+        #if urlParams:
+        #    url = '%s?%s' % (url, urlencode(urlParams))
         self.request.response.redirect(url)
         return False
 
@@ -660,5 +789,31 @@ def formatTimeDelta(value):
     if not value:
         return u''
     h, m = divmod(int(value) / 60, 60)
+    if h > 24:
+        #d, h = divmod(h / 24, 24)
+        #return u'%id %02i:%02i' % (d, h, m) 
+        return str(int(round(h / 24.0)))
     return u'%02i:%02i' % (h, m)
+
+
+class FixCheckupWorkItems(object):
+
+    def __call__(self):
+        context = removeSecurityProxy(self.context)
+        rm = context['records']['work']
+        count = 0
+        workItems = list(rm.values())
+        for wi in workItems:
+            if wi.state in ('done',):
+                if wi.workItemType != 'checkup':
+                    print '*** done, but not checkup', wi.__name__
+                    continue
+                wi.state = 'running'
+                wi.reindex('state')
+                if wi.end == wi.start:
+                    del wi.data['end']
+                count += 1
+        msg = '*** checked: %i, updated: %i.' % (len(workItems), count)
+        print msg
+        return msg
 

@@ -14,10 +14,17 @@
     <tal:comment tal:repeat="comment items">
       <br />
       <div class="comment">
+        <div class="object-actions"
+             tal:define="actions python:comments.getActionsFor(comment)"
+             tal:condition="actions">
+          <tal:actions repeat="action actions">
+            <metal:action use-macro="action/macro" />
+          </tal:actions>
+        </div>
         <h3>
           <span tal:content="comment/subject">Subject</span></h3>
         <div class="info">
-          <span tal:replace="comment/user/title">John</span>,
+          <span tal:replace="comment/poster">John</span>,
           <span tal:replace="comment/timeStamp">2007-03-30</span>
         </div>
         <p class="content"
@@ -44,6 +51,18 @@
       <input type="hidden" name="contentType" value="text/restructured" />
       <div class="heading" i18n:translate="">Add Comment</div>
       <div>
+        <tal:anonymous condition="view/isAnonymous">
+          <label i18n:translate=""
+                 for="comment_name">Name</label>
+          <div><input type="text" name="name" id="comment_name"
+                      dojoType="dijit.form.ValidationTextBox" required="true"
+                      style="width: 60em" /></div>
+          <label i18n:translate=""
+                 for="comment_email">Email Address</label>
+          <div><input type="text" name="email" id="comment_email"
+                      dojoType="dijit.form.ValidationTextBox" required="true"
+                      style="width: 60em" /></div>
+        </tal:anonymous>
         <label i18n:translate=""
                for="comment_subject">Subject</label>
         <div><input type="text" name="subject" id="comment_subject"

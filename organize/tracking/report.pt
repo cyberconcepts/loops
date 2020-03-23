@@ -71,7 +71,7 @@
       <tal:row define="object row/objectData;
                        url object/url"
                condition="object/canAccess">
-        <td tal:attributes="title object/object/description">
+        <td tal:attributes="title object/description">
           <a tal:omit-tag="not:url"
              tal:attributes="href string:$url?version=this"
              tal:content="object/title" /></td>
@@ -79,7 +79,7 @@
         <tal:version tal:condition="view/useVersioning">
           <td class="center"
               tal:define="version object/version">
-            <a tal:omit-tag="python: version == '1.1'"
+            <a tal:omit-tag="python: version in ('1.1', '1', '')"
                tal:attributes="href string:$url?loops.viewName=listversions"
                tal:content="version">1.1</a>
           </td>

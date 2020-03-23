@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ Field definitions for reports.
 
 from zope.app.form.browser.interfaces import ITerms
 from zope import component
+from zope.i18n import translate
 from zope.i18n.locales import locales
 from zope.schema.interfaces import IVocabularyFactory, IContextSourceBinder
 
@@ -29,16 +30,30 @@ from cybertools.composer.report.field import Field as BaseField
 from cybertools.composer.report.field import TableCellStyle
 from cybertools.composer.report.result import ResultSet
 from cybertools.stateful.interfaces import IStateful, IStatesDefinition
-from cybertools.util.date import timeStamp2Date
+from cybertools.util.date import timeStamp2Date, timeStamp2ISO
+from cybertools.util.format import formatDate
 from loops.common import baseObject
 from loops.expert.report import ReportInstance
+from loops.organize.work.browser import WorkItemDetails
 from loops import util
 
 
 class Field(BaseField):
 
+    def getContext(self, row):
+        return row.context
+
     def getSelectValue(self, row):
         return self.getValue(row)
+
+
+class StringField(Field):
+
+    def getSelectValue(self, row):
+        return self.getValue(row).strip()
+
+    def getSortValue(self, row):
+        return self.getValue(row).strip()
 
 
 class TextField(Field):
@@ -104,10 +119,15 @@ class IntegerField(Field):
 
 class DateField(Field):
 
-    fieldType='date',
+    fieldType='date'
     format = ('date', 'short')
     renderer = cssClass = 'center'
     dbtype = 'date'
+
+    def getValue(self, row):
+        if getattr(row.parent.context.view, 'reportMode', None) == 'export':
+            return self.getDisplayValue(row)
+        super(DateField, self).getValue(row)
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -127,16 +147,17 @@ class DateField(Field):
 
 class StateField(Field):
 
-    statesDefinition = 'workItemStates'
+    statesDefinition = None
     renderer = 'state'
 
     def getDisplayValue(self, row):
-        if IStateful.providedBy(row.context):
-            stf = row.context
-        elif row.context is None:
+        context = self.getContext(row)
+        if IStateful.providedBy(context):
+            stf = context
+        elif context is None:
             return None
         else:
-            stf = component.getAdapter(baseObject(row.context), IStateful,
+            stf = component.getAdapter(context, IStateful, 
                                         name=self.statesDefinition)
         stateObject = stf.getStateObject()
         icon = stateObject.icon or 'led%s.png' % stateObject.color
@@ -147,9 +168,32 @@ class StateField(Field):
         return util._(text)
 
 
+class WorkItemStateField(Field):
+
+    statesDefinition = 'workItemStates'
+    renderer = 'workitem_state'
+
+    def getValue(self, row):
+        view = row.parent.context.view
+        if getattr(view, 'reportMode', None) == 'export':
+            stateObject = row.context.getStateObject()
+            lang = view.languageInfo.language
+            return translate(util._(stateObject.title), target_language=lang)
+        return super(WorkItemStateField, self).getValue(row)
+
+
+    def getDisplayValue(self, row):
+        if row.context is None:
+            return None
+        details = WorkItemDetails(row.parent.context.view, row.context)
+        return dict(actions=details.actions())
+
+
 class VocabularyField(Field):
 
     vocabulary = None
+    sourceList = None
+    fieldType = 'selection'
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
@@ -160,9 +204,11 @@ class VocabularyField(Field):
             if str(item['token']) == str(value):
                 return item['title']
 
-    def getVocabularyItems(self, row):
-        context = row.context
-        request = row.parent.context.view.request
+    def getVocabularyItems(self, row=None, context=None, request=None):
+        if context is  None:
+            context = row.context
+        if request is None:
+            request = row.parent.context.view.request
         voc = self.vocabulary
         if isinstance(voc, basestring):
             terms = self.getVocabularyTerms(voc, context, request)
@@ -171,7 +217,10 @@ class VocabularyField(Field):
             voc = voc.splitlines()
             return [dict(token=t, title=t) for t in voc if t.strip()]
         elif IContextSourceBinder.providedBy(voc):
-            source = voc(row.parent.context)
+            if row is not None:
+                source = voc(row.parent.context)
+            else:
+                source = voc(context)
             terms = component.queryMultiAdapter((source, request), ITerms)
             if terms is not None:
                 termsList = [terms.getTerm(value) for value in source]
@@ -233,6 +282,14 @@ class RelationField(Field):
 
 class TargetField(RelationField):
 
+    def getSortValue(self, row):
+        value = self.getRawValue(row)
+        if value is not None:
+            value = util.getObjectForUid(value)
+            if value is not None:
+                if value.title is not None:
+                   return value.title.split()
+
     def getValue(self, row):
         value = self.getRawValue(row)
         if value is None:
@@ -246,6 +303,57 @@ class MultiLineField(Field):
 
     def getValue(self, row):
         return self.getRawValue(row)
+
+
+# track fields
+
+class TrackDateField(Field):
+
+    fieldType = 'date'
+    part = 'date'
+    format = 'short'
+    descending = False
+    cssClass = 'right'
+
+    def getValue(self, row):
+        reportMode = getattr(row.parent.context.view, 'reportMode', None)
+        if reportMode == 'export':
+            return self.getDisplayValue(row)
+        value = self.getRawValue(row)
+        if not value:
+            return None
+        return timeStamp2Date(value)
+
+    def getDisplayValue(self, row):
+        value = self.getRawValue(row)
+        if value:
+            value = timeStamp2Date(value)
+            view = row.parent.context.view
+            return formatDate(value, self.part, self.format,
+                              view.languageInfo.language)
+        return u''
+
+    def getSelectValue(self, row):
+        value = self.getRawValue(row)
+        if not value:
+            return ''
+        return timeStamp2ISO(value)[:10]
+
+    def getSortValue(self, row):
+        value = self.getRawValue(row)
+        if value and self.descending:
+            return -value
+        return value or None
+
+
+class TrackDateTimeField(TrackDateField):
+
+    part = 'dateTime'
+
+
+class TrackTimeField(TrackDateField):
+
+    part = 'time'
 
     def getDisplayValues(self, row):
         value = self.getValue(row)

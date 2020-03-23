@@ -39,6 +39,7 @@ class ExternalSourceInfo(object):
     adapts(ILoopsObject)
 
     def __init__(self, context):
+        #import pdb; pdb.set_trace()
         self.context = self.__parent__ = context
 
     def getSourceInfo(self):

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ from cybertools.composer.report.interfaces import IReportParams
 from cybertools.composer.report.result import ResultSet, Row
 from cybertools.util.jeep import Jeep
 from loops.common import AdapterBase
+from loops.expert.concept import IQueryConcept, QueryConcept
 from loops.interfaces import ILoopsAdapter
 from loops.type import TypeInterfaceSourceList
 from loops import util
@@ -43,7 +44,7 @@ from loops.util import _
 
 # interfaces
 
-class IReport(ILoopsAdapter, IReportParams):
+class IReport(ILoopsAdapter, IReportParams, IQueryConcept):
     """ The report adapter for the persistent object (concept) that stores
         the report in the concept map.
     """
@@ -66,7 +67,7 @@ class IReportInstance(IBaseReport):
 
 # report concept adapter and instances
 
-class Report(AdapterBase):
+class Report(QueryConcept):
 
     implements(IReport)
 
@@ -88,6 +89,7 @@ class ReportInstance(BaseReport):
     #headerRowFactory = Row
 
     view = None     # set upon creation
+    #headerRowFactory = Row
 
     def __init__(self, context):
         self.context = context
@@ -120,7 +122,9 @@ class ReportInstance(BaseReport):
         result = list(self.selectObjects(parts))  # may modify parts
         qc = CompoundQueryCriteria(parts)
         return ResultSet(self, result, rowFactory=self.rowFactory,
-                         sortCriteria=self.getSortCriteria(), queryCriteria=qc,
+                         sortCriteria=self.getSortCriteria(), 
+                         sortDescending=self.sortDescending,
+                         queryCriteria=qc,
                          limits=limits)
 
     def selectObjects(self, parts):
@@ -172,4 +176,16 @@ class ReportTypeSourceList(object):
 class DefaultConceptReportInstance(ReportInstance):
 
     label = u'Default Concept Report'
+
+
+# specialized rows
+
+class TrackRow(Row):
+
+    @staticmethod
+    def getContextAttr(obj, attr):
+        if attr in obj.context.metadata_attributes:
+            return getattr(obj.context, attr)
+        return obj.context.data.get(attr)
+
 

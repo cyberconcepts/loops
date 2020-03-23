@@ -95,11 +95,47 @@
              set_schema="loops.expert.report.IReportInstance" />
   </zope:class>
 
+  <zope:adapter 
+      name="work_plan_report"
+      factory="loops.organize.work.report.WorkPlanReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.organize.work.report.WorkPlanReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
+
   <browser:page
       name="work.html"
-      for="loops.organize.interfaces.ITask"
+      for="loops.organize.interfaces.IConceptSchema"
       class="loops.organize.work.report.WorkStatementView"
       permission="zope.View" />
+
+  <browser:page
+      name="work_plan.html"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.organize.work.report.WorkPlanView"
+      permission="zope.View" />
+
+  <browser:page
+      name="work.csv"
+      for="loops.organize.interfaces.IConceptSchema"
+      class="loops.organize.work.report.WorkStatementCSVExport"
+      permission="zope.View" />
+
+  <zope:adapter 
+      name="person_work_statement"
+      factory="loops.organize.work.report.PersonWorkReportInstance"
+      provides="loops.expert.report.IReportInstance"
+      trusted="True" />
+  <zope:class class="loops.organize.work.report.PersonWorkReportInstance">
+    <require permission="zope.View"
+             interface="loops.expert.report.IReportInstance" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.expert.report.IReportInstance" />
+  </zope:class>
 
   <zope:adapter 
       name="meeting_minutes"
@@ -124,6 +160,14 @@
       for="loops.interfaces.IConceptSchema"
       class="loops.organize.work.meeting.MeetingMinutesDocument"
       attribute="embed"
+      permission="zope.View" />
+
+  <!-- repair -->
+
+  <browser:page
+      name="fix_checkup_workitems.fix"
+      for="loops.interfaces.ILoops"
+      class="loops.organize.work.browser.FixCheckupWorkItems"
       permission="zope.View" />
 
   <!-- setup -->

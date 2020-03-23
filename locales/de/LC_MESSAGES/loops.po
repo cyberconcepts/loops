@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 
-"Project-Id-Version: 0.13.0\n"
+"Project-Id-Version: 0.13.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2016-01-27 12:00 CET\n"
+"PO-Revision-Date: 2017-12-08 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -88,6 +88,14 @@ msgstr "Thema ändern"
 
 msgid "Please correct the indicated errors."
 msgstr "Bitte berichtigen Sie die angezeigten Fehler."
+
+msgid "tooltip_sort_column"
+msgstr "Nach dieser Spalte sortieren"
+
+# expert (reporting)
+
+msgid "Download Data"
+msgstr "Download als Excel-Datei"
 
 # blog
 
@@ -178,6 +186,30 @@ msgstr "Glossareintrag anlegen."
 msgid "Answer Range"
 msgstr "Abstufung Bewertungen"
 
+msgid "Answer Options"
+msgstr "Antwortmöglichkeiten"
+
+msgid "Values to select from with corresponding column labels and descriptions. There should be at least answer range items with numeric values."
+msgstr "Auszuwählende Werte mit zugehörigen Spaltenüberschriften und Beschreibungen. Es sollte mindestens so viele Einträge mit numerischen Werten geben wie durch das Feld 'Abstufung Bewertungen' vorgegeben."
+
+msgid "No Grouping of Questions"
+msgstr "Keine Gruppierung der Fragen"
+
+msgid "The questions should be presented in a linear manner, not grouped by categories or question groups."
+msgstr "Die Fragen sollen in linearer Reihenfolge ausgegeben und nicht nach Fragengruppen bzw. Kategorien gruppiert werden."
+
+msgid "Questionnaire Header"
+msgstr "Infotext zum Fragebogen"
+
+msgid "Text that will appear at the top of the questionnaire."
+msgstr "Text, der vor dem Fragebogen erscheinen soll"
+
+msgid "Feedback Header"
+msgstr "Infotext zur Auswertung"
+
+msgid "Text that will appear at the top of the feedback page."
+msgstr "Text, der oben auf der Auswertungsseite erscheinen soll."
+
 msgid "Feedback Footer"
 msgstr "Auswertungs-Hinweis"
 
@@ -193,6 +225,15 @@ msgstr "Mindestanzahl an Antworten"
 msgid "Minumum number of questions that have to be answered. Empty means all questions have to be answered."
 msgstr "Anzahl der Fragen, die mindestens beantwortet werden müssen. Keine Angabe: Es müssen alle Fragen beantwortet werden."
 
+msgid "Question Type"
+msgstr "Fragentyp"
+
+msgid "Select the type of the question."
+msgstr "Bitte den Typ der Frage auswählen."
+
+msgid "Value Selection"
+msgstr "Auswahl Bewertung"
+
 msgid "Required"
 msgstr "Pflichtfrage"
 
@@ -204,6 +245,9 @@ msgstr "Negative Polarität"
 
 msgid "Value inversion: High selection means low value."
 msgstr "Invertierung der Bewertung: Hohe gewählte Stufe bedeutet niedriger Wert."
+
+msgid "Question"
+msgstr "Frage"
 
 msgid "Questionnaire"
 msgstr "Fragebogen"
@@ -241,14 +285,29 @@ msgstr "Trifft eher zu"
 msgid "survey_value_3"
 msgstr "Trifft für unser Unternehmen voll und ganz zu"
 
+msgid "label_survey_show_report"
+msgstr "Auswertung anzeigen"
+
+msgid "label_survey_report_standard"
+msgstr "Standard-Auswertung"
+
+msgid "label_survey_report_questions"
+msgstr "Einzelfragen-Auswertung"
+
 msgid "Evaluate Questionnaire"
 msgstr "Fragebogen auswerten"
+
+msgid "Save Data"
+msgstr "Daten speichern"
 
 msgid "Reset Responses Entered"
 msgstr "Eingaben zurücksetzen"
 
 msgid "Back to Questionnaire"
 msgstr "Zurück zum Fragebogen"
+
+msgid "Your data have been saved."
+msgstr "Ihre Daten wurden gespeichert."
 
 msgid "Please answer at least $minAnswers questions."
 msgstr "Bitte beantworten Sie mindestens $minAnswers Fragen."
@@ -262,10 +321,37 @@ msgstr "Bitte beantworten Sie die Pflichtfragen."
 msgid "Please answer the minimum number of questions."
 msgstr "Bitte beantworten Sie die angegebene Mindestanzahl an Fragen je Fragengruppe."
 
+msgid "Please answer the highlighted questions."
+msgstr "Bitte beantworten Sie die markierten Fragen."
+
 msgid "Obligatory question, must be answered"
 msgstr "Pflichtfrage, muss beantwortet werden"
 
-# competence (qualification)
+msgid "Score"
+msgstr "Ergebnis %"
+
+msgid "Team Score"
+msgstr "Durchschnitt Team %"
+
+msgid "Rank"
+msgstr "Rang"
+
+msgid "Team Rank"
+msgstr "Rang Team"
+
+msgid "Average"
+msgstr "Durchschnitt"
+
+msgid "Deviation"
+msgstr "Abweichung"
+
+msgid "Team Size"
+msgstr "Anzahl der vom Team ausgefüllten Fragebögen"
+
+msgid "if (confirm('Do you really want to reset all response data?')) setRadioButtons('none'); return false"
+msgstr "if (confirm('Wollen Sie wirklich alle eingegebenen Daten zurücksetzen?')) setRadioButtons('none'); return false"
+
+# compentence and qualification management
 
 msgid "Validity Period (Months)"
 msgstr "Gültigkeitszeitraum (Monate)"
@@ -471,6 +557,8 @@ msgstr "Wer?"
 msgid "When?"
 msgstr "Wann?"
 
+# personal stuff
+
 msgid "Favorites"
 msgstr "Lesezeichen"
 
@@ -519,6 +607,8 @@ msgstr "Anmelden"
 msgid "Presence"
 msgstr "Anwesenheit"
 
+# general
+
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -530,9 +620,6 @@ msgstr "Informationen über dieses Objekt"
 
 msgid "Information about this object."
 msgstr "Informationen über dieses Objekt."
-
-msgid "Send a link to this object by email."
-msgstr "Einen Link zu diesem Objekt per E-Mail versenden."
 
 msgid "Edit with external editor."
 msgstr "Mit 'External Editor' bearbeiten."
@@ -792,6 +879,9 @@ msgstr "Benutzer registrieren"
 msgid "Register new member"
 msgstr "Neu registrieren"
 
+msgid "Login name not allowed."
+msgstr "Die von Ihnen eingegebene Benutzerkennung enthält Sonderzeichen, z. B. Umlaute."
+
 msgid "Login name already taken."
 msgstr "Die von Ihnen eingegebene Benutzerkennung ist schon vergeben."
 
@@ -844,6 +934,12 @@ msgid "Start date"
 msgstr "Beginn"
 
 msgid "End date"
+msgstr "Ende"
+
+msgid "Start Day"
+msgstr "Beginn"
+
+msgid "End Day"
 msgstr "Ende"
 
 msgid "Knowledge"
@@ -918,6 +1014,9 @@ msgstr "Kommentare"
 msgid "Add Comment"
 msgstr "Kommentar hinzufügen"
 
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
 msgid "Subject"
 msgstr "Thema"
 
@@ -929,6 +1028,9 @@ msgstr "Objekte löschen"
 
 msgid "confirm('Do you really want to delete the selected objects?')"
 msgstr "confirm('Wollen Sie die ausgewählten Objekte wirklich löschen?')"
+
+msgid "title_bookTopicView"
+msgstr "Übersicht"
 
 # management interface
 
@@ -992,6 +1094,21 @@ msgstr "Kalender"
 msgid "Work Items"
 msgstr "Aktivitäten"
 
+msgid "Work Item Type"
+msgstr "Art der Aktivität"
+
+msgid "Unit of Work"
+msgstr "Standard-Aktivität"
+
+msgid "Scheduled Event"
+msgstr "Termin"
+
+msgid "Deadline"
+msgstr "Deadline"
+
+msgid "Check-up"
+msgstr "Überprüfung"
+
 msgid "Work Items for $title"
 msgstr "Aktivitäten für $title"
 
@@ -1021,6 +1138,12 @@ msgstr "Dauer/Aufwand"
 
 msgid "Duration / Effort (hh:mm)"
 msgstr "Dauer / Aufwand (hh:mm)"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Activity"
+msgstr "Leistungsart"
 
 msgid "Action"
 msgstr "Aktion"
@@ -1096,6 +1219,9 @@ msgstr "Bemerkung"
 msgid "desc_transition_comments"
 msgstr "Notizen zum Statusübergang."
 
+msgid "contact_states"
+msgstr "Kontaktstatus"
+
 # state names
 
 msgid "accepted"
@@ -1163,6 +1289,12 @@ msgstr "unklassifiziert"
 
 msgid "verified"
 msgstr "verifiziert"
+
+msgid "prospective"
+msgstr "künftig"
+
+msgid "inactive"
+msgstr "inaktiv"
 
 # transitions
 
@@ -1238,6 +1370,15 @@ msgstr "verifizieren"
 msgid "work"
 msgstr "bearbeiten"
 
+msgid "activate"
+msgstr "aktivieren"
+
+msgid "inactivate"
+msgstr "inaktiv setzen"
+
+msgid "reset"
+msgstr "zurücksetzen"
+
 # calendar
 
 msgid "Monday"
@@ -1305,3 +1446,27 @@ msgstr "Zeitraum"
 
 msgid "Technology"
 msgstr "Technik"
+
+# send mail
+
+msgid "Send a link to this object by email."
+msgstr "Einen Link zu diesem Objekt per E-Mail versenden."
+
+msgid "Send Link by Email"
+msgstr "Link per E-Mail versenden"
+
+msgid "Mail Subject"
+msgstr "Betreff"
+
+msgid "Mail Body"
+msgstr "Text"
+
+msgid "Recipients"
+msgstr "Empfänger"
+
+msgid "Additional Recipients"
+msgstr "Weitere Empfänger"
+
+msgid "Send email"
+msgstr "E-Mail senden"
+

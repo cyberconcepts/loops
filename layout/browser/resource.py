@@ -50,3 +50,15 @@ class TextView(BaseView):
 
     def render(self):
         return self.renderText(self.context.data, self.context.contentType)
+
+    @Lazy
+    def canonicalUrl(self):
+        parents = self.context.context.getParents(
+            [self.conceptManager['standard']])
+        for parent in parents:
+            view = component.getMultiAdapter((adapted(parent),
+                                              self.request), name='layout')
+            if view:
+                url = getattr(view, 'canonicalUrl')
+                if url:
+                    return url

@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,20 +23,81 @@ Interfaces for surveys used in knowledge management.
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from cybertools.composer.schema.grid.interfaces import Records
 from cybertools.knowledge.survey import interfaces
 from loops.interfaces import IConceptSchema, ILoopsAdapter
-from loops.util import _
+from loops.util import _, KeywordVocabulary
 
 
-class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
+class IQuestionnaire(ILoopsAdapter, interfaces.IQuestionnaire):
     """ A collection of questions for setting up a survey.
     """
+
+    questionnaireHeader = schema.Text(
+        title=_(u'Questionnaire Header'),
+        description=_(u'Text that will appear at the top of the questionnaire.'),
+        default=u'',
+        missing_value=u'',
+        required=False)
+
+    questionnaireType = schema.Choice(
+        title=_(u'Questionnaire Type'),
+        description=_(u'Select the type of the questionnaire.'),
+        source=KeywordVocabulary((
+                ('standard', _(u'Standard Questionnaire')),
+                ('person', _(u'Person-related Questionnaire')),
+                ('team', _(u'Team-related Questionnaire')),
+                ('pref_selection', _(u'Preference Selection')),
+            )),
+        default='standard',
+        required=True)
 
     defaultAnswerRange = schema.Int(
         title=_(u'Answer Range'),
         description=_(u'Number of items (answer options) to select from.'),
         default=4,
         required=True)
+
+    answerOptions = Records(
+        title=_(u'Answer Options'),
+        description=_(u'Values to select from with corresponding column '
+                        u'labels and descriptions. There should be at '
+                        u'least answer range items with numeric values.'),
+        default=[],
+        required=False)
+
+    answerOptions.column_types = [
+            schema.Text(__name__='value', title=u'Value',),
+            schema.Text(__name__='label', title=u'Label'),
+            schema.Text(__name__='description', title=u'Description'),
+            schema.Text(__name__='colspan', title=u'ColSpan'),
+            schema.Text(__name__='cssclass', title=u'CSS Class'),]
+
+    noGrouping = schema.Bool(
+        title=_(u'No Grouping of Questions'),
+        description=_(u'The questions should be presented in a linear manner, '
+                        u'not grouped by categories or question groups.'),
+        default=False,
+        required=False)
+
+    teamBasedEvaluation = schema.Bool(
+        title=_(u'Team-based Evaluation'),
+        description=_(u'.'),
+        default=False,
+        required=False)
+
+    #teamBasedEvaluation = Attribute('Team-based Evaluation')
+
+    feedbackColumns = Records(
+        title=_(u'Feedback Columns'),
+        description=_(u'Column definitions for the results table '
+                        u'on the feedback page.'),
+        default=[],
+        required=False)
+
+    feedbackColumns.column_types = [
+            schema.Text(__name__='name', title=u'Column Name',),
+            schema.Text(__name__='label', title=u'Column Label'),]
 
     feedbackHeader = schema.Text(
         title=_(u'Feedback Header'),
@@ -53,7 +114,7 @@ class IQuestionnaire(IConceptSchema, interfaces.IQuestionnaire):
         required=False)
 
 
-class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
+class IQuestionGroup(ILoopsAdapter, interfaces.IQuestionGroup):
     """ A group of questions within a questionnaire.
     """
 
@@ -65,9 +126,19 @@ class IQuestionGroup(IConceptSchema, interfaces.IQuestionGroup):
         required=False)
 
 
-class IQuestion(IConceptSchema, interfaces.IQuestion):
+class IQuestion(ILoopsAdapter, interfaces.IQuestion):
     """ A single question within a questionnaire.
     """
+
+    questionType = schema.Choice(
+        title=_(u'Question Type'),
+        description=_(u'Select the type of the question.'),
+        source=KeywordVocabulary((
+                ('value_selection', _(u'Value Selection')),
+                ('text', _(u'Text')),
+            )),
+        default='value_selection',
+        required=True)
 
     required = schema.Bool(
         title=_(u'Required'),
@@ -82,7 +153,7 @@ class IQuestion(IConceptSchema, interfaces.IQuestion):
         required=False)
 
 
-class IFeedbackItem(IConceptSchema, interfaces.IFeedbackItem):
+class IFeedbackItem(ILoopsAdapter, interfaces.IFeedbackItem):
     """ Some text (e.g. a recommendation) or some other kind of information
         that may be deduced from the res)ponses to a questionnaire.
     """

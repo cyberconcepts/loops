@@ -125,7 +125,7 @@
 
   <containerViews
       for="loops.interfaces.ILoops"
-      index="zope.View"
+      index="zope.ManageSite"
       contents="loops.ManageSite"
       add="loops.ManageSite" />
 
@@ -365,7 +365,7 @@
 
   <containerViews
       for="loops.interfaces.IViewManager"
-      index="zope.View"
+      index="zope.ManageSite"
       add="loops.ManageSite" />
 
   <menuItem
@@ -570,6 +570,14 @@
       provides="zope.interface.Interface"
       factory="loops.browser.concept.TabbedPage"
       permission="zope.View" />
+
+  <!-- delete object action -->
+
+  <page
+      name="delete_object"
+      for="loops.interfaces.INode"
+      class="loops.browser.form.DeleteObject"
+      permission="zope.ManageContent" />
 
   <!-- dialogs/forms (end-user views) -->
 

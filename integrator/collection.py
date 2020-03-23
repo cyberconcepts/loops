@@ -24,8 +24,10 @@ file system.
 from datetime import datetime
 from logging import getLogger
 import os, re, stat
+import transaction
 
 from zope.app.container.interfaces import INameChooser
+from zope.app.container.contained import ObjectRemovedEvent
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
@@ -51,6 +53,8 @@ from loops.versioning.interfaces import IVersionable
 
 TypeInterfaceSourceList.typeInterfaces += (IExternalCollection,)
 
+logger = getLogger('loops.integrator.collection')
+
 
 class ExternalCollectionAdapter(AdapterBase):
     """ A concept adapter for accessing an external collection.
@@ -66,7 +70,7 @@ class ExternalCollectionAdapter(AdapterBase):
 
     newResources = None
     updateMessage = None
-
+    
     def getExclude(self):
         return getattr(self.context, '_exclude', None) or []
     def setExclude(self, value):
@@ -83,10 +87,11 @@ class ExternalCollectionAdapter(AdapterBase):
                     print '###', vaddr, vobj, vid
                     versions.add(vaddr)
         new = []
-        oldFound = []
+        oldFound = set([])
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
         #print '*** old', old, versions, self.lastUpdated
+        changeCount = 0
         for addr, mdate in provider.collect(self):
             #print '***', addr, mdate
             if addr in versions:
@@ -94,8 +99,9 @@ class ExternalCollectionAdapter(AdapterBase):
             if addr in old:
                 # may be it would be better to return a file's hash
                 # for checking for changes...
-                oldFound.append(addr)
+                oldFound.add(addr)
                 if self.lastUpdated is None or (mdate and mdate > self.lastUpdated):
+                    changeCount +=1
                     obj = old[addr]
                     # update settings and regenerate scale variant for media asset
                     adobj = adapted(obj)
@@ -110,29 +116,41 @@ class ExternalCollectionAdapter(AdapterBase):
                         self.updateMessage = message
                     # force reindexing
                     notify(ObjectModifiedEvent(obj))
+                    if changeCount % 10 == 0:
+                        logger.info('Updated: %i.' % changeCount)
+                        transaction.commit()
             else:
                 new.append(addr)
+        logger.info('%i objects updated.' % changeCount)
+        transaction.commit()
         if new:
             self.newResources = provider.createExtFileObjects(self, new)
             for r in self.newResources:
                 self.context.assignResource(r)
+        logger.info('%i objects created.' % len(new))
+        transaction.commit()
         for addr in old:
             if str(addr) not in oldFound:
                 # not part of the collection any more
                 # TODO: only remove from collection but keep object?
                 self.remove(old[addr])
+        transaction.commit()
         for r in self.context.getResources():
             adobj = adapted(r)
             if self.metaInfo != adobj.metaInfo and (
                                     not adobj.metaInfo or self.overwriteMetaInfo):
                     adobj.metaInfo = self.metaInfo
         self.lastUpdated = datetime.today()
+        logger.info('External collection updated.')
+        transaction.commit()
 
     def clear(self):
         for obj in self.context.getResources():
             self.remove(obj)
 
     def remove(self, obj):
+        logger.info('Removing object: %s.' % getName(obj))
+        notify(ObjectRemovedEvent(obj))
         del self.resourceManager[getName(obj)]
 
     @Lazy
@@ -187,7 +205,7 @@ class DirectoryCollectionProvider(object):
                                 for k, v in self.extFileTypeMapping.items())
         container = client.context.getLoopsRoot().getResourceManager()
         directory = self.getDirectory(client)
-        for addr in addresses:
+        for idx, addr in enumerate(addresses):
             name = self.generateName(container, addr)
             title = self.generateTitle(addr)
             contentType = guess_content_type(addr,
@@ -200,9 +218,8 @@ class DirectoryCollectionProvider(object):
                 if extFileType is None:
                     extFileType = extFileTypes['image/*']
             if extFileType is None:
-                getLogger('loops.integrator.collection.DirectoryCollectionProvider'
-                            ).warn('No external file type found for %r, '
-                                   'content type: %r' % (name, contentType))
+                logger.warn('No external file type found for %r, '
+                            'content type: %r' % (name, contentType))
             obj = addAndConfigureObject(
                             container, Resource, name,
                             title=title,
@@ -219,6 +236,9 @@ class DirectoryCollectionProvider(object):
                 message = client.updateMessage or u''
                 message += u'<br />'.join(adobj.processingErrors)
                 client.updateMessage = message
+            if idx and idx % 10 == 0:
+                logger.info('Created: %i.' % idx)
+                transaction.commit()
             yield obj
 
     def getDirectory(self, client):

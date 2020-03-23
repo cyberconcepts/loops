@@ -219,6 +219,7 @@ nodeTypes = [
         ('page', _(u'Page')), # standalone page with a menu item
         ('menu', _(u'Menu')), # top-level menu (also a page)
         ('info', _(u'Info')), # not shown automatically, but may be a link target
+        ('raw',  _(u'Raw')),  # render body as is, viewName may contain content type
 ]
 
 class NodeTypeSourceList(object):

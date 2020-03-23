@@ -77,4 +77,3 @@ class IWorkspaceInformation(Interface):
 
     propagateParentSecurity = Attribute('Should the security settings of '
                     'the workspace parent be propagated to children?')
-

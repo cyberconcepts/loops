@@ -177,11 +177,15 @@ Recent changes
 
   >>> data[0].timeStamp
   u'... ...:...'
+
   >>> data[0].objectData
-  {'version': '', 'canAccess': True, 'title': 'Change Doc 001', 'url': '',
-   'object': <loops.resource.Resource object at ...>, 'type': u'Text'}
+  {'version': '', 'description': u'', 'title': 'Change Doc 001', 'url': '', 
+   'object': <loops.resource.Resource object at ...>, 'type': u'Text', 
+   'canAccess': True}
+
   >>> data[0].user
   {'url': '', 'object': <loops.concept.Concept ...>, 'title': u'john'}
+
   >>> data[0].action
   'modify'
 

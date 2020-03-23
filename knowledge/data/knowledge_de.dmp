@@ -1,9 +1,11 @@
-type(u'competence', u'Kompetenz', viewName=u'', 
+type(u'competence', u'Qualifikation', viewName=u'', 
     typeInterface=u'loops.knowledge.qualification.interfaces.ICompetence', 
     options=u'action.portlet:create_subtype,edit_concept')
 type(u'person', u'Person', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.IPerson', 
     options=u'action.portlet:createQualification,editPerson')
+type(u'report', u'Report', viewName=u'', 
+    typeInterface='loops.expert.report.IReport')
 type(u'task', u'Aufgabe', viewName=u'', 
     typeInterface=u'loops.knowledge.interfaces.ITask', 
     options=u'action.portlet:createTask,editTask')
@@ -26,6 +28,10 @@ concept(u'requires', u'requires', u'predicate')
 concept(u'issubtype', u'is Subtype', u'predicate', options=u'hide_children',
     predicateInterface='loops.interfaces.IIsSubtype')
 
+# reports
+concept(u'qualification_overview', u'Qualification Overview', u'report',
+    reportType=u'qualification_overview')
+
 # structure
 child(u'general', u'competence', u'standard')
 child(u'general', u'depends', u'standard')
@@ -38,6 +44,7 @@ child(u'general', u'topic', u'standard')
 #child(u'general', u'training', u'standard')
 
 child(u'system', u'issubtype', u'standard')
+child(u'system', u'report', u'standard')
 
 child(u'competence', u'competence', u'issubtype')
 #child(u'competence', u'training', u'issubtype', usePredicate=u'provides')

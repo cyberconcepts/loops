@@ -69,9 +69,9 @@
          metal:define-macro="footer">
       <metal:footer define-slot="footer">
         &copy; Copyright <span tal:replace="view/currentYear" />,
-        cyberconcepts IT-Consulting Dr. Helmut Merz
-        (<a href="#"
-          tal:attributes="href string:${view/topMenu/url}/impressum">Impressum</a>)
+        <span tal:replace="view/topMenu/copyright" />
+        (<a i18n:translate=""
+            tal:attributes="href string:${view/topMenu/url}/impressum">Impressum</a>)
         <br />
         Powered by
         <b><a href="http://www.wissen-statt-suchen.de">loops</a></b> &middot;

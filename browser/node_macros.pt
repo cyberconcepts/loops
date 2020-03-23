@@ -30,7 +30,7 @@
                              item nocall:target"
                  tal:attributes="class string:content-$level;
                                  id id;
-                                 ondblclick python: target.openEditWindow('configure.html')">
+                                 ondblclick python:target.openEditWindow('configure.html')">
               <metal:body use-macro="item/macro">
                 The body
               </metal:body>
@@ -41,17 +41,22 @@
 
 
 <metal:body define-macro="conceptbody">
-  <tal:body define="body item/body;">
+  <tal:body define="body item/body;
+                    itemNum view/itemNum;
+                    id string:$itemNum.body">
     <div class="content-1" id="1"
          tal:attributes="class string:content-$level;
                          id string:${view/itemNum}.body;
-                         ondblclick python: item.openEditWindow('configure.html')">
+                         ondblclick python:item.openEditWindow('configure.html')">
       <span tal:content="structure body">Node Body</span>
     </div>
-    <tal:concepts define="item nocall:item/targetObjectView;
-                          macro item/macro">
-      <div metal:use-macro="macro" />
-    </tal:concepts>
+    <div tal:define="item nocall:item/targetObjectView;
+                     macro item/macro">
+      <div tal:attributes="class string:content-$level;
+                           id id;">
+        <div metal:use-macro="macro" />
+      </div>
+    </div>
   </tal:body>
 </metal:body>
 
@@ -328,11 +333,12 @@
 <metal:login define-macro="login">
     <div>
       <a href="login.html"
-            i18n:translate="">Log in</a></div>
+         tal:attributes="href string:${view/topMenu/url}/login.html"
+         i18n:translate="">Log in</a></div>
     <div tal:define="register python:view.globalOptions('provideLogin')"
-         tal:condition="register">
-      <a tal:condition="python:register != True"
-         tal:attributes="href python:register[0]"
+         tal:condition="python:register and register != True">
+      <a tal:define="reg python:register[0]"
+         tal:attributes="href string:${view/topMenu/url}/$reg"
          i18n:translate="">Register new member</a></div>
 </metal:login>
 

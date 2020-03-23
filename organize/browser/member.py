@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -87,6 +87,7 @@ class BaseMemberRegistration(NodeView):
     formErrors = dict(
         confirm_nomatch=FormError(_(u'Password and password confirmation '
                                     u'do not match.')),
+        illegal_loginname=FormError(_('Login name not allowed.')),
         duplicate_loginname=FormError(_('Login name already taken.')),
     )
 
@@ -244,7 +245,7 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         regMan = IMemberRegistrationManager(self.context.getLoopsRoot())
         pw = generateName()
         email = form.get('email')
-        try:    
+        try:
             result = regMan.register(login, pw,
                                      form.get('lastName'), form.get('firstName'),
                                      email=email,)

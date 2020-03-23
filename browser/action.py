@@ -92,6 +92,8 @@ class DialogAction(Action):
             urlParams['fixed_type'] = 'yes'
         if self.viewTitle:
             urlParams['view_title'] = self.viewTitle
+        #for k, v in self.page.sortInfo.items():
+        #    urlParams['sortinfo_' + k] = v['fparam']
         urlParams.update(self.addParams)
         if self.target is not None:
             url = self.page.getUrlForTarget(self.target)

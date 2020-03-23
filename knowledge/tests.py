@@ -1,4 +1,3 @@
-# tests.py - loops.knowledge package
 
 import os
 import unittest, doctest
@@ -6,6 +5,7 @@ from zope.app.testing import ztapi
 from zope import component
 from zope.interface.verify import verifyClass
 
+from loops.expert.report import IReport, Report
 from loops.knowledge.qualification.base import Competence
 from loops.knowledge.survey.base import Questionnaire, Question, FeedbackItem
 from loops.knowledge.survey.interfaces import IQuestionnaire, IQuestion, \
@@ -18,6 +18,7 @@ importPath = os.path.join(os.path.dirname(__file__), 'data')
 
 
 def importData(loopsRoot):
+    component.provideAdapter(Report, provides=IReport)
     baseImportData(loopsRoot, importPath, 'knowledge_de.dmp')
 
 def importSurvey(loopsRoot):

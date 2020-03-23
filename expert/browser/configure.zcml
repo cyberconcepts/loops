@@ -91,4 +91,26 @@
         factory="loops.expert.browser.report.ResultsConceptView"
         permission="zope.View" />
 
+  <zope:adapter
+        name="concept_report_embedded.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.EmbeddedReportConceptView"
+        permission="zope.View" />
+
+  <zope:adapter
+        name="concept_results_embedded.html"
+        for="loops.interfaces.IConcept
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        provides="zope.interface.Interface"
+        factory="loops.expert.browser.report.EmbeddedResultsConceptView"
+        permission="zope.View" />
+
+  <browser:page
+        name="concept_results.csv"
+        for="loops.organize.interfaces.IConceptSchema"
+        class="loops.expert.browser.export.ResultsConceptCSVExport"
+        permission="zope.View" />
+
 </configure>

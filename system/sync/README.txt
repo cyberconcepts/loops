@@ -18,7 +18,7 @@ Let's set up a loops site with basic and example concepts and resources.
   >>> concepts, resources, views = t.setup()
   >>> loopsRoot = site['loops']
   >>> len(concepts), len(resources), len(views)
-  (33, 3, 1)
+  (35, 3, 1)
 
   >>> from cybertools.tracking.btree import TrackingStorage
   >>> from loops.system.job import JobRecord

@@ -1,4 +1,3 @@
-# $Id$
 
 import unittest, doctest
 from zope.interface.verify import verifyClass

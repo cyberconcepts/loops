@@ -1,6 +1,4 @@
-"""
-$Id$
-"""
+# package loops.browser.skin
 
 from cybertools.browser.liquid import Liquid
 from cybertools.browser.blue import Blue

@@ -98,8 +98,9 @@ class I18NView(object):
         return adapted(self.context, self.languageInfo)
 
     def checkLanguage(self):
-        session = ISession(self.request)[packageId]
-        lang = session.get('language') or self.languageInfo.language
+        #session = ISession(self.request)[packageId]
+        #lang = session.get('language') or self.languageInfo.language
+        lang = self.languageInfo.language
         if lang:
             self.setLanguage(lang)
 

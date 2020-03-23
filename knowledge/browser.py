@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,13 @@ from cybertools.typology.interfaces import IType
 from loops.browser.action import DialogAction
 from loops.browser.common import BaseView
 from loops.browser.concept import ConceptView
+from loops.common import adapted
 from loops.knowledge.interfaces import IPerson, ITask
 from loops.organize.party import getPersonForUser
+from loops.organize.personal import favorite
+from loops.organize.personal.interfaces import IFavorites
+from loops.security.common import checkPermission
+from loops import util
 from loops.util import _
 
 
@@ -67,6 +72,63 @@ actions.register('createQualification', 'portlet', DialogAction,
                        'registerDojoTextarea'],
         permission='loops.AssignAsParent',
 )
+
+
+class InstitutionMixin(object):
+
+    knowledge_macros = knowledge_macros
+
+    adminMaySelectAllInstitutions = True
+
+    @Lazy
+    def institutionType(self):
+        return self.conceptManager['institution']
+
+    @Lazy
+    def institutions(self):
+        if self.adminMaySelectAllInstitutions:
+            if checkPermission('loops.ManageWorkspaces', self.context):
+                return self.getAllInstitutions()
+        result = []
+        p = getPersonForUser(self.context, self.request)
+        if p is None:
+            return result
+        for parent in p.getParents(
+                [self.memberPredicate, self.masterPredicate]):
+            if parent.conceptType == self.institutionType:
+                result.append(dict(
+                        object=adapted(parent), 
+                        title=parent.title,
+                        uid=util.getUidForObject(parent)))
+        return result
+
+    def getAllInstitutions(self):
+        insts = self.institutionType.getChildren([self.typePredicate])
+        return [dict(object=adapted(inst),
+                     title=inst.title,
+                     uid=util.getUidForObject(inst)) for inst in insts]
+
+    def setInstitution(self, uid):
+        inst = util.getObjectForUid(uid)
+        person = getPersonForUser(self.context, self.request)
+        favorite.setInstitution(person, inst)
+        self.institution = inst
+        return True
+
+    def getSavedInstitution(self):
+        person = getPersonForUser(self.context, self.request)
+        favorites = IFavorites(self.loopsRoot.getRecordManager()['favorites'])
+        for inst in favorites.list(person, type='institution'):
+            return adapted(util.getObjectForUid(inst))
+
+    @Lazy
+    def institution(self):
+        saved = self.getSavedInstitution()
+        for inst in self.institutions:
+            if inst['object'] == saved:
+                return inst['object']
+        if self.institutions:
+            return self.institutions[0]['object']
 
 
 class MyKnowledge(ConceptView):

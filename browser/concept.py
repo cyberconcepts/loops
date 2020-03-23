@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -254,17 +254,34 @@ class ConceptView(BaseView):
                 result.append(view)
         return result
 
+    def viewModes(self):
+        modes = Jeep()
+        current = self.request.form.get('loops.viewName')
+        parts = (self.options('view_tabs') or 
+                    self.typeOptions('view_tabs') or [])
+        if not parts:
+            return modes
+        activeMode = None
+        for p in parts:
+            view = component.queryMultiAdapter(
+                        (self.adapted, self.request), name=p)
+            if view is None:
+                view = component.queryMultiAdapter(
+                            (self.context, self.request), name=p)
+            if view is None:
+                continue
+            active = (activeMode is None and p == current)
+            if active:
+                activeMode = p
+            url = '%s?loops.viewName=%s' % (self.targetUrl, p)
+            modes.append(ViewMode(p, view.tabTitle, url, active))
+        if activeMode is None:
+            modes[0].active = True
+        return modes
+
     @Lazy
     def adapted(self):
         return adapted(self.context, self.languageInfo)
-
-    @Lazy
-    def title(self):
-        return self.adapted.title or getName(self.context)
-
-    @Lazy
-    def description(self):
-        return self.adapted.description
 
     @Lazy
     def targetUrl(self):
@@ -283,7 +300,16 @@ class ConceptView(BaseView):
         return self.title
 
     @Lazy
+    def showInBreadcrumbs(self):
+        return (self.options('show_in_breadcrumbs') or 
+                self.typeOptions('show_in_breadcrumbs'))
+
+    @Lazy
     def breadcrumbsParent(self):
+        for p in self.context.getParents([self.defaultPredicate]):
+            view = self.nodeView.getViewForTarget(p)
+            if view.showInBreadcrumbs:
+                return view
         return None
 
     def getData(self, omit=('title', 'description')):
@@ -389,7 +415,8 @@ class ConceptView(BaseView):
     children = getChildren
 
     def childrenAlphaGroups(self, predicates=None):
-        result = Jeep()
+        #result = Jeep()
+        result = {}
         rels = self.getChildren(predicates=predicates or [self.defaultPredicate],
                                 topLevelOnly=False, sort=False)
         rels = sorted(rels, key=lambda r: r.title.lower())
@@ -449,7 +476,7 @@ class ConceptView(BaseView):
                 if r.order != pos:
                     r.order = pos
 
-    def getResources(self):
+    def getResources(self, relView=None, sort='default'):
         form = self.request.form
         #if form.get('loops.viewName') == 'index.html' and self.editable:
         if self.editable:
@@ -458,13 +485,17 @@ class ConceptView(BaseView):
                 tokens = form.get('resources_tokens')
                 if tokens:
                     self.reorderResources(tokens)
-        from loops.browser.resource import ResourceRelationView
+        if relView is None:
+            from loops.browser.resource import ResourceRelationView
+            relView = ResourceRelationView
         from loops.organize.personal.browser.filter import FilterView
         fv = FilterView(self.context, self.request)
-        rels = self.context.getResourceRelations()
+        rels = self.context.getResourceRelations(sort=sort)
         for r in rels:
             if fv.check(r.first):
-                yield ResourceRelationView(r, self.request, contextIsSecond=True)
+                view = relView(r, self.request, contextIsSecond=True)
+                if view.checkState():
+                    yield view
 
     def resources(self):
         return self.getResources()

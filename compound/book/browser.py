@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
+#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ from loops.browser.concept import ConceptRelationView as \
     BaseConceptRelationView
 from loops.browser.resource import ResourceView as BaseResourceView
 from loops.common import adapted, baseObject
+from loops.util import _
 
 
 standard_template = standard.standard_template
@@ -55,42 +56,6 @@ class Base(object):
         return self.conceptManager['section']
 
     @Lazy
-    def isPartOfPredicate(self):
-        return self.conceptManager['ispartof']
-
-    @Lazy
-    def showNavigation(self):
-        return self.typeOptions.show_navigation
-
-    @Lazy
-    def breadcrumbsParent(self):
-        for p in self.context.getParents([self.isPartOfPredicate]):
-            return self.nodeView.getViewForTarget(p)
-
-    @Lazy
-    def neighbours(self):
-        pred = succ = None
-        parent = self.breadcrumbsParent
-        if parent is not None:
-            myself = None
-            children = list(parent.context.getChildren([self.isPartOfPredicate]))
-            for idx, c in enumerate(children):
-                if c == self.context:
-                    if idx > 0:
-                        pred = self.nodeView.getViewForTarget(children[idx-1])
-                    if idx < len(children) - 1:
-                        succ = self.nodeView.getViewForTarget(children[idx+1])
-        return pred, succ
-
-    @Lazy
-    def predecessor(self):
-        return self.neighbours[0]
-
-    @Lazy
-    def successor(self):
-        return self.neighbours[1]
-
-    @Lazy
     def tabview(self):
         if self.editable:
             return 'index.html'
@@ -107,6 +72,7 @@ class Base(object):
     @Lazy
     def textResources(self):
         self.images = [[]]
+        self.otherResources = []
         result = []
         idx = 0
         for rv in self.getResources():
@@ -115,7 +81,7 @@ class Base(object):
                         idx += 1
                         result.append(rv)
                         self.images.append([])
-            else:
+            elif rv.context.contentType.startswith('image/'):
                 self.registerDojoLightbox()
                 url = self.nodeView.getUrlForTarget(rv.context)
                 src = '%s/mediaasset.html?v=small' % url
@@ -123,6 +89,8 @@ class Base(object):
                 img = dict(src=src, fullImageUrl=fullSrc, title=rv.title,
                            description=rv.description, url=url, object=rv)
                 self.images[idx].append(img)
+            else:
+                self.otherResources.append(rv)
         return result
 
     def getDocumentTypeForResource(self, r):
@@ -178,8 +146,46 @@ class SectionView(Base, ConceptView):
     def macro(self):
         return book_template.macros['section']
 
+    @Lazy
+    def isPartOfPredicate(self):
+        return self.conceptManager['ispartof']
+
+    @Lazy
+    def breadcrumbsParent(self):
+        for p in self.context.getParents([self.isPartOfPredicate]):
+            return self.nodeView.getViewForTarget(p)
+
+    @Lazy
+    def showNavigation(self):
+        return self.typeOptions.show_navigation
+
+    @Lazy
+    def neighbours(self):
+        pred = succ = None
+        parent = self.breadcrumbsParent
+        if parent is not None:
+            myself = None
+            children = list(parent.context.getChildren([self.isPartOfPredicate]))
+            for idx, c in enumerate(children):
+                if c == self.context:
+                    if idx > 0:
+                        pred = self.nodeView.getViewForTarget(children[idx-1])
+                    if idx < len(children) - 1:
+                        succ = self.nodeView.getViewForTarget(children[idx+1])
+        return pred, succ
+
+    @Lazy
+    def predecessor(self):
+        return self.neighbours[0]
+
+    @Lazy
+    def successor(self):
+        return self.neighbours[1]
+
 
 class TopicView(Base, ConceptView):
+
+    tabTitle = _(u'title_bookTopicView')
 
     @Lazy
     def macro(self):

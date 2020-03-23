@@ -737,7 +737,9 @@ on data provided in this form:
 
   >>> component.provideAdapter(NameChooser)
   >>> request = TestRequest(form={'title': u'Test Note',
-  ...                             'form.type': u'.loops/concepts/note'})
+  ...                             'form.type': u'.loops/concepts/note',
+  ...                             'contentType': u'text/restructured',
+  ...                             'linkUrl': u'http://'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
@@ -802,7 +804,7 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkText textline False None
 
   >>> view.data
-  {'linkUrl': u'http://', 'contentType': 'text/restructured', 'data': u'',
+  {'linkUrl': u'http://', 'contentType': u'text/restructured', 'data': u'',
    'linkText': u'', 'title': u'Test Note'}
 
 The object is changed via a FormController adapter created for
@@ -913,6 +915,12 @@ relates ISO country codes with the full name of the country.
   >>> sorted(adapted(concepts['countries']).data.items())
   [('at', ['Austria']), ('de', ['Germany'])]
 
+  >>> countries.dataAsRecords()
+  [{'value': 'Austria', 'key': 'at'}, {'value': 'Germany', 'key': 'de'}]
+
+  >>> countries.getRowsByValue('value', 'Germany')
+  [{'value': 'Germany', 'key': 'de'}]
+
 
 Caching
 =======
@@ -930,6 +938,12 @@ Security
 ========
 
   >>> from loops.security.browser import admin, audit
+
+
+Paster Shell Utilities - Repair Scripts
+=======================================
+
+  >>> from loops.repair.base import removeRecords
 
 
 Import/Export
