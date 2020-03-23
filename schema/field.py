@@ -70,10 +70,14 @@ class BaseRelationFieldInstance(object):
 class RelationSetFieldInstance(ListFieldInstance, BaseRelationFieldInstance):
 
     def marshall(self, value):
+        if value is None:
+            return []
         return [dict(title=v.title, uid=util.getUidForObject(baseObject(v)))
                 for v in value]
 
     def display(self, value):
+        if value is None:
+            return []
         nodeView = self.clientInstance.view.nodeView
         return [dict(url=nodeView.getUrlForTarget(baseObject(v)),
                      label=v.title) for v in value]
