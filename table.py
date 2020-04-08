@@ -90,11 +90,11 @@ class DataTable(AdapterBase):
             self.context._data = data
         reclen = len(self.columns) - 1
         for k, v in data.items():
-            v = v[:reclen]
+            #v = v[:reclen]
             missing = reclen - len(v)
             if missing > 0:
                 v += (missing * [u''])
-            data[k] = v
+                data[k] = v
         return data
     def setData(self, data):
         self.context._data = OOBTree(data)
