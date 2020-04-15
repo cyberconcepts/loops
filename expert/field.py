@@ -304,6 +304,12 @@ class MultiLineField(Field):
     def getValue(self, row):
         return self.getRawValue(row)
 
+    def getDisplayValues(self, row):
+        value = self.getValue(row)
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        return value
+
 
 # track fields
 
