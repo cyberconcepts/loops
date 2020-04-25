@@ -127,7 +127,7 @@ class DateField(Field):
     def getValue(self, row):
         if getattr(row.parent.context.view, 'reportMode', None) == 'export':
             return self.getDisplayValue(row)
-        super(DateField, self).getValue(row)
+        return super(DateField, self).getValue(row)
 
     def getDisplayValue(self, row):
         value = self.getRawValue(row)
