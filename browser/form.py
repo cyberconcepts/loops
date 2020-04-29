@@ -182,7 +182,9 @@ class ObjectForm(NodeView):
                 field = self.schema.fields.get(k)
                 if field:
                     fi = field.getFieldInstance(self.instance)
-                    input = unquote_plus(form[k])
+                    input = form[k]
+                    if isinstance(input, basestring):
+                        input = unquote_plus(input)
                     data[k] = fi.marshall(fi.unmarshall(input))
                     #data[k] = toUnicode(form[k])
         return data
