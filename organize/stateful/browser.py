@@ -187,7 +187,8 @@ class ChangeState(ChangeStateBase, EditObject):
             trackData[name] = fi.unmarshall(rawValue)
         self.stateful.doTransition(self.action)
         notify(ObjectModifiedEvent(self.target, trackData))
-        #self.request.response.redirect(self.request.getURL())
+        # TODO: check if/why this redirect is necessary:
+        self.request.response.redirect(self.request.getURL())
         return True
 
 
