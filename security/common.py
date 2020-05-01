@@ -89,13 +89,16 @@ def getOption(obj, option, checkType=True):
                 return opt[0]
     return None
 
-def canAccessObject(obj):
+def canAccessObjectWithOption(obj):
     if not canAccess(obj, 'title'):
         return False
     perm = getOption(obj, 'access_permission')
     if not perm:
         return True
     return checkPermission(perm, obj)
+
+def canAccessObject(obj):
+    return canAccess(obj, 'title')
 
 def canListObject(obj, noCheck=False):
     if noCheck:
