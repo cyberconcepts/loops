@@ -27,11 +27,11 @@ from zope.app.container.interfaces import IAdding
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
-from zope.component.interfaces import ObjectEvent
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.event import notify
 from zope.interface import implements
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
+from zope.interface.interfaces import ObjectEvent
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.proxy import removeSecurityProxy, isinstance
 from zope.traversing.api import getName, getParent

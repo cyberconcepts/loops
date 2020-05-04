@@ -27,7 +27,7 @@ from zope.schema._bootstrapinterfaces import StopValidation
 from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.file.interfaces import IImage as IBaseAsset
-from zope.component.interfaces import IObjectEvent
+from zope.interface.interfaces import IObjectEvent
 from zope.size.interfaces import ISized
 
 from cybertools.composer.schema.interfaces import FieldType

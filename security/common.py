@@ -68,6 +68,8 @@ workspaceGroupsFolderName = 'gloops_ws'
 
 # checking and querying functions
 
+# TODO: activate canAccessObjectWithOption depending on custom.config
+
 def getOption(obj, option, checkType=True):
     opts = component.queryAdapter(adapted(obj), IOptions)
     if opts is not None:
@@ -75,6 +77,7 @@ def getOption(obj, option, checkType=True):
         if opt is True:
             return opt
         if opt:
+            # TODO: log
             return opt[0]
     if not checkType:
         return None
@@ -86,6 +89,7 @@ def getOption(obj, option, checkType=True):
             if opt is True:
                 return opt
             if opt:
+                # TODO: log
                 return opt[0]
     return None
 
