@@ -69,8 +69,8 @@ class FavoriteView(NodeView):
                 adobj = adapted(obj)
                 yield dict(url=self.getUrlForTarget(obj),
                            uid=uid,
-                           title=obj.title,
-                           description=obj.description,
+                           title=adobj.favTitle,
+                           description=adobj.description,
                            object=obj,
                            trackUid=trackUid)
 
