@@ -308,7 +308,7 @@ class ConceptView(BaseView):
     def breadcrumbsParent(self):
         for p in self.context.getParents([self.defaultPredicate]):
             view = self.nodeView.getViewForTarget(p)
-            if view.showInBreadcrumbs:
+            if view is not None and view.showInBreadcrumbs:
                 return view
         return None
 
