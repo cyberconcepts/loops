@@ -152,7 +152,7 @@ class ResultsView(NodeView):
     def displayedColumns(self):
         return self.reportInstance.getActiveOutputFields()
 
-    def getColumnRenderer(self, col):
+    def getColumnRenderer(self, col, name=None):
         return self.result_macros[col.renderer]
 
 
@@ -240,7 +240,7 @@ class ResultsConceptView(ConceptView):
     def displayedColumns(self):
         return self.reportInstance.getActiveOutputFields()
 
-    def getColumnRenderer(self, col):
+    def getColumnRenderer(self, col, name=None):
         return self.result_macros[col.renderer]
 
     @Lazy
