@@ -1,8 +1,9 @@
 <html i18n:domain="loops">
 
 
-<metal:children define-macro="children"
-                tal:define="children children|python:list(item.children())">
+<div metal:define-macro="children"
+     tal:define="children children|python:list(item.children())"
+     class="book-children">
   <tal:child repeat="related children">
     <div tal:define="children python:list(related.children());
                      resources python:list(related.resources());
@@ -20,7 +21,7 @@
       </tal:nested>
     </div>
   </tal:child>
-</metal:children>
+</div>
 
 
 <metal:nested define-macro="nested_children"
@@ -38,13 +39,15 @@
 </metal:nested>
 
 
-<metal:book define-macro="book">
+<div metal:define-macro="book"
+     class="book">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <metal:info use-macro="item/book_macros/children" />
-</metal:book>
+</div>
 
 
-<metal:section define-macro="section">
+<div metal:define-macro="section"
+     class="book-section">
   <metal:navigation define-macro="navigation"
                     tal:condition="item/showNavigation">
     <div tal:define="parent nocall:item/breadcrumbsParent;
@@ -125,13 +128,14 @@
   <br style="clear: both" />
   <metal:navigation use-macro="item/book_macros/navigation" />
   <br />
-</metal:section>
+</div>
 
 
-<metal:topic define-macro="topic"
-             tal:define="children children|python:list(item.children());
-                         textResources textResources|item/textResources;
-                         resources item/otherResources">
+<div metal:define-macro="topic"
+     tal:define="children children|python:list(item.children());
+                 textResources textResources|item/textResources;
+                 resources item/otherResources"
+     clas="book-topic">
   <metal:info use-macro="view/concept_macros/concepttitle" />
   <h2 i18n:translate=""
       tal:condition="children">Children</h2>
@@ -162,10 +166,11 @@
             <img tal:attributes="src image/src;
                                  alt image/title" /></a>
         </div>
+      </div>
     </div>
   </div>
   <metal:info use-macro="view/concept_macros/conceptresources" />
-</metal:topic>
+</div>
 
 
 </html>
