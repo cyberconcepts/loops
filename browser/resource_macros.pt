@@ -72,6 +72,7 @@
     <div>
       <span class="button">
         <a i18n:translate=""
+           target="_blank"
            tal:attributes="href
                 string:${view/virtualTargetUrl}/download.html?version=this">
           Download
