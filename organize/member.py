@@ -44,7 +44,7 @@ from loops.interfaces import ILoops
 from loops.organize.auth import IPersonBasedAuthenticator
 from loops.organize.interfaces import IMemberRegistrationManager
 from loops.organize.util import getPrincipalFolder, getGroupsFolder
-from loops.organize.util import getInternalPrincipal
+from loops.organize.util import getInternalPrincipal, getPrincipalForUserId
 from loops.type import getOptionsDict
 from loops.util import _
 
@@ -79,7 +79,7 @@ class MemberRegistrationManager(object):
         if pfName is None:
             pfName = options(self.principalfolder_key,
                              (self.default_principalfolder,))[0]
-        rc = self.createPrincipal(pfName, userId, password, 
+        rc = self.createPrincipal(pfName, userId, password,
                          lastName, firstName, useExisting=useExisting)
         if rc is not None:
             return rc
@@ -93,7 +93,7 @@ class MemberRegistrationManager(object):
                               firstName=u'', groups=[], useExisting=False,
                               overwrite=False, **kw):
         if not self.checkPrincipalId(userId):
-            return dict(fieldName='loginName', error='illegal_loginname')            
+            return dict(fieldName='loginName', error='illegal_loginname')
         pFolder = getPrincipalFolder(self.context, pfName)
         if IPersonBasedAuthenticator.providedBy(pFolder):
              pFolder.setPassword(userId, password)
@@ -129,8 +129,9 @@ class MemberRegistrationManager(object):
             if gFolder is not None:
                 group = gFolder.get(gName)
                 if group is not None:
-                    members = [p for p in group.principals 
-                                 if self.checkPrincipalId(p)]
+                    members = [p for p in group.principals
+                               if self.checkPrincipalId(p)
+                               and getPrincipalForUserId(p) is not None]
                     members.append(pFolder.prefix + userId)
                     group.principals = members
 
