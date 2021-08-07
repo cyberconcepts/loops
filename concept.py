@@ -198,33 +198,41 @@ class Concept(Contained, Persistent):
         return [r.first for r in rels if canListObject(r.first)]
 
     def getChildRelations(self, predicates=None, child=None, sort='default',
-                          noSecurityCheck=False):
+                          noSecurityCheck=False, usePredicateIndex=False):
         predicates = predicates is None and ['c*'] or predicates
         relationships = [ConceptRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, (x.second.title and x.second.title.lower()))
-        rels = (r for r in getRelations(self, child, relationships=relationships)
+        rels = (r for r in getRelations(self, child, relationships=relationships,
+                                        usePredicateIndex=usePredicateIndex)
                   if canListObject(r.second, noSecurityCheck) and
                      IConcept.providedBy(r.second))
         return sorted(rels, key=sort)
 
-    def getChildren(self, predicates=None, sort='default', noSecurityCheck=False):
-        return [r.second for r in self.getChildRelations(predicates, sort=sort,
-                                                noSecurityCheck=noSecurityCheck)]
+    def getChildren(self, predicates=None, sort='default', 
+                    noSecurityCheck=False, usePredicateIndex=False):
+        return [r.second for r in self.getChildRelations(
+                                    predicates, sort=sort,
+                                    noSecurityCheck=noSecurityCheck,
+                                    usePredicateIndex=usePredicateIndex)]
 
     def getParentRelations (self, predicates=None, parent=None, sort='default',
-                            noSecurityCheck=False):
+                            noSecurityCheck=False, usePredicateIndex=False):
         predicates = predicates is None and ['c*'] or predicates
         relationships = [ConceptRelation(None, self, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.first.title and x.first.title.lower())
-        rels = (r for r in getRelations(parent, self, relationships=relationships)
+        rels = (r for r in getRelations(parent, self, relationships=relationships, 
+                                        usePredicateIndex=usePredicateIndex)
                   if canListObject(r.first, noSecurityCheck))
         return sorted(rels, key=sort)
 
-    def getParents(self, predicates=None, sort='default', noSecurityCheck=False):
-        return [r.first for r in self.getParentRelations(predicates, sort=sort,
-                                                noSecurityCheck=noSecurityCheck)]
+    def getParents(self, predicates=None, sort='default', 
+                   noSecurityCheck=False, usePredicateIndex=False):
+        return [r.first for r in self.getParentRelations(
+                                    predicates, sort=sort,
+                                    noSecurityCheck=noSecurityCheck, 
+                                    usePredicateIndex=usePredicateIndex)]
 
     def checkPredicate(self, child, predicate=None):
         cm = self.getConceptManager()
@@ -296,21 +304,25 @@ class Concept(Contained, Persistent):
     # resource relations
 
     def getResourceRelations(self, predicates=None, resource=None, sort='default',
-                             noSecurityCheck=False):
+                             noSecurityCheck=False, usePredicateIndex=False):
         if resource is not None:
             resource = getMaster(resource)
         predicates = predicates is None and ['r*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
             sort = lambda x: (x.order, x.second.title.lower())
-        rels = (r for r in getRelations(self, resource, relationships=relationships)
+        rels = (r for r in getRelations(self, resource, relationships=relationships,
+                                        usePredicateIndex=usePredicateIndex)
                   if canListObject(r.second, noSecurityCheck) and
                      IResource.providedBy(r.second))
         return sorted(rels, key=sort)
 
-    def getResources(self, predicates=None, sort='default', noSecurityCheck=False):
-        return [r.second for r in self.getResourceRelations(predicates, sort=sort,
-                                                noSecurityCheck=noSecurityCheck)]
+    def getResources(self, predicates=None, sort='default', 
+                     noSecurityCheck=False, usePredicateIndex=False):
+        return [r.second for r in self.getResourceRelations(
+                                    predicates, sort=sort,
+                                    noSecurityCheck=noSecurityCheck, 
+                                    usePredicateIndex=usePredicateIndex)]
 
     def assignResource(self, resource, predicate=None, order=0, relevance=1.0):
         resource = getMaster(resource)

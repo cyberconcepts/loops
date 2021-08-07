@@ -350,12 +350,14 @@ class RelationSet(object):
 
     langInfo = None
 
-    def __init__(self, context, predicateName, interface=None, noSecurityCheck=False):
+    def __init__(self, context, predicateName, interface=None, 
+                 noSecurityCheck=False, usePredicateIndex=False):
         self.adapted = context
         self.context = baseObject(context)
         self.predicateName = predicateName
         self.interface = interface
         self.noSecurityCheck = noSecurityCheck
+        self.usePredicateIndex = usePredicateIndex
 
     @Lazy
     def loopsRoot(self):
@@ -385,7 +387,8 @@ class ParentRelationSet(RelationSet):
         if self.adapted.__is_dummy__:
             return
         for c in self.context.getParents([self.predicate],
-                                         noSecurityCheck=self.noSecurityCheck):
+                                         noSecurityCheck=self.noSecurityCheck,
+                                         usePredicateIndex=self.usePredicateIndex):
             a = adapted(c, langInfo=self.langInfo)
             if self.interface is None or self.interface.providedBy(a):
                 yield a
@@ -396,12 +399,14 @@ class ParentRelationSet(RelationSet):
         if noSecurityCheck is None:
             noSecurityCheck = self.noSecurityCheck
         for r in self.context.getParentRelations([self.predicate],
-                                                 noSecurityCheck=noSecurityCheck):
+                                                 noSecurityCheck=noSecurityCheck,
+                                                 usePredicateIndex=self.usePredicateIndex):
             if check is None or check(r):
                 yield r
 
     def getRelated(self, check=None, noSecurityCheck=None):
-        for r in self.getRelations(check, noSecurityCheck):
+        for r in self.getRelations(check, noSecurityCheck,
+                                   usePredicateIndex=self.usePredicateIndex):
             yield adapted(r.first, langInfo=self.langInfo)
 
 
@@ -426,7 +431,8 @@ class ChildRelationSet(RelationSet):
     def __iter__(self):
         if self.adapted.__is_dummy__:
             return
-        for c in self.context.getChildren([self.predicate]):
+        for c in self.context.getChildren([self.predicate], 
+                                          usePredicateIndex=self.usePredicateIndex):
             yield adapted(c, langInfo=self.langInfo)
 
     def getRelations(self, check=None, noSecurityCheck=None):
@@ -435,7 +441,8 @@ class ChildRelationSet(RelationSet):
         if noSecurityCheck is None:
             noSecurityCheck = self.noSecurityCheck
         for r in self.context.getChildRelations([self.predicate],
-                                                 noSecurityCheck=noSecurityCheck):
+                                                 noSecurityCheck=noSecurityCheck,
+                                                 usePredicateIndex=self.usePredicateIndex):
             if check is None or check(r):
                 yield r
 
@@ -459,16 +466,19 @@ class TypeInstancesProperty(object):
 
 class RelationSetProperty(object):
 
-    def __init__(self, predicateName, interface=None, noSecurityCheck=False):
+    def __init__(self, predicateName, interface=None, 
+                 noSecurityCheck=False, usePredicateIndex=False):
         self.predicateName = predicateName
         self.interface = interface
         self.noSecurityCheck = noSecurityCheck
+        self.usePredicateIndex = usePredicateIndex
 
     def __get__(self, inst, class_=None):
         if inst is None:
             return self
         return self.factory(inst, self.predicateName, self.interface,
-                            noSecurityCheck=self.noSecurityCheck)
+                            noSecurityCheck=self.noSecurityCheck,
+                            usePredicateIndex=self.usePredicateIndex)
 
     def __set__(self, inst, value):
         objects = []

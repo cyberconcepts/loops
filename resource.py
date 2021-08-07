@@ -205,7 +205,7 @@ class Resource(Image, Contained):
         return [r.first for r in rels if canListObject(r.first)]
 
     def getConceptRelations (self, predicates=None, concept=None, sort='default',
-                             noSecurityCheck=False):
+                             noSecurityCheck=False, usePredicateIndex=False):
         predicates = predicates is None and ['r*'] or predicates
         obj = getMaster(self)
         relationships = [ResourceRelation(None, obj, p) for p in predicates]
@@ -213,14 +213,17 @@ class Resource(Image, Contained):
             #sort = lambda x: (x.order, x.first.title.lower())
             sort = lambda x: (x.first.title.lower())
         rels = (r for r in getRelations(first=concept, second=obj,
-                                        relationships=relationships)
+                                        relationships=relationships,
+                                        usePredicateIndex=usePredicateIndex)
                   if canListObject(r.first, noSecurityCheck))
         return sorted(rels, key=sort)
 
-    def getConcepts(self, predicates=None, noSecurityCheck=False):
+    def getConcepts(self, predicates=None, noSecurityCheck=False, 
+                    usePredicateIndex=False):
         obj = getMaster(self)
         return [r.first for r in obj.getConceptRelations(predicates,
-                                                noSecurityCheck=noSecurityCheck)]
+                                    noSecurityCheck=noSecurityCheck,
+                                    usePredicateIndex=usePredicateIndex)]
 
     # simplify common access for concepts and resources:
     getParentRelations = getConceptRelations
