@@ -26,6 +26,7 @@ from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.groupfolder import GroupFolder
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.security.settings import Allow, Deny, Unset
+from zope.component import queryNextUtility
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.traversing.api import getParents
 from loops.common import adapted
