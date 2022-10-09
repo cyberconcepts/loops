@@ -1103,7 +1103,9 @@ def setViewConfiguration(context, request):
     config = IViewConfiguratorSchema(context)
     skinName = config.skinName
     if not skinName:
-        skinName = context.getLoopsRoot().skinName
+        root = removeSecurityProxy(context.getLoopsRoot())
+        skinName = root.skinName
+        #skinName = context.getLoopsRoot().skinName
     if skinName:
         viewAnnotations['skinName'] = skinName
     if config.options:
