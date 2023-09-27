@@ -86,6 +86,7 @@
     <img src="/++resource++cybertools.icons/email.png"
          alt="new notifications" />
   </div>
+  <tal:box condition="python: view.request.principal.id in ['steg.plattner', 'steg.ng']"> 
   <div>
     <img src="/++resource++steg/icons/box.png"
          alt="STEG.Box" />
@@ -100,6 +101,7 @@
        onclick="objectDialog('', 'stegbox_compose_mail.html?version=this&amp;dialog='); return false;"
        title="Neue STEG.BOX Nachricht erstellen.">Neue STEG.Box Nachricht...</a>
   </div>
+  </tal:box>
 
 </metal:actions>
 
