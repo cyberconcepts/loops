@@ -86,6 +86,21 @@
     <img src="/++resource++cybertools.icons/email.png"
          alt="new notifications" />
   </div>
+  <div>
+    <img src="/++resource++steg/icons/box.png"
+         alt="STEG.Box" />
+    <a i18n:translate=""
+       href="/stegbox">Zur STEG.Box</a>
+  </div>
+  <div class="icon-action"
+       id="" title="Neue STEG.BOX Nachricht erstellen.">
+    <img alt="Neue STEG.BOX Nachricht erstellen."
+         src="/++resource++steg/icons/email_open_image.png" />
+    <a href="#"
+       onclick="objectDialog('', 'stegbox_compose_mail.html?version=this&amp;dialog='); return false;"
+       title="Neue STEG.BOX Nachricht erstellen.">Neue STEG.Box Nachricht...</a>
+  </div>
+
 </metal:actions>
 
 
