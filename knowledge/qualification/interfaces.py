@@ -23,6 +23,7 @@ Interfaces for knowledge management and elearning with loops.
 from zope.interface import Interface, Attribute
 from zope import interface, component, schema
 
+from cybertools.organize.interfaces import IWorkItem, IWorkItems
 from loops.interfaces import IConceptSchema, ILoopsAdapter
 from loops.util import _
 
@@ -41,4 +42,12 @@ class ICompetence(ILoopsAdapter):
         default=0,
         required=False)
 
+
+class IQualificationRecord(IWorkItem):
+    """ Records needs for qualification (acqusition of competence) 
+        and corresponding participations in training events etc."""
+
+
+class IQualificationRecords(IWorkItems):
+    """ Container for qualification records."""
 
