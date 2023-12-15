@@ -1,4 +1,1 @@
-"""
-$Id$
-"""
-
+#  package loops.organize.personal

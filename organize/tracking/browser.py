@@ -98,7 +98,7 @@ class BaseTrackView(TrackView):
 
     def getMetadataTarget(self, key):
         value = self.metadata.get(key)
-        if isinstance(value, int) or value.isdigit():
+        if value is not None and (isinstance(value, int) or value.isdigit()):
             obj = util.getObjectForUid(value)
             if obj is not None:
                 url = ('%s/@@SelectedManagementView.html' %
