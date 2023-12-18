@@ -9,6 +9,7 @@ import unittest
 from zope import component, interface
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
+from cco.storage.common import Storage, getEngine
 from loops.expert.testsetup import TestSite
 from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
@@ -35,6 +36,8 @@ class TestCase(unittest.TestCase):
         loopsId = util.getUidForObject(loopsRoot)
         setupData = setupObjectsForTesting(site, g.concepts)
         g.johnC = setupData.johnC
+        g.storage = Storage(getEngine('postgresql', 'ccotest', 'ccotest', 'cco'),
+                            schema='testing')
 
     @classmethod
     def cleanup(cls):
