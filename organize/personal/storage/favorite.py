@@ -4,6 +4,7 @@
 
 from cco.storage.common import registerContainerClass
 from cco.storage.tracking import record
+from loops.organize.tracking.storage import compat
 
 
 class Favorite(record.Track):
@@ -12,7 +13,7 @@ class Favorite(record.Track):
 
 
 @registerContainerClass
-class Favorites(record.Container):
+class Favorites(compat.Container):
 
     itemFactory = Favorite
     tableName = 'favorites'
