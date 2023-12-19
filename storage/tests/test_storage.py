@@ -43,7 +43,11 @@ class TestStorage(common.TestCase):
         fav = favorites.get(1)
         self.assertEqual(fav.head['userName'], '102')
 
-    def test_query(self):
+    def test_fav_010_add(self):
+        favs = FavoritesAdapter(self.g.favorites)
+
+    def test_fav_020_query(self):
+        favs = FavoritesAdapter(self.g.favorites)
         self.assertEqual('a'.upper(), 'A')
 
     def test_zzz_tearDown(self):
