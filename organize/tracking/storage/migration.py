@@ -3,6 +3,7 @@
 """Tools for migration ZODB-/BTree-based tracks to SQL-base records."""
 
 from datetime import datetime
+import transaction
 
 import config
 from cco.storage.common import Storage, getEngine
@@ -34,4 +35,5 @@ def migrate(loopsRoot, recFolderName, factory=record.Container):
         track = container.itemFactory(*head, trackId=int(id), 
                                     timeStamp=ts, data=inTrack.data)
         container.upsert(track)
+    transaction.commit()
 

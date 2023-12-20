@@ -23,6 +23,7 @@ A framework for storing personal favorites and settings.
 from zope.component import adapts
 from zope.interface import implements
 
+from cybertools.util.date import date2TimeStamp
 from cybertools.tracking.btree import Track
 from cybertools.tracking.interfaces import ITrackingStorage
 from loops.organize.personal.interfaces import IFavorites, IFavorite
@@ -50,7 +51,7 @@ class Favorites(object):
             return
         personUid = util.getUidForObject(person)
         if sortKey is None:
-            sortKey = lambda x: (x.data.get('order', 100), -x.timeStamp)
+            sortKey = lambda x: (x.data.get('order', 100), -date2TimeStamp(x.timeStamp))
         for item in sorted(self.context.query(userName=personUid), key=sortKey):
             if type is not None:
                 if item.type != type:
@@ -95,7 +96,7 @@ class Favorites(object):
                 track.data = data
 
 
-class Favorite(Track):
+class BaseFavorite(object):
 
     implements(IFavorite)
 
@@ -104,6 +105,10 @@ class Favorite(Track):
     @property
     def type(self):
         return self.data.get('type') or 'favorite'
+
+
+class Favorite(BaseFavorite, Track):
+    pass
 
 
 def updateSortInfo(person, task, data):

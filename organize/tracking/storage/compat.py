@@ -9,6 +9,17 @@ used by code based on loops.organize.tracking.
 from cco.storage.tracking import record
 
 
+class Track(record.Track):
+
+    @property
+    def taskId(self):
+        return self.head.get('taskId')
+
+
 class Container(record.Container):
 
-    pass
+    itemFactory = Track
+
+    def saveUserTrack(self, taskId, runId, userName, data):
+        track = self.itemFactory(taskId, userName, data=data)
+        return self.save(track)

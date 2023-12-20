@@ -3,11 +3,11 @@
 """SQL-based storage for personal favorites and settings."""
 
 from cco.storage.common import registerContainerClass
-from cco.storage.tracking import record
+from loops.organize.personal.favorite import BaseFavorite
 from loops.organize.tracking.storage import compat
 
 
-class Favorite(record.Track):
+class Favorite(BaseFavorite, compat.Track):
 
     prefix = 'fav'
 
