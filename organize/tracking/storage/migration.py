@@ -17,11 +17,11 @@ def migrate(loopsRoot, recFolderName, factory=record.Container):
         print('*** ERROR: folder %r not found!' % recFolderName)
         return
     options = LoopsOptions(loopsRoot)
-    print('*** database:', config.dbname, config.dbuser, config.dbpassword)
+    #print('*** database:', config.dbname, config.dbuser, config.dbpassword)
     schema = options('cco.storage.schema') or None
     if schema is not None:
         schema = schema[0]
-    print('*** schema:', schema)
+    #print('*** schema:', schema)
     storage = Storage(getEngine(config.dbengine, config.dbname, 
                                 config.dbuser, config.dbpassword, 
                                 host=config.dbhost, port=config.dbport), 
@@ -29,9 +29,9 @@ def migrate(loopsRoot, recFolderName, factory=record.Container):
     container = storage.create(factory)
     for id, inTrack in rf.items():
         ts = datetime.fromtimestamp(inTrack.timeStamp)
-        print('*** in:', id, inTrack)
+        #print('*** in:', id, inTrack)
         head = [inTrack.metadata[k] for k in container.itemFactory.headFields]
-        print('*** out:', head, ts)
+        #print('*** out:', head, ts)
         track = container.itemFactory(*head, trackId=int(id), 
                                     timeStamp=ts, data=inTrack.data)
         container.upsert(track)

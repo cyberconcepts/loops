@@ -47,13 +47,13 @@ class TestStorage(common.TestCase):
     def test_fav_010_add(self):
         favs = FavoritesAdapter(self.g.favorites)
         trackId = favs.add(self.g.resources['d002.txt'], self.g.johnC)
-        print('*** add, result:', trackId)
+        #print('*** add, result:', trackId)
 
     def test_fav_020_query(self):
         favs = FavoritesAdapter(self.g.favorites)
         uid = util.getUidForObject(self.g.johnC)
         result = list(self.g.favorites.query(userName=uid))
-        print('*** fav', list(favs.list(self.g.johnC)))
+        #print('*** fav', list(favs.list(self.g.johnC)))
 
     def test_zzz_tearDown(self):
         transaction.commit()
