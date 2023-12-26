@@ -23,7 +23,7 @@ with lower-level aspects like type or state management.
 
 Let's also import some common stuff needed later.
 
-  >>> from loops.common import adapted
+  >>> from loops.common import adapted, baseObject
   >>> from loops.setup import addAndConfigureObject
 
 
@@ -920,6 +920,26 @@ relates ISO country codes with the full name of the country.
 
   >>> countries.getRowsByValue('value', 'Germany')
   [{'value': 'Germany', 'key': 'de'}]
+
+The ``recordstable`` type is a variation of this datable type that contains
+a simple list of records - without a key column. A record in this  type is a
+dictionary with the field name as key and the field value as value.
+
+  >>> from loops.table import IRecordsTable, RecordsTable
+  >>> component.provideAdapter(RecordsTable, provides=IRecordsTable)
+
+  >>> drType = addAndConfigureObject(concepts, Concept, 'recordstable',
+  ...                   title='Records Table', conceptType=concepts['type'],
+  ...                   typeInterface=IRecordsTable)
+
+We just reuse the existing ``countries`` table and convert it to a records table.
+
+  >>> baseObject(countries).setType(drType)
+
+  >>> countries = adapted(concepts['countries'])
+
+  >>> countries.data
+  [{'value': 'Austria', 'key': 'at'}, {'value': 'Germany', 'key': 'de'}]
 
 
 Caching

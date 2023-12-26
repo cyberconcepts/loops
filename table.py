@@ -24,7 +24,7 @@ from BTrees.OOBTree import OOBTree
 from zope.cachedescriptors.property import Lazy
 from zope import component, schema
 from zope.component import adapts
-from zope.interface import implements, Interface, Attribute
+from zope.interface import implementer, implements, Interface, Attribute
 from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 
 from cybertools.composer.schema.factory import SchemaFactory
@@ -65,6 +65,11 @@ class IDataTable(IConceptSchema, ILoopsAdapter):
 IDataTable['columns'].hidden = True
 
 
+class IRecordsTable(IDataTable):
+
+    pass
+
+
 class DataTable(AdapterBase):
 
     implements(IDataTable)
@@ -101,8 +106,11 @@ class DataTable(AdapterBase):
     data = property(getData, setData)
 
     def dataAsRecords(self):
+        return self.asRecords(self.data)
+
+    def asRecords(self, data):
         result = []
-        for k, v in sorted(self.data.items()):
+        for k, v in sorted(data.items()):
             item = {}
             for idx, c in enumerate(self.columns):
                 if idx == 0:
@@ -187,4 +195,20 @@ class DataTableSourceBinder(object):
             context = baseObject(instance.context)
         dt = context.getLoopsRoot().getConceptManager()[self.tableName]
         return self.sourceList(adapted(dt), self.valueProvider)
+
+
+@implementer(IRecordsTable)
+class RecordsTable(DataTable):
+
+    def getData(self):
+        data = self.context._data
+        if not isinstance(data, list):
+            return self.asRecords(data)
+        return data
+    def setData(self, data):
+        self.context._data = data
+    data = property(getData, setData)
+
+    def dataAsRecords(self):
+        return self.data
 
