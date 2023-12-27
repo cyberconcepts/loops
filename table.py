@@ -28,7 +28,7 @@ from zope.interface import implementer, implements, Interface, Attribute
 from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 
 from cybertools.composer.schema.factory import SchemaFactory
-from cybertools.composer.schema.grid.interfaces import KeyTable
+from cybertools.composer.schema.grid.interfaces import KeyTable, Records
 from cybertools.composer.interfaces import IInstance
 from loops.common import AdapterBase, adapted, baseObject
 from loops.external.element import Element
@@ -67,7 +67,9 @@ IDataTable['columns'].hidden = True
 
 class IRecordsTable(IDataTable):
 
-    pass
+    data = Records(title=_(u'Table Data'),
+        description=_(u'Table Data'),
+        required=False)
 
 
 class DataTable(AdapterBase):
