@@ -127,7 +127,7 @@ class DataTable(AdapterBase):
         return [r for r in self.dataAsRecords() if r[column] == value]
 
 
-TypeInterfaceSourceList.typeInterfaces += (IDataTable,)
+TypeInterfaceSourceList.typeInterfaces += (IDataTable, IRecordsTable)
 
 
 class DataTableSchemaFactory(SchemaFactory):
