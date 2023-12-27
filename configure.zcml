@@ -297,6 +297,15 @@
              set_schema="loops.table.IDataTable" />
   </class>
 
+  <adapter factory="loops.table.RecordsTable" trusted="True"
+		   provides="loops.table.IRecordsTable" />
+  <class class="loops.table.RecordsTable">
+    <require permission="zope.View"
+             interface="loops.table.IRecordsTable" />
+    <require permission="zope.ManageContent"
+             set_schema="loops.table.IRecordsTable" />
+  </class>
+
   <adapter factory="loops.resource.FileAdapter"
            provides="loops.interfaces.IFile"
            trusted="True" />
