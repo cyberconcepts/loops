@@ -1,23 +1,7 @@
-#
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+"""Data (keyword-based) table definition and implementation.
 
-"""
-Data (keyword-based) table definition and implementation.
+Variant for tables without a key column: 
+RecordsTable using a list of records (key-value pairs).
 """
 
 from BTrees.OOBTree import OOBTree
@@ -30,6 +14,7 @@ from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 from cybertools.composer.schema.factory import SchemaFactory
 from cybertools.composer.schema.grid.interfaces import KeyTable, RecordsTable
 from cybertools.composer.interfaces import IInstance
+from cybertools.meta.interfaces import IOptions
 from loops.common import AdapterBase, adapted, baseObject
 from loops.external.element import Element
 from loops.interfaces import IConcept, IConceptSchema, ILoopsAdapter
@@ -205,7 +190,10 @@ class RecordsTable(DataTable):
     def getData(self):
         data = self.context._data
         if not isinstance(data, list):
-            return self.asRecords(data)
+            data = self.asRecords(data)
+        sortcrit = IOptions(self.type)('table.sort')
+        if sortcrit:
+            data.sort(key=lambda x: [x.get(f) for f in sortcrit])
         return data
     def setData(self, data):
         self.context._data = data
