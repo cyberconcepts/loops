@@ -374,6 +374,8 @@
            name="grid" />
   <adapter factory="cybertools.composer.schema.grid.field.RecordsFieldInstance"
            name="records" />
+  <adapter factory="cybertools.composer.schema.grid.field.ContextBasedRecordsFieldInstance"
+           name="recordstable" />
   <adapter factory="cybertools.composer.schema.grid.field.ContextBasedKeyTableFieldInstance"
            name="keytable" />
   <adapter factory="loops.schema.field.RelationSetFieldInstance"
