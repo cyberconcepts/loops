@@ -6,9 +6,12 @@ Provides a Container subclass that defines methods from cybertools...TrackingSto
 used by code based on loops.organize.tracking.
 """
 
+from zope.interface import implementer
 from cco.storage.tracking import record
+from loops.util import IUid
 
 
+@implementer(IUid)
 class Track(record.Track):
 
     @property

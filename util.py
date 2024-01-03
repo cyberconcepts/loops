@@ -24,6 +24,7 @@ import os
 from zope.publisher.browser import BrowserView
 from zope import component
 from zope.catalog.interfaces import ICatalog
+from zope.interface import Attribute, Interface
 from zope.interface import directlyProvides, directlyProvidedBy, implements
 from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
@@ -129,11 +130,18 @@ def reindex(obj, catalog=None):
         catalog.index_doc(int(getUidForObject(obj)), obj)
 
 
+# UID stuff
+
+class IUid(Interface):
+    """Provides uid property."""
+
+    uid = Attribute("Unique Identifier")
+
+
 def getItem(uid, intIds=None, storage=None):
     if storage is not None and '-' in uid:
         return storage.getItem(uid)
     return getObjectForUid(uid, intIds=intIds)
-
 
 def getObjectForUid(uid, intIds=None):
     if uid == '*': # wild card
@@ -150,7 +158,8 @@ def getObjectForUid(uid, intIds=None):
 def getUidForObject(obj, intIds=None):
     if obj == '*': # wild card
         return '*'
-    if hasattr(obj, 'uid'):
+    #if hasattr(obj, 'uid'):
+    if IUid.providedBy(obj):
         return str(obj.uid)
     if intIds is None:
         intIds = component.getUtility(IIntIds)
