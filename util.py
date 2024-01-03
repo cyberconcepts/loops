@@ -20,6 +20,7 @@
 Utility functions.
 """
 
+from __future__ import absolute_import
 import os
 from zope.publisher.browser import BrowserView
 from zope import component
@@ -38,7 +39,10 @@ try:
 except ImportError:
     markdown = None
 
+import config
+from cco.storage.common import Storage, getEngine
 import cybertools
+from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
 
 _ = MessageFactory('loops')
@@ -115,6 +119,8 @@ def toUnicode(value, encoding='UTF-8'):
         return value
 
 
+# catalog and index stuff
+
 def getCatalog(context):
     from loops.common import baseObject
     context = baseObject(context)
@@ -130,13 +136,29 @@ def reindex(obj, catalog=None):
         catalog.index_doc(int(getUidForObject(obj)), obj)
 
 
+# options => storage
+
+def records(context, name, factory):
+    root = context.getLoopsRoot()
+    opts = IOptions(root)
+    if name in (opts('cco.storage.records') or []):
+        schema = (opts('cco.storage.schema') or [None])[0]
+        storage = Storage(getEngine(config.dbengine, config.dbname, 
+                                    config.dbuser, config.dbpassword, 
+                                    host=config.dbhost, port=config.dbport), 
+                          schema=schema)
+        cont = storage.create(factory)
+    else:
+        cont = root.getRecordManager().get(name)
+    return cont
+
+
 # UID stuff
 
 class IUid(Interface):
     """Provides uid property."""
 
     uid = Attribute("Unique Identifier")
-
 
 def getItem(uid, intIds=None, storage=None):
     if storage is not None and '-' in uid:
