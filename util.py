@@ -124,8 +124,8 @@ def reindex(obj, catalog=None):
 def records(context, name, factory):
     root = context.getLoopsRoot()
     opts = IOptions(root)
-    if name in (opts('cco.storage.records') or []):
-        schema = (opts('cco.storage.schema') or [None])[0]
+    if name in (opts.cco.storage.records or []):
+        schema = (opts.cco.storage.schema or [None])[0]
         storage = Storage(getEngine(config.dbengine, config.dbname, 
                                     config.dbuser, config.dbpassword, 
                                     host=config.dbhost, port=config.dbport), 
