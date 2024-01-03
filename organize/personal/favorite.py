@@ -86,14 +86,16 @@ class Favorites(object):
     def reorder(self, uids):
         offset = 0
         for idx, uid in enumerate(uids):
-            track = util.getObjectForUid(uid)
+            #track = util.getObjectForUid(uid)
+            track = util.getItem(uid, storage=self.context.storage)
             if track is not None:
                 data = track.data
                 order = data.get('order', 100)
                 if order < idx or (order >= 100 and order < idx + 100):
                     offset = 100
                 data['order'] = idx + offset
-                track.data = data
+                #track.data = data
+                self.context.setTrackData(track, data)
 
 
 class BaseFavorite(object):

@@ -129,6 +129,12 @@ def reindex(obj, catalog=None):
         catalog.index_doc(int(getUidForObject(obj)), obj)
 
 
+def getItem(uid, intIds=None, storage=None):
+    if storage is not None and '-' in uid:
+        return storage.getItem(uid)
+    return getObjectForUid(uid, intIds=intIds)
+
+
 def getObjectForUid(uid, intIds=None):
     if uid == '*': # wild card
         return '*'
@@ -144,6 +150,8 @@ def getObjectForUid(uid, intIds=None):
 def getUidForObject(obj, intIds=None):
     if obj == '*': # wild card
         return '*'
+    if hasattr(obj, 'uid'):
+        return str(obj.uid)
     if intIds is None:
         intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))

@@ -23,3 +23,11 @@ class Container(record.Container):
     def saveUserTrack(self, taskId, runId, userName, data):
         track = self.itemFactory(taskId, userName, data=data)
         return self.save(track)
+
+    def setTrackData(self, track, data):
+        track.data = data
+        self.update(track)
+
+    def removeTrack(self, track):
+        self.remove(track.trackId)
+

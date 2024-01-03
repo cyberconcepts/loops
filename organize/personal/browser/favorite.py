@@ -24,11 +24,15 @@ from zope import component
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 
+import config
+from cco.storage.common import Storage, getEngine
 from cybertools.browser.configurator import ViewConfigurator, MacroViewProperty
 from loops.browser.node import NodeView
 from loops.common import adapted
 from loops.organize.party import getPersonForUser
+from loops.organize.personal.favorite import Favorites as FavAdapter
 from loops.organize.personal.interfaces import IFavorites
+from loops.organize.personal.storage.favorite import Favorites
 from loops import util
 
 
@@ -36,6 +40,24 @@ personal_macros = ViewPageTemplateFile('personal_macros.pt')
 
 
 class FavoriteView(NodeView):
+
+    containerName = 'favorites'
+    containerFactory = Favorites
+
+    @Lazy
+    def useRecordsStorage(self):
+        return self.containerName in (self.globalOptions('cco.storage.records') or [])
+
+    @Lazy
+    def recordsContainer(self):
+        schema = self.globalOptions('cco.storage.schema') or None
+        if schema is not None:
+            schema = schema[0]
+        storage = Storage(getEngine(config.dbengine, config.dbname, 
+                                config.dbuser, config.dbpassword, 
+                                host=config.dbhost, port=config.dbport), 
+                      schema=schema)
+        return storage.create(self.containerFactory)
 
     @Lazy
     def item(self):
@@ -47,6 +69,8 @@ class FavoriteView(NodeView):
 
     @Lazy
     def favorites(self):
+        if self.useRecordsStorage:
+            return FavAdapter(self.recordsContainer)
         records = self.loopsRoot.getRecordManager()
         if records is not None:
             storage = records.get('favorites')
