@@ -1,27 +1,10 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.personal.favorite
 
-"""
-A framework for storing personal favorites and settings.
+"""A framework for storing personal favorites and settings.
 """
 
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer
 
 from cybertools.util.date import date2TimeStamp
 from cybertools.tracking.btree import Track
@@ -30,9 +13,9 @@ from loops.organize.personal.interfaces import IFavorites, IFavorite
 from loops import util
 
 
+@implementer(IFavorites)
 class Favorites(object):
 
-    implements(IFavorites)
     adapts(ITrackingStorage)
 
     def __init__(self, context):
@@ -98,9 +81,8 @@ class Favorites(object):
                 self.context.setTrackData(track, data)
 
 
+@implementer(IFavorite)
 class BaseFavorite(object):
-
-    implements(IFavorite)
 
     typeName = 'Favorite'
 
@@ -116,6 +98,7 @@ class Favorite(BaseFavorite, Track):
 def updateSortInfo(person, task, data):
     if person is not None:
         favorites = task.getLoopsRoot().getRecordManager().get('favorites')
+        #favorites = util.records(task, 'favorites', FavContainer)
         if favorites is None:
             return data
         personUid = util.getUidForObject(person)
