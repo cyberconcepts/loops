@@ -17,6 +17,7 @@ from loops import util
 
 config.dbname = 'ccotest'
 config.dbuser = 'ccotest'
+config.dbpassword = 'cco'
 
 
 class Glob(object):
