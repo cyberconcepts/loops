@@ -4,16 +4,16 @@
 
 from cco.storage.common import registerContainerClass
 from loops.organize.personal.favorite import BaseFavorite
-from loops.organize.tracking.storage import compat
+from loops.storage.compat import tracking
 
 
-class Favorite(BaseFavorite, compat.Track):
+class Favorite(BaseFavorite, tracking.Track):
 
     prefix = 'fav'
 
 
 @registerContainerClass
-class Favorites(compat.Container):
+class Favorites(tracking.Container):
 
     itemFactory = Favorite
     tableName = 'favorites'

@@ -13,7 +13,7 @@ from loops.config.base import LoopsOptions
 from loops.organize.personal.favorite import Favorites as FavoritesAdapter
 from loops.organize.personal.interfaces import IFavorites
 from loops.organize.personal.storage.favorite import Favorites
-from loops.organize.tracking.storage.migration import migrate
+from loops.storage.migration.tracking import migrate
 from loops.setup import addAndConfigureObject
 from loops.storage.tests import common
 from loops import util

@@ -1,4 +1,4 @@
-# loops.organize.tracking.storage.compat
+# loops.storage.compat.tracking
 
 """loops compatibility layer on cco.storage.tracking.
 

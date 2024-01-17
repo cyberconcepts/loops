@@ -1,6 +1,6 @@
-# loops.organize.tracking.storage.migration
+# loops.storage.migration.tracking
 
-"""Tools for migration ZODB-/BTree-based tracks to SQL-base records."""
+"""Tools for migration of ZODB-/BTree-based tracks to SQL-based records."""
 
 from datetime import datetime
 import transaction
