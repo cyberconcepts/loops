@@ -7,11 +7,11 @@ import transaction
 
 import config
 from cco.storage.common import Storage, getEngine
-from cco.storage.tracking import record
+from cco.storage import tracking
 from loops.config.base import LoopsOptions
 
 
-def migrate(loopsRoot, recFolderName, factory=record.Container):
+def migrate(loopsRoot, recFolderName, factory=tracking.Container):
     rf = loopsRoot.getRecordManager().get(recFolderName)
     if rf is None:
         print('*** ERROR: folder %r not found!' % recFolderName)

@@ -7,19 +7,18 @@ used by code based on loops.organize.tracking.
 """
 
 from zope.interface import implementer
-from cco.storage.tracking import record
+
+from cco.storage import tracking
 from loops.util import IUid
 
 
 @implementer(IUid)
-class Track(record.Track):
+class Track(tracking.Track):
 
-    @property
-    def taskId(self):
-        return self.head.get('taskId')
+    pass
 
 
-class Container(record.Container):
+class Container(tracking.Container):
 
     itemFactory = Track
 
