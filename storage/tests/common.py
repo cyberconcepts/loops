@@ -9,10 +9,11 @@ import unittest
 from zope import component, interface
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
-from cco.storage.common import Storage, getEngine
+from cco.storage.common import getEngine
 from loops.expert.testsetup import TestSite
 from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
+from loops.storage.compat.common import Storage
 from loops import util
 
 config.dbname = 'ccotest'

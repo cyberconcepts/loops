@@ -43,6 +43,7 @@ class TestStorage(common.TestCase):
         self.g.favorites = favorites = self.g.storage.create(Favorites)
         fav = favorites.get(1)
         self.assertEqual(fav.head['userName'], '102')
+        #storage.setSequence('favorites', 'trackid', 101)
 
     def test_fav_010_add(self):
         favs = FavoritesAdapter(self.g.favorites)
