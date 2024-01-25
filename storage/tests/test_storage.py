@@ -23,6 +23,7 @@ class TestStorage(common.TestCase):
 
     def test_000_setUp(self):
         self.prepare()
+        self.g.storage.dropTable('favorites')
         component.provideAdapter(FavoritesAdapter)
         self.assertEqual(getName(self.loopsRoot), 'loops')
         self.assertEqual(getName(self.g.concepts), 'concepts')
@@ -43,7 +44,7 @@ class TestStorage(common.TestCase):
         self.g.favorites = favorites = self.g.storage.create(Favorites)
         fav = favorites.get(1)
         self.assertEqual(fav.head['userName'], '102')
-        #storage.setSequence('favorites', 'trackid', 101)
+        favorites.storage.resetSequence('favorites', 'trackid', 101)
 
     def test_fav_010_add(self):
         favs = FavoritesAdapter(self.g.favorites)
