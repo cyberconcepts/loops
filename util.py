@@ -23,12 +23,19 @@ except ImportError:
     markdown = None
 
 import config
-from cco.storage.common import Storage, getEngine
+import cco.storage.common
+from cco.storage.common import Storage, getEngine, sessionFactory
 import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
 
 _ = MessageFactory('loops')
+
+engine = getEngine(config.dbengine, config.dbname, 
+                   config.dbuser, config.dbpassword, 
+                   host=config.dbhost, port=config.dbport)
+cco.storage.common.engine = engine
+cco.storage.common.Session = sessionFactory(engine)
 
 
 renderingFactories = {
@@ -126,10 +133,7 @@ def records(context, name, factory):
     opts = IOptions(root)
     if name in (opts.cco.storage.records or []):
         schema = (opts.cco.storage.schema or [None])[0]
-        storage = Storage(getEngine(config.dbengine, config.dbname, 
-                                    config.dbuser, config.dbpassword, 
-                                    host=config.dbhost, port=config.dbport), 
-                          schema=schema)
+        storage = Storage(                          schema=schema)
         cont = storage.create(factory)
     else:
         cont = root.getRecordManager().get(name)

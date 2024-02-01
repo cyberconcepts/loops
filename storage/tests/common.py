@@ -4,21 +4,21 @@
 """
 
 import config
+config.dbname = 'ccotest'
+config.dbuser = 'ccotest'
+config.dbpassword = 'cco'
 
 import unittest
 from zope import component, interface
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
-from cco.storage.common import getEngine
+import cco.storage.common
+from cco.storage.common import getEngine, sessionFactory
 from loops.expert.testsetup import TestSite
 from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
 from loops.storage.compat.common import Storage
 from loops import util
-
-config.dbname = 'ccotest'
-config.dbuser = 'ccotest'
-config.dbpassword = 'cco'
 
 
 class Glob(object):
@@ -38,8 +38,7 @@ class TestCase(unittest.TestCase):
         loopsId = util.getUidForObject(loopsRoot)
         setupData = setupObjectsForTesting(site, g.concepts)
         g.johnC = setupData.johnC
-        g.storage = Storage(getEngine('postgresql', 'ccotest', 'ccotest', 'cco'),
-                            schema='testing')
+        g.storage = Storage(schema='testing')
 
     @classmethod
     def cleanup(cls):

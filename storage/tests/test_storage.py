@@ -7,6 +7,8 @@ import transaction
 from zope import component
 from zope.traversing.api import getName
 
+from loops.storage.tests import common
+
 import config
 from loops.concept import Concept
 from loops.config.base import LoopsOptions
@@ -15,7 +17,6 @@ from loops.organize.personal.interfaces import IFavorites
 from loops.organize.personal.storage.favorite import Favorites
 from loops.storage.migration.tracking import migrate
 from loops.setup import addAndConfigureObject
-from loops.storage.tests import common
 from loops import util
 
 

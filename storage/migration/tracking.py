@@ -6,7 +6,8 @@ from datetime import datetime
 import transaction
 
 import config
-from cco.storage.common import getEngine
+import cco.storage.common
+from cco.storage.common import getEngine, sessionFactory
 from cco.storage import tracking
 from loops.config.base import LoopsOptions
 from loops.storage.compat.common import Storage
@@ -24,10 +25,7 @@ def migrate(loopsRoot, recFolderName, factory=tracking.Container):
     if schema is not None:
         schema = schema[0]
     #print('*** schema:', schema)
-    storage = Storage(getEngine(config.dbengine, config.dbname, 
-                                config.dbuser, config.dbpassword, 
-                                host=config.dbhost, port=config.dbport), 
-                      schema=schema)
+    storage = Storage(schema=schema)
     container = storage.create(factory)
     for id, inTrack in rf.items():
         ts = datetime.fromtimestamp(inTrack.timeStamp)

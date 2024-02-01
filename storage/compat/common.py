@@ -12,10 +12,9 @@ class Storage(common.Storage):
 
     uidTable = None
 
-    def __init__(self, engine, schema=None):
-        super(Storage, self).__init__(engine, schema)
+    def __init__(self, schema=None):
+        super(Storage, self).__init__(schema)
         self.uidTable = self.getUidTable(self.schema)
-        self.session = self.Session()
 
     def storeUid(self, ouid, nuid):
         ouid = int(ouid)
