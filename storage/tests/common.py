@@ -1,4 +1,4 @@
-# loops.storage.test.common
+# loops.storage.tests.common
 
 """Common definitions for testing the SQL-based storage implementation.
 """

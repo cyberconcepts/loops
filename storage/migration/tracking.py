@@ -6,9 +6,11 @@ from datetime import datetime
 import transaction
 
 import config
-from cco.storage.common import Storage, getEngine
+from cco.storage.common import getEngine
 from cco.storage import tracking
 from loops.config.base import LoopsOptions
+from loops.storage.compat.common import Storage
+from loops import util
 
 
 def migrate(loopsRoot, recFolderName, factory=tracking.Container):
@@ -35,5 +37,7 @@ def migrate(loopsRoot, recFolderName, factory=tracking.Container):
         track = container.itemFactory(*head, trackId=int(id), 
                                     timeStamp=ts, data=inTrack.data)
         container.upsert(track)
+        ouid = util.getUidForObject(inTrack)
+        storage.storeUid(ouid, track.uid)
     transaction.commit()
 
