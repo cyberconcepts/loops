@@ -37,7 +37,6 @@ engine = getEngine(config.dbengine, config.dbname,
 cco.storage.common.engine = engine
 cco.storage.common.Session = sessionFactory(engine)
 
-
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
     'text/stx': 'zope.source.stx',
@@ -133,7 +132,7 @@ def records(context, name, factory):
     opts = IOptions(root)
     if name in (opts.cco.storage.records or []):
         schema = (opts.cco.storage.schema or [None])[0]
-        storage = Storage(                          schema=schema)
+        storage = Storage(schema=schema)
         cont = storage.create(factory)
     else:
         cont = root.getRecordManager().get(name)
