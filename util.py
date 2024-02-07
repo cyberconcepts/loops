@@ -142,14 +142,25 @@ def records(context, name, factory):
 # UID stuff
 
 class IUid(Interface):
-    """Provides uid property."""
 
     uid = Attribute("Unique Identifier")
+
 
 def getItem(uid, intIds=None, storage=None):
     if storage is not None and '-' in uid:
         return storage.getItem(uid)
-    return getObjectForUid(uid, intIds=intIds)
+    obj = getObjectForUid(uid, intIds=intIds)
+    if obj is None and storage is not None:
+        return getMigratedItem(uid, storage)
+    return obj
+
+def getMigratedItem(uid, storage):
+    t = self.getUidTable
+    stmt = t.select().where(t.c.legacy == int(uid))
+    newId = storage.session.execute(stmt).scalar()
+    if newId is not None:
+        return storage.getItem(newUid)
+    return None
 
 def getObjectForUid(uid, intIds=None):
     if uid == '*': # wild card
@@ -173,9 +184,10 @@ def getUidForObject(obj, intIds=None):
         intIds = component.getUtility(IIntIds)
     return str(intIds.queryId(obj))
 
-def getObjectsForUids(uids, adapt=True):
+def getObjectsForUids(uids, adapt=True, storage=None):
     intIds = component.getUtility(IIntIds)
-    result = [getObjectForUid(uid, intIds) for uid in uids]
+    #result = [getObjectForUid(uid, intIds) for uid in uids]
+    result = [getItem(uid, intIds, storage=storage) for uid in uids]
     if adapt:
         from loops.common import adapted
         return [adapted(obj) for obj in result if obj is not None]

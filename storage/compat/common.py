@@ -26,7 +26,6 @@ class Storage(common.Storage):
             self.session.execute(stmt)
         mark_changed(self.session)
 
-
     def getUidTable(self, schema=None):
         #table = getExistingTable(self.storage, self.tableName)
         #if table is None:
