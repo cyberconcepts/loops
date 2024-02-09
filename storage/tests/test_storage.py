@@ -3,11 +3,11 @@
 """Comprehensive functional testing for SQL-based storage implementation.
 """
 
+from loops.storage.tests import common
+
 import transaction
 from zope import component
 from zope.traversing.api import getName
-
-from loops.storage.tests import common
 
 import config
 from loops.concept import Concept
@@ -58,7 +58,7 @@ class TestStorage(common.TestCase):
         uid = util.getUidForObject(self.g.johnC)
         result = list(self.g.favorites.query(userName=uid))
         self.assertEqual(len(result), 2)
-        self.assertEqual(list(favs.list(self.g.johnC)), [u'21', u'23'])
+        self.assertEqual(list(sorted(favs.list(self.g.johnC))), [u'21', u'23'])
 
     def test_zzz_tearDown(self):
         transaction.commit()

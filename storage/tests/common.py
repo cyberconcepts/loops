@@ -4,9 +4,17 @@
 """
 
 import config
+import cco.storage.common
+from cco.storage.common import getEngine, sessionFactory
+
 config.dbname = 'ccotest'
 config.dbuser = 'ccotest'
 config.dbpassword = 'cco'
+engine = getEngine(config.dbengine, config.dbname, 
+                   config.dbuser, config.dbpassword, 
+                   host=config.dbhost, port=config.dbport)
+cco.storage.common.engine = engine
+cco.storage.common.Session = sessionFactory(engine)
 
 import unittest
 from zope import component, interface
