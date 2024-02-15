@@ -6,9 +6,9 @@ from datetime import datetime
 import transaction
 
 import config
-import cco.storage.common
-from cco.storage.common import getEngine, sessionFactory
-from cco.storage import tracking
+import scopes.storage.common
+from scopes.storage.common import getEngine, sessionFactory
+from scopes.storage import tracking
 from loops.config.base import LoopsOptions
 from loops.storage.compat.common import Storage
 from loops import util
@@ -26,7 +26,7 @@ def migrate(loopsRoot, source, factory=tracking.Container,
         items = [(s.__name__, s) for s in source[start:stop]]
     options = LoopsOptions(loopsRoot)
     #print('*** database:', config.dbname, config.dbuser, config.dbpassword)
-    schema = options('cco.storage.schema') or None
+    schema = options('scopes.storage.schema') or None
     if schema is not None:
         schema = schema[0]
     #print('*** schema:', schema)

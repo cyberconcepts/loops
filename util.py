@@ -23,8 +23,8 @@ except ImportError:
     markdown = None
 
 import config
-import cco.storage.common
-from cco.storage.common import Storage, getEngine, sessionFactory
+import scopes.storage.common
+from scopes.storage.common import Storage, getEngine, sessionFactory
 import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
@@ -34,8 +34,8 @@ _ = MessageFactory('loops')
 engine = getEngine(config.dbengine, config.dbname, 
                    config.dbuser, config.dbpassword, 
                    host=config.dbhost, port=config.dbport)
-cco.storage.common.engine = engine
-cco.storage.common.Session = sessionFactory(engine)
+scopes.storage.common.engine = engine
+scopes.storage.common.Session = sessionFactory(engine)
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
@@ -130,8 +130,8 @@ def reindex(obj, catalog=None):
 def records(context, name, factory):
     root = context.getLoopsRoot()
     opts = IOptions(root)
-    if name in (opts.cco.storage.records or []):
-        schema = (opts.cco.storage.schema or [None])[0]
+    if name in (opts.scopes.storage.records or []):
+        schema = (opts.scopes.storage.schema or [None])[0]
         storage = Storage(schema=schema)
         cont = storage.create(factory)
     else:

@@ -1,6 +1,6 @@
 # loops.storage.compat.tracking
 
-"""loops compatibility layer on cco.storage.tracking.
+"""loops compatibility layer on scopes.storage.tracking.
 
 Provides a Container subclass that defines methods from cybertools...TrackingStorage
 used by code based on loops.organize.tracking.
@@ -8,7 +8,7 @@ used by code based on loops.organize.tracking.
 
 from zope.interface import implementer
 
-from cco.storage import tracking
+from scopes.storage import tracking
 from loops.util import IUid
 
 

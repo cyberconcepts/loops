@@ -1,11 +1,11 @@
 # loops.storage.compat.common
 
-"""Compatibility layer on cco.storage: common functionality."""
+"""Compatibility layer on scopes.storage: common functionality."""
 
 from sqlalchemy import Table, Column, BigInteger, Text
 from zope.sqlalchemy import mark_changed
 
-from cco.storage import common
+from scopes.storage import common
 
 
 class Storage(common.Storage):

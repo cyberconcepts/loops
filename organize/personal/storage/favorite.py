@@ -2,7 +2,7 @@
 
 """SQL-based storage for personal favorites and settings."""
 
-from cco.storage.common import registerContainerClass
+from scopes.storage.common import registerContainerClass
 from loops.organize.personal.favorite import BaseFavorite
 from loops.storage.compat import tracking
 

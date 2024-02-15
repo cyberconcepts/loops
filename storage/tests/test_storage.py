@@ -39,8 +39,9 @@ class TestStorage(common.TestCase):
     def test_fav_002_migration(self):
         self.assertEqual(config.dbname, 'ccotest')
         self.assertEqual(config.dbuser, 'ccotest')
-        LoopsOptions(self.loopsRoot).set('cco.storage.schema', ['testing'])
-        self.assertEqual(LoopsOptions(self.loopsRoot)('cco.storage.schema'), ['testing'])
+        LoopsOptions(self.loopsRoot).set('scopes.storage.schema', ['testing'])
+        self.assertEqual(LoopsOptions(self.loopsRoot)('scopes.storage.schema'), 
+                         ['testing'])
         migrate(self.loopsRoot, 'favorites', factory=Favorites)
         self.g.favorites = favorites = self.g.storage.create(Favorites)
         fav = favorites.get(1)

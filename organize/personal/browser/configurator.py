@@ -59,7 +59,7 @@ class PortletConfigurator(ViewConfigurator):
         return getPersonForUser(self.context, self.request)
 
     def hasFavorites(self):
-        if 'favorites' in (self.view.globalOptions.cco.storage.records or []):
+        if 'favorites' in (self.view.globalOptions.scopes.storage.records or []):
             return True
         if self.records is not None:
             return 'favorites' in self.records

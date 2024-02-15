@@ -4,8 +4,8 @@
 """
 
 import config
-import cco.storage.common
-from cco.storage.common import getEngine, sessionFactory
+import scopes.storage.common
+from scopes.storage.common import getEngine, sessionFactory
 
 config.dbname = 'ccotest'
 config.dbuser = 'ccotest'
@@ -13,15 +13,13 @@ config.dbpassword = 'cco'
 engine = getEngine(config.dbengine, config.dbname, 
                    config.dbuser, config.dbpassword, 
                    host=config.dbhost, port=config.dbport)
-cco.storage.common.engine = engine
-cco.storage.common.Session = sessionFactory(engine)
+scopes.storage.common.engine = engine
+scopes.storage.common.Session = sessionFactory(engine)
 
 import unittest
 from zope import component, interface
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
-import cco.storage.common
-from cco.storage.common import getEngine, sessionFactory
 from loops.expert.testsetup import TestSite
 from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
