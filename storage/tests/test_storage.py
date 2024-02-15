@@ -24,6 +24,8 @@ class TestStorage(common.TestCase):
 
     def test_000_setUp(self):
         self.prepare()
+        self.assertEqual(str(self.g.storage.engine.url),  
+                         'postgresql://ccotest:cco@localhost:5432/ccotest')
         self.g.storage.dropTable('favorites')
         component.provideAdapter(FavoritesAdapter)
         self.assertEqual(getName(self.loopsRoot), 'loops')
@@ -37,8 +39,6 @@ class TestStorage(common.TestCase):
         self.assertEqual(len(records['favorites']), 1) 
 
     def test_fav_002_migration(self):
-        self.assertEqual(config.dbname, 'ccotest')
-        self.assertEqual(config.dbuser, 'ccotest')
         LoopsOptions(self.loopsRoot).set('scopes.storage.schema', ['testing'])
         self.assertEqual(LoopsOptions(self.loopsRoot)('scopes.storage.schema'), 
                          ['testing'])
