@@ -27,6 +27,7 @@ class TestStorage(common.TestCase):
         self.assertEqual(str(self.g.storage.engine.url),  
                          'postgresql://ccotest:cco@localhost:5432/ccotest')
         self.g.storage.dropTable('favorites')
+        self.g.storage.dropTable('uid_mapping')
         component.provideAdapter(FavoritesAdapter)
         self.assertEqual(getName(self.loopsRoot), 'loops')
         self.assertEqual(getName(self.g.concepts), 'concepts')

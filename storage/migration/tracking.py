@@ -14,16 +14,16 @@ from loops.storage.compat.common import Storage
 from loops import util
 
 
-def migrate(loopsRoot, source, factory=tracking.Container,
+def migrate(loopsRoot, recFolderName, sourceIds=None, factory=tracking.Container,
             start=0, stop=None, step=10, autoDelete=False):
-    if isinstance(source, basestring):
-        rf = loopsRoot.getRecordManager().get(source)
-        if rf is None:
-            print('*** ERROR: folder %r not found!' % recFolderName)
-            return
-        items = list(rf.items()[start:stop])
+    rf = loopsRoot.getRecordManager().get(recFolderName)
+    if rf is None:
+        print('*** ERROR: folder %r not found!' % recFolderName)
+        return
+    if sourceIds is None:
+        trackIds = list(rf.keys()[start:stop])
     else:
-        items = [(s.__name__, s) for s in source[start:stop]]
+        trackIds = sourceIds[start:stop]
     options = LoopsOptions(loopsRoot)
     #print('*** database:', config.dbname, config.dbuser, config.dbpassword)
     schema = options('scopes.storage.schema') or None
@@ -34,7 +34,8 @@ def migrate(loopsRoot, source, factory=tracking.Container,
     container = storage.create(factory)
     ix = 0
     prefix = factory.itemFactory.prefix
-    for ix, (id, inTrack) in enumerate(items):
+    for ix, id in enumerate(trackIds):
+        inTrack = rf[id]
         id = int(id)
         ts = datetime.fromtimestamp(inTrack.timeStamp)
         #print('*** in:', id, inTrack)
