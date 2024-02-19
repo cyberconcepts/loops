@@ -36,8 +36,9 @@ class TestStorage(common.TestCase):
     def test_fav_001_setUp(self):
         self.g.records = records = self.loopsRoot.getRecordManager()
         favs = IFavorites(records['favorites'])
-        favs.add(self.g.resources['d001.txt'], self.g.johnC)
+        trid = favs.add(self.g.resources['d001.txt'], self.g.johnC)
         self.assertEqual(len(records['favorites']), 1) 
+        self.g.favUid = util.getUidForObject(records['favorites'][trid])
 
     def test_fav_002_migration(self):
         LoopsOptions(self.loopsRoot).set('scopes.storage.schema', ['testing'])
@@ -61,6 +62,10 @@ class TestStorage(common.TestCase):
         result = list(self.g.favorites.query(userName=uid))
         self.assertEqual(len(result), 2)
         self.assertEqual(list(sorted(favs.list(self.g.johnC))), [u'21', u'23'])
+
+    def test_fav_021_olduid(self):
+        track = util.getItem(self.g.favUid)
+        self.assertEqual(track.taskId, '21')
 
     def test_zzz_tearDown(self):
         transaction.commit()

@@ -157,9 +157,9 @@ def getItem(uid, intIds=None, storage=None):
 def getMigratedItem(uid, storage):
     t = self.getUidTable
     stmt = t.select().where(t.c.legacy == int(uid))
-    newId = storage.session.execute(stmt).scalar()
+    newId = storage.session.execute(stmt).first()
     if newId is not None:
-        return storage.getItem(newUid)
+        return storage.getItem('%s-%i' % newUid)
     return None
 
 def getObjectForUid(uid, intIds=None):
