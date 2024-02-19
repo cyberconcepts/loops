@@ -33,7 +33,9 @@ def migrate(loopsRoot, source, factory=tracking.Container,
     storage = Storage(schema=schema)
     container = storage.create(factory)
     ix = 0
+    prefix = factory.itemFactory.prefix
     for ix, (id, inTrack) in enumerate(items):
+        id = int(id)
         ts = datetime.fromtimestamp(inTrack.timeStamp)
         #print('*** in:', id, inTrack)
         head = [inTrack.metadata[k] for k in container.itemFactory.headFields]
@@ -43,11 +45,11 @@ def migrate(loopsRoot, source, factory=tracking.Container,
             if k[0] == '_' and k[1] != '_':
                 print('*** _field!', k, v, head)
                 data[k] = v
-        track = container.itemFactory(*head, trackId=int(id), 
+        track = container.itemFactory(*head, trackId=id, 
                                     timeStamp=ts, data=data)
         container.upsert(track)
         ouid = util.getUidForObject(inTrack)
-        storage.storeUid(ouid, track.uid)
+        storage.storeUid(ouid, prefix, id)
         if autoDelete:
             inTrack.__parent__.removeTrack(inTrack)
         if divmod(ix+1, step)[1] == 0:

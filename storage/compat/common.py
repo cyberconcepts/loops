@@ -2,7 +2,7 @@
 
 """Compatibility layer on scopes.storage: common functionality."""
 
-from sqlalchemy import Table, Column, BigInteger, Text
+from sqlalchemy import Table, Column, Index, BigInteger, Text
 from zope.sqlalchemy import mark_changed
 
 from scopes.storage import common
@@ -16,13 +16,13 @@ class Storage(common.Storage):
         super(Storage, self).__init__(schema)
         self.uidTable = self.getUidTable(self.schema)
 
-    def storeUid(self, ouid, nuid):
+    def storeUid(self, ouid, prefix, id):
         ouid = int(ouid)
         t = self.uidTable
-        stmt = t.update().values(standard=nuid).where(t.c.legacy == ouid)
+        stmt = t.update().values(prefix=prefix, id=id).where(t.c.legacy == ouid)
         n = self.session.execute(stmt).rowcount
         if n == 0:
-            stmt = t.insert().values(legacy=ouid, standard=nuid)
+            stmt = t.insert().values(legacy=ouid, prefix=prefix, id=id)
             self.session.execute(stmt)
         mark_changed(self.session)
 
@@ -35,8 +35,10 @@ class Storage(common.Storage):
 def createUidTable(storage):
     metadata = storage.metadata
     cols = [Column('legacy', BigInteger, primary_key=True),
-            Column('standard', Text, nullable=False, unique=True, index=True)]
-    table = Table('uid_mapping', metadata, *cols, extend_existing=True)
+            Column('prefix', Text, nullable=False),
+            Column('id', BigInteger, nullable=False)]
+    idxs = [Index('idx_uid_mapping_prefix_id', 'prefix', 'id', unique=True)]
+    table = Table('uid_mapping', metadata, *(cols+idxs), extend_existing=True)
     metadata.create_all(storage.engine)
     return table
     
