@@ -125,14 +125,31 @@ def reindex(obj, catalog=None):
         catalog.index_doc(int(getUidForObject(obj)), obj)
 
 
-# options => storage
+# options => storage => records
 
-def records(context, name, factory):
+def getStorage(context, request=None):
+    if request is None:
+        request = getRequest()
+    if request is None:
+        return makeStorage(context)
+    storage = request.annotations.get('storage')
+    if storage is None:
+        storage = makeStorage(context)
+        request.annotations['storage'] = storage
+    return storage
+
+def makeStorage(context):
+    root = context.getLoopsRoot()
+    opts = IOptions(root)
+    schema = (opts.scopes.storage.schema or [None])[0]
+    return Storage(schema=schema)
+
+def records(context, name, factory, storage=None):
     root = context.getLoopsRoot()
     opts = IOptions(root)
     if name in (opts.scopes.storage.records or []):
-        schema = (opts.scopes.storage.schema or [None])[0]
-        storage = Storage(schema=schema)
+        if storage is None:
+            storage = getStorage(context)
         cont = storage.create(factory)
     else:
         cont = root.getRecordManager().get(name)
