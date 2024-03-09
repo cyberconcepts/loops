@@ -3,7 +3,6 @@
 """Compatibility layer on scopes.storage: common functionality."""
 
 from sqlalchemy import Table, Column, Index, BigInteger, Text
-from zope.sqlalchemy import mark_changed
 
 from scopes.storage import common
 
@@ -24,7 +23,7 @@ class Storage(common.Storage):
         if n == 0:
             stmt = t.insert().values(legacy=ouid, prefix=prefix, id=id)
             self.session.execute(stmt)
-        mark_changed(self.session)
+        self.mark_changed()
 
     def getUidTable(self, schema=None):
         #table = getExistingTable(self.storage, self.tableName)

@@ -138,7 +138,7 @@ def makeStorage(context):
     root = context.getLoopsRoot()
     opts = IOptions(root)
     schema = (opts.scopes.storage.schema or [None])[0]
-    return Storage(schema=schema)
+    return storageFactory(schema=schema)
 
 def records(context, name, factory, storage=None):
     root = context.getLoopsRoot()
