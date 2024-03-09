@@ -9,7 +9,6 @@ import transaction
 from zope import component
 from zope.traversing.api import getName
 
-import config
 from loops.concept import Concept
 from loops.config.base import LoopsOptions
 from loops.organize.personal.favorite import Favorites as FavoritesAdapter

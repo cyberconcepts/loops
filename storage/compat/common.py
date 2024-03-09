@@ -12,8 +12,8 @@ class Storage(common.Storage):
 
     uidTable = None
 
-    def __init__(self, schema=None):
-        super(Storage, self).__init__(schema)
+    def __init__(self, db, schema=None):
+        super(Storage, self).__init__(db, schema)
         self.uidTable = self.getUidTable(self.schema)
 
     def storeUid(self, ouid, prefix, id):

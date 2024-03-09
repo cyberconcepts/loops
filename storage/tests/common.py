@@ -4,17 +4,9 @@
 """
 
 import config
-import scopes.storage.common
-from scopes.storage.common import getEngine, sessionFactory
-
 config.dbname = 'ccotest'
 config.dbuser = 'ccotest'
 config.dbpassword = 'cco'
-engine = getEngine(config.dbengine, config.dbname, 
-                   config.dbuser, config.dbpassword, 
-                   host=config.dbhost, port=config.dbport)
-scopes.storage.common.engine = engine
-scopes.storage.common.Session = sessionFactory(engine)
 
 import unittest
 from zope import component, interface
@@ -25,6 +17,11 @@ from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
 from loops.storage.compat.common import Storage
 from loops import util
+
+from scopes.storage.db.postgres import StorageFactory 
+
+factory = StorageFactory(config, storageClass=Storage)
+storage = factory(schema='testing')
 
 
 class Glob(object):
@@ -44,7 +41,7 @@ class TestCase(unittest.TestCase):
         loopsId = util.getUidForObject(loopsRoot)
         setupData = setupObjectsForTesting(site, g.concepts)
         g.johnC = setupData.johnC
-        g.storage = Storage(schema='testing')
+        g.storage = storage
 
     @classmethod
     def cleanup(cls):

@@ -5,12 +5,8 @@
 from datetime import datetime
 import transaction
 
-import config
-import scopes.storage.common
-from scopes.storage.common import getEngine, sessionFactory
 from scopes.storage import tracking
 from loops.config.base import LoopsOptions
-from loops.storage.compat.common import Storage
 from loops import util
 
 
@@ -25,12 +21,11 @@ def migrate(loopsRoot, recFolderName, sourceIds=None, factory=tracking.Container
     else:
         trackIds = sourceIds[start:stop]
     options = LoopsOptions(loopsRoot)
-    #print('*** database:', config.dbname, config.dbuser, config.dbpassword)
     schema = options('scopes.storage.schema') or None
     if schema is not None:
         schema = schema[0]
     #print('*** schema:', schema)
-    storage = Storage(schema=schema)
+    storage = util.storageFactory(schema=schema)
     container = storage.create(factory)
     ix = 0
     prefix = factory.itemFactory.prefix

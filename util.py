@@ -22,20 +22,16 @@ try:
 except ImportError:
     markdown = None
 
-import config
-import scopes.storage.common
-from scopes.storage.common import Storage, getEngine, sessionFactory
 import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
+from loops.storage.compat.common import Storage
+
+import config
+from scopes.storage.db.postgres import StorageFactory
+storageFactory = StorageFactory(config, storageClass=Storage)
 
 _ = MessageFactory('loops')
-
-engine = getEngine(config.dbengine, config.dbname, 
-                   config.dbuser, config.dbpassword, 
-                   host=config.dbhost, port=config.dbport)
-scopes.storage.common.engine = engine
-scopes.storage.common.Session = sessionFactory(engine)
 
 renderingFactories = {
     'text/plain': 'zope.source.plaintext',
