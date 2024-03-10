@@ -18,15 +18,15 @@ from loops.organize.tests import setupObjectsForTesting
 from loops.storage.compat.common import Storage
 from loops import util
 
-from scopes.storage.db.postgres import StorageFactory 
+from loops.storage.compat.common import StorageFactory
 
-factory = StorageFactory(config, storageClass=Storage)
-storage = factory(schema='testing')
+util.storageFactory = StorageFactory(config)
 
 
 class Glob(object):
-    pass
 
+    storage = util.storageFactory(schema='testing')
+    
 
 class TestCase(unittest.TestCase):
 
@@ -41,7 +41,6 @@ class TestCase(unittest.TestCase):
         loopsId = util.getUidForObject(loopsRoot)
         setupData = setupObjectsForTesting(site, g.concepts)
         g.johnC = setupData.johnC
-        g.storage = storage
 
     @classmethod
     def cleanup(cls):

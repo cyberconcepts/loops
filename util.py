@@ -25,11 +25,10 @@ except ImportError:
 import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
-from loops.storage.compat.common import Storage
 
 import config
-from scopes.storage.db.postgres import StorageFactory
-storageFactory = StorageFactory(config, storageClass=Storage)
+from loops.storage.compat.common import StorageFactory
+storageFactory = StorageFactory(config)
 
 _ = MessageFactory('loops')
 

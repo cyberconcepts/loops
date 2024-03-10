@@ -2,9 +2,10 @@
 
 """Compatibility layer on scopes.storage: common functionality."""
 
-from sqlalchemy import Table, Column, Index, BigInteger, Text
+from sqlalchemy import Table, Column, Index, Text
 
 from scopes.storage import common
+from scopes.storage.db import postgres
 
 
 class Storage(common.Storage):
@@ -31,11 +32,16 @@ class Storage(common.Storage):
         return createUidTable(self)
 
 
+class StorageFactory(postgres.StorageFactory):
+
+    storageClass = Storage
+
+
 def createUidTable(storage):
     metadata = storage.metadata
-    cols = [Column('legacy', BigInteger, primary_key=True),
+    cols = [Column('legacy', storage.db.IdType, primary_key=True),
             Column('prefix', Text, nullable=False),
-            Column('id', BigInteger, nullable=False)]
+            Column('id', storage.db.IdType, nullable=False)]
     idxs = [Index('idx_uid_mapping_prefix_id', 'prefix', 'id', unique=True)]
     table = Table('uid_mapping', metadata, *(cols+idxs), extend_existing=True)
     metadata.create_all(storage.engine)
