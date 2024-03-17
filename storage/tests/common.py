@@ -15,10 +15,8 @@ from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from loops.expert.testsetup import TestSite
 from loops.organize.personal.setup import SetupManager
 from loops.organize.tests import setupObjectsForTesting
-from loops.storage.compat.common import Storage
-from loops import util
-
 from loops.storage.compat.common import StorageFactory
+from loops import util
 
 util.storageFactory = StorageFactory(config)
 
