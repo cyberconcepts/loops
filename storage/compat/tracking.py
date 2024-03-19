@@ -22,8 +22,8 @@ class Container(tracking.Container):
 
     itemFactory = Track
 
-    def saveUserTrack(self, taskId, runId, userName, data):
-        track = self.itemFactory(taskId, userName, data=data)
+    def saveUserTrack(self, *args):
+        track = self.itemFactory(args[0], *args[2:-1], data=args[-1])
         return self.save(track)
 
     def setTrackData(self, track, data):
