@@ -145,10 +145,8 @@ def records(context, name, factory, storage=None):
     if name in (opts.scopes.storage.records or []):
         if storage is None:
             storage = getStorage(context)
-        cont = storage.create(factory)
-    else:
-        cont = root.getRecordManager().get(name)
-    return cont
+        return storage.create(factory)
+    return root.getRecordManager()[name]
 
 
 # UID stuff
