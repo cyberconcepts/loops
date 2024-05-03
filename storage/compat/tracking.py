@@ -15,7 +15,9 @@ from loops.util import IUid
 @implementer(IUid)
 class Track(tracking.Track):
 
-    pass
+    @property
+    def __name__(self):
+        return '%07i' % self.trackId
 
 
 class Container(tracking.Container):
