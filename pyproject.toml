@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cybertools"
+version = "3.0.1"
+description = "cybertools: basic utilities for Zope3/bluebream/loops"
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["cybertools"]
+authors = [{name = "Helmut Merz", email = "helmutm@cy55.de"}]
+
+dependencies = [
+	"bs4",
+	"BTrees",
+	"docutils",
+	"lxml",
+	"persistent",
+	"pillow",
+	"zope.app.container",
+	"zope.app.file",
+	"zope.app.rotterdam",
+	"zope.app.testing",
+	"zope.authentication",
+	"zope.browser",
+	"zope.browserpage",
+	"zope.catalog",
+	"zope.component",
+	"zope.container",
+	"zope.formlib",
+	"zope.i18nmessageid",
+	"zope.index",
+	"zope.interface",
+	"zope.lifecycleevent",
+	"zope.sendmail",
+	"zope.session",
+	"zope.testing",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools]
+packages = ["cybertools"]
+
+[tool.pytest.ini_options]
+addopts = "-vv"
+python_files = "test_standard.py" # default: run only `standard` tests
+# use .pytest.ini file with `python_files = test_*.py` to run all tests
+
