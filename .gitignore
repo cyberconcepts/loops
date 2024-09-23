@@ -2,6 +2,7 @@
 *.pyo
 *.swp
 dist/
+*.egg-info
 *.project
 *.pydevproject
 *.ropeproject

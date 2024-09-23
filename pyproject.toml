@@ -3,46 +3,23 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cybertools"
+name = "loops"
 version = "3.0.1"
-description = "cybertools: basic utilities for Zope3/bluebream/loops"
+description = "loops: linked objects for organizational process services"
 readme = "README.md"
 license = {text = "MIT"}
-keywords = ["cybertools"]
+keywords = ["loops"]
 authors = [{name = "Helmut Merz", email = "helmutm@cy55.de"}]
 
 dependencies = [
-	"bs4",
-	"BTrees",
-	"docutils",
-	"lxml",
-	"persistent",
-	"pillow",
-	"zope.app.container",
-	"zope.app.file",
-	"zope.app.rotterdam",
-	"zope.app.testing",
-	"zope.authentication",
-	"zope.browser",
-	"zope.browserpage",
-	"zope.catalog",
-	"zope.component",
-	"zope.container",
-	"zope.formlib",
-	"zope.i18nmessageid",
-	"zope.index",
-	"zope.interface",
-	"zope.lifecycleevent",
-	"zope.sendmail",
-	"zope.session",
-	"zope.testing",
+	"cybertools",
 ]
 
 [project.optional-dependencies]
 test = ["pytest"]
 
 [tool.setuptools]
-packages = ["cybertools"]
+packages = ["loops"]
 
 [tool.pytest.ini_options]
 addopts = "-vv"

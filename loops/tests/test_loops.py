@@ -1,7 +1,6 @@
 
 import unittest, doctest
 from zope.interface.verify import verifyClass
-from zope.interface import implements
 from zope.intid.interfaces import IIntIds
 
 from loops.interfaces import ILoops
