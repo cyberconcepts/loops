@@ -1,37 +1,20 @@
-#
-#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.browser.node
 
-"""
-View class for Node objects.
+""" View class for Node objects.
 """
 
 from logging import getLogger
-import urllib
-from urlparse import urlparse, urlunparse
-from zope import component, interface, schema
-from zope.cachedescriptors.property import Lazy
-from zope.annotation.interfaces import IAnnotations
-from zope.app.catalog.interfaces import ICatalog
+from urllib.parse import urlencode, urlparse, urlunparse
+#from urlparse import urlparse, urlunparse
 from zope.app.container.browser.contents import JustContents
 from zope.app.container.browser.adding import Adding
-from zope.app.container.traversal import ItemTraverser
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope import component, interface, schema
+from zope.annotation.interfaces import IAnnotations
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.browserpage import ViewPageTemplateFile
+from zope.cachedescriptors.property import Lazy
+from zope.catalog.interfaces import ICatalog
+from zope.container.traversal import ItemTraverser
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
@@ -479,7 +462,7 @@ class NodeView(BaseView):
 
     @Lazy
     def logoutUrl(self):
-        nextUrl = urllib.urlencode(dict(nextUrl=self.menu.url))
+        nextUrl = urlencode(dict(nextUrl=self.menu.url))
         return '%s/logout.html?%s' % (self.menu.url, nextUrl)
 
     @Lazy
@@ -786,11 +769,11 @@ class InlineEdit(NodeView):
         if ti is not None:
             target = ti(target)
         data = self.request.form['editorContent']
-        if type(data) != unicode:
+        if not isinstance(data, str):
             try:
                 data = data.decode('ISO-8859-15')  # IE hack
             except UnicodeDecodeError:
-                print 'loops.browser.node.InlineEdit.save():', data
+                print('loops.browser.node.InlineEdit.save():', data)
                 return
         #    data = data.decode('UTF-8')
         target.data = data
@@ -962,9 +945,9 @@ class NodeAdding(Adding):
         return info
 
 
+@interface.implementer(IViewConfiguratorSchema)
 class ViewPropertiesConfigurator(object):
 
-    interface.implements(IViewConfiguratorSchema)
     component.adapts(INode)
 
     def __init__(self, context):
@@ -1052,7 +1035,7 @@ class NodeTraverser(ItemTraverser):
                 return self.context
         try:
             obj = super(NodeTraverser, self).publishTraverse(request, name)
-        except NotFound, e:
+        except NotFound:
             logger.warn('NodeTraverser: NotFound: URL = %s, name = %r' %
                             (request.URL, name))
             raise
@@ -1124,12 +1107,12 @@ def getViewConfiguration(context, request):
 class TestView(NodeView):
 
     def __call__(self):
-        print '*** begin'
+        print( '*** begin')
         for i in range(500):
             #x = util.getObjectForUid('1994729849')
             x = util.getObjectForUid('2018653366')
             self.c = list(x.getChildren())
             #self.c = list(x.getChildren([self.defaultPredicate]))
-        print '*** end', len(self.c)
+        print('*** end', len(self.c))
         return 'done'
 

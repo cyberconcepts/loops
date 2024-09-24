@@ -8,7 +8,7 @@ from BTrees.OOBTree import OOBTree
 from zope.cachedescriptors.property import Lazy
 from zope import component, schema
 from zope.component import adapts
-from zope.interface import implementer, implements, Interface, Attribute
+from zope.interface import implementer, implementer, Interface, Attribute
 from zope.schema.interfaces import IContextSourceBinder, IIterableSource
 
 from cybertools.composer.schema.factory import SchemaFactory
@@ -57,9 +57,9 @@ class IRecordsTable(IDataTable):
         required=False)
 
 
+@implementer(IDataTable)
 class DataTable(AdapterBase):
 
-    implements(IDataTable)
 
     _contextAttributes = list(IDataTable)
     _adapterAttributes = AdapterBase._adapterAttributes + ('columns', 'data')
@@ -134,9 +134,8 @@ def getRowValueWithKey(k, v):
     return u' '.join((unicode(k), v[0]))
 
 
+@implementer(IIterableSource)
 class DataTableSourceList(object):
-
-    implements(IIterableSource)
 
     def __init__(self, context, valueProvider=getRowValue):
         self.context = context
@@ -163,9 +162,8 @@ class DataTableSourceListByValue(DataTableSourceList):
         return iter([(i[1], i[2]) for i in items])
 
 
+@implementer(IContextSourceBinder)
 class DataTableSourceBinder(object):
-
-    implements(IContextSourceBinder)
 
     def __init__(self, tableName, valueProvider=getRowValue,
                  sourceList=None):

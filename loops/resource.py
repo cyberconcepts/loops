@@ -140,7 +140,7 @@ class Resource(Image, Contained):
         # probably obsolete, use zope.contenttype.guess_content_type()
         if not isinstance(data, (bytes, str)): # seems to be a file object
             data = data.read(20)
-        if data.startswith('%PDF'):
+        if data.startswith(b'%PDF'):
             self.contentType = 'application/pdf'
 
     _contentType = u''

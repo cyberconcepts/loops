@@ -1,40 +1,22 @@
-#
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.browser.concept
 
-"""
-Definition of the concept view classes.
+""" Definition of the concept view classes.
 """
 
 from itertools import groupby
 from zope import interface, component, schema
-from zope.app.catalog.interfaces import ICatalog
-from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.container.contained import ObjectRemovedEvent
-from zope.app.form.browser.interfaces import ITerms
-from zope.app.form.interfaces import IDisplayWidget
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.browser.interfaces import ITerms
+from zope.browserpage import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.catalog.interfaces import ICatalog
+from zope.container.contained import ObjectRemovedEvent
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.formlib.form import EditForm, FormFields, setUpEditWidgets
+from zope.formlib.interfaces import IDisplayWidget
 from zope.formlib.namedtemplate import NamedTemplate
-from zope.interface import implements
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.publisher.interfaces import BadRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import IIterableSource

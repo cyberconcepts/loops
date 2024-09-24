@@ -3,30 +3,30 @@ Set up a loops site for testing.
 """
 
 from zope import component
-from zope.annotation.attribute import AttributeAnnotations
-from zope.annotation.interfaces import IAnnotatable
-from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
-from zope.app.catalog.text import TextIndex
-from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.renderer.rest import IReStructuredTextSource,\
                 ReStructuredTextToHTMLRenderer, ReStructuredTextSourceFactory
-from zope.app.security.principalregistry import principalRegistry
-from zope.app.security.interfaces import IAuthentication
-from zope.app.session.interfaces import IClientIdManager, ISessionDataContainer
-from zope.app.session import session
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable
+from zope.authentication.interfaces import IAuthentication
+from zope.catalog.catalog import Catalog
+from zope.catalog.interfaces import ICatalog
+from zope.catalog.field import FieldIndex
+from zope.catalog.text import TextIndex
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
+from zope.lifecycleevent.interfaces import IObjectRemovedEvent
+from zope.principalannotation.utility import PrincipalAnnotationUtility
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.principalregistry.principalregistry import principalRegistry
 from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserView
 from zope.security.checker import Checker, defineChecker
 from zope.security.management import setSecurityPolicy
 from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
 from zope.securitypolicy.principalrole import AnnotationPrincipalRoleManager
 from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
+from zope.session.interfaces import IClientIdManager, ISessionDataContainer
+from zope.session import session
 
 from cybertools.browser.controller import Controller
 from cybertools.catalog.keyword import KeywordIndex
@@ -89,9 +89,9 @@ from loops.view import Node, NodeAdapter
 from loops.wiki.setup import SetupManager as WikiSetupManager
 
 
+@implementer(IClientIdManager)
 class ClientIdManager(object):
     """ dummy, for testing only """
-    implements(IClientIdManager)
     def getClientId(self, request):
         return 'dummy'
 

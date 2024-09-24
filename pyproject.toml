@@ -21,6 +21,7 @@ dependencies = [
 	"zope.i18n",
 	"zope.pluggableauth",
 	"zope.principalannotation",
+	"zope.principalregistry",
 	"zope.securitypolicy",
 	"zope.site",
 	"zope.thread",

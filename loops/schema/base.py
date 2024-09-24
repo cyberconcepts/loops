@@ -1,27 +1,10 @@
-#
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.schema.base
 
-"""
-Specialized field definitions.
+""" Specialized field definitions.
 """
 
 from zope.component import adapts
-from zope.interface import Attribute, implements
+from zope.interface import Attribute, implementer
 from zope.schema import Field, List
 from zope.schema.interfaces import IField, IList
 
@@ -50,9 +33,8 @@ class IRelationSet(IList):
                 'of candidates to select from, in JSON format.')
 
 
+@implementer(IRelation)
 class Relation(Field):
-
-    implements(IRelation)
 
     __typeInfo__ = ('relation',
                     FieldType('relation', 'relation',
@@ -65,9 +47,8 @@ class Relation(Field):
         super(Relation, self).__init__(*args, **kw)
 
 
+@implementer(IRelationSet)
 class RelationSet(List):
-
-    implements(IRelationSet)
 
     __typeInfo__ = ('relationset',
                     FieldType('relationset', 'relationset',

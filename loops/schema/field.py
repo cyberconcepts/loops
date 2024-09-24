@@ -1,30 +1,13 @@
-#
-#  Copyright (c) 2011 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.schema.field
 
-"""
-Field and field instance classes for grids.
+""" Field and field instance classes for grids.
 """
 
+import json
 from zope import component
-from zope.component import adapts
-from zope.interface import implements
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
+from zope.component import adapts
 import zope.schema
 from zope.traversing.api import getName
 
@@ -33,7 +16,6 @@ from cybertools.composer.schema.field import FieldInstance, ListFieldInstance
 from cybertools.composer.schema.interfaces import IField, IFieldInstance
 from cybertools.composer.schema.interfaces import fieldTypes, undefined
 from cybertools.util.format import toStr, toUnicode
-from cybertools.util import json
 from loops.common import baseObject
 from loops import util
 

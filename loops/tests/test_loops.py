@@ -23,21 +23,21 @@ class Test(unittest.TestCase):
 
     def testInterfaces(self):
         verifyClass(ILoops, Loops)
-        self.assert_(ILoops.providedBy(Loops()))
+        self.assertTrue(ILoops.providedBy(Loops()))
         verifyClass(IConcept, Concept)
-        self.assert_(IConcept.providedBy(Concept()))
+        self.assertTrue(IConcept.providedBy(Concept()))
         verifyClass(IConceptManager, ConceptManager)
-        self.assert_(IConceptManager.providedBy(ConceptManager()))
+        self.assertTrue(IConceptManager.providedBy(ConceptManager()))
         verifyClass(IDocument, Document)
-        self.assert_(IDocument.providedBy(Document()))
+        self.assertTrue(IDocument.providedBy(Document()))
         verifyClass(IMediaAsset, MediaAsset)
-        self.assert_(IMediaAsset.providedBy(MediaAsset()))
+        self.assertTrue(IMediaAsset.providedBy(MediaAsset()))
         verifyClass(IResourceManager, ResourceManager)
-        self.assert_(IResourceManager.providedBy(ResourceManager()))
+        self.assertTrue(IResourceManager.providedBy(ResourceManager()))
         verifyClass(INode, Node)
-        self.assert_(INode.providedBy(Node()))
+        self.assertTrue(INode.providedBy(Node()))
         verifyClass(IViewManager, ViewManager)
-        self.assert_(IViewManager.providedBy(ViewManager()))
+        self.assertTrue(IViewManager.providedBy(ViewManager()))
 
 
 def test_suite():
