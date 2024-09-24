@@ -1,33 +1,16 @@
-#
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.resource
 
-"""
-Definition of the Concept class.
+""" Definition of the Concept class.
 """
 
-from cStringIO import StringIO
+from io import BytesIO
 from logging import getLogger
 from persistent import Persistent
 from zope import component, schema
-from zope.app.container.btree import BTreeContainer
-from zope.app.container.contained import Contained
 from zope.app.file.image import Image
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
+from zope.container.btree import BTreeContainer
+from zope.container.contained import Contained
 from zope.contenttype import guess_content_type
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.cachedescriptors.property import Lazy
@@ -35,7 +18,7 @@ from zope.component import adapts
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.i18nmessageid import MessageFactory
-from zope.interface import implements
+from zope.interface import implementer
 from zope.size.interfaces import ISized
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName, getParent
@@ -69,9 +52,8 @@ logger = getLogger('loops.resource')
 _ = MessageFactory('loops')
 
 
+@implementer(IResourceManager, ILoopsContained)
 class ResourceManager(BTreeContainer):
-
-    implements(IResourceManager, ILoopsContained)
 
     def getLoopsRoot(self):
         return getParent(self)
@@ -86,12 +68,10 @@ class ResourceManager(BTreeContainer):
         return Jeep()
 
 
+@implementer(IBaseResource, IResource, IResourceManagerContained, IRelatable, ISized)
 class Resource(Image, Contained):
 
     # TODO: remove dependency on Image
-
-    implements(IBaseResource, IResource, IResourceManagerContained,
-               IRelatable, ISized)
 
     proxyInterface = IMediaAssetView  # obsolete!
 
@@ -149,7 +129,7 @@ class Resource(Image, Contained):
         self.resourceType = value
 
     def _setData(self, data):
-        dataFile = StringIO(data)  # let File tear it into pieces
+        dataFile = BytesIO(data)  # let File tear it into pieces
         super(Resource, self)._setData(dataFile)
         if not self.contentType:
             self.guessContentType(data)
@@ -158,7 +138,7 @@ class Resource(Image, Contained):
 
     def guessContentType(self, data):
         # probably obsolete, use zope.contenttype.guess_content_type()
-        if not isinstance(data, str): # seems to be a file object
+        if not isinstance(data, (bytes, str)): # seems to be a file object
             data = data.read(20)
         if data.startswith('%PDF'):
             self.contentType = 'application/pdf'
@@ -305,9 +285,8 @@ class Resource(Image, Contained):
 
 # Document and MediaAsset are legacy classes, will become obsolete
 
+@implementer(IDocument)
 class Document(Resource):
-
-    implements(IDocument)
 
     proxyInterface = IDocumentView
 
@@ -323,18 +302,18 @@ class Document(Resource):
     data = property(getData, setData)
 
 
+@implementer(IMediaAsset)
 class MediaAsset(Resource):
 
-    implements(IMediaAsset)
+    pass
 
 
 # type adapters
 
+@implementer(IFile)
 class FileAdapter(ResourceAdapterBase):
     """ A type adapter for providing file functionality for resources.
     """
-
-    implements(IFile)
 
     _contextAttributes = list(IFile) + list(IBaseResource)
     _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
@@ -361,9 +340,8 @@ class FileAdapter(ResourceAdapterBase):
     storageName = property(getStorageName, setStorageName)
 
 
+@implementer(IExternalFile)
 class ExternalFileAdapter(FileAdapter):
-
-    implements(IExternalFile)
 
     _adapterAttributes = (FileAdapter._adapterAttributes
                         + ('storageParams', 'externalAddress', 'uniqueAddress',
@@ -458,19 +436,19 @@ class DocumentAdapter(ResourceAdapterBase):
     data = property(getData, setData)
 
 
+@implementer(ITextDocument)
 class TextDocumentAdapter(DocumentAdapter):
     """ A type adapter for providing text document functionality for resources.
     """
 
-    implements(ITextDocument)
     _contextAttributes = list(ITextDocument) + list(IBaseResource)
 
 
+@implementer(INote)
 class NoteAdapter(DocumentAdapter):
     """ A note is a short text document with an associated link.
     """
 
-    implements(INote)
     _contextAttributes = list(INote) + list(IBaseResource)
 
     @property
@@ -480,9 +458,9 @@ class NoteAdapter(DocumentAdapter):
 
 # other adapters
 
+@implementer(IWriteFile)
 class DocumentWriteFileAdapter(object):
 
-    implements(IWriteFile)
     adapts(IResource)
 
     def __init__(self, context):
@@ -502,9 +480,9 @@ class DocumentWriteFileAdapter(object):
         notify(ObjectModifiedEvent(self.context, Attributes(IResource, 'data')))
 
 
+@implementer(IReadFile)
 class DocumentReadFileAdapter(object):
 
-    implements(IReadFile)
     adapts(IResource)
 
     def __init__(self, context):
@@ -525,9 +503,9 @@ class DocumentReadFileAdapter(object):
         return len(self.data)
 
 
+@implementer(IFileFactory)
 class ExternalFileFactory(object):
 
-    implements(IFileFactory)
     adapts(IResourceManager)
 
     def __init__(self, context):
@@ -546,9 +524,9 @@ class ExternalFileFactory(object):
         return res
 
 
+@implementer(IIndexAttributes)
 class IndexAttributes(object):
 
-    implements(IIndexAttributes)
     adapts(IResource)
 
     def __init__(self, context):
@@ -573,7 +551,7 @@ class IndexAttributes(object):
         if not actx.contentType.startswith('text'):
             return u''
         data = actx.data
-        if type(data) != unicode:
+        if type(data) != str:
             try:
                 data = data.decode('UTF-8')
             except UnicodeDecodeError:
@@ -590,14 +568,14 @@ class IndexAttributes(object):
             if transform is not None:
                 rfa = component.queryAdapter(IReadFile, adapted)
                 if rfa is None:
-                    data = transform(StringIO(adapted.data))
+                    data = transform(BytesOP(adapted.data))
                     return data
                 else:
                     return transform(rfa)
         if not context.contentType.startswith('text'):
             return u''
         data = context.data
-        if type(data) != unicode:
+        if type(data) != str:
             data = data.decode('UTF-8')
         return data
 
@@ -635,10 +613,10 @@ def transformToText(obj, data=None, contentType=None):
         #rfa = component.queryAdapter(IReadFile, obj)
         rfa = IReadFile(obj, None)
         if rfa is None:
-            if isinstance(data, unicode):
+            if isinstance(data, str):
                 data = data.encode('UTF-8')
             try:
-                return transform(StringIO(data))
+                return transform(BytesIO(data))
             except:
                 import traceback
                 logger.warn(traceback.format_exc())
@@ -647,9 +625,8 @@ def transformToText(obj, data=None, contentType=None):
             return transform(rfa)
 
 
+@implementer(schema.interfaces.IIterableSource)
 class ResourceTypeSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
         self.context = context

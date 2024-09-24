@@ -18,6 +18,7 @@ dependencies = [
 	"python-dotenv",
 	"zope.app.renderer",
 	"zope.browsermenu",
+	"zope.i18n",
 	"zope.securitypolicy",
 	"zope.site",
 	"zope.thread",

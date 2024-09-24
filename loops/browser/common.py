@@ -1,47 +1,28 @@
-#
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.browser.common
 
-"""
-Common base class for loops browser view classes.
+""" Common base class for loops browser view classes.
 """
 
-from cgi import parse_qsl
 #import mimetypes   # use more specific assignments from cybertools.text
 from datetime import date, datetime
 from logging import getLogger
 import re
 from time import strptime
-from urllib import urlencode
-from urlparse import parse_qs
+from urllib.parse import parse_qs, parse_qsl, urlencode
 from zope import component
-from zope.app.form.browser.interfaces import ITerms
-from zope.app.i18n.interfaces import ITranslationDomain
-from zope.app.security.interfaces import IAuthentication, IUnauthenticatedPrincipal
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.security.interfaces import PrincipalLookupError
+from zope.authentication.interfaces import IAuthentication, IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import PrincipalLookupError
+from zope.browser.interfaces import ITerms
+from zope.browserpage import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.formlib import form
 from zope.formlib.form import FormFields
 from zope.formlib.namedtemplate import NamedTemplate
-from zope.interface import Interface, implements
+from zope.i18n.interfaces import ITranslationDomain
+from zope.interface import Interface, implementer
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import applySkin
 from zope.publisher.interfaces.browser import IBrowserSkinType, IBrowserView
@@ -1092,12 +1073,11 @@ class LoggedIn(object):
 
 # vocabulary stuff
 
+@implementer(ITerms)
 class SimpleTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection
         lists.
     """
-
-    implements(ITerms)
 
     def __init__(self, source, request):
         # the source parameter is a list of tuples (token, title).
@@ -1113,12 +1093,11 @@ class SimpleTerms(object):
         return (token, self.terms[token])
 
 
+@implementer(ITerms)
 class LoopsTerms(object):
     """ Provide the ITerms interface, e.g. for usage in selection
         lists.
     """
-
-    implements(ITerms)
 
     def __init__(self, source, request):
         # the source parameter is a view or adapter of a real context object:
@@ -1141,11 +1120,10 @@ class LoopsTerms(object):
         return self.loopsRoot.loopsTraverse(token)
 
 
+@implementer(ITerms)
 class InterfaceTerms(object):
     """ Provide the ITerms interface for source list of interfaces.
     """
-
-    implements(ITerms)
 
     def __init__(self, source, request):
         self.source = source
