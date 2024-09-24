@@ -1,26 +1,6 @@
-#! /usr/bin/env python
-#
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.main
 
-"""
-Entry point for the loops application.
-
-$Id$
+""" Entry point for the loops application.
 """
 
 import os, sys
@@ -68,7 +48,7 @@ def setInstanceHomeInZopeConf():
     zc.close()
     command, key, value = [w.strip() for w in l1.split()]
     if command == '%define' and key == 'INSTANCE' and value != instanceHome:
-        print 'INSTANCE variable changed from %s to %s.' % (value, instanceHome)
+        print('INSTANCE variable changed from %s to %s.' % (value, instanceHome))
         l1 = ' '.join((command, key, instanceHome)) + '\n'
         zc = open(configFile, 'w')
         zc.write(l1)
@@ -86,7 +66,7 @@ def startZope(configFile):
         main(["-C", configFile])
     except IOError, e:
         if str(e) == '[Errno 11] Resource temporarily unavailable':
-            print 'WARNING: Background process already running.'
+            print('WARNING: Background process already running.')
             #from startup import openBrowser
             #openBrowser(None)
 

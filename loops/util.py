@@ -9,7 +9,7 @@ from zope.publisher.browser import BrowserView
 from zope import component
 from zope.catalog.interfaces import ICatalog
 from zope.interface import Attribute, Interface
-from zope.interface import directlyProvides, directlyProvidedBy, implements
+from zope.interface import directlyProvides, directlyProvidedBy, implementer
 from zope.intid.interfaces import IIntIds
 from zope.i18nmessageid import MessageFactory
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -53,9 +53,9 @@ MarkdownSourceFactory = SourceFactory(
     IMarkdownSource, _("Markdown(md))"),
     _("Markdown(md) Source"))
 
+@implementer(IHTMLRenderer)
 class MarkdownToHTMLRenderer(BrowserView):
 
-    implements(IHTMLRenderer)
     component.adapts(IMarkdownSource, IBrowserRequest)
 
     def render(self, settings_overrides={}):
@@ -94,7 +94,7 @@ def nl2br(text):
         return '<br />\n'.join(text.split('\r'))
 
 def toUnicode(value, encoding='UTF-8'):
-    if type(value) is not unicode:
+    if type(value) is not str:
         try:
             return value.decode(encoding)
         except UnicodeDecodeError:

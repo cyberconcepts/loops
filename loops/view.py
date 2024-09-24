@@ -1,25 +1,6 @@
-#
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.view
 
-"""
-Definition of the View and related classses.
-
-$Id$
+""" Definition of the View and related classses.
 """
 
 from zope import component
@@ -28,7 +9,7 @@ from zope.app.container.contained import Contained
 from zope.app.container.ordered import OrderedContainer
 from zope.cachedescriptors.property import Lazy, readproperty
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.intid.interfaces import IIntIds
 from zope.publisher.browser import applySkin
@@ -55,9 +36,8 @@ from loops import util
 from loops.util import _
 
 
+@implementer(IView, INodeContained, IRelatable)
 class View(object):
-
-    implements(IView, INodeContained, IRelatable)
 
     def __init__(self, title=u'', description=u''):
         self.title = title
@@ -86,8 +66,9 @@ class View(object):
         if len(rels) == 0:
             return None
         if len(rels) > 1:
+            targets = [getName(r.second) for r in rels]
             raise ValueError('There may be only one target for a View object: %s - %s'
-                % (getName(self), `[getName(r.second) for r in rels]`))
+                % (getName(self), targets))
         return list(rels)[0].second
 
     def setTarget(self, target):
@@ -114,9 +95,8 @@ class View(object):
         return Jeep()
 
 
+@implementer(INode)
 class Node(View, OrderedContainer):
-
-    implements(INode)
 
     _nodeType = 'info'
     def getNodeType(self): return self._nodeType
@@ -180,9 +160,8 @@ class Node(View, OrderedContainer):
         return self.nodeType in ('page', 'menu')
 
 
+@implementer(IViewManager, ILoopsContained)
 class ViewManager(OrderedContainer):
-
-    implements(IViewManager, ILoopsContained)
 
     def getLoopsRoot(self):
         return getParent(self)
@@ -194,21 +173,22 @@ class ViewManager(OrderedContainer):
         return Jeep()
 
 
+@implementer(ITargetRelation)
 class TargetRelation(DyadicRelation):
     """ A relation between a view and its target.
     """
-    implements(ITargetRelation)
+    pass
 
 
 # adapters
 
+@implementer(INodeAdapter)
 class NodeAdapter(AdapterBase):
     """ Allows nodes to be adapted like concepts and resources, e.g.
         for i18n (needs derivation from I18NAdapterBase),
         specific capabilities or dynamic attributes.
     """
 
-    implements(INodeAdapter)
     adapts(INode)
 
     _contextAttributes = ('title', 'description', 'body',)
@@ -222,9 +202,8 @@ nodeTypes = [
         ('raw',  _(u'Raw')),  # render body as is, viewName may contain content type
 ]
 
+@implementer(schema.interfaces.IIterableSource)
 class NodeTypeSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
         self.context = context

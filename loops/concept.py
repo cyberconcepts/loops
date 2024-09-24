@@ -1,35 +1,18 @@
-#
-#  Copyright (c) 2016 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.concept
 
-"""
-Definition of the Concept and related classes.
+""" Definition of the Concept and related classes.
 """
 
 from zope import component, schema
-from zope.app.container.btree import BTreeContainer
-from zope.app.container.contained import Contained
-from zope.app.container.interfaces import IAdding
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
+from zope.browser.interfaces import IAdding
 from zope.cachedescriptors.property import Lazy
 from zope.component import adapts
+from zope.container.btree import BTreeContainer
+from zope.container.contained import Contained
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import alsoProvides, directlyProvides, directlyProvidedBy
 from zope.interface.interfaces import ObjectEvent
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -93,27 +76,24 @@ class BaseRelation(DyadicRelation):
     # So we patched zope.location.location, line 109...
 
 
+@implementer(IConceptRelation)
 class ConceptRelation(BaseRelation):
     """ A relation between concept objects.
     """
-    implements(IConceptRelation)
-
     fallback = 'c*'
 
 
+@implementer(IConceptRelation)
 class ResourceRelation(BaseRelation):
     """ A relation between a concept and a resource object.
     """
-    implements(IConceptRelation)
-
     fallback = 'r*'
 
 
 # concept
 
+@implementer(IConcept, IConceptManagerContained, IRelatable)
 class Concept(Contained, Persistent):
-
-    implements(IConcept, IConceptManagerContained, IRelatable)
 
     proxyInterface = IConceptView
 
@@ -362,9 +342,8 @@ class Concept(Contained, Persistent):
 
 # concept manager
 
+@implementer(IConceptManager, ILoopsContained)
 class ConceptManager(BTreeContainer):
-
-    implements(IConceptManager, ILoopsContained)
 
     typeConcept = None
     typePredicate = None
@@ -402,9 +381,8 @@ class ConceptManager(BTreeContainer):
 
 # adapters and similar components
 
+@implementer(schema.interfaces.IIterableSource)
 class ConceptTypeSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
         if IBrowserRequest.providedBy(context):
@@ -428,9 +406,8 @@ class ConceptTypeSourceList(object):
         return len(self.conceptTypes)
 
 
+@implementer(schema.interfaces.IIterableSource)
 class PredicateSourceList(object):
-
-    implements(schema.interfaces.IIterableSource)
 
     def __init__(self, context):
         self.context = context
@@ -458,9 +435,9 @@ class PredicateSourceList(object):
         return len(self.predicates)
 
 
+@implementer(IIndexAttributes)
 class IndexAttributes(object):
 
-    implements(IIndexAttributes)
     adapts(IConcept)
 
     def __init__(self, context):
@@ -537,18 +514,16 @@ class IndexAttributes(object):
 
 # events
 
+@implementer(IAssignmentEvent)
 class AssignmentEvent(ObjectEvent):
-
-    implements(IAssignmentEvent)
 
     def __init__(self, obj, relation):
         super(AssignmentEvent, self).__init__(obj)
         self.relation = relation
 
 
+@implementer(IDeassignmentEvent)
 class DeassignmentEvent(ObjectEvent):
-
-    implements(IDeassignmentEvent)
 
     def __init__(self, obj, relation):
         super(DeassignmentEvent, self).__init__(obj)

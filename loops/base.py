@@ -1,30 +1,13 @@
-#
-#  Copyright (c) 2019 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.base
 
-"""
-Implementation of loops root object.
+""" Implementation of loops root object.
 """
 
-from zope.app.container.btree import BTreeContainer
-from zope.app.folder.folder import Folder
-from zope.app.folder.interfaces import IFolder
+from zope.container.btree import BTreeContainer
+from zope.site.folder import Folder
+from zope.site.interfaces import IFolder
 from zope.traversing.api import getPath, traverse
-from zope.interface import implements
+from zope.interface import implementer
 
 from cybertools.util.jeep import Jeep
 from loops.interfaces import ILoops
@@ -32,17 +15,8 @@ from loops.interfaces import ILoops
 loopsPrefix = '.loops'
 
 
+@implementer(ILoops)
 class Loops(Folder):
-#class Loops(BTreeContainer):
-
-    implements(ILoops)
-
-    #def getSiteManager(self):
-    #    return self.__parent__.getSiteManager()
-
-    #@property
-    #def _SampleContainer__data(self):
-    #    return self.data
 
     _skinName = ''
     def getSkinName(self): return self._skinName
@@ -72,10 +46,7 @@ class Loops(Folder):
         return self.get('records')
 
     def getLoopsUri(self, obj):
-        #return str(loopsPrefix + getPath(obj)[len(getPath(self)):])
         uri = loopsPrefix + getPath(obj)[len(getPath(self)):]
-        #if isinstance(uri, unicode):
-        #    uri = uri.encode('UTF-8')
         return uri
 
     def loopsTraverse(self, uri):

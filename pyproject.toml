@@ -13,6 +13,14 @@ authors = [{name = "Helmut Merz", email = "helmutm@cy55.de"}]
 
 dependencies = [
 	"cybertools",
+	"py-scopes",
+	"markdown",
+	"python-dotenv",
+	"zope.app.renderer",
+	"zope.browsermenu",
+	"zope.securitypolicy",
+	"zope.site",
+	"zope.thread",
 ]
 
 [project.optional-dependencies]

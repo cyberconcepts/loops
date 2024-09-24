@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2013 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.interfaces
 
-"""
-loops interface definitions.
+""" loops interface definitions.
 """
 
 from zope.interface import Interface, Attribute
@@ -287,15 +270,15 @@ class IBaseResource(ILoopsObject):
     data = schema.Bytes(
                 title=_(u'Data'),
                 description=_(u'Resource raw data'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     contentType = schema.BytesLine(
                 title=_(u'Content Type'),
                 description=_(u'Content type (format) of the data field'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     metaInfo = Attribute('Optional additional information about the resource '
@@ -361,15 +344,15 @@ class IResourceSchema(Interface):
     data = schema.Bytes(
                 title=_(u'Data'),
                 description=_(u'Resource raw data'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     contentType = schema.BytesLine(
                 title=_(u'Content Type'),
                 description=_(u'Content type (format) of the data field'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     metaInfo = Attribute('Optional additional information about the resource '
@@ -720,14 +703,14 @@ class ITypeConcept(IConceptSchema, ILoopsAdapter, IOptions):
         title=_(u'Concept Manager Name'),
         description=_(u'Name of the concept manager in which objects of this '
                       u'type should be created.'),
-        default='',     #determined at runtime: 'concepts' or 'resources'
+        default=b'',     #determined at runtime: 'concepts' or 'resources'
         required=False)
 
     namePrefix = schema.BytesLine(
         title=_(u'Name Prefix'),
         description=_(u'String that will be prepended to the (generated) name '
                       u'of a newly created object of this type.'),
-        default='',
+        default=b'',
         required=False)
 
     viewName = schema.TextLine(
@@ -821,8 +804,8 @@ class IFile(IResourceAdapter, IResourceSchema):
     data = schema.Bytes(
                 title=_(u'Data'),
                 description=_(u'Resource raw data'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
     localFilename = Attribute('Filename provided during upload.')
 
@@ -854,16 +837,16 @@ class IStorageInfo(Interface):
                 title=_(u'Storage Name'),
                 description=_(u'The name of a storage utility used for this '
                         'object.'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     storageParams = schema.BytesLine(
                 title=_(u'Storage Parameters'),
                 description=_(u'Information used to address the external '
                         'storage, e.g. a filename or path.'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     externalAddress = ExternalAddressField(
@@ -883,8 +866,8 @@ class IExternalFile(IFile):
     data = schema.Bytes(
                 title=_(u'Data'),
                 description=_(u'Resource raw data'),
-                default='',
-                missing_value='',
+                default=b'',
+                missing_value=b'',
                 required=False)
 
     externalAddress = ExternalAddressField(

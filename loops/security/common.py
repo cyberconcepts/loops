@@ -1,32 +1,14 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.security.common
 
-"""
-Common functions and other stuff for working with permissions and roles.
+""" Common functions and other stuff for working with permissions and roles.
 """
 
 from persistent import Persistent
 from zope import component
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.security.settings import Allow, Deny, Unset
 from zope.cachedescriptors.property import Lazy
-from zope.interface import implements
+from zope.interface import implementer
+from zope.lifecycleevent import IObjectAddedEvent
 from zope.lifecycleevent import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.location.interfaces import IRoot, ILocation
 from zope.security import canAccess, canWrite
@@ -34,6 +16,7 @@ from zope.security import checkPermission as baseCheckPermission
 from zope.security.management import getInteraction
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.settings import Allow, Deny, Unset
 from zope.traversing.api import getName, getParents
 from zope.traversing.interfaces import IPhysicallyLocatable
 
@@ -228,12 +211,11 @@ def revokeAcquiredSecurity(obj, event):
 
 # workspace handling
 
+@implementer(IPhysicallyLocatable, IWorkspaceInformation)
 class WorkspaceInformation(Persistent):
     """ For storing security-related stuff pertaining to
         children and resources of the context (=parent) object.
     """
-
-    implements(IPhysicallyLocatable, IWorkspaceInformation)
 
     __name__ = u'workspace_information'
 
@@ -259,9 +241,9 @@ class WorkspaceInformation(Persistent):
         return [p] + getParents(p)
 
 
+@implementer(ILocation)
 class LocationWSI(object):
 
-    implements(ILocation)
     component.adapts(WorkspaceInformation)
 
     def __init__(self, context):
