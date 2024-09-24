@@ -25,7 +25,7 @@ from zope.security.management import setSecurityPolicy
 from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
 from zope.securitypolicy.principalrole import AnnotationPrincipalRoleManager
 from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
-from zope.session.interfaces import IClientIdManager, ISessionDataContainer
+from zope.session.interfaces import IClientId, IClientIdManager, ISessionDataContainer
 from zope.session import session
 
 from cybertools.browser.controller import Controller
@@ -37,6 +37,7 @@ from cybertools.composer.schema.field import FieldInstance, \
 from cybertools.composer.schema.field import FileUploadFieldInstance
 from cybertools.composer.schema.grid.field import RecordsFieldInstance
 from cybertools.composer.schema.instance import Instance, Editor
+from cybertools.meta.interfaces import IOptions
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry, IIndexableRelation
 from cybertools.relation.interfaces import IRelation, IRelationRegistry
@@ -123,7 +124,7 @@ class TestSite(object):
         component.provideAdapter(AnnotationPrincipalRoleManager, (ILoopsObject,))
         component.provideAdapter(AnnotationRolePermissionManager, (ILoopsObject,))
         component.provideUtility(principalRegistry, IAuthentication)
-        component.provideAdapter(session.ClientId)
+        component.provideAdapter(session.ClientId, provides=IClientId)
         component.provideAdapter(session.Session)
         component.provideUtility(session.RAMSessionDataContainer(),
                                  ISessionDataContainer)
@@ -153,11 +154,11 @@ class TestSite(object):
         component.provideAdapter(BaseSecuritySetter)
         component.provideAdapter(ConceptSecuritySetter)
         component.provideAdapter(ResourceSecuritySetter)
-        component.provideAdapter(LoopsOptions)
-        component.provideAdapter(PredicateOptions)
-        component.provideAdapter(QueryOptions)
-        component.provideAdapter(TypeOptions)
-        component.provideUtility(GlobalOptions())
+        component.provideAdapter(LoopsOptions, provides=IOptions)
+        component.provideAdapter(PredicateOptions, provides=IOptions)
+        component.provideAdapter(QueryOptions, provides=IOptions)
+        component.provideAdapter(TypeOptions, provides=IOptions)
+        component.provideUtility(GlobalOptions(), IOptions)
         component.provideAdapter(VersionableResource)
 
         component.provideAdapter(Instance)

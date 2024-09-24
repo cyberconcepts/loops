@@ -1,29 +1,12 @@
-#
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.versioning.versionable
 
-"""
-Utilities for managing version informations.
+""" Utilities for managing version informations.
 """
 
 from BTrees.OOBTree import OOBTree
 from zope import component
 from zope.component import adapts
-from zope.interface import implements, Attribute
+from zope.interface import implementer, Attribute
 from zope.cachedescriptors.property import Lazy
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
@@ -41,11 +24,11 @@ _not_found = object()
 attrPattern = '__version_%s__'
 
 
+@implementer(IVersionable)
 class VersionableResource(object):
     """ An adapter that enables a resource to store version information.
     """
 
-    implements(IVersionable)
     adapts(IResource)
 
     def __init__(self, context):

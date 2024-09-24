@@ -48,14 +48,14 @@ top-level loops container and a concept manager:
   >>> cc1 = Concept()
   >>> concepts['cc1'] = cc1
   >>> cc1.title
-  u''
+  ''
   >>> loopsRoot.getLoopsUri(cc1)
-  u'.loops/concepts/cc1'
+  '.loops/concepts/cc1'
 
-  >>> cc2 = Concept(u'Zope 3')
+  >>> cc2 = Concept('Zope 3')
   >>> concepts['cc2'] = cc2
   >>> cc2.title
-  u'Zope 3'
+  'Zope 3'
 
 Now we want to relate the second concept to the first one.
 
@@ -73,11 +73,11 @@ ConceptRelation):
 We can now ask our concepts for their related child and parent concepts:
 
   >>> [getName(c) for c in cc1.getChildren()]
-  [u'cc2']
+  ['cc2']
   >>> len(cc1.getParents())
   0
   >>> [getName(p) for p in cc2.getParents()]
-  [u'cc1']
+  ['cc1']
 
   >>> len(cc2.getChildren())
   0
@@ -90,24 +90,24 @@ a special predicate 'hasType'.
   >>> typeObject = concepts['type']
   >>> typeObject.setConceptType(typeObject)
   >>> typeObject.getConceptType().title
-  u'Type'
+  'Type'
 
-  >>> concepts['unknown'] = Concept(u'Unknown Type')
+  >>> concepts['unknown'] = Concept('Unknown Type')
   >>> unknown = concepts['unknown']
   >>> unknown.setConceptType(typeObject)
   >>> unknown.getConceptType().title
-  u'Type'
+  'Type'
 
   >>> cc1.setConceptType(unknown)
   >>> cc1.getConceptType().title
-  u'Unknown Type'
+  'Unknown Type'
 
-  >>> concepts['topic'] = Concept(u'Topic')
+  >>> concepts['topic'] = Concept('Topic')
   >>> topic = concepts['topic']
   >>> topic.setConceptType(typeObject)
   >>> cc1.setConceptType(topic)
   >>> cc1.getConceptType().title
-  u'Topic'
+  'Topic'
 
 We get a list of types using the ConceptTypeSourceList.
 In order for the type machinery to work we first have to provide a
@@ -124,7 +124,7 @@ type manager.
   >>> from loops.concept import ConceptTypeSourceList
   >>> types = ConceptTypeSourceList(cc1)
   >>> sorted(t.title for t in types)
-  [u'Customer', u'Domain', u'Predicate', u'Topic', u'Type', u'Unknown Type']
+  ['Customer', 'Domain', 'Predicate', 'Topic', 'Type', 'Unknown Type']
 
 Using a PredicateSourceList we can retrieve a list of the available
 predicates.
@@ -136,7 +136,7 @@ Note that the 'hasType' predicate is suppressed from this list as the
 corresponding relation is only assigned via the conceptType attribute:
 
   >>> sorted(t.title for t in predicates)
-  [u'subobject']
+  ['subobject']
 
 Concept Views
 -------------
@@ -146,7 +146,7 @@ Concept Views
 
   >>> children = list(view.children())
   >>> [c.title for c in children]
-  [u'Zope 3']
+  ['Zope 3']
 
 The token attribute provided with the items returned by the children() and
 parents() methods identifies identifies not only the item itself but
@@ -154,19 +154,19 @@ also the relationship to the context object using a combination
 of URIs to item and the predicate of the relationship:
 
   >>> [c.token for c in children]
-  [u'.loops/concepts/cc2:.loops/concepts/standard']
+  ['.loops/concepts/cc2:.loops/concepts/standard']
 
 There is also a concept configuration view that allows updating the
 underlying context object:
 
-  >>> cc3 = Concept(u'loops for Zope 3')
+  >>> cc3 = Concept('loops for Zope 3')
   >>> concepts['cc3'] = cc3
   >>> view = ConceptConfigureView(cc1,
   ...           TestRequest(action='assign', tokens=['.loops/concepts/cc3']))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
-  [u'Zope 3', u'loops for Zope 3']
+  ['Zope 3', 'loops for Zope 3']
 
   >>> input = {'action': 'remove', 'qualifier': 'children',
   ...          'form.button.submit': 'Remove Chiildren',
@@ -175,18 +175,18 @@ underlying context object:
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
-  [u'loops for Zope 3']
+  ['loops for Zope 3']
 
 We can also create a new concept and assign it.
 
   >>> params = {'action': 'create', 'create.name': 'cc4',
-  ...           'create.title': u'New concept',
+  ...           'create.title': 'New concept',
   ...           'create.type': '.loops/concepts/topic'}
   >>> view = ConceptConfigureView(cc1, TestRequest(**params))
   >>> view.update()
   True
   >>> sorted(c.title for c in cc1.getChildren())
-  [u'New concept', u'loops for Zope 3']
+  ['New concept', 'loops for Zope 3']
 
 The concept configuration view provides methods for displaying concept
 types and predicates.
@@ -198,15 +198,15 @@ types and predicates.
   >>> component.provideAdapter(LoopsTerms, (IIterableSource, IBrowserRequest), ITerms)
 
   >>> sorted((t.title, t.token) for t in view.conceptTypes())
-  [(u'Customer', '.loops/concepts/customer'),
-   (u'Domain', '.loops/concepts/domain'),
-   (u'Predicate', '.loops/concepts/predicate'),
-   (u'Topic', '.loops/concepts/topic'),
-   (u'Type', '.loops/concepts/type'),
-   (u'Unknown Type', '.loops/concepts/unknown')]
+  [('Customer', '.loops/concepts/customer'),
+   ('Domain', '.loops/concepts/domain'),
+   ('Predicate', '.loops/concepts/predicate'),
+   ('Topic', '.loops/concepts/topic'),
+   ('Type', '.loops/concepts/type'),
+   ('Unknown Type', '.loops/concepts/unknown')]
 
   >>> sorted((t.title, t.token) for t in view.predicates())
-  [(u'subobject', '.loops/concepts/standard')]
+  [('subobject', '.loops/concepts/standard')]
 
 Index attributes adapter
 ------------------------
@@ -214,10 +214,10 @@ Index attributes adapter
   >>> from loops.concept import IndexAttributes
   >>> idx = IndexAttributes(cc2)
   >>> idx.text()
-  u'cc2 Zope 3'
+  'cc2 Zope 3'
 
   >>> idx.title()
-  u'cc2 Zope 3'
+  'cc2 Zope 3'
 
 
 Resources and what they have to do with Concepts
@@ -233,20 +233,20 @@ A common type of resource is a document:
 
   >>> from loops.interfaces import IDocument
   >>> from loops.resource import Document
-  >>> doc1 = Document(u'Zope Info')
+  >>> doc1 = Document('Zope Info')
   >>> resources['doc1'] = doc1
   >>> doc1.title
-  u'Zope Info'
+  'Zope Info'
   >>> doc1.data
-  u''
+  ''
   >>> doc1.contentType
-  u''
+  ''
 
 We can also directly use Resource objects; these behave like files.
 In fact, by using resource types we can explicitly assign a resource
 the 'file' type, but we will use this feature later:
 
-  >>> img = Resource(u'A png Image')
+  >>> img = Resource('A png Image')
 
 For testing we use some simple files from the tests directory:
 
@@ -261,7 +261,7 @@ For testing we use some simple files from the tests directory:
   >>> img.contentType
   'image/png'
 
-  >>> pdf = Resource(u'A pdf File')
+  >>> pdf = Resource('A pdf File')
   >>> pdf.data = open(os.path.join(path, 'test.pdf')).read()
   >>> pdf.getSize()
   25862
@@ -287,7 +287,7 @@ from concepts to resources:
   ...         'tokens': ['.loops/resources/doc1:.loops/concepts/standard']}
   >>> view = ConceptConfigureView(cc1, TestRequest(form=form))
   >>> [getName(r.context) for r in view.resources()]
-  [u'doc1']
+  ['doc1']
   >>> view.update()
   True
   >>> len(cc1.getResources())
@@ -316,10 +316,10 @@ Index attributes adapter
   >>> component.provideAdapter(FileAdapter, provides=IFile)
   >>> idx = IndexAttributes(doc1)
   >>> idx.text()
-  u''
+  ''
 
   >>> idx.title()
-  u'doc1 Zope Info'
+  'doc1 Zope Info'
 
 
 Views/Nodes: Menus, Menu Items, Listings, Pages, etc
@@ -343,14 +343,14 @@ The view manager has already been created during setup.
 The view space is typically built up with nodes; a node may be a top-level
 menu that may contain other nodes as menu or content items:
 
-  >>> m1 = views['m1'] = Node(u'Menu')
-  >>> m11 = m1['m11'] = Node(u'Zope')
-  >>> m111 = m11['m111'] = Node(u'Zope in General')
-  >>> m112 = m11['m112'] = Node(u'Zope 3')
+  >>> m1 = views['m1'] = Node('Menu')
+  >>> m11 = m1['m11'] = Node('Zope')
+  >>> m111 = m11['m111'] = Node('Zope in General')
+  >>> m112 = m11['m112'] = Node('Zope 3')
   >>> m112.title
-  u'Zope 3'
+  'Zope 3'
   >>> m112.description
-  u''
+  ''
 
 There are a few convienence methods for accessing parent and child nodes:
 
@@ -359,7 +359,7 @@ There are a few convienence methods for accessing parent and child nodes:
   >>> m11.getParentNode() is m1
   True
   >>> [getName(child) for child in m11.getChildNodes()]
-  [u'm111', u'm112']
+  ['m111', 'm112']
 
 What is returned by these may be controlled by the nodeType attribute:
 
@@ -493,14 +493,14 @@ view; these views we have to provide as multi-adapters:
   >>> len(tt)
   9
   >>> sorted((t.token, t.title) for t in view.targetTypes())[1]
-  ('.loops/concepts/domain', u'Domain')
+  ('.loops/concepts/domain', 'Domain')
   >>> view.update()
   True
   >>> sorted(resources.keys())
-  [u'd001.txt', u'd002.txt', u'd003.txt', u'doc1', u'm1.m11.m111']
+  ['d001.txt', 'd002.txt', 'd003.txt', 'doc1', 'm1.m11.m111']
 
   >>> view.target.title, view.target.token
-  ('New Resource', u'.loops/resources/m1.m11.m111')
+  ('New Resource', '.loops/resources/m1.m11.m111')
 
 A node object provides the targetSchema of its target:
 
@@ -537,28 +537,28 @@ view for rendering.)
   >>> component.provideAdapter(LoopsType)
   >>> view = NodeView(m112, TestRequest())
   >>> view.renderTarget()
-  u'<pre></pre>'
-  >>> doc1.data = u'Test data\n\nAnother paragraph'
+  '<pre></pre>'
+  >>> doc1.data = 'Test data\n\nAnother paragraph'
   >>> view.renderTarget()
-  u'<pre>Test data\n\nAnother paragraph</pre>'
+  '<pre>Test data\n\nAnother paragraph</pre>'
 
   >>> doc1.contentType = 'text/restructured'
-  >>> doc1.data = u'Test data\n\nAnother `paragraph <para>`_'
+  >>> doc1.data = 'Test data\n\nAnother `paragraph <para>`_'
 
   >>> from loops.wiki.base import wikiLinksActive
   >>> wikiLinksActive(loopsRoot)
   False
 
   >>> view.renderTarget()
-  u'<p>Test data</p>\n<p>Another <a class="reference external" href="para">paragraph</a></p>\n'
+  '<p>Test data</p>\n<p>Another <a class="reference external" href="para">paragraph</a></p>\n'
 
-u'<p>Test data</p>\n<p>Another <a class="reference create"
+'<p>Test data</p>\n<p>Another <a class="reference create"
     href="http://127.0.0.1/loops/wiki/create.html?linkid=0000001">?paragraph</a></p>\n'
 
   >>> #links = loopsRoot.getRecordManager()['links']
   >>> #links['0000001']
 
-<Link ['42', 1, '', '... ...', u'para', None]: {}>
+<Link ['42', 1, '', '... ...', 'para', None]: {}>
 
 If the target object is removed from its container all references
 to it are removed as well. (To make this work we have to handle
@@ -632,7 +632,7 @@ Let's add some more nodes and reorder them:
   >>> m114 = Node()
   >>> m11['m114'] = m114
   >>> m11.keys()
-  [u'm111', u'm112', u'm113', u'm114']
+  ['m111', 'm112', 'm113', 'm114']
 
 A special management view provides methods for moving objects down, up,
 to the bottom, and to the top.
@@ -641,10 +641,10 @@ to the bottom, and to the top.
   >>> view = OrderedContainerView(m11, TestRequest())
   >>> view.move_bottom(('m113',))
   >>> m11.keys()
-  [u'm111', u'm112', u'm114', u'm113']
+  ['m111', 'm112', 'm114', 'm113']
   >>> view.move_up(('m114',), 1)
   >>> m11.keys()
-  [u'm111', u'm114', u'm112', u'm113']
+  ['m111', 'm114', 'm112', 'm113']
 
 
 Breadcrumbs
@@ -661,9 +661,9 @@ Breadcrumbs
   >>> view = NodeView(m114, request)
   >>> request.annotations.setdefault('loops.view', {})['nodeView'] = view
   >>> view.breadcrumbs()
-  [{'url': 'http://127.0.0.1/loops/views/m1', 'label': u'Menu'},
-   {'url': 'http://127.0.0.1/loops/views/m1/m11', 'label': u'Zope'},
-   {'url': 'http://127.0.0.1/loops/views/m1/m11/m114', 'label': u''}]
+  [{'url': 'http://127.0.0.1/loops/views/m1', 'label': 'Menu'},
+   {'url': 'http://127.0.0.1/loops/views/m1/m11', 'label': 'Zope'},
+   {'url': 'http://127.0.0.1/loops/views/m1/m11/m114', 'label': ''}]
 
 
 End-user Forms and Special Views
@@ -705,8 +705,8 @@ been created during setup.
   >>> custType = TypeConcept(customer)
   >>> custType.options
   []
-  >>> cust1 = concepts['cust1'] = Concept(u'Zope Corporation')
-  >>> cust2 = concepts['cust2'] = Concept(u'cyberconcepts')
+  >>> cust1 = concepts['cust1'] = Concept('Zope Corporation')
+  >>> cust2 = concepts['cust2'] = Concept('cyberconcepts')
   >>> for c in (cust1, cust2): c.conceptType = customer
   >>> custType.options = ('qualifier:assign',)
   >>> ConceptType(cust1).qualifiers
@@ -714,7 +714,7 @@ been created during setup.
 
   >>> form = CreateObjectForm(m112, TestRequest())
   >>> form.presetTypesForAssignment
-  [{'token': 'loops:concept:customer', 'title': u'Customer'}]
+  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
 
 If the node's target is a type concept we don't get any assignments because
 it does not make much sense to assign resources or other concepts as
@@ -736,18 +736,18 @@ on data provided in this form:
   >>> note_tc = concepts['note']
 
   >>> component.provideAdapter(NameChooser)
-  >>> request = TestRequest(form={'title': u'Test Note',
-  ...                             'form.type': u'.loops/concepts/note',
-  ...                             'contentType': u'text/restructured',
-  ...                             'linkUrl': u'http://'})
+  >>> request = TestRequest(form={'title': 'Test Note',
+  ...                             'form.type': '.loops/concepts/note',
+  ...                             'contentType': 'text/restructured',
+  ...                             'linkUrl': 'http://'})
   >>> view = NodeView(m112, request)
   >>> cont = CreateObject(view, request)
   >>> cont.update()
   False
   >>> sorted(resources.keys())
-  [...u'test_note'...]
+  [...'test_note'...]
   >>> resources['test_note'].title
-  u'Test Note'
+  'Test Note'
 
 If there is a concept selected in the combo box we assign this to the newly
 created object:
@@ -755,8 +755,8 @@ created object:
   >>> from loops import util
   >>> topicUid = util.getUidForObject(topic)
   >>> predicateUid = util.getUidForObject(concepts.getDefaultPredicate())
-  >>> request = TestRequest(form={'title': u'Test Note',
-  ...                             'form.type': u'.loops/concepts/note',
+  >>> request = TestRequest(form={'title': 'Test Note',
+  ...                             'form.type': '.loops/concepts/note',
   ...                             'form.assignments.selected':
   ...                                   [':'.join((topicUid, predicateUid))]})
   >>> view = NodeView(m112, request)
@@ -764,22 +764,22 @@ created object:
   >>> cont.update()
   False
   >>> sorted(resources.keys())
-  [...u'test_note-2'...]
+  [...'test_note-2'...]
   >>> note = resources['test_note-2']
   >>> sorted(t.__name__ for t in note.getConcepts())
-  [u'note', u'topic']
+  ['note', 'topic']
 
 When creating an object its name may be automatically generated using the title
 of the object. Let's make sure that the name chooser also handles special
 and possibly critcal cases:
 
   >>> nc = NameChooser(resources)
-  >>> nc.chooseName(u'', Resource(u'abc: (cde)'))
-  u'abc__cde'
-  >>> nc.chooseName(u'', Resource(u'\xdcml\xe4ut'))
-  u'uemlaeut'
-  >>> nc.chooseName(u'', Resource(u'A very very loooooong title'))
-  u'a_title'
+  >>> nc.chooseName('', Resource('abc: (cde)'))
+  'abc__cde'
+  >>> nc.chooseName('', Resource('\xdcml\xe4ut'))
+  'uemlaeut'
+  >>> nc.chooseName('', Resource('A very very loooooong title'))
+  'a_title'
 
 Editing an Object
 -----------------
@@ -804,22 +804,22 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkText textline False None
 
   >>> view.data
-  {'linkUrl': u'http://', 'contentType': u'text/restructured', 'data': u'',
-   'linkText': u'', 'title': u'Test Note'}
+  {'linkUrl': 'http://', 'contentType': 'text/restructured', 'data': '',
+   'linkText': '', 'title': 'Test Note'}
 
 The object is changed via a FormController adapter created for
 a NodeView.
 
   >>> form = dict(
-  ...     title=u'Test Note - changed',
-  ...     contentType=u'text/plain',)
+  ...     title='Test Note - changed',
+  ...     contentType='text/plain',)
   >>> request = TestRequest(form=form)
   >>> view = NodeView(m112, request)
   >>> cont = EditObject(view, request)
   >>> cont.update()
   False
   >>> resources['test_note'].title
-  u'Test Note - changed'
+  'Test Note - changed'
 
 Virtual Targets
 ---------------
@@ -951,7 +951,7 @@ To be done...
   >>> obj = resources['test_note']
   >>> cxObj = cached(obj)
   >>> [p.object.title for p in cxObj.getAllParents()]
-  [u'Note', u'Type']
+  ['Note', 'Type']
 
 
 Security
