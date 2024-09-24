@@ -17,6 +17,7 @@ dependencies = [
 	"markdown",
 	"python-dotenv",
 	"zope.app.renderer",
+	"zope.app.authentication",
 	"zope.browsermenu",
 	"zope.i18n",
 	"zope.pluggableauth",

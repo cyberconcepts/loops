@@ -175,7 +175,7 @@ def getMigratedItem(uid, storage):
 def getObjectForUid(uid, intIds=None):
     if uid == '*': # wild card
         return '*'
-    if isinstance(uid, basestring) and not uid.isdigit():   # not a valid uid
+    if isinstance(uid, str) and not uid.isdigit():   # not a valid uid
         return None
     if intIds is None:
         intIds = component.getUtility(IIntIds)

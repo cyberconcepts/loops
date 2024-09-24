@@ -233,12 +233,12 @@ def generateNameFromTitle(title):
 
 def normalizeName(baseName):
     specialCharacters = {
-        '\xc4': 'Ae', '\xe4': 'ae', '\xd6': 'Oe', '\xf6': 'oe',
-        '\xdc': 'Ue', '\xfc': 'ue', '\xdf': 'ss'}
+        b'\xc4': 'Ae', b'\xe4': 'ae', b'\xd6': 'Oe', b'\xf6': 'oe',
+        b'\xdc': 'Ue', b'\xfc': 'ue', b'\xdf': 'ss'}
     result = []
     for c in baseName:
         try:
-            c = c.encode('ISO8859-15')
+            x = c.encode('ISO8859-15')
         except UnicodeEncodeError:
             # replace all characters not representable in ISO encoding
             result.append('_')
@@ -250,13 +250,13 @@ def normalizeName(baseName):
             # separator and special characters to keep
             result.append(c)
             continue
-        if c in specialCharacters:
+        if x in specialCharacters:
             # transform umlauts and other special characters
-            result.append(specialCharacters[c].lower())
+            result.append(specialCharacters[x].lower())
             continue
-        if ord(c) > 127:
+        if ord(x) > 127:
             # map to ASCII characters
-            c = chr(ord(c) & 127)
+            c = chr(ord(x) & 127).decode('ISO8859-15')
         if c in ':,/\\ ':
             # replace separator characters with _
             result.append('_')
@@ -265,7 +265,7 @@ def normalizeName(baseName):
             continue
         else:
             result.append(c.lower())
-    name = unicode(''.join(result))
+    name = ''.join(result)
     return name
 
 

@@ -444,13 +444,13 @@ Node Views
   >>> page = view.page
   >>> items = page.textItems
   >>> for item in items:
-  ...     print item.url, item.editable
+  ...     print(item.url, item.editable)
   http://127.0.0.1/loops/views/m1/m11/m112 False
 
   >>> menu = view.menu
   >>> items = menu.menuItems
   >>> for item in items:
-  ...     print item.url, view.selected(item)
+  ...     print(item.url, view.selected(item))
   http://127.0.0.1/loops/views/m1/m11 True
 
 A NodeView provides an itemNum attribute that may be used to count elements
@@ -796,7 +796,7 @@ that in turns calls formlibs ``setUpWidgets()``.
 The new technique uses the ``fields`` and ``data`` attributes...
 
   >>> for f in view.fields:
-  ...     print f.name, f.fieldType, f.required, f.vocabulary
+  ...     print(f.name, f.fieldType, f.required, f.vocabulary)
   title textline True None
   data textarea False None
   contentType dropdown True <...SimpleVocabulary object...>
@@ -804,8 +804,8 @@ The new technique uses the ``fields`` and ``data`` attributes...
   linkText textline False None
 
   >>> view.data
-  {'linkUrl': 'http://', 'contentType': 'text/restructured', 'data': '',
-   'linkText': '', 'title': 'Test Note'}
+  {'title': 'Test Note', 'data': '', 'contentType': 'text/restructured', 
+   'linkUrl': 'http://', 'linkText': ''}
 
 The object is changed via a FormController adapter created for
 a NodeView.
@@ -883,13 +883,13 @@ informations about all parents of an object.
 
   >>> parents = m113.getAllParents()
   >>> for p in parents:
-  ...     print p.object.title
+  ...     print(p.object.title)
   Zope
   Menu
 
   >>> parents = resources['test_note'].getAllParents()
   >>> for p in parents:
-  ...     print p.object.title, len(p.relations)
+  ...     print(p.object.title, len(p.relations))
   Note 1
   Type 2
 
@@ -916,10 +916,10 @@ relates ISO country codes with the full name of the country.
   [('at', ['Austria']), ('de', ['Germany'])]
 
   >>> countries.dataAsRecords()
-  [{'value': 'Austria', 'key': 'at'}, {'value': 'Germany', 'key': 'de'}]
+  [{'key': 'at', 'value': 'Austria'}, {'key': 'de', 'value': 'Germany'}]
 
   >>> countries.getRowsByValue('value', 'Germany')
-  [{'value': 'Germany', 'key': 'de'}]
+  [{'key': 'de', 'value': 'Germany'}]
 
 The ``recordstable`` type is a variation of this datable type that contains
 a simple list of records - without a key column. A record in this  type is a
@@ -939,7 +939,7 @@ We just reuse the existing ``countries`` table and convert it to a records table
   >>> countries = adapted(concepts['countries'])
 
   >>> countries.data
-  [{'value': 'Austria', 'key': 'at'}, {'value': 'Germany', 'key': 'de'}]
+  [{'key': 'at', 'value': 'Austria'}, {'key': 'de', 'value': 'Germany'}]
 
 
 Caching

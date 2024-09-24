@@ -1,36 +1,18 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.browser.resource
 
-"""
-View class for resource objects.
+""" View class for resource objects.
 """
 
 import os.path
-import urllib
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.browserpagge import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope import component
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.container.interfaces import INameChooser
-from zope.app.form.browser.textwidgets import FileWidget
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.catalog.interfaces import ICatalog
+from zope.container.interfaces import INameChooser
 from zope.formlib.form import FormFields
 from zope.formlib.interfaces import DISPLAY_UNWRITEABLE
+from zope.formlib.textwidgets import FileWidget
 from zope.proxy import removeAllProxies
 from zope.schema.interfaces import IBytes
 from zope.security import canAccess, canWrite
@@ -272,7 +254,7 @@ class ResourceView(BaseView):
             #wp = wiki.createPage(getName(self.context))
             wp = wiki.addPage(LoopsWikiPage(self.context))
             wp.text = text
-            #print wp.wiki.getManager()
+            #print(wp.wiki.getManager())
             #return util.toUnicode(wp.render(self.request))
         return super(ResourceView, self).renderText(text, contentType)
 
@@ -467,7 +449,7 @@ class ExternalEditorView(ExternalEditorView, BaseView):
         r.append('meta_type:' + '.'.join((context.__module__, context.__class__.__name__)))
         auth = self.request.get('_auth')
         if auth:
-            print 'ExternalEditorView: auth = ', auth
+            print('ExternalEditorView: auth = ', auth)
             if auth.endswith('\n'):
                 auth = auth[:-1]
             r.append('auth:' + auth)
