@@ -1,35 +1,18 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.party
 
-"""
-Adapters for IConcept providing interfaces from the cybertools.organize package.
+""" Adapters for IConcept providing interfaces from the cybertools.organize package.
 """
 
 from persistent.mapping import PersistentMapping
 from zope import interface, component
-from zope.app.principalannotation import annotations
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.component import adapts
-from zope.interface import implements
+from zope.principalannotation.utility import annotations
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.cachedescriptors.property import Lazy
+from zope.component import adapts
+from zope.formlib.interfaces import WidgetInputError
+from zope.interface import implementer
 from zope.schema.interfaces import ValidationError
-from zope.app.form.interfaces import WidgetInputError
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import getName
 
@@ -88,11 +71,10 @@ def getPrincipal(context):
     return None
 
 
+@implementer(IPerson)
 class Person(AdapterBase, BasePerson):
     """ typeInterface adapter for concepts of type 'person'.
     """
-
-    implements(IPerson)
 
     _adapterAttributes = ('context', '__parent__', 'userId', 'phoneNumbers')
     _contextAttributes = list(IPerson) + list(IConcept)
@@ -185,11 +167,10 @@ def removePersonReferenceFromPrincipal(context, event):
             person.removeReferenceFromPrincipal(person.userId)
 
 
+@implementer(IAddress)
 class Address(AdapterBase):
     """ typeInterface adapter for concepts of type 'address'.
     """
-
-    implements(IAddress)
 
     _adapterAttributes = ('context', '__parent__', 'lines')
     _contextAttributes = list(IAddress) + list(IConcept)
@@ -201,10 +182,9 @@ class Address(AdapterBase):
     lines = property(getLines, setLines)
 
 
+@implementer(IHasRole)
 class HasRole(RelationAdapter):
     """ Allows specification of a role for a relation.
     """
-
-    implements(IHasRole)
 
     _contextAttributes = list(IHasRole)

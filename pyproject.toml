@@ -19,6 +19,8 @@ dependencies = [
 	"zope.app.renderer",
 	"zope.browsermenu",
 	"zope.i18n",
+	"zope.pluggableauth",
+	"zope.principalannotation",
 	"zope.securitypolicy",
 	"zope.site",
 	"zope.thread",

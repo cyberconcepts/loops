@@ -1,33 +1,16 @@
-#
-#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.util
 
-"""
-Utilities for the loops.organize package.
+""" Utilities for the loops.organize package.
 """
 
 from zope import interface, component, schema
-from zope.app.authentication.interfaces import IPluggableAuthentication
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.authentication.groupfolder import GroupFolder
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.app.security.settings import Allow, Deny, Unset
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
 from zope.component import queryNextUtility
+from zope.pluggableauth.interfaces import IPluggableAuthentication
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth.plugins.groupfolder import GroupFolder
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.settings import Allow, Deny, Unset
 from zope.traversing.api import getParents
 from loops.common import adapted
 from loops.security.common import getCurrentPrincipal

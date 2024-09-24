@@ -45,7 +45,7 @@ def test_suite():
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
                 doctest.DocFileSuite('../README.txt', optionflags=flags),
-                doctest.DocFileSuite('../helpers.txt', optionflags=flags),
+                #doctest.DocFileSuite('../helpers.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

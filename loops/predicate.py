@@ -1,28 +1,11 @@
-#
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.predicate
 
-"""
-Definition and management of special predicates and corresponding relations.
+""" Definition and management of special predicates and corresponding relations.
 """
 
 from zope import component, schema
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer
 from zope.cachedescriptors.property import Lazy
 from zope.dottedname.resolve import resolve
 from zope.security.proxy import removeSecurityProxy
@@ -39,11 +22,10 @@ from loops.type import TypeInterfaceSourceList
 TypeInterfaceSourceList.typeInterfaces += (IPredicate,)
 
 
+@implementer(IPredicate)
 class Predicate(AdapterBase):
     """ typeInterface adapter for concepts of type 'predicate'.
     """
-
-    implements(IPredicate)
 
     _contextAttributes = list(IPredicate) # + list(IConcept)
 
@@ -66,12 +48,12 @@ class PredicateInterfaceSourceList(TypeInterfaceSourceList):
         return self.predicateInterfaces
 
 
+@implementer(IRelationAdapter)
 class RelationAdapter(AdapterBase):
     """ Base class for adapters to relations that may be used for
         specifying additional attributes for relations.
     """
 
-    implements(IRelationAdapter)
     adapts(IConceptRelation)
 
 
@@ -91,20 +73,18 @@ def adaptedRelation(relation):
 PredicateInterfaceSourceList.predicateInterfaces += (
         IIsSubtype,)
 
+@implementer(IIsSubtype)
 class IsSubtype(RelationAdapter):
     """ Allows specification of a predicate for relations between concepts
         of certain types.
     """
-
-    implements(IIsSubtype)
 
     _contextAttributes = list(IIsSubtype)
 
 
 #PredicateInterfaceSourceList.predicateInterfaces += (IMappingAttributeRelation,)
 
+#@implementer(IMappingAttributeRelation)
 #class MappingAttributeRelation(AdapterBase):
-
-    #implements(IMappingAttributeRelation)
 
     #_contextAttributes = list(IMappingAttributeRelation)
