@@ -117,7 +117,7 @@ class FullQuery(BaseQuery):
             return ScoredSet(result, scores)
         if text or type != 'loops:*':  # TODO: this may be highly inefficient!
             cat = self.catalog
-            if isinstance(type, basestring):
+            if isinstance(type, str):
                 type = [type]
             for tp in type:
                 if tp.endswith('*'):

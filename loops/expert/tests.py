@@ -5,7 +5,7 @@ try:
     from loops.expert import query
     ignore = False
 except ImportError:
-    print 'Skipping loops.expert'
+    print('Skipping loops.expert')
     ignore = True
 
 class Test(unittest.TestCase):

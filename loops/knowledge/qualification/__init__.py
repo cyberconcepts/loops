@@ -1,16 +1,15 @@
 '''package loops.knowledge.qualification'''
 
 from zope.component import adapts
-from zope.interface import implementer, implements
+from zope.interface import implementer
 from cybertools.tracking.interfaces import ITrackingStorage
 from loops.knowledge.qualification.interfaces import IQualificationRecord, \
                     IQualificationRecords
 from loops.organize.work.base import WorkItem, WorkItems
 
 
+@implementer(IQualificationRecord)
 class QualificationRecord(WorkItem):
-
-    implements(IQualificationRecord)
 
     typeName = 'QualificationRecord'
     typeInterface = IQualificationRecord
@@ -24,9 +23,9 @@ class QualificationRecord(WorkItem):
         return new
 
 
+@implementer(IQualificationRecords)
 class QualificationRecords(WorkItems):
     """ A tracking storage adapter managing qualification records."""
     
-    implements(IQualificationRecords) 
     adapts(ITrackingStorage)
 

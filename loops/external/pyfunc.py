@@ -1,50 +1,30 @@
-#
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.external.pyfunc
 
-"""
-Reading and writing loops objects (represented by IElement objects)
+""" Reading and writing loops objects (represented by IElement objects)
 in Python function notation.
-
-$Id$
 """
 
 from zope.cachedescriptors.property import Lazy
-from zope.interface import implements
+from zope.interface import implementer
 
 from loops.external.interfaces import IReader, IWriter
 from loops.external.element import elementTypes, toplevelElements
 
 
+@implementer(IReader)
 class PyReader(object):
-
-    implements(IReader)
 
     def read(self, input):
         if not isinstance(input, str):
             input = input.read()
         proc = InputProcessor()
-        exec input in proc
+        exec(input, proc)
         return proc.elements
 
 
 class InputProcessor(dict):
 
-    _constants = dict(True=True, False=False)
+    _constants = {'True': True, 'False': False}
 
     def __init__(self):
         self.elements = []
@@ -61,9 +41,8 @@ class InputProcessor(dict):
         return factory
 
 
+@implementer(IWriter)
 class PyWriter(object):
-
-    implements(IWriter)
 
     def write(self, elements, output, level=0):
         for idx, element in enumerate(elements):

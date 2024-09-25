@@ -5,8 +5,6 @@ loops - Linked Objects for Organization and Processing Services
 The loops expert - knows what is in a loops site and how to make
 use of it.
 
-  ($Id$)
-
 
 Setting up a loops Site and Utilities
 =====================================
@@ -88,7 +86,7 @@ corresponding adapter and activate it for the current loops site.
 We have now to reindex all documents so that the state index gets populated
 according to the new settings.
 
-  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> from zope.catalog.interfaces import ICatalog
   >>> catalog = component.getUtility(ICatalog)
   >>> from loops import util
   >>> for r in resources.values():
@@ -152,7 +150,7 @@ filtering the results; this defaults to ``canListObjects``.
   >>> from loops.expert.query import getObjects
   >>> objs = getObjects(query.Title('ty*').apply(), root=loopsRoot)
   >>> sorted(o.title for o in objs)
-  [u'Document Type', u'Type', u'has Type']
+  ['Document Type', 'Type', 'has Type']
 
 
 Filters
@@ -180,19 +178,19 @@ concepts) that are direct or indirect children of jim.
   >>> qu = query.Type('loops:resource:textdocument')
   >>> objs = getObjects(qu.apply())
   >>> sorted(o.title for o in objs)
-  [u'Doc 001', u'Doc 002', u'Doc 003']
+  ['Doc 001', 'Doc 002', 'Doc 003']
 
   >>> from loops.expert import filter
   >>> fltr = filter.Children(jim, recursive=True, includeResources=True)
   >>> sorted(o.title for o in getObjects((qu & fltr.query()).apply()))
-  [u'Doc 001', u'Doc 003']
+  ['Doc 001', 'Doc 003']
 
   >>> #fltr.check(resources['d001.txt'])
   >>> #fltr.check(resources['d002.txt'])
   >>> r1 = qu.apply()
   >>> r2 = fltr.apply(dict(zip(r1, getObjects(r1))))
   >>> sorted(o.title for o in r2.values())
-  [u'Doc 001', u'Doc 003']
+  ['Doc 001', 'Doc 003']
 
 
 Organizing Queries and Filters with Query Instances
@@ -235,7 +233,7 @@ Reports
   >>> from loops.expert.report import ReportTypeSourceList
   >>> source = ReportTypeSourceList(report)
   >>> list(source)
-  [(u'default_concept_report', u'Default Concept Report')]
+  [('default_concept_report', 'Default Concept Report')]
 
 
 Fin de partie

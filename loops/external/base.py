@@ -1,35 +1,16 @@
-#
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.external.base
 
-"""
-Reading and writing loops objects (represented by IElement objects)
+""" Reading and writing loops objects (represented by IElement objects)
 in Python function notation.
-
-$Id$
 """
 
-from cStringIO import StringIO
+from io import StringIO
 import itertools
 import os, sys
 import zdaemon
 from zope import component
 from zope.cachedescriptors.property import Lazy
-from zope.interface import implements
+from zope.interface import implementer
 from zope.traversing.api import getName, getParent
 
 from cybertools.composer.interfaces import IInstance
@@ -73,9 +54,8 @@ class Base(object):
         return self.concepts.getTypePredicate()
 
 
+@implementer(ILoader)
 class Loader(Base, BaseLoader, SetupManager):
-
-    implements(ILoader)
 
     def __init__(self, context, resourceDirectory=None):
         #super(Loader, self).__init__(context, resourceDirectory)
@@ -89,9 +69,8 @@ class Loader(Base, BaseLoader, SetupManager):
     # def addConcept(self, ...):
 
 
+@implementer(IExtractor)
 class Extractor(Base):
-
-    implements(IExtractor)
 
     count = 0
 

@@ -1,11 +1,10 @@
-"""
-Set up a loops site for testing.
+# loops.expert.testsetup
 
-$Id$
+""" Set up a loops site for testing.
 """
 
 from zope import component
-from zope.app.catalog.interfaces import ICatalog
+from zope.catalog.interfaces import ICatalog
 
 from cybertools.typology.interfaces import IType
 from loops import util

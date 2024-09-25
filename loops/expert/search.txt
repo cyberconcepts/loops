@@ -2,8 +2,6 @@
 loops.search - Provide search functionality for the loops framework
 ===================================================================
 
-  ($Id$)
-
 
 Let's do some basic set up
 
@@ -11,7 +9,6 @@ Let's do some basic set up
   >>> site = placefulSetUp(True)
 
   >>> from zope import component, interface
-  >>> from zope.interface import implements
 
 and setup a simple loops site with a concept manager and some concepts
 (with all the type machinery, what in real life is done via standard
@@ -32,7 +29,7 @@ ZCML setup):
 In addition we create a concept that holds the search page and a node
 (page) that links to this concept:
 
-  >>> search = concepts['search'] = Concept(u'Search')
+  >>> search = concepts['search'] = Concept('Search')
   >>> search.conceptType = query
 
   >>> from loops.view import Node
@@ -105,13 +102,13 @@ resource we can search for and index it in the catalog.
   >>> from loops.resource import Resource
   >>> rplone = resources['plone'] = Resource()
 
-  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> from zope.catalog.interfaces import ICatalog
   >>> from loops import util
   >>> catalog = component.getUtility(ICatalog)
   >>> catalog.index_doc(int(util.getUidForObject(rplone)), rplone)
 
   >>> from loops.expert.browser.search import SearchResults
-  >>> form = {'search.2.title': True, 'search.2.text': u'plone'}
+  >>> form = {'search.2.title': True, 'search.2.text': 'plone'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
 
@@ -121,7 +118,7 @@ resource we can search for and index it in the catalog.
   >>> results[0].context == rplone
   True
 
-  >>> form = {'search.2.title': True, 'search.2.text': u'foo'}
+  >>> form = {'search.2.title': True, 'search.2.text': 'foo'}
   >>> request = TestRequest(form=form)
   >>> resultsView = SearchResults(page, request)
   >>> len(list(resultsView.results))
@@ -133,10 +130,10 @@ Search via related concepts
 We first have to prepare some test concepts (topics); we also assign our test
 resource (rplone) from above to one of the topics:
 
-  >>> czope = concepts['zope'] = Concept(u'Zope')
-  >>> czope2 = concepts['zope2'] = Concept(u'Zope 2')
-  >>> czope3 = concepts['zope3'] = Concept(u'Zope 3')
-  >>> cplone = concepts['plone'] = Concept(u'Plone')
+  >>> czope = concepts['zope'] = Concept('Zope')
+  >>> czope2 = concepts['zope2'] = Concept('Zope 2')
+  >>> czope3 = concepts['zope3'] = Concept('Zope 3')
+  >>> cplone = concepts['plone'] = Concept('Plone')
   >>> for c in (czope, czope2, czope3, cplone):
   ...     c.conceptType = topic
   ...     catalog.index_doc(int(util.getUidForObject(c)), c)
@@ -157,7 +154,7 @@ with them:
   >>> len(results)
   5
   >>> results[0].context.__name__
-  u'plone'
+  'plone'
 
   >>> uid = util.getUidForObject(concepts['zope3'])
   >>> form = {'search.3.type': 'loops:concept:topic', 'search.3.text': uid}
@@ -167,17 +164,19 @@ with them:
   >>> len(results)
   1
   >>> results[0].context.__name__
-  u'zope3'
+  'zope3'
 
 To support easy entry of concepts to search for we can preselect the available
 concepts (optionally restricted to a certain type) by entering text parts
 of the concepts' titles:
 
-  >>> form = {'searchType': 'loops:concept:topic', 'name': u'zope'}
+  >>> form = {'searchType': 'loops:concept:topic', 'name': 'zope'}
   >>> request = TestRequest(form=form)
   >>> view = Search(page, request)
   >>> view.listConcepts()
-  '{"items": [{"id": "...", "name": "Zope", "label": "Zope (Thema)"}, {"id": "...", "name": "Zope 2", "label": "Zope 2 (Thema)"}, {"id": "...", "name": "Zope 3", "label": "Zope 3 (Thema)"}], "identifier": "id"}'
+  '{"identifier": "id", "items": [{...}]}'
+
+'{"items": [{"id": "...", "name": "Zope", "label": "Zope (Thema)"}, {"id": "...", "name": "Zope 2", "label": "Zope 2 (Thema)"}, {"id": "...", "name": "Zope 3", "label": "Zope 3 (Thema)"}], "identifier": "id"}'
 
 Preset Concept Types on Search Forms
 ------------------------------------
@@ -215,21 +214,23 @@ and thus include the customer type in the preset search types.
   ('concept', 'search')
   >>> searchView = Search(search, TestRequest())
   >>> list(searchView.presetSearchTypes)
-  [{'token': 'loops:concept:customer', 'title': u'Customer'}]
+  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
 
   >>> searchView.conceptsForType('loops:concept:customer')
-  [{'token': 'none', 'title': u'not selected'},
-   {'token': '...', 'title': u'Customer 1'},
-   {'token': '...', 'title': u'Customer 2'},
-   {'token': '...', 'title': u'Customer 3'}]
+  [{'token': 'none', 'title': 'not selected'},
+   {...}, {...}, {...}]
+
+{'token': '...', 'title': 'Customer 1'},
+{'token': '...', 'title': 'Customer 2'},
+{'token': '...', 'title': 'Customer 3'}]
 
 Let's use this new search option for querying:
 
-  >>> form = {'search.4.text_selected': u'75'}
+  >>> form = {'search.4.text_selected': '75'}
   >>> resultsView = SearchResults(page, TestRequest(form=form))
   >>> results = list(resultsView.results)
   >>> results[0].title
-  u'Customer 1'
+  'Customer 1'
 
 
 Automatic Filtering

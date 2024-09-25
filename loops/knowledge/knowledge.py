@@ -1,29 +1,12 @@
-#
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.knowledge.knowledge
 
-"""
-Adapters for IConcept providing interfaces from the
+""" Adapters for IConcept providing interfaces from the
 cybertools.knowledge package.
 """
 
 from zope import interface, component
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer
 from zope.cachedescriptors.property import Lazy
 
 from cybertools.typology.interfaces import IType
@@ -75,6 +58,7 @@ class KnowledgeAdapterMixin(object):
         return self.context == other.context
 
 
+@implementer(IPerson)
 class Person(BasePerson, Knowing, KnowledgeAdapterMixin):
     """ A typeInterface adapter for concepts of type 'person', including
         knowledge/learning management features.
@@ -84,8 +68,6 @@ class Person(BasePerson, Knowing, KnowledgeAdapterMixin):
     _noexportAttributes = ('knowledge',)
 
     knowledge = ParentRelationSetProperty('knows')
-
-    implements(IPerson)
 
     def getKnowledge(self):
         return (IKnowledgeElement(c)
@@ -98,12 +80,12 @@ class Person(BasePerson, Knowing, KnowledgeAdapterMixin):
         self.context.deassignParent(obj.context, (self.knowsPred,))
 
 
+@implementer(ITopic)
 class Topic(I18NAdapterBase, KnowledgeAdapterMixin):
     """ A typeInterface adapter for concepts of type 'topic' that
         may act as a knowledge element.
     """
 
-    implements(ITopic)
     _adapterAttributes = I18NAdapterBase._adapterAttributes + ('parent',)
 
     def getParent(self):
@@ -140,12 +122,11 @@ class Topic(I18NAdapterBase, KnowledgeAdapterMixin):
                        + self.context.getResources((self.providesPred,)))
 
 
+@implementer(ITask)
 class Task(BaseTask, KnowledgeAdapterMixin):
     """ A typeInterface adapter for concepts of type 'task' that
         may act as a knowledge requirement profile.
     """
-
-    implements(ITask)
 
     _adapterAttributes = BasePerson._adapterAttributes + ('requirements',)
     _noexportAttributes = ('requirements',)
@@ -183,9 +164,8 @@ class Task(BaseTask, KnowledgeAdapterMixin):
         return sorted(result, key=lambda x: (-x['fit'], x['person'].title))
 
 
+@implementer(IKnowledgeProvider)
 class ConceptKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):
-
-    implements(IKnowledgeProvider)
 
     def getProvidedKnowledge(self):
         return (IKnowledgeElement(c)
@@ -198,9 +178,9 @@ class ConceptKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):
         self.context.deassignParent(obj.context, (self.providesPred,))
 
 
+@implementer(IKnowledgeProvider)
 class ResourceKnowledgeProvider(AdapterBase, KnowledgeAdapterMixin):
 
-    implements(IKnowledgeProvider)
     adapts(IResource)
 
     def getProvidedKnowledge(self):

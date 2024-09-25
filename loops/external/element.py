@@ -99,7 +99,7 @@ class TypeElement(ConceptElement):
         super(TypeElement, self).__init__(name, title, *args, **kw)
         ti = self.get('typeInterface')
         if ti:
-            if not isinstance(ti, basestring):
+            if not isinstance(ti, str):
                 self['typeInterface'] = '.'.join((ti.__module__, ti.__name__))
 
     def execute(self, loader):
@@ -125,7 +125,7 @@ class RecordManagerElement(Element):
     def __init__(self, name, trackFactory, **kw):
         self['name'] = name
         tf = self['trackFactory'] = trackFactory
-        if not isinstance(tf, basestring):
+        if not isinstance(tf, str):
             self['trackFactory'] = '.'.join((tf.__module__, tf.__name__))
         for k, v in kw.items():
             self[k] = v

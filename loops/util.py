@@ -26,9 +26,12 @@ import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
 
-import config
-from loops.storage.compat.common import StorageFactory
-storageFactory = StorageFactory(config)
+try: # for testing!
+    import config
+    from loops.storage.compat.common import StorageFactory
+    storageFactory = StorageFactory(config)
+except ImportError:
+    pass
 
 _ = MessageFactory('loops')
 

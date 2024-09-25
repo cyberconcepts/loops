@@ -227,14 +227,15 @@ class SetupManager(object):
     def getPredicate(self, predicate):
         if predicate is None:
             return self.concepts.getDefaultPredicate()
-        if isinstance(predicate, basestring):
+        if isinstance(predicate, str):
             return self.concepts[predicate]
         return predicate
 
     def log(self, message):
-        if isinstance(message, unicode):
-            message = message.encode('UTF-8')
-        print >> self.logger, message
+        #if isinstance(message, str):
+        #    message = message.encode('UTF-8')
+        #print >> self.logger, message
+        print(message, file=self.logger)
 
     def addObject(self, container, class_, name, **kw):
         return addObject(container, class_, name, **kw)
