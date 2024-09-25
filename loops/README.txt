@@ -253,7 +253,7 @@ For testing we use some simple files from the tests directory:
   >>> from loops import tests
   >>> import os
   >>> path = os.path.join(*tests.__path__)
-  >>> img.data = open(os.path.join(path, 'test_icon.png')).read()
+  >>> img.data = open(os.path.join(path, 'test_icon.png'), 'rb').read()
   >>> img.getSize()
   381
   >>> img.getImageSize()
@@ -262,7 +262,7 @@ For testing we use some simple files from the tests directory:
   'image/png'
 
   >>> pdf = Resource('A pdf File')
-  >>> pdf.data = open(os.path.join(path, 'test.pdf')).read()
+  >>> pdf.data = open(os.path.join(path, 'test.pdf'), 'rb').read()
   >>> pdf.getSize()
   25862
   >>> pdf.getImageSize()
@@ -661,9 +661,9 @@ Breadcrumbs
   >>> view = NodeView(m114, request)
   >>> request.annotations.setdefault('loops.view', {})['nodeView'] = view
   >>> view.breadcrumbs()
-  [{'url': 'http://127.0.0.1/loops/views/m1', 'label': 'Menu'},
-   {'url': 'http://127.0.0.1/loops/views/m1/m11', 'label': 'Zope'},
-   {'url': 'http://127.0.0.1/loops/views/m1/m11/m114', 'label': ''}]
+  [{'label': 'Menu', 'url': 'http://127.0.0.1/loops/views/m1'},
+   {'label': 'Zope', 'url': 'http://127.0.0.1/loops/views/m1/m11'},
+   {'label': '', 'url': 'http://127.0.0.1/loops/views/m1/m11/m114'}]
 
 
 End-user Forms and Special Views
@@ -714,7 +714,7 @@ been created during setup.
 
   >>> form = CreateObjectForm(m112, TestRequest())
   >>> form.presetTypesForAssignment
-  [{'token': 'loops:concept:customer', 'title': 'Customer'}]
+  [{'title': 'Customer', 'token': 'loops:concept:customer'}]
 
 If the node's target is a type concept we don't get any assignments because
 it does not make much sense to assign resources or other concepts as

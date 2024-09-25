@@ -165,7 +165,7 @@ class ResourceType(LoopsType):
     @Lazy
     def title(self):
         cn = self.className
-        return self.typeTitles.get(cn, unicode(cn))
+        return self.typeTitles.get(cn, cn)
 
     @Lazy
     def token(self):

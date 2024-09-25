@@ -1,5 +1,6 @@
 
 import unittest, doctest
+import warnings
 from zope.interface.verify import verifyClass
 from zope.intid.interfaces import IIntIds
 
@@ -22,6 +23,7 @@ class Test(unittest.TestCase):
     "Basic tests for the loops package."
 
     def testInterfaces(self):
+        warnings.filterwarnings('ignore', category=ResourceWarning)
         verifyClass(ILoops, Loops)
         self.assertTrue(ILoops.providedBy(Loops()))
         verifyClass(IConcept, Concept)
@@ -45,7 +47,7 @@ def test_suite():
     return unittest.TestSuite((
                 unittest.makeSuite(Test),
                 doctest.DocFileSuite('../README.txt', optionflags=flags),
-                #doctest.DocFileSuite('../helpers.txt', optionflags=flags),
+                doctest.DocFileSuite('../helpers.txt', optionflags=flags),
             ))
 
 if __name__ == '__main__':

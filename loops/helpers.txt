@@ -6,8 +6,6 @@ This file documents and tests a bunch of facilities that support the
 loops framework, mostly provided by sub-packages of the cybertools
 package.
 
-  ($Id$)
-
 Let's first do some basic imports
 
   >>> from zope import interface, component
@@ -22,48 +20,48 @@ Let's first do some basic imports
   >>> concepts, resources, views = t.setup()
 
   >>> concepts['hasType'].title
-  u'has Type'
+  'has Type'
 
   >>> loopsRoot = site['loops']
 
 We also add some example concepts,
 
   >>> from loops.concept import Concept
-  >>> cc1 = Concept(u'Zope')
+  >>> cc1 = Concept('Zope')
   >>> concepts['cc1'] = cc1
   >>> cc1.title
-  u'Zope'
+  'Zope'
 
-  >>> cc2 = Concept(u'Zope 3')
+  >>> cc2 = Concept('Zope 3')
   >>> concepts['cc2'] = cc2
   >>> cc2.title
-  u'Zope 3'
+  'Zope 3'
 
 resources,
 
   >>> from loops.resource import Resource
-  >>> file1 = resources['file1'] = Resource(u'A file')
+  >>> file1 = resources['file1'] = Resource('A file')
   >>> file1.resourceType = concepts['file']
 
 (note: the use of Document is deprecated)
 
   >>> from loops.resource import Document
-  >>> doc1 = Document(u'Zope Info')
+  >>> doc1 = Document('Zope Info')
   >>> resources['doc1'] = doc1
   >>> doc1.title
-  u'Zope Info'
+  'Zope Info'
 
-  >>> img1 = resources['img1'] = Resource(u'An Image')
+  >>> img1 = resources['img1'] = Resource('An Image')
   >>> img1.resourceType = concepts['file']
 
 and nodes (in view space):
 
   >>> from loops.view import Node
-  >>> m1 = Node(u'Home')
+  >>> m1 = Node('Home')
   >>> views['m1'] = m1
   >>> m1.nodeType = 'menu'
 
-  >>> m1p1 = Node(u'Page')
+  >>> m1p1 = Node('Page')
   >>> m1['p1'] = m1p1
   >>> m1p1.nodeType = 'page'
 
@@ -85,7 +83,7 @@ As we have not yet associated a type with one of our content objects we get
   >>> cc1_type.typeProvider is None
   True
   >>> cc1_type.title
-  u'Unknown Type'
+  'Unknown Type'
   >>> cc1_type.token
   '.unknown'
 
@@ -107,9 +105,9 @@ So let's check the type of the type object:
   >>> type_type.typeProvider is typeObject
   True
   >>> type_type.title
-  u'Type'
+  'Type'
   >>> type_type.token
-  u'.loops/concepts/type'
+  '.loops/concepts/type'
   >>> type_type.tokenForSearch
   'loops:concept:type'
   >>> type_type.qualifiers
@@ -117,7 +115,7 @@ So let's check the type of the type object:
 
 Now we register another type ('topic') and assign it to cc1:
 
-  >>> concepts['topic'] = Concept(u'Topic')
+  >>> concepts['topic'] = Concept('Topic')
   >>> topic = concepts['topic']
   >>> topic.conceptType = typeObject
   >>> cc1.conceptType = topic
@@ -147,9 +145,9 @@ Now let's have a look at resources.
   >>> component.provideAdapter(LoopsType, (IResource,), IType)
   >>> file1_type = IType(file1)
   >>> file1_type.title
-  u'File'
+  'File'
   >>> file1_type.token
-  u'.loops/concepts/file'
+  '.loops/concepts/file'
   >>> file1_type.tokenForSearch
   'loops:resource:file'
   >>> file1_type.qualifiers
@@ -167,7 +165,7 @@ Now let's have a look at resources.
 
   >>> doc1_type = IType(doc1)
   >>> doc1_type.title
-  u'Document'
+  'Document'
   >>> doc1_type.token
   'loops.resource.Document'
   >>> doc1_type.tokenForSearch
@@ -181,11 +179,11 @@ Now let's have a look at resources.
 
   >>> img1_type = IType(img1)
   >>> img1_type.token
-  u'.loops/concepts/file'
+  '.loops/concepts/file'
   >>> img1_type.tokenForSearch
   'loops:resource:file'
   >>> img1_type.title
-  u'File'
+  'File'
 
 Using the type machinery we can also specify options that may be used
 for controlling e.g. storage for external files.
@@ -194,8 +192,8 @@ for controlling e.g. storage for external files.
   >>> from loops.resource import FileAdapter
   >>> component.provideAdapter(FileAdapter, provides=IFile)
 
-  >>> extfile = concepts['extfile'] = Concept(u'External File')
-  >>> ef1 = resources['ef1'] = Resource(u'Extfile #1')
+  >>> extfile = concepts['extfile'] = Concept('External File')
+  >>> ef1 = resources['ef1'] = Resource('Extfile #1')
   >>> ef1.resourceType = extfile
   >>> ef1_type = IType(ef1)
   >>> IType(ef1).options
@@ -208,7 +206,7 @@ for controlling e.g. storage for external files.
   >>> IType(ef1).options
   ['dummy', 'storage:varsubdir', 'storage_parameters:extfiles']
   >>> IType(ef1).optionsDict
-  {'default': ['dummy'], 'storage_parameters': 'extfiles', 'storage': 'varsubdir'}
+  {'default': ['dummy'], 'storage': 'varsubdir', 'storage_parameters': 'extfiles'}
 
 Can we find out somehow which types are available? This is the time to look
 for a type manager. This could be a utility; but in the loops package it
@@ -265,10 +263,10 @@ This is done by assigning this interface to topic_type.typeProvider,
 i.e. the 'topic' concept, via an adapter:
 
   >>> class ITopic(Interface): pass
-  >>> from zope.interface import implements
+  >>> from zope.interface import implementer
   >>> class Topic(object):
-  ...     implements(ITopic)
   ...     def __init__(self, context): pass
+  >>> Topic = implementer(ITopic)(Topic)
   >>> from loops.interfaces import IConcept
   >>> component.provideAdapter(Topic, (IConcept,), ITopic)
 
@@ -299,7 +297,7 @@ context object's type:
   >>> from loops.browser.common import BaseView
   >>> view = BaseView(cc1, TestRequest())
   >>> view.typeTitle
-  u'Topic'
+  'Topic'
   >>> view.typeInterface
   <InterfaceClass ...ITopic>
   >>> view.typeAdapter
@@ -321,7 +319,7 @@ been provided by the setup, but we have to register a corresponding adapter.
 
 Next we need a concept of this type:
 
-  >>> simpleQuery = concepts['simpleQuery'] = Concept(u'Simple query')
+  >>> simpleQuery = concepts['simpleQuery'] = Concept('Simple query')
   >>> simpleQuery.conceptType = query
   >>> sq_type = IType(simpleQuery)
   >>> sq_adapter = sq_type.typeInterface(simpleQuery)
@@ -426,7 +424,7 @@ Folders
   map.
 
   >>> tFolder = addAndConfigureObject(concepts, Concept, 'folder',
-  ...                   title=u'Folder', conceptType=typeObject)
+  ...                   title='Folder', conceptType=typeObject)
 
 Usually we want to create folders only in objects of a certain type,
 e.g. in a domain. So we activate the folder creation action by providing
@@ -444,7 +442,7 @@ If we now create a domain and set up a view on it it will provide the
 folder creation action.
 
   >>> general = addAndConfigureObject(concepts, Concept, 'general',
-  ...                   title=u'General', conceptType=tDomain)
+  ...                   title='General', conceptType=tDomain)
 
   >>> from loops.browser.concept import ConceptView
   >>> view = ConceptView(general, TestRequest())
@@ -454,7 +452,7 @@ folder creation action.
 Let's now create a folder.
 
   >>> f01 = addAndConfigureObject(concepts, Concept, 'f01',
-  ...                   title=u'Test Folder', conceptType=tFolder)
+  ...                   title='Test Folder', conceptType=tFolder)
 
 A folder should be associated with a FolderView that provides two actions
 for editing the folder and for creating a new subfolder.

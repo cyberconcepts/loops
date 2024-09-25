@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.expert.query
 
-"""
-Generic query functionality for retrieving stuff from a loops database.
+""" Generic query functionality for retrieving stuff from a loops database.
 """
 
 from BTrees.IIBTree import IITreeSet
@@ -25,7 +8,7 @@ from BTrees.IFBTree import IFBucket, IFBTree, IFTreeSet
 from BTrees.IOBTree import IOBucket, IOBTree
 from zope import interface, component
 from zope.component import adapts
-from zope.interface import implements, implementer
+from zope.interface import implementer
 from zope.cachedescriptors.property import Lazy
 from zope.intid.interfaces import IIntIds
 
@@ -91,9 +74,8 @@ def AnyKeyword(value):
 
 # concept map queries
 
+@implementer(IQuery)
 class ConceptMapTerm(Term):
-
-    implements(IQuery)
 
     def __init__(self, concept, **kw):
         self.context = concept

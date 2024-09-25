@@ -5,7 +5,7 @@
 
 import os.path
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
-from zope.browserpagge import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.catalog.interfaces import ICatalog

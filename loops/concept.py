@@ -187,6 +187,8 @@ class Concept(Contained, Persistent):
                                         usePredicateIndex=usePredicateIndex)
                   if canListObject(r.second, noSecurityCheck) and
                      IConcept.providedBy(r.second))
+        if sort is None:
+            return rels
         return sorted(rels, key=sort)
 
     def getChildren(self, predicates=None, sort='default',
