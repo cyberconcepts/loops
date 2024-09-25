@@ -32,7 +32,7 @@ ZCML setup):
 
   >>> from loops.concept import Concept
   >>> from loops.setup import addAndConfigureObject
-  >>> johnC = addAndConfigureObject(concepts, Concept, 'john', title=u'John',
+  >>> johnC = addAndConfigureObject(concepts, Concept, 'john', title='John',
   ...                               conceptType=person)
 
 
@@ -45,10 +45,10 @@ The classes used in this package are just adapters to IConcept.
 
   >>> john = IPerson(johnC)
   >>> john.title
-  u'John'
-  >>> john.firstName = u'John'
+  'John'
+  >>> john.firstName = 'John'
   >>> johnC._firstName
-  u'John'
+  'John'
   >>> john.lastName is None
   True
   >>> john.someOtherAttribute
@@ -76,7 +76,7 @@ For testing, we first have to provide the needed utilities and settings
   >>> auth = setupData.auth
   >>> principalAnnotations = setupData.principalAnnotations
 
-  >>> principal = auth.definePrincipal('users.john', u'John', login='john')
+  >>> principal = auth.definePrincipal('users.john', 'John', login='john')
   >>> john.userId = 'users.john'
 
   >>> annotations = principalAnnotations.getAnnotationsById('users.john')
@@ -86,7 +86,7 @@ For testing, we first have to provide the needed utilities and settings
 
 Change a userId assignment:
 
-  >>> principal = auth.definePrincipal('users.johnny', u'Johnny', login='johnny')
+  >>> principal = auth.definePrincipal('users.johnny', 'Johnny', login='johnny')
   >>> john.userId = 'users.johnny'
 
   >>> annotations = principalAnnotations.getAnnotationsById('users.johnny')
@@ -127,13 +127,13 @@ principal annotation:
 If we try to assign a userId of a principal that already has a person
 concept assigned we should get an error:
 
-  >>> johnC = concepts['john'] = Concept(u'John')
+  >>> johnC = concepts['john'] = Concept('John')
   >>> johnC.conceptType = person
   >>> john = IPerson(johnC)
   >>> john.userId = 'users.john'
   >>> john.email = 'john@loopz.org'
 
-  >>> marthaC = concepts['martha'] = Concept(u'Martha')
+  >>> marthaC = concepts['martha'] = Concept('Martha')
   >>> marthaC.conceptType = person
   >>> martha = IPerson(marthaC)
 
@@ -150,15 +150,15 @@ The member registration needs the whole pluggable authentication stuff
 with a principal folder:
 
   >>> from zope.app.appsetup.bootstrap import ensureUtility
-  >>> from zope.app.authentication.authentication import PluggableAuthentication
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.pluggableauth import PluggableAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> ensureUtility(site, IAuthentication, '', PluggableAuthentication,
   ...               copy_to_zlog=False)
   <...PluggableAuthentication...>
   >>> pau = component.getUtility(IAuthentication, context=site)
 
-  >>> from zope.app.authentication.principalfolder import PrincipalFolder
-  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+  >>> from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
+  >>> from zope.pluggableauth.interfaces import IAuthenticatorPlugin
   >>> pFolder = PrincipalFolder('loops.')
   >>> pau['loops'] = pFolder
   >>> pau.authenticatorPlugins = ('loops',)
@@ -179,12 +179,12 @@ sure that a principal object can be served by a corresponding factory):
   >>> from zope.app.authentication.principalfolder import FoundPrincipalFactory
   >>> component.provideAdapter(FoundPrincipalFactory)
 
-  >>> data = {'loginName': u'newuser',
-  ...         'password': u'quack',
-  ...         'passwordConfirm': u'quack',
-  ...         'lastName': u'Sawyer',
-  ...         'firstName': u'Tom',
-  ...         'email': u'tommy@sawyer.com',
+  >>> data = {'loginName': 'newuser',
+  ...         'password': 'quack',
+  ...         'passwordConfirm': 'quack',
+  ...         'lastName': 'Sawyer',
+  ...         'firstName': 'Tom',
+  ...         'email': 'tommy@sawyer.com',
   ...         'form.action': 'update',}
 
 and register it.
@@ -200,19 +200,19 @@ and register it.
   >>> person = concepts['person.newuser']
   >>> pa = adapted(person)
   >>> pa.lastName, pa.userId
-  (u'Sawyer', u'loops.newuser')
+  ('Sawyer', 'loops.newuser')
 
 Now we can also retrieve it from the authentication utility:
 
   >>> pau.getPrincipal('loops.newuser').title
-  u'Tom Sawyer'
+  'Tom Sawyer'
 
 Change Password
 ---------------
 
-  >>> data = {'oldPassword': u'tiger',
-  ...         'password': u'lion',
-  ...         'passwordConfirm': u'lion',
+  >>> data = {'oldPassword': 'tiger',
+  ...         'password': 'lion',
+  ...         'passwordConfirm': 'lion',
   ...         'action': 'update'}
 
   >>> request = TestRequest(form=data)
@@ -235,7 +235,7 @@ Invalidates the user account by generating a new password. A mail ist sent to
 the email address of the person with a link for re-activating the account
 and enter a new password.
 
-  >>> data = {'loginName': u'dummy',
+  >>> data = {'loginName': 'dummy',
   ...         'action': 'update'}
 
   >>> request = TestRequest(form=data)
@@ -257,14 +257,14 @@ store a persistent (internal) principal object.
   >>> pau['persons'] = pbAuth
   >>> pau.authenticatorPlugins = ('loops', 'persons',)
 
-  >>> eddieC = addAndConfigureObject(concepts, Concept, 'eddie', title=u'Eddie',
+  >>> eddieC = addAndConfigureObject(concepts, Concept, 'eddie', title='Eddie',
   ...                                conceptType=person)
   >>> eddie = adapted(eddieC)
   >>> eddie.userId = 'persons.eddie'
 
   >>> pbAuth.setPassword('eddie', 'secret')
   >>> pbAuth.authenticateCredentials(dict(login='eddie', password='secret'))
-  PrincipalInfo(u'persons.eddie')
+  PrincipalInfo('persons.eddie')
 
 
 Security
@@ -275,7 +275,7 @@ Automatic security settings on persons
 
   >>> from zope.traversing.api import getName
   >>> list(sorted(getName(c) for c in concepts['person'].getChildren()))
-  [u'jim', u'john', u'martha', u'person.newuser']
+  ['jim', 'john', 'martha', 'person.newuser']
 
 Person objects that have a user assigned to them receive this user
 (principal) as their owner.
@@ -284,7 +284,7 @@ Person objects that have a user assigned to them receive this user
   >>> IPrincipalRoleMap(concepts['john']).getPrincipalsAndRoles()
   [('loops.Person', 'users.john', PermissionSetting: Allow)]
   >>> IPrincipalRoleMap(concepts['person.newuser']).getPrincipalsAndRoles()
-  [('loops.Person', u'loops.newuser', PermissionSetting: Allow)]
+  [('loops.Person', 'loops.newuser', PermissionSetting: Allow)]
 
 The person ``martha`` hasn't got a user id, so there is no role assigned
 to it.
@@ -299,7 +299,7 @@ We also need an interaction with a participation based on the principal
 whose permissions we want to check.
 
   >>> from zope.app.authentication.principalfolder import Principal
-  >>> pJohn = Principal('users.john', 'xxx', u'John')
+  >>> pJohn = Principal('users.john', 'xxx', 'John')
 
   >>> from loops.tests.auth import login
   >>> login(pJohn)
@@ -335,7 +335,7 @@ So let's try with another user with another role setting.
   >>> principalRoles.assignRoleToPrincipal('loops.Staff', 'users.martha')
   >>> principalRoles.assignRoleToPrincipal('zope.Member', 'users.martha')
 
-  >>> pMartha = Principal('users.martha', 'xxx', u'Martha')
+  >>> pMartha = Principal('users.martha', 'xxx', 'Martha')
   >>> login(pMartha)
 
   >>> canAccess(john, 'title')
@@ -364,14 +364,14 @@ Task view with edit action
 --------------------------
 
   >>> from loops.organize.interfaces import ITask
-  >>> task = addAndConfigureObject(concepts, Concept, 'task', title=u'Task',
+  >>> task = addAndConfigureObject(concepts, Concept, 'task', title='Task',
   ...                              conceptType=type, typeInterface=ITask)
 
   >>> from loops.organize.task import Task
   >>> component.provideAdapter(Task)
 
   >>> task01 = addAndConfigureObject(concepts, Concept, 'task01',
-  ...                                title=u'Task #1', conceptType=task)
+  ...                                title='Task #1', conceptType=task)
 
   >>> from loops.organize.browser.task import TaskView
   >>> view = TaskView(task01, TestRequest())
@@ -389,21 +389,22 @@ but has to be entered as a type option.
 Events listing
 --------------
 
-  >>> event = addAndConfigureObject(concepts, Concept, 'event', title=u'Event',
+  >>> event = addAndConfigureObject(concepts, Concept, 'event', title='Event',
   ...                               conceptType=type, typeInterface=ITask)
   >>> event01 = addAndConfigureObject(concepts, Concept, 'event01',
-  ...                                 title=u'Event #1', conceptType=event,
+  ...                                 title='Event #1', conceptType=event,
   ...                           )
 
   >>> from loops.organize.browser.event import Events
-  >>> events = addAndConfigureObject(concepts, Concept, 'events', title=u'Events',
+  >>> events = addAndConfigureObject(concepts, Concept, 'events', title='Events',
   ...                                conceptType=concepts['query'])
   >>> listing = Events(events, TestRequest())
   >>> listing.getActions('portlet')
   [<loops.browser.action.DialogAction ...>]
 
   >>> from loops.config.base import QueryOptions
-  >>> component.provideAdapter(QueryOptions)
+  >>> from cybertools.meta.interfaces import IOptions
+  >>> component.provideAdapter(QueryOptions, provides=IOptions)
 
   >>> list(listing.events())
   [<loops.browser.concept.ConceptRelationView ...>]
@@ -422,12 +423,15 @@ Send Email to Members
   >>> from loops.organize.browser.party import SendEmailForm
   >>> form = SendEmailForm(menu, TestRequest())
   >>> form.members
-  [{'object': <...Person...>, 'email': 'john@loopz.org', 'title': u'John'},
-   {'object': <...Person...>, 'email': u'tommy@sawyer.com', 'title': u'Tom Sawyer'}]
+  [{'title': 'John', ...}, {'title': 'Tom Sawyer', ...}]
+
+[{'object': <...Person...>, 'email': 'john@loopz.org', 'title': 'John'},
+ {'object': <...Person...>, 'email': 'tommy@sawyer.com', 'title': 'Tom Sawyer'}]
+
   >>> form.subject
-  u"loops Notification from '$site'"
+  "loops Notification from '$site'"
   >>> form.mailBody
-  u'\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.118\n\n'
+  '\n\nEvent #1\nhttp://127.0.0.1/loops/views/menu/.118\n\n'
 
 
 Show Presence of Other Users
@@ -453,7 +457,7 @@ may be chosen from an arbitrary list.)
   >>> from loops.organize.interfaces import IHasRole
   >>> predicate = concepts['predicate']
   >>> hasRole = addAndConfigureObject(concepts, Concept, 'hasrole',
-  ...                   title=u'has Role',
+  ...                   title='has Role',
   ...                   conceptType=predicate, predicateInterface=IHasRole)
 
 Let's now assign john to task01 and have a look at the relation created.

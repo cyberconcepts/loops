@@ -4,17 +4,17 @@ from zope.interface.verify import verifyClass
 
 from zope import component
 from zope.app.appsetup.bootstrap import ensureUtility
-from zope.app.authentication.authentication import PluggableAuthentication
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.authentication.principalfolder import FoundPrincipalFactory
-from zope.app.authentication.principalfolder import InternalPrincipal
-from zope.app.authentication.principalfolder import Principal
-from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation import annotations
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.principalregistry import PrincipalRegistry
+from zope.authentication.interfaces import IAuthentication
+from zope.pluggableauth import PluggableAuthentication
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth.factories import FoundPrincipalFactory
+from zope.pluggableauth.factories import Principal
+from zope.pluggableauth.plugins.principalfolder import InternalPrincipal
+from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
+from zope.principalannotation.utility import PrincipalAnnotationUtility
+from zope.principalannotation.utility import annotations
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.principalregistry.principalregistry import PrincipalRegistry
 from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 

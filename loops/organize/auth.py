@@ -1,36 +1,17 @@
-#
-#  Copyright (c) 2009 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.auth
 
-"""
-Specialized authentication components.
-
-$Id$
+""" Specialized authentication components.
 """
 
 from persistent import Persistent
-from zope.app.container.contained import Contained
+from zope.authentication.interfaces import IAuthentication
+from zope.container.contained import Contained
 from zope import component
-from zope.interface import Interface, implements
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.authentication.principalfolder import IInternalPrincipal
-from zope.app.authentication.principalfolder import PrincipalInfo
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.security.interfaces import IAuthentication
+from zope.interface import Interface, implementer
+from zope.pluggableauth.factories import PrincipalInfo
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth.plugins.principalfolder import IInternalPrincipal
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope import schema
 from zope.traversing.api import getParent
 
@@ -52,15 +33,14 @@ class IPersonBasedAuthenticator(Interface):
         readonly=True)
 
 
+@implementer(IAuthenticatorPlugin, IPersonBasedAuthenticator)
 class PersonBasedAuthenticator(Persistent, Contained):
-
-    implements(IAuthenticatorPlugin, IPersonBasedAuthenticator)
 
     passwordKey = 'loops.organize.password'
     ignoreCase = True
 
     def __init__(self, prefix=''):
-        self.prefix = unicode(prefix)
+        self.prefix = prefix
 
     def authenticateCredentials(self, credentials):
         if not isinstance(credentials, dict):

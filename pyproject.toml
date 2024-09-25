@@ -16,6 +16,7 @@ dependencies = [
 	"py-scopes",
 	"markdown",
 	"python-dotenv",
+	"zope.app.appsetup",
 	"zope.app.authentication",
 	"zope.app.exception",
 	"zope.app.renderer",

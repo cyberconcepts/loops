@@ -1,40 +1,22 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.member
 
-"""
-Member registration adapter(s).
+""" Member registration adapter(s).
 """
 
 from zope import interface, component, schema
-from zope.app.component import queryNextUtility
-from zope.app.container.interfaces import INameChooser
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
 from zope.cachedescriptors.property import Lazy
-from zope.component import adapts
-from zope.interface import implements
-from zope.app.authentication.interfaces import IPluggableAuthentication
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.authentication.principalfolder import IInternalPrincipal
-from zope.app.authentication.principalfolder import InternalPrincipal
-from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.component import adapts, queryNextUtility
+from zope.container.interfaces import INameChooser
+from zope.cachedescriptors.property import Lazy
 from zope.event import notify
 from zope.i18nmessageid import MessageFactory
-from zope.cachedescriptors.property import Lazy
+from zope.interface import implementer
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.pluggableauth.interfaces import IPluggableAuthentication
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth.plugins.principalfolder import IInternalPrincipal
+from zope.pluggableauth.plugins.principalfolder import InternalPrincipal
 
 from cybertools.meta.interfaces import IOptions
 from cybertools.typology.interfaces import IType
@@ -49,9 +31,9 @@ from loops.type import getOptionsDict
 from loops.util import _
 
 
+@implementer(IMemberRegistrationManager)
 class MemberRegistrationManager(object):
 
-    implements(IMemberRegistrationManager)
     adapts(ILoops)
 
     person_typeName = 'person'

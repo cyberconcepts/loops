@@ -150,8 +150,8 @@ For testing, we first have to provide the needed utilities and settings
   >>> auth = PrincipalRegistry()
   >>> component.provideUtility(auth, IAuthentication)
 
-  >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-  >>> from zope.app.principalannotation import PrincipalAnnotationUtility
+  >>> from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+  >>> from zope.principalannotation.utility import PrincipalAnnotationUtility
   >>> principalAnnotations = PrincipalAnnotationUtility()
   >>> component.provideUtility(principalAnnotations, IPrincipalAnnotationUtility)
 
