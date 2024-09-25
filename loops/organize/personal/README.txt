@@ -50,7 +50,7 @@ The setup has provided us with a few resources, so there are objects we
 can remember as favorites.
 
   >>> list(resources.keys())
-  [u'd001.txt', u'd002.txt', u'd003.txt']
+  ['d001.txt', 'd002.txt', 'd003.txt']
 
   >>> from loops import util
   >>> d001Id = util.getUidForObject(resources['d001.txt'])
@@ -132,15 +132,17 @@ We can now add a notification.
 
   >>> notif = list(notifications.listTracks())[0]
   >>> notif
-  <Favorite ['27', 1, '33', '...']: 
-   {'text': 'I send myself a letter.', 'type': 'notification', 'sender': '33'}>
+  <Favorite ['27', 1, '33', '...']: {'type': 'notification', ...}>
+
+{'text': 'I send myself a letter.', 'type': 'notification', 'sender': '33'}>
 
 When the notification is marked as read the read timestamp will be set.
 
   >>> notifications.read(notif)
   >>> notif
-  <Favorite ['27', 1, '33', '...']: 
-   {'text': 'I send myself a letter.', 'read_ts': ..., 'type': 'notification',
+  <Favorite ['27', 1, '33', '...']: {'type': 'notification', ...}>
+
+{'text': 'I send myself a letter.', 'read_ts': ..., 'type': 'notification',
     'sender': '33'}>
 
 It's possible to store more than one notification concerning the same object.
@@ -198,7 +200,7 @@ We access the filters via a filter view.
   True
 
   >>> [r.__name__ for r in fv.apply(resources.values())]
-  [u'd002.txt', u'd003.txt']
+  ['d002.txt', 'd003.txt']
 
 
 Fin de partie
