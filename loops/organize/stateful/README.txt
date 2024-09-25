@@ -146,8 +146,8 @@ The form view gives us access to the states of the object.
   ...     sto = st.getStateObject()
   ...     transitions = st.getAvailableTransitions()
   ...     userTrans = st.getAvailableTransitionsForUser()
-  ...     print st.statesDefinition, sto.title, [t.title for t in transitions],
-  ...     print [t.title for t in userTrans]
+  ...     print(st.statesDefinition, sto.title, [t.title for t in transitions], end=' ')
+  ...     print([t.title for t in userTrans])
   classification_quality unclassified ['classify', 'verify'] ['verify']
   simple_publishing published ['retract', 'archive'] ['retract', 'archive']
 
@@ -169,8 +169,11 @@ Querying objects by state
   >>> from loops.organize.stateful.browser import StateQuery
   >>> view = StateQuery(stateQuery, TestRequest())
 
-  >>> view.rcStatesDefinitions
-  {'concept': [], 'resource': [...StatesDefinition..., ...StatesDefinition...]}
+  >>> stdef = view.rcStatesDefinitions
+  >>> stdef['resource']
+  [...StatesDefinition..., ...StatesDefinition...]
+  >>> stdef['concept']
+  []
 
   >>> input = {'state.resource.classification_quality': ['verified']}
   >>> view = StateQuery(stateQuery, TestRequest(form=input))

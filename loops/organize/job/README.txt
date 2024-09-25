@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -57,7 +55,7 @@ the loops root object.
   >>> from loops.organize.job.base import JobManager
   >>> class Notifier(JobManager):
   ...     def process(self):
-  ...         print 'processing...'
+  ...         print('processing...')
 
   >>> component.provideAdapter(Notifier, name='loops_notifier')
   >>> loopsRoot.options = ['organize.job.managers:loops_notifier']

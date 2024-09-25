@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -72,10 +70,10 @@ Viewing comments
   >>> items = list(comments.allItems())
   >>> items
   [<Comment ['27', 1, '33', '... ...']:
-    {'text': 'Comment text', 'subject': 'My comment'}>]
+    {'subject': 'My comment', 'text': 'Comment text'}>]
   >>> item = items[0]
   >>> item.subject, item.timeStamp, item.user['title']
-  ('My comment', u'... ...', u'john')
+  ('My comment', '... ...', 'john')
 
 
 Reporting
