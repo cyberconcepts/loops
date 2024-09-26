@@ -276,7 +276,7 @@ class Resource(Image, Contained):
         if newAdapted is not None and newOptions.get('storage') != oldAdapted.storageName:
             data = oldAdapted.data
             #print 'data', data
-            oldAdapted.data = ''            # clear old storage
+            oldAdapted.data = b''            # clear old storage
             context._storageName = None     # let's take storage from new type options
             context._storageParams = None   # "
             if data:    # do not write empty files

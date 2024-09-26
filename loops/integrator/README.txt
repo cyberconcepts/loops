@@ -4,8 +4,6 @@ loops - Linked Objects for Organization and Processing Services
 
 Integration of external sources.
 
-  ($Id$)
-
 
 Setting up a loops Site and Utilities
 =====================================
@@ -46,7 +44,7 @@ and methods of the external collect object.
   >>> from loops.integrator.collection import ExternalCollectionAdapter
   >>> tExternalCollection = concepts['extcollection']
   >>> coll01 = addObject(concepts, Concept, 'coll01',
-  ...                    title=u'Collection One', conceptType=tExternalCollection)
+  ...                    title='Collection One', conceptType=tExternalCollection)
   >>> aColl01 = ExternalCollectionAdapter(coll01)
 
 An external collection carries a set of attributes that control the access
@@ -58,7 +56,7 @@ to the external system:
   >>> aColl01.baseAddress = dataDir
   >>> aColl01.address = 'topics'
 
-  >>> aColl01.metaInfo = u'Photograph taken by...'
+  >>> aColl01.metaInfo = 'Photograph taken by...'
   >>> aColl01.overwriteMetaInfo is None
   True
 
@@ -91,9 +89,9 @@ Let's now create the corresponding resource objects.
   2
   >>> xf1 = res[0]
   >>> xf1.__name__
-  u'programming_beautifulprogram.pdf'
+  'programming_beautifulprogram.pdf'
   >>> xf1.title
-  u'BeautifulProgram'
+  'BeautifulProgram'
   >>> xf1.contentType
   'application/pdf'
 
@@ -115,8 +113,8 @@ Working with the External Collection
   >>> len(res)
   2
   >>> sorted((r.__name__, r.title, r._storageName) for r in res)
-  [(u'programming_beautifulprogram.pdf', u'BeautifulProgram', 'fullpath'),
-   (u'programming_zope_zope3.txt', u'zope3', 'fullpath')]
+  [('programming_beautifulprogram.pdf', 'BeautifulProgram', 'fullpath'),
+   ('programming_zope_zope3.txt', 'zope3', 'fullpath')]
 
 We may update the collection after having changed the storage params.
 This should also change the settings for existing objects if they still
@@ -133,7 +131,7 @@ can be found.
   ('fullpath', {'subdirectory': '...programming'}, 'BeautifulProgram.pdf')
 
   >>> aXf1.metaInfo
-  u'Photograph taken by...'
+  'Photograph taken by...'
 
 But if one of the referenced objects is not found any more it will be deleted.
 
@@ -153,14 +151,14 @@ Mail Collections
   >>> tType = concepts['type']
   >>> from loops.integrator.mail.interfaces import IMailCollection, IMailResource
   >>> tMailCollection = addAndConfigureObject(concepts, Concept, 'mailcollection',
-  ...                    title=u'Mail Collection', conceptType=tType,
+  ...                    title='Mail Collection', conceptType=tType,
   ...                    typeInterface=IMailCollection)
   >>> tMailResource = addAndConfigureObject(concepts, Concept, 'email',
-  ...                    title=u'Mail Resource', conceptType=tType,
+  ...                    title='Mail Resource', conceptType=tType,
   ...                    typeInterface=IMailResource)
 
   >>> mailColl = addObject(concepts, Concept, 'mails.user1',
-  ...                    title=u'My Mails (User1)', conceptType=tMailCollection)
+  ...                    title='My Mails (User1)', conceptType=tMailCollection)
 
   >>> from loops.integrator.mail.collection import MailCollectionAdapter
   >>> aMailColl = MailCollectionAdapter(mailColl)
@@ -168,10 +166,10 @@ Mail Collections
 An external collection carries a set of attributes that control the access
 to the external system:
 
-  >>> aMailColl.userName = u'jim'
+  >>> aMailColl.userName = 'jim'
   >>> (aMailColl.providerName, aMailColl.baseAddress, aMailColl.address,
   ...  aMailColl.pattern, aMailColl.userName)
-  (u'imap', None, None, None, u'jim')
+  ('imap', None, None, None, 'jim')
 
   >>> from loops.integrator.mail import testing
 
@@ -187,9 +185,9 @@ to the external system:
   >>> aMail.date, aMail.sender, aMail.receiver, aMail.title
   (datetime.datetime(...), 'ceo@cy55.de', 'ceo@example.org', 'Blogging from Munich')
   >>> aMail.data
-  u'<p><b>Blogging from ...</b><br />\n'
+  '<p><b>Blogging from ...</b><br />\n'
   >>> aMail.externalAddress
-  u'imap://jim@.../20081208171745.e4ce2xm96cco80cg@cy55.de'
+  'imap://jim@.../20081208171745.e4ce2xm96cco80cg@cy55.de'
 
 
 Uploading Resources with HTTP PUT Requests
@@ -217,9 +215,9 @@ Uploading Resources with HTTP PUT Requests
   *** resources.PUT .data local/user/filesystem/testing/data/file1.txt
 
   >>> getName(resource)
-  u'local_user_filesystem_testing_data_file1.txt'
+  'local_user_filesystem_testing_data_file1.txt'
   >>> resource.title
-  u'file1'
+  'file1'
 
 
 Extracting Document Properties from MS Office Files
@@ -234,7 +232,7 @@ Extracting Document Properties from MS Office Files
   23561...
 
   >>> officeFile = addAndConfigureObject(resources, Resource, 'test.docx',
-  ...                    title=u'Example Word File', resourceType=tOfficeFile,
+  ...                    title='Example Word File', resourceType=tOfficeFile,
   ...                    storageParams=dict(subdirectory=path))
   >>> aOfficeFile = adapted(officeFile)
   >>> aOfficeFile.externalAddress = 'example.docx'
@@ -245,6 +243,7 @@ Extracting Document Properties from MS Office Files
 
   Clean up:
   >>> shutil.copy(fn + '.sav', fn)
+  '.../example.docx'
 
 
 Fin de partie

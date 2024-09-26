@@ -1,42 +1,23 @@
-#
-#  Copyright (c) 2010 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.integrator.mail.imap
 
-"""
-Concept adapter(s) for external collections, e.g. a directory in the
+""" Concept adapter(s) for external collections, e.g. a directory in the
 file system.
-
-$Id$
 """
 
 from datetime import datetime
-import email, email.Header
+import email, email.header, email.utils
 from logging import getLogger
 import os
 import time
 
-from zope.app.container.interfaces import INameChooser
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
+from zope.container.interfaces import INameChooser
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 from zope.traversing.api import getName, getParent
 
 from loops.common import AdapterBase, adapted
@@ -47,11 +28,10 @@ from loops.resource import Resource
 from loops.setup import addAndConfigureObject
 
 
+@implementer(IExternalCollectionProvider)
 class IMAPCollectionProvider(object):
     """ A utility that provides access to an IMAP folder.
     """
-
-    implements(IExternalCollectionProvider)
 
     def collect(self, client):
         client._collectedObjects = {}
@@ -90,7 +70,7 @@ class IMAPCollectionProvider(object):
             #raw_date = msg['Date'].rsplit(' ', 1)[0]
             #fmt = '%a,  %d %b %Y %H:%M:%S'
             #date = datetime(*(time.strptime(raw_date, fmt)[0:6]))
-            date = datetime(*(email.Utils.parsedate(msg['Date'])[0:6]))
+            date = datetime(*(email.utils.parsedate(msg['Date'])[0:6]))
             parts = getPayload(msg)
             if 'html' in parts:
                 text = '<br /><br /><hr /><br /><br />'.join(parts['html'])
@@ -117,7 +97,7 @@ class IMAPCollectionProvider(object):
 
 def decodeHeader(h):
     result = []
-    for v, dec in email.Header.decode_header(h):
+    for v, dec in email.header.decode_header(h):
         if dec:
             v = v.decode(dec)
         result.append(v)

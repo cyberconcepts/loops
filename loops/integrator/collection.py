@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2012 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.integrator.collection
 
-"""
-Concept adapter(s) for external collections, e.g. a directory in the
+""" Concept adapter(s) for external collections, e.g. a directory in the
 file system.
 """
 
@@ -26,15 +9,15 @@ from logging import getLogger
 import os, re, stat
 import transaction
 
-from zope.app.container.interfaces import INameChooser
-from zope.app.container.contained import ObjectRemovedEvent
+from zope.container.interfaces import INameChooser
+from zope.container.contained import ObjectRemovedEvent
 from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
 from zope.contenttype import guess_content_type
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
-from zope.interface import implements, Attribute
+from zope.interface import implementer, Attribute
 from zope.schema.interfaces import IField
 from zope.traversing.api import getName, getParent
 
@@ -56,12 +39,12 @@ TypeInterfaceSourceList.typeInterfaces += (IExternalCollection,)
 logger = getLogger('loops.integrator.collection')
 
 
+@implementer(IExternalCollection)
 class ExternalCollectionAdapter(AdapterBase):
     """ A concept adapter for accessing an external collection.
         May delegate access to a named utility.
     """
 
-    implements(IExternalCollection)
     adapts(IConcept)
 
     _adapterAttributes = AdapterBase._adapterAttributes + (
@@ -84,16 +67,16 @@ class ExternalCollectionAdapter(AdapterBase):
         if self.useVersioning:
             for obj in old.values():
                 for vaddr, vobj, vid in self.getVersions(obj):
-                    print '###', vaddr, vobj, vid
+                    print('###', vaddr, vobj, vid)
                     versions.add(vaddr)
         new = []
         oldFound = set([])
         provider = component.getUtility(IExternalCollectionProvider,
                                         name=self.providerName or '')
-        #print '*** old', old, versions, self.lastUpdated
+        #print('*** old', old, versions, self.lastUpdated)
         changeCount = 0
         for addr, mdate in provider.collect(self):
-            #print '***', addr, mdate
+            #print('***', addr, mdate)
             if addr in versions:
                 continue
             if addr in old:
@@ -170,11 +153,10 @@ class ExternalCollectionAdapter(AdapterBase):
                     if IVersionable(v).parent is not None]
 
 
+@implementer(IExternalCollectionProvider)
 class DirectoryCollectionProvider(object):
     """ A utility that provides access to files in a directory.
     """
-
-    implements(IExternalCollectionProvider)
 
     extFileTypeMapping = {
         'image/*': 'media_asset',
@@ -256,7 +238,7 @@ class DirectoryCollectionProvider(object):
             base, ext = title.rsplit('.', 1)
             if ext.lower() in mimetypes.extensions.values():
                 title = base
-        if not isinstance(title, unicode):
+        if isinstance(title, bytes):
             try:
                 title = title.decode('UTF-8')
             except UnicodeDecodeError:
