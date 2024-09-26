@@ -1,27 +1,10 @@
-#
-#  Copyright (c) 2017 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.expert.browser.export
 
-"""
-View classes for export of report results.
+""" View classes for export of report results.
 """
 
 import csv
-from cStringIO import StringIO
+from io import StringIO
 import os
 import time
 from zope.cachedescriptors.property import Lazy
@@ -67,8 +50,8 @@ class ResultsConceptCSVExport(ResultsConceptView):
         title = field.title
         if not isinstance(title, Message):
             title = _(title)
-        return encode(translate(title, target_language=lang), 
-                      self.encoding)
+        #return encode(translate(title, target_language=lang), self.encoding)
+        return translate(title, target_language=lang)
 
     def getFilenames(self):
         """@return (data_fn, result_fn)"""
@@ -122,7 +105,7 @@ class ResultsConceptCSVExport(ResultsConceptView):
                 value = f.getExportValue(row, 'csv', lang)
                 if ILoopsObject.providedBy(value):
                     value = value.title
-                value = encode(value, self.encoding)
+                #value = encode(value, self.encoding)
                 data[f.name] = value
             writer.writerow(data)
         if csvRenderer:
@@ -151,7 +134,7 @@ class ResultsConceptCSVExport(ResultsConceptView):
 
 
 def encode(text, encoding):
-    if not isinstance(text, unicode):
+    if isinstance(text, bytes):
         return text
     try:
         return text.encode(encoding)
@@ -161,7 +144,7 @@ def encode(text, encoding):
             try:
                 result.append(c.encode(encoding))
             except UnicodeEncodeError:
-                result.append('?')
-        return ''.join(result)
-    return '???'
+                result.append(b'?')
+        return b''.join(result)
+    return b'???'
 

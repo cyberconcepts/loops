@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic setup
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -147,10 +145,12 @@ Overview (cumulative) statistics
   >>> from loops.organize.tracking.report import TrackingStats
   >>> view = TrackingStats(statQuery, TestRequest())
   >>> result = view.getData()
-  >>> result['macro'][4][1][u'define-macro']
-  u'overview'
+  >>> result['macro'][4][1]['define-macro']
+  'overview'
   >>> result['data']
-  [{'access': 2, 'new': 0, 'changed': 1, 'period': '...', 'count': 3}]
+  [{'period': '...', ...}]
+
+[{'access': 2, 'new': 0, 'changed': 1, 'period': '...', 'count': 3}]
 
 
 Changes for a certain period (month)
@@ -168,23 +168,27 @@ Recent changes
   >>> from loops.organize.tracking.report import RecentChanges
   >>> view = RecentChanges(statQuery, TestRequest())
   >>> result = view.getData()
-  >>> result['macro'][4][1][u'define-macro']
-  u'recent_changes'
+  >>> result['macro'][4][1]['define-macro']
+  'recent_changes'
 
   >>> data = result['data']
   >>> data
   [<ChangeRecord ['27', 2, '33', '...']: {'action': 'modify'}>]
 
   >>> data[0].timeStamp
-  u'... ...:...'
+  '... ...:...'
 
   >>> data[0].objectData
-  {'version': '', 'description': u'', 'title': 'Change Doc 001', 'url': '', 
-   'object': <loops.resource.Resource object at ...>, 'type': u'Text', 
-   'canAccess': True}
+  {'object': ...}
+
+{'version': '', 'description': '', 'title': 'Change Doc 001', 'url': '', 
+ 'object': <loops.resource.Resource object at ...>, 'type': 'Text', 
+ 'canAccess': True}
 
   >>> data[0].user
-  {'url': '', 'object': <loops.concept.Concept ...>, 'title': u'john'}
+  {'object': ...}
+
+{'url': '', 'object': <loops.concept.Concept ...>, 'title': 'john'}
 
   >>> data[0].action
   'modify'
