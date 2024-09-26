@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2015 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# looops.classifier.base
 
-"""
-Adapters and others classes for analyzing resources.
+""" Adapters and others classes for analyzing resources.
 """
 
 from itertools import tee
@@ -26,7 +9,7 @@ from zope.cachedescriptors.property import Lazy
 from zope import component
 from zope.component import adapts
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 from zope.traversing.api import getName, getParent
 from cybertools.typology.interfaces import IType
 
@@ -44,11 +27,11 @@ logger = getLogger('Classifier')
 TypeInterfaceSourceList.typeInterfaces += (IClassifier,)
 
 
+@implementer(IClassifier)
 class Classifier(AdapterBase):
     """ A concept adapter for analyzing resources.
     """
 
-    implements(IClassifier)
     adapts(IConcept)
 
     _contextAttributes = list(IClassifier) + list(IConcept)
@@ -112,9 +95,9 @@ class Classifier(AdapterBase):
             logger.info(u'%s: %s' % (getName(self.context), message))
 
 
+@implementer(IExtractor)
 class Extractor(object):
 
-    implements(IExtractor)
     adapts(IResource)
 
     def __init__(self, context):
@@ -124,9 +107,9 @@ class Extractor(object):
         return InformationSet()
 
 
+@implementer(IAnalyzer)
 class Analyzer(object):
 
-    implements(IAnalyzer)
     adapts(IClassifier)
 
     def __init__(self, context):
@@ -147,14 +130,14 @@ class Analyzer(object):
         return r1
 
 
+@implementer(IInformationSet)
 class InformationSet(dict):
 
-    implements(IInformationSet)
+    pass
 
 
+@implementer(IStatement)
 class Statement(object):
-
-    implements(IStatement)
 
     def __init__(self, object=None, predicate=None, subject=None, relevance=100):
         self.subject = subject

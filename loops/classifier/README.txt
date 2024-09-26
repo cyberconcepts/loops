@@ -4,8 +4,6 @@ loops - Linked Objects for Organization and Processing Services
 
 Automatic classification of resources.
 
-  ($Id$)
-
 
 Setting up a loops Site and Utilities
 =====================================
@@ -39,7 +37,7 @@ from external files so we have something to work with.
 
   >>> tExternalCollection = concepts['extcollection']
   >>> coll01 = addObject(concepts, Concept, 'coll01',
-  ...                    title=u'Collection One', conceptType=tExternalCollection)
+  ...                    title='Collection One', conceptType=tExternalCollection)
   >>> aColl01 = adapted(coll01)
   >>> aColl01.baseAddress = dataDir
   >>> aColl01.address = ''
@@ -49,7 +47,7 @@ from external files so we have something to work with.
   7
   >>> rnames = list(sorted(resources.keys()))
   >>> rnames[0]
-  u'cust_im_contract_webbg_20071015.txt'
+  'cust_im_contract_webbg_20071015.txt'
 
 
 Filename-based Classification
@@ -76,7 +74,7 @@ and follow the classifier step by step.
   >>> from loops.classifier.interfaces import IExtractor, IAnalyzer
   >>> infoSet = InformationSet()
   >>> for name in classifier.extractors.split():
-  ...     print 'extractor:', name
+  ...     print('extractor:', name)
   ...     extractor = component.getAdapter(adapted(r1), IExtractor, name=name)
   ...     infoSet.update(extractor.extractInformationSet())
   extractor: filename
@@ -96,32 +94,32 @@ So there seems to be something missing - we have to create concepts
 that may be identified as being candidates for classification.
 
   >>> tInstitution = addObject(concepts, Concept, 'institution',
-  ...                     title=u'Institution', conceptType=concepts['type'])
+  ...                     title='Institution', conceptType=concepts['type'])
   >>> cust_im = addObject(concepts, Concept, 'im_editors',
-  ...                     title=u'im Editors', conceptType=tInstitution)
+  ...                     title='im Editors', conceptType=tInstitution)
   >>> cust_mc = addObject(concepts, Concept, 'mc_consulting',
-  ...                     title=u'MC Management Consulting', conceptType=tInstitution)
+  ...                     title='MC Management Consulting', conceptType=tInstitution)
 
   >>> tDoctype = addObject(concepts, Concept, 'doctype',
-  ...                     title=u'Document Type', conceptType=concepts['type'])
+  ...                     title='Document Type', conceptType=concepts['type'])
   >>> dt_note = addObject(concepts, Concept, 'dt_note',
-  ...                     title=u'Note', conceptType=tDoctype)
+  ...                     title='Note', conceptType=tDoctype)
   >>> dt_contract = addObject(concepts, Concept, 'dt_contract',
-  ...                     title=u'Contract', conceptType=tDoctype)
+  ...                     title='Contract', conceptType=tDoctype)
 
   >>> tPerson = concepts['person']
   >>> webbg = addObject(concepts, Concept, 'webbg',
-  ...                     title=u'Gerald Webb', conceptType=tPerson)
+  ...                     title='Gerald Webb', conceptType=tPerson)
   >>> smitha = addObject(concepts, Concept, 'smitha',
-  ...                     title=u'Angelina Smith', conceptType=tPerson)
+  ...                     title='Angelina Smith', conceptType=tPerson)
   >>> watersj = addObject(concepts, Concept, 'watersj',
-  ...                     title=u'Jerry Waters', conceptType=tPerson)
+  ...                     title='Jerry Waters', conceptType=tPerson)
   >>> millerj = addObject(concepts, Concept, 'millerj',
-  ...                     title=u'Jeannie Miller', conceptType=tPerson)
+  ...                     title='Jeannie Miller', conceptType=tPerson)
 
   >>> t.indexAll(concepts, resources)
 
-  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> from zope.catalog.interfaces import ICatalog
   >>> cat = component.getUtility(ICatalog)
 
   >>> statements = analyzer.extractStatements(infoSet)
@@ -135,7 +133,7 @@ So we are now ready to have the whole stuff run in one call.
 Classifier fileclassifier: Assigning: ...
 
   >>> list(sorted([c.title for c in r1.getConcepts()]))
-  [u'Collection One', u'Contract', u'External File', u'Gerald Webb', u'im Editors']
+  ['Collection One', 'Contract', 'External File', 'Gerald Webb', 'im Editors']
 
   >>> for name in rnames[1:]:
   ...     classifier.process(resources[name])
