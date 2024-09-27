@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -33,7 +31,7 @@ ZCML setup):
 For testing and demonstration purposes let's create a topic.
 
   >>> topic = concepts['topic']
-  >>> topic01 = concepts['topic01'] = Concept(u'loops for Zope 3')
+  >>> topic01 = concepts['topic01'] = Concept('loops for Zope 3')
   >>> topic01.conceptType = topic
 
 
@@ -43,7 +41,7 @@ Content Internationalization
 Let's look at a certain concept that should contain i18n-alized data.
 
   >>> topic01.title
-  u'loops for Zope 3'
+  'loops for Zope 3'
 
 We can query the available languages, the current language setting and
 the default language using a LanguageInfo object that is similar to a view.
@@ -115,7 +113,7 @@ Now we are ready to enter a language-specific title.
   >>> form.update()
 
   >>> topic01.title
-  I18NValue({'en': u'loops for Zope 3', 'it': u'loops per Zope 3'})
+  I18NValue({'it': 'loops per Zope 3', 'en': 'loops for Zope 3'})
 
 If we access an i18n attribute via a view that is i18n-aware we get the
 value corresponding to the language preferences that appear in the request.
@@ -123,7 +121,7 @@ value corresponding to the language preferences that appear in the request.
   >>> input = {'loops.language': 'it'}
   >>> view = ConceptView(topic01, TestRequest(form=input))
   >>> view.title
-  u'loops per Zope 3'
+  'loops per Zope 3'
 
 If there is no entry for the language given we get back the entry for
 the default language.
@@ -131,24 +129,24 @@ the default language.
   >>> input = {'loops.language': 'de'}
   >>> view = ConceptView(topic01, TestRequest(form=input))
   >>> view.title
-  u'loops for Zope 3'
+  'loops for Zope 3'
 
 There are also fallbacks - mainly for being able to access the title
 attribute in not i18n-aware contexts - that retrieve the value corresponding
 to the default language at the time of the attribute creation.
 
   >>> topic01.title.getDefault()
-  u'loops for Zope 3'
+  'loops for Zope 3'
   >>> str(topic01.title)
   'loops for Zope 3'
   >>> topic01.title.lower()
-  u'loops for zope 3'
+  'loops for zope 3'
 
 Viewing translations
 --------------------
 
   >>> view.adapted.translations()
-  {'en': u'loops for Zope 3', 'it': u'loops per Zope 3'}
+  {'it': 'loops per Zope 3', 'en': 'loops for Zope 3'}
 
 
 Fin de partie

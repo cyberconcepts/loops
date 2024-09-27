@@ -52,9 +52,9 @@ some options.
   >>> opt.useVersioning
   True
 
-  >>> print opt
-  organize(tracking=['changes', 'access'])
+  >>> print(opt)
   useVersioning=True
+  organize(tracking=['changes', 'access'])
 
 If we query an option that is not defined on the site level we get a
 dummy element that corresponds to False.

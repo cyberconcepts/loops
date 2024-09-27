@@ -2,8 +2,6 @@
 loops.xmlrpc
 ===============================================================
 
-  ($Id$)
-
 Let's do some basic set up
 
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -35,8 +33,8 @@ ZCML setup):
 Let's look what setup has provided us with:
 
   >>> sorted(concepts)
-  [u'domain', u'file', u'hasType', u'note', u'predicate',
-   u'standard', u'textdocument', u'type']
+  ['domain', 'file', 'hasType', 'note', 'predicate',
+   'standard', 'textdocument', 'type']
 
 
 loops Traversal
@@ -62,7 +60,7 @@ domain type concept (or the top-level type concept, if there is no domain type):
   >>> obj
   <loops.rest.common.ConceptView object at ...>
   >>> obj.context.title
-  u'Domain'
+  'Domain'
 
 The traversal adapter returns a view that when called renders the
 representation of its context object:
