@@ -33,13 +33,13 @@ We first create the compound type and one instance of the newly created
 type. We also need an ``ispartof`` predicate.
 
   >>> tCompound = addAndConfigureObject(concepts, Concept, 'compound',
-  ...                   title=u'Compound',
+  ...                   title='Compound',
   ...                   conceptType=tType, typeInterface=ICompound)
   >>> c01 = addAndConfigureObject(concepts, Concept, 'c01',
-  ...                    title=u'Compound #01', conceptType=tCompound)
+  ...                    title='Compound #01', conceptType=tCompound)
   >>> tPredicate = concepts.getPredicateType()
   >>> isPartof = addAndConfigureObject(concepts, Concept, 'ispartof',
-  ...                   title=u'is Part of', conceptType=tPredicate)
+  ...                   title='is Part of', conceptType=tPredicate)
 
 In order to access the compound concept's attributes we have to adapt
 it.
@@ -49,31 +49,31 @@ it.
 
 Now we are able to add resources to it.
 
-  >>> aC01.add(resources[u'd003.txt'])
-  >>> aC01.add(resources[u'd001.txt'])
+  >>> aC01.add(resources['d003.txt'])
+  >>> aC01.add(resources['d001.txt'])
 
   >>> [getName(p) for p in aC01.getParts()]
-  [u'd003.txt', u'd001.txt']
+  ['d003.txt', 'd001.txt']
 
-  >>> aC01.add(resources[u'd001.txt'], 0)
+  >>> aC01.add(resources['d001.txt'], 0)
   >>> [getName(p) for p in aC01.getParts()]
-  [u'd001.txt', u'd003.txt', u'd001.txt']
+  ['d001.txt', 'd003.txt', 'd001.txt']
 
-  >>> aC01.add(resources[u'd002.txt'], -1)
+  >>> aC01.add(resources['d002.txt'], -1)
   >>> [getName(p) for p in aC01.getParts()]
-  [u'd001.txt', u'd003.txt', u'd002.txt', u'd001.txt']
+  ['d001.txt', 'd003.txt', 'd002.txt', 'd001.txt']
 
 We can reorder the parts of a compound.
 
-  >>> aC01.reorder([resources[u'd002.txt'], resources[u'd001.txt'], ])
+  >>> aC01.reorder([resources['d002.txt'], resources['d001.txt'], ])
   >>> [getName(p) for p in aC01.getParts()]
-  [u'd002.txt', u'd001.txt', u'd003.txt', u'd001.txt']
+  ['d002.txt', 'd001.txt', 'd003.txt', 'd001.txt']
 
 And remove a part from the compound.
 
-  >>> aC01.remove(resources[u'd001.txt'], 1)
+  >>> aC01.remove(resources['d001.txt'], 1)
   >>> [getName(p) for p in aC01.getParts()]
-  [u'd002.txt', u'd003.txt', u'd001.txt']
+  ['d002.txt', 'd003.txt', 'd001.txt']
 
 
 Blogs
@@ -83,23 +83,23 @@ Blogs
   >>> from loops.compound.blog.interfaces import IBlogPost
   >>> component.provideAdapter(BlogPost, provides=IBlogPost)
 
-  >>> tBlog = addAndConfigureObject(concepts, Concept, 'blog', title=u'Blog',
+  >>> tBlog = addAndConfigureObject(concepts, Concept, 'blog', title='Blog',
   ...                               conceptType=tType)
   >>> tBlogPost = addAndConfigureObject(concepts, Concept, 'blogpost',
-  ...                               title=u'Blog Post', conceptType=tType,
+  ...                               title='Blog Post', conceptType=tType,
   ...                               typeInterface=IBlogPost)
 
-  >>> myBlog = addAndConfigureObject(concepts, Concept, 'myblog', title=u'My Blog',
+  >>> myBlog = addAndConfigureObject(concepts, Concept, 'myblog', title='My Blog',
   ...                               conceptType=tBlog)
 
   >>> firstPost = addAndConfigureObject(concepts, Concept, 'firstpost',
-  ...                               title=u'My first post', conceptType=tBlogPost)
+  ...                               title='My first post', conceptType=tBlogPost)
 
   >>> aFirstPost = adapted(firstPost)
   >>> aFirstPost.date
-  >>> aFirstPost.text = u'My first blog post.'
+  >>> aFirstPost.text = 'My first blog post.'
   >>> aFirstPost.text
-  u'My first blog post.'
+  'My first blog post.'
   >>> aFirstPost.creator
 
 Blog and BlogPost views
@@ -114,7 +114,7 @@ a new post.
 
   >>> view = BlogView(myBlog, TestRequest())
   >>> for act in view.getActions('portlet'):
-  ...     print act.name
+  ...     print(act.name)
   createBlogPost
 
   >>> view = BlogPostView(firstPost, TestRequest())
@@ -143,13 +143,13 @@ and a corresponding person.
   >>> auth = setupData.auth
   >>> tPerson = concepts['person']
 
-  >>> userJohn = auth.definePrincipal('users.john', u'John', login='john')
+  >>> userJohn = auth.definePrincipal('users.john', 'John', login='john')
   >>> persJohn = addAndConfigureObject(concepts, Concept, 'person.john',
-  ...                   title=u'John Smith', conceptType=tPerson,
+  ...                   title='John Smith', conceptType=tPerson,
   ...                   userId='users.john')
 
   >>> blogJohn = addAndConfigureObject(concepts, Concept, 'blog.john',
-  ...                   title=u'John\'s Blog', conceptType=tBlog)
+  ...                   title='John\'s Blog', conceptType=tBlog)
   >>> persJohn.assignChild(blogJohn)
 
 Let's now login as the newly defined user.
@@ -178,9 +178,9 @@ used for creating the blog post.
   >>> home.target = myBlog
 
   >>> from loops.compound.blog.browser import CreateBlogPostForm, CreateBlogPost
-  >>> input = {'title': u'John\'s first post', 'text': u'Text of John\'s post',
+  >>> input = {'title': 'John\'s first post', 'text': 'Text of John\'s post',
   ...          'date': '2008-02-02T15:54:11',
-  ...          'privateComment': u'John\'s private comment',
+  ...          'privateComment': 'John\'s private comment',
   ...          'form.type': '.loops/concepts/blogpost'}
   >>> cbpForm = CreateBlogPostForm(home, TestRequest(form=input))
   >>> cbpController = CreateBlogPost(cbpForm, cbpForm.request)
@@ -192,11 +192,11 @@ used for creating the blog post.
   1
   >>> postJohn0 = posts[0]
   >>> postJohn0.title
-  u"John's first post"
+  "John's first post"
 
   >>> postJohn0Text = adapted(postJohn0.getResources()[0])
   >>> postJohn0Text.data
-  u"Text of John's post"
+  "Text of John's post"
 
 
 Security
@@ -269,7 +269,7 @@ So let's now switch to another user. On a global level, Martha also has
 the ContentManager role, i.e. she is allowed to edit content objects.
 Nevertheless she is not allowed to change John's blog post.
 
-  >>> userMartha = auth.definePrincipal('users.martha', u'Martha', login='martha')
+  >>> userMartha = auth.definePrincipal('users.martha', 'Martha', login='martha')
   >>> assignRole('zope.Member', 'users.martha')
   >>> assignRole('zope.ContentManager', 'users.martha')
 
@@ -322,29 +322,29 @@ Micro Articles
   >>> component.provideAdapter(MicroArt, provides=IMicroArt)
 
   >>> tMicroArt = addAndConfigureObject(concepts, Concept, 'microart',
-  ...                                   title=u'MicroArt', conceptType=tType,
+  ...                                   title='MicroArt', conceptType=tType,
   ...                                   typeInterface=IMicroArt)
 
   >>> ma01 = addAndConfigureObject(concepts, Concept, 'ma01',
   ...               conceptType=tMicroArt,
-  ...               title=u'Organizational Knowledge',
-  ...               story=u'Systemic KM talks about organizational knowledge.',
-  ...               insight=u'Organizational knowledge is not visible.',
-  ...               consequences=u'Use examples. Look for strucure and rules. '
-  ...                       u'Knowledge shows itself in actions.',
-  ...               followUps=u'What about collective intelligence? '
-  ...                       u'How does an organization express itself?')
+  ...               title='Organizational Knowledge',
+  ...               story='Systemic KM talks about organizational knowledge.',
+  ...               insight='Organizational knowledge is not visible.',
+  ...               consequences='Use examples. Look for strucure and rules. '
+  ...                       'Knowledge shows itself in actions.',
+  ...               followUps='What about collective intelligence? '
+  ...                       'How does an organization express itself?')
 
   >>> ma01._insight
-  u'Organizational knowledge is not visible.'
+  'Organizational knowledge is not visible.'
   >>> list(resources)
-  [..., u'ma01_story']
+  [..., 'ma01_story']
 
   >>> adMa01 = adapted(ma01)
   >>> adMa01.insight
-  u'Organizational knowledge is not visible.'
+  'Organizational knowledge is not visible.'
   >>> adMa01.story
-  u'Systemic KM talks about organizational knowledge.'
+  'Systemic KM talks about organizational knowledge.'
 
 
 Books, Sections, and Pages

@@ -1,22 +1,22 @@
-"""
-Set up a loops site for testing.
+# loops.versioning.testsetup
 
-$Id$
+""" Set up a loops site for testing.
 """
 
 from zope import component
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotatable
-from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
-from zope.app.catalog.text import TextIndex
-from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.principalregistry import principalRegistry
+from zope.authentication.interfaces import IAuthentication
+from zope.catalog.catalog import Catalog
+from zope.catalog.interfaces import ICatalog
+from zope.catalog.field import FieldIndex
+from zope.catalog.text import TextIndex
+from zope.container.interfaces import IObjectRemovedEvent
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.principalregistry.principalregistry import principalRegistry
 
+from cybertools.meta.interfaces import IOptions
 from cybertools.relation.tests import IntIdsStub
 from cybertools.relation.registry import RelationRegistry
 from cybertools.relation.interfaces import IRelationRegistry
@@ -56,7 +56,7 @@ class TestSite(object):
         component.provideAdapter(ZDCAnnotatableAdapter, (ILoopsObject,), IZopeDublinCore)
         component.provideAdapter(AttributeAnnotations, (ILoopsObject,))
         component.provideAdapter(LoopsDCAdapter, (IConcept,), IZopeDublinCore)
-        component.provideAdapter(LoopsOptions)
+        component.provideAdapter(LoopsOptions, provides=IOptions)
 
         component.provideAdapter(ConceptType)
         component.provideAdapter(ResourceType)

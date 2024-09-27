@@ -4,8 +4,6 @@ loops - Linked Objects for Organization and Processing Services
 
 Managing versions of resources.
 
-  ($Id$)
-
 
 Setting up a loops Site and Utilities
 =====================================
@@ -45,7 +43,7 @@ adapter on the object.
 
   >>> d001 = resources['d001.txt']
   >>> d001.title
-  u'Doc 001'
+  'Doc 001'
   >>> vD001 = IVersionable(d001)
   >>> vD001.versionLevels
   ['major', 'minor']
@@ -68,9 +66,9 @@ Now we can create a new version for our document:
 
   >>> d001v1_2 = vD001.createVersion()
   >>> getName(d001v1_2)
-  u'd001_1.2.txt'
+  'd001_1.2.txt'
   >>> d001v1_2.title
-  u'Doc 001'
+  'Doc 001'
 
   >>> vD001v1_2 = IVersionable(d001v1_2)
   >>> vD001v1_2.versionId
@@ -91,14 +89,14 @@ a major version change, the lower levels are reset to 1:
 
   >>> d001v2_1 = vD001.createVersion(0)
   >>> getName(d001v2_1)
-  u'd001_2.1.txt'
+  'd001_2.1.txt'
 
 The name of the new version is always derived from the name of the master
 even if we create a new version from another one:
 
   >>> d001v2_2 = IVersionable(d001v1_2).createVersion()
   >>> getName(d001v2_2)
-  u'd001_2.2.txt'
+  'd001_2.2.txt'
 
 
 Providing the Correct Version
@@ -151,7 +149,7 @@ derived from it are deleted as well.
 
   >>> del resources['d001.txt']
   >>> sorted(resources)
-  [u'd002.txt', u'd003.txt']
+  ['d002.txt', 'd003.txt']
 
 
 Fin de partie

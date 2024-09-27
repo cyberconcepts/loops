@@ -54,12 +54,12 @@ from their typeInterface adapters we here append a 'C' to the name of
 the variables:
 
   >>> from loops.concept import Concept
-  >>> progLangC = concepts['progLang'] = Concept(u'Programming Language')
-  >>> ooProgC = concepts['ooProg'] = Concept(u'Object-oriented Programming')
-  >>> pythonC = concepts['python'] = Concept(u'Python')
-  >>> pyBasicsC = concepts['pyBasics'] = Concept(u'Python Basics')
-  >>> pyOoC = concepts['pyOo'] = Concept(u'OO Programming with Python')
-  >>> pySpecialsC = concepts['pySpecials'] = Concept(u'Python Specials')
+  >>> progLangC = concepts['progLang'] = Concept('Programming Language')
+  >>> ooProgC = concepts['ooProg'] = Concept('Object-oriented Programming')
+  >>> pythonC = concepts['python'] = Concept('Python')
+  >>> pyBasicsC = concepts['pyBasics'] = Concept('Python Basics')
+  >>> pyOoC = concepts['pyOo'] = Concept('OO Programming with Python')
+  >>> pySpecialsC = concepts['pySpecials'] = Concept('Python Specials')
 
   >>> topicConcepts = (progLangC, ooProgC, pythonC, pyBasicsC, pyOoC, pySpecialsC)
 
@@ -78,13 +78,13 @@ the variables:
 
 We now create a person and assign some knowledge to it:
 
-  >>> johnC = concepts['john'] = Concept(u'John')
+  >>> johnC = concepts['john'] = Concept('John')
   >>> johnC.conceptType = person
 
   >>> john = IPerson(johnC)
   >>> john.knows(pyBasics)
   >>> list(john.getKnowledge())[0].title
-  u'Python Basics'
+  'Python Basics'
 
 Now let's get to tasks - a task is used as a requirement profile, i.e.
 it requires a certain set of knowledge elements:
@@ -100,7 +100,7 @@ a position with the requirement profile:
 
   >>> missing = john.getMissingKnowledge(task01)
   >>> [m.title for m in missing]
-  [u'Object-oriented Programming', u'OO Programming with Python']
+  ['Object-oriented Programming', 'OO Programming with Python']
 
 Luckily there are a few elearning content objects out there that
 provide some of the knowledge needed:
@@ -155,7 +155,7 @@ For testing, we first have to provide the needed utilities and settings
   >>> principalAnnotations = PrincipalAnnotationUtility()
   >>> component.provideUtility(principalAnnotations, IPrincipalAnnotationUtility)
 
-  >>> principal = auth.definePrincipal('users.john', u'John', login='john')
+  >>> principal = auth.definePrincipal('users.john', 'John', login='john')
   >>> john.userId = 'users.john'
 
   >>> from zope.publisher.browser import TestRequest
