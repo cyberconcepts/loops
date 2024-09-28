@@ -1,13 +1,12 @@
+# loops.classifier.testsetup
 """
 Set up a loops site for testing.
-
-$Id$
 """
 
 import os
 from zope import component
-#from zope.app.catalog.interfaces import ICatalog
-#from zope.app.catalog.text import TextIndex
+#from zope.catalog.interfaces import ICatalog
+#from zope.catalog.text import TextIndex
 
 from cybertools.storage.interfaces import IExternalStorage
 from cybertools.storage.filesystem import fullPathStorage

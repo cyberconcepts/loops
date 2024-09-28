@@ -3,9 +3,13 @@
 """Comprehensive functional testing for SQL-based storage implementation.
 """
 
+from loops.tests import fixPythonPath
+fixPythonPath()
+
 from loops.storage.tests import common
 
 import transaction
+import unittest
 from zope import component
 from zope.traversing.api import getName
 
@@ -24,7 +28,7 @@ class TestStorage(common.TestCase):
     def test_000_setUp(self):
         self.prepare()
         self.assertEqual(str(self.g.storage.engine.url),  
-                         'postgresql://ccotest:cco@localhost:5432/ccotest')
+                         'postgresql+psycopg://ccotest:***@localhost:5432/ccotest')
         self.g.storage.dropTable('favorites')
         self.g.storage.dropTable('uid_mapping')
         component.provideAdapter(FavoritesAdapter)
@@ -71,6 +75,12 @@ class TestStorage(common.TestCase):
         self.cleanup()
 
 
+def test_suite():
+    return unittest.TestSuite((
+            unittest.makeSuite(TestStorage),
+        ))
+
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')
 

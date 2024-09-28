@@ -26,7 +26,7 @@ import cybertools
 from cybertools.meta.interfaces import IOptions
 from loops.browser.util import html_quote
 
-try: # for testing!
+try: # avoid error when testing
     import config
     from loops.storage.compat.common import StorageFactory
     storageFactory = StorageFactory(config)
