@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.media.asset
 
-"""
-Media asset file adapter.
+""" Media asset file adapter.
 
 Original authors: Johann Schimpf, Erich Seifert.
 """
@@ -28,7 +11,7 @@ import os
 
 from zope import component
 from zope.cachedescriptors.property import Lazy
-from zope.interface import implements
+from zope.interface import implementer
 
 from cybertools.media.asset import MediaAssetFile
 from cybertools.storage.interfaces import IExternalStorage
@@ -44,12 +27,11 @@ transformPrefix = 'asset_transform.'
 TypeInterfaceSourceList.typeInterfaces += (IMediaAsset,)
 
 
+@implementer(IMediaAsset)
 class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     """ Concept adapter for extracting metadata from assets and for creating
         transformation variants.
     """
-
-    implements(IMediaAsset)
 
     _adapterAttributes = ExternalFileAdapter._adapterAttributes + ('modified',)
     _contextAttributes = list(IMediaAsset)
@@ -109,7 +91,7 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
                         pass
                 try:
                     return datetime.fromtimestamp(os.path.getmtime(dp))
-                except Exception, e:
+                except Exception as e:
                     getLogger('loops.media.asset.MediaAsset').warn(e)
                     return None
 

@@ -4,8 +4,6 @@ loops - Linked Objects for Organization and Processing Services
 
 loops System Management.
 
-  ($Id$)
-
 
 Setting up a loops Site and Utilities
 =====================================
@@ -39,11 +37,11 @@ In addition to the application site we need a loops system management site.
   >>> systemRoot = site['loops.system']
 
   >>> sorted(sysConcepts)
-  [u'domain', u'file', u'hasType', u'job', u'note', u'predicate',
-   u'standard', u'textdocument', u'type']
+  ['domain', 'file', 'hasType', 'job', 'note', 'predicate',
+   'standard', 'textdocument', 'type']
 
   >>> list(systemRoot.getRecordManager().keys())
-  [u'jobs']
+  ['jobs']
 
 
 Portal Links

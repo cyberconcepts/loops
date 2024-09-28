@@ -1,13 +1,12 @@
-"""
-Set up a loops site for testing.
+# loops.constraint.testsetup
 
-$Id$
+""" Set up a loops site for testing.
 """
 
 import os
 from zope import component
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
+from zope.catalog.interfaces import ICatalog
+from zope.catalog.field import FieldIndex
 
 from loops import util
 from loops.concept import Concept
