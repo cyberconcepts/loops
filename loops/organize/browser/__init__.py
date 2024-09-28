@@ -1,6 +1,4 @@
-"""
-$Id$
-"""
+# loops.organize.browser
 
 # make sure actions get registered
-import party
+from loops.organize import party

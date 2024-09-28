@@ -11,7 +11,7 @@ from zope.catalog.catalog import Catalog
 from zope.catalog.interfaces import ICatalog
 from zope.catalog.field import FieldIndex
 from zope.catalog.text import TextIndex
-from zope.container.interfaces import IObjectRemovedEvent
+from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.principalregistry.principalregistry import principalRegistry

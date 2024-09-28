@@ -430,6 +430,8 @@ class DocumentAdapter(ResourceAdapterBase):
     _adapterAttributes = ResourceAdapterBase._adapterAttributes + ('data',)
 
     def setData(self, data):
+        if isinstance(data, bytes):
+            data = data.decode('UTF-8')
         self.context._data = data.replace('\r', '')
         self.context._size = len(data)
     def getData(self): return self.context._data

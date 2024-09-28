@@ -2,8 +2,6 @@
 loops - Linked Objects for Organization and Processing Services
 ===============================================================
 
-  ($Id$)
-
   >>> from zope import component
   >>> from zope.traversing.api import getName
 
@@ -28,13 +26,15 @@ Reading object information from an external source
 
   >>> from loops.external.pyfunc import PyReader
 
-  >>> input = ("concept('myquery', u'My Query', 'query', viewName='mystuff.html',"
+  >>> input = ("concept('myquery', 'My Query', 'query', viewName='mystuff.html',"
   ...          "        options='option1\\noption2')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
   >>> elements
-  [{'options': 'option1\noption2', 'type': 'query', 'name': 'myquery',
-    'viewName': 'mystuff.html', 'title': u'My Query'}]
+  [{'name': 'myquery', ...}]
+
+[{'options': 'option1\noption2', 'type': 'query', 'name': 'myquery',
+  'viewName': 'mystuff.html', 'title': 'My Query'}]
 
 Creating the corresponding objects
 ----------------------------------
@@ -50,14 +50,14 @@ Creating the corresponding objects
   >>> adMyquery = adapted(concepts['myquery'])
 
   >>> adMyquery.viewName
-  u'mystuff.html'
+  'mystuff.html'
   >>> adMyquery.options
-  [u'option1', u'option2']
+  ['option1', 'option2']
 
 Importing types
 ---------------
 
-  >>> input = ("type('mytype', u'My Type',"
+  >>> input = ("type('mytype', 'My Type',"
   ...          "        typeInterface='loops.expert.concept.IQueryConcept')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
@@ -70,7 +70,7 @@ Importing types
 Working with resources
 ----------------------
 
-  >>> input = ("resource('doc04.txt', u'Document 4', 'textdocument')\n"
+  >>> input = ("resource('doc04.txt', 'Document 4', 'textdocument')\n"
   ...          "resourceRelation('myquery', 'doc04.txt', 'standard')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
@@ -81,13 +81,13 @@ Working with resources
   >>> loader.load(elements)
 
   >>> sorted(resources)
-  [u'd001.txt', u'd002.txt', u'd003.txt', u'doc04.txt']
+  ['d001.txt', 'd002.txt', 'd003.txt', 'doc04.txt']
 
 Working with nodes
 ------------------
 
-  >>> input = ("node('home', u'Home', '', u'menu', body=u'Welcome')\n"
-  ...          "node('myquery', u'My Query', 'home', u'page', "
+  >>> input = ("node('home', 'Home', '', 'menu', body='Welcome')\n"
+  ...          "node('myquery', 'My Query', 'home', 'page', "
   ...          "     target='concepts/myquery')")
   >>> reader = PyReader()
   >>> elements = reader.read(input)
@@ -105,12 +105,12 @@ registered.
 
   >>> from loops.external import annotation
 
-  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html',
+  >>> input = """concept('myquery', 'My Query', 'query', viewName='mystuff.html',
   ...                    options='option1\\noption2')[
-  ...     annotations(creators=(u'john',))]"""
+  ...     annotations(creators=('john',))]"""
   >>> elements = reader.read(input)
   >>> elements[0].subElements
-  [{'creators': (u'john',)}]
+  [{'creators': ('john',)}]
 
 Loading the element with the sub-element stores the DC attributes.
 
@@ -118,7 +118,7 @@ Loading the element with the sub-element stores the DC attributes.
   >>> from zope.dublincore.interfaces import IZopeDublinCore
   >>> dc = IZopeDublinCore(concepts['myquery'])
   >>> dc.creators
-  (u'john',)
+  ('john',)
 
 
 Exporting loops Objects
@@ -137,22 +137,23 @@ Writing object information to the external storage
 --------------------------------------------------
 
   >>> from loops.external.pyfunc import PyWriter
-  >>> from cStringIO import StringIO
+  >>> from io import StringIO
 
   >>> output = StringIO()
   >>> writer = PyWriter()
   >>> writer.write(elements, output)
-  >>> print output.getvalue()
-  type(u'task', ...)...
-  type(u'country', u'Country', viewName=u'', typeInterface=u''..., options=u''...)...
-  type(u'query', u'Query', viewName=u'', typeInterface='loops.expert.concept.IQueryConcept'..., options=u''...)...
-  concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
-       viewName=u'mystuff.html'...)...
-  child(u'projects', u'customer', u'standard')...
-  resource(u'doc04.txt', u'Document 4', u'textdocument', contentType=u'')...
-  resourceRelation(u'myquery', u'doc04.txt', u'standard')
-  node(u'home', u'Home', '', u'menu')
-  node(u'myquery', u'My Query', u'home', u'page', target=u'concepts/myquery')...
+  >>> print(output.getvalue())
+  type('task', ...)...
+
+type('country', 'Country', viewName='', typeInterface=''..., options=''...)...
+  type('query', 'Query', viewName='', typeInterface='loops.expert.concept.IQueryConcept'..., options=''...)...
+  concept('myquery', 'My Query', 'query', options='option1\noption2',
+       viewName='mystuff.html'...)...
+  child('projects', 'customer', 'standard')...
+  resource('doc04.txt', 'Document 4', 'textdocument', contentType='')...
+  resourceRelation('myquery', 'doc04.txt', 'standard')
+  node('home', 'Home', '', 'menu')
+  node('myquery', 'My Query', 'home', 'page', target='concepts/myquery')...
 
 Writing sub-elements
 -------------------
@@ -160,7 +161,7 @@ Writing sub-elements
 Let's first set up a sequence with one element containing
 two sub-elements.
 
-  >>> input = """concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+  >>> input = """concept('myquery', 'My Query', 'query', viewName='mystuff.html')[
   ...     annotations(creators='john'),
   ...     annotations(modified='2007-08-12')]"""
   >>> elements = reader.read(input)
@@ -169,8 +170,8 @@ two sub-elements.
 
 Writing this sequence reproduces the import format.
 
-  >>> print output.getvalue()
-  concept('myquery', u'My Query', 'query', viewName='mystuff.html')[
+  >>> print(output.getvalue())
+  concept('myquery', 'My Query', 'query', viewName='mystuff.html')[
       annotations(creators='john'),
       annotations(modified='2007-08-12')]...
 
@@ -184,12 +185,13 @@ corresponding extractor adapter.
   >>> extractor = Extractor(loopsRoot, os.path.join(dataDirectory, 'export'))
   >>> PyWriter().write(extractor.extract(), output)
 
-  >>> print output.getvalue()
-  type(u'task', ...)...
-  type(u'country', u'Country', viewName=u'', typeInterface=u''..., options=u''...)...
-  concept(u'myquery', u'My Query', u'query', options=u'option1\noption2',
-          viewName=u'mystuff.html')[
-              annotations(creators=(u'john',))]...
+  >>> print(output.getvalue())
+  type('task', ...)...
+
+type('country', 'Country', viewName='', typeInterface=''..., options=''...)...
+  concept('myquery', 'My Query', 'query', options='option1\noption2',
+          viewName='mystuff.html')[
+              annotations(creators=('john',))]...
 
 Extracting selected parts of the concept map
 --------------------------------------------
@@ -202,17 +204,17 @@ Extracting selected parts of the concept map
 
   >>> output = StringIO()
   >>> writer.write(elements, output)
-  >>> print output.getvalue()
-  type(u'customer', u'Customer', viewName=u'', typeInterface=u''..., options=u''...)
-  concept(u'cust1', u'Customer 1', u'customer')
-  concept(u'cust2', u'Customer 2', u'customer')
-  concept(u'cust3', u'Customer 3', u'customer')
-  resource(u'd001.txt', u'Doc 001', u'textdocument', contentType=u'')
-  resource(u'd003.txt', u'Doc 003', u'textdocument', contentType=u'')
-  resource(u'd002.txt', u'Doc 002', u'textdocument', contentType=u'')
-  resourceRelation(u'cust1', u'd001.txt', u'standard')
-  resourceRelation(u'cust1', u'd003.txt', u'standard')
-  resourceRelation(u'cust3', u'd002.txt', u'standard')
+  >>> print(output.getvalue())
+  type('customer', 'Customer', ...)
+  concept('cust1', 'Customer 1', 'customer')
+  concept('cust2', 'Customer 2', 'customer')
+  concept('cust3', 'Customer 3', 'customer')
+  resource('d001.txt', 'Doc 001', 'textdocument', contentType='')
+  resource('d003.txt', 'Doc 003', 'textdocument', contentType='')
+  resource('d002.txt', 'Doc 002', 'textdocument', contentType='')
+  resourceRelation('cust1', 'd001.txt', 'standard')
+  resourceRelation('cust1', 'd003.txt', 'standard')
+  resourceRelation('cust3', 'd002.txt', 'standard')
 
 
 The Export/Import View

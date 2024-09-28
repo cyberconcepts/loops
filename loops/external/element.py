@@ -179,10 +179,10 @@ class ResourceElement(Element):
     def processExport(self, extractor):
         content = self.pop('data', '')
         fileFlags = 'wb'
-        if (self.get('contentType', '').startswith('text/')
-            and isinstance(content, unicode)):
-            content = content.encode('UTF-8')
+        if self.get('contentType', '').startswith('text/'):
             fileFlags = 'wt'
+        elif isinstance(content, str):
+            content = content.encode('UTF-8')
         directory = extractor.resourceDirectory
         if not os.path.exists(directory):
             os.makedirs(directory)
