@@ -1,27 +1,8 @@
-#
-#  Copyright (c) 2008 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.media.browser.admin
 
-"""
-View for regenerating all transformed media assets.
+""" View for regenerating all transformed media assets.
 
 Authors: Johann Schimpf, Erich Seifert.
-
-$Id$
 """
 
 from logging import getLogger
@@ -72,7 +53,7 @@ class ChangeSubdirectories(object):
             found += 1
             sp = obj._storageParams
             subdir = sp.get('subdirectory', '')
-            print subdir
+            print(subdir)
             if self.search in subdir:
                 changed += 1
                 sp['subdirectory'] = subdir.replace(self.search, self.replace)

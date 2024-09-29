@@ -36,6 +36,7 @@ dependencies = [
 server = [
 	"waitress", 
 	"ZConfig", 
+	"zope.app.catalog",
 	"zope.app.form",
 	"zope.app.intid",
 	"zope.app.publication",

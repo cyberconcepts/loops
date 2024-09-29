@@ -43,6 +43,6 @@
       class="zope.app.exception.browser.notfound.NotFound"
       />
 
-  <include package="cco.member" />
+  <!--<include package="cco.member" />-->
 
 </configure>

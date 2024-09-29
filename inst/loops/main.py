@@ -1,4 +1,4 @@
-# loops/inst/bluebream/main.py
+# loops/inst/loops/main.py
 
 import waitress
 from zope.app.wsgi import config, getWSGIApplication

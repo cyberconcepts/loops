@@ -5,35 +5,42 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
-  <zope:utility factory="loops.config.base.GlobalOptions" />
+  <zope:utility factory="loops.config.base.GlobalOptions"
+                provides="cybertools.meta.interfaces.IOptions" />
 
-  <zope:adapter factory="loops.config.base.LoopsOptions" trusted="True" />
+  <zope:adapter factory="loops.config.base.LoopsOptions" trusted="True"
+                 provides="cybertools.meta.interfaces.IOptions" />
   <zope:class class="loops.config.base.LoopsOptions">
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
-  <zope:adapter factory="loops.config.base.TypeOptions" trusted="True" />
+  <zope:adapter factory="loops.config.base.TypeOptions" trusted="True"
+                provides="cybertools.meta.interfaces.IOptions" />
   <zope:class class="loops.config.base.TypeOptions">
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
-  <zope:adapter factory="loops.config.base.QueryOptions" trusted="True" />
+  <zope:adapter factory="loops.config.base.QueryOptions" trusted="True"
+                provides="cybertools.meta.interfaces.IOptions" />
   <zope:class class="loops.config.base.QueryOptions">
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
-  <zope:adapter factory="loops.config.base.PredicateOptions" trusted="True" />
+  <zope:adapter factory="loops.config.base.PredicateOptions" trusted="True"
+                provides="cybertools.meta.interfaces.IOptions" />
   <zope:class class="loops.config.base.PredicateOptions">
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
-  <zope:adapter factory="loops.config.base.ConceptAdapterOptions" trusted="True" />
+  <zope:adapter factory="loops.config.base.ConceptAdapterOptions" trusted="True"
+                provides="cybertools.meta.interfaces.IOptions" />
   <zope:class class="loops.config.base.ConceptAdapterOptions">
     <allow interface="cybertools.meta.interfaces.IOptions" />
   </zope:class>
 
   <!-- backward compatibility -->
   <zope:adapter factory="loops.config.base.QueryOptions" trusted="True"
+                provides="cybertools.meta.interfaces.IOptions"
                 for="loops.query.IQueryConcept" />
 
   <!-- query views -->
@@ -45,6 +52,5 @@
         provides="zope.interface.Interface"
         factory="loops.config.browser.ConfiguratorView"
         permission="zope.View" />
-
 
 </configure>
