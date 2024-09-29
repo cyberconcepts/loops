@@ -2,6 +2,7 @@
 *.pyo
 *.swp
 dist/
+var/
 *.egg-info
 *.project
 *.pydevproject

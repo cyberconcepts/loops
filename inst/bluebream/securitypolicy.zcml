@@ -36,7 +36,6 @@
   <grant role="zope.Member" permission="zope.View" />
   <grant role="zope.ContentManager" permission="zope.ManageContent" />
   <grant role="zope.ContentManager" permission="zope.View" />
-  <grant role="zope.ContentManager" permission="loops.AssignAsParent" />
 
   <principal
      id="zope.manager"

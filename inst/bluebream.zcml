@@ -12,8 +12,7 @@
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.form.browser" file="meta.zcml" />
   <include package="zope.app.container.browser" file="meta.zcml" />
-  <include package="zope.app.pagetemplate" file="meta.zcml" />
-  <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
+
   <include package="zope.browserresource" />
   <include package="zope.copypastemove" />
   <include package="zope.publisher" />
@@ -42,13 +41,15 @@
   <include package="zope.app.authentication" />
   <include package="zope.app.security.browser" />
   <include package="zope.traversing.browser" />
-  <include package="zope.app.pagetemplate" />
+  <include package="zope.browserpage" />
   <include package="zope.app.schema" />
   <include package="zope.app.http" />
   <include package="zope.keyreference" />
   <include package="zope.intid" />
   <include package="zope.contentprovider" />
   <include package="zope.i18n" />
+  <include package="zope.catalog" />
+  <include package="zope.dublincore.browser" />
 
   <!-- enable the apidoc -->
   <!-- enable this when apidoc works

@@ -25,13 +25,26 @@ dependencies = [
 	"zope.pluggableauth",
 	"zope.principalannotation",
 	"zope.principalregistry",
+	"zope.publisher",
 	"zope.securitypolicy",
 	"zope.site",
 	"zope.thread",
 ]
 
 [project.optional-dependencies]
-server = ["waitress", "ZConfig", "zope.app.wsgi"]
+
+server = [
+	"waitress", 
+	"ZConfig", 
+	"zope.app.form",
+	"zope.app.intid",
+	"zope.app.publication",
+	"zope.app.session",
+	"zope.app.wsgi",
+	"zope.app.zcmlfiles",
+	"zope.contentprovider",
+]
+
 test = ["zope.testrunner"]
 
 [tool.setuptools]

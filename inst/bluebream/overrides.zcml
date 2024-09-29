@@ -4,8 +4,6 @@
 
   <!-- ZCML declarations to override the default definitions -->
 
-  <browser:defaultSkin name="Loops" />
-
   <browser:containerViews
       for="zope.app.folder.interfaces.IFolder"
       contents="zope.ManageContent"
@@ -42,7 +40,5 @@
       template="notfound.pt"
       class="zope.app.exception.browser.notfound.NotFound"
       />
-
-  <include package="cco.member" />
 
 </configure>
