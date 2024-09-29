@@ -1,0 +1,63 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="main">
+
+  <!-- default bluebream libraries -->
+  <include file="bluebream.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.catalog" />
+  <include package="zope.app.i18n" />
+  <include package="zope.app.intid" />
+  <include package="zope.app.renderer" />
+  <include package="zope.app.session" />
+  <include package="zope.dublincore.browser" />
+  <include package="zope.intid" />
+  <include package="zope.sendmail" file="meta.zcml" />
+
+  <!-- Security Policy -->
+  <include package="main" file="securitypolicy.zcml" />
+
+<!-- The following registration (defaultView) register 'index' as
+       the default view for a container.  The name of default view
+       can be changed to a different value, for example, 'index.html'.
+       More details about defaultView registration is available here:
+       http://bluebream.zope.org/doc/1.0/howto/defaultview.html
+       -->
+
+  <browser:defaultView
+        for="zope.container.interfaces.IContainer"
+        name="index.html" />
+
+  <!-- To remove the sample application delete the following line
+       and remove the `welcome` folder from this directory.
+       -->
+  <!--<include package=".welcome" />-->
+
+  <include package="cybertools" />
+  <include package="cybertools.ajax.dojo" />
+  <include package="cybertools.catalog" />
+  <include package="cybertools.composer.layout" />
+  <include package="cybertools.container" />
+  <!--<include package="cybertools.pyscript" />-->
+  <include package="cybertools.xedit" />
+  <include package="loops" />
+  <!--<include package="loops.browser.flash" />-->
+  <include package="cco.schema" />
+  <include package="cco.skin.r2" />
+  <include package="cco.webapi" />
+  <include package="ccq.cqportal" />
+  <include package="ccq.misc" />
+  <include package="custom.bwp" />
+  <include package="custom.brunold" />
+  <include package="custom.bwpsites" />
+  <include package="custom.cyberconcepts" />
+  <include package="custom.omk" />
+  <include package="cyberapps.ccmkg" />
+  <include package="cyberapps.knowledge" />
+
+  <!-- Override registrations -->
+  <includeOverrides package="main" file="overrides.zcml" />
+
+</configure>

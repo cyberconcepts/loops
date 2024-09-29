@@ -1,0 +1,48 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- ZCML declarations to override the default definitions -->
+
+  <browser:defaultSkin name="Loops" />
+
+  <browser:containerViews
+      for="zope.app.folder.interfaces.IFolder"
+      contents="zope.ManageContent"
+      index="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
+  <browser:page
+      name="singleBranchTree.xml"
+      for="zope.interface.interface.Interface"
+      permission="zope.ManageContent"
+      class="zope.app.rotterdam.xmlobject.XmlObjectView"
+      attribute="singleBranchTree"
+      />
+
+  <browser:pages
+      for="zope.container.interfaces.IReadContainer"
+      permission="zope.ManageContent"
+      class="zope.app.rotterdam.xmlobject.ReadContainerXmlObjectView">
+    <browser:page
+        name="children.xml"
+        attribute="children"
+        />
+    <browser:page
+        name="singleBranchTree.xml"
+        attribute="singleBranchTree"
+        />
+  </browser:pages>
+
+  <browser:page
+      for="zope.publisher.interfaces.INotFound"
+      name="index.html"
+      permission="zope.Public"
+      template="notfound.pt"
+      class="zope.app.exception.browser.notfound.NotFound"
+      />
+
+  <include package="cco.member" />
+
+</configure>
