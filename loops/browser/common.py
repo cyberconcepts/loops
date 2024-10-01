@@ -895,6 +895,7 @@ class BaseView(GenericView, I18NView, SortableMixin):
 
     @Lazy
     def xeditable(self):
+        return False
         if self.typeOptions('no_external_edit'):
             return False
         ct = getattr(self.context, 'contentType', '')

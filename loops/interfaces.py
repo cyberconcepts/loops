@@ -764,7 +764,7 @@ class IIsSubtype(IRelationAdapter):
 
 
 # probably not useful
-class xxIMappingAttributeRelation(IConceptSchema):
+class IMappingAttributeRelation(IConceptSchema):
     """ A relation based on a predicate ('mappingAttribute') that provides
         values for an attribute name on a parent and a corresponding
         identifiers on the the child objects that will be used as keys

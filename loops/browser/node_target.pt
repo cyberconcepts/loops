@@ -18,10 +18,6 @@
           <a href="#"
              tal:attributes="href string:${target/url}/@@configure.html"
              tal:content="target/title">Document xy</a>
-          <tal:xedit define="xeditObjectUrl target/url"
-                     condition="target/xeditable">
-            <metal:xedit use-macro="views/xedit_macros/editLink" />
-          </tal:xedit>
         </tal:target>
       </div>
 

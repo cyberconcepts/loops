@@ -1,5 +1,9 @@
 # loops/inst/loops/main.py
 
+import sys
+from zope.securitypolicy import securitymap
+sys.modules['zope.app.securitypolicy.securitymap'] = securitymap
+
 import waitress
 from zope.app.wsgi import config, getWSGIApplication
 
