@@ -1,7 +1,6 @@
-#! /usr/bin/python
+# loops.organize.stateful
 
-"""
-Tests for the 'loops.stateful' package.
+""" Tests for the 'loops.stateful' package.
 """
 
 import unittest, doctest
@@ -17,7 +16,7 @@ class Test(unittest.TestCase):
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
-        unittest.makeSuite(Test),
+        unittest.TestLoader().loadTestsFromTestCase(Test),
         doctest.DocFileSuite('README.txt', optionflags=flags),
         ))
 

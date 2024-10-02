@@ -1,3 +1,4 @@
+# loops.expert.tests
 
 import unittest, doctest
 from zope.interface.verify import verifyClass
@@ -20,10 +21,10 @@ def test_suite():
         return unittest.TestSuite()  # do nothing
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
-                unittest.makeSuite(Test),
-                doctest.DocFileSuite('README.txt', optionflags=flags),
-                doctest.DocFileSuite('search.txt', optionflags=flags),
-            ))
+        unittest.TestLoader().loadTestsFromTestCase(Test),
+        doctest.DocFileSuite('README.txt', optionflags=flags),
+        doctest.DocFileSuite('search.txt', optionflags=flags),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
