@@ -1,31 +1,40 @@
-<!-- copy this file to the etc subdirectory of your Zope instance -->
-
-<!-- security policy settings -->
-
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="zope">
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="main">
 
-  <include package="zope.app.securitypolicy" />
+  <!-- This file contains sample security policy definition -->
 
-  <securityPolicy
-    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <securityPolicy 
+     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <unauthenticatedPrincipal
+     id="zope.anybody"
+     title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+     id="zope.Anybody"
+     title="Unauthenticated Users" />
+
+  <authenticatedGroup
+     id="zope.Authenticated"
+     title="Authenticated Users" />
+
+  <everybodyGroup
+     id="zope.Everybody"
+     title="All Users" />
 
   <role id="zope.Anonymous" title="Everybody"
         description="All users have this role implicitly" />
+  <grant permission="zope.View" role="zope.Anonymous" />
+
   <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+
   <role id="zope.Member" title="Site Member" />
   <role id="zope.ContentManager" title="Content Manager" />
 
-  <grant role="zope.Anonymous" permission="zope.app.dublincore.view" />
   <grant role="zope.Member" permission="zope.View" />
-
   <grant role="zope.ContentManager" permission="zope.ManageContent" />
   <grant role="zope.ContentManager" permission="zope.View" />
-
-  <!-- loops-specific grant added in 2010-06 -->
-  <grant role="zope.ContentManager" permission="loops.AssignAsParent" />
-
-  <grantAll role="zope.Manager" />
 
 </configure>

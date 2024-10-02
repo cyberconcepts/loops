@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <principal
+     id="zope.manager"
+     title="Manager"
+     login="admin"
+     password="admin"
+     password_manager="Plain Text" />
+
+  <grant
+     role="zope.Manager"
+     principal="zope.manager" />
+
+</configure>

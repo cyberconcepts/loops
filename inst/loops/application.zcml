@@ -1,22 +1,10 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="main">
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <include file="../bluebream.zcml" />
+  <include package="loops" file="bluebream.zcml" />
 
-  <include package="zope.app.zcmlfiles" />
-  <include package="zope.app.i18n" />
-  <include package="zope.app.intid" />
-  <include package="zope.app.renderer" />
-  <include package="zope.app.session" />
-  <include package="zope.sendmail" file="meta.zcml" />
+  <include package="loops" file="securitypolicy.zcml" />
 
-  <include package="main" file="securitypolicy.zcml" />
-
-  <browser:defaultView
-        for="zope.container.interfaces.IContainer"
-        name="index.html" />
+  <include file="adminuser.zcml" />
 
   <include package="cybertools" />
   <include package="cybertools.ajax.dojo" />
@@ -42,6 +30,7 @@
   <include package="cyberapps.knowledge" />-->
 
   <!-- Override registrations -->
-  <includeOverrides package="main" file="overrides.zcml" />
+  <includeOverrides package="loops" file="overrides.zcml" />
+  <includeOverrides file="overrides.zcml" />
 
 </configure>

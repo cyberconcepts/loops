@@ -10,3 +10,4 @@ var/
 *.sublime-project
 *.sublime-workspace
 .settings
+adminuser.zcml

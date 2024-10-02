@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
   <include package="zope.component" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
@@ -52,13 +54,16 @@
   <include package="zope.catalog" />
   <include package="zope.dublincore.browser" />
 
-  <!-- enable the apidoc -->
-  <!-- enable this when apidoc works
-  <include zcml:condition="have devmode"
-           package="zope.app.apidoc" file="meta.zcml" />
-  <include zcml:condition="have devmode"
-           package="zope.app.apidoc" />
-  -->
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.i18n" />
+  <include package="zope.app.intid" />
+  <include package="zope.app.renderer" />
+  <include package="zope.app.session" />
+  <include package="zope.sendmail" file="meta.zcml" />
+
+  <browser:defaultView
+        for="zope.container.interfaces.IContainer"
+        name="index.html" />
 
 </configure>
 
