@@ -84,8 +84,9 @@ def getInternalPrincipal(id, context=None, pau=None):
     raise PrincipalLookupError(id)
 
 
-def getPrincipalForUserId(id, context=None):
-    auth = component.getUtility(IAuthentication, context=context)
+def getPrincipalForUserId(id, context=None, auth=None):
+    if auth is None:
+        auth = component.getUtility(IAuthentication, context=context)
     try:
         return auth.getPrincipal(id)
     except PrincipalLookupError:

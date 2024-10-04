@@ -4,6 +4,8 @@
 
   <!-- ZCML declarations to override the default definitions -->
 
+  <browser:defaultSkin name="Loops" />
+
   <browser:containerViews
       for="zope.app.folder.interfaces.IFolder"
       contents="zope.ManageContent"

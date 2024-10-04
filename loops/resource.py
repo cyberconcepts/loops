@@ -588,12 +588,15 @@ class IndexAttributes(object):
                         self.creators()).strip()
 
     def creators(self):
+        from loops.organize.util import getPrincipalForUserId
         cr = IZopeDublinCore(self.context).creators or []
-        pau = component.getUtility(IAuthentication)
+        pau = component.getUtility(IAuthentication, context=self.context)
         creators = []
         for c in cr:
-            principal = pau.getPrincipal(c)
-            if principal is not None:
+            principal = getPrincipalForUserId(c, auth=pau)
+            if principal is None:
+                creators.append(c)
+            else:
                 creators.append(principal.title)
         return creators
 
