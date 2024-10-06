@@ -1,6 +1,10 @@
-# loops/inst/loops/main.py
+# loops.server.main
+
+# call main() for starting a loops server process
 
 import sys
+
+# module aliases - should be moved to loops.server.aliases
 from zope.securitypolicy import securitymap
 sys.modules['zope.app.securitypolicy.securitymap'] = securitymap
 
@@ -12,8 +16,11 @@ def run(app, config):
     #print(f'Serving on port {port}.')
     waitress.serve(app, port=port)
 
-
-if __name__ == '__main__':
+def main():
     import config
+    zope_conf = getattr(config, 'zope_conf', 'zope.conf')
     app = getWSGIApplication('zope.conf')
     run(app, config)
+
+if __name__ == '__main__':
+    main()

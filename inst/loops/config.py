@@ -5,7 +5,11 @@ from os import getenv
 
 load_dotenv()
 
+zope_conf = getenv('ZOPE_CONF', 'zope.conf')
 server_port = getenv('SERVER_PORT', '8099')
+
+shell_pw = (getenv('SHELL_PW', 'dummy'))
+
 
 # storage settings
 from scopes.storage.db.postgres import StorageFactory
