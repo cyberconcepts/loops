@@ -19,7 +19,8 @@ def run(app, config):
 def main():
     import config
     zope_conf = getattr(config, 'zope_conf', 'zope.conf')
-    app = getWSGIApplication('zope.conf')
+    print(f'starting loops server... - conf: {zope_conf}')
+    app = getWSGIApplication(zope_conf)
     run(app, config)
 
 if __name__ == '__main__':

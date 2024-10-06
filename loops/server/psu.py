@@ -50,7 +50,7 @@ def closeConnection():
         print('closing ZODB connection...')
         conn.close()
 
-def setup(zope_conf=None, loopsRootPath='sites/loops', config=config):
+def setup(zope_conf=None, loopsRootPath=None, config=config):
     if zope_conf is None:
         zope_conf = getattr(config, 'zope_conf', 'zope.conf')
     if loopsRootPath is None:
