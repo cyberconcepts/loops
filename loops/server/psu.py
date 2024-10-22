@@ -209,13 +209,13 @@ def reindex_objects(objs, **kw):
         util.reindex(obj, catalog)
     loop('reindex %s objects' % len(objs), objs, do_reindex, **kw)
 
-def reindex_all(root, step=1000):
+def reindex_all(root, step=1000, **kw):
     catalog = getCatalog(root)
     def _updateObj(params, info):
         uid, obj = params
         for index in catalog.values():
             index.index_doc(uid, obj)
-    info = startup('Indexing all objects', step=step)
+    info = startup('Indexing all objects', step=step, **kw)
     for uid, obj in catalog._visitSublocations():
         update(_updateObj, (uid, obj), info)
     finish(info)
