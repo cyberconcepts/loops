@@ -166,7 +166,7 @@ class ObjectForm(NodeView):
                 if field:
                     fi = field.getFieldInstance(self.instance)
                     input = form[k]
-                    if isinstance(input, basestring):
+                    if isinstance(input, str):
                         input = unquote_plus(input)
                     data[k] = fi.marshall(fi.unmarshall(input))
                     #data[k] = toUnicode(form[k])

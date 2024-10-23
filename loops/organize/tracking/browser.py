@@ -1,23 +1,6 @@
-#
-#  Copyright (c) 2014 Helmut Merz helmutm@cy55.de
-#
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# loops.organize.tracking.browser
 
-"""
-View classes for tracks.
+""" View classes for tracks.
 """
 
 from zope import component
@@ -82,7 +65,7 @@ class BaseTrackView(TrackView):
 
     @Lazy
     def userTitle(self):
-        if isinstance(self.user, basestring):
+        if isinstance(self.user, str):
             uid = self.user
             try:
                 return self.authentication.getPrincipal(uid).title or uid
@@ -93,7 +76,7 @@ class BaseTrackView(TrackView):
     @Lazy
     def userUrl(self):
         user = self.user
-        if user is not None and not isinstance(user, basestring):
+        if user is not None and not isinstance(user, str):
             return '%s/@@introspector.html' % absoluteURL(user, self.request)
 
     def getMetadataTarget(self, key):

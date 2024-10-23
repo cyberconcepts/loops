@@ -290,7 +290,7 @@ class SurveyView(InstitutionMixin, ConceptView):
             result['average'] = int(round(average))
             result['stddev'] = int(round(stddev))
         texts = [r.texts.get(question) for r in self.teamData]
-        result['texts'] = '<br />'.join([unicode(t) for t in texts if t])
+        result['texts'] = '<br />'.join([t for t in texts if t])
         return result
 
     def prefsResults(self, respManager, form, action):

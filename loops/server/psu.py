@@ -141,7 +141,7 @@ def move(source, target, name):
     commit()
 
 def get(container, obj):
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         name = obj
         obj = container.get(name)
         if obj is None:

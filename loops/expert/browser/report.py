@@ -100,7 +100,7 @@ class ResultsView(NodeView):
     def parseLimitsParam(self, value):
         if not value:
             return None
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             limits = value.split(',')
         else:
             limits = value
