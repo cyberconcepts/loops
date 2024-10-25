@@ -131,7 +131,7 @@ def getRowValue(k, v):
     return v[0]
 
 def getRowValueWithKey(k, v):
-    return ' '.join((k, v[0]))
+    return ' '.join((str(k), v[0]))
 
 
 @implementer(IIterableSource)

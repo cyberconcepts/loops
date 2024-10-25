@@ -43,22 +43,30 @@ except ImportError:
 
 
 sc = Jeep()     # shortcuts
+db = None
 conn = None
 
 def closeConnection():
+    global conn
     if conn is not None:
         print('closing ZODB connection...')
         conn.close()
+        conn = None
+
+atexit.register(closeConnection)
 
 def setup(zope_conf=None, loopsRootPath=None, config=config):
     if zope_conf is None:
         zope_conf = getattr(config, 'zope_conf', 'zope.conf')
     if loopsRootPath is None:
         loopsRootPath = getattr(config, 'loops_path', None)
-    global conn, root, sm, smdefault, intids, pau, loopsRoot, sc
-    print(f'opening ZODB connection... - conf: {zope_conf}, path: {loopsRootPath}')
-    conn = wsgi.config(zope_conf).open()
-    atexit.register(closeConnection)
+    global db, conn, root, sm, smdefault, intids, pau, loopsRoot, sc
+    if db is None:
+        print(f'setting up ZODB... - conf: {zope_conf}, path: {loopsRootPath}')
+        db = wsgi.config(zope_conf)
+    if conn is None:
+        print(f'opening ZODB connection...')
+        conn = db.open()
     root = conn.root()['Application']
     setSite(root)
     sm = component.getSiteManager(root)
