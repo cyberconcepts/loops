@@ -25,7 +25,7 @@ dependencies = [
 	"zope.pluggableauth",
 	"zope.principalannotation",
 	"zope.principalregistry",
-	"zope.publisher",
+	"zope.publisher==5.2.1",
 	"zope.securitypolicy",
 	"zope.site",
 	"zope.thread",
