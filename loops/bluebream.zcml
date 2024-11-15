@@ -33,7 +33,6 @@
   <include package="zope.app.form.browser" />
   <include package="zope.app.basicskin" />
   <include package="zope.browsermenu" />
-  <include package="zope.principalregistry" />
   <include package="zope.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.login" />

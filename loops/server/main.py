@@ -5,9 +5,11 @@
 import sys
 
 # module aliases - should be moved to loops.server.aliases
+# or removed after migration with zodbupdate
 from zope.securitypolicy import securitymap
 sys.modules['zope.app.securitypolicy.securitymap'] = securitymap
 
+from scopes.server import auth
 import waitress
 from zope.app.wsgi import config, getWSGIApplication
 
@@ -21,6 +23,7 @@ def main():
     zope_conf = getattr(config, 'zope_conf', 'zope.conf')
     print(f'starting loops server... - conf: {zope_conf}')
     app = getWSGIApplication(zope_conf)
+    auth.registerAuthUtility()
     run(app, config)
 
 if __name__ == '__main__':

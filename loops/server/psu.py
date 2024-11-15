@@ -11,6 +11,7 @@
 
 import atexit
 import os
+from scopes.server import auth
 from transaction import commit, abort
 from zope.app import wsgi
 from zope.app.authentication.principalfolder import Principal
@@ -67,6 +68,7 @@ def setup(zope_conf=None, loopsRootPath=None, config=config):
     if conn is None:
         print(f'opening ZODB connection...')
         conn = db.open()
+    auth.registerAuthUtility()
     root = conn.root()['Application']
     setSite(root)
     sm = component.getSiteManager(root)
