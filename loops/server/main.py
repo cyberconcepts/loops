@@ -9,7 +9,7 @@ import sys
 from zope.securitypolicy import securitymap
 sys.modules['zope.app.securitypolicy.securitymap'] = securitymap
 
-from scopes.server import auth
+from loops.server import auth
 import waitress
 from zope.app.wsgi import config, getWSGIApplication
 

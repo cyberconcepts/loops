@@ -11,7 +11,6 @@
 
 import atexit
 import os
-from scopes.server import auth
 from transaction import commit, abort
 from zope.app import wsgi
 from zope.app.authentication.principalfolder import Principal
@@ -32,6 +31,7 @@ from zope.security.management import getInteraction, newInteraction, endInteract
 from cybertools.util.date import date2TimeStamp, strptime
 from cybertools.util.jeep import Jeep
 from loops.common import adapted, baseObject
+from loops.server import auth
 from loops.util import getObjectForUid, getUidForObject, getCatalog, reindex
 
 os.environ['NLS_LANG'] = 'German_Germany.UTF8'
