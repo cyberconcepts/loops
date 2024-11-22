@@ -7,7 +7,7 @@ from scopes.server import auth
 from zope.authentication.interfaces import IAuthentication
 from zope.component import getUtility, provideUtility
 
-def registerAuthUtility():
+def registerAuthUtility(config):
     baseAuth = getUtility(IAuthentication)
     print('*** registerAuthUtility, baseAuth:', baseAuth)
     provideUtility(auth.JwtAuthentication(baseAuth))
