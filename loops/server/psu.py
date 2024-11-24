@@ -68,7 +68,7 @@ def setup(zope_conf=None, loopsRootPath=None, config=config):
     if conn is None:
         print(f'opening ZODB connection...')
         conn = db.open()
-    auth.registerAuthUtility()
+    auth.registerAuthUtility(config)
     root = conn.root()['Application']
     setSite(root)
     sm = component.getSiteManager(root)
