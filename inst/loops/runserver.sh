@@ -2,7 +2,6 @@
 set -a
 
 # use environment variables for instance-specific configuration:
-#ZOPE_CONF=zope-1.conf
-#SERVER_PORT=8091
+#SERVER_ID=0
 
 python -c "from loops.server.main import main; main()"

@@ -11,7 +11,7 @@ server_port = getenv('SERVER_PORT',
         server_id and getenv(f'SERVER_PORT_{server_id}')) or '8080'
 
 shell_pw = (getenv('SHELL_PW', 'dummy'))
-loops_path = (getenv('LOOPS_PATH', None))
+loops_path = (getenv('LOOPS_PATH', 'loops/demo'))
 
 # storage settings
 from scopes.storage.db.postgres import StorageFactory
