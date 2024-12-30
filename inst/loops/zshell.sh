@@ -2,7 +2,7 @@
 set -a
 
 # use environment variables for instance-specific configuration:
-#ZOPE_CONF=zope-1.conf
+#SERVER_ID=0
 #LOOPS_PATH=sites/mysite
 
 python -ic "from loops.server import psu; psu.setup()"

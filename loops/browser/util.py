@@ -3,7 +3,8 @@
 """ Utilities.
 """
 
-import re, urllib
+import re
+import urllib.parse
 from zope.browserpage import ViewPageTemplateFile
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.interfaces import IBrowserSubMenuItem
@@ -51,4 +52,4 @@ def html_quote(text, character_entities=((u'&', u'&amp;'), (u'<', u'&lt;' ),
 pattern = re.compile(r'[ /\?\+\|%]')
 
 def normalizeForUrl(text):
-    return urllib.quote(pattern.sub('-', text).encode('UTF-8'))
+    return urllib.parse.quote(pattern.sub('-', text).encode('UTF-8'))

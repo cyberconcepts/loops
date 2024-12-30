@@ -31,7 +31,7 @@ class Presence(object):
 
     def removeInactiveUsers(self):
         toDelete = []
-        for id, timeStamp in self.presentUsers.iteritems():
+        for id, timeStamp in self.presentUsers.items():
             if (getTimeStamp() - timeStamp) > (self.min_until_logout*60):
                 toDelete.append(id)
         for id in toDelete:
@@ -40,7 +40,7 @@ class Presence(object):
 
     def getPresentUsers(self, context=None):
         ret = []
-        for id, timeStamp in self.presentUsers.iteritems():
+        for id, timeStamp in self.presentUsers.items():
             principal = util.getPrincipalForUserId(id)
             person = getPersonForUser(context, principal=principal)
             ret.append(person or principal)

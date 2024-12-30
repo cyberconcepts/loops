@@ -496,7 +496,7 @@ class DocumentReadFileAdapter(object):
 
     def read(self):
         data = self.data
-        if type(data) is unicode:
+        if type(data) is str:
             return self.data.encode('UTF-8')
         else:
             return data
