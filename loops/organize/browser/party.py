@@ -195,9 +195,7 @@ class SendEmail(FormController):
         # TODO: remove duplicates
         person = getPersonForUser(self.context, self.request)
         sender = person and adapted(person).email or 'loops@unknown.com'
-        #msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
         msg = MIMEText(message, 'plain', 'utf-8')
-        #msg['Subject'] = subject.encode('utf-8')
         msg['Subject'] = subject
         msg['From'] = sender
         recipients = [r.strip() for r in recipients if r.strip()]
