@@ -8,7 +8,7 @@ import os
 from cybertools.util.date import date2TimeStamp, strptime
 from cybertools.util.jeep import Jeep
 from loops.common import baseObject
-from loops import psu
+from loops.server import psu
 
 os.environ['NLS_LANG'] = 'German_Germany.UTF8'
 
