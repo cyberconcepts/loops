@@ -68,6 +68,6 @@ class PyWriter(object):
 
 
 def toStr(value):
-    if isinstance(value, unicode):
+    if isinstance(value, str):
         return value.encode('UTF-8')
     return str(value)

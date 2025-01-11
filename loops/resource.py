@@ -395,7 +395,7 @@ class ExternalFileAdapter(FileAdapter):
 
     def getData(self):
         if self.storageName in ('unknown', None):    # object not set up yet
-            return ''
+            return b''
         return self.storage.getData(self.externalAddress, params=self.storageParams)
 
     data = property(getData, setData)
