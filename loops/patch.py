@@ -38,6 +38,32 @@ def patched_decode(code):
 zope.index.text.widcode.decode = patched_decode
 
 
+from zope.index.text.baseindex import BaseIndex
+from zope.index.text import widcode
+from zope.index.text.setops import mass_weightedIntersection
+def patched_search_phrase(self, phrase):
+    wids = self._lexicon.termToWordIds(phrase)
+    cleaned_wids = self._remove_oov_wids(wids)
+    if len(wids) != len(cleaned_wids):
+        # At least one wid was OOV:  can't possibly find it.
+        return self.family.IF.BTree()
+    scores = self._search_wids(wids)
+    hits = mass_weightedIntersection(scores, self.family)
+    if not hits:
+        return hits
+    code = widcode.encode(wids)
+    result = self.family.IF.BTree()
+    for docid, weight in hits.items():
+        docwords = self._docwords[docid]
+        if isinstance(docwords, bytes):  # PATCH
+            # byte-wise conversion to str:
+            docwords = ''.join(chr(b) for b in docwords)
+        if docwords.find(code) >= 0:
+            result[docid] = weight
+    return result
+BaseIndex.search_phrase = patched_search_phrase
+
+
 import zope.sendmail.zcml
 from zope.sendmail.interfaces import IMailer
 from zope.sendmail.mailer import SMTPMailer
@@ -67,5 +93,5 @@ def patched_rebuild(modulename, globalname, *args):
 ZODB.broken.rebuild = patched_rebuild
 
 
-print("loops.patch: 4 monkey patches installed")
+print("loops.patch: 5 monkey patches installed")
 
