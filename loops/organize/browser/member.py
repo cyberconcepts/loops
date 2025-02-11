@@ -260,16 +260,16 @@ class SecureMemberRegistration(BaseMemberRegistration, CreateForm):
         name = '.'.join((self.text_names_prefix, self.email_key))
         text = self.resourceManager.get(name)
         if text:
-            message = (text.data % url).encode('UTF-8')
+            message = (text.data % url)
             subject = text.description or subject
         else:
             message = _(u'confirmation_mail_text') + u':\n\n'
-            message = (message + url).encode('UTF-8')
+            message = (message + url)
         senderInfo = self.globalOptions('email.sender')
         sender = senderInfo and senderInfo[0] or 'info@loops.cy55.de'
-        sender = sender.encode('UTF-8')
+        #sender = sender.encode('UTF-8')
         msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = subject.encode('UTF-8')
+        msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(recipients)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
@@ -469,12 +469,12 @@ class PasswordReset(PasswordChange):
         recipients = [recipient]
         subject = _(u'password_reset_mail_subject')
         message = _(u'password_reset_mail_text') + u':\n\n'
-        message = (message + url).encode('UTF-8')
+        message = (message + url)
         senderInfo = self.globalOptions('email.sender')
         sender = senderInfo and senderInfo[0] or 'info@loops.cy55.de'
-        sender = sender.encode('UTF-8')
+        sender = sender
         msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = subject.encode('UTF-8')
+        msg['Subject'] = subject
         msg['From'] = sender
         msg['To'] = ', '.join(recipients)
         mailhost = component.getUtility(IMailDelivery, 'Mail')
