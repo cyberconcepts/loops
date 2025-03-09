@@ -445,7 +445,7 @@ class ConceptView(BaseView):
 
     def parents(self):
         rels = sorted(self.context.getParentRelations(),
-                      key=(lambda x: x.first.title and x.first.title.lower()))
+                      key=(lambda x: x.first.title and x.first.title.lower() or ''))
         for r in rels:
             yield self.childViewFactory(r, self.request)
 
