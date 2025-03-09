@@ -51,6 +51,7 @@ def closeConnection():
     global conn
     if conn is not None:
         print('closing ZODB connection...')
+        commit()
         conn.close()
         conn = None
 
