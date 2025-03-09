@@ -98,6 +98,7 @@ class IntegerField(Field):
         value = self.getValue(row)
         if value.isdigit():
             return int(value)
+        return 0
 
 
 class DateField(Field):
@@ -252,7 +253,7 @@ class RelationField(Field):
         return self.getRawValue(row)
 
     def getSortValue(self, row):
-        return self.getDisplayValue(row)['title']
+        return self.getDisplayValue(row)['title'] or ''
 
     def getDisplayValue(self, row):
         value = self.getValue(row)
@@ -272,6 +273,7 @@ class TargetField(RelationField):
             if value is not None:
                 if value.title is not None:
                    return value.title.split()
+        return ''
 
     def getValue(self, row):
         value = self.getRawValue(row)
@@ -332,7 +334,7 @@ class TrackDateField(Field):
         value = self.getRawValue(row)
         if value and self.descending:
             return -value
-        return value or None
+        return value or 0
 
 
 class TrackDateTimeField(TrackDateField):
