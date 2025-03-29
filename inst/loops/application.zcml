@@ -4,6 +4,8 @@
 
   <include package="loops" file="securitypolicy.zcml" />
 
+  <module module="loops.patch" />
+
   <include file="adminuser.zcml" />
 
   <include package="cybertools" />
@@ -19,13 +21,6 @@
   <!--<include package="cco.schema" />
   <include package="cco.skin.r2" />
   <include package="cco.webapi" />
-  <include package="ccq.cqportal" />
-  <include package="ccq.misc" />
-  <include package="custom.bwp" />
-  <include package="custom.brunold" />
-  <include package="custom.bwpsites" />
-  <include package="custom.cyberconcepts" />
-  <include package="custom.omk" />
   <include package="cyberapps.ccmkg" />
   <include package="cyberapps.knowledge" />-->
 

@@ -6,8 +6,6 @@
 
   <include file="adminuser.zcml" />
 
-  <includeOverrides package="loops" file="overrides.zcml" />
-
   <includeOverrides file="overrides.zcml" />
 
 </configure>

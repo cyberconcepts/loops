@@ -15,7 +15,7 @@ loops_path = (getenv('LOOPS_PATH', 'loops/demo'))
 
 # storage settings
 from scopes.storage.db.postgres import StorageFactory
-dbengine = 'postgresql+psycopg'
+dbengine = getenv('DBENGINE', 'postgresql+psycopg')
 dbname = getenv('DBNAME', 'demo')
 dbuser = getenv('DBUSER', 'demo')
 dbpassword = getenv('DBPASSWORD', 'secret')

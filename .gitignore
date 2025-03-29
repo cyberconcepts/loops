@@ -9,5 +9,6 @@ var/
 *.ropeproject
 *.sublime-project
 *.sublime-workspace
+.env
 .settings
 adminuser.zcml
