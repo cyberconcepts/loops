@@ -29,7 +29,9 @@ class I18NValue(PersistentMapping):
 
     def getDefault(self):
         if self.default is None:
-            return self.values()[0]
+            #return self.values()[0]
+            for v in self.values():
+                return v
         return self.default
 
     def __str__(self):
