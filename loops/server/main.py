@@ -23,8 +23,7 @@ def main():
     zope_conf = getattr(config, 'zope_conf', 'zope.conf')
     print(f'starting loops server... - conf: {zope_conf}')
     app = getWSGIApplication(zope_conf)
-    #auth.registerAuthUtility(config)
-    auth.registerAuthentication(config)
+    auth.registerAuthUtility(config)
     run(app, config)
 
 if __name__ == '__main__':

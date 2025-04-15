@@ -11,32 +11,10 @@ from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserPage
 from zope.publisher.browser import BrowserPage
 from zope.security.proxy import removeSecurityProxy
 
-def registerAuthentication(config):
-    registerAuthUtility(config)
-    #registerAuthViews(config)
-
 def registerAuthUtility(config):
     baseAuth = getUtility(IAuthentication)
     print('*** registerAuthUtility, baseAuth:', baseAuth)
     provideUtility(auth.OidcAuthentication(baseAuth))
-
-def registerAuthViews(config):
-    provideAdapter(LoginView, (Interface, IBrowserRequest), IBrowserPage,
-                   name='auth_login')
-    provideAdapter(callback, (Interface, IBrowserRequest), IBrowserPage,
-                   name='auth_callback')
-
-@implementer(IBrowserPage)
-def login(context, request):
-    removeSecurityProxy(context)
-    auth.Authenticator(request).login()
-    return context
-
-@implementer(IBrowserPage)
-def callback(context, request):
-    removeSecurityProxy(context)
-    auth.Authenticator(request).callback()
-    return DummyView(context, request)
 
 
 class LoginView:
