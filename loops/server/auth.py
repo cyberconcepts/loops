@@ -3,7 +3,7 @@
 # provide (register) authentication utility
 # and other authentication and authorization stuff.
 
-from scopes.server import auth
+from scopes.web.auth import oidc
 from zope.authentication.interfaces import IAuthentication
 from zope.component import provideAdapter, getUtility, provideUtility
 from zope.interface import implementer, Interface
@@ -14,18 +14,18 @@ from zope.security.proxy import removeSecurityProxy
 def registerAuthUtility(config):
     baseAuth = getUtility(IAuthentication)
     print('*** registerAuthUtility, baseAuth:', baseAuth)
-    provideUtility(auth.OidcAuthentication(baseAuth))
+    provideUtility(oidc.OidcAuthentication(baseAuth))
 
 
 class LoginView:
 
     def __call__(self):
-        auth.Authenticator(self.request).login()
+        oidc.Authenticator(self.request).login()
         return ''
 
 
 class CallbackView:
 
     def __call__(self):
-        auth.Authenticator(self.request).callback()
+        oidc.Authenticator(self.request).callback()
         return ''

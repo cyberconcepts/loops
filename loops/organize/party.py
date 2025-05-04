@@ -24,6 +24,7 @@ from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IAddress, IPerson, IHasRole
 from loops.organize.interfaces import ANNOTATION_KEY
+from loops.organize.util import getPrincipalForUserId
 from loops.predicate import RelationAdapter
 from loops.predicate import PredicateInterfaceSourceList
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
@@ -32,6 +33,7 @@ from loops.security.common import getCurrentPrincipal
 from loops.security.interfaces import ISecuritySetter
 from loops.type import TypeInterfaceSourceList
 from loops import util
+from scopes.web.auth import oidc
 
 
 # register type interfaces - (TODO: use a function for this)
@@ -85,6 +87,7 @@ class Person(AdapterBase, BasePerson):
         setter = ISecuritySetter(self)
         if userId:
             principal = self.getPrincipalForUserId(userId)
+            print('***', userId, principal)
             if principal is None:
                 return
             person = getPersonForUser(self.context, principal=principal)
@@ -140,13 +143,15 @@ class Person(AdapterBase, BasePerson):
 
     def getPrincipalForUserId(self, userId=None):
         userId = userId or self.userId
+        return getPrincipalForUserId(userId, self.context, self.authentication)
         if not userId:
             return None
         auth = self.authentication
         try:
             return auth.getPrincipal(userId)
         except PrincipalLookupError:
-            return None
+            return oidc.Principal(userId, dict(name=userId))
+            #return None
 
 
 def getAuthenticationUtility(context):

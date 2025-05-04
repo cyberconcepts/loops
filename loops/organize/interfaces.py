@@ -15,9 +15,10 @@ from cybertools.organize.interfaces import IPerson as IBasePerson
 from cybertools.organize.interfaces import ITask
 from loops.interfaces import ILoopsAdapter, IConceptSchema, IRelationAdapter
 from loops.interfaces import HtmlText
-from loops.organize.util import getPrincipalFolder
+from loops.organize.util import getPrincipalFolder, getPrincipalForUserId
 from loops import util
 from loops.util import _
+from scopes.web.auth import oidc
 
 ANNOTATION_KEY = 'loops.organize.person'
 
@@ -38,20 +39,23 @@ class UserId(schema.TextLine):
     """
 
     def _validate(self, userId):
-        from loops.organize.party import getPersonForUser
         if not userId:
             return
+        from loops.organize.party import getPersonForUser
         context = removeSecurityProxy(self.context).context
-        auth = component.getUtility(IAuthentication, context=context)
-        try:
-            principal = auth.getPrincipal(userId)
-        except PrincipalLookupError:
-            raiseValidationError(_(u'User $userId does not exist',
+        principal = getPrincipalForUserId(userId, context)
+        #auth = component.getUtility(IAuthentication, context=context)
+        #try:
+            #principal = auth.getPrincipal(userId)
+        #except PrincipalLookupError:
+            #principal = oidc.Principal(userId, dict(name=userId))
+        if principal is None:
+            raiseValidationError(_('User $userId does not exist',
                                    mapping={'userId': userId}))
         person = getPersonForUser(context, principal=principal)
         if person is not None and person != context:
             raiseValidationError(
-                _(u'There is alread a person ($person) assigned to user $userId.',
+                _('There is already a person ($person) assigned to user $userId.',
                   mapping=dict(person=getName(person),
                                userId=userId)))
 
