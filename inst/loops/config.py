@@ -9,7 +9,8 @@ server_id = getenv('SERVER_ID')
 zope_conf = getenv('ZOPE_CONF', 'zope.conf')
 server_port = getenv('SERVER_PORT',
         server_id and getenv(f'SERVER_PORT_{server_id}')) or '8080'
-base_url = getenv('BASE_URL', 'https://test.example.com')
+base_url = getenv('BASE_URL', 
+        server_id and getenv(f'BASE_URL_{server_id}')) or 'https://test.example.com'
 
 shell_pw = (getenv('SHELL_PW', 'dummy'))
 loops_path = (getenv('LOOPS_PATH', 'loops/demo'))
