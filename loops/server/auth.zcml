@@ -1,0 +1,18 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page 
+	for="zope.interface.Interface"
+  	name="auth_login"
+    class="loops.server.auth.LoginView"
+	permission="zope.Public" />
+
+  <browser:page 
+	for="zope.interface.Interface"
+  	name="auth_callback"
+    class="loops.server.auth.CallbackView"
+	permission="zope.Public" />
+
+</configure>
+

@@ -15,7 +15,6 @@ from zope.traversing.api import getParents
 from loops.common import adapted
 from loops.security.common import getCurrentPrincipal
 from loops.type import getOptionsDict
-from scopes.web.auth import oidc
 
 defaultAuthPluginId = 'loops'
 
@@ -93,6 +92,7 @@ def getPrincipalForUserId(id, context=None, auth=None):
     try:
         return auth.getPrincipal(id)
     except PrincipalLookupError:
+        from scopes.web.auth import oidc
         return oidc.Principal(id, dict(name=id))
         #return None
 

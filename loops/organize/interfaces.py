@@ -18,7 +18,6 @@ from loops.interfaces import HtmlText
 from loops.organize.util import getPrincipalFolder, getPrincipalForUserId
 from loops import util
 from loops.util import _
-from scopes.web.auth import oidc
 
 ANNOTATION_KEY = 'loops.organize.person'
 
@@ -34,7 +33,7 @@ def raiseValidationError(info):
 
 
 class UserId(schema.TextLine):
-    """ Obsolete, as member registration does not use zope.formlib any more.
+    """ Note: member registration does not use zope.formlib any more.
         TODO: transfer validation to loops.organize.browser.
     """
 
@@ -44,11 +43,6 @@ class UserId(schema.TextLine):
         from loops.organize.party import getPersonForUser
         context = removeSecurityProxy(self.context).context
         principal = getPrincipalForUserId(userId, context)
-        #auth = component.getUtility(IAuthentication, context=context)
-        #try:
-            #principal = auth.getPrincipal(userId)
-        #except PrincipalLookupError:
-            #principal = oidc.Principal(userId, dict(name=userId))
         if principal is None:
             raiseValidationError(_('User $userId does not exist',
                                    mapping={'userId': userId}))

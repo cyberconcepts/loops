@@ -15,7 +15,8 @@ import waitress
 from zope.app.wsgi import config, getWSGIApplication
 
 def run(app, config):
-    oidc.startup()
+    if config.oidc_provider:
+        oidc.startup()
     port = int(config.server_port)
     print(f'Serving on port {port}.')
     waitress.serve(app, port=port)

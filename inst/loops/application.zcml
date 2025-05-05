@@ -24,6 +24,8 @@
   <include package="cyberapps.ccmkg" />
   <include package="cyberapps.knowledge" />-->
 
+  <include package="loops.server" file="auth.zcml" />
+
   <!-- Override registrations -->
   <includeOverrides package="loops" file="overrides.zcml" />
   <includeOverrides file="overrides.zcml" />

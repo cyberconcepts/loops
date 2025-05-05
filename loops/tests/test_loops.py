@@ -1,5 +1,8 @@
 # loops.tests.test_loops
 
+import os, sys
+sys.path = [os.path.dirname(__file__)] + sys.path
+
 import unittest, doctest
 import warnings
 from zope.interface.verify import verifyClass
