@@ -84,16 +84,16 @@ def getInternalPrincipal(id, context=None, pau=None):
     raise PrincipalLookupError(id)
 
 
-def getPrincipalForUserId(id, context=None, auth=None):
-    if not id:
+def getPrincipalForUserId(userId, context=None, auth=None):
+    if not userId:
         return None
     if auth is None:
         auth = component.getUtility(IAuthentication, context=context)
     try:
-        return auth.getPrincipal(id)
+        return auth.getPrincipal(userId)
     except PrincipalLookupError:
         from scopes.web.auth import oidc
-        return oidc.Principal(id, dict(name=id))
+        return oidc.Principal(userId, dict(name=userId))
         #return None
 
 
