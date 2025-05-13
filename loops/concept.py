@@ -293,11 +293,14 @@ class Concept(Contained, Persistent):
         predicates = predicates is None and ['r*'] or predicates
         relationships = [ResourceRelation(self, None, p) for p in predicates]
         if sort == 'default':
-            sort = lambda x: (x.order, x.second.title.lower())
+            sort = lambda x: (x.order or 0, 
+                             (x.second.title and x.second.title.lower() or ''))
         rels = (r for r in getRelations(self, resource, relationships=relationships,
                                         usePredicateIndex=usePredicateIndex)
                   if canListObject(r.second, noSecurityCheck) and
                      IResource.providedBy(r.second))
+        if sort is None:
+            return rels
         return sorted(rels, key=sort)
 
     def getResources(self, predicates=None, sort='default',
@@ -337,9 +340,12 @@ class Concept(Contained, Persistent):
         relationships = ([ResourceRelation(self, None, p) for p in predicates]
                        + [ConceptRelation(None, self, p) for p in predicates])
         if sort == 'default':
-            sort = lambda x: (x.order, x.second.title.lower())
+            sort = lambda x: (x.order or 0, 
+                             (x.second.title and x.second.title.lower() or ''))
         rels = (r for r in getRelations(self, child, relationships=relationships)
                   if canListObject(r.second))
+        if sort is None:
+            return rels
         return sorted(rels, key=sort)
 
 
