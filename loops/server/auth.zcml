@@ -14,5 +14,11 @@
     class="loops.server.auth.CallbackView"
 	permission="zope.Public" />
 
+  <browser:page 
+	for="zope.interface.Interface"
+  	name="auth_logout"
+    class="loops.server.auth.LogoutView"
+	permission="zope.Public" />
+
 </configure>
 

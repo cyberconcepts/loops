@@ -29,3 +29,10 @@ class CallbackView:
     def __call__(self):
         oidc.Authenticator(self.request).callback()
         return ''
+
+
+class LogoutView:
+
+    def __call__(self):
+        oidc.Authenticator(self.request).logout()
+        return ''
