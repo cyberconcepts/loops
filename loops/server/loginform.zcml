@@ -1,0 +1,12 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+    name="loginForm.html" for="*"
+    template="loginform.pt"
+    permission="zope.Public"
+    layer="cybertools.browser.loops.Loops" />
+
+</configure>
+
