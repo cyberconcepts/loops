@@ -17,13 +17,17 @@
     <br />
   </metal:empty>
 
-  <div metal:fill-slot="body" tal:define="principal python:request.principal.id">
+  <div metal:fill-slot="body" 
+	   tal:define="principal python:request.principal.id;
+	   			   camefrom python:request.get('camefrom') or request.URL[-1]">
     <p i18n:translate="" tal:condition="python: principal == 'zope.anybody'">
       Please provide Login Information</p>
     <p i18n:translate="" tal:condition="python: principal != 'zope.anybody'">
       You are not authorized to perform this action. However, you may login as a
       different user who is authorized.</p>
-	<p><a href="/auth_login">Login with Zitadel</a></p>
+	<p>
+	  <a tal:attributes="href string:/auth_login?camefrom=$camefrom">Login with Zitadel</a>
+	</p>
     <form action="." method="post"
           tal:attributes="action request/URL">
         <div tal:omit-tag=""
