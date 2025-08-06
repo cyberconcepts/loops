@@ -30,6 +30,14 @@ class CallbackView:
         oidc.Authenticator(self.request).callback()
         return ''
 
+    def getGroupsForPrincipal(self, prcId):
+        pau = getUtility(IAuthentication, context=self.context)
+        groups = pau['gloops'].getGroupsForPrincipal(prcId)
+        gf_ws = pau.get('gloops_ws')
+        if gf_ws:
+            groups += gf_ws.getGroupsForPrincipal(prcId)
+        return groups
+
 
 class LogoutView:
 

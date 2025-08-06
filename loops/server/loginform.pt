@@ -26,7 +26,8 @@
       You are not authorized to perform this action. However, you may login as a
       different user who is authorized.</p>
 	<p>
-	  <a tal:attributes="href string:/auth_login?camefrom=$camefrom">Login with Zitadel</a>
+	  <a tal:attributes="href string:/auth_login?camefrom=$camefrom"
+	    i18n:translate="">Login with Zitadel</a>
 	</p>
     <form action="." method="post"
           tal:attributes="action request/URL">
