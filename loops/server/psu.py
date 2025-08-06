@@ -11,6 +11,7 @@
 
 import atexit
 import os
+import sys
 from transaction import commit, abort
 from zope.app import wsgi
 from zope.app.authentication.principalfolder import Principal
@@ -26,6 +27,7 @@ from zope.interface import Interface
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.publisher.browser import TestRequest as BaseTestRequest
 from zope.security.management import getInteraction, newInteraction, endInteraction
+from zope.site import site
 #from zope.pluggableauth.plugins.principalfolder import PrincipalInfo
 
 from cybertools.util.date import date2TimeStamp, strptime
@@ -35,6 +37,9 @@ from loops.server import auth
 from loops.util import getObjectForUid, getUidForObject, getCatalog, reindex
 
 os.environ['NLS_LANG'] = 'German_Germany.UTF8'
+
+# hack for fixing error from migration (zope.app.component.SiteManagementFolder):
+sys.modules['dummy'] = site
 
 try:
     import config
