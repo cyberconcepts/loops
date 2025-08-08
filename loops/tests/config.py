@@ -20,8 +20,14 @@ dbschema = getenv('DBSCHEMA', 'demo')
 
 base_url = 'test://'
 
+# special testing stuff
+from scopes.tests import data_auth # add oidc URIs and keys to dummy_requests data
+from scopes.tests import dummy_requests
+import sys
+sys.modules['requests'] = dummy_requests
+
 # authentication settings
-oidc_provider = ''
+oidc_provider = 'test://oidc'
 oidc_client_id = getenv('OIDC_CLIENT_ID', '12345')
 oidc_params = dict(
     op_config_url=oidc_provider + '/.well-known/openid-configuration',

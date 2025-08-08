@@ -27,7 +27,8 @@ class LoginView:
 class CallbackView:
 
     def __call__(self):
-        oidc.Authenticator(self.request).callback()
+        oidc.Authenticator(
+                self.request).callback(groupsProvider=self.getGroupsForPrincipal)
         return ''
 
     def getGroupsForPrincipal(self, prcId):

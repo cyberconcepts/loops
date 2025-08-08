@@ -1,5 +1,9 @@
 # loops.organize.tests
 
+import os, sys
+#sys.path = [os.path.dirname(__file__)] + sys.path
+sys.path = ['loops/tests'] + sys.path
+
 import unittest, doctest
 from zope.interface.verify import verifyClass
 

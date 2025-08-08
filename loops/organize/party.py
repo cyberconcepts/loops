@@ -80,6 +80,10 @@ class Person(AdapterBase, BasePerson):
     _adapterAttributes = ('context', '__parent__', 'userId', 'phoneNumbers')
     _contextAttributes = list(IPerson) + list(IConcept)
 
+    def createExtUser(self, userId):
+        from scopes.org import user
+        #print('*** Person.createExtUser', userId)
+
     def getUserId(self):
         return getattr(self.context, '_userId', None)
     def setUserId(self, userId):
@@ -111,6 +115,8 @@ class Person(AdapterBase, BasePerson):
         self.context._userId = userId
         setter.propagateSecurity()
         allowEditingForOwner(self.context, revert=not userId)  # why this?
+        if not oldUserId:
+            self.createExtUser(userId)
     userId = property(getUserId, setUserId)
 
     def removeReferenceFromPrincipal(self, userId):
