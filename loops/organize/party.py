@@ -24,7 +24,7 @@ from loops.concept import Concept
 from loops.interfaces import IConcept
 from loops.organize.interfaces import IAddress, IPerson, IHasRole
 from loops.organize.interfaces import ANNOTATION_KEY
-from loops.organize.util import getPrincipalForUserId
+from loops.organize.util import getInternalPrincipal, getPrincipalForUserId
 from loops.predicate import RelationAdapter
 from loops.predicate import PredicateInterfaceSourceList
 from loops.security.common import assignOwner, removeOwner, allowEditingForOwner
@@ -81,8 +81,22 @@ class Person(AdapterBase, BasePerson):
     _contextAttributes = list(IPerson) + list(IConcept)
 
     def createExtUser(self, userId):
-        from scopes.org import user
+        import config
+        params = getattr(config, 'oidc_params', None)
+        if params is None:
+            return
         #print('*** Person.createExtUser', userId)
+        from scopes.org import user
+        try:
+            prc = getInternalPrincipal(userId, self.context)
+        except ValueError: # may happen during testing
+            #print('*** PAU not available, userId:', userId)
+            return
+        u = user.User(prc.login, self.email, #prc.password,
+                      firstName=self.firstName or '', 
+                      lastName=self.lastName or '')
+        xu = user.ExtUser(u, prc.__parent__.prefix)
+        xu.create(True)
 
     def getUserId(self):
         return getattr(self.context, '_userId', None)
@@ -116,6 +130,7 @@ class Person(AdapterBase, BasePerson):
         setter.propagateSecurity()
         allowEditingForOwner(self.context, revert=not userId)  # why this?
         if not oldUserId:
+            pass
             self.createExtUser(userId)
     userId = property(getUserId, setUserId)
 
