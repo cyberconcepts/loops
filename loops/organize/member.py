@@ -25,6 +25,7 @@ from loops.concept import Concept
 from loops.interfaces import ILoops
 from loops.organize.auth import IPersonBasedAuthenticator
 from loops.organize.interfaces import IMemberRegistrationManager
+from loops.organize.party import getPersonForUser
 from loops.organize.util import getPrincipalFolder, getGroupsFolder
 from loops.organize.util import getInternalPrincipal, getPrincipalForUserId
 from loops.type import getOptionsDict
@@ -68,8 +69,10 @@ class MemberRegistrationManager(object):
         if not groups:
             groups = options(self.groups_key, ())
         self.setGroupsForPrincipal(pfName, userId,  groups=groups)
-        return self.createPersonForPrincipal(pfName, userId, lastName, firstName,
-                                      useExisting, **kw)
+        person = self.createPersonForPrincipal(
+                    pfName, userId, lastName, firstName, useExisting, **kw)
+        createExtUser(person)
+        return person
 
     def createPrincipal(self, pfName, userId, password, lastName,
                               firstName=u'', groups=[], useExisting=False,
@@ -156,3 +159,26 @@ class MemberRegistrationManager(object):
         principal.setPassword(newPw)
         return True
 
+
+def createExtUser(person, principal=None, updateIfExists=False):
+    import config
+    params = getattr(config, 'oidc_params', None)
+    if params is None:
+        return
+    if principal is None:
+        principal = getInternalPrincipal(person.userId, person.context)
+    from scopes.org import user
+    u = user.User(principal.login, person.email, #principal.password,
+                  firstName=person.firstName or '', 
+                  lastName=person.lastName or '')
+    xu = user.ExtUser(u, principal.__parent__.prefix)
+    res = xu.create(updateIfExists)
+    #print('*** Person.createExtUser', principal.login, res)
+
+
+def syncExtUsers(context, pfolderName):
+    pf = getPrincipalFolder(context, pFolderName)
+    for id, prc in pf.items():
+        userId = pf.prefix + id
+        person = getPersonForUser(context, getPrincipalForUserId(userId, context))
+        createExtUser(person, principal, True)
