@@ -180,5 +180,6 @@ def syncExtUsers(context, pfolderName):
     pf = getPrincipalFolder(context, pFolderName)
     for id, prc in pf.items():
         userId = pf.prefix + id
-        person = getPersonForUser(context, getPrincipalForUserId(userId, context))
+        person = getPersonForUser(
+                    context, principal=getPrincipalForUserId(userId, context))
         createExtUser(person, principal, True)
