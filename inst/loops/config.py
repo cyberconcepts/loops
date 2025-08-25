@@ -30,6 +30,7 @@ oidc_params = dict(
     op_config_url=oidc_provider + '/.well-known/openid-configuration',
     op_uris=None,
     op_keys=None,
+    op_project_scope='urn:zitadel:iam:org:project:id:zitadel:aud',
     callback_url=getenv('OIDC_CALLBACK_URL', base_url + '/auth_callback'),
     client_id=oidc_client_id,
     principal_prefix=getenv('OIDC_PRINCIPAL_PREFIX', 'loops.'),
@@ -39,6 +40,6 @@ oidc_params = dict(
     cookie_crypt=getenv('OIDC_COOKIE_CRYPT', None),
     private_key_file=getenv('OIDC_SERVICE_USER_PRIVATE_KEY_FILE', '.private-key.json'),
     organization_id=getenv('OIDC_ORGANIZATION_ID', '12346'),
-    project_id=getenv('OIDC_PROJECT_ID', '12347'),
+    project_id=getenv('OIDC_PROJECT_ID', None),
 )
 

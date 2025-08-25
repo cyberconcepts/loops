@@ -44,5 +44,6 @@ oidc_params = dict(
     private_key_file=getenv('OIDC_SERVICE_USER_PRIVATE_KEY_FILE', 
                             'loops/tests/test-private-key.json'),
     organization_id=getenv('OIDC_ORGANIZATION_ID', '12346'),
+    project_id=getenv('OIDC_PROJECT_ID', None),
 )
 
