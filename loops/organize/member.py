@@ -176,10 +176,13 @@ def createExtUser(person, principal=None, updateIfExists=False):
     #print('*** Person.createExtUser', principal.login, res)
 
 
-def syncExtUsers(context, pfolderName):
-    pf = getPrincipalFolder(context, pFolderName)
+def syncExtUsers(context, pfolderName, userIds=None, check=None):
+    pf = getPrincipalFolder(context, pfolderName)
     for id, prc in pf.items():
+        if userIds and id not in userIds:
+            continue
         userId = pf.prefix + id
-        person = getPersonForUser(
-                    context, principal=getPrincipalForUserId(userId, context))
-        createExtUser(person, principal, True)
+        person = adapted(getPersonForUser(
+                    context, principal=getPrincipalForUserId(userId, context)))
+        if check is None or check(person):
+            createExtUser(person, prc, True)
