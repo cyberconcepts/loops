@@ -26,7 +26,7 @@
       You are not authorized to perform this action. However, you may login as a
       different user who is authorized.</p>
 	<p i18n:domain="loops">
-	  <a tal:attributes="href string:/auth_login?camefrom=$camefrom"
+	  <a tal:attributes="href string:/@@auth_login?camefrom=$camefrom"
 	    i18n:translate="login-with-oidc">Login with OpenID Connect (Zitadel)</a>
 	</p>
     <form action="." method="post"
