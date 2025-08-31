@@ -50,10 +50,11 @@ class Logout(object):
 
     def __call__(self):
         nextUrl = self.request.get('nextURL') or self.request.URL[-1]
+        nx = self.request.response.redirect(nextUrl)
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             auth = component.getUtility(IAuthentication)
             ILogout(auth).logout(self.request)
-        return self.request.response.redirect(nextUrl)
+        return nx
 
 
 class Unauthorized(ConceptView):
