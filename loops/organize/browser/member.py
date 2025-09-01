@@ -60,6 +60,13 @@ class PersonalInfo(ConceptView):
     def view(self):
         return self
 
+    @Lazy
+    def extUserLink(self):
+        from scopes.web.auth.oidc import IExternalPrincipal
+        if IExternalPrincipal.providedBy(self.request.principal):
+            return self.request.principal.extUserLink
+        return None
+
 
 class BaseMemberRegistration(NodeView):
 
