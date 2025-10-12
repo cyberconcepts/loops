@@ -256,7 +256,7 @@ def normalizeName(baseName):
             continue
         if ord(x) > 127:
             # map to ASCII characters
-            c = chr(ord(x) & 127).decode('ISO8859-15')
+            c = bytes([ord(x) & 127]).decode('ISO8859-15')
         if c in ':,/\\ ':
             # replace separator characters with _
             result.append('_')
