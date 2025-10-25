@@ -39,6 +39,7 @@ from loops.organize.util import getPrincipalFolder
 import loops.browser.util
 from loops.util import _
 
+import config
 
 organize_macros = ViewPageTemplateFile('view_macros.pt')
 
@@ -59,6 +60,13 @@ class PersonalInfo(ConceptView):
     @Lazy
     def view(self):
         return self
+
+    @Lazy
+    def selectAuthMethod(self):
+        return getattr(config, 'authentication_method', 'legacy') == 'cookie'
+
+    def getAuthMethod(self):
+        return self.request.cookies.get('loops_auth_method') or 'legacy'
 
     @Lazy
     def extUserLink(self):
