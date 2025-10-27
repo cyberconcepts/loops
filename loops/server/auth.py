@@ -23,19 +23,18 @@ def registerAuthUtility(config):
 class LoginPage:
 
     index = ViewPageTemplateFile('loginform.pt')
+    showSelection = False
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.authMethod = getattr(config, 'authentication_method', 'legacy')
+        self.authMethod = getConfigAuthMethod()
         if self.authMethod == 'cookie':
             self.authMethod = getAuthMethodCookieValue(request)
-        self.oidc_allowed = self.authMethod in ('oidc', 'select')
+        self.oidc_allowed = self.showSelection or self.authMethod in ('oidc', 'select')
 
     def __call__(self):
-        print('***', self.request.principal.id)
-        print('***', self.authMethod)
-        if self.authMethod == 'oidc':
+        if self.authMethod == 'oidc' and not self.showSelection:
             return self.authOidc()
         return self.index()
 
@@ -43,8 +42,18 @@ class LoginPage:
         oidc.Authenticator(self.request).login()
         return ''
 
+
+class LoginPageSelect(LoginPage):
+
+    @property
+    def showSelection(self):
+        return getConfigAuthMethod() == 'cookie'
+
+
+def getConfigAuthMethod():
+    return getattr(config, 'authentication_method', 'legacy')
+
 def getAuthMethodCookieValue(request):
-    print('***', dict(request.cookies))
     return request.cookies.get('loops_auth_method') or 'legacy'
 
 

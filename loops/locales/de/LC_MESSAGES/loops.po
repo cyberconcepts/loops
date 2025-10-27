@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 3.0.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2025-10-26 12:00 CET\n"
+"PO-Revision-Date: 2025-10-27 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -1477,6 +1477,9 @@ msgstr "Mit OpenID Connect (Zitadel) anmelden"
 
 msgid "edit-external-user"
 msgstr "Login-Einstellungen bearbeiten"
+
+msgid "set-authentication-method"
+msgstr "Login-Verfahren einstellen"
 
 msgid "authentication-method"
 msgstr "Login-Verfahren"

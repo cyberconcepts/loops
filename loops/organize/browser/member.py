@@ -62,13 +62,6 @@ class PersonalInfo(ConceptView):
         return self
 
     @Lazy
-    def selectAuthMethod(self):
-        return getattr(config, 'authentication_method', 'legacy') == 'cookie'
-
-    def getAuthMethod(self):
-        return self.request.cookies.get('loops_auth_method') or 'legacy'
-
-    @Lazy
     def extUserLink(self):
         from scopes.web.auth.oidc import IExternalPrincipal
         if IExternalPrincipal.providedBy(self.request.principal):

@@ -60,20 +60,6 @@
           <li tal:condition="python:item.globalOptions('organize.useFilters')">
             <a href="edit_filters.html"
                i18n:translate="">Edit Filters</a></li>
-		  <li tal:condition="item/selectAuthMethod">
-			<span i18n:translate="authentication-method">Authentication Method</span>:
-			<select name="auth_method"
-				   onchange="document.cookie=`loops_auth_method=${this.value}; path=/`"
-				   tal:define="meth item/getAuthMethod"
-			       tal:attributes="value meth">
-              <option value="legacy" i18n:translate="authentication-method-legacy"
-			          tal:attributes="selected python:meth=='legacy'">Legacy</option>
-              <option value="oidc" i18n:translate="authentication-method-oidc"
-			          tal:attributes="selected python:meth=='oidc'">OIDC</option>
-              <option value="select" i18n:translate="authentication-method-select"
-			          tal:attributes="selected python:meth=='select'">Selection</option>
-			</select>
-		  </li>
         </ul>
       </metal:block>
     </metal:block>

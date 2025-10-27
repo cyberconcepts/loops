@@ -8,5 +8,11 @@
     permission="zope.Public"
     layer="cybertools.browser.loops.Loops" />
 
+  <browser:page for="*"
+    name="auth_select"
+	class="loops.server.auth.LoginPageSelect"
+    permission="zope.Public"
+    layer="cybertools.browser.loops.Loops" />
+
 </configure>
 
