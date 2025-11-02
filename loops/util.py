@@ -148,7 +148,8 @@ def records(context, name, factory, storage=None):
     if name in (opts.scopes.storage.records or []):
         if storage is None:
             storage = getStorage(context)
-        return storage.create(factory)
+        #return storage.create(factory)
+        return storage.getContainer(factory.itemFactory)
     return root.getRecordManager()[name]
 
 
