@@ -19,8 +19,8 @@
 
   <div metal:fill-slot="body" 
        tal:define="principal python:request.principal.id;
-                   camefrom python:request.get('camefrom') or request.URL[-1]">
                    baseUrl python:request.URL[-1];
+                   camefrom python:request.get('camefrom') or request.URL[-1]">
 
     <p i18n:translate="" tal:condition="python: principal == 'zope.anybody'">
       Please provide Login Information</p>
