@@ -19,7 +19,8 @@
 
   <div metal:fill-slot="body" 
 	   tal:define="principal python:request.principal.id;
-	   			   camefrom python:request.get('camefrom') or request.URL[-1]">
+                   baseUrl python:request.URL[-1];
+	   			   camefrom python:request.get('camefrom') or baseUrl">
 
     <p i18n:translate="" tal:condition="python: principal == 'zope.anybody'">
       Please provide Login Information</p>
@@ -28,15 +29,14 @@
       different user who is authorized.</p>
 	<p i18n:domain="loops"
 	   tal:condition="view/oidc_allowed">
-	  <a tal:attributes="href string:/@@auth_login?camefrom=$camefrom"
+	  <a tal:attributes="href string:$baseUrl/@@auth_login?camefrom=$camefrom"
 	    i18n:translate="login-with-oidc">Login with OpenID Connect (Zitadel)</a>
 	</p>
     <form action="." method="post"
           tal:attributes="action request/URL">
         <div tal:omit-tag=""
              tal:condition="python:principal != 'zope.anybody' and 'SUBMIT' in request">
-            <span tal:define="dummy python:
-                request.response.redirect(request.get('camefrom') or request.URL[-1])" />
+            <span tal:define="dummy python:request.response.redirect(camefrom)" />
         </div>
         <div class="row">
             <div class="label" i18n:translate="">User Name</div>
