@@ -52,7 +52,7 @@
     </tal:actions>
     <h1 tal:define="tabview item/tabview|nothing"
         tal:attributes="ondblclick item/openEditWindow">
-      <a tal:omit-tag="python: level > 1"
+      <a tal:omit-tag="python: int(level) > 1"
          tal:attributes="href string:${view/requestUrl}${item/urlParamString}"
          tal:content="item/title">Title</a>
       <a title="Show tabular view"
@@ -340,7 +340,7 @@
 <metal:listing define-macro="list_nested">
   <div style="margin-left: 20px"
        tal:define="item nocall:related;
-                   level python:level + 1">
+                   level python: int(level) + 1">
     <tal:children condition="children">
       <metal:list use-macro="item/template/macros/conceptchildren" />
     </tal:children>
