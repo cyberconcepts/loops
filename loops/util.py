@@ -169,7 +169,7 @@ def getItem(uid, intIds=None, storage=None):
     return obj
 
 def getMigratedItem(uid, storage):
-    t = self.getUidTable
+    t = storage.getUidTable
     stmt = t.select().where(t.c.legacy == int(uid))
     newId = storage.session.execute(stmt).first()
     if newId is not None:
