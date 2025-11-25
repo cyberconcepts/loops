@@ -275,6 +275,13 @@ class BaseView(GenericView, I18NView, SortableMixin):
     def isAnonymous(self):
         return IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
+    @Lazy
+    def extUserLink(self):
+        from scopes.web.auth.oidc import IExternalPrincipal
+        if IExternalPrincipal.providedBy(self.request.principal):
+            return self.request.principal.extUserLink
+        return None
+
     def recordAccess(self, viewName, **kw):
         access.record(self.request, principal=self.principalId, view=viewName, **kw)
 
