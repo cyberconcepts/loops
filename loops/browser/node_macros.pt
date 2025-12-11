@@ -267,7 +267,7 @@
 
 
 <metal:actions define-macro="view_modes">
-  <ul class="view-modes"
+  <ul class="view-modes noprint"
       tal:define="viewModes view/viewModes"
       tal:condition="viewModes">
     <li tal:repeat="mode viewModes"

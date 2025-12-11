@@ -38,7 +38,7 @@
 
 <div metal:define-macro="header">
     <metal:block use-macro="view/concept_macros/concepttitle" />
-    <form method="get" name="report_data" class="report-meta">
+    <form method="get" name="report_data" class="report-meta noprint">
       <input type="hidden" name="show_results" value="True" />
       <tal:hidden define="params item/dynamicParams">
         <input type="hidden"
