@@ -117,6 +117,12 @@ thead th {
     }
 }
 
+@media screen {
+	.print-only {
+		display: none !important;
+	}
+}
+
 /* class-specific */
 
 .breadcrumbs td {

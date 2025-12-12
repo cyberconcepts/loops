@@ -37,6 +37,8 @@
 
 
 <div metal:define-macro="header">
+    <h1 class="print-only"
+        tal:content="report/context/title" />
     <metal:block use-macro="view/concept_macros/concepttitle" />
     <form method="get" name="report_data" class="report-meta noprint">
       <input type="hidden" name="show_results" value="True" />
