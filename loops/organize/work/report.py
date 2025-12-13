@@ -277,6 +277,7 @@ class WorkReportInstance(ReportInstance):
 
     type = "work_statement"
     label = u'Work Statement'
+    show_report_title = True
 
     rowFactory = WorkRow
 
