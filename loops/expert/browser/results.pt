@@ -51,8 +51,8 @@
          tal:define="results reportView/results">
     <tr>
       <th style="white-space: nowrap"
+          tal:attributes="class col/cssClass"
           tal:repeat="col results/displayedColumns">
-        <span tal:attributes="class col/cssClass">
         <a title="tooltip_sort_column"
            tal:define="colName col/name"
            tal:omit-tag="python:not item.isSortableColumn(tableName, colName)"
@@ -64,7 +64,6 @@
                tal:condition="src"
                tal:attributes="src src" />
         </a>
-        </span>
       </th>
     </tr>
     <tr tal:repeat="row results"
