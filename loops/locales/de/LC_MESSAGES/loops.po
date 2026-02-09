@@ -3,7 +3,7 @@ msgstr ""
 
 "Project-Id-Version: 3.0.1\n"
 "POT-Creation-Date: 2007-05-22 12:00 CET\n"
-"PO-Revision-Date: 2026-01-23 12:00 CET\n"
+"PO-Revision-Date: 2026-01-09 12:00 CET\n"
 "Last-Translator: Helmut Merz <helmutm@cy55.de>\n"
 "Language-Team: loops developers <helmutm@cy55.de>\n"
 "MIME-Version: 1.0\n"
@@ -1494,7 +1494,7 @@ msgid "authentication-method-legacy"
 msgstr "Klassisches Login-Verfahren"
 
 msgid "authentication-method-oidc"
-msgstr "Login mit OpenID Connect"
+msgstr "Immer mit neuem Login-Verfahren anmelden"
 
 msgid "authentication-method-select"
 msgstr "Verfahren beim Login auswählen"
