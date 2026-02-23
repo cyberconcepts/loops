@@ -54,7 +54,8 @@ def getConfigAuthMethod():
     return getattr(config, 'authentication_method', 'legacy')
 
 def getAuthMethodCookieValue(request):
-    return request.cookies.get('loops_auth_method') or 'legacy'
+    default = getattr(config, 'authentication_method_cookie_default', 'legacy')
+    return request.cookies.get('loops_auth_method') or default
 
 
 # OIDC authentication
