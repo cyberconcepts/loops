@@ -31,7 +31,8 @@
         <select name="auth_method"
                 onchange="document.cookie=`loops_auth_method=${this.value}; path=/; expires=Sun, 31 Jan 2027 12:00:00 UTC`"
                 tal:define="meth view/authMethod"
-                tal:attributes="value meth">
+                tal:attributes="value meth;
+                                onchange view/authMethodCookieString">
            <option value="legacy" i18n:translate="authentication-method-legacy"
                    tal:attributes="selected python:meth=='legacy'">Legacy</option>
            <option value="oidc" i18n:translate="authentication-method-oidc"

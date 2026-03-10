@@ -49,6 +49,10 @@ class LoginPageSelect(LoginPage):
     def showSelection(self):
         return getConfigAuthMethod() == 'cookie'
 
+    def authMethodCookieString(self):
+        domain = getattr(config, 'authentication_method_cookie_domain', None)
+        return 'document.cookie=`loops_auth_method=${this.value}; path=/; expires=Sun, 31 Jan 2027 12:00:00 UTC%s`' % (domain and f'; domain={domain}' or '')
+
 
 def getConfigAuthMethod():
     return getattr(config, 'authentication_method', 'legacy')
