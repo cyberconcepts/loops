@@ -44,6 +44,11 @@
         class="loops.browser.auth.Logout"
         permission="zope.View" />
 
+  <page for="loops.interfaces.INode"
+        name="loggedout.html"
+        class="loops.browser.auth.Loggedout"
+        permission="zope.View" />
+
   <!-- see also view/adapter "login.html" in section "query views" -->
 
   <!-- macros -->

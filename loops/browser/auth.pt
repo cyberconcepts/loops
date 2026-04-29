@@ -40,3 +40,24 @@
       </form>
     </div>
 </metal:login>
+
+
+<metal:loggedout define-macro="loggedout"
+                 i18n:domain="loops"
+                 tal:define="principal request/principal/id">
+    <h2 i18n:translate="">Logged out</h2>
+    <div>
+      <p i18n:translate=""
+         tal:condition="python: principal == 'zope.anybody'">Your have been successfully logged out from this application. Please login again if needed or close this browser tab</p>
+      <p i18n:translate=""
+         tal:condition="python: principal != 'zope.anybody'">
+        You are not authorized to perform this action. However, you may login as a
+        different user who is authorized.</p>
+      <div class="row">
+        <button i18n:translate="">
+          <a i18n:translate=""
+             tal:attributes="href view/baseUrl">Log in again</a></button>
+
+      </div>
+    </div>
+</metal:loggedout>

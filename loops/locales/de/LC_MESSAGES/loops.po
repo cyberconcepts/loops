@@ -604,8 +604,17 @@ msgstr "Nicht angemeldet"
 msgid "Log in"
 msgstr "Anmelden"
 
+msgid "Log in again"
+msgstr "Erneut anmelden"
+
 msgid "Presence"
 msgstr "Anwesenheit"
+
+msgid "Logged out"
+msgstr "Abgemeldet"
+
+msgid "Your have been successfully logged out from this application. Please login again if needed or close this browser tab"
+msgstr "Sie haben sich erfolgreich von dieser Anwendung abgemeldet. Bitte loggen Sie sich bei Bedarf wieder ein oder schließen Sie das Browserfenster"
 
 # general
 

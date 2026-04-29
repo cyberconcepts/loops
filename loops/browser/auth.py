@@ -57,6 +57,24 @@ class Logout(object):
         return nx
 
 
+class Loggedout(NodeView):
+
+    template = template
+
+    @Lazy
+    def macro(self):
+        return self.template.macros['loggedout']
+
+    @Lazy
+    def item(self):
+        return self
+
+    @Lazy
+    def baseUrl(self):
+        url = self.menu.url
+        return url
+
+
 class Unauthorized(ConceptView):
 
     isTopLevel = True
