@@ -54,6 +54,14 @@ class LoginPageSelect(LoginPage):
         return 'document.cookie=`loops_auth_method=${this.value}; path=/; expires=Sun, 31 Jan 2027 12:00:00 UTC%s`' % (domain and f'; domain={domain}' or '')
 
 
+class Unauthorized(LoginPage):
+
+    def __call__(self):
+        print(f'*** unauthorized: user = {self.request.principal.id}, authMethod = {self.authMethod}')
+        return "Unauthorized"
+        #return super(Unauthorized, self).__call__()
+
+
 def getConfigAuthMethod():
     return getattr(config, 'authentication_method', 'legacy')
 
