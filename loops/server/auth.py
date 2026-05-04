@@ -75,7 +75,7 @@ class Unauthorized(LoginPage):
             return super(Unauthorized, self).__call__()  # open or redirect to login page
         else:
             response.setStatus(403)
-            return 'Unauthorized'
+            return 'Unauthorized: You are not allowed to access this ressource.'
 
 
 def getConfigAuthMethod():
