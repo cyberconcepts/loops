@@ -24,6 +24,9 @@ dbpassword = getenv('DBPASSWORD', 'secret')
 dbschema = getenv('DBSCHEMA', 'demo')
 
 # OpenID Connect (OIDC, e.g. via zitadel) authentication settings
+authentication_method = 'cookie' # 'legacy'|'select'|'oidc'|'cookie'
+
+# OpenID Connect (OIDC) authentication settings
 oidc_provider = getenv('OIDC_PROVIDER', '') #'https://instance1-abcdef.zitadel.cloud')
 oidc_client_id = getenv('OIDC_CLIENT_ID', '12345')
 oidc_params = dict(

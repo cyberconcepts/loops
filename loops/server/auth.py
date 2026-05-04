@@ -4,8 +4,9 @@
 # and other authentication and authorization stuff.
 
 from scopes.web.auth import oidc
-from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication, IUnauthenticatedPrincipal
 from zope.browserpage import ViewPageTemplateFile
+from zope.cachedescriptors.property import Lazy
 from zope.component import provideAdapter, getUtility, provideUtility
 from zope.interface import implementer, Interface
 from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserPage
@@ -13,6 +14,9 @@ from zope.publisher.browser import BrowserPage
 from zope.security.proxy import removeSecurityProxy
 
 import config
+
+from logging import getLogger
+logger = getLogger("loops.server.auth")
 
 def registerAuthUtility(config):
     baseAuth = getUtility(IAuthentication)
@@ -38,6 +42,10 @@ class LoginPage:
             return self.authOidc()
         return self.index()
 
+    @Lazy
+    def isAnonymous(self):
+        return IUnauthenticatedPrincipal.providedBy(self.request.principal)
+
     def authOidc(self):
         oidc.Authenticator(self.request).login()
         return ''
@@ -57,9 +65,17 @@ class LoginPageSelect(LoginPage):
 class Unauthorized(LoginPage):
 
     def __call__(self):
-        print(f'*** unauthorized: user = {self.request.principal.id}, authMethod = {self.authMethod}')
-        return "Unauthorized"
-        #return super(Unauthorized, self).__call__()
+        response = self.request.response
+        # make sure that squid does not keep the response in the cache
+        response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+        response.setHeader('Pragma', 'no-cache')
+        logger.warn(f'unauthorized: user={self.request.principal.id}, authMethod={self.authMethod}')
+        if self.isAnonymous:
+            return super(Unauthorized, self).__call__()  # open or redirect to login page
+        else:
+            response.setStatus(403)
+            return 'Unauthorized'
 
 
 def getConfigAuthMethod():

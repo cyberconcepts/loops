@@ -1,4 +1,27 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page 
+        for="zope.security.interfaces.IUnauthorized"
+        name="index.html"
+		class="loops.server.auth.Unauthorized"
+        permission="zope.Public" />
+
+  <!--<browser:page
+        for="zope.publisher.interfaces.INotFound"
+        name="index.html"
+        class="loops.browser.common.NotFound"
+        permission="zope.Public" />
+
+  <browser:page
+        for="zope.interface.common.interfaces.IException"
+        name="index.html"
+        class="loops.browser.common.SystemErrorView"
+        permission="zope.Public" />-->
+
+  <!--<browser:defaultSkin name="Loops" />-->
+
+  <include package="loops.server" file="loginform.zcml" />
 
 </configure>
 
