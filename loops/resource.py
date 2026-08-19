@@ -550,6 +550,8 @@ class IndexAttributes(object):
         txt = transformToText(actx)
         if txt is not None:
             return txt
+        if isinstance(actx.contentType, bytes):
+            actx.contentType = actx.contentType.decode('UTF-8')
         if not actx.contentType.startswith('text'):
             return u''
         data = actx.data
@@ -613,6 +615,8 @@ def transformToText(obj, data=None, contentType=None):
         data = obj.data
     if contentType is None:
         contentType = obj.contentType
+    if type(contentType) == bytes:
+        contentType = contentType.decode('UTF-8')
     transform = component.queryAdapter(obj, ITextTransform, name=contentType)
     if transform is not None:
         #rfa = component.queryAdapter(IReadFile, obj)

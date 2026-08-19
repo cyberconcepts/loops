@@ -57,6 +57,8 @@ class MediaAsset(MediaAssetFile, ExternalFileAdapter):
     data = property(ExternalFileAdapter.getData, setData)
 
     def setExternalAddress(self, addr):
+        if isinstance(addr, bytes):
+            addr = addr.decode('UTF-8')
         ExternalFileAdapter.setExternalAddress(self, addr)
         if addr and self.getMimeType().startswith('image/'):
             self.transform(self.rules)
