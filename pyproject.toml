@@ -11,6 +11,8 @@ license = {text = "MIT"}
 keywords = ["loops"]
 authors = [{name = "Helmut Merz", email = "helmutm@cy55.de"}]
 
+# zope.publisher: v5.2.1 needed for handling of :records fields,
+# should be replaced by patched zope.publisher fork (with multipart monkey patch)
 dependencies = [
 	"cybertools",
 	"py-scopes",
